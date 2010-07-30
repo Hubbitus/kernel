@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-%global baserelease 57
+%global baserelease 58
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -673,6 +673,7 @@ Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 Patch2911: linux-2.6-v4l-dvb-add-kworld-a340-support.patch
 Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
+Patch2913: linux-2.6-v4l-dvb-ir-core-memleak-fixes.patch
 
 Patch2915: lirc-staging-2.6.36.patch
 #Patch2916: lirc-staging-2.6.36-fixes.patch
@@ -1251,6 +1252,7 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 ApplyPatch linux-2.6-v4l-dvb-ir-core-update.patch
+ApplyPatch linux-2.6-v4l-dvb-ir-core-memleak-fixes.patch
 ApplyPatch linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 ApplyPatch linux-2.6-v4l-dvb-add-kworld-a340-support.patch
 
@@ -1868,6 +1870,7 @@ fi
 - lirc staging update
 - update kworld patch to one committed upstream
 - can't believe how much nicer dist-git is than dist-cvs
+- patch memory leaks in mceusb and imon drivers
 
 * Fri Jul 30 2010 Dave Jones <davej@redhat.com>
 - Enable PPS (#619392)
