@@ -38,19 +38,18 @@ Summary: The Linux kernel
 %endif
 %endif
 
-# fedora_build defines which build revision of this kernel version we're
-# building. Rather than incrementing forever, as with the prior versioning
-# setup, we set fedora_cvs_origin to the current cvs revision s/1.// of the
-# kernel spec when the kernel is rebased, so fedora_build automatically
-# works out to the offset from the rebase, so it doesn't get too ginormous.
+# baserelease defines which build revision of this kernel version we're
+# building.  We used to call this fedora_build, but the magical name
+# baserelease is matched by the rpmdev-bumpspec tool, which you should use.
 #
-# If you're building on a branch, the RCS revision will be something like
-# 1.1205.1.1.  In this case we drop the initial 1, subtract fedora_cvs_origin
-# from the second number, and then append the rest of the RCS string as is.
-# Don't stare at the awk too long, you'll go blind.
-%define fedora_cvs_origin   2037
-%define fedora_cvs_revision() %2
-%global fedora_build %(echo %{fedora_cvs_origin}.%{fedora_cvs_revision $Revision: 1.2094 $} | awk -F . '{ OFS = "."; ORS = ""; print $3 - $1 ; i = 4 ; OFS = ""; while (i <= NF) { print ".", $i ; i++} }')
+# We used to have some extra magic weirdness to bump this automatically,
+# but now we don't.  Just use: rpmdev-bumpspec -c 'comment for changelog'
+# When changing base_sublevel below or going from rc to a final kernel,
+# reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
+# scripts/rebase.sh should be made to do that for you, actually.
+#
+%global baserelease 57
+%global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
