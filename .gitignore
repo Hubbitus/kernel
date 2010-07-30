@@ -1,3 +1,5 @@
-linux-2.6.34.tar.bz2
-patch-2.6.35-rc6.bz2
-patch-2.6.35-rc6-git5.bz2
+linux-*.tar.bz2
+patch-*.bz2
+clog
+*.rpm
+kernel-2.6.*/
