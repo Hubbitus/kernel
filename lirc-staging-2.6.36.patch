@@ -1,15 +1,16 @@
  drivers/staging/Kconfig                 |    2 +
  drivers/staging/Makefile                |    1 +
- drivers/staging/lirc/Kconfig            |  110 +++
+ drivers/staging/lirc/Kconfig            |  111 +++
  drivers/staging/lirc/Makefile           |   19 +
  drivers/staging/lirc/TODO               |    8 +
+ drivers/staging/lirc/TODO.lirc_i2c      |    3 +
  drivers/staging/lirc/lirc_bt829.c       |  383 +++++++++
  drivers/staging/lirc/lirc_ene0100.c     |  646 ++++++++++++++
  drivers/staging/lirc/lirc_ene0100.h     |  169 ++++
  drivers/staging/lirc/lirc_i2c.c         |  536 ++++++++++++
  drivers/staging/lirc/lirc_igorplugusb.c |  555 ++++++++++++
  drivers/staging/lirc/lirc_imon.c        | 1058 +++++++++++++++++++++++
- drivers/staging/lirc/lirc_it87.c        | 1019 +++++++++++++++++++++++
+ drivers/staging/lirc/lirc_it87.c        | 1022 +++++++++++++++++++++++
  drivers/staging/lirc/lirc_it87.h        |  116 +++
  drivers/staging/lirc/lirc_ite8709.c     |  542 ++++++++++++
  drivers/staging/lirc/lirc_parallel.c    |  705 ++++++++++++++++
@@ -18,9 +19,9 @@
  drivers/staging/lirc/lirc_serial.c      | 1313 +++++++++++++++++++++++++++++
  drivers/staging/lirc/lirc_sir.c         | 1282 ++++++++++++++++++++++++++++
  drivers/staging/lirc/lirc_streamzap.c   |  821 ++++++++++++++++++
- drivers/staging/lirc/lirc_ttusbir.c     |  397 +++++++++
+ drivers/staging/lirc/lirc_ttusbir.c     |  396 +++++++++
  drivers/staging/lirc/lirc_zilog.c       | 1387 +++++++++++++++++++++++++++++++
- 22 files changed, 12028 insertions(+), 0 deletions(-)
+ 23 files changed, 12034 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/staging/Kconfig b/drivers/staging/Kconfig
 index 984a754..9296517 100644
@@ -35,25 +36,29 @@ index 984a754..9296517 100644
  endif # !STAGING_EXCLUDE_BUILD
  endif # STAGING
 diff --git a/drivers/staging/Makefile b/drivers/staging/Makefile
-index 9fa2513..9e9b068 100644
+index 9fa2513..6c5b523 100644
 --- a/drivers/staging/Makefile
 +++ b/drivers/staging/Makefile
-@@ -54,3 +54,4 @@ obj-$(CONFIG_ADIS16255)		+= adis16255/
- obj-$(CONFIG_FB_XGI)		+= xgifb/
- obj-$(CONFIG_TOUCHSCREEN_MRSTOUCH)	+= mrst-touchscreen/
- obj-$(CONFIG_MSM_STAGING)	+= msm/
+@@ -8,6 +8,7 @@ obj-$(CONFIG_SLICOSS)		+= slicoss/
+ obj-$(CONFIG_VIDEO_GO7007)	+= go7007/
+ obj-$(CONFIG_VIDEO_CX25821)	+= cx25821/
+ obj-$(CONFIG_VIDEO_TM6000)	+= tm6000/
 +obj-$(CONFIG_LIRC_STAGING)	+= lirc/
+ obj-$(CONFIG_USB_IP_COMMON)	+= usbip/
+ obj-$(CONFIG_W35UND)		+= winbond/
+ obj-$(CONFIG_PRISM2_USB)	+= wlan-ng/
 diff --git a/drivers/staging/lirc/Kconfig b/drivers/staging/lirc/Kconfig
 new file mode 100644
-index 0000000..968c2ad
+index 0000000..ab30a09
 --- /dev/null
 +++ b/drivers/staging/lirc/Kconfig
-@@ -0,0 +1,110 @@
+@@ -0,0 +1,111 @@
 +#
 +# LIRC driver(s) configuration
 +#
 +menuconfig LIRC_STAGING
 +	bool "Linux Infrared Remote Control IR receiver/transmitter drivers"
++	depends on LIRC
 +	help
 +	  Say Y here, and all supported Linux Infrared Remote Control IR and
 +	  RF receiver and transmitter drivers will be displayed. When paired
@@ -64,13 +69,13 @@ index 0000000..968c2ad
 +
 +config LIRC_BT829
 +        tristate "BT829 based hardware"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && PCI
 +	help
 +	  Driver for the IR interface on BT829-based hardware
 +
 +config LIRC_ENE0100
 +	tristate "ENE KB3924/ENE0100 CIR Port Reciever"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && PNP
 +	help
 +	  This is a driver for CIR port handled by ENE KB3924 embedded
 +	  controller found on some notebooks.
@@ -78,7 +83,7 @@ index 0000000..968c2ad
 +
 +config LIRC_I2C
 +	tristate "I2C Based IR Receivers"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && I2C
 +	help
 +	  Driver for I2C-based IR receivers, such as those commonly
 +	  found onboard Hauppauge PVR-150/250/350 video capture cards
@@ -91,7 +96,7 @@ index 0000000..968c2ad
 +
 +config LIRC_IMON
 +	tristate "Legacy SoundGraph iMON Receiver and Display"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && USB
 +	help
 +	  Driver for the original SoundGraph iMON IR Receiver and Display
 +
@@ -99,7 +104,7 @@ index 0000000..968c2ad
 +
 +config LIRC_IT87
 +	tristate "ITE IT87XX CIR Port Receiver"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && PNP
 +	help
 +	  Driver for the ITE IT87xx IR Receiver
 +
@@ -111,13 +116,13 @@ index 0000000..968c2ad
 +
 +config LIRC_PARALLEL
 +	tristate "Homebrew Parallel Port Receiver"
-+	depends on LIRC_STAGING && !SMP
++	depends on LIRC_STAGING && PARPORT && !SMP
 +	help
 +	  Driver for Homebrew Parallel Port Receivers
 +
 +config LIRC_SASEM
 +	tristate "Sasem USB IR Remote"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && USB
 +	help
 +	  Driver for the Sasem OnAir Remocon-V or Dign HV5 HTPC IR/VFD Module
 +
@@ -142,7 +147,7 @@ index 0000000..968c2ad
 +
 +config LIRC_STREAMZAP
 +	tristate "Streamzap PC Receiver"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && USB
 +	help
 +	  Driver for the Streamzap PC Receiver
 +
@@ -154,7 +159,7 @@ index 0000000..968c2ad
 +
 +config LIRC_ZILOG
 +	tristate "Zilog/Hauppauge IR Transmitter"
-+	depends on LIRC_STAGING
++	depends on LIRC_STAGING && I2C
 +	help
 +	  Driver for the Zilog/Hauppauge IR Transmitter, found on
 +	  PVR-150/500, HVR-1200/1250/1700/1800, HD-PVR and other cards
@@ -198,9 +203,18 @@ index 0000000..b6cb593
 +Jarod Wilson <jarod@wilsonet.com>
 +Greg Kroah-Hartman <greg@kroah.com>
 +
+diff --git a/drivers/staging/lirc/TODO.lirc_i2c b/drivers/staging/lirc/TODO.lirc_i2c
+new file mode 100644
+index 0000000..1f0a6ff
+--- /dev/null
++++ b/drivers/staging/lirc/TODO.lirc_i2c
+@@ -0,0 +1,3 @@
++lirc_i2c provides support for some drivers that have already a RC
++driver under drivers/media/video. It should be integrated into those
++drivers, in special with drivers/media/video/ir-kbd-i2c.c.
 diff --git a/drivers/staging/lirc/lirc_bt829.c b/drivers/staging/lirc/lirc_bt829.c
 new file mode 100644
-index 0000000..d0f34b5
+index 0000000..3388102
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_bt829.c
 @@ -0,0 +1,383 @@
@@ -283,7 +297,7 @@ index 0000000..d0f34b5
 +		pci_addr_phys = 0;
 +		if (my_dev->resource[0].flags & IORESOURCE_MEM) {
 +			pci_addr_phys = my_dev->resource[0].start;
-+			printk(KERN_INFO DRIVER_NAME ": memory at 0x%08X \n",
++			printk(KERN_INFO DRIVER_NAME ": memory at 0x%08X\n",
 +			       (unsigned int)pci_addr_phys);
 +		}
 +		if (pci_addr_phys == 0) {
@@ -1241,7 +1255,7 @@ index 0000000..a152c52
 +module_exit(ene_exit);
 diff --git a/drivers/staging/lirc/lirc_ene0100.h b/drivers/staging/lirc/lirc_ene0100.h
 new file mode 100644
-index 0000000..825045d
+index 0000000..776b693
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_ene0100.h
 @@ -0,0 +1,169 @@
@@ -1271,14 +1285,14 @@ index 0000000..825045d
 +
 +/* hardware address */
 +#define ENE_STATUS		0	 /* hardware status - unused */
-+#define ENE_ADDR_HI 		1	 /* hi byte of register address */
-+#define ENE_ADDR_LO 		2	 /* low byte of register address */
-+#define ENE_IO 			3	 /* read/write window */
++#define ENE_ADDR_HI		1	 /* hi byte of register address */
++#define ENE_ADDR_LO		2	 /* low byte of register address */
++#define ENE_IO			3	 /* read/write window */
 +#define ENE_MAX_IO		4
 +
 +/* 8 bytes of samples, divided in 2 halfs*/
-+#define ENE_SAMPLE_BUFFER 	0xF8F0	 /* regular sample buffer */
-+#define ENE_SAMPLE_SPC_MASK 	(1 << 7) /* sample is space */
++#define ENE_SAMPLE_BUFFER	0xF8F0	 /* regular sample buffer */
++#define ENE_SAMPLE_SPC_MASK	(1 << 7) /* sample is space */
 +#define ENE_SAMPLE_VALUE_MASK	0x7F
 +#define ENE_SAMPLE_OVERFLOW	0x7F
 +#define ENE_SAMPLES_SIZE	4
@@ -1355,7 +1369,7 @@ index 0000000..825045d
 +#define ENE_TX_PORT2_EN		(1 << 1)
 +
 +#define ENE_TX_INPUT		0xFEC9	 /* next byte to transmit */
-+#define ENE_TX_SPC_MASK 	(1 << 7) /* Transmitted sample is space */
++#define ENE_TX_SPC_MASK		(1 << 7) /* Transmitted sample is space */
 +#define ENE_TX_UNK1		0xFECB	 /* set to 0x63 */
 +#define ENE_TX_SMPL_PERIOD	50	 /* transmit sample period */
 +
@@ -1366,7 +1380,7 @@ index 0000000..825045d
 +
 +/* Hardware versions */
 +#define ENE_HW_VERSION		0xFF00	 /* hardware revision */
-+#define ENE_HW_UNK 		0xFF1D
++#define ENE_HW_UNK		0xFF1D
 +#define ENE_HW_UNK_CLR		(1 << 2)
 +#define ENE_HW_VER_MAJOR	0xFF1E	 /* chip version */
 +#define ENE_HW_VER_MINOR	0xFF1F
@@ -1374,12 +1388,12 @@ index 0000000..825045d
 +
 +#define same_sign(a, b) ((((a) > 0) && (b) > 0) || ((a) < 0 && (b) < 0))
 +
-+#define ENE_DRIVER_NAME 	"enecir"
-+#define ENE_MAXGAP 		250000	 /* this is amount of time we wait
++#define ENE_DRIVER_NAME		"enecir"
++#define ENE_MAXGAP		250000	 /* this is amount of time we wait
 +					 before turning the sampler, chosen
 +					 arbitry */
 +
-+#define space(len) 	       (-(len))	 /* add a space */
++#define space(len)	       (-(len))	 /* add a space */
 +
 +/* software defines */
 +#define ENE_IRQ_RX		1
@@ -2519,7 +2533,7 @@ index 0000000..bce600e
 +
 diff --git a/drivers/staging/lirc/lirc_imon.c b/drivers/staging/lirc/lirc_imon.c
 new file mode 100644
-index 0000000..43856d6
+index 0000000..6649325
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_imon.c
 @@ -0,0 +1,1058 @@
@@ -2636,7 +2650,7 @@ index 0000000..43856d6
 +	} tx;
 +};
 +
-+static struct file_operations display_fops = {
++static const struct file_operations display_fops = {
 +	.owner		= THIS_MODULE,
 +	.open		= &display_open,
 +	.write		= &vfd_write,
@@ -3583,10 +3597,10 @@ index 0000000..43856d6
 +module_exit(imon_exit);
 diff --git a/drivers/staging/lirc/lirc_it87.c b/drivers/staging/lirc/lirc_it87.c
 new file mode 100644
-index 0000000..781abc3
+index 0000000..ec11c0e
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_it87.c
-@@ -0,0 +1,1019 @@
+@@ -0,0 +1,1022 @@
 +/*
 + * LIRC driver for ITE IT8712/IT8705 CIR port
 + *
@@ -3698,6 +3712,7 @@ index 0000000..781abc3
 +
 +static DEFINE_SPINLOCK(hardware_lock);
 +static DEFINE_SPINLOCK(dev_lock);
++static bool device_open;
 +
 +static int rx_buf[RBUF_LEN];
 +unsigned int rx_tail, rx_head;
@@ -3736,10 +3751,11 @@ index 0000000..781abc3
 +static int lirc_open(struct inode *inode, struct file *file)
 +{
 +	spin_lock(&dev_lock);
-+	if (module_refcount(THIS_MODULE)) {
++	if (device_open) {
 +		spin_unlock(&dev_lock);
 +		return -EBUSY;
 +	}
++	device_open = true;
 +	spin_unlock(&dev_lock);
 +	return 0;
 +}
@@ -3747,6 +3763,9 @@ index 0000000..781abc3
 +
 +static int lirc_close(struct inode *inode, struct file *file)
 +{
++	spin_lock(&dev_lock);
++	device_open = false;
++	spin_unlock(&dev_lock);
 +	return 0;
 +}
 +
@@ -3918,7 +3937,7 @@ index 0000000..781abc3
 +}
 +
 +
-+static struct file_operations lirc_fops = {
++static const struct file_operations lirc_fops = {
 +	.owner		= THIS_MODULE,
 +	.read		= lirc_read,
 +	.write		= lirc_write,
@@ -3952,7 +3971,6 @@ index 0000000..781abc3
 +};
 +
 +
-+#ifdef MODULE
 +static int init_chrdev(void)
 +{
 +	driver.minor = lirc_register_driver(&driver);
@@ -3969,7 +3987,6 @@ index 0000000..781abc3
 +{
 +	lirc_unregister_driver(driver.minor);
 +}
-+#endif
 +
 +
 +/* SECTION: Hardware */
@@ -5278,7 +5295,7 @@ index 0000000..9352f45
 +MODULE_PARM_DESC(debug, "Enable debugging messages");
 diff --git a/drivers/staging/lirc/lirc_parallel.c b/drivers/staging/lirc/lirc_parallel.c
 new file mode 100644
-index 0000000..df12e7b
+index 0000000..6da4a8c
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_parallel.c
 @@ -0,0 +1,705 @@
@@ -5524,7 +5541,7 @@ index 0000000..df12e7b
 +	unsigned int level, newlevel;
 +	unsigned int timeout;
 +
-+	if (!module_refcount(THIS_MODULE))
++	if (!is_open)
 +		return;
 +
 +	if (!is_claimed)
@@ -5799,7 +5816,7 @@ index 0000000..df12e7b
 +
 +static int lirc_open(struct inode *node, struct file *filep)
 +{
-+	if (module_refcount(THIS_MODULE) || !lirc_claim())
++	if (is_open || !lirc_claim())
 +		return -EBUSY;
 +
 +	parport_enable_irq(pport);
@@ -5823,7 +5840,7 @@ index 0000000..df12e7b
 +	return 0;
 +}
 +
-+static struct file_operations lirc_fops = {
++static const struct file_operations lirc_fops = {
 +	.owner		= THIS_MODULE,
 +	.llseek		= lirc_lseek,
 +	.read		= lirc_read,
@@ -6021,7 +6038,7 @@ index 0000000..4bed6af
 +#endif
 diff --git a/drivers/staging/lirc/lirc_sasem.c b/drivers/staging/lirc/lirc_sasem.c
 new file mode 100644
-index 0000000..9e516a1
+index 0000000..73166c3
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_sasem.c
 @@ -0,0 +1,933 @@
@@ -6146,7 +6163,7 @@ index 0000000..9e516a1
 +};
 +
 +/* VFD file operations */
-+static struct file_operations vfd_fops = {
++static const struct file_operations vfd_fops = {
 +	.owner		= THIS_MODULE,
 +	.open		= &vfd_open,
 +	.write		= &vfd_write,
@@ -6960,7 +6977,7 @@ index 0000000..9e516a1
 +module_exit(sasem_exit);
 diff --git a/drivers/staging/lirc/lirc_serial.c b/drivers/staging/lirc/lirc_serial.c
 new file mode 100644
-index 0000000..d2ea3f0
+index 0000000..9456f8e
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_serial.c
 @@ -0,0 +1,1313 @@
@@ -8016,7 +8033,7 @@ index 0000000..d2ea3f0
 +	return 0;
 +}
 +
-+static struct file_operations lirc_fops = {
++static const struct file_operations lirc_fops = {
 +	.owner		= THIS_MODULE,
 +	.write		= lirc_write,
 +	.unlocked_ioctl	= lirc_ioctl,
@@ -8279,7 +8296,7 @@ index 0000000..d2ea3f0
 +MODULE_PARM_DESC(debug, "Enable debugging messages");
 diff --git a/drivers/staging/lirc/lirc_sir.c b/drivers/staging/lirc/lirc_sir.c
 new file mode 100644
-index 0000000..97146d1
+index 0000000..eb08fa7
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_sir.c
 @@ -0,0 +1,1282 @@
@@ -8736,7 +8753,7 @@ index 0000000..97146d1
 +	wake_up_interruptible(&lirc_read_queue);
 +}
 +
-+static struct file_operations lirc_fops = {
++static const struct file_operations lirc_fops = {
 +	.owner		= THIS_MODULE,
 +	.read		= lirc_read,
 +	.write		= lirc_write,
@@ -9567,7 +9584,7 @@ index 0000000..97146d1
 +MODULE_PARM_DESC(debug, "Enable debugging messages");
 diff --git a/drivers/staging/lirc/lirc_streamzap.c b/drivers/staging/lirc/lirc_streamzap.c
 new file mode 100644
-index 0000000..5b46ac4
+index 0000000..be09c10
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_streamzap.c
 @@ -0,0 +1,821 @@
@@ -10004,7 +10021,7 @@ index 0000000..5b46ac4
 +	return;
 +}
 +
-+static struct file_operations streamzap_fops = {
++static const struct file_operations streamzap_fops = {
 +	.owner		= THIS_MODULE,
 +	.unlocked_ioctl	= streamzap_ioctl,
 +	.read		= lirc_dev_fop_read,
@@ -10394,10 +10411,10 @@ index 0000000..5b46ac4
 +MODULE_PARM_DESC(debug, "Enable debugging messages");
 diff --git a/drivers/staging/lirc/lirc_ttusbir.c b/drivers/staging/lirc/lirc_ttusbir.c
 new file mode 100644
-index 0000000..1f1da47
+index 0000000..e345ab9
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_ttusbir.c
-@@ -0,0 +1,397 @@
+@@ -0,0 +1,396 @@
 +/*
 + * lirc_ttusbir.c
 + *
@@ -10541,8 +10558,7 @@ index 0000000..1f1da47
 + * still have about 14 samples per pulse/space, i.e. we sample with 14
 + * times higher frequency than the signal frequency
 + */
-+const unsigned char map_table[] =
-+{
++const unsigned char map_table[] = {
 +	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 +	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 +	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -10797,7 +10813,7 @@ index 0000000..1f1da47
 +module_exit(ttusbir_exit_module);
 diff --git a/drivers/staging/lirc/lirc_zilog.c b/drivers/staging/lirc/lirc_zilog.c
 new file mode 100644
-index 0000000..1b013bf
+index 0000000..100caab
 --- /dev/null
 +++ b/drivers/staging/lirc/lirc_zilog.c
 @@ -0,0 +1,1387 @@
@@ -11935,7 +11951,7 @@ index 0000000..1b013bf
 +	.id_table	= ir_transceiver_id,
 +};
 +
-+static struct file_operations lirc_fops = {
++static const struct file_operations lirc_fops = {
 +	.owner		= THIS_MODULE,
 +	.llseek		= lseek,
 +	.read		= read,

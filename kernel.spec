@@ -1864,6 +1864,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Jul 30 2010 Jarod Wilson <jarod@redhat.com>
+- lirc staging update
+- update kworld patch to one committed upstream
+- can't believe how much nicer dist-git is than dist-cvs
+
 * Fri Jul 30 2010 Dave Jones <davej@redhat.com>
 - Enable PPS (#619392)
 
