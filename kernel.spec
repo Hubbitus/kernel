@@ -81,7 +81,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1864,6 +1864,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Jul 29 2010 Dave Jones <davej@redhat.com>
+- 2.6.35-rc6-git5
+
 * Mon Jul 27 2010 Kyle McMartin <kyle@redhat.com>
 - Patch from linville to only use the country code to set band limits.
   (Fixes Apple Airport base stations from limiting you from associating
