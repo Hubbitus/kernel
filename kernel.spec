@@ -1864,6 +1864,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Jul 30 2010 Dave Jones <davej@redhat.com>
+- Enable PPS (#619392)
+
 * Thu Jul 29 2010 Dave Jones <davej@redhat.com>
 - 2.6.35-rc6-git5
 

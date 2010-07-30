@@ -4220,10 +4220,9 @@ CONFIG_IEEE802154_FAKEHARD=m
 
 # CONFIG_GCOV_KERNEL is not set
 
-### is this generally useful?
-# CONFIG_PPS is not set
+CONFIG_PPS=m
 # CONFIG_PPS_CLIENT_KTIMER is not set
-# CONFIG_PPS_CLIENT_LDISC is not set
+CONFIG_PPS_CLIENT_LDISC=m
 # CONFIG_PPS_DEBUG is not set
 
 # CONFIG_USB_SERIAL_QUATECH2 is not set
