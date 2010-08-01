@@ -81,7 +81,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1866,6 +1866,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sun Aug 01 2010 Dave Jones <davej@redhat.com>
+- 2.6.35-rc6-git6
+
 * Fri Jul 30 2010 Jarod Wilson <jarod@redhat.com>
 - lirc staging update
 - update kworld patch to one committed upstream
