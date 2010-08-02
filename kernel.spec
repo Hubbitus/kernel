@@ -969,16 +969,23 @@ ApplyOptionalPatch()
 %endif
 %endif
 
-# We can share hardlinked source trees by putting a list of
-# directory names of the CVS checkouts that we want to share
-# with in .shared-srctree. (Full pathnames are required.)
-[ -f .shared-srctree ] && sharedirs=$(cat .shared-srctree)
+# %{vanillaversion} : the full version name, e.g. 2.6.35-rc6-git3
+# %{kversion}       : the base version, e.g. 2.6.34
 
-if [ ! -d kernel-%{kversion}/vanilla-%{vanillaversion} ]; then
+# Use kernel-%{kversion}%{?dist} as the top-level directory name
+# so we can prep different trees within a single git directory.
 
-  if [ -d kernel-%{kversion}/vanilla-%{kversion} ]; then
+# Build a list of the other top-level kernel tree directories.
+# This will be used to hardlink identical vanilla subdirs.
+sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-2.6.*' \
+            | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
-    cd kernel-%{kversion}
+if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
+
+  if [ -d kernel-%{kversion}%{?dist}/vanilla-%{kversion} ]; then
+
+    # The base vanilla version already exists.
+    cd kernel-%{kversion}%{?dist}
 
     # Any vanilla-* directories other than the base one are stale.
     for dir in vanilla-*; do
@@ -987,18 +994,18 @@ if [ ! -d kernel-%{kversion}/vanilla-%{vanillaversion} ]; then
 
   else
 
-    # Ok, first time we do a make prep.
     rm -f pax_global_header
+    # Look for an identical base vanilla dir that can be hardlinked.
     for sharedir in $sharedirs ; do
-      if [[ ! -z $sharedir  &&  -d $sharedir/kernel-%{kversion}/vanilla-%{kversion} ]] ; then
+      if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{kversion} ]] ; then
         break
       fi
     done
-    if [[ ! -z $sharedir  &&  -d $sharedir/kernel-%{kversion}/vanilla-%{kversion} ]] ; then
-%setup -q -n kernel-%{kversion} -c -T
-      cp -rl $sharedir/kernel-%{kversion}/vanilla-%{kversion} .
+    if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{kversion} ]] ; then
+%setup -q -n kernel-%{kversion}%{?dist} -c -T
+      cp -rl $sharedir/vanilla-%{kversion} .
     else
-%setup -q -n kernel-%{kversion} -c
+%setup -q -n kernel-%{kversion}%{?dist} -c
       mv linux-%{kversion} vanilla-%{kversion}
     fi
 
@@ -1007,16 +1014,17 @@ if [ ! -d kernel-%{kversion}/vanilla-%{vanillaversion} ]; then
 %if "%{kversion}" != "%{vanillaversion}"
 
   for sharedir in $sharedirs ; do
-    if [[ ! -z $sharedir  &&  -d $sharedir/kernel-%{kversion}/vanilla-%{vanillaversion} ]] ; then
+    if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{vanillaversion} ]] ; then
       break
     fi
   done
-  if [[ ! -z $sharedir  &&  -d $sharedir/kernel-%{kversion}/vanilla-%{vanillaversion} ]] ; then
+  if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{vanillaversion} ]] ; then
 
-    cp -rl $sharedir/kernel-%{kversion}/vanilla-%{vanillaversion} .
+    cp -rl $sharedir/vanilla-%{vanillaversion} .
 
   else
 
+    # Need to apply patches to the base vanilla version.
     cp -rl vanilla-%{kversion} vanilla-%{vanillaversion}
     cd vanilla-%{vanillaversion}
 
@@ -1041,10 +1049,13 @@ if [ ! -d kernel-%{kversion}/vanilla-%{vanillaversion} ]; then
 %endif
 
 else
-  # We already have a vanilla dir.
-  cd kernel-%{kversion}
+
+  # We already have all vanilla dirs, just change to the top-level directory.
+  cd kernel-%{kversion}%{?dist}
+
 fi
 
+# Now build the fedora kernel tree.
 if [ -d linux-%{kversion}.%{_target_cpu} ]; then
   # Just in case we ctrl-c'd a prep already
   rm -rf deleteme.%{_target_cpu}
