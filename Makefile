@@ -23,6 +23,9 @@ KVERSION := $(shell awk '$$1 == "%define" && $$2 == "base_sublevel" { \
 			 }' $(SPECFILE))
 endif
 
+prep:
+	fedpkg -v prep --arch=$(PREPARCH)
+
 extremedebug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PAGEALLOC is not set/CONFIG_DEBUG_PAGEALLOC=y/' config-nodebug
 
