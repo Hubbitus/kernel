@@ -48,13 +48,13 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-%global baserelease 58
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
 # which yields a base_sublevel of 21.
-%define base_sublevel 34
+%define base_sublevel 35
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -79,9 +79,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1866,6 +1866,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sun Aug 01 2010 Dave Jones <davej@redhat.com>
+- Linux 2.6.35
+
 * Sun Aug 01 2010 Dave Jones <davej@redhat.com>
 - 2.6.35-rc6-git6
 
