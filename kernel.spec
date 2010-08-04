@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -1877,6 +1877,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 04 2010 Kyle McMartin <kyle@redhat.com>
+- Disable %released_kernel.
+- This is properly 2.6.36-0.git1, unlike the last commit. Had to make
+  a mistake sometime, I'm glad it was early.
+
 * Wed Aug 04 2010 Kyle McMartin <kyle@redhat.com>
 - Linux 2.6.35-git1, beginning of rawhide for 2.6.36...
 
