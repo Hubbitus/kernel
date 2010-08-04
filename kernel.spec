@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -81,7 +81,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1877,6 +1877,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 04 2010 Kyle McMartin <kyle@redhat.com>
+- Linux 2.6.35-git1, beginning of rawhide for 2.6.36...
+
 * Sun Aug 01 2010 Dave Jones <davej@redhat.com>
 - Linux 2.6.35
 
