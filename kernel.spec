@@ -451,7 +451,7 @@ Requires(pre): %{initrd_prereq}\
 %if %{with_firmware}\
 Requires(pre): kernel-firmware >= %{rpmversion}-%{pkg_release}\
 %else\
-Requires(pre): linux-firmware\
+Requires(pre): linux-firmware >= 20100806-2\
 %endif\
 Requires(post): /sbin/new-kernel-pkg\
 Requires(preun): /sbin/new-kernel-pkg\
