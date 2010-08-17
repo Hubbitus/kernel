@@ -1,4 +1,3 @@
-
 		Kernel package tips & tricks.
 		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
