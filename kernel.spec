@@ -79,9 +79,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -149,7 +149,6 @@ Summary: The Linux kernel
 %define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
-# (well, almost none, we need nonintconfig for build purposes). Default to 0 (off).
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
 
 # pkg_release is what we'll fill in for the rpm Release: field
@@ -372,12 +371,12 @@ Summary: The Linux kernel
 %define vdso_arches ppc ppc64
 %endif
 
+# Should make listnewconfig fail if there's config options
+# printed out?
 %if %{nopatches}%{using_upstream_branch}
-# Ignore unknown options in our config-* files.
-# Some options go with patches we're not applying.
-%define oldconfig_target loose_nonint_oldconfig
+%define listnewconfig_fail 0
 %else
-%define oldconfig_target nonint_oldconfig
+%define listnewconfig_fail 1
 %endif
 
 # To temporarily exclude an architecture from being built, add it to
@@ -579,9 +578,6 @@ Patch00: patch-2.6.%{base_sublevel}-git%{gitrev}.bz2
 
 Patch02: git-linus.diff
 
-# we always need nonintconfig, even for -vanilla kernels
-Patch03: linux-2.6-build-nonintconfig.patch
-
 # we also need compile fixes for -vanilla
 Patch04: linux-2.6-compile-fixes.patch
 
@@ -598,8 +594,6 @@ Patch09: linux-2.6-upstream-reverts.patch
 Patch20: linux-2.6-hotfixes.patch
 
 Patch30: git-utrace.patch
-Patch31: utrace-ptrace-fix-build.patch
-Patch32: utrace-remove-use-of-kref_set.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 
@@ -614,8 +608,6 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch383: linux-2.6-defaults-aspm.patch
-Patch384: pci-acpi-disable-aspm-if-no-osc.patch
-Patch385: pci-aspm-dont-enable-too-early.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -671,16 +663,12 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
-Patch2911: linux-2.6-v4l-dvb-add-kworld-a340-support.patch
 Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
-Patch2913: linux-2.6-v4l-dvb-ir-core-memleak-fixes.patch
 
-Patch2915: lirc-staging-2.6.36.patch
 #Patch2916: lirc-staging-2.6.36-fixes.patch
 Patch2917: hdpvr-ir-enable.patch
 
 # fs fixes
-Patch3000: linux-2.6-ext4-fix-freeze-deadlock.patch
 
 # NFSv4
 
@@ -695,8 +683,6 @@ Patch12017: prevent-runtime-conntrack-changes.patch
 Patch12018: neuter_intel_microcode_load.patch
 
 Patch12030: ssb_check_for_sprom.patch
-
-Patch12040: only-use-alpha2-regulatory-information-from-country-IE.patch
 
 %endif
 
@@ -1099,11 +1085,6 @@ make -f %{SOURCE20} VERSION=%{version} configs
 
 ApplyOptionalPatch git-linus.diff
 
-# This patch adds a "make nonint_oldconfig" which is non-interactive and
-# also gives a list of missing options at the end. Useful for automated
-# builds (as used in the buildsystem).
-ApplyPatch linux-2.6-build-nonintconfig.patch
-
 ApplyPatch linux-2.6-makefile-after_link.patch
 
 #
@@ -1120,8 +1101,6 @@ ApplyPatch linux-2.6-hotfixes.patch
 
 # Roland's utrace ptrace replacement.
 ApplyPatch git-utrace.patch
-ApplyPatch utrace-ptrace-fix-build.patch
-ApplyPatch utrace-remove-use-of-kref_set.patch
 
 # Architecture patches
 # x86(-64)
@@ -1150,7 +1129,6 @@ ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 #
 
 # ext4
-ApplyPatch linux-2.6-ext4-fix-freeze-deadlock.patch
 
 # xfs
 
@@ -1175,7 +1153,7 @@ ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
 ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
-ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
+###FIX###ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 
 #
@@ -1185,10 +1163,6 @@ ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
-# disable aspm if acpi doesn't provide an _OSC method
-ApplyPatch pci-acpi-disable-aspm-if-no-osc.patch
-# allow drivers to disable aspm at load time
-ApplyPatch pci-aspm-dont-enable-too-early.patch
 
 #
 # SCSI Bits.
@@ -1242,7 +1216,7 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 #ApplyPatch revert-drm-kms-toggle-poll-around-switcheroo.patch
 
 # Nouveau DRM + drm fixes
-ApplyPatch drm-nouveau-updates.patch
+#ApplyPatch drm-nouveau-updates.patch
 ApplyPatch drm-intel-big-hammer.patch
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
@@ -1260,15 +1234,12 @@ ApplyPatch linux-2.6-silence-acpi-blacklist.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
-ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
+#ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
+#ApplyPatch linux-2.6-v4l-dvb-ir-core-update.patch
 
-ApplyPatch linux-2.6-v4l-dvb-ir-core-update.patch
-ApplyPatch linux-2.6-v4l-dvb-ir-core-memleak-fixes.patch
-ApplyPatch linux-2.6-v4l-dvb-add-lgdt3304-support.patch
-ApplyPatch linux-2.6-v4l-dvb-add-kworld-a340-support.patch
+###FIX###ApplyPatch linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 
 # http://www.lirc.org/
-ApplyPatch lirc-staging-2.6.36.patch
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 # enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
 ApplyPatch hdpvr-ir-enable.patch
@@ -1280,8 +1251,6 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # rhbz#533746
 #ApplyPatch ssb_check_for_sprom.patch
-
-ApplyPatch only-use-alpha2-regulatory-information-from-country-IE.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1314,7 +1283,14 @@ for i in *.config
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
-  make ARCH=$Arch %{oldconfig_target} > /dev/null
+  make ARCH=$Arch listnewconfig | egrep '^CONFIG_' >.newoptions || true
+%if %{listnewconfig_fail}
+  if [ -s .newoptions ]; then
+    cat .newoptions
+    exit 0
+  fi
+%endif
+  rm -f .newoptions
   echo "# $Arch" > configs/$i
   cat .config >> configs/$i
 done
@@ -1391,7 +1367,7 @@ BuildKernel() {
     Arch=`head -1 .config | cut -b 3-`
     echo USING ARCH=$Arch
 
-    make -s ARCH=$Arch %{oldconfig_target} > /dev/null
+    make -s ARCH=$Arch oldnoconfig >/dev/null
     make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
     make -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
@@ -1882,6 +1858,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
+- Linux 2.6.36-rc1
+
 * Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
 - Prevent scripts/setlocalversion from mucking with our version
   numbers.

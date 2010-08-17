@@ -42,16 +42,18 @@ index 79da65d..f11c21b 100644
        cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/x86/vdso/Makefile b/arch/x86/vdso/Makefile
-index 6b4ffed..cbc3d05 100644
+index 4a2afa1..12ad9f7 100644
 --- a/arch/x86/vdso/Makefile
 +++ b/arch/x86/vdso/Makefile
-@@ -120,7 +120,8 @@ $(obj)/vdso32-syms.lds: $(vdso32.so-y:%=$(obj)/vdso32-%-syms.lds) FORCE
+@@ -120,8 +120,9 @@ $(obj)/vdso32-syms.lds: $(vdso32.so-y:%=$(obj)/vdso32-%-syms.lds) FORCE
  quiet_cmd_vdso = VDSO    $@
        cmd_vdso = $(CC) -nostdlib -o $@ \
  		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
--		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^)
+-		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
+-		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
 +		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) \
-+		 $(if $(AFTER_LINK),; $(AFTER_LINK))
++		$(if $(AFTER_LINK),; $(AFTER_LINK)) && \
++		sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
  
  VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=sysv)
  GCOV_PROFILE := n
