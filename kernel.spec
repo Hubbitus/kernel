@@ -1859,6 +1859,9 @@ fi
 
 %changelog
 * Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
+- explicitly set KERNEL_GZIP
+
+* Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
 - Linux 2.6.36-rc1
 
 * Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
