@@ -1477,11 +1477,14 @@ BuildKernel() {
     # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
     cp $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/.config $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/config/auto.conf
 
+%if %{fancy_debuginfo}
     if test -s vmlinux.id; then
       cp vmlinux.id $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/vmlinux.id
     else
-      echo >&2 "*** WARNING *** no vmlinux build ID! ***"
+      echo >&2 "*** ERROR *** no vmlinux build ID! ***"
+      exit 1
     fi
+%endif
 
     #
     # save the vmlinux file for kernel debugging into the kernel-debuginfo rpm
