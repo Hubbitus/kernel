@@ -1,0 +1,29 @@
+From 726a550e84ab288ddc8f0be7645997326884206e Mon Sep 17 00:00:00 2001
+From: Kyle McMartin <kyle@dreadnought.i.jkkm.org>
+Date: Tue, 17 Aug 2010 17:13:48 -0400
+Subject: fix oldnoconfig to do what i want
+
+---
+ scripts/kconfig/conf.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/scripts/kconfig/conf.c b/scripts/kconfig/conf.c
+index 5b7c86e..dd09320 100644
+--- a/scripts/kconfig/conf.c
++++ b/scripts/kconfig/conf.c
+@@ -423,8 +423,10 @@ static void check_conf(struct menu *menu)
+ 	if (sym && !sym_has_value(sym)) {
+ 		if (sym_is_changable(sym) ||
+ 		    (sym_is_choice(sym) && sym_get_tristate_value(sym) == yes)) {
+-			if (input_mode == listnewconfig) {
+-				if (sym->name && !sym_is_choice_value(sym)) {
++			if (input_mode == listnewconfig ||
++			    input_mode == oldnoconfig) {
++				if (input_mode == listnewconfig &&
++				    sym->name && !sym_is_choice_value(sym)) {
+ 					printf("CONFIG_%s\n", sym->name);
+ 				}
+ 			} else {
+-- 
+1.7.2.1
+

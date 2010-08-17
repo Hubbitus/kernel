@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -584,7 +584,10 @@ Patch04: linux-2.6-compile-fixes.patch
 # build tweak for build ID magic, even for -vanilla
 Patch05: linux-2.6-makefile-after_link.patch
 
+Patch08: fix-oldnoconfig-to-dtrt.patch
+
 %if !%{nopatches}
+
 
 # revert upstream patches we get via other methods
 Patch09: linux-2.6-upstream-reverts.patch
@@ -1085,6 +1088,7 @@ make -f %{SOURCE20} VERSION=%{version} configs
 
 ApplyOptionalPatch git-linus.diff
 
+ApplyPatch fix-oldnoconfig-to-dtrt.patch
 ApplyPatch linux-2.6-makefile-after_link.patch
 
 #
@@ -1858,6 +1862,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.1.rc1.git0
+- Fix 'oldnoconfig' to do what nonint_loose_oldconfig did.
+
 * Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
 - explicitly set KERNEL_GZIP
 
