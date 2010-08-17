@@ -1291,6 +1291,8 @@ ApplyPatch only-use-alpha2-regulatory-information-from-country-IE.patch
 
 chmod +x scripts/checkpatch.pl
 
+touch .scmversion
+
 # only deal with configs if we are going to build for the arch
 %ifnarch %nobuildarches
 
@@ -1880,6 +1882,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com>
+- Prevent scripts/setlocalversion from mucking with our version
+  numbers.
+
 * Wed Aug 04 2010 Kyle McMartin <kyle@redhat.com>
 - Disable %released_kernel.
 - This is properly 2.6.36-0.git1, unlike the last commit. Had to make
