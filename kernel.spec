@@ -1865,6 +1865,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 18 2010 Dave Jones <davej@redhat.com>
+- systemd is dependant upon autofs, so build it in instead of modular.
+
 * Wed Aug 18 2010 Chuck Ebbert <cebbert@redhat.com>
 - Linux 2.6.36-rc1-git1
 

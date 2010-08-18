@@ -3358,7 +3358,8 @@ CONFIG_QUOTACTL=y
 CONFIG_DNOTIFY=y
 # Autofsv3 is obsolete.
 # CONFIG_AUTOFS_FS is not set
-CONFIG_AUTOFS4_FS=m
+# systemd is dependant upon AUTOFS, so build it in.
+CONFIG_AUTOFS4_FS=y
 CONFIG_EXOFS_FS=m
 # CONFIG_EXOFS_DEBUG is not set
 CONFIG_NILFS2_FS=m
