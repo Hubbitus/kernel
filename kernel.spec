@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -495,7 +495,7 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 
@@ -1862,6 +1862,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 18 2010 Kyle McMartin <kmcmartin@redhat.com> - 2.6.36-0.2.rc1.git0
+- Link perf against libnewt for TUI support.
+
 * Tue Aug 17 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.1.rc1.git0
 - Fix 'oldnoconfig' to do what nonint_loose_oldconfig did.
 
