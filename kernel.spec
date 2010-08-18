@@ -48,7 +48,10 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-%global baserelease 2
+# For non-released -rc kernels, this will be prepended with "0.", so
+# for example a 3 here will become 0.3
+#
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -81,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1862,6 +1865,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 18 2010 Chuck Ebbert <cebbert@redhat.com>
+- Linux 2.6.36-rc1-git1
+
 * Wed Aug 18 2010 Kyle McMartin <kmcmartin@redhat.com> - 2.6.36-0.2.rc1.git0
 - Link perf against libnewt for TUI support.
 
