@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1297,6 +1297,7 @@ do
   fi
 %endif
   rm -f .newoptions
+  make ARCH=$Arch oldnoconfig
   echo "# $Arch" > configs/$i
   cat .config >> configs/$i
 done
@@ -1864,6 +1865,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Aug 19 2010 Kyle McMartin <kmcmartin@redhat.com> - 2.6.36-0.4.rc1.git1
+- Run oldnoconfig on the configs during make prep.
+- Make the fix oldnoconfig patch a one liner.
+
 * Wed Aug 18 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.3.rc1.git1
 - Fix hangs on boot with some AMD processors
   (x86-cpu-fix-regression-in-amd-errata-checking-code.patch)
