@@ -688,7 +688,7 @@ Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12030: ssb_check_for_sprom.patch
+Patch12019: x86-cpu-fix-regression-in-amd-errata-checking-code.patch
 
 %endif
 
@@ -1256,8 +1256,7 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
 
-# rhbz#533746
-#ApplyPatch ssb_check_for_sprom.patch
+ApplyPatch x86-cpu-fix-regression-in-amd-errata-checking-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1855,8 +1854,8 @@ fi
 # and build.
 
 #  ___________________________________________________________
-# / This branch is for Fedora 14. You probably want to commit \
-# \ to the F-13 branch instead, or in addition to this one.   /
+# / This branch is for Fedora 15. You probably want to commit \
+# \ to the F-14 branch instead, or in addition to this one.   /
 #  -----------------------------------------------------------
 #         \   ^__^
 #          \  (@@)\_______
@@ -1865,6 +1864,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Aug 18 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.3.rc1.git1
+- Fix hangs on boot with some AMD processors
+  (x86-cpu-fix-regression-in-amd-errata-checking-code.patch)
+- Drop unused ssb_check_for_sprom.patch
+
 * Wed Aug 18 2010 Dave Jones <davej@redhat.com>
 - systemd is dependant upon autofs, so build it in instead of modular.
 
