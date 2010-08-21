@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 4
+%global baserelease 5
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -688,8 +688,6 @@ Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12019: x86-cpu-fix-regression-in-amd-errata-checking-code.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1255,8 +1253,6 @@ ApplyPatch hdpvr-ir-enable.patch
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
-
-ApplyPatch x86-cpu-fix-regression-in-amd-errata-checking-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1865,6 +1861,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Aug 20 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.5.rc1.git3
+- Linux 2.6.36-rc1-git3
+- Drop x86-cpu-fix-regression-in-amd-errata-checking-code.patch, now merged.
+
 * Thu Aug 19 2010 Kyle McMartin <kmcmartin@redhat.com> - 2.6.36-0.4.rc1.git1
 - Run oldnoconfig on the configs during make prep.
 - Make the fix oldnoconfig patch a one liner.
