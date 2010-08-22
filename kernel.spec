@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 6
+%global baserelease 7
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1861,6 +1861,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Sun Aug 22 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.7.rc1.git4
+- Linux 2.6.36-rc1-git4
+- Fix context in linux-2.6-i386-nx-emulation.patch
+
 * Sat Aug 21 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.6.rc1.git3
 - Drop utrace patch that causes hang on boot.
 
