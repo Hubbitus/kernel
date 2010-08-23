@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 7
+%global baserelease 8
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1105,7 +1105,7 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 ApplyPatch linux-2.6-hotfixes.patch
 
 # Roland's utrace ptrace replacement.
-#ApplyPatch git-utrace.patch
+ApplyPatch git-utrace.patch
 
 # Architecture patches
 # x86(-64)
@@ -1861,6 +1861,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Aug 23 2010 Roland McGrath <roland@redhat.com> - 2.6.36-0.8.rc2.git0
+- utrace update
+
 * Sun Aug 22 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.7.rc2.git0
 - Linux 2.6.36-rc2
 
