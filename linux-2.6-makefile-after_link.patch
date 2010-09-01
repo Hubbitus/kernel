@@ -1,3 +1,7 @@
+From: Roland McGrath <roland@redhat.com>
+Subject: Fix build ID fiddling magic. (#465873)
+Date: 2008/10/07 21:58:20
+
 diff --git a/Makefile b/Makefile
 index f908acc..960ff6f 100644
 --- a/Makefile
