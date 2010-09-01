@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 13
+%global baserelease 14
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -604,6 +604,8 @@ Patch30: linux-2.6-tracehook.patch
 Patch31: linux-2.6-utrace.patch
 Patch32: linux-2.6-utrace-ptrace.patch
 
+Patch100: fix-icebp-breakpoints.patch
+
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
@@ -1114,6 +1116,7 @@ ApplyPatch linux-2.6-utrace-ptrace.patch
 
 # Architecture patches
 # x86(-64)
+ApplyPatch fix-icebp-breakpoints.patch
 
 #
 # Intel IOMMU
@@ -1866,6 +1869,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 01 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.14.rc3.git0
+- Fix icebp breakpoints, patch from Frederic Weisbecker.
+  (https://bugzilla.kernel.org/show_bug.cgi?id=16315#c26)
+
 * Wed Sep 01 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.13.rc3.git0
 - Swap back to roland's auto-updated utrace patches.
 
