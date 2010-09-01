@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 12
+%global baserelease 13
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -599,7 +599,10 @@ Patch09: linux-2.6-upstream-reverts.patch
 # Standalone patches
 Patch20: linux-2.6-hotfixes.patch
 
-Patch30: git-utrace.patch
+
+Patch30: linux-2.6-tracehook.patch
+Patch31: linux-2.6-utrace.patch
+Patch32: linux-2.6-utrace-ptrace.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 
@@ -1105,7 +1108,9 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 ApplyPatch linux-2.6-hotfixes.patch
 
 # Roland's utrace ptrace replacement.
-ApplyPatch git-utrace.patch
+ApplyPatch linux-2.6-tracehook.patch
+ApplyPatch linux-2.6-utrace.patch
+ApplyPatch linux-2.6-utrace-ptrace.patch
 
 # Architecture patches
 # x86(-64)
@@ -1861,6 +1866,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 01 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.13.rc3.git0
+- Swap back to roland's auto-updated utrace patches.
+
 * Mon Aug 30 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.12.rc3.git0
 - Linux 2.6.36-rc3
 
