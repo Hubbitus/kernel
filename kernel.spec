@@ -693,6 +693,8 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12020: alsa-fix-substream-proc-status-read.patch
 
+Patch12030: tpm-fix-stall-on-boot.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1263,6 +1265,9 @@ ApplyPatch hdpvr-ir-enable.patch
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
+
+# try to fix stalls during boot (#530393)
+ApplyPatch tpm-fix-stall-on-boot.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1873,6 +1878,7 @@ fi
 %changelog
 * Thu Sep 02 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.15.rc3.git0
 - Add patch from ALSA mailing list to try to fix bug #628404
+- tpm-fix-stall-on-boot.patch: attempt to fix stalls during boot (#530393)
 
 * Wed Sep 01 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.14.rc3.git0
 - Fix icebp breakpoints, patch from Frederic Weisbecker.
