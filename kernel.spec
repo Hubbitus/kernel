@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 14
+%global baserelease 15
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -683,8 +683,6 @@ Patch2917: hdpvr-ir-enable.patch
 
 # NFSv4
 
-# VIA Nano / VX8xx updates
-
 # patches headed upstream
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -692,6 +690,8 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
+
+Patch12020: alsa-fix-substream-proc-status-read.patch
 
 %endif
 
@@ -1185,6 +1185,8 @@ ApplyPatch linux-2.6-defaults-aspm.patch
 
 # ALSA
 ApplyPatch hda_intel-prealloc-4mb-dmabuffer.patch
+# patch from alsa list to try to fix bug #628404
+ApplyPatch alsa-fix-substream-proc-status-read.patch
 
 # Networking
 
@@ -1869,6 +1871,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Sep 02 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.15.rc3.git0
+- Add patch from ALSA mailing list to try to fix bug #628404
+
 * Wed Sep 01 2010 Kyle McMartin <kyle@redhat.com> - 2.6.36-0.14.rc3.git0
 - Fix icebp breakpoints, patch from Frederic Weisbecker.
   (https://bugzilla.kernel.org/show_bug.cgi?id=16315#c26)
