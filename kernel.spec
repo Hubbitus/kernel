@@ -1877,6 +1877,9 @@ fi
 
 %changelog
 * Fri Sep 03 2010 Dave Jones <davej@redhat.com>
+- exec-randomization: brk away from exec rand area (Kees Cook)
+
+* Fri Sep 03 2010 Dave Jones <davej@redhat.com>
 - Remove the execshield boot parameter.
   Based on a patch from Kees Cook
 
