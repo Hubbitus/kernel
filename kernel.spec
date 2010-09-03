@@ -685,6 +685,8 @@ Patch2917: hdpvr-ir-enable.patch
 
 # patches headed upstream
 
+Patch12010: add-appleir-usb-driver.patch
+
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12017: prevent-runtime-conntrack-changes.patch
@@ -1263,6 +1265,8 @@ ApplyPatch hdpvr-ir-enable.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
+
+ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
 
@@ -1876,6 +1880,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Sep 03 2010 Kyle McMartin <kyle@redhat.com>
+- Restore AppleIR USB driver which got lost between F-13 and now.
+
 * Fri Sep 03 2010 Dave Jones <davej@redhat.com> 2.6.36-0.16.rc3.git0
 - exec-randomization: brk away from exec rand area (Kees Cook)
 
