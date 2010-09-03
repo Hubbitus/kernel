@@ -1,7 +1,13 @@
+From f072f7db2194c8255c003d985b61ad2f97ebbee0 Mon Sep 17 00:00:00 2001
 From: Roland McGrath <roland@redhat.com>
-Subject: Fix build ID fiddling magic. (#465873)
-Date: 2008/10/07 21:58:20
+Date: Mon, 6 Oct 2008 23:03:03 -0700
+Subject: [PATCH] kbuild: AFTER_LINK
 
+If the make variable AFTER_LINK is set, it is a command line to run
+after each final link.  This includes vmlinux itself and vDSO images.
+
+Signed-off-by: Roland McGrath <roland@redhat.com>
+---
 diff --git a/Makefile b/Makefile
 index f908acc..960ff6f 100644
 --- a/Makefile
