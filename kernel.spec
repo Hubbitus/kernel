@@ -1876,6 +1876,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Sep 03 2010 Dave Jones <davej@redhat.com>
+- Remove the execshield boot parameter.
+  Based on a patch from Kees Cook
+
 * Thu Sep 02 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.15.rc3.git0
 - Add patch from ALSA mailing list to try to fix bug #628404
 - tpm-fix-stall-on-boot.patch: attempt to fix stalls during boot (#530393)
