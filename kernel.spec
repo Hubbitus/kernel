@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 15
+%global baserelease 16
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1876,7 +1876,7 @@ fi
 #                 ||     ||
 
 %changelog
-* Fri Sep 03 2010 Dave Jones <davej@redhat.com>
+* Fri Sep 03 2010 Dave Jones <davej@redhat.com> 2.6.36-0.16.rc3.git0
 - exec-randomization: brk away from exec rand area (Kees Cook)
 
 * Fri Sep 03 2010 Dave Jones <davej@redhat.com>
