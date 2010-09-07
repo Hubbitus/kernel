@@ -1882,6 +1882,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Sep 07 2010 Dave Jones <davej@redhat.com>
+- Disable hung task checker, it only ever causes false positives. (#630777)
+
 * Tue Sep 07 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.17.rc3.git0
 - Revert ce171780 which breaks my graphics on resume.
   (drm/i915: Enable RC6 on Ironlake.)
