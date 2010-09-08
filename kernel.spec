@@ -618,6 +618,7 @@ Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
 Patch380: linux-2.6-defaults-pci_no_msi.patch
+Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
@@ -1179,6 +1180,7 @@ ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 #
 # make default state of PCI MSI a config option
 ApplyPatch linux-2.6-defaults-pci_no_msi.patch
+ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 
@@ -1882,6 +1884,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com>
+- Make pci=use_crs a compile-time config option we can switch the default
+  value of easily.
+
 * Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.18.rc3.git1
 - 2.6.36-rc3-git1
 - Set CONFIG_CRYPTO_MANAGER_DISABLE_TESTS for nodebug, and unset for debug.
