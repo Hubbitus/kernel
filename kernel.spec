@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 17
+%global baserelease 18
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1882,6 +1882,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.18.rc3.git1
+- 2.6.36-rc3-git1
+- Set CONFIG_CRYPTO_MANAGER_DISABLE_TESTS for nodebug, and unset for debug.
+  Which seems like the sensible thing to do given the Kconfig default is y.
+
 * Tue Sep 07 2010 Dave Jones <davej@redhat.com>
 - Disable hung task checker, it only ever causes false positives. (#630777)
 
