@@ -1885,6 +1885,9 @@ fi
 
 %changelog
 * Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com>
+- Enable GPIO_SYSFS. (#631958)
+
+* Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com>
 - Make pci=use_crs a compile-time config option we can switch the default
   value of easily.
 
