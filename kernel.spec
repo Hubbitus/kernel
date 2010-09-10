@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 18
+%global baserelease 19
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1884,6 +1884,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Sep 10 2010 Bastien Nocera <bnocera@redhat.com> - 2.6.36-0.19.rc3.git1
+- Update AppleIR patch to work, and support the enter key on
+  newer remotes
+
 * Wed Sep 08 2010 Kyle McMartin <kyle@redhat.com>
 - Enable GPIO_SYSFS. (#631958)
 
