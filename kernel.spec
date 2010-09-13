@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 20
+%global baserelease 21
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1882,6 +1882,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com>
+- Linux 2.6.36-rc4
+
 * Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.20.rc3.git4
 - Linux 2.6.36-rc3-git4
 - Drop revert-drm-i915-enable-rc6-on-ironlake.patch, now merged
