@@ -698,6 +698,17 @@ Patch12020: alsa-fix-substream-proc-status-read.patch
 
 Patch12030: tpm-fix-stall-on-boot.patch
 
+# Wacom Bamboo
+Patch12100: wacom-01-add-fuzz-parameters-to-features.patch
+Patch12105: wacom-02-parse-the-bamboo-device-family.patch
+Patch12110: wacom-03-collect-device-quirks-into-single-function.patch
+Patch12115: wacom-04-add-support-for-the-bamboo-touch-trackpad.patch
+Patch12120: wacom-05-add-a-quirk-for-low-resolution-bamboo-devices.patch
+Patch12125: wacom-06-request-tablet-data-for-bamboo-pens.patch
+Patch12130: wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
+Patch12035: wacom-08-add-support-for-bamboo-pen.patch
+Patch12040: wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1274,6 +1285,17 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # try to fix stalls during boot (#530393)
 ApplyPatch tpm-fix-stall-on-boot.patch
+
+# Wacom Bamboo
+ApplyPatch wacom-01-add-fuzz-parameters-to-features.patch
+ApplyPatch wacom-02-parse-the-bamboo-device-family.patch
+ApplyPatch wacom-03-collect-device-quirks-into-single-function.patch
+ApplyPatch wacom-04-add-support-for-the-bamboo-touch-trackpad.patch
+ApplyPatch wacom-05-add-a-quirk-for-low-resolution-bamboo-devices.patch
+ApplyPatch wacom-06-request-tablet-data-for-bamboo-pens.patch
+ApplyPatch wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
+ApplyPatch wacom-08-add-support-for-bamboo-pen.patch
+ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1884,6 +1906,7 @@ fi
 %changelog
 * Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com>
 - Linux 2.6.36-rc4
+- Add preliminary support for Wacom Bamboo pen and touch devices.
 
 * Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.20.rc3.git4
 - Linux 2.6.36-rc3-git4
