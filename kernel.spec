@@ -498,7 +498,7 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed)
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 
@@ -1904,9 +1904,10 @@ fi
 #                 ||     ||
 
 %changelog
-* Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com>
+* Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.21.rc4.git0
 - Linux 2.6.36-rc4
 - Add preliminary support for Wacom Bamboo pen and touch devices.
+- Require python-devel and perl(ExtUtils::Embed) when building perf package (#632942)
 
 * Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.20.rc3.git4
 - Linux 2.6.36-rc3-git4
