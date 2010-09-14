@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1904,8 +1904,8 @@ fi
 #                 ||     ||
 
 %changelog
-* Sat Sep 11 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.21.rc4.git0
-- Linux 2.6.36-rc4
+* Mon Sep 13 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.21.rc4.git1
+- Linux 2.6.36-rc4-git1
 - Add preliminary support for Wacom Bamboo pen and touch devices.
 - Require python-devel and perl(ExtUtils::Embed) when building perf package (#632942)
 
