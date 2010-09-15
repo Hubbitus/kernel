@@ -647,6 +647,7 @@ Patch800: linux-2.6-crash-driver.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
+Patch1556: linux-2.6.35.4-virtio_console-fix-poll.patch
 
 # DRM
 Patch1801: drm-revert-drm-fbdev-rework-output-polling-to-be-back-in-core.patch
@@ -1243,6 +1244,7 @@ ApplyPatch linux-2.6-crash-driver.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
+ApplyPatch linux-2.6.35.4-virtio_console-fix-poll.patch
 
 #ApplyPatch drm-revert-drm-fbdev-rework-output-polling-to-be-back-in-core.patch
 #ApplyPatch revert-drm-kms-toggle-poll-around-switcheroo.patch
@@ -1904,6 +1906,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 15 2010 Hans de Goede <hdegoede@redhat.com>
+- virtio_console: Fix poll/select blocking even though there is data to read
+
 * Wed Sep 15 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.22.rc4.git2
 - Linux 2.6.36-rc4-git2
 - Fix up add-appleir-usb-driver.patch after HID core changes.
