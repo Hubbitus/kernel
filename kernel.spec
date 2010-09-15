@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 21
+%global baserelease 22
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1904,6 +1904,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 15 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.22.rc4.git2
+- Linux 2.6.36-rc4-git2
+- Fix up add-appleir-usb-driver.patch after HID core changes.
+
 * Mon Sep 13 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.21.rc4.git1
 - Linux 2.6.36-rc4-git1
 - Add preliminary support for Wacom Bamboo pen and touch devices.
