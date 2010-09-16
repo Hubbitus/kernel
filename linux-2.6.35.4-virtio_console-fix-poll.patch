@@ -1,4 +1,4 @@
-Subject: virtio_console: Fix poll blocking even though there is data to read (version 2)
+Subject: virtio_console: Fix poll blocking even though there is data to read
 From: Hans de Goede <hdegoede@redhat.com>
 
 I found this while working on a Linux agent for spice, the symptom I was
@@ -10,9 +10,9 @@ read won't block. However if an application reads enough bytes from inbuf
 through port_fops_read, to empty the current port->inbuf, port->inbuf
 will be NULL even though there may be buffers left in the virtqueue.
 
-This causes poll() to block even though there is data ready to be read, this
-patch fixes this by using port_has_data(port) instead of the
-port->inbuf != NULL check.
+This causes poll() to block even though there is data to be read, this patch
+fixes this by using the alredy defined will_read_block utility function
+instead of the port->inbuf != NULL check.
 
 Signed-off-By: Hans de Goede <hdegoede@redhat.com>
 diff -up linux-2.6.35.x86_64/drivers/char/virtio_console.c~ linux-2.6.35.x86_64/drivers/char/virtio_console.c
@@ -23,7 +23,7 @@ diff -up linux-2.6.35.x86_64/drivers/char/virtio_console.c~ linux-2.6.35.x86_64/
  
  	ret = 0;
 -	if (port->inbuf)
-+	if (port_has_data(port))
++	if (!will_read_block(port))
  		ret |= POLLIN | POLLRDNORM;
  	if (!will_write_block(port))
  		ret |= POLLOUT;

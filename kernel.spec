@@ -1906,6 +1906,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Sep 16 2010 Hans de Goede <hdegoede@redhat.com>
+- Small fix to virtio_console poll fix from upstream review
+
 * Wed Sep 15 2010 Hans de Goede <hdegoede@redhat.com>
 - virtio_console: Fix poll/select blocking even though there is data to read
 
