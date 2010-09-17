@@ -710,6 +710,12 @@ Patch12130: wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
 Patch12035: wacom-08-add-support-for-bamboo-pen.patch
 Patch12040: wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
 
+# Runtime power management
+Patch12200: linux-2.6-bluetooth-autosuspend.patch
+Patch12201: linux-2.6-uvc-autosuspend.patch
+Patch12202: linux-2.6-qcserial-autosuspend.patch
+Patch12203: linux-2.6-usb-pci-autosuspend.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1298,6 +1304,12 @@ ApplyPatch wacom-06-request-tablet-data-for-bamboo-pens.patch
 ApplyPatch wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
 ApplyPatch wacom-08-add-support-for-bamboo-pen.patch
 ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
+
+# Runtime PM
+ApplyPatch linux-2.6-bluetooth-autosuspend.patch
+ApplyPatch linux-2.6-uvc-autosuspend.patch
+ApplyPatch linux-2.6-qcserial-autosuspend.patch
+ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1906,6 +1918,13 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Sep 17 2010 Matthew Garrett <mjg@redhat.com>
+- linux-2.6-bluetooth-autosuspend.patch
+  linux-2.6-uvc-autosuspend.patch
+  linux-2.6-qcserial-autosuspend.patch
+  linux-2.6-usb-pci-autosuspend.patch - Get some more devices into USB
+  autosuspend by default, and then put unused USB controllers to sleep
+
 * Thu Sep 16 2010 Hans de Goede <hdegoede@redhat.com>
 - Small fix to virtio_console poll fix from upstream review
 
