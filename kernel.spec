@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 22
+%global baserelease 23
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -695,8 +695,6 @@ Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12020: alsa-fix-substream-proc-status-read.patch
-
 Patch12030: tpm-fix-stall-on-boot.patch
 
 # Wacom Bamboo
@@ -1209,8 +1207,6 @@ ApplyPatch linux-2.6-defaults-aspm.patch
 
 # ALSA
 ApplyPatch hda_intel-prealloc-4mb-dmabuffer.patch
-# patch from alsa list to try to fix bug #628404
-ApplyPatch alsa-fix-substream-proc-status-read.patch
 
 # Networking
 
@@ -1918,6 +1914,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Sun Sep 19 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.23.rc4.git4
+- Linux 2.6.36-rc4-git4
+- Drop alsa-fix-substream-proc-status-read.patch, now merged.
+
 * Fri Sep 17 2010 Matthew Garrett <mjg@redhat.com>
 - linux-2.6-bluetooth-autosuspend.patch
   linux-2.6-uvc-autosuspend.patch
