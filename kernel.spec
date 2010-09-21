@@ -714,6 +714,9 @@ Patch12201: linux-2.6-uvc-autosuspend.patch
 Patch12202: linux-2.6-qcserial-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 
+Patch12300: btusb-macbookpro-7-1.patch
+Patch12301: btusb-macbookpro-6-2.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1306,6 +1309,9 @@ ApplyPatch linux-2.6-bluetooth-autosuspend.patch
 ApplyPatch linux-2.6-uvc-autosuspend.patch
 ApplyPatch linux-2.6-qcserial-autosuspend.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
+
+ApplyPatch btusb-macbookpro-7-1.patch
+ApplyPatch btusb-macbookpro-6-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1914,6 +1920,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Sep 21 2010 Kyle McMartin <kyle@redhat.com>
+- Add new btusb ids for MacBookPro from wwoods@.
+
 * Mon Sep 20 2010 Chuck Ebbert <cebbert@redhat.com> - 2.6.36-0.24.rc5
 - Linux 2.6.36-rc5
 
