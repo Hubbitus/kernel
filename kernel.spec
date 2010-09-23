@@ -1923,6 +1923,9 @@ fi
 
 %changelog
 * Thu Sep 23 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.25.rc5
+- Add s390 vdso AFTER_LINK to Roland's linux-2.6-makefile-after_link.patch
+
+* Thu Sep 23 2010 Kyle McMartin <kyle@redhat.com>
 - Snipe ACPI patch from mjg59 to fix battery levels on some laptops.
 
 * Tue Sep 21 2010 Kyle McMartin <kyle@redhat.com>
