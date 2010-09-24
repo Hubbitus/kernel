@@ -1930,6 +1930,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Sep 23 2010 Kyle McMartin <kyle@redhat.com>
+- Bump x86 NR_CPUS to 64. (Still 512/256 on x86_64.)
+
 * Thu Sep 23 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-0.26.rc5.git4
 - Linux 2.6.36-rc5-git4
 - Drop merged patches:
