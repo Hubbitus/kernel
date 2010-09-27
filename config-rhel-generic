@@ -94,8 +94,6 @@
 # CONFIG_BLK_DEV_NBD is not set
 # CONFIG_BLK_DEV_DAC960 is not set
 
-# CONFIG_PARIDE is not set
-
 # CONFIG_I2O is not set
 
 # CONFIG_MWAVE is not set
