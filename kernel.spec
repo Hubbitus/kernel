@@ -1930,10 +1930,6 @@ fi
 #                 ||     ||
 
 %changelog
-* Tue Sep 28 2010 Dave Jones <davej@redhat.com>
-- Disable zaurus usb networking.
-  This should only show up on ARM, but it binds to stuff on Dell laptops too.
-
 * Fri Sep 24 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-0.27.rc5.git6
 - Linux 2.6.36-rc5-git6
 
