@@ -640,6 +640,8 @@ Patch580: linux-2.6-sparc-selinux-mprotect-checks.patch
 
 Patch610: hda_intel-prealloc-4mb-dmabuffer.patch
 
+Patch700: linux-2.6-e1000-ich9-montevina.patch
+
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
@@ -1248,6 +1250,9 @@ ApplyPatch linux-2.6-silence-fbcon-logo.patch
 
 # /dev/crash driver.
 ApplyPatch linux-2.6-crash-driver.patch
+
+# Hack e1000e to work on Montevina SDV
+ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
 
@@ -1930,6 +1935,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 29 2010 Dave Jones <davej@redhat.com>
+- Add back an old hack to make an SDV e1000e variant work.
+
 * Wed Sep 29 2010 Dave Jones <davej@redhat.com>
 - Enable IB700 watchdog (used by qemu/kvm). (#637152)
 
