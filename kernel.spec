@@ -1930,6 +1930,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Sep 29 2010 Dave Jones <davej@redhat.com>
+- Enable IB700 watchdog (used by qemu/kvm). (#637152)
+
 * Tue Sep 28 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.28.rc6
 - Linux 2.6.36-rc6
 
