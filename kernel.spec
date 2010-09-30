@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 28
+%global baserelease 30
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -723,6 +723,8 @@ Patch12224: pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
 
+Patch12310: fix-intel_ips-to-work-properly.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1327,6 +1329,8 @@ ApplyPatch pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
+
+ApplyPatch fix-intel_ips-to-work-properly.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1935,6 +1939,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Sep 30 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.30.rc6
+- Collection of patches to make intel_ips work properly.
+
 * Wed Sep 29 2010 Dave Jones <davej@redhat.com>
 - Add back an old hack to make an SDV e1000e variant work.
 
