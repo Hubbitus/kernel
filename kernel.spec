@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 30
+%global baserelease 31
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1944,6 +1944,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Oct 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.31.rc6.git2
+- Linux 2.6.36-rc6-git2
+
 * Thu Sep 30 2010 Dave Jones <davej@redhat.com>
 - silence another rcu_reference warning
 
