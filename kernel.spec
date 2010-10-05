@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 33
+%global baserelease 34
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1333,8 +1333,6 @@ ApplyPatch pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
 
-ApplyPatch fix-intel_ips-to-work-properly.patch
-
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1942,7 +1940,7 @@ fi
 #                 ||     ||
 
 %changelog
-* Tue Oct 05 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.33.rc6.git3
+* Tue Oct 05 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.34.rc6.git3
 - Linux 2.6.36-rc6-git3
 - Drop intel_ips patches merged upstream.
 
