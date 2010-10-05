@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 32
+%global baserelease 33
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -724,8 +724,6 @@ Patch12224: pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
-
-Patch12310: fix-intel_ips-to-work-properly.patch
 
 %endif
 
@@ -1944,6 +1942,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Oct 05 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.33.rc6.git3
+- Linux 2.6.36-rc6-git3
+- Drop intel_ips patches merged upstream.
+
 * Sun Oct 03 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.32.rc6.git2
 - Enable printk.time by default for more useful logs.
 
