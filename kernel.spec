@@ -682,6 +682,7 @@ Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 Patch2917: hdpvr-ir-enable.patch
 
 Patch3000: linux-2.6-rcu-sched-warning.patch
+Patch3010: linux-2.6-rcu-netpoll.patch
 
 # fs fixes
 
@@ -1295,6 +1296,7 @@ ApplyPatch hdpvr-ir-enable.patch
 
 # silence another rcu_reference warning
 ApplyPatch linux-2.6-rcu-sched-warning.patch
+ApplyPatch linux-2.6-rcu-netpoll.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1940,6 +1942,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Oct 06 2010 Dave Jones <davej@redhat.com>
+- Another day, another rcu_dereference warning. (#640673)
+
 * Tue Oct 05 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.34.rc6.git3
 - Linux 2.6.36-rc6-git3
 - Drop intel_ips patches merged upstream.
