@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 34
+%global baserelease 35
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -682,7 +682,6 @@ Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 Patch2917: hdpvr-ir-enable.patch
 
 Patch3000: linux-2.6-rcu-sched-warning.patch
-Patch3010: linux-2.6-rcu-netpoll.patch
 
 # fs fixes
 
@@ -1296,7 +1295,6 @@ ApplyPatch hdpvr-ir-enable.patch
 
 # silence another rcu_reference warning
 ApplyPatch linux-2.6-rcu-sched-warning.patch
-ApplyPatch linux-2.6-rcu-netpoll.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1942,6 +1940,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Oct 06 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.35.rc7.git0
+- Linux 2.6.36-rc7 upstream.
+
 * Wed Oct 06 2010 Dave Jones <davej@redhat.com>
 - Another day, another rcu_dereference warning. (#640673)
 
