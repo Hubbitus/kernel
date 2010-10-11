@@ -715,6 +715,7 @@ Patch12200: linux-2.6-bluetooth-autosuspend.patch
 Patch12201: linux-2.6-uvc-autosuspend.patch
 Patch12202: linux-2.6-qcserial-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
+Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 
 # PCI patches to fix problems with _CRS
 Patch12221: pci-v2-1-4-resources-ensure-alignment-callback-doesn-t-allocate-below-available-start.patch
@@ -1322,6 +1323,7 @@ ApplyPatch linux-2.6-bluetooth-autosuspend.patch
 ApplyPatch linux-2.6-uvc-autosuspend.patch
 ApplyPatch linux-2.6-qcserial-autosuspend.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
+ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 
 # PCI patches to fix problems with _CRS
 # ( from https://bugzilla.kernel.org/show_bug.cgi?id=16228#c49 )
@@ -1940,6 +1942,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Oct 11 2010 Matthew Garrett <mjg@redhat.com> 2.6.36-0.35.rc7.git1
+- linux-2.6-enable-more-pci-autosuspend.patch: Enable more PCI autosuspend
+
 * Wed Oct 06 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.35.rc7.git0
 - Linux 2.6.36-rc7 upstream.
 
