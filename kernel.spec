@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 36
+%global baserelease 37
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1316,11 +1316,12 @@ ApplyPatch wacom-08-add-support-for-bamboo-pen.patch
 ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
 
 # Runtime PM
-ApplyPatch linux-2.6-bluetooth-autosuspend.patch
-ApplyPatch linux-2.6-uvc-autosuspend.patch
-ApplyPatch linux-2.6-qcserial-autosuspend.patch
-ApplyPatch linux-2.6-usb-pci-autosuspend.patch
-ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
+# (there's still dragons here, disabled for now... --kyle)
+#ApplyPatch linux-2.6-bluetooth-autosuspend.patch
+#ApplyPatch linux-2.6-uvc-autosuspend.patch
+#ApplyPatch linux-2.6-qcserial-autosuspend.patch
+#ApplyPatch linux-2.6-usb-pci-autosuspend.patch
+#ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 
 # PCI patches to fix problems with _CRS
 # ( from https://bugzilla.kernel.org/show_bug.cgi?id=16228#c49 )
@@ -1939,6 +1940,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Oct 14 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.37.rc7.git5
+- Linux 2.6.36-rc7-git5
+- Disable runtime PM until it can be poked at.
+
 * Tue Oct 12 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.36.rc7.git3
 - Linux 2.6.36-rc7-git3
 - Drop fix-oldnoconfig-to-dtrt.patch, nonintconfig patches are upstream!
