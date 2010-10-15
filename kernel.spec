@@ -1946,7 +1946,7 @@ fi
 
 %changelog
 * Fri Oct 15 2010 Kyle McMartin <kyle@redhat.com>
-- Switch -debug to pci=use_crs by default (it should have been fixed since
+- Switched to pci=use_crs by default (it should have been fixed since
   cebbert sucked in the patches anyway.)
 
 * Fri Oct 15 2010 Kyle McMartin <kyle@redhat.com>
