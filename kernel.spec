@@ -724,6 +724,8 @@ Patch12224: pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
 
+Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1333,6 +1335,9 @@ ApplyPatch pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
 
+# rhbz#641468
+ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1940,6 +1945,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Oct 15 2010 Kyle McMartin <kyle@redhat.com>
+- backport pnpacpi-cope-with-invalid-device-ids from linux-next.
+  (rhbz#641468)
+
 * Fri Oct 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.39.rc8.git0
 - Linux 2.6.36-rc8.
 
