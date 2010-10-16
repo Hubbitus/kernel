@@ -648,8 +648,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # DRM
-Patch1801: drm-revert-drm-fbdev-rework-output-polling-to-be-back-in-core.patch
-Patch1802: revert-drm-kms-toggle-poll-around-switcheroo.patch
+
 # nouveau + drm fixes
 Patch1810: drm-nouveau-updates.patch
 Patch1819: drm-intel-big-hammer.patch
@@ -1261,13 +1260,14 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
 
-#ApplyPatch drm-revert-drm-fbdev-rework-output-polling-to-be-back-in-core.patch
-#ApplyPatch revert-drm-kms-toggle-poll-around-switcheroo.patch
+# DRM core
 
-# Nouveau DRM + drm fixes
-#ApplyPatch drm-nouveau-updates.patch
-ApplyPatch drm-intel-big-hammer.patch
+# Nouveau DRM
+ApplyOptionalPatch drm-nouveau-updates.patch
+
+# Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
+ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
