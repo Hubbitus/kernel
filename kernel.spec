@@ -725,6 +725,8 @@ Patch12301: btusb-macbookpro-6-2.patch
 
 Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
 
+Patch12303: dmar-disable-when-ricoh-multifunction.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1338,6 +1340,9 @@ ApplyPatch btusb-macbookpro-6-2.patch
 # rhbz#641468
 ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
 
+# rhbz#605888
+ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1945,6 +1950,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com>
+- Quirk to disable DMAR with Ricoh card reader/firewire. (rhbz#605888)
+
 * Fri Oct 15 2010 Kyle McMartin <kyle@redhat.com>
 - Switched to pci=use_crs by default (it should have been fixed since
   cebbert sucked in the patches anyway.)
