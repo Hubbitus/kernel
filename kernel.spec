@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 39
+%global baserelease 40
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -617,6 +617,8 @@ Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
 
+Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
+
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch393: acpi-ec-add-delay-before-write.patch
@@ -727,7 +729,7 @@ Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12304: ima-allow-it-to-be-completely-disabled-and-default-off.patch
+Patch12305: xhci_hcd-suspend-resume.patch
 
 %endif
 
@@ -1213,6 +1215,8 @@ ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 
+ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
+
 #
 # SCSI Bits.
 #
@@ -1345,7 +1349,7 @@ ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
+ApplyPatch xhci_hcd-suspend-resume.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1954,6 +1958,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.40.rc8.git0
+- Backport xHCI suspend/resume code from linux-next.
+
 * Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com>
 - ima: Default it to off, pass ima=on to enable. Reduce impact of the option
   when disabled.
