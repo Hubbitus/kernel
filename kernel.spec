@@ -727,6 +727,8 @@ Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
+Patch12304: ima-allow-it-to-be-completely-disabled-and-default-off.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1343,6 +1345,8 @@ ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
+ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1950,6 +1954,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com>
+- ima: Default it to off, pass ima=on to enable. Reduce impact of the option
+  when disabled.
+
 * Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com>
 - Quirk to disable DMAR with Ricoh card reader/firewire. (rhbz#605888)
 
