@@ -716,11 +716,7 @@ Patch12202: linux-2.6-qcserial-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 
-# PCI patches to fix problems with _CRS
-Patch12221: pci-v2-1-4-resources-ensure-alignment-callback-doesn-t-allocate-below-available-start.patch
-Patch12222: pci-v2-2-4-x86-PCI-allocate-space-from-the-end-of-a-region-not-the-beginning.patch
-Patch12223: pci-v2-3-4-resources-allocate-space-within-a-region-from-the-top-down.patch
-Patch12224: pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
+Patch12225: pci-crs-fixes.patch
 
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
@@ -1334,11 +1330,8 @@ ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
 #ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 
 # PCI patches to fix problems with _CRS
-# ( from https://bugzilla.kernel.org/show_bug.cgi?id=16228#c49 )
-ApplyPatch pci-v2-1-4-resources-ensure-alignment-callback-doesn-t-allocate-below-available-start.patch
-ApplyPatch pci-v2-2-4-x86-PCI-allocate-space-from-the-end-of-a-region-not-the-beginning.patch
-ApplyPatch pci-v2-3-4-resources-allocate-space-within-a-region-from-the-top-down.patch
-ApplyPatch pci-v2-4-4-PCI-allocate-bus-resources-from-the-top-down.patch
+# ( from linux-pci list )
+ApplyPatch pci-crs-fixes.patch
 
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
@@ -1960,6 +1953,7 @@ fi
 %changelog
 * Tue Oct 19 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-0.41.rc8.git5
 - Linux 2.6.36-rc8-git5
+- Update PCI _CRS fixes
 
 * Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.40.rc8.git0
 - Backport xHCI suspend/resume code from linux-next.
