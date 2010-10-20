@@ -715,6 +715,7 @@ Patch12201: linux-2.6-uvc-autosuspend.patch
 Patch12202: linux-2.6-qcserial-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
+Patch12205: runtime_pm_fixups.patch
 
 Patch12225: pci-crs-fixes.patch
 
@@ -1322,12 +1323,12 @@ ApplyPatch wacom-08-add-support-for-bamboo-pen.patch
 ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
 
 # Runtime PM
-# (there's still dragons here, disabled for now... --kyle)
-#ApplyPatch linux-2.6-bluetooth-autosuspend.patch
-#ApplyPatch linux-2.6-uvc-autosuspend.patch
-#ApplyPatch linux-2.6-qcserial-autosuspend.patch
-#ApplyPatch linux-2.6-usb-pci-autosuspend.patch
-#ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
+ApplyPatch linux-2.6-bluetooth-autosuspend.patch
+ApplyPatch linux-2.6-uvc-autosuspend.patch
+ApplyPatch linux-2.6-qcserial-autosuspend.patch
+ApplyPatch linux-2.6-usb-pci-autosuspend.patch
+ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
+ApplyPatch runtime_pm_fixups.patch
 
 # PCI patches to fix problems with _CRS
 # ( from linux-pci list )
@@ -1951,6 +1952,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Oct 20 2010 Matthew Garrett <mjg@redhat.com> 2.6.36-0.42.rc8.git5
+- runtime_pm_fixups.patch: should fix this on Thinkpads
+
 * Tue Oct 19 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-0.41.rc8.git5
 - Linux 2.6.36-rc8-git5
 - Update PCI _CRS fixes
