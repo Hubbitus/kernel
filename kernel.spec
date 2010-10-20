@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 40
+%global baserelease 41
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 0
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1958,6 +1958,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Oct 19 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-0.41.rc8.git5
+- Linux 2.6.36-rc8-git5
+
 * Mon Oct 18 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-0.40.rc8.git0
 - Backport xHCI suspend/resume code from linux-next.
 
