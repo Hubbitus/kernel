@@ -82,7 +82,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_DEBUG is not set/CONFIG_DMADEVICES_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_VDEBUG is not set/CONFIG_DMADEVICES_VDEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CEPH_FS_PRETTYDEBUG is not set/CONFIG_CEPH_FS_PRETTYDEBUG=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/CONFIG_CEPH_LIB_PRETTYDEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_QUOTA_DEBUG is not set/CONFIG_QUOTA_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_KGDB_KDB is not set/CONFIG_KGDB_KDB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_KDB_KEYBOARD is not set/CONFIG_KDB_KEYBOARD=y/' config-nodebug
@@ -154,7 +154,7 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_DEBUG=y/# CONFIG_DMADEVICES_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_VDEBUG=y/# CONFIG_DMADEVICES_VDEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_CEPH_FS_PRETTYDEBUG=y/# CONFIG_CEPH_FS_PRETTYDEBUG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_CEPH_LIB_PRETTYDEBUG=y/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_QUOTA_DEBUG=y/# CONFIG_QUOTA_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/' config-nodebug
 	#@perl -pi -e 's/CONFIG_KGDB_KDB=y/# CONFIG_KGDB_KDB is not set/' config-nodebug

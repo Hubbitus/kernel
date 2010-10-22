@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -679,8 +679,6 @@ Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 
 #Patch2916: lirc-staging-2.6.36-fixes.patch
 Patch2917: hdpvr-ir-enable.patch
-
-Patch3000: linux-2.6-rcu-sched-warning.patch
 
 # fs fixes
 
@@ -1297,9 +1295,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 # enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
 ApplyPatch hdpvr-ir-enable.patch
-
-# silence another rcu_reference warning
-ApplyPatch linux-2.6-rcu-sched-warning.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1952,6 +1947,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Oct 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc0.git2
+- Switch to tracking git snapshots of what will become 2.6.37.
+- Fix context rejects in utrace and a few other patches.
+
 * Wed Oct 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-1
 - Linux 2.6.36
 

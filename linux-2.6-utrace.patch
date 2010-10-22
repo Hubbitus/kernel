@@ -1636,9 +1636,9 @@ index 2de5b1c..a283086 100644
 +	  kernel interface exported to kernel modules, to track events in
 +	  user threads, extract and change user thread state.
 +
- menu "RCU Subsystem"
+ source "kernel/irq/Kconfig"
  
- choice
+ menu "RCU Subsystem"
 diff --git a/kernel/Makefile b/kernel/Makefile
 index 0b72d1a..6004913 100644  
 --- a/kernel/Makefile
