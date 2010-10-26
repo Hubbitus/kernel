@@ -941,7 +941,7 @@ ApplyPatch()
     exit 1
   fi
 %if !%{using_upstream_branch}
-  if ! egrep "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:10}" != "patch-2.6." ] ; then
       echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
       exit 1
@@ -1376,7 +1376,7 @@ for i in *.config
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
-  make ARCH=$Arch listnewconfig | egrep '^CONFIG_' >.newoptions || true
+  make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
 %if %{listnewconfig_fail}
   if [ -s .newoptions ]; then
     cat .newoptions
@@ -1573,7 +1573,7 @@ BuildKernel() {
 
     # Generate a list of modules for block and networking.
 
-    fgrep /drivers/ modnames | xargs --no-run-if-empty nm -upA |
+    grep -F /drivers/ modnames | xargs --no-run-if-empty nm -upA |
     sed -n 's,^.*/\([^/]*\.ko\):  *U \(.*\)$,\1 \2,p' > drivers.undef
 
     collect_modules_list()
@@ -1599,7 +1599,7 @@ BuildKernel() {
       /sbin/modinfo -l $i >> modinfo
     done < modnames
 
-    egrep -v \
+    grep -E -v \
     	  'GPL( v2)?$|Dual BSD/GPL$|Dual MPL/GPL$|GPL and additional rights$' \
 	  modinfo && exit 1
 
