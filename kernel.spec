@@ -481,9 +481,9 @@ ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ia64 sparc sparc64 s390 s390x 
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
-%ifarch x86_64 sparc64
-Obsoletes: kernel-smp
-%endif
+
+
+
 
 
 #
