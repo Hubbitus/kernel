@@ -482,10 +482,6 @@ ExclusiveOS: Linux
 
 %kernel_reqprovconf
 
-
-
-
-
 #
 # List the packages used during the kernel build
 #
