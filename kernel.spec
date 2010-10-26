@@ -144,7 +144,7 @@ Summary: The Linux kernel
 %define with_dbgonly   %{?_with_dbgonly:      1} %{?!_with_dbgonly:      0}
 
 # should we do C=1 builds with sparse
-%define with_sparse	%{?_with_sparse:      1} %{?!_with_sparse:      0}
+%define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
 
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
