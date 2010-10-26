@@ -2149,7 +2149,7 @@ fi
   numbers.
 
 * Wed Aug 04 2010 Kyle McMartin <kyle@redhat.com>
-- Disable %released_kernel.
+- Disable %%released_kernel.
 - This is properly 2.6.36-0.git1, unlike the last commit. Had to make
   a mistake sometime, I'm glad it was early.
 
@@ -2193,7 +2193,7 @@ fi
 - Linux 2.6.35-rc5-git7
 
 * Wed Jul 21 2010 Dave Jones <davej@redhat.com>
-- Remove the %verify (no mtime) on kernel-devel's files.
+- Remove the %%verify (no mtime) on kernel-devel's files.
   If they got modified, they should fail rpm verify.
 
 * Wed Jul 21 2010 Dave Jones <davej@redhat.com>
@@ -2372,7 +2372,7 @@ fi
   having trouble finding anyone who actually uses it.
 
 * Tue Jun 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.34-38
-- Fix build by nuking superfluous "%{expand" which was missing a
+- Fix build by nuking superfluous "%%{expand" which was missing a
   trailing '}'. You may now reward me with an array of alcoholic
   beverages, I so richly deserve for spending roughly a full
   day staring at the diff of the spec.
