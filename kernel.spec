@@ -1342,6 +1342,9 @@ done
 # get rid of unwanted files resulting from patch fuzz
 find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
 
+# remove unnecessary SCM files
+find . -name .gitignore -exec rm -f {} \; >/dev/null
+
 cd ..
 
 ###
