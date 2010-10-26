@@ -442,7 +442,7 @@ Summary: The Linux kernel
 # macros defined above.
 #
 %define kernel_reqprovconf \
-Provides: kernel = %{rpmversion}-%{pkg_release}\
+\
 Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:.%{1}}\
 Provides: kernel-drm = 4.3.0\
 Provides: kernel-drm-nouveau = 16\
