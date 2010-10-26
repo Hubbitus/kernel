@@ -383,7 +383,7 @@ Summary: The Linux kernel
 %endif
 
 # To temporarily exclude an architecture from being built, add it to
-# %nobuildarches. Do _NOT_ use the ExclusiveArch: line, because if we
+# %%nobuildarches. Do _NOT_ use the ExclusiveArch: line, because if we
 # don't build kernel-headers then the new build system will no longer let
 # us use the previous build of that package -- it'll just be completely AWOL.
 # Which is a BadThing(tm).
@@ -429,7 +429,7 @@ Summary: The Linux kernel
 %define kernel_headers_conflicts libdrm-devel < 2.4.0-0.15
 
 #
-# Packages that need to be installed before the kernel is, because the %post
+# Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
 %define kernel_prereq  fileutils, module-init-tools, initscripts >= 8.11.1-1, grubby >= 7.0.10-1
@@ -999,10 +999,10 @@ ApplyOptionalPatch()
 %endif
 %endif
 
-# %{vanillaversion} : the full version name, e.g. 2.6.35-rc6-git3
-# %{kversion}       : the base version, e.g. 2.6.34
+# %%{vanillaversion} : the full version name, e.g. 2.6.35-rc6-git3
+# %%{kversion}       : the base version, e.g. 2.6.34
 
-# Use kernel-%{kversion}%{?dist} as the top-level directory name
+# Use kernel-%%{kversion}%%{?dist} as the top-level directory name
 # so we can prep different trees within a single git directory.
 
 # Build a list of the other top-level kernel tree directories.
@@ -1880,7 +1880,7 @@ fi
 %{_mandir}/man[1-8]/*
 %endif
 
-# This is %{image_install_path} on an arch where that includes ELF files,
+# This is %%{image_install_path} on an arch where that includes ELF files,
 # or empty otherwise.
 %define elf_image_install_path %{?kernel_image_elf:%{image_install_path}}
 
