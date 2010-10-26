@@ -442,7 +442,6 @@ Summary: The Linux kernel
 # macros defined above.
 #
 %define kernel_reqprovconf \
-\
 Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:.%{1}}\
 Provides: kernel-drm = 4.3.0\
 Provides: kernel-drm-nouveau = 16\
@@ -481,10 +480,6 @@ ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ia64 sparc sparc64 s390 s390x 
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
-
-
-
-
 
 #
 # List the packages used during the kernel build
