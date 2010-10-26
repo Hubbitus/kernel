@@ -77,6 +77,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_CFQ_IOSCHED is not set/CONFIG_DEBUG_CFQ_IOSCHED=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DRBD_FAULT_INJECTION is not set/CONFIG_DRBD_FAULT_INJECTION=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/CONFIG_IWLWIFI_DEVICE_TRACING=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_WORK is not set/CONFIG_DEBUG_OBJECTS_WORK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/' config-nodebug
@@ -149,6 +150,7 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_CFQ_IOSCHED=y/# CONFIG_DEBUG_CFQ_IOSCHED is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DRBD_FAULT_INJECTION=y/# CONFIG_DRBD_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_ATH_DEBUG=y/# CONFIG_ATH_DEBUG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_CARL9170_DEBUGFS=y/# CONFIG_CARL9170_DEBUGFS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_IWLWIFI_DEVICE_TRACING=y/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_WORK=y/# CONFIG_DEBUG_OBJECTS_WORK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/' config-nodebug
