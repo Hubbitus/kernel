@@ -1732,7 +1732,7 @@ find $RPM_BUILD_ROOT/usr/include \
      \( -name .install -o -name .check -o \
      	-name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
 
-find $RPM_BUILD_ROOT/usr/src/kernels -name .*.cmd -exec rm -f {} \;
+find $RPM_BUILD_ROOT/usr/src/kernels -name ".*.cmd" -exec rm -f {} \;
 
 # glibc provides scsi headers for itself, for now
 rm -rf $RPM_BUILD_ROOT/usr/include/scsi
