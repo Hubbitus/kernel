@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 8
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -698,14 +698,9 @@ Patch12030: tpm-fix-stall-on-boot.patch
 
 # Runtime power management
 Patch12200: linux-2.6-bluetooth-autosuspend.patch
-Patch12201: linux-2.6-uvc-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
-
-Patch12225: pci-crs-fixes.patch
-
-Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
@@ -1127,7 +1122,7 @@ ApplyPatch linux-2.6-hotfixes.patch
 # Roland's utrace ptrace replacement.
 ApplyPatch linux-2.6-tracehook.patch
 ApplyPatch linux-2.6-utrace.patch
-ApplyPatch linux-2.6-utrace-ptrace.patch
+#ApplyPatch linux-2.6-utrace-ptrace.patch
 
 # Architecture patches
 # x86(-64)
@@ -1193,7 +1188,7 @@ ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 
-ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
+#ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
 #
 # SCSI Bits.
@@ -1291,17 +1286,9 @@ ApplyPatch tpm-fix-stall-on-boot.patch
 
 # Runtime PM
 ApplyPatch linux-2.6-bluetooth-autosuspend.patch
-ApplyPatch linux-2.6-uvc-autosuspend.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 ApplyPatch runtime_pm_fixups.patch
-
-# PCI patches to fix problems with _CRS
-# ( from linux-pci list )
-ApplyPatch pci-crs-fixes.patch
-
-# rhbz#641468
-ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -1913,6 +1900,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Nov 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git0
+- Linux 2.6.37-rc1
+
 * Tue Oct 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc0.git8
 - Linux 2.6.36-git8
 

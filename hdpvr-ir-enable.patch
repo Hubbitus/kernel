@@ -110,7 +110,7 @@ index 463b81b..60cdc06 100644
  						 msgs[i].len);
  	}
  
-@@ -115,31 +120,59 @@ static struct i2c_algorithm hdpvr_algo = {
+@@ -115,30 +120,58 @@ static struct i2c_algorithm hdpvr_algo = {
  	.functionality = hdpvr_functionality,
  };
  
@@ -119,7 +119,6 @@ index 463b81b..60cdc06 100644
 +	.owner 	= THIS_MODULE,
 +	.id 	= I2C_HW_B_HDPVR,
 +	.algo 	= &hdpvr_algo,
-+	.class 	= I2C_CLASS_TV_ANALOG,
 +};
 +
 +static struct i2c_board_info hdpvr_i2c_board_info = {
@@ -160,7 +159,6 @@ index 463b81b..60cdc06 100644
 -	strlcpy(i2c_adap->name, "Hauppauge HD PVR I2C",
 -		sizeof(i2c_adap->name));
 -	i2c_adap->algo  = &hdpvr_algo;
--	i2c_adap->class = I2C_CLASS_TV_ANALOG;
 -	i2c_adap->owner = THIS_MODULE;
 -	i2c_adap->dev.parent = &dev->udev->dev;
 +	memcpy(&dev->i2c_adapter, &hdpvr_i2c_adapter_template,
