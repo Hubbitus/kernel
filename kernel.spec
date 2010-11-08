@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1900,6 +1900,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git5
+- Linux 2.6.37-rc1-git5
+
 * Mon Nov 08 2010 Kyle McMartin <kyle@redhat.com>
 - Cherry-pick utrace-ptrace fixes from mayoung. Thanks!
 
