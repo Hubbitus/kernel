@@ -1122,7 +1122,7 @@ ApplyPatch linux-2.6-hotfixes.patch
 # Roland's utrace ptrace replacement.
 ApplyPatch linux-2.6-tracehook.patch
 ApplyPatch linux-2.6-utrace.patch
-#ApplyPatch linux-2.6-utrace-ptrace.patch
+ApplyPatch linux-2.6-utrace-ptrace.patch
 
 # Architecture patches
 # x86(-64)
@@ -1900,6 +1900,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 08 2010 Kyle McMartin <kyle@redhat.com>
+- Cherry-pick utrace-ptrace fixes from mayoung. Thanks!
+
 * Tue Nov 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git0
 - Linux 2.6.37-rc1
 
