@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 7
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -693,7 +693,6 @@ Patch12018: neuter_intel_microcode_load.patch
 Patch12030: tpm-fix-stall-on-boot.patch
 
 # Runtime power management
-Patch12200: linux-2.6-bluetooth-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
@@ -1281,7 +1280,6 @@ ApplyPatch neuter_intel_microcode_load.patch
 ApplyPatch tpm-fix-stall-on-boot.patch
 
 # Runtime PM
-ApplyPatch linux-2.6-bluetooth-autosuspend.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 ApplyPatch runtime_pm_fixups.patch
@@ -1901,6 +1899,13 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Nov 13 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git10
+- Linux 2.6.37-rc1-git10
+- SECURITY_DMESG_RESTRICT added, the principle of least surprise dictates
+  we should probably have it off. If you want to restrict dmesg access
+  you may use the kernel.dmesg_restrict sysctl.
+- linux-2.6-bluetooth-autosuspend.patch: merged upstream.
+
 * Tue Nov 09 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git7
 - Linux 2.6.37-rc1-git7
 
