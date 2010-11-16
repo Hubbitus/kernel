@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -149,7 +149,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -649,12 +649,10 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # nouveau + drm fixes
 Patch1810: drm-nouveau-updates.patch
+Patch1811: drm-intel-2.6.37-rc2.patch
 Patch1819: drm-intel-big-hammer.patch
-# intel drm is all merged upstream
-Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
-Patch1826: drm-i915-reprogram-power-monitoring-registers-on-resume.patch
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -1269,10 +1267,9 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
-ApplyOptionalPatch drm-intel-next.patch
+ApplyPatch drm-intel-2.6.37-rc2.patch
 ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
-ApplyPatch drm-i915-reprogram-power-monitoring-registers-on-resume.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -1957,6 +1954,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Nov 16 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-3
+- Rebase drm/intel to 2.6.37-rc2+edp_fixes, hopefully to sort out most of
+  the issues folks with eDP are having.
+- Switch to release builds and turn on debugging flavours.
+
 * Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com>
 - rhbz#651019: pull in support for MBA3.
 
