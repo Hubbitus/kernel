@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1657,7 +1657,8 @@ BuildKernel %make_target %kernel_image smp
 
 %if %{with_doc}
 # Make the HTML and man pages.
-make %{?_smp_mflags} htmldocs mandocs || %{doc_build_fail}
+#  %{?_smp_mflags} frequently fails when j>8
+make htmldocs mandocs || %{doc_build_fail}
 
 # sometimes non-world-readable files sneak into the kernel source tree
 chmod -R a=rX Documentation
@@ -1954,6 +1955,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Nov 16 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-4
+- Disable parallel doc builds, they fail. Constantly.
+
 * Tue Nov 16 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-3
 - Rebase drm/intel to 2.6.37-rc2+edp_fixes, hopefully to sort out most of
   the issues folks with eDP are having.
