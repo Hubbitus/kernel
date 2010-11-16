@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -654,6 +654,7 @@ Patch1819: drm-intel-big-hammer.patch
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
+Patch1826: drm-i915-reprogram-power-monitoring-registers-on-resume.patch
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -1270,6 +1271,7 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
+ApplyPatch drm-i915-reprogram-power-monitoring-registers-on-resume.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -1953,6 +1955,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-2
+- drm-i915-reprogram-power-monitoring-registers-on-resume.patch: fix intel_ips
+  driver.
+
 * Wed Oct 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-1
 - Linux 2.6.36
 
