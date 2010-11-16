@@ -718,6 +718,7 @@ Patch12225: pci-crs-fixes.patch
 
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
+Patch12304: add-macbookair3-ids.patch
 
 Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
 
@@ -1334,6 +1335,7 @@ ApplyPatch pci-crs-fixes.patch
 
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
+ApplyPatch add-macbookair3-ids.patch
 
 # rhbz#641468
 ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
@@ -1955,6 +1957,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com>
+- rhbz#651019: pull in support for MBA3.
+
 * Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-2
 - drm-i915-reprogram-power-monitoring-registers-on-resume.patch: fix intel_ips
   driver.
