@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 4
+%global baserelease 5
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1267,9 +1267,9 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
-ApplyPatch drm-intel-2.6.37-rc2.patch
-ApplyPatch drm-intel-big-hammer.patch
-ApplyPatch drm-intel-make-lvds-work.patch
+#ApplyPatch drm-intel-2.6.37-rc2.patch
+#ApplyPatch drm-intel-big-hammer.patch
+#ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -1955,6 +1955,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-5
+- Disable drm/intel rebase until it can be fixed.
+
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com>
 - Make vmlinuz/System.map root read-write only by default. You can just
   chmod 644 them later if you (unlikely) need them without root.
