@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1899,6 +1899,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc2.git2
+- Linux 2.6.37-rc2-git2
+- enable STRICT_DEVMEM on s390x.
+
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com>
 - Make vmlinuz/System.map root read-write only by default. You can just
   chmod 644 them later if you (unlikely) need them without root.
