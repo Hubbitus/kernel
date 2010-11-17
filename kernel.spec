@@ -1840,8 +1840,8 @@ fi
 %if %{1}\
 %{expand:%%files %{?2}}\
 %defattr(-,root,root)\
-/%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
-/boot/System.map-%{KVERREL}%{?2:.%{2}}\
+%attr(600,root,root) /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
+%attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:.%{2}}\
 /boot/config-%{KVERREL}%{?2:.%{2}}\
 %dir /lib/modules/%{KVERREL}%{?2:.%{2}}\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/kernel\
@@ -1899,6 +1899,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com>
+- Make vmlinuz/System.map root read-write only by default. You can just
+  chmod 644 them later if you (unlikely) need them without root.
+
 * Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc2.git0
 - Linux 2.6.37-rc2
 
