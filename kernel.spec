@@ -175,7 +175,7 @@ Summary: The Linux kernel
 %else
 %define gittag .git0
 %endif
-%define pkg_release 0.%{fedora_build}%{?rctag}%{?gittag}%{?buildid}%{?dist}
+%define pkg_release 0%{?rctag}%{?gittag}.%{fedora_build}%{?buildid}%{?dist}
 
 %endif
 
@@ -1899,6 +1899,13 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Nov 18 2010 Kyle McMartin <kyle@redhat.com>
+- Move %{fedora_build} in the un-released (ie: -git/-rc) kernel case for
+  a variety of reasons, principally so that:
+  1: Bumping %baserelease isn't needed if we're just updating snapshots.
+  2: %buildid will sort as newer so we don't need to bump baserelease when
+     building bugzilla fixes.
+
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc2.git2
 - Linux 2.6.37-rc2-git2
 - enable STRICT_DEVMEM on s390x.
