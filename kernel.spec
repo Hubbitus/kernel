@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1899,6 +1899,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 19 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc2.git5.1
+- Linux 2.6.37-rc2-git5
+
 * Thu Nov 18 2010 Kyle McMartin <kyle@redhat.com>
 - Move %{fedora_build} in the un-released (ie: -git/-rc) kernel case for
   a variety of reasons, principally so that:
