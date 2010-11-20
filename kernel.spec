@@ -724,6 +724,8 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12305: xhci_hcd-suspend-resume.patch
 
+Patch12306: secmark-do-not-return-early-if-there-was-no-error.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1342,6 +1344,8 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch xhci_hcd-suspend-resume.patch
 
+#ApplyPatch secmark-do-not-return-early-if-there-was-no-error.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1957,6 +1961,12 @@ fi
 %changelog
 * Sat Nov 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36.1-6.rc1
 - Linux 2.6.36.1-rc1
+- Comment out upstreamed patches:
+  secmark-do-not-return-early-if-there-was-no-error.patch
+
+* Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com>
+- secmark-do-not-return-early-if-there-was-no-error.patch: requested
+  by eparis@. (Fixes a BUG when using secmark.)
 
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-5
 - Disable drm/intel rebase until it can be fixed.
