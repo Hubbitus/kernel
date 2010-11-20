@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 5
+%global baserelease 6
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -63,9 +63,9 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Is it a -stable RC?
-%define stable_rc 0
+%define stable_rc 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev .%{stable_update}
@@ -1955,6 +1955,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Nov 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36.1-6.rc1
+- Linux 2.6.36.1-rc1
+
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-5
 - Disable drm/intel rebase until it can be fixed.
 
