@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 8
+%global baserelease 9
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -65,7 +65,7 @@ Summary: The Linux kernel
 # Do we have a -stable update to apply?
 %define stable_update 1
 # Is it a -stable RC?
-%define stable_rc 1
+%define stable_rc 0
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev .%{stable_update}
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -724,8 +724,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12305: xhci_hcd-suspend-resume.patch
 
-Patch12306: secmark-do-not-return-early-if-there-was-no-error.patch
-
 Patch12307: tty-restore-tty_ldisc_wait_idle.patch
 
 %endif
@@ -1346,8 +1344,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch xhci_hcd-suspend-resume.patch
 
-#ApplyPatch secmark-do-not-return-early-if-there-was-no-error.patch
-
 ApplyPatch tty-restore-tty_ldisc_wait_idle.patch
 
 # END OF PATCH APPLICATIONS
@@ -1963,6 +1959,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-9
+- Linux stable 2.6.36.1
+
 * Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-8.rc1
 - Merge 100eeae2 (TTY: restore tty_ldisc_wait_idle) which should fix the WARN
   in tty_open in rawhide.
