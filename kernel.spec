@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 7
+%global baserelease 8
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -726,6 +726,8 @@ Patch12305: xhci_hcd-suspend-resume.patch
 
 Patch12306: secmark-do-not-return-early-if-there-was-no-error.patch
 
+Patch12307: tty-restore-tty_ldisc_wait_idle.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1346,6 +1348,8 @@ ApplyPatch xhci_hcd-suspend-resume.patch
 
 #ApplyPatch secmark-do-not-return-early-if-there-was-no-error.patch
 
+ApplyPatch tty-restore-tty_ldisc_wait_idle.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1959,6 +1963,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-8.rc1
+- Merge 100eeae2 (TTY: restore tty_ldisc_wait_idle) which should fix the WARN
+  in tty_open in rawhide.
+
 * Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-7.rc1
 - Make vmlinuz world readable again.
 
