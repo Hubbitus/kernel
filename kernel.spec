@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 6
+%global baserelease 7
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1900,7 +1900,7 @@ fi
 %if %{1}\
 %{expand:%%files %{?2}}\
 %defattr(-,root,root)\
-%attr(600,root,root) /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
+/%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:.%{2}}\
 /boot/config-%{KVERREL}%{?2:.%{2}}\
 %dir /lib/modules/%{KVERREL}%{?2:.%{2}}\
@@ -1959,6 +1959,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-7.rc1
+- Make vmlinuz world readable again.
+
 * Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com>
 - Merge patch from Aris to allow kernel-debuginfo to be multiply-installed
   (means we had to move the build dir, kind of a bummer, but I verified
