@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 7
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1899,6 +1899,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git0.1
+- Linux 2.6.37-rc3
+
 * Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc2.git7.1
 - Linux 2.6.37-rc2-git7
 
