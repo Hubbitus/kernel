@@ -609,6 +609,8 @@ Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
+Patch210: debug-tty-print-dev-name.patch
+
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
@@ -1200,6 +1202,8 @@ ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
 ###FIX###ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
+
+ApplyPatch debug-tty-print-dev-name.patch
 
 #
 # PCI
@@ -1959,6 +1963,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com>
+- Add a debugging patch to help track down which tty is being
+  poked by plymouth.
+
 * Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-9
 - Linux stable 2.6.36.1
 
