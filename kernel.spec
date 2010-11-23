@@ -728,6 +728,8 @@ Patch12305: xhci_hcd-suspend-resume.patch
 
 Patch12307: tty-restore-tty_ldisc_wait_idle.patch
 
+Patch12308: fix-i8k-inline-asm.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1350,6 +1352,8 @@ ApplyPatch xhci_hcd-suspend-resume.patch
 
 ApplyPatch tty-restore-tty_ldisc_wait_idle.patch
 
+ApplyPatch fix-i8k-inline-asm.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1963,6 +1967,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
+- fix-i8k-inline-asm.patch: backport gcc miscompilation fix from git
+  [22d3243d, 6b4e81db] (rhbz#647677)
+
 * Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com>
 - Add a debugging patch to help track down which tty is being
   poked by plymouth.
