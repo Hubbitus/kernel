@@ -731,6 +731,7 @@ Patch12307: tty-restore-tty_ldisc_wait_idle.patch
 Patch12308: fix-i8k-inline-asm.patch
 
 Patch12400: ipc-zero-struct-memory-for-compat-fns.patch
+Patch12401: ipc-shm-fix-information-leak-to-user.patch
 
 %endif
 
@@ -1359,6 +1360,9 @@ ApplyPatch fix-i8k-inline-asm.patch
 # rhbz#648658 (CVE-2010-4073)
 ApplyPatch ipc-zero-struct-memory-for-compat-fns.patch
 
+# rhbz#648656 (CVE-2010-4072)
+ApplyPatch ipc-shm-fix-information-leak-to-user.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1974,6 +1978,7 @@ fi
 %changelog
 * Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
 - zero struct memory in ipc compat (CVE-2010-4073) (#648658)
+- zero struct memory in ipc shm (CVE-2010-4072) (#648656)
 
 * Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
 - fix-i8k-inline-asm.patch: backport gcc miscompilation fix from git
