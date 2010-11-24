@@ -715,6 +715,7 @@ Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
 Patch12225: pci-crs-fixes.patch
+Patch12226: x86-never-alloc-pci-from-the-last-1M-below-4G.patch
 
 Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
@@ -1344,6 +1345,7 @@ ApplyPatch runtime_pm_fixups.patch
 # PCI patches to fix problems with _CRS
 # ( from linux-pci list )
 ApplyPatch pci-crs-fixes.patch
+ApplyPatch x86-never-alloc-pci-from-the-last-1M-below-4G.patch
 
 ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
@@ -1986,6 +1988,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
+- Fix graphics on HP 2530p (korg#23542)
+
 * Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
 - zero struct memory in ipc compat (CVE-2010-4073) (#648658)
 - zero struct memory in ipc shm (CVE-2010-4072) (#648656)
