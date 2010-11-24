@@ -657,6 +657,8 @@ Patch1819: drm-intel-big-hammer.patch
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
+Patch1920: radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
+
 # linux1394 git patches
 Patch2200: linux-2.6-firewire-git-update.patch
 Patch2201: linux-2.6-firewire-git-pending.patch
@@ -1287,6 +1289,8 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 #ApplyPatch drm-intel-big-hammer.patch
 #ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
+
+ApplyPatch radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1988,6 +1992,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
+- drm/radeon/kms: MC vram map needs to be >= pci aperture size (fdo#28402)
+
 * Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
 - Fix graphics on HP 2530p (korg#23542)
 
