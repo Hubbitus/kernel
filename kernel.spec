@@ -1993,6 +1993,9 @@ fi
 
 %changelog
 * Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
+- Disable FSCACHE for CIFS until issues are addressed. (#656498)
+
+* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
 - drm/radeon/kms: MC vram map needs to be >= pci aperture size (fdo#28402)
 
 * Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
