@@ -8,8 +8,8 @@ index 613c852..09c86d2 100644
  	mutex_lock(&tty->ldisc_mutex);
 -	WARN_ON(!test_bit(TTY_LDISC, &tty->flags));
 +	if (!test_bit(TTY_LDISC, &tty->flags)) {
-+		printk("%s: !test_bit(TTY_LDISC, &tty->flags) dev=%s\n",
-+			__func__, tty->name);
++		printk("%s: !test_bit(TTY_LDISC, &tty->flags) dev=%s ldisc=%s\n",
++			__func__, tty->name, tty->ldisc ? tty->ldisc->name : NULL);
 +		WARN_ON(1);
 +	}
  	mutex_unlock(&tty->ldisc_mutex);
