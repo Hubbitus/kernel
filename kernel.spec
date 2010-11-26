@@ -700,6 +700,7 @@ Patch12205: runtime_pm_fixups.patch
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12400: tty-dont-allow-reopen-when-ldisc-is-changing.patch
+Patch12401: debug-tty-print-dev-name.patch
 
 %endif
 
@@ -1291,6 +1292,7 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # rhbz#630464
 ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
+ApplyPatch debug-tty-print-dev-name.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1904,6 +1906,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
+- Copy tty_open WARN_ON debugging patch from rawhide.
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git2.1
 - Linux 2.6.37-rc3-git2
 - CGROUP_MEM_RES_CTLR_SWAP_ENABLED is not set, so the cgroup memory
