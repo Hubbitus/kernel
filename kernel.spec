@@ -737,6 +737,7 @@ Patch12400: ipc-zero-struct-memory-for-compat-fns.patch
 Patch12401: ipc-shm-fix-information-leak-to-user.patch
 
 Patch12405: inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
+Patch12408: netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
 
 Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
@@ -1380,6 +1381,7 @@ ApplyPatch ipc-shm-fix-information-leak-to-user.patch
 
 # rhbz#651264 (CVE-2010-3880)
 ApplyPatch inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
+ApplyPatch netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
 
 # rhbz#656264
 ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
@@ -2004,6 +2006,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
+- Quiet a build warning the previous INET_DIAG fix caused.
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
 - Plug stack leaks in tty/serial drivers. (#648663, #648660)
 
