@@ -742,6 +742,9 @@ Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
 Patch12407: hda_realtek-handle-unset-external-amp-bits.patch
 
+Patch12410: tty-make-tiocgicount-a-handler.patch
+Patch12411: tty-icount-changeover-for-other-main-devices.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1384,6 +1387,10 @@ ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 # rhbz#657388
 ApplyPatch hda_realtek-handle-unset-external-amp-bits.patch
 
+# CVE-2010-4077, CVE-2010-4075 (rhbz#648660, #648663)
+ApplyPatch tty-make-tiocgicount-a-handler.patch
+ApplyPatch tty-icount-changeover-for-other-main-devices.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1997,6 +2004,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
+- Plug stack leaks in tty/serial drivers. (#648663, #648660)
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
 - hda/realtek: handle unset external amp config (#657388)
 
