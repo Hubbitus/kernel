@@ -740,6 +740,8 @@ Patch12405: inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
 
 Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
+Patch12407: hda_realtek-handle-unset-external-amp-bits.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1379,6 +1381,9 @@ ApplyPatch inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
 # rhbz#656264
 ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
+# rhbz#657388
+ApplyPatch hda_realtek-handle-unset-external-amp-bits.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1992,6 +1997,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
+- hda/realtek: handle unset external amp config (#657388)
+
 * Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
 - Disable FSCACHE for CIFS until issues are addressed. (#656498)
 
