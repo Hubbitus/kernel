@@ -699,6 +699,8 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
+Patch12400: tty-dont-allow-reopen-when-ldisc-is-changing.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1286,6 +1288,9 @@ ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+
+# rhbz#630464
+ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1901,6 +1906,10 @@ fi
 %changelog
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git2.1
 - Linux 2.6.37-rc3-git2
+- CGROUP_MEM_RES_CTLR_SWAP_ENABLED is not set, so the cgroup memory
+  resource controller swap accounting is disabled by default. You can
+  enable it with 'swapaccount' if desired.
+- TTY: don't allow reopen when ldisc is changing (rhbz#630464)
 
 * Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git1.1
 - Linux 2.6.37-rc3-git1
