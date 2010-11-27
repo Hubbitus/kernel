@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -701,6 +701,8 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12400: tty-dont-allow-reopen-when-ldisc-is-changing.patch
 Patch12401: debug-tty-print-dev-name.patch
+Patch12402: tty-ldisc-fix-open-flag-handling.patch
+Patch12403: tty-open-hangup-race-fixup.patch
 
 %endif
 
@@ -1293,6 +1295,8 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 # rhbz#630464
 ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
 ApplyPatch debug-tty-print-dev-name.patch
+ApplyPatch tty-ldisc-fix-open-flag-handling.patch
+ApplyPatch tty-open-hangup-race-fixup.patch
 
 # END OF PATCH APPLICATIONS
 
