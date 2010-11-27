@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1906,6 +1906,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git3.1
+- Linux 2.6.37-rc3-git3
+- Print tty->flags as well in debugging patch...
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
 - Copy tty_open WARN_ON debugging patch from rawhide.
 
