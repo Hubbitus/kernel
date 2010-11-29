@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1910,6 +1910,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git6.1
+- Linux 2.6.37-rc3-git6
+- TTY: open/hangup race fixup (rhbz#630464)
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git3.1
 - Linux 2.6.37-rc3-git3
 - Print tty->flags as well in debugging patch...
