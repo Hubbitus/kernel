@@ -746,6 +746,12 @@ Patch12407: hda_realtek-handle-unset-external-amp-bits.patch
 Patch12410: tty-make-tiocgicount-a-handler.patch
 Patch12411: tty-icount-changeover-for-other-main-devices.patch
 
+Patch12413: tpm-autodetect-itpm-devices.patch
+
+Patch12415: tty-dont-allow-reopen-when-ldisc-is-changing.patch
+Patch12416: tty-ldisc-fix-open-flag-handling.patch
+Patch12417: tty-open-hangup-race-fixup.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1393,6 +1399,12 @@ ApplyPatch hda_realtek-handle-unset-external-amp-bits.patch
 ApplyPatch tty-make-tiocgicount-a-handler.patch
 ApplyPatch tty-icount-changeover-for-other-main-devices.patch
 
+ApplyPatch tpm-autodetect-itpm-devices.patch
+
+ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
+ApplyPatch tty-ldisc-fix-open-flag-handling.patch
+ApplyPatch tty-open-hangup-race-fixup.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2006,6 +2018,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com>
+- tpm-autodetect-itpm-devices.patch: Auto-fix TPM issues on various
+  laptops which prevented suspend/resume. (#647132)
+- tty fixes from kernel-git (#630464)
+
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
 - Quiet a build warning the previous INET_DIAG fix caused.
 
