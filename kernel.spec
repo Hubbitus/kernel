@@ -611,6 +611,8 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
 Patch210: debug-tty-print-dev-name.patch
 
+Patch300: pnp-log-pnp-resources-as-we-do-for-pci.patch
+
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
@@ -1237,6 +1239,9 @@ ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
+
+# helps debug resource conflicts [c1f3f281]
+ApplyPatch pnp-log-pnp-resources-as-we-do-for-pci.patch
 
 ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -2018,6 +2023,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com>
+- PNP: log PNP resources, as we do for PCI [c1f3f281]
+  should help us debug resource conflicts (requested by bjorn.)
+
 * Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-10
 - tpm-autodetect-itpm-devices.patch: Auto-fix TPM issues on various
   laptops which prevented suspend/resume. (#647132)
