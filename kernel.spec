@@ -1226,7 +1226,7 @@ ApplyPatch acpi-update-battery-information-on-notification-0x81.patch
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
 ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
-###FIX###ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
+ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 
 ApplyPatch debug-tty-print-dev-name.patch
@@ -1302,9 +1302,8 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
-#ApplyPatch drm-intel-2.6.37-rc2.patch
-#ApplyPatch drm-intel-big-hammer.patch
-#ApplyPatch drm-intel-make-lvds-work.patch
+ApplyPatch drm-intel-big-hammer.patch
+ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 ApplyPatch radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
