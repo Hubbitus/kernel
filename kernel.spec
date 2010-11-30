@@ -653,7 +653,6 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # nouveau + drm fixes
 Patch1810: drm-nouveau-updates.patch
-Patch1811: drm-intel-2.6.37-rc2.patch
 Patch1819: drm-intel-big-hammer.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
