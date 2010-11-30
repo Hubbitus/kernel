@@ -1176,7 +1176,7 @@ ApplyPatch acpi-update-battery-information-on-notification-0x81.patch
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
 ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
-###FIX###ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
+ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 
 #
@@ -1910,6 +1910,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com>
+- Update debug-vm-would_have_oomkilled patch.
+
 * Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git6.1
 - Linux 2.6.37-rc3-git6
 - TTY: open/hangup race fixup (rhbz#630464)
