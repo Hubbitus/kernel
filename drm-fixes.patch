@@ -1,0 +1,1572 @@
+diff --git a/MAINTAINERS b/MAINTAINERS
+index b3be8b3..3eafe9e 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -2080,7 +2080,7 @@ F:	include/drm/
+ 
+ INTEL DRM DRIVERS (excluding Poulsbo, Moorestown and derivative chipsets)
+ M:	Chris Wilson <chris@chris-wilson.co.uk>
+-L:	intel-gfx@lists.freedesktop.org
++L:	intel-gfx@lists.freedesktop.org (subscribers-only)
+ L:	dri-devel@lists.freedesktop.org
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/ickle/drm-intel.git
+ S:	Supported
+diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
+index f7af91c..7ca5935 100644
+--- a/drivers/gpu/drm/drm_crtc_helper.c
++++ b/drivers/gpu/drm/drm_crtc_helper.c
+@@ -471,6 +471,7 @@ int drm_crtc_helper_set_config(struct drm_mode_set *set)
+ 	int count = 0, ro, fail = 0;
+ 	struct drm_crtc_helper_funcs *crtc_funcs;
+ 	int ret = 0;
++	int i;
+ 
+ 	DRM_DEBUG_KMS("\n");
+ 
+@@ -666,6 +667,12 @@ int drm_crtc_helper_set_config(struct drm_mode_set *set)
+ 		if (ret != 0)
+ 			goto fail;
+ 	}
++	DRM_DEBUG_KMS("Setting connector DPMS state to on\n");
++	for (i = 0; i < set->num_connectors; i++) {
++		DRM_DEBUG_KMS("\t[CONNECTOR:%d:%s] set DPMS on\n", set->connectors[i]->base.id,
++			      drm_get_connector_name(set->connectors[i]));
++		set->connectors[i]->dpms = DRM_MODE_DPMS_ON;
++	}
+ 
+ 	kfree(save_connectors);
+ 	kfree(save_encoders);
+@@ -841,7 +848,7 @@ static void output_poll_execute(struct work_struct *work)
+ 	struct delayed_work *delayed_work = to_delayed_work(work);
+ 	struct drm_device *dev = container_of(delayed_work, struct drm_device, mode_config.output_poll_work);
+ 	struct drm_connector *connector;
+-	enum drm_connector_status old_status, status;
++	enum drm_connector_status old_status;
+ 	bool repoll = false, changed = false;
+ 
+ 	if (!drm_kms_helper_poll)
+@@ -866,8 +873,9 @@ static void output_poll_execute(struct work_struct *work)
+ 		    !(connector->polled & DRM_CONNECTOR_POLL_HPD))
+ 			continue;
+ 
+-		status = connector->funcs->detect(connector, false);
+-		if (old_status != status)
++		connector->status = connector->funcs->detect(connector, false);
++		DRM_DEBUG_KMS("connector status updated to %d\n", connector->status);
++		if (old_status != connector->status)
+ 			changed = true;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
+index 17b1cba..5e54821 100644
+--- a/drivers/gpu/drm/i915/i915_gem.c
++++ b/drivers/gpu/drm/i915/i915_gem.c
+@@ -38,8 +38,7 @@
+ 
+ static uint32_t i915_gem_get_gtt_alignment(struct drm_gem_object *obj);
+ 
+-static int i915_gem_object_flush_gpu_write_domain(struct drm_gem_object *obj,
+-						  bool pipelined);
++static int i915_gem_object_flush_gpu_write_domain(struct drm_gem_object *obj);
+ static void i915_gem_object_flush_gtt_write_domain(struct drm_gem_object *obj);
+ static void i915_gem_object_flush_cpu_write_domain(struct drm_gem_object *obj);
+ static int i915_gem_object_set_to_cpu_domain(struct drm_gem_object *obj,
+@@ -2594,7 +2593,7 @@ i915_gem_object_put_fence_reg(struct drm_gem_object *obj,
+ 	if (reg->gpu) {
+ 		int ret;
+ 
+-		ret = i915_gem_object_flush_gpu_write_domain(obj, true);
++		ret = i915_gem_object_flush_gpu_write_domain(obj);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -2742,8 +2741,7 @@ i915_gem_clflush_object(struct drm_gem_object *obj)
+ 
+ /** Flushes any GPU write domain for the object if it's dirty. */
+ static int
+-i915_gem_object_flush_gpu_write_domain(struct drm_gem_object *obj,
+-				       bool pipelined)
++i915_gem_object_flush_gpu_write_domain(struct drm_gem_object *obj)
+ {
+ 	struct drm_device *dev = obj->dev;
+ 	uint32_t old_write_domain;
+@@ -2762,10 +2760,7 @@ i915_gem_object_flush_gpu_write_domain(struct drm_gem_object *obj,
+ 					    obj->read_domains,
+ 					    old_write_domain);
+ 
+-	if (pipelined)
+-		return 0;
+-
+-	return i915_gem_object_wait_rendering(obj, true);
++	return 0;
+ }
+ 
+ /** Flushes the GTT write domain for the object if it's dirty. */
+@@ -2826,18 +2821,15 @@ i915_gem_object_set_to_gtt_domain(struct drm_gem_object *obj, int write)
+ 	if (obj_priv->gtt_space == NULL)
+ 		return -EINVAL;
+ 
+-	ret = i915_gem_object_flush_gpu_write_domain(obj, false);
++	ret = i915_gem_object_flush_gpu_write_domain(obj);
+ 	if (ret != 0)
+ 		return ret;
++	ret = i915_gem_object_wait_rendering(obj, true);
++	if (ret)
++		return ret;
+ 
+ 	i915_gem_object_flush_cpu_write_domain(obj);
+ 
+-	if (write) {
+-		ret = i915_gem_object_wait_rendering(obj, true);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	old_write_domain = obj->write_domain;
+ 	old_read_domains = obj->read_domains;
+ 
+@@ -2875,7 +2867,7 @@ i915_gem_object_set_to_display_plane(struct drm_gem_object *obj,
+ 	if (obj_priv->gtt_space == NULL)
+ 		return -EINVAL;
+ 
+-	ret = i915_gem_object_flush_gpu_write_domain(obj, true);
++	ret = i915_gem_object_flush_gpu_write_domain(obj);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -2924,9 +2916,12 @@ i915_gem_object_set_to_cpu_domain(struct drm_gem_object *obj, int write)
+ 	uint32_t old_write_domain, old_read_domains;
+ 	int ret;
+ 
+-	ret = i915_gem_object_flush_gpu_write_domain(obj, false);
++	ret = i915_gem_object_flush_gpu_write_domain(obj);
+ 	if (ret != 0)
+ 		return ret;
++	ret = i915_gem_object_wait_rendering(obj, true);
++	if (ret)
++		return ret;
+ 
+ 	i915_gem_object_flush_gtt_write_domain(obj);
+ 
+@@ -2935,12 +2930,6 @@ i915_gem_object_set_to_cpu_domain(struct drm_gem_object *obj, int write)
+ 	 */
+ 	i915_gem_object_set_to_full_cpu_read_domain(obj);
+ 
+-	if (write) {
+-		ret = i915_gem_object_wait_rendering(obj, true);
+-		if (ret)
+-			return ret;
+-	}
+-
+ 	old_write_domain = obj->write_domain;
+ 	old_read_domains = obj->read_domains;
+ 
+@@ -3205,9 +3194,13 @@ i915_gem_object_set_cpu_read_domain_range(struct drm_gem_object *obj,
+ 	if (offset == 0 && size == obj->size)
+ 		return i915_gem_object_set_to_cpu_domain(obj, 0);
+ 
+-	ret = i915_gem_object_flush_gpu_write_domain(obj, false);
++	ret = i915_gem_object_flush_gpu_write_domain(obj);
+ 	if (ret != 0)
+ 		return ret;
++	ret = i915_gem_object_wait_rendering(obj, true);
++	if (ret)
++		return ret;
++
+ 	i915_gem_object_flush_gtt_write_domain(obj);
+ 
+ 	/* If we're already fully in the CPU read domain, we're done. */
+@@ -3254,192 +3247,230 @@ i915_gem_object_set_cpu_read_domain_range(struct drm_gem_object *obj,
+ 	return 0;
+ }
+ 
+-/**
+- * Pin an object to the GTT and evaluate the relocations landing in it.
+- */
+ static int
+-i915_gem_execbuffer_relocate(struct drm_i915_gem_object *obj,
+-			     struct drm_file *file_priv,
+-			     struct drm_i915_gem_exec_object2 *entry)
++i915_gem_execbuffer_relocate_entry(struct drm_i915_gem_object *obj,
++				   struct drm_file *file_priv,
++				   struct drm_i915_gem_exec_object2 *entry,
++				   struct drm_i915_gem_relocation_entry *reloc)
+ {
+ 	struct drm_device *dev = obj->base.dev;
+-	drm_i915_private_t *dev_priv = dev->dev_private;
+-	struct drm_i915_gem_relocation_entry __user *user_relocs;
+-	struct drm_gem_object *target_obj = NULL;
+-	uint32_t target_handle = 0;
+-	int i, ret = 0;
++	struct drm_gem_object *target_obj;
++	uint32_t target_offset;
++	int ret = -EINVAL;
+ 
+-	user_relocs = (void __user *)(uintptr_t)entry->relocs_ptr;
+-	for (i = 0; i < entry->relocation_count; i++) {
+-		struct drm_i915_gem_relocation_entry reloc;
+-		uint32_t target_offset;
++	target_obj = drm_gem_object_lookup(dev, file_priv,
++					   reloc->target_handle);
++	if (target_obj == NULL)
++		return -ENOENT;
+ 
+-		if (__copy_from_user_inatomic(&reloc,
+-					      user_relocs+i,
+-					      sizeof(reloc))) {
+-			ret = -EFAULT;
+-			break;
+-		}
++	target_offset = to_intel_bo(target_obj)->gtt_offset;
+ 
+-		if (reloc.target_handle != target_handle) {
+-			drm_gem_object_unreference(target_obj);
++#if WATCH_RELOC
++	DRM_INFO("%s: obj %p offset %08x target %d "
++		 "read %08x write %08x gtt %08x "
++		 "presumed %08x delta %08x\n",
++		 __func__,
++		 obj,
++		 (int) reloc->offset,
++		 (int) reloc->target_handle,
++		 (int) reloc->read_domains,
++		 (int) reloc->write_domain,
++		 (int) target_offset,
++		 (int) reloc->presumed_offset,
++		 reloc->delta);
++#endif
+ 
+-			target_obj = drm_gem_object_lookup(dev, file_priv,
+-							   reloc.target_handle);
+-			if (target_obj == NULL) {
+-				ret = -ENOENT;
+-				break;
+-			}
++	/* The target buffer should have appeared before us in the
++	 * exec_object list, so it should have a GTT space bound by now.
++	 */
++	if (target_offset == 0) {
++		DRM_ERROR("No GTT space found for object %d\n",
++			  reloc->target_handle);
++		goto err;
++	}
+ 
+-			target_handle = reloc.target_handle;
+-		}
+-		target_offset = to_intel_bo(target_obj)->gtt_offset;
++	/* Validate that the target is in a valid r/w GPU domain */
++	if (reloc->write_domain & (reloc->write_domain - 1)) {
++		DRM_ERROR("reloc with multiple write domains: "
++			  "obj %p target %d offset %d "
++			  "read %08x write %08x",
++			  obj, reloc->target_handle,
++			  (int) reloc->offset,
++			  reloc->read_domains,
++			  reloc->write_domain);
++		goto err;
++	}
++	if (reloc->write_domain & I915_GEM_DOMAIN_CPU ||
++	    reloc->read_domains & I915_GEM_DOMAIN_CPU) {
++		DRM_ERROR("reloc with read/write CPU domains: "
++			  "obj %p target %d offset %d "
++			  "read %08x write %08x",
++			  obj, reloc->target_handle,
++			  (int) reloc->offset,
++			  reloc->read_domains,
++			  reloc->write_domain);
++		goto err;
++	}
++	if (reloc->write_domain && target_obj->pending_write_domain &&
++	    reloc->write_domain != target_obj->pending_write_domain) {
++		DRM_ERROR("Write domain conflict: "
++			  "obj %p target %d offset %d "
++			  "new %08x old %08x\n",
++			  obj, reloc->target_handle,
++			  (int) reloc->offset,
++			  reloc->write_domain,
++			  target_obj->pending_write_domain);
++		goto err;
++	}
+ 
+-#if WATCH_RELOC
+-		DRM_INFO("%s: obj %p offset %08x target %d "
+-			 "read %08x write %08x gtt %08x "
+-			 "presumed %08x delta %08x\n",
+-			 __func__,
+-			 obj,
+-			 (int) reloc.offset,
+-			 (int) reloc.target_handle,
+-			 (int) reloc.read_domains,
+-			 (int) reloc.write_domain,
+-			 (int) target_offset,
+-			 (int) reloc.presumed_offset,
+-			 reloc.delta);
+-#endif
++	target_obj->pending_read_domains |= reloc->read_domains;
++	target_obj->pending_write_domain |= reloc->write_domain;
+ 
+-		/* The target buffer should have appeared before us in the
+-		 * exec_object list, so it should have a GTT space bound by now.
+-		 */
+-		if (target_offset == 0) {
+-			DRM_ERROR("No GTT space found for object %d\n",
+-				  reloc.target_handle);
+-			ret = -EINVAL;
+-			break;
+-		}
++	/* If the relocation already has the right value in it, no
++	 * more work needs to be done.
++	 */
++	if (target_offset == reloc->presumed_offset)
++		goto out;
+ 
+-		/* Validate that the target is in a valid r/w GPU domain */
+-		if (reloc.write_domain & (reloc.write_domain - 1)) {
+-			DRM_ERROR("reloc with multiple write domains: "
+-				  "obj %p target %d offset %d "
+-				  "read %08x write %08x",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.offset,
+-				  reloc.read_domains,
+-				  reloc.write_domain);
+-			ret = -EINVAL;
+-			break;
+-		}
+-		if (reloc.write_domain & I915_GEM_DOMAIN_CPU ||
+-		    reloc.read_domains & I915_GEM_DOMAIN_CPU) {
+-			DRM_ERROR("reloc with read/write CPU domains: "
+-				  "obj %p target %d offset %d "
+-				  "read %08x write %08x",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.offset,
+-				  reloc.read_domains,
+-				  reloc.write_domain);
+-			ret = -EINVAL;
+-			break;
+-		}
+-		if (reloc.write_domain && target_obj->pending_write_domain &&
+-		    reloc.write_domain != target_obj->pending_write_domain) {
+-			DRM_ERROR("Write domain conflict: "
+-				  "obj %p target %d offset %d "
+-				  "new %08x old %08x\n",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.offset,
+-				  reloc.write_domain,
+-				  target_obj->pending_write_domain);
+-			ret = -EINVAL;
+-			break;
+-		}
++	/* Check that the relocation address is valid... */
++	if (reloc->offset > obj->base.size - 4) {
++		DRM_ERROR("Relocation beyond object bounds: "
++			  "obj %p target %d offset %d size %d.\n",
++			  obj, reloc->target_handle,
++			  (int) reloc->offset,
++			  (int) obj->base.size);
++		goto err;
++	}
++	if (reloc->offset & 3) {
++		DRM_ERROR("Relocation not 4-byte aligned: "
++			  "obj %p target %d offset %d.\n",
++			  obj, reloc->target_handle,
++			  (int) reloc->offset);
++		goto err;
++	}
+ 
+-		target_obj->pending_read_domains |= reloc.read_domains;
+-		target_obj->pending_write_domain |= reloc.write_domain;
++	/* and points to somewhere within the target object. */
++	if (reloc->delta >= target_obj->size) {
++		DRM_ERROR("Relocation beyond target object bounds: "
++			  "obj %p target %d delta %d size %d.\n",
++			  obj, reloc->target_handle,
++			  (int) reloc->delta,
++			  (int) target_obj->size);
++		goto err;
++	}
+ 
+-		/* If the relocation already has the right value in it, no
+-		 * more work needs to be done.
+-		 */
+-		if (target_offset == reloc.presumed_offset)
+-			continue;
++	reloc->delta += target_offset;
++	if (obj->base.write_domain == I915_GEM_DOMAIN_CPU) {
++		uint32_t page_offset = reloc->offset & ~PAGE_MASK;
++		char *vaddr;
+ 
+-		/* Check that the relocation address is valid... */
+-		if (reloc.offset > obj->base.size - 4) {
+-			DRM_ERROR("Relocation beyond object bounds: "
+-				  "obj %p target %d offset %d size %d.\n",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.offset, (int) obj->base.size);
+-			ret = -EINVAL;
+-			break;
+-		}
+-		if (reloc.offset & 3) {
+-			DRM_ERROR("Relocation not 4-byte aligned: "
+-				  "obj %p target %d offset %d.\n",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.offset);
+-			ret = -EINVAL;
+-			break;
+-		}
++		vaddr = kmap_atomic(obj->pages[reloc->offset >> PAGE_SHIFT]);
++		*(uint32_t *)(vaddr + page_offset) = reloc->delta;
++		kunmap_atomic(vaddr);
++	} else {
++		struct drm_i915_private *dev_priv = dev->dev_private;
++		uint32_t __iomem *reloc_entry;
++		void __iomem *reloc_page;
+ 
+-		/* and points to somewhere within the target object. */
+-		if (reloc.delta >= target_obj->size) {
+-			DRM_ERROR("Relocation beyond target object bounds: "
+-				  "obj %p target %d delta %d size %d.\n",
+-				  obj, reloc.target_handle,
+-				  (int) reloc.delta, (int) target_obj->size);
+-			ret = -EINVAL;
+-			break;
+-		}
++		ret = i915_gem_object_set_to_gtt_domain(&obj->base, 1);
++		if (ret)
++			goto err;
+ 
+-		reloc.delta += target_offset;
+-		if (obj->base.write_domain == I915_GEM_DOMAIN_CPU) {
+-			uint32_t page_offset = reloc.offset & ~PAGE_MASK;
+-			char *vaddr;
++		/* Map the page containing the relocation we're going to perform.  */
++		reloc->offset += obj->gtt_offset;
++		reloc_page = io_mapping_map_atomic_wc(dev_priv->mm.gtt_mapping,
++						      reloc->offset & PAGE_MASK);
++		reloc_entry = (uint32_t __iomem *)
++			(reloc_page + (reloc->offset & ~PAGE_MASK));
++		iowrite32(reloc->delta, reloc_entry);
++		io_mapping_unmap_atomic(reloc_page);
++	}
+ 
+-			vaddr = kmap_atomic(obj->pages[reloc.offset >> PAGE_SHIFT]);
+-			*(uint32_t *)(vaddr + page_offset) = reloc.delta;
+-			kunmap_atomic(vaddr);
+-		} else {
+-			uint32_t __iomem *reloc_entry;
+-			void __iomem *reloc_page;
++	/* and update the user's relocation entry */
++	reloc->presumed_offset = target_offset;
+ 
+-			ret = i915_gem_object_set_to_gtt_domain(&obj->base, 1);
+-			if (ret)
+-				break;
++out:
++	ret = 0;
++err:
++	drm_gem_object_unreference(target_obj);
++	return ret;
++}
+ 
+-			/* Map the page containing the relocation we're going to perform.  */
+-			reloc.offset += obj->gtt_offset;
+-			reloc_page = io_mapping_map_atomic_wc(dev_priv->mm.gtt_mapping,
+-							      reloc.offset & PAGE_MASK);
+-			reloc_entry = (uint32_t __iomem *)
+-				(reloc_page + (reloc.offset & ~PAGE_MASK));
+-			iowrite32(reloc.delta, reloc_entry);
+-			io_mapping_unmap_atomic(reloc_page);
+-		}
++static int
++i915_gem_execbuffer_relocate_object(struct drm_i915_gem_object *obj,
++				    struct drm_file *file_priv,
++				    struct drm_i915_gem_exec_object2 *entry)
++{
++	struct drm_i915_gem_relocation_entry __user *user_relocs;
++	int i, ret;
++
++	user_relocs = (void __user *)(uintptr_t)entry->relocs_ptr;
++	for (i = 0; i < entry->relocation_count; i++) {
++		struct drm_i915_gem_relocation_entry reloc;
++
++		if (__copy_from_user_inatomic(&reloc,
++					      user_relocs+i,
++					      sizeof(reloc)))
++			return -EFAULT;
++
++		ret = i915_gem_execbuffer_relocate_entry(obj, file_priv, entry, &reloc);
++		if (ret)
++			return ret;
+ 
+-		/* and update the user's relocation entry */
+-		reloc.presumed_offset = target_offset;
+ 		if (__copy_to_user_inatomic(&user_relocs[i].presumed_offset,
+-					      &reloc.presumed_offset,
+-					      sizeof(reloc.presumed_offset))) {
+-		    ret = -EFAULT;
+-		    break;
+-		}
++					    &reloc.presumed_offset,
++					    sizeof(reloc.presumed_offset)))
++			return -EFAULT;
+ 	}
+ 
+-	drm_gem_object_unreference(target_obj);
+-	return ret;
++	return 0;
++}
++
++static int
++i915_gem_execbuffer_relocate_object_slow(struct drm_i915_gem_object *obj,
++					 struct drm_file *file_priv,
++					 struct drm_i915_gem_exec_object2 *entry,
++					 struct drm_i915_gem_relocation_entry *relocs)
++{
++	int i, ret;
++
++	for (i = 0; i < entry->relocation_count; i++) {
++		ret = i915_gem_execbuffer_relocate_entry(obj, file_priv, entry, &relocs[i]);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
+ }
+ 
+ static int
+-i915_gem_execbuffer_pin(struct drm_device *dev,
+-			struct drm_file *file,
+-			struct drm_gem_object **object_list,
+-			struct drm_i915_gem_exec_object2 *exec_list,
+-			int count)
++i915_gem_execbuffer_relocate(struct drm_device *dev,
++			     struct drm_file *file,
++			     struct drm_gem_object **object_list,
++			     struct drm_i915_gem_exec_object2 *exec_list,
++			     int count)
++{
++	int i, ret;
++
++	for (i = 0; i < count; i++) {
++		struct drm_i915_gem_object *obj = to_intel_bo(object_list[i]);
++		obj->base.pending_read_domains = 0;
++		obj->base.pending_write_domain = 0;
++		ret = i915_gem_execbuffer_relocate_object(obj, file,
++							  &exec_list[i]);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int
++i915_gem_execbuffer_reserve(struct drm_device *dev,
++			    struct drm_file *file,
++			    struct drm_gem_object **object_list,
++			    struct drm_i915_gem_exec_object2 *exec_list,
++			    int count)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	int ret, i, retry;
+@@ -3502,6 +3533,87 @@ i915_gem_execbuffer_pin(struct drm_device *dev,
+ }
+ 
+ static int
++i915_gem_execbuffer_relocate_slow(struct drm_device *dev,
++				  struct drm_file *file,
++				  struct drm_gem_object **object_list,
++				  struct drm_i915_gem_exec_object2 *exec_list,
++				  int count)
++{
++	struct drm_i915_gem_relocation_entry *reloc;
++	int i, total, ret;
++
++	for (i = 0; i < count; i++) {
++		struct drm_i915_gem_object *obj = to_intel_bo(object_list[i]);
++		obj->in_execbuffer = false;
++	}
++
++	mutex_unlock(&dev->struct_mutex);
++
++	total = 0;
++	for (i = 0; i < count; i++)
++		total += exec_list[i].relocation_count;
++
++	reloc = drm_malloc_ab(total, sizeof(*reloc));
++	if (reloc == NULL) {
++		mutex_lock(&dev->struct_mutex);
++		return -ENOMEM;
++	}
++
++	total = 0;
++	for (i = 0; i < count; i++) {
++		struct drm_i915_gem_relocation_entry __user *user_relocs;
++
++		user_relocs = (void __user *)(uintptr_t)exec_list[i].relocs_ptr;
++
++		if (copy_from_user(reloc+total, user_relocs,
++				   exec_list[i].relocation_count *
++				   sizeof(*reloc))) {
++			ret = -EFAULT;
++			mutex_lock(&dev->struct_mutex);
++			goto err;
++		}
++
++		total += exec_list[i].relocation_count;
++	}
++
++	ret = i915_mutex_lock_interruptible(dev);
++	if (ret) {
++		mutex_lock(&dev->struct_mutex);
++		goto err;
++	}
++
++	ret = i915_gem_execbuffer_reserve(dev, file,
++					  object_list, exec_list,
++					  count);
++	if (ret)
++		goto err;
++
++	total = 0;
++	for (i = 0; i < count; i++) {
++		struct drm_i915_gem_object *obj = to_intel_bo(object_list[i]);
++		obj->base.pending_read_domains = 0;
++		obj->base.pending_write_domain = 0;
++		ret = i915_gem_execbuffer_relocate_object_slow(obj, file,
++							       &exec_list[i],
++							       reloc + total);
++		if (ret)
++			goto err;
++
++		total += exec_list[i].relocation_count;
++	}
++
++	/* Leave the user relocations as are, this is the painfully slow path,
++	 * and we want to avoid the complication of dropping the lock whilst
++	 * having buffers reserved in the aperture and so causing spurious
++	 * ENOSPC for random operations.
++	 */
++
++err:
++	drm_free_large(reloc);
++	return ret;
++}
++
++static int
+ i915_gem_execbuffer_move_to_gpu(struct drm_device *dev,
+ 				struct drm_file *file,
+ 				struct intel_ring_buffer *ring,
+@@ -3630,8 +3742,15 @@ validate_exec_list(struct drm_i915_gem_exec_object2 *exec,
+ 
+ 	for (i = 0; i < count; i++) {
+ 		char __user *ptr = (char __user *)(uintptr_t)exec[i].relocs_ptr;
+-		size_t length = exec[i].relocation_count * sizeof(struct drm_i915_gem_relocation_entry);
++		int length; /* limited by fault_in_pages_readable() */
++
++		/* First check for malicious input causing overflow */
++		if (exec[i].relocation_count >
++		    INT_MAX / sizeof(struct drm_i915_gem_relocation_entry))
++			return -EINVAL;
+ 
++		length = exec[i].relocation_count *
++			sizeof(struct drm_i915_gem_relocation_entry);
+ 		if (!access_ok(VERIFY_READ, ptr, length))
+ 			return -EFAULT;
+ 
+@@ -3774,18 +3893,24 @@ i915_gem_do_execbuffer(struct drm_device *dev, void *data,
+ 	}
+ 
+ 	/* Move the objects en-masse into the GTT, evicting if necessary. */
+-	ret = i915_gem_execbuffer_pin(dev, file,
+-				      object_list, exec_list,
+-				      args->buffer_count);
++	ret = i915_gem_execbuffer_reserve(dev, file,
++					  object_list, exec_list,
++					  args->buffer_count);
+ 	if (ret)
+ 		goto err;
+ 
+ 	/* The objects are in their final locations, apply the relocations. */
+-	for (i = 0; i < args->buffer_count; i++) {
+-		struct drm_i915_gem_object *obj = to_intel_bo(object_list[i]);
+-		obj->base.pending_read_domains = 0;
+-		obj->base.pending_write_domain = 0;
+-		ret = i915_gem_execbuffer_relocate(obj, file, &exec_list[i]);
++	ret = i915_gem_execbuffer_relocate(dev, file,
++					   object_list, exec_list,
++					   args->buffer_count);
++	if (ret) {
++		if (ret == -EFAULT) {
++			ret = i915_gem_execbuffer_relocate_slow(dev, file,
++								object_list,
++								exec_list,
++								args->buffer_count);
++			BUG_ON(!mutex_is_locked(&dev->struct_mutex));
++		}
+ 		if (ret)
+ 			goto err;
+ 	}
+diff --git a/drivers/gpu/drm/i915/i915_suspend.c b/drivers/gpu/drm/i915/i915_suspend.c
+index 454c064..42729d2 100644
+--- a/drivers/gpu/drm/i915/i915_suspend.c
++++ b/drivers/gpu/drm/i915/i915_suspend.c
+@@ -239,6 +239,16 @@ static void i915_save_modeset_reg(struct drm_device *dev)
+ 	if (drm_core_check_feature(dev, DRIVER_MODESET))
+ 		return;
+ 
++	/* Cursor state */
++	dev_priv->saveCURACNTR = I915_READ(CURACNTR);
++	dev_priv->saveCURAPOS = I915_READ(CURAPOS);
++	dev_priv->saveCURABASE = I915_READ(CURABASE);
++	dev_priv->saveCURBCNTR = I915_READ(CURBCNTR);
++	dev_priv->saveCURBPOS = I915_READ(CURBPOS);
++	dev_priv->saveCURBBASE = I915_READ(CURBBASE);
++	if (IS_GEN2(dev))
++		dev_priv->saveCURSIZE = I915_READ(CURSIZE);
++
+ 	if (HAS_PCH_SPLIT(dev)) {
+ 		dev_priv->savePCH_DREF_CONTROL = I915_READ(PCH_DREF_CONTROL);
+ 		dev_priv->saveDISP_ARB_CTL = I915_READ(DISP_ARB_CTL);
+@@ -529,6 +539,16 @@ static void i915_restore_modeset_reg(struct drm_device *dev)
+ 	I915_WRITE(DSPBCNTR, dev_priv->saveDSPBCNTR);
+ 	I915_WRITE(DSPBADDR, I915_READ(DSPBADDR));
+ 
++	/* Cursor state */
++	I915_WRITE(CURAPOS, dev_priv->saveCURAPOS);
++	I915_WRITE(CURACNTR, dev_priv->saveCURACNTR);
++	I915_WRITE(CURABASE, dev_priv->saveCURABASE);
++	I915_WRITE(CURBPOS, dev_priv->saveCURBPOS);
++	I915_WRITE(CURBCNTR, dev_priv->saveCURBCNTR);
++	I915_WRITE(CURBBASE, dev_priv->saveCURBBASE);
++	if (IS_GEN2(dev))
++		I915_WRITE(CURSIZE, dev_priv->saveCURSIZE);
++
+ 	return;
+ }
+ 
+@@ -543,16 +563,6 @@ void i915_save_display(struct drm_device *dev)
+ 	/* Don't save them in KMS mode */
+ 	i915_save_modeset_reg(dev);
+ 
+-	/* Cursor state */
+-	dev_priv->saveCURACNTR = I915_READ(CURACNTR);
+-	dev_priv->saveCURAPOS = I915_READ(CURAPOS);
+-	dev_priv->saveCURABASE = I915_READ(CURABASE);
+-	dev_priv->saveCURBCNTR = I915_READ(CURBCNTR);
+-	dev_priv->saveCURBPOS = I915_READ(CURBPOS);
+-	dev_priv->saveCURBBASE = I915_READ(CURBBASE);
+-	if (IS_GEN2(dev))
+-		dev_priv->saveCURSIZE = I915_READ(CURSIZE);
+-
+ 	/* CRT state */
+ 	if (HAS_PCH_SPLIT(dev)) {
+ 		dev_priv->saveADPA = I915_READ(PCH_ADPA);
+@@ -657,16 +667,6 @@ void i915_restore_display(struct drm_device *dev)
+ 	/* Don't restore them in KMS mode */
+ 	i915_restore_modeset_reg(dev);
+ 
+-	/* Cursor state */
+-	I915_WRITE(CURAPOS, dev_priv->saveCURAPOS);
+-	I915_WRITE(CURACNTR, dev_priv->saveCURACNTR);
+-	I915_WRITE(CURABASE, dev_priv->saveCURABASE);
+-	I915_WRITE(CURBPOS, dev_priv->saveCURBPOS);
+-	I915_WRITE(CURBCNTR, dev_priv->saveCURBCNTR);
+-	I915_WRITE(CURBBASE, dev_priv->saveCURBBASE);
+-	if (IS_GEN2(dev))
+-		I915_WRITE(CURSIZE, dev_priv->saveCURSIZE);
+-
+ 	/* CRT state */
+ 	if (HAS_PCH_SPLIT(dev))
+ 		I915_WRITE(PCH_ADPA, dev_priv->saveADPA);
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index bee24b1..255b52e 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -5336,9 +5336,14 @@ static void intel_setup_outputs(struct drm_device *dev)
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	struct intel_encoder *encoder;
+ 	bool dpd_is_edp = false;
++	bool has_lvds = false;
+ 
+ 	if (IS_MOBILE(dev) && !IS_I830(dev))
+-		intel_lvds_init(dev);
++		has_lvds = intel_lvds_init(dev);
++	if (!has_lvds && !HAS_PCH_SPLIT(dev)) {
++		/* disable the panel fitter on everything but LVDS */
++		I915_WRITE(PFIT_CONTROL, 0);
++	}
+ 
+ 	if (HAS_PCH_SPLIT(dev)) {
+ 		dpd_is_edp = intel_dpd_is_edp(dev);
+diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
+index c8e0055..300f64b 100644
+--- a/drivers/gpu/drm/i915/intel_dp.c
++++ b/drivers/gpu/drm/i915/intel_dp.c
+@@ -584,17 +584,6 @@ intel_dp_mode_fixup(struct drm_encoder *encoder, struct drm_display_mode *mode,
+ 		mode->clock = dev_priv->panel_fixed_mode->clock;
+ 	}
+ 
+-	/* Just use VBT values for eDP */
+-	if (is_edp(intel_dp)) {
+-		intel_dp->lane_count = dev_priv->edp.lanes;
+-		intel_dp->link_bw = dev_priv->edp.rate;
+-		adjusted_mode->clock = intel_dp_link_clock(intel_dp->link_bw);
+-		DRM_DEBUG_KMS("eDP link bw %02x lane count %d clock %d\n",
+-			      intel_dp->link_bw, intel_dp->lane_count,
+-			      adjusted_mode->clock);
+-		return true;
+-	}
+-
+ 	for (lane_count = 1; lane_count <= max_lane_count; lane_count <<= 1) {
+ 		for (clock = 0; clock <= max_clock; clock++) {
+ 			int link_avail = intel_dp_max_data_rate(intel_dp_link_clock(bws[clock]), lane_count);
+@@ -613,6 +602,19 @@ intel_dp_mode_fixup(struct drm_encoder *encoder, struct drm_display_mode *mode,
+ 		}
+ 	}
+ 
++	if (is_edp(intel_dp)) {
++		/* okay we failed just pick the highest */
++		intel_dp->lane_count = max_lane_count;
++		intel_dp->link_bw = bws[max_clock];
++		adjusted_mode->clock = intel_dp_link_clock(intel_dp->link_bw);
++		DRM_DEBUG_KMS("Force picking display port link bw %02x lane "
++			      "count %d clock %d\n",
++			      intel_dp->link_bw, intel_dp->lane_count,
++			      adjusted_mode->clock);
++
++		return true;
++	}
++
+ 	return false;
+ }
+ 
+@@ -1087,21 +1089,11 @@ intel_get_adjust_train(struct intel_dp *intel_dp)
+ }
+ 
+ static uint32_t
+-intel_dp_signal_levels(struct intel_dp *intel_dp)
++intel_dp_signal_levels(uint8_t train_set, int lane_count)
+ {
+-	struct drm_device *dev = intel_dp->base.base.dev;
+-	struct drm_i915_private *dev_priv = dev->dev_private;
+-	uint32_t signal_levels = 0;
+-	u8 train_set = intel_dp->train_set[0];
+-	u32 vswing = train_set & DP_TRAIN_VOLTAGE_SWING_MASK;
+-	u32 preemphasis = train_set & DP_TRAIN_PRE_EMPHASIS_MASK;
++	uint32_t	signal_levels = 0;
+ 
+-	if (is_edp(intel_dp)) {
+-		vswing = dev_priv->edp.vswing;
+-		preemphasis = dev_priv->edp.preemphasis;
+-	}
+-
+-	switch (vswing) {
++	switch (train_set & DP_TRAIN_VOLTAGE_SWING_MASK) {
+ 	case DP_TRAIN_VOLTAGE_SWING_400:
+ 	default:
+ 		signal_levels |= DP_VOLTAGE_0_4;
+@@ -1116,7 +1108,7 @@ intel_dp_signal_levels(struct intel_dp *intel_dp)
+ 		signal_levels |= DP_VOLTAGE_1_2;
+ 		break;
+ 	}
+-	switch (preemphasis) {
++	switch (train_set & DP_TRAIN_PRE_EMPHASIS_MASK) {
+ 	case DP_TRAIN_PRE_EMPHASIS_0:
+ 	default:
+ 		signal_levels |= DP_PRE_EMPHASIS_0;
+@@ -1203,18 +1195,6 @@ intel_channel_eq_ok(struct intel_dp *intel_dp)
+ }
+ 
+ static bool
+-intel_dp_aux_handshake_required(struct intel_dp *intel_dp)
+-{
+-	struct drm_device *dev = intel_dp->base.base.dev;
+-	struct drm_i915_private *dev_priv = dev->dev_private;
+-
+-	if (is_edp(intel_dp) && dev_priv->no_aux_handshake)
+-		return false;
+-
+-	return true;
+-}
+-
+-static bool
+ intel_dp_set_link_train(struct intel_dp *intel_dp,
+ 			uint32_t dp_reg_value,
+ 			uint8_t dp_train_pat)
+@@ -1226,9 +1206,6 @@ intel_dp_set_link_train(struct intel_dp *intel_dp,
+ 	I915_WRITE(intel_dp->output_reg, dp_reg_value);
+ 	POSTING_READ(intel_dp->output_reg);
+ 
+-	if (!intel_dp_aux_handshake_required(intel_dp))
+-		return true;
+-
+ 	intel_dp_aux_native_write_1(intel_dp,
+ 				    DP_TRAINING_PATTERN_SET,
+ 				    dp_train_pat);
+@@ -1261,11 +1238,10 @@ intel_dp_start_link_train(struct intel_dp *intel_dp)
+ 	POSTING_READ(intel_dp->output_reg);
+ 	intel_wait_for_vblank(dev, intel_crtc->pipe);
+ 
+-	if (intel_dp_aux_handshake_required(intel_dp))
+-		/* Write the link configuration data */
+-		intel_dp_aux_native_write(intel_dp, DP_LINK_BW_SET,
+-					  intel_dp->link_configuration,
+-					  DP_LINK_CONFIGURATION_SIZE);
++	/* Write the link configuration data */
++	intel_dp_aux_native_write(intel_dp, DP_LINK_BW_SET,
++				  intel_dp->link_configuration,
++				  DP_LINK_CONFIGURATION_SIZE);
+ 
+ 	DP |= DP_PORT_EN;
+ 	if (HAS_PCH_CPT(dev) && !is_edp(intel_dp))
+@@ -1283,7 +1259,7 @@ intel_dp_start_link_train(struct intel_dp *intel_dp)
+ 			signal_levels = intel_gen6_edp_signal_levels(intel_dp->train_set[0]);
+ 			DP = (DP & ~EDP_LINK_TRAIN_VOL_EMP_MASK_SNB) | signal_levels;
+ 		} else {
+-			signal_levels = intel_dp_signal_levels(intel_dp);
++			signal_levels = intel_dp_signal_levels(intel_dp->train_set[0], intel_dp->lane_count);
+ 			DP = (DP & ~(DP_VOLTAGE_MASK|DP_PRE_EMPHASIS_MASK)) | signal_levels;
+ 		}
+ 
+@@ -1297,37 +1273,33 @@ intel_dp_start_link_train(struct intel_dp *intel_dp)
+ 			break;
+ 		/* Set training pattern 1 */
+ 
+-		udelay(500);
+-		if (intel_dp_aux_handshake_required(intel_dp)) {
++		udelay(100);
++		if (!intel_dp_get_link_status(intel_dp))
+ 			break;
+-		} else {
+-			if (!intel_dp_get_link_status(intel_dp))
+-				break;
+ 
+-			if (intel_clock_recovery_ok(intel_dp->link_status, intel_dp->lane_count)) {
+-				clock_recovery = true;
+-				break;
+-			}
++		if (intel_clock_recovery_ok(intel_dp->link_status, intel_dp->lane_count)) {
++			clock_recovery = true;
++			break;
++		}
+ 
+-			/* Check to see if we've tried the max voltage */
+-			for (i = 0; i < intel_dp->lane_count; i++)
+-				if ((intel_dp->train_set[i] & DP_TRAIN_MAX_SWING_REACHED) == 0)
+-					break;
+-			if (i == intel_dp->lane_count)
++		/* Check to see if we've tried the max voltage */
++		for (i = 0; i < intel_dp->lane_count; i++)
++			if ((intel_dp->train_set[i] & DP_TRAIN_MAX_SWING_REACHED) == 0)
+ 				break;
++		if (i == intel_dp->lane_count)
++			break;
+ 
+-			/* Check to see if we've tried the same voltage 5 times */
+-			if ((intel_dp->train_set[0] & DP_TRAIN_VOLTAGE_SWING_MASK) == voltage) {
+-				++tries;
+-				if (tries == 5)
+-					break;
+-			} else
+-				tries = 0;
+-			voltage = intel_dp->train_set[0] & DP_TRAIN_VOLTAGE_SWING_MASK;
++		/* Check to see if we've tried the same voltage 5 times */
++		if ((intel_dp->train_set[0] & DP_TRAIN_VOLTAGE_SWING_MASK) == voltage) {
++			++tries;
++			if (tries == 5)
++				break;
++		} else
++			tries = 0;
++		voltage = intel_dp->train_set[0] & DP_TRAIN_VOLTAGE_SWING_MASK;
+ 
+-			/* Compute new intel_dp->train_set as requested by target */
+-			intel_get_adjust_train(intel_dp);
+-		}
++		/* Compute new intel_dp->train_set as requested by target */
++		intel_get_adjust_train(intel_dp);
+ 	}
+ 
+ 	intel_dp->DP = DP;
+@@ -1354,7 +1326,7 @@ intel_dp_complete_link_train(struct intel_dp *intel_dp)
+ 			signal_levels = intel_gen6_edp_signal_levels(intel_dp->train_set[0]);
+ 			DP = (DP & ~EDP_LINK_TRAIN_VOL_EMP_MASK_SNB) | signal_levels;
+ 		} else {
+-			signal_levels = intel_dp_signal_levels(intel_dp);
++			signal_levels = intel_dp_signal_levels(intel_dp->train_set[0], intel_dp->lane_count);
+ 			DP = (DP & ~(DP_VOLTAGE_MASK|DP_PRE_EMPHASIS_MASK)) | signal_levels;
+ 		}
+ 
+@@ -1368,28 +1340,24 @@ intel_dp_complete_link_train(struct intel_dp *intel_dp)
+ 					     DP_TRAINING_PATTERN_2))
+ 			break;
+ 
+-		udelay(500);
+-
+-		if (!intel_dp_aux_handshake_required(intel_dp)) {
++		udelay(400);
++		if (!intel_dp_get_link_status(intel_dp))
+ 			break;
+-		} else {
+-			if (!intel_dp_get_link_status(intel_dp))
+-				break;
+ 
+-			if (intel_channel_eq_ok(intel_dp)) {
+-				channel_eq = true;
+-				break;
+-			}
++		if (intel_channel_eq_ok(intel_dp)) {
++			channel_eq = true;
++			break;
++		}
+ 
+-			/* Try 5 times */
+-			if (tries > 5)
+-				break;
++		/* Try 5 times */
++		if (tries > 5)
++			break;
+ 
+-			/* Compute new intel_dp->train_set as requested by target */
+-			intel_get_adjust_train(intel_dp);
+-			++tries;
+-		}
++		/* Compute new intel_dp->train_set as requested by target */
++		intel_get_adjust_train(intel_dp);
++		++tries;
+ 	}
++
+ 	if (HAS_PCH_CPT(dev) && !is_edp(intel_dp))
+ 		reg = DP | DP_LINK_TRAIN_OFF_CPT;
+ 	else
+diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
+index 21551fe..e52c612 100644
+--- a/drivers/gpu/drm/i915/intel_drv.h
++++ b/drivers/gpu/drm/i915/intel_drv.h
+@@ -237,7 +237,7 @@ extern bool intel_sdvo_init(struct drm_device *dev, int output_device);
+ extern void intel_dvo_init(struct drm_device *dev);
+ extern void intel_tv_init(struct drm_device *dev);
+ extern void intel_mark_busy(struct drm_device *dev, struct drm_gem_object *obj);
+-extern void intel_lvds_init(struct drm_device *dev);
++extern bool intel_lvds_init(struct drm_device *dev);
+ extern void intel_dp_init(struct drm_device *dev, int dp_reg);
+ void
+ intel_dp_set_m_n(struct drm_crtc *crtc, struct drm_display_mode *mode,
+diff --git a/drivers/gpu/drm/i915/intel_lvds.c b/drivers/gpu/drm/i915/intel_lvds.c
+index 4324a32..f79327f 100644
+--- a/drivers/gpu/drm/i915/intel_lvds.c
++++ b/drivers/gpu/drm/i915/intel_lvds.c
+@@ -837,7 +837,7 @@ static bool intel_lvds_ddc_probe(struct drm_device *dev, u8 pin)
+  * Create the connector, register the LVDS DDC bus, and try to figure out what
+  * modes we can display on the LVDS panel (if present).
+  */
+-void intel_lvds_init(struct drm_device *dev)
++bool intel_lvds_init(struct drm_device *dev)
+ {
+ 	struct drm_i915_private *dev_priv = dev->dev_private;
+ 	struct intel_lvds *intel_lvds;
+@@ -853,37 +853,37 @@ void intel_lvds_init(struct drm_device *dev)
+ 
+ 	/* Skip init on machines we know falsely report LVDS */
+ 	if (dmi_check_system(intel_no_lvds))
+-		return;
++		return false;
+ 
+ 	pin = GMBUS_PORT_PANEL;
+ 	if (!lvds_is_present_in_vbt(dev, &pin)) {
+ 		DRM_DEBUG_KMS("LVDS is not present in VBT\n");
+-		return;
++		return false;
+ 	}
+ 
+ 	if (HAS_PCH_SPLIT(dev)) {
+ 		if ((I915_READ(PCH_LVDS) & LVDS_DETECTED) == 0)
+-			return;
++			return false;
+ 		if (dev_priv->edp.support) {
+ 			DRM_DEBUG_KMS("disable LVDS for eDP support\n");
+-			return;
++			return false;
+ 		}
+ 	}
+ 
+ 	if (!intel_lvds_ddc_probe(dev, pin)) {
+ 		DRM_DEBUG_KMS("LVDS did not respond to DDC probe\n");
+-		return;
++		return false;
+ 	}
+ 
+ 	intel_lvds = kzalloc(sizeof(struct intel_lvds), GFP_KERNEL);
+ 	if (!intel_lvds) {
+-		return;
++		return false;
+ 	}
+ 
+ 	intel_connector = kzalloc(sizeof(struct intel_connector), GFP_KERNEL);
+ 	if (!intel_connector) {
+ 		kfree(intel_lvds);
+-		return;
++		return false;
+ 	}
+ 
+ 	if (!HAS_PCH_SPLIT(dev)) {
+@@ -1026,7 +1026,7 @@ out:
+ 	/* keep the LVDS connector */
+ 	dev_priv->int_lvds_connector = connector;
+ 	drm_sysfs_connector_add(connector);
+-	return;
++	return true;
+ 
+ failed:
+ 	DRM_DEBUG_KMS("No LVDS modes found, disabling.\n");
+@@ -1034,4 +1034,5 @@ failed:
+ 	drm_encoder_cleanup(encoder);
+ 	kfree(intel_lvds);
+ 	kfree(intel_connector);
++	return false;
+ }
+diff --git a/drivers/gpu/drm/i915/intel_sdvo.c b/drivers/gpu/drm/i915/intel_sdvo.c
+index de158b7..d97e6cb 100644
+--- a/drivers/gpu/drm/i915/intel_sdvo.c
++++ b/drivers/gpu/drm/i915/intel_sdvo.c
+@@ -107,7 +107,8 @@ struct intel_sdvo {
+ 	 * This is set if we treat the device as HDMI, instead of DVI.
+ 	 */
+ 	bool is_hdmi;
+-	bool has_audio;
++	bool has_hdmi_monitor;
++	bool has_hdmi_audio;
+ 
+ 	/**
+ 	 * This is set if we detect output of sdvo device as LVDS and
+@@ -1023,7 +1024,7 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
+ 	if (!intel_sdvo_set_target_input(intel_sdvo))
+ 		return;
+ 
+-	if (intel_sdvo->is_hdmi &&
++	if (intel_sdvo->has_hdmi_monitor &&
+ 	    !intel_sdvo_set_avi_infoframe(intel_sdvo))
+ 		return;
+ 
+@@ -1063,7 +1064,7 @@ static void intel_sdvo_mode_set(struct drm_encoder *encoder,
+ 	}
+ 	if (intel_crtc->pipe == 1)
+ 		sdvox |= SDVO_PIPE_B_SELECT;
+-	if (intel_sdvo->has_audio)
++	if (intel_sdvo->has_hdmi_audio)
+ 		sdvox |= SDVO_AUDIO_ENABLE;
+ 
+ 	if (INTEL_INFO(dev)->gen >= 4) {
+@@ -1295,55 +1296,14 @@ intel_sdvo_get_edid(struct drm_connector *connector)
+ 	return drm_get_edid(connector, &sdvo->ddc);
+ }
+ 
+-static struct drm_connector *
+-intel_find_analog_connector(struct drm_device *dev)
+-{
+-	struct drm_connector *connector;
+-	struct intel_sdvo *encoder;
+-
+-	list_for_each_entry(encoder,
+-			    &dev->mode_config.encoder_list,
+-			    base.base.head) {
+-		if (encoder->base.type == INTEL_OUTPUT_ANALOG) {
+-			list_for_each_entry(connector,
+-					    &dev->mode_config.connector_list,
+-					    head) {
+-				if (&encoder->base ==
+-				    intel_attached_encoder(connector))
+-					return connector;
+-			}
+-		}
+-	}
+-
+-	return NULL;
+-}
+-
+-static int
+-intel_analog_is_connected(struct drm_device *dev)
+-{
+-	struct drm_connector *analog_connector;
+-
+-	analog_connector = intel_find_analog_connector(dev);
+-	if (!analog_connector)
+-		return false;
+-
+-	if (analog_connector->funcs->detect(analog_connector, false) ==
+-			connector_status_disconnected)
+-		return false;
+-
+-	return true;
+-}
+-
+ /* Mac mini hack -- use the same DDC as the analog connector */
+ static struct edid *
+ intel_sdvo_get_analog_edid(struct drm_connector *connector)
+ {
+ 	struct drm_i915_private *dev_priv = connector->dev->dev_private;
+ 
+-	if (!intel_analog_is_connected(connector->dev))
+-		return NULL;
+-
+-	return drm_get_edid(connector, &dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
++	return drm_get_edid(connector,
++			    &dev_priv->gmbus[dev_priv->crt_ddc_pin].adapter);
+ }
+ 
+ enum drm_connector_status
+@@ -1388,8 +1348,10 @@ intel_sdvo_hdmi_sink_detect(struct drm_connector *connector)
+ 		/* DDC bus is shared, match EDID to connector type */
+ 		if (edid->input & DRM_EDID_INPUT_DIGITAL) {
+ 			status = connector_status_connected;
+-			intel_sdvo->is_hdmi = drm_detect_hdmi_monitor(edid);
+-			intel_sdvo->has_audio = drm_detect_monitor_audio(edid);
++			if (intel_sdvo->is_hdmi) {
++				intel_sdvo->has_hdmi_monitor = drm_detect_hdmi_monitor(edid);
++				intel_sdvo->has_hdmi_audio = drm_detect_monitor_audio(edid);
++			}
+ 		}
+ 		connector->display_info.raw_edid = NULL;
+ 		kfree(edid);
+@@ -1398,7 +1360,7 @@ intel_sdvo_hdmi_sink_detect(struct drm_connector *connector)
+ 	if (status == connector_status_connected) {
+ 		struct intel_sdvo_connector *intel_sdvo_connector = to_intel_sdvo_connector(connector);
+ 		if (intel_sdvo_connector->force_audio)
+-			intel_sdvo->has_audio = intel_sdvo_connector->force_audio > 0;
++			intel_sdvo->has_hdmi_audio = intel_sdvo_connector->force_audio > 0;
+ 	}
+ 
+ 	return status;
+@@ -1415,10 +1377,12 @@ intel_sdvo_detect(struct drm_connector *connector, bool force)
+ 	if (!intel_sdvo_write_cmd(intel_sdvo,
+ 				  SDVO_CMD_GET_ATTACHED_DISPLAYS, NULL, 0))
+ 		return connector_status_unknown;
+-	if (intel_sdvo->is_tv) {
+-		/* add 30ms delay when the output type is SDVO-TV */
++
++	/* add 30ms delay when the output type might be TV */
++	if (intel_sdvo->caps.output_flags &
++	    (SDVO_OUTPUT_SVID0 | SDVO_OUTPUT_CVBS0))
+ 		mdelay(30);
+-	}
++
+ 	if (!intel_sdvo_read_response(intel_sdvo, &response, 2))
+ 		return connector_status_unknown;
+ 
+@@ -1472,8 +1436,10 @@ static void intel_sdvo_get_ddc_modes(struct drm_connector *connector)
+ 		edid = intel_sdvo_get_analog_edid(connector);
+ 
+ 	if (edid != NULL) {
+-		drm_mode_connector_update_edid_property(connector, edid);
+-		drm_add_edid_modes(connector, edid);
++		if (edid->input & DRM_EDID_INPUT_DIGITAL) {
++			drm_mode_connector_update_edid_property(connector, edid);
++			drm_add_edid_modes(connector, edid);
++		}
+ 		connector->display_info.raw_edid = NULL;
+ 		kfree(edid);
+ 	}
+@@ -1713,12 +1679,12 @@ intel_sdvo_set_property(struct drm_connector *connector,
+ 
+ 		intel_sdvo_connector->force_audio = val;
+ 
+-		if (val > 0 && intel_sdvo->has_audio)
++		if (val > 0 && intel_sdvo->has_hdmi_audio)
+ 			return 0;
+-		if (val < 0 && !intel_sdvo->has_audio)
++		if (val < 0 && !intel_sdvo->has_hdmi_audio)
+ 			return 0;
+ 
+-		intel_sdvo->has_audio = val > 0;
++		intel_sdvo->has_hdmi_audio = val > 0;
+ 		goto done;
+ 	}
+ 
+@@ -2070,6 +2036,8 @@ intel_sdvo_dvi_init(struct intel_sdvo *intel_sdvo, int device)
+ 		intel_sdvo_set_colorimetry(intel_sdvo,
+ 					   SDVO_COLORIMETRY_RGB256);
+ 		connector->connector_type = DRM_MODE_CONNECTOR_HDMIA;
++
++		intel_sdvo_add_hdmi_properties(intel_sdvo_connector);
+ 		intel_sdvo->is_hdmi = true;
+ 	}
+ 	intel_sdvo->base.clone_mask = ((1 << INTEL_SDVO_NON_TV_CLONE_BIT) |
+@@ -2077,8 +2045,6 @@ intel_sdvo_dvi_init(struct intel_sdvo *intel_sdvo, int device)
+ 
+ 	intel_sdvo_connector_init(intel_sdvo_connector, intel_sdvo);
+ 
+-	intel_sdvo_add_hdmi_properties(intel_sdvo_connector);
+-
+ 	return true;
+ }
+ 
+diff --git a/drivers/gpu/drm/radeon/atom.c b/drivers/gpu/drm/radeon/atom.c
+index 8e421f6..05efb5b 100644
+--- a/drivers/gpu/drm/radeon/atom.c
++++ b/drivers/gpu/drm/radeon/atom.c
+@@ -112,6 +112,7 @@ static uint32_t atom_iio_execute(struct atom_context *ctx, int base,
+ 			base += 3;
+ 			break;
+ 		case ATOM_IIO_WRITE:
++			(void)ctx->card->ioreg_read(ctx->card, CU16(base + 1));
+ 			ctx->card->ioreg_write(ctx->card, CU16(base + 1), temp);
+ 			base += 3;
+ 			break;
+diff --git a/drivers/gpu/drm/radeon/r600_cs.c b/drivers/gpu/drm/radeon/r600_cs.c
+index 9bebac1..0f90fc3 100644
+--- a/drivers/gpu/drm/radeon/r600_cs.c
++++ b/drivers/gpu/drm/radeon/r600_cs.c
+@@ -315,7 +315,7 @@ static inline int r600_cs_track_validate_cb(struct radeon_cs_parser *p, int i)
+ 		if (array_mode == V_0280A0_ARRAY_LINEAR_GENERAL) {
+ 			/* the initial DDX does bad things with the CB size occasionally */
+ 			/* it rounds up height too far for slice tile max but the BO is smaller */
+-			tmp = (height - 7) * pitch * bpe;
++			tmp = (height - 7) * 8 * bpe;
+ 			if ((tmp + track->cb_color_bo_offset[i]) > radeon_bo_size(track->cb_color_bo[i])) {
+ 				dev_warn(p->dev, "%s offset[%d] %d %d %lu too big\n", __func__, i, track->cb_color_bo_offset[i], tmp, radeon_bo_size(track->cb_color_bo[i]));
+ 				return -EINVAL;
+diff --git a/drivers/gpu/drm/radeon/r600_reg.h b/drivers/gpu/drm/radeon/r600_reg.h
+index d84612a..33cda01 100644
+--- a/drivers/gpu/drm/radeon/r600_reg.h
++++ b/drivers/gpu/drm/radeon/r600_reg.h
+@@ -86,6 +86,7 @@
+ #define R600_HDP_NONSURFACE_BASE                                0x2c04
+ 
+ #define R600_BUS_CNTL                                           0x5420
++#       define R600_BIOS_ROM_DIS                                (1 << 1)
+ #define R600_CONFIG_CNTL                                        0x5424
+ #define R600_CONFIG_MEMSIZE                                     0x5428
+ #define R600_CONFIG_F0_BASE                                     0x542C
+diff --git a/drivers/gpu/drm/radeon/radeon_atombios.c b/drivers/gpu/drm/radeon/radeon_atombios.c
+index 87ead09..bc5a2c3 100644
+--- a/drivers/gpu/drm/radeon/radeon_atombios.c
++++ b/drivers/gpu/drm/radeon/radeon_atombios.c
+@@ -98,6 +98,14 @@ static inline struct radeon_i2c_bus_rec radeon_lookup_i2c_gpio(struct radeon_dev
+ 				}
+ 			}
+ 
++			/* some DCE3 boards have bad data for this entry */
++			if (ASIC_IS_DCE3(rdev)) {
++				if ((i == 4) &&
++				    (gpio->usClkMaskRegisterIndex == 0x1fda) &&
++				    (gpio->sucI2cId.ucAccess == 0x94))
++					gpio->sucI2cId.ucAccess = 0x14;
++			}
++
+ 			if (gpio->sucI2cId.ucAccess == id) {
+ 				i2c.mask_clk_reg = le16_to_cpu(gpio->usClkMaskRegisterIndex) * 4;
+ 				i2c.mask_data_reg = le16_to_cpu(gpio->usDataMaskRegisterIndex) * 4;
+@@ -174,6 +182,14 @@ void radeon_atombios_i2c_init(struct radeon_device *rdev)
+ 				}
+ 			}
+ 
++			/* some DCE3 boards have bad data for this entry */
++			if (ASIC_IS_DCE3(rdev)) {
++				if ((i == 4) &&
++				    (gpio->usClkMaskRegisterIndex == 0x1fda) &&
++				    (gpio->sucI2cId.ucAccess == 0x94))
++					gpio->sucI2cId.ucAccess = 0x14;
++			}
++
+ 			i2c.mask_clk_reg = le16_to_cpu(gpio->usClkMaskRegisterIndex) * 4;
+ 			i2c.mask_data_reg = le16_to_cpu(gpio->usDataMaskRegisterIndex) * 4;
+ 			i2c.en_clk_reg = le16_to_cpu(gpio->usClkEnRegisterIndex) * 4;
+diff --git a/drivers/gpu/drm/radeon/radeon_bios.c b/drivers/gpu/drm/radeon/radeon_bios.c
+index 654787e..8f2c7b5 100644
+--- a/drivers/gpu/drm/radeon/radeon_bios.c
++++ b/drivers/gpu/drm/radeon/radeon_bios.c
+@@ -130,6 +130,7 @@ static bool radeon_atrm_get_bios(struct radeon_device *rdev)
+ 	}
+ 	return true;
+ }
++
+ static bool r700_read_disabled_bios(struct radeon_device *rdev)
+ {
+ 	uint32_t viph_control;
+@@ -143,7 +144,7 @@ static bool r700_read_disabled_bios(struct radeon_device *rdev)
+ 	bool r;
+ 
+ 	viph_control = RREG32(RADEON_VIPH_CONTROL);
+-	bus_cntl = RREG32(RADEON_BUS_CNTL);
++	bus_cntl = RREG32(R600_BUS_CNTL);
+ 	d1vga_control = RREG32(AVIVO_D1VGA_CONTROL);
+ 	d2vga_control = RREG32(AVIVO_D2VGA_CONTROL);
+ 	vga_render_control = RREG32(AVIVO_VGA_RENDER_CONTROL);
+@@ -152,7 +153,7 @@ static bool r700_read_disabled_bios(struct radeon_device *rdev)
+ 	/* disable VIP */
+ 	WREG32(RADEON_VIPH_CONTROL, (viph_control & ~RADEON_VIPH_EN));
+ 	/* enable the rom */
+-	WREG32(RADEON_BUS_CNTL, (bus_cntl & ~RADEON_BUS_BIOS_DIS_ROM));
++	WREG32(R600_BUS_CNTL, (bus_cntl & ~R600_BIOS_ROM_DIS));
+ 	/* Disable VGA mode */
+ 	WREG32(AVIVO_D1VGA_CONTROL,
+ 	       (d1vga_control & ~(AVIVO_DVGA_CONTROL_MODE_ENABLE |
+@@ -191,7 +192,7 @@ static bool r700_read_disabled_bios(struct radeon_device *rdev)
+ 			cg_spll_status = RREG32(R600_CG_SPLL_STATUS);
+ 	}
+ 	WREG32(RADEON_VIPH_CONTROL, viph_control);
+-	WREG32(RADEON_BUS_CNTL, bus_cntl);
++	WREG32(R600_BUS_CNTL, bus_cntl);
+ 	WREG32(AVIVO_D1VGA_CONTROL, d1vga_control);
+ 	WREG32(AVIVO_D2VGA_CONTROL, d2vga_control);
+ 	WREG32(AVIVO_VGA_RENDER_CONTROL, vga_render_control);
+@@ -216,7 +217,7 @@ static bool r600_read_disabled_bios(struct radeon_device *rdev)
+ 	bool r;
+ 
+ 	viph_control = RREG32(RADEON_VIPH_CONTROL);
+-	bus_cntl = RREG32(RADEON_BUS_CNTL);
++	bus_cntl = RREG32(R600_BUS_CNTL);
+ 	d1vga_control = RREG32(AVIVO_D1VGA_CONTROL);
+ 	d2vga_control = RREG32(AVIVO_D2VGA_CONTROL);
+ 	vga_render_control = RREG32(AVIVO_VGA_RENDER_CONTROL);
+@@ -231,7 +232,7 @@ static bool r600_read_disabled_bios(struct radeon_device *rdev)
+ 	/* disable VIP */
+ 	WREG32(RADEON_VIPH_CONTROL, (viph_control & ~RADEON_VIPH_EN));
+ 	/* enable the rom */
+-	WREG32(RADEON_BUS_CNTL, (bus_cntl & ~RADEON_BUS_BIOS_DIS_ROM));
++	WREG32(R600_BUS_CNTL, (bus_cntl & ~R600_BIOS_ROM_DIS));
+ 	/* Disable VGA mode */
+ 	WREG32(AVIVO_D1VGA_CONTROL,
+ 	       (d1vga_control & ~(AVIVO_DVGA_CONTROL_MODE_ENABLE |
+@@ -262,7 +263,7 @@ static bool r600_read_disabled_bios(struct radeon_device *rdev)
+ 
+ 	/* restore regs */
+ 	WREG32(RADEON_VIPH_CONTROL, viph_control);
+-	WREG32(RADEON_BUS_CNTL, bus_cntl);
++	WREG32(R600_BUS_CNTL, bus_cntl);
+ 	WREG32(AVIVO_D1VGA_CONTROL, d1vga_control);
+ 	WREG32(AVIVO_D2VGA_CONTROL, d2vga_control);
+ 	WREG32(AVIVO_VGA_RENDER_CONTROL, vga_render_control);
+diff --git a/drivers/gpu/drm/radeon/radeon_combios.c b/drivers/gpu/drm/radeon/radeon_combios.c
+index 3bddea5..137b807 100644
+--- a/drivers/gpu/drm/radeon/radeon_combios.c
++++ b/drivers/gpu/drm/radeon/radeon_combios.c
+@@ -729,7 +729,7 @@ void radeon_combios_i2c_init(struct radeon_device *rdev)
+ 					clk = RBIOS8(offset + 3 + (i * 5) + 3);
+ 					data = RBIOS8(offset + 3 + (i * 5) + 4);
+ 					i2c = combios_setup_i2c_bus(rdev, DDC_MONID,
+-								    clk, data);
++								    (1 << clk), (1 << data));
+ 					rdev->i2c_bus[4] = radeon_i2c_create(dev, &i2c, "GPIOPAD_MASK");
+ 					break;
+ 				}
+diff --git a/drivers/gpu/drm/radeon/radeon_connectors.c b/drivers/gpu/drm/radeon/radeon_connectors.c
+index 3bef9f6..8afaf7a 100644
+--- a/drivers/gpu/drm/radeon/radeon_connectors.c
++++ b/drivers/gpu/drm/radeon/radeon_connectors.c
+@@ -1175,6 +1175,8 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
+ 		connector->polled = DRM_CONNECTOR_POLL_CONNECT;
++		connector->interlace_allowed = true;
++		connector->doublescan_allowed = true;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_DVIA:
+ 		drm_connector_init(dev, &radeon_connector->base, &radeon_vga_connector_funcs, connector_type);
+@@ -1190,6 +1192,8 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 					      1);
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
++		connector->interlace_allowed = true;
++		connector->doublescan_allowed = true;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_DVII:
+ 	case DRM_MODE_CONNECTOR_DVID:
+@@ -1226,6 +1230,11 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 						      rdev->mode_info.load_detect_property,
+ 						      1);
+ 		}
++		connector->interlace_allowed = true;
++		if (connector_type == DRM_MODE_CONNECTOR_DVII)
++			connector->doublescan_allowed = true;
++		else
++			connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_HDMIA:
+ 	case DRM_MODE_CONNECTOR_HDMIB:
+@@ -1256,6 +1265,11 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 						      0);
+ 		}
+ 		subpixel_order = SubPixelHorizontalRGB;
++		connector->interlace_allowed = true;
++		if (connector_type == DRM_MODE_CONNECTOR_HDMIB)
++			connector->doublescan_allowed = true;
++		else
++			connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_DisplayPort:
+ 	case DRM_MODE_CONNECTOR_eDP:
+@@ -1293,6 +1307,9 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 						      rdev->mode_info.underscan_vborder_property,
+ 						      0);
+ 		}
++		connector->interlace_allowed = true;
++		/* in theory with a DP to VGA converter... */
++		connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_SVIDEO:
+ 	case DRM_MODE_CONNECTOR_Composite:
+@@ -1308,6 +1325,8 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 					      radeon_atombios_get_tv_info(rdev));
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
++		connector->interlace_allowed = false;
++		connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_LVDS:
+ 		radeon_dig_connector = kzalloc(sizeof(struct radeon_connector_atom_dig), GFP_KERNEL);
+@@ -1326,6 +1345,8 @@ radeon_add_atom_connector(struct drm_device *dev,
+ 					      dev->mode_config.scaling_mode_property,
+ 					      DRM_MODE_SCALE_FULLSCREEN);
+ 		subpixel_order = SubPixelHorizontalRGB;
++		connector->interlace_allowed = false;
++		connector->doublescan_allowed = false;
+ 		break;
+ 	}
+ 
+@@ -1403,6 +1424,8 @@ radeon_add_legacy_connector(struct drm_device *dev,
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
+ 		connector->polled = DRM_CONNECTOR_POLL_CONNECT;
++		connector->interlace_allowed = true;
++		connector->doublescan_allowed = true;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_DVIA:
+ 		drm_connector_init(dev, &radeon_connector->base, &radeon_vga_connector_funcs, connector_type);
+@@ -1418,6 +1441,8 @@ radeon_add_legacy_connector(struct drm_device *dev,
+ 					      1);
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
++		connector->interlace_allowed = true;
++		connector->doublescan_allowed = true;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_DVII:
+ 	case DRM_MODE_CONNECTOR_DVID:
+@@ -1435,6 +1460,11 @@ radeon_add_legacy_connector(struct drm_device *dev,
+ 						      1);
+ 		}
+ 		subpixel_order = SubPixelHorizontalRGB;
++		connector->interlace_allowed = true;
++		if (connector_type == DRM_MODE_CONNECTOR_DVII)
++			connector->doublescan_allowed = true;
++		else
++			connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_SVIDEO:
+ 	case DRM_MODE_CONNECTOR_Composite:
+@@ -1457,6 +1487,8 @@ radeon_add_legacy_connector(struct drm_device *dev,
+ 					      radeon_combios_get_tv_info(rdev));
+ 		/* no HPD on analog connectors */
+ 		radeon_connector->hpd.hpd = RADEON_HPD_NONE;
++		connector->interlace_allowed = false;
++		connector->doublescan_allowed = false;
+ 		break;
+ 	case DRM_MODE_CONNECTOR_LVDS:
+ 		drm_connector_init(dev, &radeon_connector->base, &radeon_lvds_connector_funcs, connector_type);
+@@ -1470,6 +1502,8 @@ radeon_add_legacy_connector(struct drm_device *dev,
+ 					      dev->mode_config.scaling_mode_property,
+ 					      DRM_MODE_SCALE_FULLSCREEN);
+ 		subpixel_order = SubPixelHorizontalRGB;
++		connector->interlace_allowed = false;
++		connector->doublescan_allowed = false;
+ 		break;
+ 	}
+ 

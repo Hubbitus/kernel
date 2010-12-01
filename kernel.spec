@@ -648,6 +648,7 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 # DRM
 
 # nouveau + drm fixes
+Patch1801: drm-fixes.patch
 Patch1810: drm-nouveau-updates.patch
 Patch1819: drm-intel-big-hammer.patch
 # intel drm is all merged upstream
@@ -1242,6 +1243,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # DRM core
+ApplyPatch drm-fixes.patch
 
 # Nouveau DRM
 ApplyOptionalPatch drm-nouveau-updates.patch
@@ -1912,6 +1914,7 @@ fi
 %changelog
 * Wed Dec 01 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git1.1
 - Linux 2.6.37-rc4-git1
+- Pull in DRM fixes that are queued for -rc5 [3074adc8]
 
 * Tue Nov 30 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git0.1
 - Linux 2.6.37-rc4
