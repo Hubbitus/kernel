@@ -4,3 +4,4 @@ clog
 *.rpm
 kernel-2.6.*/
 /patch-2.6.37-rc4.bz2
+/patch-2.6.37-rc4-git1.bz2

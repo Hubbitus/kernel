@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1910,6 +1910,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 01 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git1.1
+- Linux 2.6.37-rc4-git1
+
 * Tue Nov 30 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git0.1
 - Linux 2.6.37-rc4
 
