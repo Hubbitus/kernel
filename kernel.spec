@@ -1915,6 +1915,7 @@ fi
 * Wed Dec 01 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git1.1
 - Linux 2.6.37-rc4-git1
 - Pull in DRM fixes that are queued for -rc5 [3074adc8]
+  + edp-fixes on top
 
 * Tue Nov 30 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git0.1
 - Linux 2.6.37-rc4
