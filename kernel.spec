@@ -705,6 +705,9 @@ Patch12401: debug-tty-print-dev-name.patch
 Patch12402: tty-ldisc-fix-open-flag-handling.patch
 Patch12403: tty-open-hangup-race-fixup.patch
 
+Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
+Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1299,6 +1302,10 @@ ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
 ApplyPatch debug-tty-print-dev-name.patch
 ApplyPatch tty-ldisc-fix-open-flag-handling.patch
 ApplyPatch tty-open-hangup-race-fixup.patch
+
+# backport some fixes for kswapd from mmotm, rhbz#649694
+ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
+ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1912,6 +1919,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com>
+- Grab some of Mel's fixes from -mmotm to hopefully sort out #649694.
+
 * Wed Dec 01 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git1.1
 - Linux 2.6.37-rc4-git1
 - Pull in DRM fixes that are queued for -rc5 [3074adc8]
