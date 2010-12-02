@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 10
+%global baserelease 11
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -753,6 +753,9 @@ Patch12415: tty-dont-allow-reopen-when-ldisc-is-changing.patch
 Patch12416: tty-ldisc-fix-open-flag-handling.patch
 Patch12417: tty-open-hangup-race-fixup.patch
 
+Patch12420: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
+Patch12421: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1408,6 +1411,10 @@ ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
 ApplyPatch tty-ldisc-fix-open-flag-handling.patch
 ApplyPatch tty-open-hangup-race-fixup.patch
 
+# backport some fixes for kswapd from mmotm, rhbz#649694
+ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
+ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2021,6 +2028,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-11
+- Grab some of Mel's fixes from -mmotm to hopefully sort out #649694.
+  They've been tested by a few on that bug on 2.6.35, but let's push
+  it out to a bigger audience.
+
 * Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com>
 - PNP: log PNP resources, as we do for PCI [c1f3f281]
   should help us debug resource conflicts (requested by bjorn.)
