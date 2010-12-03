@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -648,13 +648,14 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 # DRM
 
 # nouveau + drm fixes
-Patch1801: drm-fixes.patch
 Patch1810: drm-nouveau-updates.patch
 Patch1819: drm-intel-big-hammer.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
+Patch1826: drm-intel-edp-fixes.patch
+
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -700,10 +701,7 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12400: tty-dont-allow-reopen-when-ldisc-is-changing.patch
 Patch12401: debug-tty-print-dev-name.patch
-Patch12402: tty-ldisc-fix-open-flag-handling.patch
-Patch12403: tty-open-hangup-race-fixup.patch
 
 Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
@@ -1246,7 +1244,6 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # DRM core
-ApplyPatch drm-fixes.patch
 
 # Nouveau DRM
 ApplyOptionalPatch drm-nouveau-updates.patch
@@ -1256,6 +1253,7 @@ ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
+ApplyPatch drm-intel-edp-fixes.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1298,10 +1296,7 @@ ApplyPatch runtime_pm_fixups.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # rhbz#630464
-ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
 ApplyPatch debug-tty-print-dev-name.patch
-ApplyPatch tty-ldisc-fix-open-flag-handling.patch
-ApplyPatch tty-open-hangup-race-fixup.patch
 
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
@@ -1919,6 +1914,14 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Dec 03 2010 Kyle McMartin <kyle@redhat.com>
+- Linux 2.6.37-rc4-git3
+- Enable HP ILO on x86_64 for (#571329)
+- Drop merged drm-fixes.patch, split out edp-fixes.
+- tty-dont-allow-reopen-when-ldisc-is-changing.patch: upstream.
+- tty-ldisc-fix-open-flag-handling.patch: upstream.
+- Enable CIFS_ACL.
+
 * Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com>
 - Grab some of Mel's fixes from -mmotm to hopefully sort out #649694.
 
