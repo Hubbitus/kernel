@@ -2028,7 +2028,10 @@ fi
 #                 ||     ||
 
 %changelog
-* Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-11
+* Fri Dec 03 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-11
+- Enable HP ILO on x86_64. (#571329)
+
+* Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com>
 - Grab some of Mel's fixes from -mmotm to hopefully sort out #649694.
   They've been tested by a few on that bug on 2.6.35, but let's push
   it out to a bigger audience.
