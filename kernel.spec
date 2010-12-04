@@ -1609,7 +1609,7 @@ BuildKernel %make_target %kernel_image smp
 %endif
 
 %global perf_make \
-  make %{?_smp_mflags} -C tools/perf -s V=1 NO_DEMANGLE=1 prefix=%{_prefix}
+  make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
 %if %{with_perf}
 %{perf_make} all
 %{perf_make} man || %{doc_build_fail}
@@ -1914,6 +1914,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Dec 04 2010 Kyle McMartin <kyle@redhat.com>
+- Enable C++ symbol demangling with perf by linking against libiberty.a,
+  which is LGPL2.
+
 * Fri Dec 03 2010 Kyle McMartin <kyle@redhat.com>
 - Linux 2.6.37-rc4-git3
 - Enable HP ILO on x86_64 for (#571329)
