@@ -1572,7 +1572,7 @@ BuildKernel() {
     done
 
     # Move the devel headers out of the root file system
-    mkdir -p $RPM_BUILD_ROOT/$DevelDir
+    mkdir -p $RPM_BUILD_ROOT/usr/src/kernels
     mv $RPM_BUILD_ROOT/lib/modules/$KernelVer/build $RPM_BUILD_ROOT/$DevelDir
     ln -sf ../../..$DevelDir $RPM_BUILD_ROOT/lib/modules/$KernelVer/build
 
