@@ -756,6 +756,8 @@ Patch12417: tty-open-hangup-race-fixup.patch
 Patch12420: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12421: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
+Patch12430: sched-cure-more-NO_HZ-load-average-woes.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1415,6 +1417,9 @@ ApplyPatch tty-open-hangup-race-fixup.patch
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
+# rhbz#650934
+ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2029,6 +2034,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com>
+- sched-cure-more-NO_HZ-load-average-woes.patch: fix some of the complaints
+  in 2.6.35+ about load average with dynticks. (rhbz#650934)
+
 * Sat Dec 04 2010 Kyle McMartin <kyle@redhat.com>
 - Enable C++ symbol demangling with perf by linking against libiberty.a,
   which is LGPL2.
