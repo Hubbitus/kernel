@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -705,6 +705,9 @@ Patch12401: debug-tty-print-dev-name.patch
 
 Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
+
+# rhbz#650934
+Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
 
 %endif
 
@@ -1915,6 +1918,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git2.1
+- Linux 2.6.37-rc5-git2
+- sched-cure-more-NO_HZ-load-average-woes.patch: fix some of the complaints
+  in 2.6.35+ about load average with dynticks. (rhbz#650934)
+
 * Tue Dec 07 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git0.1
 - Linux 2.6.37-rc5
 
