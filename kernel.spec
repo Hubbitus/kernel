@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1915,6 +1915,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Dec 07 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git0.1
+- Linux 2.6.37-rc5
+
 * Sat Dec 04 2010 Kyle McMartin <kyle@redhat.com>
 - Enable C++ symbol demangling with perf by linking against libiberty.a,
   which is LGPL2.
