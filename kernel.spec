@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 11
+%global baserelease 12
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -63,9 +63,9 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Is it a -stable RC?
-%define stable_rc 0
+%define stable_rc 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev .%{stable_update}
@@ -658,8 +658,6 @@ Patch1819: drm-intel-big-hammer.patch
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
-Patch1920: radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
-
 # linux1394 git patches
 Patch2200: linux-2.6-firewire-git-update.patch
 Patch2201: linux-2.6-firewire-git-pending.patch
@@ -679,8 +677,6 @@ Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 
 #Patch2916: lirc-staging-2.6.36-fixes.patch
 Patch2917: hdpvr-ir-enable.patch
-
-Patch3000: linux-2.6-rcu-sched-warning.patch
 
 # fs fixes
 
@@ -724,34 +720,21 @@ Patch12300: btusb-macbookpro-7-1.patch
 Patch12301: btusb-macbookpro-6-2.patch
 Patch12304: add-macbookair3-ids.patch
 
-Patch12302: pnpacpi-cope-with-invalid-device-ids.patch
-
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12305: xhci_hcd-suspend-resume.patch
 
-Patch12307: tty-restore-tty_ldisc_wait_idle.patch
-
 Patch12308: fix-i8k-inline-asm.patch
-
-Patch12400: ipc-zero-struct-memory-for-compat-fns.patch
-Patch12401: ipc-shm-fix-information-leak-to-user.patch
 
 Patch12405: inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
 Patch12408: netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
 
 Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
-Patch12407: hda_realtek-handle-unset-external-amp-bits.patch
-
 Patch12410: tty-make-tiocgicount-a-handler.patch
 Patch12411: tty-icount-changeover-for-other-main-devices.patch
 
 Patch12413: tpm-autodetect-itpm-devices.patch
-
-Patch12415: tty-dont-allow-reopen-when-ldisc-is-changing.patch
-Patch12416: tty-ldisc-fix-open-flag-handling.patch
-Patch12417: tty-open-hangup-race-fixup.patch
 
 Patch12420: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12421: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
@@ -1310,8 +1293,6 @@ ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
-ApplyPatch radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
-
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
 #ApplyOptionalPatch linux-2.6-firewire-git-pending.patch
@@ -1333,9 +1314,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 # enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
 ApplyPatch hdpvr-ir-enable.patch
-
-# silence another rcu_reference warning
-ApplyPatch linux-2.6-rcu-sched-warning.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1375,23 +1353,12 @@ ApplyPatch btusb-macbookpro-7-1.patch
 ApplyPatch btusb-macbookpro-6-2.patch
 ApplyPatch add-macbookair3-ids.patch
 
-# rhbz#641468
-ApplyPatch pnpacpi-cope-with-invalid-device-ids.patch
-
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch xhci_hcd-suspend-resume.patch
 
-ApplyPatch tty-restore-tty_ldisc_wait_idle.patch
-
 ApplyPatch fix-i8k-inline-asm.patch
-
-# rhbz#648658 (CVE-2010-4073)
-ApplyPatch ipc-zero-struct-memory-for-compat-fns.patch
-
-# rhbz#648656 (CVE-2010-4072)
-ApplyPatch ipc-shm-fix-information-leak-to-user.patch
 
 # rhbz#651264 (CVE-2010-3880)
 ApplyPatch inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
@@ -1400,18 +1367,11 @@ ApplyPatch netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
 # rhbz#656264
 ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
 
-# rhbz#657388
-ApplyPatch hda_realtek-handle-unset-external-amp-bits.patch
-
 # CVE-2010-4077, CVE-2010-4075 (rhbz#648660, #648663)
 ApplyPatch tty-make-tiocgicount-a-handler.patch
 ApplyPatch tty-icount-changeover-for-other-main-devices.patch
 
 ApplyPatch tpm-autodetect-itpm-devices.patch
-
-ApplyPatch tty-dont-allow-reopen-when-ldisc-is-changing.patch
-ApplyPatch tty-ldisc-fix-open-flag-handling.patch
-ApplyPatch tty-open-hangup-race-fixup.patch
 
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
@@ -2034,6 +1994,20 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.2-12.rc1
+- Linux stable 2.6.36.2-rc1
+- Drop patches merged in stable series:
+   tty-dont-allow-reopen-when-ldisc-is-changing.patch
+   tty-ldisc-fix-open-flag-handling.patch
+   tty-open-hangup-race-fixup.patch
+   tty-restore-tty_ldisc_wait_idle.patch
+   hda_realtek-handle-unset-external-amp-bits.patch
+   ipc-shm-fix-information-leak-to-user.patch
+   ipc-zero-struct-memory-for-compat-fns.patch
+   linux-2.6-rcu-sched-warning.patch
+   pnpacpi-cope-with-invalid-device-ids.patch
+   radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
+
 * Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com>
 - sched-cure-more-NO_HZ-load-average-woes.patch: fix some of the complaints
   in 2.6.35+ about load average with dynticks. (rhbz#650934)
