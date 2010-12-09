@@ -77,13 +77,12 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_CFQ_IOSCHED is not set/CONFIG_DEBUG_CFQ_IOSCHED=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DRBD_FAULT_INJECTION is not set/CONFIG_DRBD_FAULT_INJECTION=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/CONFIG_IWLWIFI_DEVICE_TRACING=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_WORK is not set/CONFIG_DEBUG_OBJECTS_WORK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_DEBUG is not set/CONFIG_DMADEVICES_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_VDEBUG is not set/CONFIG_DMADEVICES_VDEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/CONFIG_CEPH_LIB_PRETTYDEBUG=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_CEPH_FS_PRETTYDEBUG is not set/CONFIG_CEPH_FS_PRETTYDEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_QUOTA_DEBUG is not set/CONFIG_QUOTA_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_KGDB_KDB is not set/CONFIG_KGDB_KDB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_KDB_KEYBOARD is not set/CONFIG_KDB_KEYBOARD=y/' config-nodebug
@@ -91,8 +90,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PER_CPU_MAPS is not set/CONFIG_DEBUG_PER_CPU_MAPS=y/' config-nodebug
 	@perl -pi -e 's/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/' config-nodebug
 	#@perl -pi -e 's/# CONFIG_PCI_DEFAULT_USE_CRS is not set/CONFIG_PCI_DEFAULT_USE_CRS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
@@ -154,13 +151,12 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_CFQ_IOSCHED=y/# CONFIG_DEBUG_CFQ_IOSCHED is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DRBD_FAULT_INJECTION=y/# CONFIG_DRBD_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_ATH_DEBUG=y/# CONFIG_ATH_DEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_CARL9170_DEBUGFS=y/# CONFIG_CARL9170_DEBUGFS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_IWLWIFI_DEVICE_TRACING=y/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_WORK=y/# CONFIG_DEBUG_OBJECTS_WORK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_DEBUG=y/# CONFIG_DMADEVICES_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_VDEBUG=y/# CONFIG_DMADEVICES_VDEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_CEPH_LIB_PRETTYDEBUG=y/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_CEPH_FS_PRETTYDEBUG=y/# CONFIG_CEPH_FS_PRETTYDEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_QUOTA_DEBUG=y/# CONFIG_QUOTA_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/' config-nodebug
 	#@perl -pi -e 's/CONFIG_KGDB_KDB=y/# CONFIG_KGDB_KDB is not set/' config-nodebug
@@ -168,8 +164,6 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_PER_CPU_MAPS=y/# CONFIG_DEBUG_PER_CPU_MAPS is not set/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/' config-nodebug
 	#@perl -pi -e 's/CONFIG_PCI_DEFAULT_USE_CRS=y/# CONFIG_PCI_DEFAULT_USE_CRS is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_TEST_LIST_SORT=y/# CONFIG_TEST_LIST_SORT is not set/' config-nodebug
 
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
