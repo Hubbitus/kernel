@@ -703,30 +703,11 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12401: debug-tty-print-dev-name.patch
-
 Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
 # rhbz#650934
 Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
-
-Patch12308: fix-i8k-inline-asm.patch
-
-Patch12405: inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
-Patch12408: netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
-
-Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
-
-Patch12410: tty-make-tiocgicount-a-handler.patch
-Patch12411: tty-icount-changeover-for-other-main-devices.patch
-
-Patch12413: tpm-autodetect-itpm-devices.patch
-
-Patch12420: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
-Patch12421: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
-
-Patch12430: sched-cure-more-NO_HZ-load-average-woes.patch
 
 %endif
 
@@ -1317,28 +1298,6 @@ ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
-
-# rhbz#630464
-ApplyPatch debug-tty-print-dev-name.patch
-
-# backport some fixes for kswapd from mmotm, rhbz#649694
-ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
-ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
-
-ApplyPatch fix-i8k-inline-asm.patch
-
-# rhbz#651264 (CVE-2010-3880)
-ApplyPatch inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
-ApplyPatch netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
-
-# rhbz#656264
-ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
-
-# CVE-2010-4077, CVE-2010-4075 (rhbz#648660, #648663)
-ApplyPatch tty-make-tiocgicount-a-handler.patch
-ApplyPatch tty-icount-changeover-for-other-main-devices.patch
-
-ApplyPatch tpm-autodetect-itpm-devices.patch
 
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
