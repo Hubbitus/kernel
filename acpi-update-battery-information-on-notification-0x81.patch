@@ -56,9 +56,9 @@ index 95649d3..2a774a8 100644
  }
  
 @@ -914,7 +923,8 @@ static void acpi_battery_notify(struct acpi_device *device, u32 event)
- #ifdef CONFIG_ACPI_SYSFS_POWER
+ 	if (!battery)
+ 		return;
  	old = battery->bat.dev;
- #endif
 -	acpi_battery_update(battery);
 +	acpi_battery_update(battery, (event == ACPI_BATTERY_NOTIFY_INFO ? true
 +				      : false));
