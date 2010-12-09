@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 12
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -63,9 +63,9 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 0
 # Is it a -stable RC?
-%define stable_rc 1
+%define stable_rc 0
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev .%{stable_update}
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -149,7 +149,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -175,7 +175,7 @@ Summary: The Linux kernel
 %else
 %define gittag .git0
 %endif
-%define pkg_release 0.%{fedora_build}%{?rctag}%{?gittag}%{?buildid}%{?dist}
+%define pkg_release 0%{?rctag}%{?gittag}.%{fedora_build}%{?buildid}%{?dist}
 
 %endif
 
@@ -609,10 +609,6 @@ Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
-Patch210: debug-tty-print-dev-name.patch
-
-Patch300: pnp-log-pnp-resources-as-we-do-for-pci.patch
-
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
@@ -654,8 +650,12 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 # nouveau + drm fixes
 Patch1810: drm-nouveau-updates.patch
 Patch1819: drm-intel-big-hammer.patch
+# intel drm is all merged upstream
+Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
+Patch1826: drm-intel-edp-fixes.patch
+
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
 # linux1394 git patches
@@ -694,52 +694,20 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12030: tpm-fix-stall-on-boot.patch
 
-# Wacom Bamboo
-Patch12100: wacom-01-add-fuzz-parameters-to-features.patch
-Patch12105: wacom-02-parse-the-bamboo-device-family.patch
-Patch12110: wacom-03-collect-device-quirks-into-single-function.patch
-Patch12115: wacom-04-add-support-for-the-bamboo-touch-trackpad.patch
-Patch12120: wacom-05-add-a-quirk-for-low-resolution-bamboo-devices.patch
-Patch12125: wacom-06-request-tablet-data-for-bamboo-pens.patch
-Patch12130: wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
-Patch12135: wacom-08-add-support-for-bamboo-pen.patch
-Patch12140: wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
-
 # Runtime power management
-Patch12200: linux-2.6-bluetooth-autosuspend.patch
-Patch12201: linux-2.6-uvc-autosuspend.patch
-Patch12202: linux-2.6-qcserial-autosuspend.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
-Patch12225: pci-crs-fixes.patch
-Patch12226: x86-never-alloc-pci-from-the-last-1M-below-4G.patch
-
-Patch12300: btusb-macbookpro-7-1.patch
-Patch12301: btusb-macbookpro-6-2.patch
-Patch12304: add-macbookair3-ids.patch
-
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12305: xhci_hcd-suspend-resume.patch
+Patch12401: debug-tty-print-dev-name.patch
 
-Patch12308: fix-i8k-inline-asm.patch
+Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
+Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
-Patch12405: inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
-Patch12408: netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
-
-Patch12406: posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
-
-Patch12410: tty-make-tiocgicount-a-handler.patch
-Patch12411: tty-icount-changeover-for-other-main-devices.patch
-
-Patch12413: tpm-autodetect-itpm-devices.patch
-
-Patch12420: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
-Patch12421: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
-
-Patch12430: sched-cure-more-NO_HZ-load-average-woes.patch
+# rhbz#650934
+Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
 
 %endif
 
@@ -1099,17 +1067,17 @@ else
 fi
 
 # Now build the fedora kernel tree.
-if [ -d linux-%{KVERREL} ]; then
+if [ -d linux-%{kversion}.%{_target_cpu} ]; then
   # Just in case we ctrl-c'd a prep already
   rm -rf deleteme.%{_target_cpu}
   # Move away the stale away, and delete in background.
-  mv linux-%{KVERREL} deleteme.%{_target_cpu}
+  mv linux-%{kversion}.%{_target_cpu} deleteme.%{_target_cpu}
   rm -rf deleteme.%{_target_cpu} &
 fi
 
-cp -rl vanilla-%{vanillaversion} linux-%{KVERREL}
+cp -rl vanilla-%{vanillaversion} linux-%{kversion}.%{_target_cpu}
 
-cd linux-%{KVERREL}
+cd linux-%{kversion}.%{_target_cpu}
 
 # released_kernel with possible stable updates
 %if 0%{?stable_base}
@@ -1216,8 +1184,6 @@ ApplyPatch linux-2.6-debug-taint-vm.patch
 ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 
-ApplyPatch debug-tty-print-dev-name.patch
-
 #
 # PCI
 #
@@ -1227,10 +1193,7 @@ ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 
-# helps debug resource conflicts [c1f3f281]
-ApplyPatch pnp-log-pnp-resources-as-we-do-for-pci.patch
-
-ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
+#ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
 #
 # SCSI Bits.
@@ -1289,9 +1252,11 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
+ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
+ApplyPatch drm-intel-edp-fixes.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1325,60 +1290,20 @@ ApplyPatch neuter_intel_microcode_load.patch
 # try to fix stalls during boot (#530393)
 ApplyPatch tpm-fix-stall-on-boot.patch
 
-# Wacom Bamboo
-ApplyPatch wacom-01-add-fuzz-parameters-to-features.patch
-ApplyPatch wacom-02-parse-the-bamboo-device-family.patch
-ApplyPatch wacom-03-collect-device-quirks-into-single-function.patch
-ApplyPatch wacom-04-add-support-for-the-bamboo-touch-trackpad.patch
-ApplyPatch wacom-05-add-a-quirk-for-low-resolution-bamboo-devices.patch
-ApplyPatch wacom-06-request-tablet-data-for-bamboo-pens.patch
-ApplyPatch wacom-07-move-bamboo-touch-irq-to-its-own-function.patch
-ApplyPatch wacom-08-add-support-for-bamboo-pen.patch
-ApplyPatch wacom-09-disable-bamboo-touchpad-when-pen-is-being-used.patch
-
 # Runtime PM
-ApplyPatch linux-2.6-bluetooth-autosuspend.patch
-ApplyPatch linux-2.6-uvc-autosuspend.patch
-ApplyPatch linux-2.6-qcserial-autosuspend.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 ApplyPatch runtime_pm_fixups.patch
 
-# PCI patches to fix problems with _CRS
-# ( from linux-pci list )
-ApplyPatch pci-crs-fixes.patch
-ApplyPatch x86-never-alloc-pci-from-the-last-1M-below-4G.patch
-
-ApplyPatch btusb-macbookpro-7-1.patch
-ApplyPatch btusb-macbookpro-6-2.patch
-ApplyPatch add-macbookair3-ids.patch
-
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-ApplyPatch xhci_hcd-suspend-resume.patch
-
-ApplyPatch fix-i8k-inline-asm.patch
-
-# rhbz#651264 (CVE-2010-3880)
-ApplyPatch inet_diag-make-sure-we-run-the-same-bytecode-we-audited.patch
-ApplyPatch netlink-make-nlmsg_find_attr-take-a-const-ptr.patch
-
-# rhbz#656264
-ApplyPatch posix-cpu-timers-workaround-to-suppress-problems-with-mt-exec.patch
-
-# CVE-2010-4077, CVE-2010-4075 (rhbz#648660, #648663)
-ApplyPatch tty-make-tiocgicount-a-handler.patch
-ApplyPatch tty-icount-changeover-for-other-main-devices.patch
-
-ApplyPatch tpm-autodetect-itpm-devices.patch
+# rhbz#630464
+ApplyPatch debug-tty-print-dev-name.patch
 
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
-
-# rhbz#650934
-ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1667,7 +1592,7 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/boot
 mkdir -p $RPM_BUILD_ROOT%{_libexecdir}
 
-cd linux-%{KVERREL}
+cd linux-%{kversion}.%{_target_cpu}
 
 %if %{with_debug}
 BuildKernel %make_target %kernel_image debug
@@ -1698,8 +1623,7 @@ BuildKernel %make_target %kernel_image smp
 
 %if %{with_doc}
 # Make the HTML and man pages.
-#  %{?_smp_mflags} frequently fails when j>8
-make htmldocs mandocs || %{doc_build_fail}
+make %{?_smp_mflags} htmldocs mandocs || %{doc_build_fail}
 
 # sometimes non-world-readable files sneak into the kernel source tree
 chmod -R a=rX Documentation
@@ -1733,7 +1657,7 @@ find Documentation -type d | xargs chmod u+w
 
 %install
 
-cd linux-%{KVERREL}
+cd linux-%{kversion}.%{_target_cpu}
 
 %if %{with_doc}
 docdir=$RPM_BUILD_ROOT%{_datadir}/doc/kernel-doc-%{rpmversion}
@@ -1994,123 +1918,113 @@ fi
 #                 ||     ||
 
 %changelog
-* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.2-12.rc1
-- Linux stable 2.6.36.2-rc1
-- Drop patches merged in stable series:
-   tty-dont-allow-reopen-when-ldisc-is-changing.patch
-   tty-ldisc-fix-open-flag-handling.patch
-   tty-open-hangup-race-fixup.patch
-   tty-restore-tty_ldisc_wait_idle.patch
-   hda_realtek-handle-unset-external-amp-bits.patch
-   ipc-shm-fix-information-leak-to-user.patch
-   ipc-zero-struct-memory-for-compat-fns.patch
-   linux-2.6-rcu-sched-warning.patch
-   pnpacpi-cope-with-invalid-device-ids.patch
-   radeon-mc-vram-map-needs-to-be-gt-pci-aperture.patch
-
-* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com>
+* Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git2.1
+- Linux 2.6.37-rc5-git2
 - sched-cure-more-NO_HZ-load-average-woes.patch: fix some of the complaints
   in 2.6.35+ about load average with dynticks. (rhbz#650934)
+
+* Tue Dec 07 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git0.1
+- Linux 2.6.37-rc5
 
 * Sat Dec 04 2010 Kyle McMartin <kyle@redhat.com>
 - Enable C++ symbol demangling with perf by linking against libiberty.a,
   which is LGPL2.
 
-* Fri Dec 03 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-11
-- Enable HP ILO on x86_64. (#571329)
+* Fri Dec 03 2010 Kyle McMartin <kyle@redhat.com>
+- Linux 2.6.37-rc4-git3
+- Enable HP ILO on x86_64 for (#571329)
+- Drop merged drm-fixes.patch, split out edp-fixes.
+- tty-dont-allow-reopen-when-ldisc-is-changing.patch: upstream.
+- tty-ldisc-fix-open-flag-handling.patch: upstream.
+- Enable CIFS_ACL.
 
 * Thu Dec 02 2010 Kyle McMartin <kyle@redhat.com>
 - Grab some of Mel's fixes from -mmotm to hopefully sort out #649694.
-  They've been tested by a few on that bug on 2.6.35, but let's push
-  it out to a bigger audience.
+
+* Wed Dec 01 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git1.1
+- Linux 2.6.37-rc4-git1
+- Pull in DRM fixes that are queued for -rc5 [3074adc8]
+  + edp-fixes on top
+
+* Tue Nov 30 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc4.git0.1
+- Linux 2.6.37-rc4
 
 * Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com>
-- PNP: log PNP resources, as we do for PCI [c1f3f281]
-  should help us debug resource conflicts (requested by bjorn.)
+- Update debug-vm-would_have_oomkilled patch.
 
-* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-10
-- tpm-autodetect-itpm-devices.patch: Auto-fix TPM issues on various
-  laptops which prevented suspend/resume. (#647132)
-- tty fixes from kernel-git (#630464)
+* Mon Nov 29 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git6.1
+- Linux 2.6.37-rc3-git6
+- TTY: open/hangup race fixup (rhbz#630464)
 
-* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
-- Quiet a build warning the previous INET_DIAG fix caused.
-
-* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
-- Plug stack leaks in tty/serial drivers. (#648663, #648660)
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git3.1
+- Linux 2.6.37-rc3-git3
+- Print tty->flags as well in debugging patch...
 
 * Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com>
-- hda/realtek: handle unset external amp config (#657388)
+- Copy tty_open WARN_ON debugging patch from rawhide.
 
-* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
-- Disable FSCACHE for CIFS until issues are addressed. (#656498)
+* Fri Nov 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git2.1
+- Linux 2.6.37-rc3-git2
+- CGROUP_MEM_RES_CTLR_SWAP_ENABLED is not set, so the cgroup memory
+  resource controller swap accounting is disabled by default. You can
+  enable it with 'swapaccount' if desired.
+- TTY: don't allow reopen when ldisc is changing (rhbz#630464)
 
-* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
-- drm/radeon/kms: MC vram map needs to be >= pci aperture size (fdo#28402)
+* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git1.1
+- Linux 2.6.37-rc3-git1
 
-* Wed Nov 24 2010 Kyle McMartin <kyle@redhat.com>
-- Fix graphics on HP 2530p (korg#23542)
+* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc3.git0.1
+- Linux 2.6.37-rc3
 
-* Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
-- zero struct memory in ipc compat (CVE-2010-4073) (#648658)
-- zero struct memory in ipc shm (CVE-2010-4072) (#648656)
-- fix logic error in INET_DIAG bytecode auditing (CVE-2010-3880) (#651264)
-- posix-cpu-timers: workaround to suppress the problems with mt exec
-  (rhbz#656264)
+* Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc2.git7.1
+- Linux 2.6.37-rc2-git7
 
-* Tue Nov 23 2010 Kyle McMartin <kyle@redhat.com>
-- fix-i8k-inline-asm.patch: backport gcc miscompilation fix from git
-  [22d3243d, 6b4e81db] (rhbz#647677)
+* Fri Nov 19 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc2.git5.1
+- Linux 2.6.37-rc2-git5
 
-* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com>
-- Add a debugging patch to help track down which tty is being
-  poked by plymouth.
+* Thu Nov 18 2010 Kyle McMartin <kyle@redhat.com>
+- Move %{fedora_build} in the un-released (ie: -git/-rc) kernel case for
+  a variety of reasons, principally so that:
+  1: Bumping %baserelease isn't needed if we're just updating snapshots.
+  2: %buildid will sort as newer so we don't need to bump baserelease when
+     building bugzilla fixes.
 
-* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-9
-- Linux stable 2.6.36.1
-
-* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-8.rc1
-- Merge 100eeae2 (TTY: restore tty_ldisc_wait_idle) which should fix the WARN
-  in tty_open in rawhide.
-
-* Mon Nov 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.36.1-7.rc1
-- Make vmlinuz world readable again.
-
-* Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com>
-- Merge patch from Aris to allow kernel-debuginfo to be multiply-installed
-  (means we had to move the build dir, kind of a bummer, but I verified
-   that a -gitN to -gitN+1 worked.)
-
-* Sat Nov 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36.1-6.rc1
-- Linux 2.6.36.1-rc1
-- Comment out upstreamed patches:
-  secmark-do-not-return-early-if-there-was-no-error.patch
-
-* Sat Nov 20 2010 Kyle McMartin <kyle@redhat.com>
-- secmark-do-not-return-early-if-there-was-no-error.patch: requested
-  by eparis@. (Fixes a BUG when using secmark.)
-
-* Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-5
-- Disable drm/intel rebase until it can be fixed.
+* Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc2.git2
+- Linux 2.6.37-rc2-git2
+- enable STRICT_DEVMEM on s390x.
 
 * Wed Nov 17 2010 Kyle McMartin <kyle@redhat.com>
 - Make vmlinuz/System.map root read-write only by default. You can just
   chmod 644 them later if you (unlikely) need them without root.
 
-* Tue Nov 16 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-4
-- Disable parallel doc builds, they fail. Constantly.
+* Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc2.git0
+- Linux 2.6.37-rc2
 
-* Tue Nov 16 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-3
-- Rebase drm/intel to 2.6.37-rc2+edp_fixes, hopefully to sort out most of
-  the issues folks with eDP are having.
-- Switch to release builds and turn on debugging flavours.
+* Sat Nov 13 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git10
+- Linux 2.6.37-rc1-git10
+- SECURITY_DMESG_RESTRICT added, the principle of least surprise dictates
+  we should probably have it off. If you want to restrict dmesg access
+  you may use the kernel.dmesg_restrict sysctl.
+- linux-2.6-bluetooth-autosuspend.patch: merged upstream.
 
-* Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com>
-- rhbz#651019: pull in support for MBA3.
+* Tue Nov 09 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git7
+- Linux 2.6.37-rc1-git7
 
-* Mon Nov 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.36-2
-- drm-i915-reprogram-power-monitoring-registers-on-resume.patch: fix intel_ips
-  driver.
+* Mon Nov 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git5
+- Linux 2.6.37-rc1-git5
+
+* Mon Nov 08 2010 Kyle McMartin <kyle@redhat.com>
+- Cherry-pick utrace-ptrace fixes from mayoung. Thanks!
+
+* Tue Nov 02 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc1.git0
+- Linux 2.6.37-rc1
+
+* Tue Oct 26 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc0.git8
+- Linux 2.6.36-git8
+
+* Fri Oct 22 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.1.rc0.git2
+- Switch to tracking git snapshots of what will become 2.6.37.
+- Fix context rejects in utrace and a few other patches.
 
 * Wed Oct 20 2010 Chuck Ebbert <cebbert@redhat.com> 2.6.36-1
 - Linux 2.6.36
