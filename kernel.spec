@@ -613,6 +613,7 @@ Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
 Patch384: pci-disable-aspm-if-bios-asks-us-to.patch
+Patch386: pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -1196,6 +1197,8 @@ ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 ApplyPatch pci-disable-aspm-if-bios-asks-us-to.patch
+# rhbz#638912
+ApplyPatch pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 #ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -1928,6 +1931,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Dec 10 2010 Kyle McMartin <kyle@redhat.com>
+- Another patch from mjg59: Set _OSC supported field correctly (#638912)
+
 * Fri Dec 10 2010 Kyle McMartin <kyle@redhat.com>
 - pci-disable-aspm-if-bios-asks-us-to.patch: Patch from mjg59 to disable
   ASPM if the BIOS has disabled it, but enabled it already on some devices.
