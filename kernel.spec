@@ -709,6 +709,8 @@ Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-pe
 # rhbz#650934
 Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
 
+Patch12421: orinoco-initialise-priv_hw-before-assigning-the-interrupt.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1304,6 +1306,12 @@ ApplyPatch debug-tty-print-dev-name.patch
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
+
+# rhbz#650934
+ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
+
+# rhbz657864
+ApplyPatch orinoco-initialise-priv_hw-before-assigning-the-interrupt.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1918,6 +1926,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Dec 09 2010 Kyle McMartin <kyle@redhat.com>
+- Snarf patch from wireless-next to fix mdomsch's orinico wifi.
+  (orinoco: initialise priv->hw before assigning the interrupt)
+  [229bd792] (#657864)
+
 * Wed Dec 08 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git2.1
 - Linux 2.6.37-rc5-git2
 - sched-cure-more-NO_HZ-load-average-woes.patch: fix some of the complaints
