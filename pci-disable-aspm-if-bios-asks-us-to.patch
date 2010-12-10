@@ -101,7 +101,7 @@ index 7122281..8112415 100644
  
  __setup("pcie_aspm=", pcie_aspm_disable);
  
-+void pci_clear_aspm(void)
++void pcie_clear_aspm(void)
 +{
 +	if (!aspm_force)
 +		aspm_clear_state = 1;
