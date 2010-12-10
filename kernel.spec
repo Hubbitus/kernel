@@ -612,6 +612,7 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
+Patch384: pci-disable-aspm-if-bios-asks-us-to.patch
 
 Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -1194,6 +1195,7 @@ ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
+ApplyPatch pci-disable-aspm-if-bios-asks-us-to.patch
 
 #ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -1926,6 +1928,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Dec 10 2010 Kyle McMartin <kyle@redhat.com>
+- pci-disable-aspm-if-bios-asks-us-to.patch: Patch from mjg59 to disable
+  ASPM if the BIOS has disabled it, but enabled it already on some devices.
+
 * Thu Dec 09 2010 Kyle McMartin <kyle@redhat.com>
 - Snarf patch from wireless-next to fix mdomsch's orinico wifi.
   (orinoco: initialise priv->hw before assigning the interrupt)
