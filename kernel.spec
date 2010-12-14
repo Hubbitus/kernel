@@ -326,6 +326,7 @@ Summary: The Linux kernel
 %define image_install_path boot
 %define make_target image
 %define kernel_image arch/s390/boot/image
+%define with_perf 0
 %endif
 
 %ifarch sparc64
