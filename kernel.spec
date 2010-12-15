@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -712,8 +712,6 @@ Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-pe
 # rhbz#650934
 Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
 
-Patch12421: orinoco-initialise-priv_hw-before-assigning-the-interrupt.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1315,9 +1313,6 @@ ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-per
 
 # rhbz#650934
 ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
-
-# rhbz657864
-ApplyPatch orinoco-initialise-priv_hw-before-assigning-the-interrupt.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1932,6 +1927,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git5.1
+- 2.6.37-rc5-git5
+
 * Fri Dec 10 2010 Kyle McMartin <kyle@redhat.com>
 - Another patch from mjg59: Set _OSC supported field correctly (#638912)
 
