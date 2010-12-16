@@ -697,6 +697,12 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12030: tpm-fix-stall-on-boot.patch
 
+Patch12100: applesmc_update.patch
+Patch12101: apple_backlight.patch
+Patch12102: efifb_update.patch
+Patch12200: acpi_reboot.patch
+Patch12210: efi_default_physical.patch
+
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -1295,6 +1301,13 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # try to fix stalls during boot (#530393)
 ApplyPatch tpm-fix-stall-on-boot.patch
+
+# various fixes for Apple and EFI
+ApplyPatch applesmc_update.patch
+ApplyPatch apple_backlight.patch
+ApplyPatch efifb_update.patch
+ApplyPatch acpi_reboot.patch
+ApplyPatch efi_default_physical.patch
 
 # Runtime PM
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1927,6 +1940,13 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Dec 16 2010 Matthew Garrett <mjg@redhat.com> 2.6.37-0.rc6.git0.2
+- applesmc_update.patch: Make the driver more generic. Should help Apples.
+- apple_backlight.patch: Make sure that this loads on all hardware.
+- efifb_update.patch: Fixes for the 11 inch Macbook Air
+- acpi_reboot.patch: Should make reboot work better on most hardware
+- efi_default_physical.patch: Some machines dislike EFI virtual mode
+
 * Wed Dec 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc6.git0.1
 - Linux 2.6.37-rc6
 - Re-activate acpi patch which rejected on the previous commit.
