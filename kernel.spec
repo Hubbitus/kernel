@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1927,6 +1927,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Dec 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc6.git0.1
+- Linux 2.6.37-rc6
+- Re-activate acpi patch which rejected on the previous commit.
+
 * Wed Dec 15 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc5.git5.1
 - 2.6.37-rc5-git5
 
