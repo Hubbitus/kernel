@@ -700,6 +700,7 @@ Patch12030: tpm-fix-stall-on-boot.patch
 Patch12100: applesmc_update.patch
 Patch12101: apple_backlight.patch
 Patch12102: efifb_update.patch
+Patch12103: linux-next-macbook-air-input.patch
 Patch12200: acpi_reboot.patch
 Patch12210: efi_default_physical.patch
 
@@ -1306,6 +1307,7 @@ ApplyPatch tpm-fix-stall-on-boot.patch
 ApplyPatch applesmc_update.patch
 ApplyPatch apple_backlight.patch
 ApplyPatch efifb_update.patch
+ApplyPatch linux-next-macbook-air-input.patch
 ApplyPatch acpi_reboot.patch
 ApplyPatch efi_default_physical.patch
 
