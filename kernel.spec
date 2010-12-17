@@ -1940,6 +1940,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Dec 17 2010 Matthew Garrett <mjg@redhat.com> 2.6.37-0.rc6.git0.3
+- efi_default_physical.patch: Revert hunk that breaks boot
+- linux-next-macbook-air-input.patch: Add input support for new Macbook Airs
+
 * Thu Dec 16 2010 Matthew Garrett <mjg@redhat.com> 2.6.37-0.rc6.git0.2
 - applesmc_update.patch: Make the driver more generic. Should help Apples.
 - apple_backlight.patch: Make sure that this loads on all hardware.
