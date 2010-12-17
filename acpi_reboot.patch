@@ -66,7 +66,7 @@ index 50cc3be..c6a4e63 100644
  		    acpi_os_write_port((acpi_io_address) reset_reg->address,
 -				       acpi_gbl_FADT.reset_value,
 -				       reset_reg->bit_width);
-+				       acpi_gbl_FADT.reset_value, 8)
++				       acpi_gbl_FADT.reset_value, 8);
  	} else {
  		/* Write the reset value to the reset register */
  
