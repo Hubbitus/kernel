@@ -719,6 +719,8 @@ Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-pe
 # rhbz#650934
 Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
 
+Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1328,6 +1330,9 @@ ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-per
 
 # rhbz#650934
 ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
+
+# rhbz#662344,600690
+ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1942,6 +1947,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Sat Dec 18 2010 Kyle McMartin <kyle@redhat.com>
+- Fix SELinux issues with NFS/btrfs and/or xfsdump. (#662344)
+
 * Fri Dec 17 2010 Matthew Garrett <mjg@redhat.com> 2.6.37-0.rc6.git0.3
 - efi_default_physical.patch: Revert hunk that breaks boot
 - linux-next-macbook-air-input.patch: Add input support for new Macbook Airs
