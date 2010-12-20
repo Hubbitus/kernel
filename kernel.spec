@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -716,9 +716,6 @@ Patch12401: debug-tty-print-dev-name.patch
 Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
-# rhbz#650934
-Patch12420: sched-cure-more-NO_HZ-load-average-woes.patch
-
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 Patch12422: net-AF_PACKET-vmalloc.patch
@@ -1329,9 +1326,6 @@ ApplyPatch debug-tty-print-dev-name.patch
 # backport some fixes for kswapd from mmotm, rhbz#649694
 ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
 ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
-
-# rhbz#650934
-ApplyPatch sched-cure-more-NO_HZ-load-average-woes.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
@@ -1952,6 +1946,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Sun Dec 19 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc6.git5.1
+- Linux 2.6.37-rc6-git5
+- sched-cure-more-NO_HZ-load-average-woes.patch: upstream.
+
 * Sat Dec 18 2010 Kyle McMartin <kyle@redhat.com>
 - Patch from nhorman against f13:
   Enhance AF_PACKET to allow non-contiguous buffer alloc (#637619)
