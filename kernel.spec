@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1946,6 +1946,11 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Dec 21 2010 Kyle McMartin <kyle@redhat.com> 2.6.37.0.rc7.git0.1
+- Linux 2.6.37-rc7
+- CONFIG_USB_OTG=n (seems unnecessary?)
+- Enable release builds until .37 releases in rawhide.
+
 * Sun Dec 19 2010 Kyle McMartin <kyle@redhat.com> 2.6.37-0.rc6.git5.1
 - Linux 2.6.37-rc6-git5
 - sched-cure-more-NO_HZ-load-average-woes.patch: upstream.
