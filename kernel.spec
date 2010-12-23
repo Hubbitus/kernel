@@ -681,6 +681,8 @@ Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 #Patch2916: lirc-staging-2.6.36-fixes.patch
 Patch2917: hdpvr-ir-enable.patch
 
+Patch2918: flexcop-fix-xlate_proc_name-warning.patch
+
 # fs fixes
 
 # NFSv4
@@ -1293,6 +1295,9 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 # enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
 ApplyPatch hdpvr-ir-enable.patch
+
+# rhbz#664852
+ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1946,6 +1951,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Thu Dec 23 2010 Kyle McMartin <kyle@redhat.com>
+- Pull in flexcop procfs rename patch since it's still not upstream. (#664852)
+
 * Tue Dec 21 2010 Kyle McMartin <kyle@redhat.com> 2.6.37.0.rc7.git0.2
 - Linux 2.6.37-rc7
 - CONFIG_USB_OTG=n (seems unnecessary?)
