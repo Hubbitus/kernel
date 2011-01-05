@@ -600,6 +600,7 @@ Patch31: linux-2.6-utrace.patch
 Patch32: linux-2.6-utrace-ptrace.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
+Patch151: 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
@@ -1157,6 +1158,7 @@ ApplyPatch linux-2.6-utrace-ptrace.patch
 # SPARC64
 #
 ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
+ApplyPatch 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch
 
 #
 # Exec shield
@@ -1951,6 +1953,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us> 
+- add patch for sparc build failure
+
 * Tue Jan 04 2011 Kyle McMartin <kyle@redhat.com> 2.6.37-1
 - Track release of 2.6.37
 
