@@ -338,6 +338,10 @@ Summary: The Linux kernel
 %define with_perf 0
 %endif
 
+%ifarch sparcv9
+%define hdrarch sparc
+%endif
+
 %ifarch ppc
 %define asmarch powerpc
 %define hdrarch powerpc
@@ -390,7 +394,7 @@ Summary: The Linux kernel
 # Which is a BadThing(tm).
 
 # We only build kernel-headers on the following...
-%define nobuildarches i386 s390 sparc %{arm}
+%define nobuildarches i386 s390 sparc sparcv9 %{arm}
 
 %ifarch %nobuildarches
 %define with_up 0
@@ -478,7 +482,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ia64 sparc sparc64 s390 s390x alpha alphaev56 %{arm}
+ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ia64 %{sparc} s390 s390x alpha alphaev56 %{arm}
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
@@ -1953,6 +1957,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us> 
+- build sparc headers on sparcv9
+
 * Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us> 
 - add patch for sparc build failure
 
