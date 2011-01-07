@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -663,6 +663,7 @@ Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1826: drm-intel-edp-fixes.patch
+Patch1827: drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1279,6 +1280,7 @@ ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 ApplyPatch drm-intel-edp-fixes.patch
+ApplyPatch drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1957,6 +1959,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Fri Jan 07 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.37-2
+- drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch reported to
+  fix HP/Sony eDP issues by adamw and airlied.
+
 * Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us> 
 - build sparc headers on sparcv9
 
