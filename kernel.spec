@@ -546,6 +546,10 @@ Source90: config-sparc64-generic
 
 Source100: config-arm
 
+# This file is intentionally left empty in the stock kernel. Its a nicety
+# added for those wanting to do custom rebuilds with altered config opts.
+Source1000: config-local
+
 # Here should be only the patches up to the upstream canonical Linus tree.
 
 # For a stable release kernel
@@ -1123,6 +1127,14 @@ make -f %{SOURCE20} VERSION=%{version} configs
     rm $i.tmp
   done
 %endif
+
+# Merge in any user-provided local config option changes
+for i in %{all_arch_configs}
+do
+  mv $i $i.tmp
+  ./merge.pl %{SOURCE1000} $i.tmp > $i
+  rm $i.tmp
+done
 
 ApplyOptionalPatch git-linus.diff
 
@@ -1950,8 +1962,10 @@ fi
 #             (__)\       )\/\
 #                 ||----w |
 #                 ||     ||
-
 %changelog
+* Mon Jan 10 2011 Jarod Wilson <jarod@redhat.com>
+- Add support for local rebuild config option overrides
+
 * Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git4.2
 - Disable DEBUG_SET_MODULE_RONX for now, it causes boot-up to fail since
   dynamic ftrace is trying to rewrite instructions on module load.
