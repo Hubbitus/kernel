@@ -31,7 +31,7 @@ index 170f71e..4f3e632 100644
  static int i8042_controller_check(void)
  {
 -	if (i8042_flush() == I8042_BUFFER_SIZE) {
--		printk(KERN_ERR "i8042.c: No controller found.\n");
+-		pr_err("No controller found\n");
 +	if (i8042_flush() == I8042_BUFFER_SIZE)
  		return -ENODEV;
 -	}

@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -149,7 +149,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -610,7 +610,7 @@ Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
 Patch200: linux-2.6-debug-sizeof-structs.patch
-Patch201: linux-2.6-debug-nmi-timeout.patch
+#Patch201: linux-2.6-debug-nmi-timeout.patch
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
@@ -685,7 +685,7 @@ Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 
 #Patch2916: lirc-staging-2.6.36-fixes.patch
-Patch2917: hdpvr-ir-enable.patch
+#Patch2917: hdpvr-ir-enable.patch
 
 Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 
@@ -725,8 +725,6 @@ Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-i
 Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
-Patch12422: net-AF_PACKET-vmalloc.patch
 
 %endif
 
@@ -1199,7 +1197,7 @@ ApplyPatch acpi-update-battery-information-on-notification-0x81.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
-ApplyPatch linux-2.6-debug-nmi-timeout.patch
+#ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
 ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
@@ -1302,7 +1300,7 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 # http://www.lirc.org/
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 # enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
-ApplyPatch hdpvr-ir-enable.patch
+#ApplyPatch hdpvr-ir-enable.patch
 
 # rhbz#664852
 ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
@@ -1342,9 +1340,6 @@ ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-per
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
-# rhbz#637619
-ApplyPatch net-AF_PACKET-vmalloc.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1959,6 +1954,20 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git4.1
+- Branch for 2.6.38
+- Rebase trivial patches.
+- Switch debug configs back on.
+- config changes:
+  DEBUG_SET_MODULE_RONX=y
+  B43_PHY_N=y
+  RT2800USB_RT33XX=y |
+  RT2800PCI_RT33XX=y | experimental
+  WL12XX=m
+  RTL8192CE=m
+  CAN_SLCAN=m
+  SCHED_AUTOGROUP=n
+
 * Fri Jan 07 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.37-2
 - drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch reported to
   fix HP/Sony eDP issues by adamw and airlied.

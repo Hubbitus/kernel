@@ -94,6 +94,8 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 
+	#@perl -pi -e 's/# CONFIG_DEBUG_SET_MODULE_RONX is not set/CONFIG_DEBUG_SET_MODULE_RONX=y/' config-nodebug
+
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
 
@@ -170,6 +172,8 @@ release:
 	#@perl -pi -e 's/CONFIG_PCI_DEFAULT_USE_CRS=y/# CONFIG_PCI_DEFAULT_USE_CRS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_TEST_LIST_SORT=y/# CONFIG_TEST_LIST_SORT is not set/' config-nodebug
+
+	#@perl -pi -e 's/CONFIG_DEBUG_SET_MODULE_RONX=y/# CONFIG_DEBUG_SET_MODULE_RONX is not set/' config-nodebug
 
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
