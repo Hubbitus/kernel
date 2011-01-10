@@ -610,7 +610,6 @@ Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
 Patch200: linux-2.6-debug-sizeof-structs.patch
-#Patch201: linux-2.6-debug-nmi-timeout.patch
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
@@ -1197,7 +1196,6 @@ ApplyPatch acpi-update-battery-information-on-notification-0x81.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
-#ApplyPatch linux-2.6-debug-nmi-timeout.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
 ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
@@ -1954,6 +1952,9 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Drop obsolete linux-2.6-debug-nmi-timeout.patch
+
 * Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git4.1
 - Branch for 2.6.38
 - Rebase trivial patches.
