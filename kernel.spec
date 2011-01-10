@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1952,6 +1952,10 @@ fi
 #                 ||     ||
 
 %changelog
+* Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git4.2
+- Disable DEBUG_SET_MODULE_RONX for now, it causes boot-up to fail since
+  dynamic ftrace is trying to rewrite instructions on module load.
+
 * Mon Jan 10 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Drop obsolete linux-2.6-debug-nmi-timeout.patch
 
