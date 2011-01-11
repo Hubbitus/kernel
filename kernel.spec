@@ -729,6 +729,7 @@ Patch12200: acpi_reboot.patch
 Patch12210: efi_default_physical.patch
 
 # Runtime power management
+Patch12202: linux-2.6-ehci-check-port-status.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
@@ -1350,6 +1351,7 @@ ApplyPatch acpi_reboot.patch
 ApplyPatch efi_default_physical.patch
 
 # Runtime PM
+ApplyPatch linux-2.6-ehci-check-port-status.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 ApplyPatch runtime_pm_fixups.patch
@@ -1982,6 +1984,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 11 2011 Matthew Garrett <mjg@redhat.com>
+- linux-2.6-ehci-check-port-status.patch - fix USB resume on some AMD systems
+
 * Mon Jan 10 2011 Jarod Wilson <jarod@redhat.com>
 - Add support for local rebuild config option overrides
 - Add missing --with/--without pae build flag support
