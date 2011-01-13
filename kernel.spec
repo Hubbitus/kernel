@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1969,6 +1969,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 12 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git9.1
+- Linux 2.6.37-git9
+- Re-enable DEBUG_SET_MODULE_RONX since commit 94462ad3 fixed it.
+- Enable some more new random HID and sensor junk as modules.
+
 * Mon Jan 10 2011 Jarod Wilson <jarod@redhat.com>
 - Add support for local rebuild config option overrides
 - Add missing --with/--without pae build flag support
