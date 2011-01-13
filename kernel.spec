@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
