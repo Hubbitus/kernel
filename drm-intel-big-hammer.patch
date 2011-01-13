@@ -1,13 +1,13 @@
 omgwtfbbqchainsaw?
 ---
- drivers/gpu/drm/i915/i915_gem.c |    5 +++++
+ drivers/gpu/drm/i915/i915_gem_execbuffer.c |    5 +++++
  1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
-index 8eb8453..36fa9d7 100644
---- a/drivers/gpu/drm/i915/i915_gem.c
-+++ b/drivers/gpu/drm/i915/i915_gem.c
-@@ -3692,6 +3692,11 @@ i915_gem_do_execbuffer(struct drm_device *dev, void *data,
+diff --git a/drivers/gpu/drm/i915/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
+index e698343..21e601d1 100644
+--- a/drivers/gpu/drm/i915/i915_gem_execbuffer.c
++++ b/drivers/gpu/drm/i915/i915_gem_execbuffer.c
+@@ -1090,6 +1090,11 @@ i915_gem_do_execbuffer(struct drm_device *dev, void *data,
  	if (ret)
  		goto pre_mutex_err;
  

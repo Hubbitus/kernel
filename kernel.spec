@@ -678,7 +678,6 @@ Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1826: drm-intel-edp-fixes.patch
-Patch1827: drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -720,10 +719,8 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12030: tpm-fix-stall-on-boot.patch
 
-Patch12100: applesmc_update.patch
 Patch12101: apple_backlight.patch
 Patch12102: efifb_update.patch
-Patch12103: linux-next-macbook-air-input.patch
 Patch12200: acpi_reboot.patch
 Patch12210: efi_default_physical.patch
 
@@ -1300,7 +1297,6 @@ ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 ApplyPatch drm-intel-edp-fixes.patch
-ApplyPatch drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1338,10 +1334,8 @@ ApplyPatch neuter_intel_microcode_load.patch
 ApplyPatch tpm-fix-stall-on-boot.patch
 
 # various fixes for Apple and EFI
-ApplyPatch applesmc_update.patch
 ApplyPatch apple_backlight.patch
 ApplyPatch efifb_update.patch
-ApplyPatch linux-next-macbook-air-input.patch
 ApplyPatch acpi_reboot.patch
 ApplyPatch efi_default_physical.patch
 
