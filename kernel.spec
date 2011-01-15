@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -620,7 +620,6 @@ Patch31: linux-2.6-utrace.patch
 Patch32: linux-2.6-utrace-ptrace.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
-Patch151: 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
@@ -633,7 +632,6 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
-Patch384: pci-disable-aspm-if-bios-asks-us-to.patch
 Patch386: pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
@@ -642,7 +640,6 @@ Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch393: acpi-ec-add-delay-before-write.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
-Patch395: acpi-update-battery-information-on-notification-0x81.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
@@ -732,9 +729,6 @@ Patch12205: runtime_pm_fixups.patch
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12401: debug-tty-print-dev-name.patch
-
-Patch12410: mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
-Patch12411: mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
@@ -1181,7 +1175,6 @@ ApplyPatch linux-2.6-utrace-ptrace.patch
 # SPARC64
 #
 ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
-ApplyPatch 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch
 
 #
 # Exec shield
@@ -1213,7 +1206,6 @@ ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
-ApplyPatch acpi-update-battery-information-on-notification-0x81.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
@@ -1229,9 +1221,8 @@ ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
-ApplyPatch pci-disable-aspm-if-bios-asks-us-to.patch
 # rhbz#638912
-ApplyPatch pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
+#ApplyPatch pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 #ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -1341,18 +1332,14 @@ ApplyPatch efi_default_physical.patch
 
 # Runtime PM
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
-ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
-ApplyPatch runtime_pm_fixups.patch
+#ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
+#ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # rhbz#630464
 ApplyPatch debug-tty-print-dev-name.patch
-
-# backport some fixes for kswapd from mmotm, rhbz#649694
-ApplyPatch mm-page-allocator-adjust-the-per-cpu-counter-threshold-when-memory-is-low.patch
-ApplyPatch mm-vmstat-use-a-single-setter-function-and-callback-for-adjusting-percpu-thresholds.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
@@ -1969,6 +1956,18 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 14 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git12.1
+- Linux 2.6.37-git12
+- 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch: drop
+  upstream patch.
+- acpi-update-battery-information-on-notification-0x81.patch: drop upstream
+  patch.
+- mm-*.patch: drop upstream patches.
+- important config changes:
+  ACPI_IPMI=m
+  CRYPTO_AES_NI_INTEL=m [i386]
+  TRANSPARENT_HUGEPAGE=y
+
 * Wed Jan 12 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git9.1
 - Linux 2.6.37-git9
 - Re-enable DEBUG_SET_MODULE_RONX since commit 94462ad3 fixed it.
