@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -732,8 +732,6 @@ Patch12401: debug-tty-print-dev-name.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
-Patch12422: xen_export-arbitrary_virt_to_machine.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1345,8 +1343,6 @@ ApplyPatch debug-tty-print-dev-name.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
-ApplyPatch xen_export-arbitrary_virt_to_machine.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1960,6 +1956,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jan 15 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git13.1
+- Linux 2.6.37-git13
+- Drop xen_export-arbitrary_virt_to_machine.patch, upstream.
+
 * Fri Jan 14 2011 Kyle McMartin <kmcmartin@redhat.com>
 - xen_export-arbitrary_virt_to_machine.patch: pull patch from upstream
   to fix build error.
