@@ -1,0 +1,25 @@
+commit de23be5f3580f7b9b52cad6633bb3a3cd13abafe
+Author: Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Sat Jan 15 10:36:26 2011 +1100
+
+    xen: export arbitrary_virt_to_machine
+    
+    Fixes this build error:
+    
+     ERROR: "arbitrary_virt_to_machine" [drivers/xen/xen-gntdev.ko] undefined!
+    
+    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+
+diff --git a/arch/x86/xen/mmu.c b/arch/x86/xen/mmu.c
+index 7575e55..5e92b61 100644
+--- a/arch/x86/xen/mmu.c
++++ b/arch/x86/xen/mmu.c
+@@ -201,6 +201,7 @@ xmaddr_t arbitrary_virt_to_machine(void *vaddr)
+ 	offset = address & ~PAGE_MASK;
+ 	return XMADDR(((phys_addr_t)pte_mfn(*pte) << PAGE_SHIFT) + offset);
+ }
++EXPORT_SYMBOL_GPL(arbitrary_virt_to_machine);
+ 
+ void make_lowmem_page_readonly(void *vaddr)
+ {

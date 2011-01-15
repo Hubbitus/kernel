@@ -732,6 +732,8 @@ Patch12401: debug-tty-print-dev-name.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
+Patch12422: xen_export-arbitrary_virt_to_machine.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1343,6 +1345,8 @@ ApplyPatch debug-tty-print-dev-name.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
+
+ApplyPatch xen_export-arbitrary_virt_to_machine.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1956,6 +1960,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 14 2011 Kyle McMartin <kmcmartin@redhat.com>
+- xen_export-arbitrary_virt_to_machine.patch: pull patch from upstream
+  to fix build error.
+
 * Fri Jan 14 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git12.1
 - Linux 2.6.37-git12
 - 0001-use-__devexit-not-__exit-in-n2_unregister_algs-fixes.patch: drop
