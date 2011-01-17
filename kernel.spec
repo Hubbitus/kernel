@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 13
+%define gitrev 16
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1956,6 +1956,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 17 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git16.1
+- Linux 2.6.37-git16
+- config changes:
+ - CONFIG_SQUASHFS_XZ=y [generic]
+ - CONFIG_SPARSE_IRQ=y [arm]
+
 * Sat Jan 15 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc0.git13.1
 - Linux 2.6.37-git13
 - Drop xen_export-arbitrary_virt_to_machine.patch, upstream.
