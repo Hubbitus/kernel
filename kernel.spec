@@ -1984,6 +1984,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 19 2011 Roland McGrath <roland@redhat.com>
+- utrace update
+
 * Tue Jan 11 2011 Matthew Garrett <mjg@redhat.com>
 - linux-2.6-ehci-check-port-status.patch - fix USB resume on some AMD systems
 
@@ -1995,10 +1998,10 @@ fi
 - drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch reported to
   fix HP/Sony eDP issues by adamw and airlied.
 
-* Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us> 
+* Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us>
 - build sparc headers on sparcv9
 
-* Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us> 
+* Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us>
 - add patch for sparc build failure
 
 * Tue Jan 04 2011 Kyle McMartin <kyle@redhat.com> 2.6.37-1

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-utrace_base=2.6-current
+utrace_base=2.6.37
 
 url=http://people.redhat.com/roland/utrace/${1:-$utrace_base}
 
