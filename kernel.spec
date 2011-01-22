@@ -1965,6 +1965,9 @@ fi
 * Thu Jan 20 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc1.git1.1
 - Linux 2.6.38-rc1-git1, should fix boot failure in -rc1.
 
+* Wed Jan 19 2011 Roland McGrath <roland@redhat.com>
+- utrace update
+
 * Wed Jan 19 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc1.git0.1
 - Linux 2.6.38-rc1
 
@@ -2034,10 +2037,10 @@ fi
 - drm_i915-check-eDP-encoder-correctly-when-setting-modes.patch reported to
   fix HP/Sony eDP issues by adamw and airlied.
 
-* Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us> 
+* Wed Jan 05 2011 Dennis Gilmore <dennis@ausil.us>
 - build sparc headers on sparcv9
 
-* Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us> 
+* Tue Jan 04 2011 Dennis Gilmore <dennis@ausil.us>
 - add patch for sparc build failure
 
 * Tue Jan 04 2011 Kyle McMartin <kyle@redhat.com> 2.6.37-1
