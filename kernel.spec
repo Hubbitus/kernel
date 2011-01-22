@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1956,6 +1956,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jan 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git0.1
+- Linux 2.6.38-rc2
+- linux-2.6-serial-460800.patch, drivers/serial => drivers/tty/serial
+
 * Thu Jan 20 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc1.git1.1
 - Linux 2.6.38-rc1-git1, should fix boot failure in -rc1.
 
