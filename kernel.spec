@@ -1955,7 +1955,9 @@ fi
 %changelog
 * Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com>
 - debug-tty-print-dev-name.patch: drop, haven't seen any warnings recently.
-- runtime_pm_fixups.patch: rebase and re-enable.
+- runtime_pm_fixups.patch: rebase and re-enable, make acpi_power_transition
+   in pci_bind actually do the right thing instead of (likely) always
+   trying to transition to D0.
 
 * Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git1.1
 - Linux 2.6.38-rc2-git1
