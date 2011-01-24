@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -714,8 +714,6 @@ Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12030: tpm-fix-stall-on-boot.patch
-
 Patch12101: apple_backlight.patch
 Patch12102: efifb_update.patch
 Patch12200: acpi_reboot.patch
@@ -1321,9 +1319,6 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
-
-# try to fix stalls during boot (#530393)
-ApplyPatch tpm-fix-stall-on-boot.patch
 
 # various fixes for Apple and EFI
 ApplyPatch apple_backlight.patch
@@ -1958,6 +1953,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git1.1
+- Linux 2.6.38-rc2-git1
+- [e5cce6c1] tpm: fix panic caused by "tpm: Autodetect itpm devices"
+  may fix some boot issues people were having.
+- tpm-fix-stall-on-boot.patch: upstream.
+
 * Sat Jan 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git0.1
 - Linux 2.6.38-rc2
 - linux-2.6-serial-460800.patch, drivers/serial => drivers/tty/serial
