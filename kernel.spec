@@ -1331,7 +1331,8 @@ ApplyPatch efi_default_physical.patch
 # Runtime PM
 ApplyPatch linux-2.6-ehci-check-port-status.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
-#ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
+### Broken by implicit notify support & ACPICA rebase
+###ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
 ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
