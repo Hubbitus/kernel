@@ -706,6 +706,8 @@ Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 
 # patches headed upstream
 
+Patch12001: perf-gcc460-build-fixes.patch
+
 Patch12010: add-appleir-usb-driver.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -1314,6 +1316,8 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
 
 # Patches headed upstream
+ApplyPatch perf-gcc460-build-fixes.patch
+
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch add-appleir-usb-driver.patch
@@ -1958,6 +1962,8 @@ fi
 - [e5cce6c1] tpm: fix panic caused by "tpm: Autodetect itpm devices"
   may fix some boot issues people were having.
 - tpm-fix-stall-on-boot.patch: upstream.
+- perf-gcc460-build-fixes.patch: fix build issues with warn-unused-but-set
+  in gcc 4.6.0
 
 * Sat Jan 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git0.1
 - Linux 2.6.38-rc2
