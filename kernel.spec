@@ -729,8 +729,6 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12401: debug-tty-print-dev-name.patch
-
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 %endif
@@ -1334,13 +1332,10 @@ ApplyPatch efi_default_physical.patch
 ApplyPatch linux-2.6-ehci-check-port-status.patch
 ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 #ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
-#ApplyPatch runtime_pm_fixups.patch
+ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
-
-# rhbz#630464
-ApplyPatch debug-tty-print-dev-name.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
@@ -1957,6 +1952,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com>
+- debug-tty-print-dev-name.patch: drop, haven't seen any warnings recently.
+- runtime_pm_fixups.patch: rebase and re-enable.
+
 * Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git1.1
 - Linux 2.6.38-rc2-git1
 - [e5cce6c1] tpm: fix panic caused by "tpm: Autodetect itpm devices"
