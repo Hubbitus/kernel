@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1330,10 +1330,10 @@ ApplyPatch efi_default_physical.patch
 
 # Runtime PM
 ApplyPatch linux-2.6-ehci-check-port-status.patch
-ApplyPatch linux-2.6-usb-pci-autosuspend.patch
+#ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ### Broken by implicit notify support & ACPICA rebase
 ###ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
-ApplyPatch runtime_pm_fixups.patch
+#ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -1953,6 +1953,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git1.3
+- Disable usb/pci/acpi autosuspend goo until it can be checked.
+
 * Mon Jan 24 2011 Kyle McMartin <kmcmartin@redhat.com>
 - debug-tty-print-dev-name.patch: drop, haven't seen any warnings recently.
 - runtime_pm_fixups.patch: rebase and re-enable, make acpi_power_transition
