@@ -119,7 +119,7 @@ index 05344c6..373cfc0 100644
 -	len = sym->end - sym->start;
 -
  	sprintf(command,
- 		"objdump --start-address=%#0*Lx --stop-address=%#0*Lx -dS %s",
+ 		"objdump --start-address=%#0*" PRIx64 " --stop-address=%#0*" PRIx64 " -dS %s",
  		BITS_PER_LONG / 4, map__rip_2objdump(map, sym->start),
 @@ -1295,7 +1292,7 @@ static int __cmd_top(void)
  {
