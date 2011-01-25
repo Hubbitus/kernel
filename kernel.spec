@@ -1120,6 +1120,7 @@ cp %{SOURCE15} .
 # Dynamically generate kernel .config files from config-* files
 make -f %{SOURCE20} VERSION=%{version} configs
 
+%if %{?all_arch_configs:1}%{!?all_arch_configs:0}
 #if a rhel kernel, apply the rhel config options
 %if 0%{?rhel}
   for i in %{all_arch_configs}
@@ -1137,6 +1138,7 @@ do
   ./merge.pl %{SOURCE1000} $i.tmp > $i
   rm $i.tmp
 done
+%endif
 
 ApplyOptionalPatch git-linus.diff
 
