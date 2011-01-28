@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1955,6 +1955,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 28 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git7.1
+- Linux 2.6.38-rc2-git7
+
 * Wed Jan 26 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc2.git5.1
 - Linux 2.6.38-rc2-git5
 - [x86] Re-enable TRANSPARENT_HUGEPAGE, should be fixed by cacf061c.
