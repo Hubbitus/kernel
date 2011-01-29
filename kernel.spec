@@ -1378,7 +1378,7 @@ do
 %if %{listnewconfig_fail}
   if [ -s .newoptions ]; then
     cat .newoptions
-    exit 0
+    exit 1
   fi
 %endif
   rm -f .newoptions
