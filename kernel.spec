@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -731,6 +731,8 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
+Patch12430: can-softing-depend-on-iomem.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1342,6 +1344,9 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
+
+# Fix build failure on s390
+ApplyPatch can-softing-depend-on-iomem.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1955,6 +1960,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git7.2
+- Fix build failure on s390.
+
 * Fri Jan 28 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git7.1
 - Linux 2.6.38-rc2-git7
 
