@@ -1,0 +1,896 @@
+diff --git a/fs/lockd/host.c b/fs/lockd/host.c
+index 5f1bcb2..b7c99bf 100644
+--- a/fs/lockd/host.c
++++ b/fs/lockd/host.c
+@@ -520,7 +520,7 @@ static struct nlm_host *next_host_state(struct hlist_head *cache,
+ 					struct nsm_handle *nsm,
+ 					const struct nlm_reboot *info)
+ {
+-	struct nlm_host *host = NULL;
++	struct nlm_host *host;
+ 	struct hlist_head *chain;
+ 	struct hlist_node *pos;
+ 
+@@ -532,12 +532,13 @@ static struct nlm_host *next_host_state(struct hlist_head *cache,
+ 			host->h_state++;
+ 
+ 			nlm_get_host(host);
+-			goto out;
++			mutex_unlock(&nlm_host_mutex);
++			return host;
+ 		}
+ 	}
+-out:
++
+ 	mutex_unlock(&nlm_host_mutex);
+-	return host;
++	return NULL;
+ }
+ 
+ /**
+diff --git a/fs/nfs/callback.c b/fs/nfs/callback.c
+index 1990165..e3d2942 100644
+--- a/fs/nfs/callback.c
++++ b/fs/nfs/callback.c
+@@ -135,33 +135,6 @@ out_err:
+ 
+ #if defined(CONFIG_NFS_V4_1)
+ /*
+- *  * CB_SEQUENCE operations will fail until the callback sessionid is set.
+- *   */
+-int nfs4_set_callback_sessionid(struct nfs_client *clp)
+-{
+-	struct svc_serv *serv = clp->cl_rpcclient->cl_xprt->bc_serv;
+-	struct nfs4_sessionid *bc_sid;
+-
+-	if (!serv->sv_bc_xprt)
+-		return -EINVAL;
+-
+-	/* on success freed in xprt_free */
+-	bc_sid = kmalloc(sizeof(struct nfs4_sessionid), GFP_KERNEL);
+-	if (!bc_sid)
+-		return -ENOMEM;
+-	memcpy(bc_sid->data, &clp->cl_session->sess_id.data,
+-		NFS4_MAX_SESSIONID_LEN);
+-	spin_lock_bh(&serv->sv_cb_lock);
+-	serv->sv_bc_xprt->xpt_bc_sid = bc_sid;
+-	spin_unlock_bh(&serv->sv_cb_lock);
+-	dprintk("%s set xpt_bc_sid=%u:%u:%u:%u for sv_bc_xprt %p\n", __func__,
+-		((u32 *)bc_sid->data)[0], ((u32 *)bc_sid->data)[1],
+-		((u32 *)bc_sid->data)[2], ((u32 *)bc_sid->data)[3],
+-		serv->sv_bc_xprt);
+-	return 0;
+-}
+-
+-/*
+  * The callback service for NFSv4.1 callbacks
+  */
+ static int
+@@ -266,10 +239,6 @@ static inline void nfs_callback_bc_serv(u32 minorversion, struct rpc_xprt *xprt,
+ 		struct nfs_callback_data *cb_info)
+ {
+ }
+-int nfs4_set_callback_sessionid(struct nfs_client *clp)
+-{
+-	return 0;
+-}
+ #endif /* CONFIG_NFS_V4_1 */
+ 
+ /*
+@@ -359,78 +328,58 @@ void nfs_callback_down(int minorversion)
+ 	mutex_unlock(&nfs_callback_mutex);
+ }
+ 
+-static int check_gss_callback_principal(struct nfs_client *clp,
+-					struct svc_rqst *rqstp)
++/* Boolean check of RPC_AUTH_GSS principal */
++int
++check_gss_callback_principal(struct nfs_client *clp, struct svc_rqst *rqstp)
+ {
+ 	struct rpc_clnt *r = clp->cl_rpcclient;
+ 	char *p = svc_gss_principal(rqstp);
+ 
++	if (rqstp->rq_authop->flavour != RPC_AUTH_GSS)
++		return 1;
++
+ 	/* No RPC_AUTH_GSS on NFSv4.1 back channel yet */
+ 	if (clp->cl_minorversion != 0)
+-		return SVC_DROP;
++		return 0;
+ 	/*
+ 	 * It might just be a normal user principal, in which case
+ 	 * userspace won't bother to tell us the name at all.
+ 	 */
+ 	if (p == NULL)
+-		return SVC_DENIED;
++		return 0;
+ 
+ 	/* Expect a GSS_C_NT_HOSTBASED_NAME like "nfs@serverhostname" */
+ 
+ 	if (memcmp(p, "nfs@", 4) != 0)
+-		return SVC_DENIED;
++		return 0;
+ 	p += 4;
+ 	if (strcmp(p, r->cl_server) != 0)
+-		return SVC_DENIED;
+-	return SVC_OK;
++		return 0;
++	return 1;
+ }
+ 
+-/* pg_authenticate method helper */
+-static struct nfs_client *nfs_cb_find_client(struct svc_rqst *rqstp)
+-{
+-	struct nfs4_sessionid *sessionid = bc_xprt_sid(rqstp);
+-	int is_cb_compound = rqstp->rq_proc == CB_COMPOUND ? 1 : 0;
+-
+-	dprintk("--> %s rq_proc %d\n", __func__, rqstp->rq_proc);
+-	if (svc_is_backchannel(rqstp))
+-		/* Sessionid (usually) set after CB_NULL ping */
+-		return nfs4_find_client_sessionid(svc_addr(rqstp), sessionid,
+-						  is_cb_compound);
+-	else
+-		/* No callback identifier in pg_authenticate */
+-		return nfs4_find_client_no_ident(svc_addr(rqstp));
+-}
+-
+-/* pg_authenticate method for nfsv4 callback threads. */
++/*
++ * pg_authenticate method for nfsv4 callback threads.
++ *
++ * The authflavor has been negotiated, so an incorrect flavor is a server
++ * bug. Drop packets with incorrect authflavor.
++ *
++ * All other checking done after NFS decoding where the nfs_client can be
++ * found in nfs4_callback_compound
++ */
+ static int nfs_callback_authenticate(struct svc_rqst *rqstp)
+ {
+-	struct nfs_client *clp;
+-	RPC_IFDEBUG(char buf[RPC_MAX_ADDRBUFLEN]);
+-	int ret = SVC_OK;
+-
+-	/* Don't talk to strangers */
+-	clp = nfs_cb_find_client(rqstp);
+-	if (clp == NULL)
+-		return SVC_DROP;
+-
+-	dprintk("%s: %s NFSv4 callback!\n", __func__,
+-			svc_print_addr(rqstp, buf, sizeof(buf)));
+-
+ 	switch (rqstp->rq_authop->flavour) {
+-		case RPC_AUTH_NULL:
+-			if (rqstp->rq_proc != CB_NULL)
+-				ret = SVC_DENIED;
+-			break;
+-		case RPC_AUTH_UNIX:
+-			break;
+-		case RPC_AUTH_GSS:
+-			ret = check_gss_callback_principal(clp, rqstp);
+-			break;
+-		default:
+-			ret = SVC_DENIED;
++	case RPC_AUTH_NULL:
++		if (rqstp->rq_proc != CB_NULL)
++			return SVC_DROP;
++		break;
++	case RPC_AUTH_GSS:
++		/* No RPC_AUTH_GSS support yet in NFSv4.1 */
++		 if (svc_is_backchannel(rqstp))
++			return SVC_DROP;
+ 	}
+-	nfs_put_client(clp);
+-	return ret;
++	return SVC_OK;
+ }
+ 
+ /*
+diff --git a/fs/nfs/callback.h b/fs/nfs/callback.h
+index d3b44f9..46d93ce 100644
+--- a/fs/nfs/callback.h
++++ b/fs/nfs/callback.h
+@@ -7,6 +7,7 @@
+  */
+ #ifndef __LINUX_FS_NFS_CALLBACK_H
+ #define __LINUX_FS_NFS_CALLBACK_H
++#include <linux/sunrpc/svc.h>
+ 
+ #define NFS4_CALLBACK 0x40000000
+ #define NFS4_CALLBACK_XDRSIZE 2048
+@@ -37,7 +38,6 @@ enum nfs4_callback_opnum {
+ struct cb_process_state {
+ 	__be32			drc_status;
+ 	struct nfs_client	*clp;
+-	struct nfs4_sessionid	*svc_sid; /* v4.1 callback service sessionid */
+ };
+ 
+ struct cb_compound_hdr_arg {
+@@ -168,7 +168,7 @@ extern unsigned nfs4_callback_layoutrecall(
+ extern void nfs4_check_drain_bc_complete(struct nfs4_session *ses);
+ extern void nfs4_cb_take_slot(struct nfs_client *clp);
+ #endif /* CONFIG_NFS_V4_1 */
+-
++extern int check_gss_callback_principal(struct nfs_client *, struct svc_rqst *);
+ extern __be32 nfs4_callback_getattr(struct cb_getattrargs *args,
+ 				    struct cb_getattrres *res,
+ 				    struct cb_process_state *cps);
+diff --git a/fs/nfs/callback_proc.c b/fs/nfs/callback_proc.c
+index 4bb91cb..8958757 100644
+--- a/fs/nfs/callback_proc.c
++++ b/fs/nfs/callback_proc.c
+@@ -373,17 +373,11 @@ __be32 nfs4_callback_sequence(struct cb_sequenceargs *args,
+ {
+ 	struct nfs_client *clp;
+ 	int i;
+-	__be32 status;
++	__be32 status = htonl(NFS4ERR_BADSESSION);
+ 
+ 	cps->clp = NULL;
+ 
+-	status = htonl(NFS4ERR_BADSESSION);
+-	/* Incoming session must match the callback session */
+-	if (memcmp(&args->csa_sessionid, cps->svc_sid, NFS4_MAX_SESSIONID_LEN))
+-		goto out;
+-
+-	clp = nfs4_find_client_sessionid(args->csa_addr,
+-					 &args->csa_sessionid, 1);
++	clp = nfs4_find_client_sessionid(args->csa_addr, &args->csa_sessionid);
+ 	if (clp == NULL)
+ 		goto out;
+ 
+@@ -414,9 +408,9 @@ __be32 nfs4_callback_sequence(struct cb_sequenceargs *args,
+ 	res->csr_highestslotid = NFS41_BC_MAX_CALLBACKS - 1;
+ 	res->csr_target_highestslotid = NFS41_BC_MAX_CALLBACKS - 1;
+ 	nfs4_cb_take_slot(clp);
+-	cps->clp = clp; /* put in nfs4_callback_compound */
+ 
+ out:
++	cps->clp = clp; /* put in nfs4_callback_compound */
+ 	for (i = 0; i < args->csa_nrclists; i++)
+ 		kfree(args->csa_rclists[i].rcl_refcalls);
+ 	kfree(args->csa_rclists);
+diff --git a/fs/nfs/callback_xdr.c b/fs/nfs/callback_xdr.c
+index 23112c2..14e0f93 100644
+--- a/fs/nfs/callback_xdr.c
++++ b/fs/nfs/callback_xdr.c
+@@ -794,10 +794,9 @@ static __be32 nfs4_callback_compound(struct svc_rqst *rqstp, void *argp, void *r
+ 
+ 	if (hdr_arg.minorversion == 0) {
+ 		cps.clp = nfs4_find_client_ident(hdr_arg.cb_ident);
+-		if (!cps.clp)
++		if (!cps.clp || !check_gss_callback_principal(cps.clp, rqstp))
+ 			return rpc_drop_reply;
+-	} else
+-		cps.svc_sid = bc_xprt_sid(rqstp);
++	}
+ 
+ 	hdr_res.taglen = hdr_arg.taglen;
+ 	hdr_res.tag = hdr_arg.tag;
+diff --git a/fs/nfs/client.c b/fs/nfs/client.c
+index 192f2f8..bd3ca32 100644
+--- a/fs/nfs/client.c
++++ b/fs/nfs/client.c
+@@ -1206,16 +1206,11 @@ nfs4_find_client_ident(int cb_ident)
+  * For CB_COMPOUND calls, find a client by IP address, protocol version,
+  * minorversion, and sessionID
+  *
+- * CREATE_SESSION triggers a CB_NULL ping from servers. The callback service
+- * sessionid can only be set after the CREATE_SESSION return, so a CB_NULL
+- * can arrive before the callback sessionid is set. For CB_NULL calls,
+- * find a client by IP address protocol version, and minorversion.
+- *
+  * Returns NULL if no such client
+  */
+ struct nfs_client *
+ nfs4_find_client_sessionid(const struct sockaddr *addr,
+-			   struct nfs4_sessionid *sid, int is_cb_compound)
++			   struct nfs4_sessionid *sid)
+ {
+ 	struct nfs_client *clp;
+ 
+@@ -1227,9 +1222,9 @@ nfs4_find_client_sessionid(const struct sockaddr *addr,
+ 		if (!nfs4_has_session(clp))
+ 			continue;
+ 
+-		/* Match sessionid unless cb_null call*/
+-		if (is_cb_compound && (memcmp(clp->cl_session->sess_id.data,
+-		    sid->data, NFS4_MAX_SESSIONID_LEN) != 0))
++		/* Match sessionid*/
++		if (memcmp(clp->cl_session->sess_id.data,
++		    sid->data, NFS4_MAX_SESSIONID_LEN) != 0)
+ 			continue;
+ 
+ 		atomic_inc(&clp->cl_count);
+@@ -1244,7 +1239,7 @@ nfs4_find_client_sessionid(const struct sockaddr *addr,
+ 
+ struct nfs_client *
+ nfs4_find_client_sessionid(const struct sockaddr *addr,
+-			   struct nfs4_sessionid *sid, int is_cb_compound)
++			   struct nfs4_sessionid *sid)
+ {
+ 	return NULL;
+ }
+diff --git a/fs/nfs/delegation.c b/fs/nfs/delegation.c
+index 364e432..bbbc6bf 100644
+--- a/fs/nfs/delegation.c
++++ b/fs/nfs/delegation.c
+@@ -23,8 +23,6 @@
+ 
+ static void nfs_do_free_delegation(struct nfs_delegation *delegation)
+ {
+-	if (delegation->cred)
+-		put_rpccred(delegation->cred);
+ 	kfree(delegation);
+ }
+ 
+@@ -37,6 +35,10 @@ static void nfs_free_delegation_callback(struct rcu_head *head)
+ 
+ static void nfs_free_delegation(struct nfs_delegation *delegation)
+ {
++	if (delegation->cred) {
++		put_rpccred(delegation->cred);
++		delegation->cred = NULL;
++	}
+ 	call_rcu(&delegation->rcu, nfs_free_delegation_callback);
+ }
+ 
+diff --git a/fs/nfs/direct.c b/fs/nfs/direct.c
+index e6ace0d..9943a75 100644
+--- a/fs/nfs/direct.c
++++ b/fs/nfs/direct.c
+@@ -407,15 +407,18 @@ static ssize_t nfs_direct_read_schedule_iovec(struct nfs_direct_req *dreq,
+ 		pos += vec->iov_len;
+ 	}
+ 
++	/*
++	 * If no bytes were started, return the error, and let the
++	 * generic layer handle the completion.
++	 */
++	if (requested_bytes == 0) {
++		nfs_direct_req_release(dreq);
++		return result < 0 ? result : -EIO;
++	}
++
+ 	if (put_dreq(dreq))
+ 		nfs_direct_complete(dreq);
+-
+-	if (requested_bytes != 0)
+-		return 0;
+-
+-	if (result < 0)
+-		return result;
+-	return -EIO;
++	return 0;
+ }
+ 
+ static ssize_t nfs_direct_read(struct kiocb *iocb, const struct iovec *iov,
+@@ -841,15 +844,18 @@ static ssize_t nfs_direct_write_schedule_iovec(struct nfs_direct_req *dreq,
+ 		pos += vec->iov_len;
+ 	}
+ 
++	/*
++	 * If no bytes were started, return the error, and let the
++	 * generic layer handle the completion.
++	 */
++	if (requested_bytes == 0) {
++		nfs_direct_req_release(dreq);
++		return result < 0 ? result : -EIO;
++	}
++
+ 	if (put_dreq(dreq))
+ 		nfs_direct_write_complete(dreq, dreq->inode);
+-
+-	if (requested_bytes != 0)
+-		return 0;
+-
+-	if (result < 0)
+-		return result;
+-	return -EIO;
++	return 0;
+ }
+ 
+ static ssize_t nfs_direct_write(struct kiocb *iocb, const struct iovec *iov,
+diff --git a/fs/nfs/inode.c b/fs/nfs/inode.c
+index d851242..1cc600e 100644
+--- a/fs/nfs/inode.c
++++ b/fs/nfs/inode.c
+@@ -881,9 +881,10 @@ out:
+ 	return ret;
+ }
+ 
+-static void nfs_wcc_update_inode(struct inode *inode, struct nfs_fattr *fattr)
++static unsigned long nfs_wcc_update_inode(struct inode *inode, struct nfs_fattr *fattr)
+ {
+ 	struct nfs_inode *nfsi = NFS_I(inode);
++	unsigned long ret = 0;
+ 
+ 	if ((fattr->valid & NFS_ATTR_FATTR_PRECHANGE)
+ 			&& (fattr->valid & NFS_ATTR_FATTR_CHANGE)
+@@ -891,25 +892,32 @@ static void nfs_wcc_update_inode(struct inode *inode, struct nfs_fattr *fattr)
+ 		nfsi->change_attr = fattr->change_attr;
+ 		if (S_ISDIR(inode->i_mode))
+ 			nfsi->cache_validity |= NFS_INO_INVALID_DATA;
++		ret |= NFS_INO_INVALID_ATTR;
+ 	}
+ 	/* If we have atomic WCC data, we may update some attributes */
+ 	if ((fattr->valid & NFS_ATTR_FATTR_PRECTIME)
+ 			&& (fattr->valid & NFS_ATTR_FATTR_CTIME)
+-			&& timespec_equal(&inode->i_ctime, &fattr->pre_ctime))
+-			memcpy(&inode->i_ctime, &fattr->ctime, sizeof(inode->i_ctime));
++			&& timespec_equal(&inode->i_ctime, &fattr->pre_ctime)) {
++		memcpy(&inode->i_ctime, &fattr->ctime, sizeof(inode->i_ctime));
++		ret |= NFS_INO_INVALID_ATTR;
++	}
+ 
+ 	if ((fattr->valid & NFS_ATTR_FATTR_PREMTIME)
+ 			&& (fattr->valid & NFS_ATTR_FATTR_MTIME)
+ 			&& timespec_equal(&inode->i_mtime, &fattr->pre_mtime)) {
+-			memcpy(&inode->i_mtime, &fattr->mtime, sizeof(inode->i_mtime));
+-			if (S_ISDIR(inode->i_mode))
+-				nfsi->cache_validity |= NFS_INO_INVALID_DATA;
++		memcpy(&inode->i_mtime, &fattr->mtime, sizeof(inode->i_mtime));
++		if (S_ISDIR(inode->i_mode))
++			nfsi->cache_validity |= NFS_INO_INVALID_DATA;
++		ret |= NFS_INO_INVALID_ATTR;
+ 	}
+ 	if ((fattr->valid & NFS_ATTR_FATTR_PRESIZE)
+ 			&& (fattr->valid & NFS_ATTR_FATTR_SIZE)
+ 			&& i_size_read(inode) == nfs_size_to_loff_t(fattr->pre_size)
+-			&& nfsi->npages == 0)
+-			i_size_write(inode, nfs_size_to_loff_t(fattr->size));
++			&& nfsi->npages == 0) {
++		i_size_write(inode, nfs_size_to_loff_t(fattr->size));
++		ret |= NFS_INO_INVALID_ATTR;
++	}
++	return ret;
+ }
+ 
+ /**
+@@ -1223,7 +1231,7 @@ static int nfs_update_inode(struct inode *inode, struct nfs_fattr *fattr)
+ 			| NFS_INO_REVAL_PAGECACHE);
+ 
+ 	/* Do atomic weak cache consistency updates */
+-	nfs_wcc_update_inode(inode, fattr);
++	invalid |= nfs_wcc_update_inode(inode, fattr);
+ 
+ 	/* More cache consistency checks */
+ 	if (fattr->valid & NFS_ATTR_FATTR_CHANGE) {
+diff --git a/fs/nfs/internal.h b/fs/nfs/internal.h
+index 4644f04..cf9fdbd 100644
+--- a/fs/nfs/internal.h
++++ b/fs/nfs/internal.h
+@@ -133,8 +133,7 @@ extern void nfs_put_client(struct nfs_client *);
+ extern struct nfs_client *nfs4_find_client_no_ident(const struct sockaddr *);
+ extern struct nfs_client *nfs4_find_client_ident(int);
+ extern struct nfs_client *
+-nfs4_find_client_sessionid(const struct sockaddr *, struct nfs4_sessionid *,
+-			   int);
++nfs4_find_client_sessionid(const struct sockaddr *, struct nfs4_sessionid *);
+ extern struct nfs_server *nfs_create_server(
+ 					const struct nfs_parsed_mount_data *,
+ 					struct nfs_fh *);
+diff --git a/fs/nfs/nfs3acl.c b/fs/nfs/nfs3acl.c
+index 9f88c5f..2743427 100644
+--- a/fs/nfs/nfs3acl.c
++++ b/fs/nfs/nfs3acl.c
+@@ -311,8 +311,8 @@ static int nfs3_proc_setacls(struct inode *inode, struct posix_acl *acl,
+ 	if (!nfs_server_capable(inode, NFS_CAP_ACLS))
+ 		goto out;
+ 
+-	/* We are doing this here, because XDR marshalling can only
+-	   return -ENOMEM. */
++	/* We are doing this here because XDR marshalling does not
++	 * return any results, it BUGs. */
+ 	status = -ENOSPC;
+ 	if (acl != NULL && acl->a_count > NFS_ACL_MAX_ENTRIES)
+ 		goto out;
+diff --git a/fs/nfs/nfs3xdr.c b/fs/nfs/nfs3xdr.c
+index 01c5e8b..183c6b1 100644
+--- a/fs/nfs/nfs3xdr.c
++++ b/fs/nfs/nfs3xdr.c
+@@ -1328,10 +1328,13 @@ static void nfs3_xdr_enc_setacl3args(struct rpc_rqst *req,
+ 
+ 	encode_nfs_fh3(xdr, NFS_FH(args->inode));
+ 	encode_uint32(xdr, args->mask);
++
++	base = req->rq_slen;
+ 	if (args->npages != 0)
+ 		xdr_write_pages(xdr, args->pages, 0, args->len);
++	else
++		xdr_reserve_space(xdr, NFS_ACL_INLINE_BUFSIZE);
+ 
+-	base = req->rq_slen;
+ 	error = nfsacl_encode(xdr->buf, base, args->inode,
+ 			    (args->mask & NFS_ACL) ?
+ 			    args->acl_access : NULL, 1, 0);
+diff --git a/fs/nfs/nfs4filelayoutdev.c b/fs/nfs/nfs4filelayoutdev.c
+index 51fe64a..f5c9b12 100644
+--- a/fs/nfs/nfs4filelayoutdev.c
++++ b/fs/nfs/nfs4filelayoutdev.c
+@@ -214,7 +214,7 @@ decode_and_add_ds(__be32 **pp, struct inode *inode)
+ 
+ 	/* ipv6 length plus port is legal */
+ 	if (rlen > INET6_ADDRSTRLEN + 8) {
+-		dprintk("%s Invalid address, length %d\n", __func__,
++		dprintk("%s: Invalid address, length %d\n", __func__,
+ 			rlen);
+ 		goto out_err;
+ 	}
+@@ -225,6 +225,11 @@ decode_and_add_ds(__be32 **pp, struct inode *inode)
+ 	/* replace the port dots with dashes for the in4_pton() delimiter*/
+ 	for (i = 0; i < 2; i++) {
+ 		char *res = strrchr(buf, '.');
++		if (!res) {
++			dprintk("%s: Failed finding expected dots in port\n",
++				__func__);
++			goto out_free;
++		}
+ 		*res = '-';
+ 	}
+ 
+@@ -240,7 +245,7 @@ decode_and_add_ds(__be32 **pp, struct inode *inode)
+ 	port = htons((tmp[0] << 8) | (tmp[1]));
+ 
+ 	ds = nfs4_pnfs_ds_add(inode, ip_addr, port);
+-	dprintk("%s Decoded address and port %s\n", __func__, buf);
++	dprintk("%s: Decoded address and port %s\n", __func__, buf);
+ out_free:
+ 	kfree(buf);
+ out_err:
+diff --git a/fs/nfs/nfs4proc.c b/fs/nfs/nfs4proc.c
+index 9d992b0..78936a8 100644
+--- a/fs/nfs/nfs4proc.c
++++ b/fs/nfs/nfs4proc.c
+@@ -50,6 +50,7 @@
+ #include <linux/module.h>
+ #include <linux/sunrpc/bc_xprt.h>
+ #include <linux/xattr.h>
++#include <linux/utsname.h>
+ 
+ #include "nfs4_fs.h"
+ #include "delegation.h"
+@@ -4572,27 +4573,16 @@ int nfs4_proc_exchange_id(struct nfs_client *clp, struct rpc_cred *cred)
+ 	*p = htonl((u32)clp->cl_boot_time.tv_nsec);
+ 	args.verifier = &verifier;
+ 
+-	while (1) {
+-		args.id_len = scnprintf(args.id, sizeof(args.id),
+-					"%s/%s %u",
+-					clp->cl_ipaddr,
+-					rpc_peeraddr2str(clp->cl_rpcclient,
+-							 RPC_DISPLAY_ADDR),
+-					clp->cl_id_uniquifier);
+-
+-		status = rpc_call_sync(clp->cl_rpcclient, &msg, 0);
+-
+-		if (status != -NFS4ERR_CLID_INUSE)
+-			break;
+-
+-		if (signalled())
+-			break;
+-
+-		if (++clp->cl_id_uniquifier == 0)
+-			break;
+-	}
++	args.id_len = scnprintf(args.id, sizeof(args.id),
++				"%s/%s.%s/%u",
++				clp->cl_ipaddr,
++				init_utsname()->nodename,
++				init_utsname()->domainname,
++				clp->cl_rpcclient->cl_auth->au_flavor);
+ 
+-	status = nfs4_check_cl_exchange_flags(clp->cl_exchange_flags);
++	status = rpc_call_sync(clp->cl_rpcclient, &msg, 0);
++	if (!status)
++		status = nfs4_check_cl_exchange_flags(clp->cl_exchange_flags);
+ 	dprintk("<-- %s status= %d\n", __func__, status);
+ 	return status;
+ }
+diff --git a/fs/nfs/nfs4state.c b/fs/nfs/nfs4state.c
+index 2336d53..e6742b5 100644
+--- a/fs/nfs/nfs4state.c
++++ b/fs/nfs/nfs4state.c
+@@ -232,12 +232,6 @@ int nfs41_init_clientid(struct nfs_client *clp, struct rpc_cred *cred)
+ 	status = nfs4_proc_create_session(clp);
+ 	if (status != 0)
+ 		goto out;
+-	status = nfs4_set_callback_sessionid(clp);
+-	if (status != 0) {
+-		printk(KERN_WARNING "Sessionid not set. No callback service\n");
+-		nfs_callback_down(1);
+-		status = 0;
+-	}
+ 	nfs41_setup_state_renewal(clp);
+ 	nfs_mark_client_ready(clp, NFS_CS_READY);
+ out:
+diff --git a/fs/nfs/nfs4xdr.c b/fs/nfs/nfs4xdr.c
+index 2ab8e5c..4e2c168 100644
+--- a/fs/nfs/nfs4xdr.c
++++ b/fs/nfs/nfs4xdr.c
+@@ -6086,11 +6086,11 @@ int nfs4_decode_dirent(struct xdr_stream *xdr, struct nfs_entry *entry,
+ 	__be32 *p = xdr_inline_decode(xdr, 4);
+ 	if (unlikely(!p))
+ 		goto out_overflow;
+-	if (!ntohl(*p++)) {
++	if (*p == xdr_zero) {
+ 		p = xdr_inline_decode(xdr, 4);
+ 		if (unlikely(!p))
+ 			goto out_overflow;
+-		if (!ntohl(*p++))
++		if (*p == xdr_zero)
+ 			return -EAGAIN;
+ 		entry->eof = 1;
+ 		return -EBADCOOKIE;
+@@ -6101,7 +6101,7 @@ int nfs4_decode_dirent(struct xdr_stream *xdr, struct nfs_entry *entry,
+ 		goto out_overflow;
+ 	entry->prev_cookie = entry->cookie;
+ 	p = xdr_decode_hyper(p, &entry->cookie);
+-	entry->len = ntohl(*p++);
++	entry->len = be32_to_cpup(p);
+ 
+ 	p = xdr_inline_decode(xdr, entry->len);
+ 	if (unlikely(!p))
+@@ -6132,9 +6132,6 @@ int nfs4_decode_dirent(struct xdr_stream *xdr, struct nfs_entry *entry,
+ 	if (entry->fattr->valid & NFS_ATTR_FATTR_TYPE)
+ 		entry->d_type = nfs_umode_to_dtype(entry->fattr->mode);
+ 
+-	if (verify_attr_len(xdr, p, len) < 0)
+-		goto out_overflow;
+-
+ 	return 0;
+ 
+ out_overflow:
+diff --git a/fs/nfs/pnfs.c b/fs/nfs/pnfs.c
+index bc40897..1b1bc1a 100644
+--- a/fs/nfs/pnfs.c
++++ b/fs/nfs/pnfs.c
+@@ -951,7 +951,7 @@ pnfs_put_deviceid_cache(struct nfs_client *clp)
+ {
+ 	struct pnfs_deviceid_cache *local = clp->cl_devid_cache;
+ 
+-	dprintk("--> %s cl_devid_cache %p\n", __func__, clp->cl_devid_cache);
++	dprintk("--> %s ({%d})\n", __func__, atomic_read(&local->dc_ref));
+ 	if (atomic_dec_and_lock(&local->dc_ref, &clp->cl_lock)) {
+ 		int i;
+ 		/* Verify cache is empty */
+diff --git a/fs/nfs/write.c b/fs/nfs/write.c
+index 10d648e..c8278f4 100644
+--- a/fs/nfs/write.c
++++ b/fs/nfs/write.c
+@@ -932,7 +932,7 @@ out_bad:
+ 	while (!list_empty(&list)) {
+ 		data = list_entry(list.next, struct nfs_write_data, pages);
+ 		list_del(&data->pages);
+-		nfs_writedata_release(data);
++		nfs_writedata_free(data);
+ 	}
+ 	nfs_redirty_request(req);
+ 	return -ENOMEM;
+diff --git a/fs/nfs_common/nfsacl.c b/fs/nfs_common/nfsacl.c
+index fc1c525..84c27d6 100644
+--- a/fs/nfs_common/nfsacl.c
++++ b/fs/nfs_common/nfsacl.c
+@@ -42,6 +42,11 @@ struct nfsacl_encode_desc {
+ 	gid_t gid;
+ };
+ 
++struct nfsacl_simple_acl {
++	struct posix_acl acl;
++	struct posix_acl_entry ace[4];
++};
++
+ static int
+ xdr_nfsace_encode(struct xdr_array2_desc *desc, void *elem)
+ {
+@@ -72,9 +77,20 @@ xdr_nfsace_encode(struct xdr_array2_desc *desc, void *elem)
+ 	return 0;
+ }
+ 
+-unsigned int
+-nfsacl_encode(struct xdr_buf *buf, unsigned int base, struct inode *inode,
+-	      struct posix_acl *acl, int encode_entries, int typeflag)
++/**
++ * nfsacl_encode - Encode an NFSv3 ACL
++ *
++ * @buf: destination xdr_buf to contain XDR encoded ACL
++ * @base: byte offset in xdr_buf where XDR'd ACL begins
++ * @inode: inode of file whose ACL this is
++ * @acl: posix_acl to encode
++ * @encode_entries: whether to encode ACEs as well
++ * @typeflag: ACL type: NFS_ACL_DEFAULT or zero
++ *
++ * Returns size of encoded ACL in bytes or a negative errno value.
++ */
++int nfsacl_encode(struct xdr_buf *buf, unsigned int base, struct inode *inode,
++		  struct posix_acl *acl, int encode_entries, int typeflag)
+ {
+ 	int entries = (acl && acl->a_count) ? max_t(int, acl->a_count, 4) : 0;
+ 	struct nfsacl_encode_desc nfsacl_desc = {
+@@ -88,17 +104,22 @@ nfsacl_encode(struct xdr_buf *buf, unsigned int base, struct inode *inode,
+ 		.uid = inode->i_uid,
+ 		.gid = inode->i_gid,
+ 	};
++	struct nfsacl_simple_acl aclbuf;
+ 	int err;
+-	struct posix_acl *acl2 = NULL;
+ 
+ 	if (entries > NFS_ACL_MAX_ENTRIES ||
+ 	    xdr_encode_word(buf, base, entries))
+ 		return -EINVAL;
+ 	if (encode_entries && acl && acl->a_count == 3) {
+-		/* Fake up an ACL_MASK entry. */
+-		acl2 = posix_acl_alloc(4, GFP_KERNEL);
+-		if (!acl2)
+-			return -ENOMEM;
++		struct posix_acl *acl2 = &aclbuf.acl;
++
++		/* Avoid the use of posix_acl_alloc().  nfsacl_encode() is
++		 * invoked in contexts where a memory allocation failure is
++		 * fatal.  Fortunately this fake ACL is small enough to
++		 * construct on the stack. */
++		memset(acl2, 0, sizeof(acl2));
++		posix_acl_init(acl2, 4);
++
+ 		/* Insert entries in canonical order: other orders seem
+ 		 to confuse Solaris VxFS. */
+ 		acl2->a_entries[0] = acl->a_entries[0];  /* ACL_USER_OBJ */
+@@ -109,8 +130,6 @@ nfsacl_encode(struct xdr_buf *buf, unsigned int base, struct inode *inode,
+ 		nfsacl_desc.acl = acl2;
+ 	}
+ 	err = xdr_encode_array2(buf, base + 4, &nfsacl_desc.desc);
+-	if (acl2)
+-		posix_acl_release(acl2);
+ 	if (!err)
+ 		err = 8 + nfsacl_desc.desc.elem_size *
+ 			  nfsacl_desc.desc.array_len;
+@@ -224,9 +243,18 @@ posix_acl_from_nfsacl(struct posix_acl *acl)
+ 	return 0;
+ }
+ 
+-unsigned int
+-nfsacl_decode(struct xdr_buf *buf, unsigned int base, unsigned int *aclcnt,
+-	      struct posix_acl **pacl)
++/**
++ * nfsacl_decode - Decode an NFSv3 ACL
++ *
++ * @buf: xdr_buf containing XDR'd ACL data to decode
++ * @base: byte offset in xdr_buf where XDR'd ACL begins
++ * @aclcnt: count of ACEs in decoded posix_acl
++ * @pacl: buffer in which to place decoded posix_acl
++ *
++ * Returns the length of the decoded ACL in bytes, or a negative errno value.
++ */
++int nfsacl_decode(struct xdr_buf *buf, unsigned int base, unsigned int *aclcnt,
++		  struct posix_acl **pacl)
+ {
+ 	struct nfsacl_decode_desc nfsacl_desc = {
+ 		.desc = {
+diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+index 39df95a..b1cf6bf 100644
+--- a/fs/posix_acl.c
++++ b/fs/posix_acl.c
+@@ -22,6 +22,7 @@
+ 
+ #include <linux/errno.h>
+ 
++EXPORT_SYMBOL(posix_acl_init);
+ EXPORT_SYMBOL(posix_acl_alloc);
+ EXPORT_SYMBOL(posix_acl_clone);
+ EXPORT_SYMBOL(posix_acl_valid);
+@@ -32,6 +33,16 @@ EXPORT_SYMBOL(posix_acl_chmod_masq);
+ EXPORT_SYMBOL(posix_acl_permission);
+ 
+ /*
++ * Init a fresh posix_acl
++ */
++void
++posix_acl_init(struct posix_acl *acl, int count)
++{
++	atomic_set(&acl->a_refcount, 1);
++	acl->a_count = count;
++}
++
++/*
+  * Allocate a new ACL with the specified number of entries.
+  */
+ struct posix_acl *
+@@ -40,10 +51,8 @@ posix_acl_alloc(int count, gfp_t flags)
+ 	const size_t size = sizeof(struct posix_acl) +
+ 	                    count * sizeof(struct posix_acl_entry);
+ 	struct posix_acl *acl = kmalloc(size, flags);
+-	if (acl) {
+-		atomic_set(&acl->a_refcount, 1);
+-		acl->a_count = count;
+-	}
++	if (acl)
++		posix_acl_init(acl, count);
+ 	return acl;
+ }
+ 
+diff --git a/include/linux/nfsacl.h b/include/linux/nfsacl.h
+index f321b57..fabcb1e 100644
+--- a/include/linux/nfsacl.h
++++ b/include/linux/nfsacl.h
+@@ -51,10 +51,10 @@ nfsacl_size(struct posix_acl *acl_access, struct posix_acl *acl_default)
+ 	return w;
+ }
+ 
+-extern unsigned int
++extern int
+ nfsacl_encode(struct xdr_buf *buf, unsigned int base, struct inode *inode,
+ 	      struct posix_acl *acl, int encode_entries, int typeflag);
+-extern unsigned int
++extern int
+ nfsacl_decode(struct xdr_buf *buf, unsigned int base, unsigned int *aclcnt,
+ 	      struct posix_acl **pacl);
+ 
+diff --git a/include/linux/posix_acl.h b/include/linux/posix_acl.h
+index d68283a..54211c1 100644
+--- a/include/linux/posix_acl.h
++++ b/include/linux/posix_acl.h
+@@ -71,6 +71,7 @@ posix_acl_release(struct posix_acl *acl)
+ 
+ /* posix_acl.c */
+ 
++extern void posix_acl_init(struct posix_acl *, int);
+ extern struct posix_acl *posix_acl_alloc(int, gfp_t);
+ extern struct posix_acl *posix_acl_clone(const struct posix_acl *, gfp_t);
+ extern int posix_acl_valid(const struct posix_acl *);
+diff --git a/include/linux/sunrpc/bc_xprt.h b/include/linux/sunrpc/bc_xprt.h
+index c50b458..0828842 100644
+--- a/include/linux/sunrpc/bc_xprt.h
++++ b/include/linux/sunrpc/bc_xprt.h
+@@ -47,14 +47,6 @@ static inline int svc_is_backchannel(const struct svc_rqst *rqstp)
+ 		return 1;
+ 	return 0;
+ }
+-static inline struct nfs4_sessionid *bc_xprt_sid(struct svc_rqst *rqstp)
+-{
+-	if (svc_is_backchannel(rqstp))
+-		return (struct nfs4_sessionid *)
+-			rqstp->rq_server->sv_bc_xprt->xpt_bc_sid;
+-	return NULL;
+-}
+-
+ #else /* CONFIG_NFS_V4_1 */
+ static inline int xprt_setup_backchannel(struct rpc_xprt *xprt,
+ 					 unsigned int min_reqs)
+@@ -67,11 +59,6 @@ static inline int svc_is_backchannel(const struct svc_rqst *rqstp)
+ 	return 0;
+ }
+ 
+-static inline struct nfs4_sessionid *bc_xprt_sid(struct svc_rqst *rqstp)
+-{
+-	return NULL;
+-}
+-
+ static inline void xprt_free_bc_request(struct rpc_rqst *req)
+ {
+ }
+diff --git a/include/linux/sunrpc/svc_xprt.h b/include/linux/sunrpc/svc_xprt.h
+index 059877b..7ad9751 100644
+--- a/include/linux/sunrpc/svc_xprt.h
++++ b/include/linux/sunrpc/svc_xprt.h
+@@ -77,7 +77,6 @@ struct svc_xprt {
+ 	size_t			xpt_remotelen;	/* length of address */
+ 	struct rpc_wait_queue	xpt_bc_pending;	/* backchannel wait queue */
+ 	struct list_head	xpt_users;	/* callbacks on free */
+-	void			*xpt_bc_sid;	/* back channel session ID */
+ 
+ 	struct net		*xpt_net;
+ 	struct rpc_xprt		*xpt_bc_xprt;	/* NFSv4.1 backchannel */
+diff --git a/net/sunrpc/svcsock.c b/net/sunrpc/svcsock.c
+index 7bd3bbb..d802e94 100644
+--- a/net/sunrpc/svcsock.c
++++ b/net/sunrpc/svcsock.c
+@@ -1609,9 +1609,7 @@ static struct svc_xprt *svc_bc_create_socket(struct svc_serv *serv,
+  */
+ static void svc_bc_sock_free(struct svc_xprt *xprt)
+ {
+-	if (xprt) {
+-		kfree(xprt->xpt_bc_sid);
++	if (xprt)
+ 		kfree(container_of(xprt, struct svc_sock, sk_xprt));
+-	}
+ }
+ #endif /* CONFIG_NFS_V4_1 */

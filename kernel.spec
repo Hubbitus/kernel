@@ -733,6 +733,8 @@ Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 Patch12430: can-softing-depend-on-iomem.patch
 
+Patch12431: nfs-2.6.38-bugfixes.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1348,6 +1350,8 @@ ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 # Fix build failure on s390
 ApplyPatch can-softing-depend-on-iomem.patch
 
+ApplyPatch nfs-2.6.38-bugfixes.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1962,6 +1966,7 @@ fi
 %changelog
 * Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com>
 - Linux 2.6.38-rc2-git8
+- Add Trond's NFS bugfixes branch from git.linux-nfs.org
 
 * Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git7.2
 - Fix build failure on s390.
