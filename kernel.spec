@@ -1964,6 +1964,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 31 2011 Kyle McMartin <kmcmartin@redhat.com>
+- disable CONFIG_SERIAL_8250_DETECT_IRQ (from mschmidt@redhat.com)
+
 * Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com>
 - Linux 2.6.38-rc2-git8
 - Add Trond's NFS bugfixes branch from git.linux-nfs.org
