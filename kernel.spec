@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1964,6 +1964,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git9.1
+- Linux 2.6.38-rc2-git9
+
 * Mon Jan 31 2011 Kyle McMartin <kmcmartin@redhat.com>
 - disable CONFIG_SERIAL_8250_DETECT_IRQ (from mschmidt@redhat.com)
 
