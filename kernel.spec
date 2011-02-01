@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 9
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -733,8 +733,6 @@ Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 Patch12430: can-softing-depend-on-iomem.patch
 
-Patch12431: nfs-2.6.38-bugfixes.patch
-
 # rhbz#673857
 Patch12432: hfsplus-01-dont-leak-buffer.patch
 Patch12433: hfsplus-02-fill-super-skip-cleanup.patch
@@ -1354,9 +1352,8 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 # Fix build failure on s390
+# accepted upstream
 ApplyPatch can-softing-depend-on-iomem.patch
-
-ApplyPatch nfs-2.6.38-bugfixes.patch
 
 # rhbz#673857
 ApplyPatch hfsplus-01-dont-leak-buffer.patch
@@ -1977,6 +1974,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Feb 01 2011 Chuck Ebbert <cebbert@redhat.com>
+- Linux 2.6.38-rc3
 - Try to fix some obvious bugs in hfsplus mount failure handling (#673857)
 
 * Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git9.1
