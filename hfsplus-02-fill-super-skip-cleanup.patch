@@ -1,0 +1,38 @@
+hfsplus: Skip cleanup on early failures
+
+Signed-Off-By: Chuck Ebbert <cebbert@redhat.com>
+
+--- vanilla-2.6.38-rc2-git9.orig/fs/hfsplus/super.c
++++ vanilla-2.6.38-rc2-git9/fs/hfsplus/super.c
+@@ -344,14 +344,13 @@ static int hfsplus_fill_super(struct sup
+ 	if (!sbi)
+ 		return -ENOMEM;
+ 
+-	sb->s_fs_info = sbi;
+ 	mutex_init(&sbi->alloc_mutex);
+ 	mutex_init(&sbi->vh_mutex);
+ 	hfsplus_fill_defaults(sbi);
+ 	if (!hfsplus_parse_options(data, sbi)) {
+ 		printk(KERN_ERR "hfs: unable to parse mount options\n");
+-		err = -EINVAL;
+-		goto cleanup;
++		kfree(sbi);
++		return -EINVAL;
+ 	}
+ 
+ 	/* temporarily use utf8 to correctly find the hidden dir below */
+@@ -359,10 +358,12 @@ static int hfsplus_fill_super(struct sup
+ 	sbi->nls = load_nls("utf8");
+ 	if (!sbi->nls) {
+ 		printk(KERN_ERR "hfs: unable to load nls for utf8\n");
+-		err = -EINVAL;
+-		goto cleanup;
++		kfree(sbi);
++		return -EINVAL;
+ 	}
+ 
++	sb->s_fs_info = sbi;
++
+ 	/* Grab the volume header */
+ 	if (hfsplus_read_wrapper(sb)) {
+ 		if (!silent)

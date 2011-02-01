@@ -735,6 +735,12 @@ Patch12430: can-softing-depend-on-iomem.patch
 
 Patch12431: nfs-2.6.38-bugfixes.patch
 
+# rhbz#673857
+Patch12432: hfsplus-01-dont-leak-buffer.patch
+Patch12433: hfsplus-02-fill-super-skip-cleanup.patch
+Patch12434: hfsplus-03-zero-vhdr-on-free.patch
+Patch12435: hfsplus-04-check-for-vhdr.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1352,6 +1358,12 @@ ApplyPatch can-softing-depend-on-iomem.patch
 
 ApplyPatch nfs-2.6.38-bugfixes.patch
 
+# rhbz#673857
+ApplyPatch hfsplus-01-dont-leak-buffer.patch
+ApplyPatch hfsplus-02-fill-super-skip-cleanup.patch
+ApplyPatch hfsplus-03-zero-vhdr-on-free.patch
+ApplyPatch hfsplus-04-check-for-vhdr.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1964,6 +1976,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 01 2011 Chuck Ebbert <cebbert@redhat.com>
+- Try to fix some obvious bugs in hfsplus mount failure handling (#673857)
+
 * Mon Jan 31 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc2.git9.1
 - Linux 2.6.38-rc2-git9
 

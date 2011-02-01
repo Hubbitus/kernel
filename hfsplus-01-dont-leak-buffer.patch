@@ -1,0 +1,24 @@
+hfsplus: Don't leak buffer on error
+
+Signed-Off-By: Chuck Ebbert <cebbert@redhat.com>
+
+--- vanilla-2.6.38-rc2-git9.orig/fs/hfsplus/part_tbl.c
++++ vanilla-2.6.38-rc2-git9/fs/hfsplus/part_tbl.c
+@@ -134,7 +134,7 @@ int hfs_part_find(struct super_block *sb
+ 	res = hfsplus_submit_bio(sb->s_bdev, *part_start + HFS_PMAP_BLK,
+ 				 data, READ);
+ 	if (res)
+-		return res;
++		goto out;
+ 
+ 	switch (be16_to_cpu(*((__be16 *)data))) {
+ 	case HFS_OLD_PMAP_MAGIC:
+@@ -147,7 +147,7 @@ int hfs_part_find(struct super_block *sb
+ 		res = -ENOENT;
+ 		break;
+ 	}
+-
++out:
+ 	kfree(data);
+ 	return res;
+ }
