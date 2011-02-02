@@ -1971,7 +1971,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Feb 01 2011 Chuck Ebbert <cebbert@redhat.com>
+* Mon Feb 01 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc3.git0.1
 - Linux 2.6.38-rc3
 - Try to fix some obvious bugs in hfsplus mount failure handling (#673857)
 
