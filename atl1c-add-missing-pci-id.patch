@@ -1,0 +1,17 @@
+atl1c: Add missing PCI device ID
+
+Commit 8f574b35f22fbb9b5e5f1d11ad6b55b6f35f4533 added support for a new
+adapter but failed to add it to the PCI device table.
+
+Signed-Off-By: Chuck Ebbert <cebbert@redhat.com>
+
+--- vanilla-2.6.38-rc3.orig/drivers/net/atl1c/atl1c_main.c
++++ vanilla-2.6.38-rc3/drivers/net/atl1c/atl1c_main.c
+@@ -48,6 +48,7 @@ static DEFINE_PCI_DEVICE_TABLE(atl1c_pci
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ATTANSIC, PCI_DEVICE_ID_ATHEROS_L2C_B)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ATTANSIC, PCI_DEVICE_ID_ATHEROS_L2C_B2)},
+ 	{PCI_DEVICE(PCI_VENDOR_ID_ATTANSIC, PCI_DEVICE_ID_ATHEROS_L1D)},
++	{PCI_DEVICE(PCI_VENDOR_ID_ATTANSIC, PCI_DEVICE_ID_ATHEROS_L1D_2_0)},
+ 	/* required last entry */
+ 	{ 0 }
+ };

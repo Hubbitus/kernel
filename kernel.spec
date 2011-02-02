@@ -738,6 +738,9 @@ Patch12432: hfsplus-01-dont-leak-buffer.patch
 Patch12434: hfsplus-03-zero-vhdr-on-free.patch
 Patch12436: hfsplus-05-fix-failed-mount.patch
 
+# rhbz#607499
+Patch12437: atl1c-add-missing-pci-id.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1359,6 +1362,9 @@ ApplyPatch hfsplus-01-dont-leak-buffer.patch
 ApplyPatch hfsplus-03-zero-vhdr-on-free.patch
 ApplyPatch hfsplus-05-fix-failed-mount.patch
 
+# rhbz#607499
+ApplyPatch atl1c-add-missing-pci-id.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1971,7 +1977,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Feb 01 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc3.git0.1
+* Wed Feb 02 2011 Chuck Ebbert <cebbert@redhat.com>
+- Fix autoload of atl1c driver for latest hardware (#607499)
+
+* Tue Feb 01 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc3.git0.1
 - Linux 2.6.38-rc3
 - Try to fix some obvious bugs in hfsplus mount failure handling (#673857)
 
