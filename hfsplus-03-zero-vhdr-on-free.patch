@@ -1,8 +1,4 @@
-hfsplus: Clear volume header pointers on failure
-
-The next patch will use NULL volume header to determine whether
-to flush the superblock. Also fix two failure cases so they
-clear the headers before exiting.
+hfsplus: Fix two memory leaks in wrapper.c
 
 Signed-Off-By: Chuck Ebbert <cebbert@redhat.com>
 
@@ -26,14 +22,3 @@ Signed-Off-By: Chuck Ebbert <cebbert@redhat.com>
  		goto reread;
  	}
  
-@@ -230,8 +230,10 @@ reread:
- 
- out_free_backup_vhdr:
- 	kfree(sbi->s_backup_vhdr);
-+	sbi->s_backup_vhdr = NULL;
- out_free_vhdr:
- 	kfree(sbi->s_vhdr);
-+	sbi->s_vhdr = NULL;
- out:
- 	return error;
- }

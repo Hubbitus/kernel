@@ -735,9 +735,8 @@ Patch12430: can-softing-depend-on-iomem.patch
 
 # rhbz#673857
 Patch12432: hfsplus-01-dont-leak-buffer.patch
-Patch12433: hfsplus-02-fill-super-skip-cleanup.patch
 Patch12434: hfsplus-03-zero-vhdr-on-free.patch
-Patch12435: hfsplus-04-check-for-vhdr.patch
+Patch12436: hfsplus-05-fix-failed-mount.patch
 
 %endif
 
@@ -1357,9 +1356,8 @@ ApplyPatch can-softing-depend-on-iomem.patch
 
 # rhbz#673857
 ApplyPatch hfsplus-01-dont-leak-buffer.patch
-ApplyPatch hfsplus-02-fill-super-skip-cleanup.patch
 ApplyPatch hfsplus-03-zero-vhdr-on-free.patch
-ApplyPatch hfsplus-04-check-for-vhdr.patch
+ApplyPatch hfsplus-05-fix-failed-mount.patch
 
 # END OF PATCH APPLICATIONS
 
