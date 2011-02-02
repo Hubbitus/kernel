@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1977,6 +1977,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 02 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc3.git1.1
+- Linux 2.6.38-rc3-git1 snapshot.
+
 * Wed Feb 02 2011 Chuck Ebbert <cebbert@redhat.com>
 - Fix autoload of atl1c driver for latest hardware (#607499)
 
