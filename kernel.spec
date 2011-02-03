@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -741,6 +741,8 @@ Patch12436: hfsplus-05-fix-failed-mount.patch
 # rhbz#607499
 Patch12437: atl1c-add-missing-pci-id.patch
 
+Patch12438: ath5k-fix-fast-channel-change.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1365,6 +1367,9 @@ ApplyPatch hfsplus-05-fix-failed-mount.patch
 # rhbz#607499
 ApplyPatch atl1c-add-missing-pci-id.patch
 
+# rhbz#672778
+ApplyPatch ath5k-fix-fast-channel-change.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1977,6 +1982,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 03 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc3.git2.1
+- Linux 2.6.38-rc3-git2 snapshot
+- [sgruszka] ath5k: fix fast channel change (#672778)
+
 * Wed Feb 02 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc3.git1.1
 - Linux 2.6.38-rc3-git1 snapshot.
 
