@@ -1982,6 +1982,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 03 2011 Chuck Ebbert <cebbert@redhat.com>
+- Enable Advansys SCSI driver on x86_64 (#589115)
+
 * Thu Feb 03 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc3.git2.1
 - Linux 2.6.38-rc3-git2 snapshot
 - [sgruszka] ath5k: fix fast channel change (#672778)
