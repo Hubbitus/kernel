@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1983,6 +1983,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Feb 03 2011 Chuck Ebbert <cebbert@redhat.com>
+- Linux 2.6.38-rc3-git3
 - Enable Advansys SCSI driver on x86_64 (#589115)
 
 * Thu Feb 03 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc3.git2.1
