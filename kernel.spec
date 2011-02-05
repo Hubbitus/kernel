@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -731,16 +731,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
-Patch12430: can-softing-depend-on-iomem.patch
-
-# rhbz#673857
-Patch12432: hfsplus-01-dont-leak-buffer.patch
-Patch12434: hfsplus-03-zero-vhdr-on-free.patch
-Patch12436: hfsplus-05-fix-failed-mount.patch
-
-# rhbz#607499
-Patch12437: atl1c-add-missing-pci-id.patch
-
 Patch12438: ath5k-fix-fast-channel-change.patch
 
 %endif
@@ -1354,18 +1344,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
-# Fix build failure on s390
-# accepted upstream
-ApplyPatch can-softing-depend-on-iomem.patch
-
-# rhbz#673857
-ApplyPatch hfsplus-01-dont-leak-buffer.patch
-ApplyPatch hfsplus-03-zero-vhdr-on-free.patch
-ApplyPatch hfsplus-05-fix-failed-mount.patch
-
-# rhbz#607499
-ApplyPatch atl1c-add-missing-pci-id.patch
 
 # rhbz#672778
 ApplyPatch ath5k-fix-fast-channel-change.patch
@@ -1982,6 +1960,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 04 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc3.git4.1
+- Linux 2.6.38-rc3-git4
+
 * Thu Feb 03 2011 Chuck Ebbert <cebbert@redhat.com>
 - Linux 2.6.38-rc3-git3
 - Enable Advansys SCSI driver on x86_64 (#589115)
