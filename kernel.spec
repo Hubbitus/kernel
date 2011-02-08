@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1960,6 +1960,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 07 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 2.6.38-0.rc4.git0.2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Mon Feb 07 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc4.git0.1
 - Linux 2.6.38-rc4
 
