@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1950,18 +1950,9 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 
-#  ___________________________________________________________
-# / This branch is for Fedora 15. You probably want to commit \
-# \ to the F-14 branch instead, or in addition to this one.   /
-#  -----------------------------------------------------------
-#         \   ^__^
-#          \  (@@)\_______
-#             (__)\       )\/\
-#                 ||----w |
-#                 ||     ||
 %changelog
-* Sat Feb 12 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git5.1
-- Linux 2.6.38-rc4-git5
+* Sat Feb 12 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git6.1
+- Linux 2.6.38-rc4-git6
 
 * Thu Feb 10 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git3.1
 - Linux 2.6.38-rc4-git3
