@@ -733,6 +733,8 @@ Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 Patch12438: ath5k-fix-fast-channel-change.patch
 
+Patch12440: bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1348,6 +1350,8 @@ ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 # rhbz#672778
 ApplyPatch ath5k-fix-fast-channel-change.patch
 
+ApplyPatch bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1953,6 +1957,7 @@ fi
 %changelog
 * Sat Feb 12 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git6.1
 - Linux 2.6.38-rc4-git6
+- Fix memory corruption caused by bug in bridge code.
 
 * Thu Feb 10 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git3.1
 - Linux 2.6.38-rc4-git3
