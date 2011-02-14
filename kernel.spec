@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1955,6 +1955,9 @@ fi
 # and build.
 
 %changelog
+* Sun Feb 13 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git7.1
+- Linux 2.6.38-rc4-git7
+
 * Sat Feb 12 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc4.git6.1
 - Linux 2.6.38-rc4-git6
 - Fix memory corruption caused by bug in bridge code.
