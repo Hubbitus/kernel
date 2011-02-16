@@ -735,6 +735,9 @@ Patch12438: ath5k-fix-fast-channel-change.patch
 
 Patch12440: bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
 
+# rhbz#676860
+Patch12441: usb-sierra-add-airprime-direct-ip.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1352,6 +1355,9 @@ ApplyPatch ath5k-fix-fast-channel-change.patch
 
 ApplyPatch bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
 
+# rhbz#676860
+ApplyPatch usb-sierra-add-airprime-direct-ip.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1955,6 +1961,9 @@ fi
 # and build.
 
 %changelog
+* Wed Feb 16 2011 Chuck Ebbert <cebbert@redhat.com>
+- Add support for Airprime/Sierra USB IP modem (#676860)
+
 * Tue Feb 15 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc5.git0.1
 - Linux 2.6.38-rc5 (81 minutes later...)
 
