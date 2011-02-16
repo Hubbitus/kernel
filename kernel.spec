@@ -738,6 +738,9 @@ Patch12440: bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
 # rhbz#676860
 Patch12441: usb-sierra-add-airprime-direct-ip.patch
 
+# rhbz#672265
+Patch12442: revert-block-check-bdev-readonly.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1358,6 +1361,9 @@ ApplyPatch bridge-fix-mglist-corruption-that-leads-to-memory-corruption.patch
 # rhbz#676860
 ApplyPatch usb-sierra-add-airprime-direct-ip.patch
 
+# rhbz#672265
+ApplyPatch revert-block-check-bdev-readonly.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1964,6 +1970,7 @@ fi
 * Wed Feb 16 2011 Chuck Ebbert <cebbert@redhat.com>
 - Add support for Airprime/Sierra USB IP modem (#676860)
 - Make virtio_console built-in on x86_64 (#677713)
+- Revert check for read-only block device added in .38 (#672265)
 
 * Tue Feb 15 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc5.git0.1
 - Linux 2.6.38-rc5 (81 minutes later...)
