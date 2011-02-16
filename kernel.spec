@@ -1963,6 +1963,7 @@ fi
 %changelog
 * Wed Feb 16 2011 Chuck Ebbert <cebbert@redhat.com>
 - Add support for Airprime/Sierra USB IP modem (#676860)
+- Make virtio_console built-in on x86_64 (#677713)
 
 * Tue Feb 15 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc5.git0.1
 - Linux 2.6.38-rc5 (81 minutes later...)
