@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1967,7 +1967,8 @@ fi
 # and build.
 
 %changelog
-* Wed Feb 16 2011 Chuck Ebbert <cebbert@redhat.com>
+* Wed Feb 16 2011 Chuck Ebbert <cebbert@redhat.com>  2.6.38-0.rc5.git1.1
+- Linux 2.6.38-rc5-git1
 - Add support for Airprime/Sierra USB IP modem (#676860)
 - Make virtio_console built-in on x86_64 (#677713)
 - Revert check for read-only block device added in .38 (#672265)
