@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -640,6 +640,7 @@ Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch393: acpi-ec-add-delay-before-write.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
+Patch395: linux-2.6-acpi-fix-implicit-notify.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
@@ -1209,6 +1210,7 @@ ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
+ApplyPatch linux-2.6-acpi-fix-implicit-notify.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
@@ -1951,6 +1953,10 @@ fi
 # and build.
 
 %changelog
+* Thu Feb 24 2011 Matthew Garrett <mjg@redhat.com> 2.6.38-0.rc6.git2.2
+- linux-2.6-acpi-fix-implicit-notify.patch: Fix implicit notify when there's
+  more than one device per GPE
+
 * Wed Feb 23 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git2.1
 - Linux 2.6.38-rc6-git2
 
