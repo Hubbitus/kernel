@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -733,9 +733,6 @@ Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
 Patch12438: ath5k-fix-fast-channel-change.patch
 
-# rhbz#676860
-Patch12441: usb-sierra-add-airprime-direct-ip.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1351,9 +1348,6 @@ ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 # rhbz#672778
 ApplyPatch ath5k-fix-fast-channel-change.patch
 
-# rhbz#676860
-ApplyPatch usb-sierra-add-airprime-direct-ip.patch
-
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1957,6 +1951,12 @@ fi
 # and build.
 
 %changelog
+* Wed Feb 23 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git2.1
+- Linux 2.6.38-rc6-git2
+
+* Wed Feb 23 2011 Ben Skeggs <bskeggs@redhat.com> 2.6.38-0.rc6.git0.2
+- nouveau: nv4x pciegart fixes, nvc0 accel improvements
+
 * Tue Feb 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc6.git0.1
 - Linux 2.6.38-rc6
 
