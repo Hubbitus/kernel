@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -732,8 +732,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
-Patch12438: ath5k-fix-fast-channel-change.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1347,9 +1345,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 # rhbz#662344,600690
 ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
 
-# rhbz#672778
-ApplyPatch ath5k-fix-fast-channel-change.patch
-
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1953,6 +1948,9 @@ fi
 # and build.
 
 %changelog
+* Thu Feb 24 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git4.1
+- Linux 2.6.38-rc6-git4
+
 * Thu Feb 24 2011 Matthew Garrett <mjg@redhat.com> 2.6.38-0.rc6.git2.2
 - linux-2.6-acpi-fix-implicit-notify.patch: Fix implicit notify when there's
   more than one device per GPE
