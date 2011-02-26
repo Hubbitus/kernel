@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 4
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1948,6 +1948,10 @@ fi
 # and build.
 
 %changelog
+* Fri Feb 25 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git6.1
+- Linux 2.6.38-rc6-git6
+- Build in virtio_pci driver so virtio_console will be built-in (#677713)
+
 * Thu Feb 24 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git4.1
 - Linux 2.6.38-rc6-git4
 
