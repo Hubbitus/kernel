@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1948,6 +1948,9 @@ fi
 # and build.
 
 %changelog
+* Tue Mar 01 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git0.1
+- Linux 2.6.38-rc7
+
 * Fri Feb 25 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc6.git6.1
 - Linux 2.6.38-rc6-git6
 - Build in virtio_pci driver so virtio_console will be built-in (#677713)
