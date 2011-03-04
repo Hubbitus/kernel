@@ -675,6 +675,7 @@ Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1826: drm-intel-edp-fixes.patch
+Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1289,6 +1290,9 @@ ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 ApplyPatch drm-intel-edp-fixes.patch
+# rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
+#  where intelObj->mt == NULL)
+ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1946,6 +1950,9 @@ fi
 # and build.
 
 %changelog
+* Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com>
+- drm-i915-gen4-has-non-power-of-two-strides.patch (#681285)
+
 * Thu Mar 03 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc7.git1.1
 - Linux 2.6.38-rc7-git1
 
