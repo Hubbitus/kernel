@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -802,6 +802,20 @@ Group: Development/System
 License: GPLv2
 %description -n perf
 This package provides the perf tool and the supporting documentation.
+
+%package -n perf-debuginfo
+Summary: Debug information for package perf
+Group: Development/Debug
+Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
+AutoReqProv: no
+%description -n perf-debuginfo
+This package provides debug information for package perf.
+
+# Note that this pattern only works right to match the .build-id
+# symlinks because of the trailing nonmatching alternation and
+# the leading .*, because of find-debuginfo.sh's buggy handling
+# of matching the pattern against the symlinks file.
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|XXX' -o perf-debuginfo.list}
 %endif
 
 
@@ -1886,6 +1900,11 @@ fi
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
 %{_mandir}/man[1-8]/*
+
+%if %{with_debuginfo}
+%files -f perf-debuginfo.list -n perf-debuginfo
+%defattr(-,root,root)
+%endif
 %endif
 
 # This is %%{image_install_path} on an arch where that includes ELF files,
@@ -1950,6 +1969,9 @@ fi
 # and build.
 
 %changelog
+* Fri Mar 04 2011 Roland McGrath <roland@redhat.com> - 2.6.38-0.rc7.git2.3
+- Split out perf-debuginfo subpackage.
+
 * Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git2.2
 - Disable drm-i915-gen4-has-non-power-of-two-strides.patch for now, breaks
   my mutter.
