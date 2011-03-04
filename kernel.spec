@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1292,7 +1292,7 @@ ApplyPatch linux-2.6-intel-iommu-igfx.patch
 ApplyPatch drm-intel-edp-fixes.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
-ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
+#ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1950,6 +1950,10 @@ fi
 # and build.
 
 %changelog
+* Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git2.2
+- Disable drm-i915-gen4-has-non-power-of-two-strides.patch for now, breaks
+  my mutter.
+
 * Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git2.1
 - Linux 2.6.38-rc7-git2
 - drm-i915-gen4-has-non-power-of-two-strides.patch (#681285)
