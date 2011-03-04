@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1950,7 +1950,8 @@ fi
 # and build.
 
 %changelog
-* Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com>
+* Fri Mar 04 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git2.1
+- Linux 2.6.38-rc7-git2
 - drm-i915-gen4-has-non-power-of-two-strides.patch (#681285)
 
 * Thu Mar 03 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc7.git1.1
