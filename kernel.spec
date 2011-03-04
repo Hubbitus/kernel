@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -640,7 +640,6 @@ Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch393: acpi-ec-add-delay-before-write.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
-Patch395: linux-2.6-acpi-fix-implicit-notify.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
@@ -1208,7 +1207,6 @@ ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
-ApplyPatch linux-2.6-acpi-fix-implicit-notify.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
@@ -1948,6 +1946,9 @@ fi
 # and build.
 
 %changelog
+* Thu Mar 03 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc7.git1.1
+- Linux 2.6.38-rc7-git1
+
 * Tue Mar 01 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.38-0.rc7.git0.1
 - Linux 2.6.38-rc7
 
