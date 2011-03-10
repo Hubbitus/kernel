@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1972,6 +1972,9 @@ fi
 # and build.
 
 %changelog
+* Wed Mar 09 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc8.git1.1
+- Linux 2.6.38-rc8-git1
+
 * Wed Mar 09 2011 Dennis Gilmore <dennis@ausil.us> 
 - apply sparc64 gcc-4.6.0 buildfix patch
 
