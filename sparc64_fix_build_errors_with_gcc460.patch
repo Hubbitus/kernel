@@ -1,0 +1,305 @@
+From dbb988cf34a62e69c8863f212be212c6841004ba Mon Sep 17 00:00:00 2001
+From: David S. Miller <davem@davemloft.net>
+Date: Sat, 26 Feb 2011 23:40:02 -0800
+Subject: [PATCH] sparc64: Fix build errors with gcc-4.6.0
+
+Most of the warnings emitted (we fail arch/sparc file
+builds with -Werror) were legitimate but harmless, however
+one case (n2_pcr_write) was a genuine bug.
+
+Based almost entirely upon a patch by Sam Ravnborg.
+
+Reported-by: Dennis Gilmore <dennis@ausil.us>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ arch/sparc/kernel/iommu.c      |    3 ---
+ arch/sparc/kernel/ldc.c        |   28 ++++++++++++++++++----------
+ arch/sparc/kernel/pci.c        |    1 +
+ arch/sparc/kernel/pci_common.c |   11 +++++++----
+ arch/sparc/kernel/pci_fire.c   |    2 --
+ arch/sparc/kernel/pci_schizo.c |    4 +---
+ arch/sparc/kernel/pci_sun4v.c  |    3 +--
+ arch/sparc/kernel/pcr.c        |    2 +-
+ arch/sparc/kernel/ptrace_64.c  |    3 ++-
+ arch/sparc/kernel/smp_64.c     |   11 ++++-------
+ arch/sparc/kernel/traps_64.c   |    3 +--
+ 11 files changed, 36 insertions(+), 35 deletions(-)
+
+diff --git a/arch/sparc/kernel/iommu.c b/arch/sparc/kernel/iommu.c
+index 72509d0..6f01e8c 100644
+--- a/arch/sparc/kernel/iommu.c
++++ b/arch/sparc/kernel/iommu.c
+@@ -333,13 +333,10 @@ static void dma_4u_free_coherent(struct device *dev, size_t size,
+ 				 void *cpu, dma_addr_t dvma)
+ {
+ 	struct iommu *iommu;
+-	iopte_t *iopte;
+ 	unsigned long flags, order, npages;
+ 
+ 	npages = IO_PAGE_ALIGN(size) >> IO_PAGE_SHIFT;
+ 	iommu = dev->archdata.iommu;
+-	iopte = iommu->page_table +
+-		((dvma - iommu->page_table_map_base) >> IO_PAGE_SHIFT);
+ 
+ 	spin_lock_irqsave(&iommu->lock, flags);
+ 
+diff --git a/arch/sparc/kernel/ldc.c b/arch/sparc/kernel/ldc.c
+index df39a0f..732b0bc 100644
+--- a/arch/sparc/kernel/ldc.c
++++ b/arch/sparc/kernel/ldc.c
+@@ -790,16 +790,20 @@ static void send_events(struct ldc_channel *lp, unsigned int event_mask)
+ static irqreturn_t ldc_rx(int irq, void *dev_id)
+ {
+ 	struct ldc_channel *lp = dev_id;
+-	unsigned long orig_state, hv_err, flags;
++	unsigned long orig_state, flags;
+ 	unsigned int event_mask;
+ 
+ 	spin_lock_irqsave(&lp->lock, flags);
+ 
+ 	orig_state = lp->chan_state;
+-	hv_err = sun4v_ldc_rx_get_state(lp->id,
+-					&lp->rx_head,
+-					&lp->rx_tail,
+-					&lp->chan_state);
++
++	/* We should probably check for hypervisor errors here and
++	 * reset the LDC channel if we get one.
++	 */
++	sun4v_ldc_rx_get_state(lp->id,
++			       &lp->rx_head,
++			       &lp->rx_tail,
++			       &lp->chan_state);
+ 
+ 	ldcdbg(RX, "RX state[0x%02lx:0x%02lx] head[0x%04lx] tail[0x%04lx]\n",
+ 	       orig_state, lp->chan_state, lp->rx_head, lp->rx_tail);
+@@ -904,16 +908,20 @@ out:
+ static irqreturn_t ldc_tx(int irq, void *dev_id)
+ {
+ 	struct ldc_channel *lp = dev_id;
+-	unsigned long flags, hv_err, orig_state;
++	unsigned long flags, orig_state;
+ 	unsigned int event_mask = 0;
+ 
+ 	spin_lock_irqsave(&lp->lock, flags);
+ 
+ 	orig_state = lp->chan_state;
+-	hv_err = sun4v_ldc_tx_get_state(lp->id,
+-					&lp->tx_head,
+-					&lp->tx_tail,
+-					&lp->chan_state);
++
++	/* We should probably check for hypervisor errors here and
++	 * reset the LDC channel if we get one.
++	 */
++	sun4v_ldc_tx_get_state(lp->id,
++			       &lp->tx_head,
++			       &lp->tx_tail,
++			       &lp->chan_state);
+ 
+ 	ldcdbg(TX, " TX state[0x%02lx:0x%02lx] head[0x%04lx] tail[0x%04lx]\n",
+ 	       orig_state, lp->chan_state, lp->tx_head, lp->tx_tail);
+diff --git a/arch/sparc/kernel/pci.c b/arch/sparc/kernel/pci.c
+index 4137579..f255382 100644
+--- a/arch/sparc/kernel/pci.c
++++ b/arch/sparc/kernel/pci.c
+@@ -675,6 +675,7 @@ static void __devinit pci_bus_register_of_sysfs(struct pci_bus *bus)
+ 		 * humanoid.
+ 		 */
+ 		err = sysfs_create_file(&dev->dev.kobj, &dev_attr_obppath.attr);
++		(void) err;
+ 	}
+ 	list_for_each_entry(child_bus, &bus->children, node)
+ 		pci_bus_register_of_sysfs(child_bus);
+diff --git a/arch/sparc/kernel/pci_common.c b/arch/sparc/kernel/pci_common.c
+index 6c7a33a..6e3874b 100644
+--- a/arch/sparc/kernel/pci_common.c
++++ b/arch/sparc/kernel/pci_common.c
+@@ -295,14 +295,17 @@ static int sun4v_write_pci_cfg(struct pci_bus *bus_dev, unsigned int devfn,
+ 	unsigned int bus = bus_dev->number;
+ 	unsigned int device = PCI_SLOT(devfn);
+ 	unsigned int func = PCI_FUNC(devfn);
+-	unsigned long ret;
+ 
+ 	if (config_out_of_range(pbm, bus, devfn, where)) {
+ 		/* Do nothing. */
+ 	} else {
+-		ret = pci_sun4v_config_put(devhandle,
+-				HV_PCI_DEVICE_BUILD(bus, device, func),
+-				where, size, value);
++		/* We don't check for hypervisor errors here, but perhaps
++		 * we should and influence our return value depending upon
++		 * what kind of error is thrown.
++		 */
++		pci_sun4v_config_put(devhandle,
++				     HV_PCI_DEVICE_BUILD(bus, device, func),
++				     where, size, value);
+ 	}
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+diff --git a/arch/sparc/kernel/pci_fire.c b/arch/sparc/kernel/pci_fire.c
+index efb896d..75dfeb6 100644
+--- a/arch/sparc/kernel/pci_fire.c
++++ b/arch/sparc/kernel/pci_fire.c
+@@ -214,11 +214,9 @@ static int pci_fire_msi_setup(struct pci_pbm_info *pbm, unsigned long msiqid,
+ 
+ static int pci_fire_msi_teardown(struct pci_pbm_info *pbm, unsigned long msi)
+ {
+-	unsigned long msiqid;
+ 	u64 val;
+ 
+ 	val = upa_readq(pbm->pbm_regs + MSI_MAP(msi));
+-	msiqid = (val & MSI_MAP_EQNUM);
+ 
+ 	val &= ~MSI_MAP_VALID;
+ 
+diff --git a/arch/sparc/kernel/pci_schizo.c b/arch/sparc/kernel/pci_schizo.c
+index 445a47a..4620eb7 100644
+--- a/arch/sparc/kernel/pci_schizo.c
++++ b/arch/sparc/kernel/pci_schizo.c
+@@ -1313,7 +1313,7 @@ static int __devinit schizo_pbm_init(struct pci_pbm_info *pbm,
+ 	const struct linux_prom64_registers *regs;
+ 	struct device_node *dp = op->dev.of_node;
+ 	const char *chipset_name;
+-	int is_pbm_a, err;
++	int err;
+ 
+ 	switch (chip_type) {
+ 	case PBM_CHIP_TYPE_TOMATILLO:
+@@ -1343,8 +1343,6 @@ static int __devinit schizo_pbm_init(struct pci_pbm_info *pbm,
+ 	 */
+ 	regs = of_get_property(dp, "reg", NULL);
+ 
+-	is_pbm_a = ((regs[0].phys_addr & 0x00700000) == 0x00600000);
+-
+ 	pbm->next = pci_pbm_root;
+ 	pci_pbm_root = pbm;
+ 
+diff --git a/arch/sparc/kernel/pci_sun4v.c b/arch/sparc/kernel/pci_sun4v.c
+index 743344a..859abfd 100644
+--- a/arch/sparc/kernel/pci_sun4v.c
++++ b/arch/sparc/kernel/pci_sun4v.c
+@@ -580,7 +580,7 @@ static int __devinit pci_sun4v_iommu_init(struct pci_pbm_info *pbm)
+ {
+ 	static const u32 vdma_default[] = { 0x80000000, 0x80000000 };
+ 	struct iommu *iommu = pbm->iommu;
+-	unsigned long num_tsb_entries, sz, tsbsize;
++	unsigned long num_tsb_entries, sz;
+ 	u32 dma_mask, dma_offset;
+ 	const u32 *vdma;
+ 
+@@ -596,7 +596,6 @@ static int __devinit pci_sun4v_iommu_init(struct pci_pbm_info *pbm)
+ 
+ 	dma_mask = (roundup_pow_of_two(vdma[1]) - 1UL);
+ 	num_tsb_entries = vdma[1] / IO_PAGE_SIZE;
+-	tsbsize = num_tsb_entries * sizeof(iopte_t);
+ 
+ 	dma_offset = vdma[0];
+ 
+diff --git a/arch/sparc/kernel/pcr.c b/arch/sparc/kernel/pcr.c
+index 7c2ced6..8ac23e6 100644
+--- a/arch/sparc/kernel/pcr.c
++++ b/arch/sparc/kernel/pcr.c
+@@ -81,7 +81,7 @@ static void n2_pcr_write(u64 val)
+ 	unsigned long ret;
+ 
+ 	ret = sun4v_niagara2_setperf(HV_N2_PERF_SPARC_CTL, val);
+-	if (val != HV_EOK)
++	if (ret != HV_EOK)
+ 		write_pcr(val);
+ }
+ 
+diff --git a/arch/sparc/kernel/ptrace_64.c b/arch/sparc/kernel/ptrace_64.c
+index 9ccc812..96ee50a 100644
+--- a/arch/sparc/kernel/ptrace_64.c
++++ b/arch/sparc/kernel/ptrace_64.c
+@@ -1086,6 +1086,7 @@ asmlinkage int syscall_trace_enter(struct pt_regs *regs)
+ 
+ asmlinkage void syscall_trace_leave(struct pt_regs *regs)
+ {
++#ifdef CONFIG_AUDITSYSCALL
+ 	if (unlikely(current->audit_context)) {
+ 		unsigned long tstate = regs->tstate;
+ 		int result = AUDITSC_SUCCESS;
+@@ -1095,7 +1096,7 @@ asmlinkage void syscall_trace_leave(struct pt_regs *regs)
+ 
+ 		audit_syscall_exit(result, regs->u_regs[UREG_I0]);
+ 	}
+-
++#endif
+ 	if (unlikely(test_thread_flag(TIF_SYSCALL_TRACEPOINT)))
+ 		trace_sys_exit(regs, regs->u_regs[UREG_G1]);
+ 
+diff --git a/arch/sparc/kernel/smp_64.c b/arch/sparc/kernel/smp_64.c
+index 555a76d..3e94a8c 100644
+--- a/arch/sparc/kernel/smp_64.c
++++ b/arch/sparc/kernel/smp_64.c
+@@ -189,7 +189,7 @@ static inline long get_delta (long *rt, long *master)
+ void smp_synchronize_tick_client(void)
+ {
+ 	long i, delta, adj, adjust_latency = 0, done = 0;
+-	unsigned long flags, rt, master_time_stamp, bound;
++	unsigned long flags, rt, master_time_stamp;
+ #if DEBUG_TICK_SYNC
+ 	struct {
+ 		long rt;	/* roundtrip time */
+@@ -208,10 +208,8 @@ void smp_synchronize_tick_client(void)
+ 	{
+ 		for (i = 0; i < NUM_ROUNDS; i++) {
+ 			delta = get_delta(&rt, &master_time_stamp);
+-			if (delta == 0) {
++			if (delta == 0)
+ 				done = 1;	/* let's lock on to this... */
+-				bound = rt;
+-			}
+ 
+ 			if (!done) {
+ 				if (i > 0) {
+@@ -933,13 +931,12 @@ void smp_flush_dcache_page_impl(struct page *page, int cpu)
+ void flush_dcache_page_all(struct mm_struct *mm, struct page *page)
+ {
+ 	void *pg_addr;
+-	int this_cpu;
+ 	u64 data0;
+ 
+ 	if (tlb_type == hypervisor)
+ 		return;
+ 
+-	this_cpu = get_cpu();
++	preempt_disable();
+ 
+ #ifdef CONFIG_DEBUG_DCFLUSH
+ 	atomic_inc(&dcpage_flushes);
+@@ -964,7 +961,7 @@ void flush_dcache_page_all(struct mm_struct *mm, struct page *page)
+ 	}
+ 	__local_flush_dcache_page(page);
+ 
+-	put_cpu();
++	preempt_enable();
+ }
+ 
+ void __irq_entry smp_new_mmu_context_version_client(int irq, struct pt_regs *regs)
+diff --git a/arch/sparc/kernel/traps_64.c b/arch/sparc/kernel/traps_64.c
+index 42ad2ba..9456472 100644
+--- a/arch/sparc/kernel/traps_64.c
++++ b/arch/sparc/kernel/traps_64.c
+@@ -2152,7 +2152,7 @@ static void user_instruction_dump(unsigned int __user *pc)
+ 
+ void show_stack(struct task_struct *tsk, unsigned long *_ksp)
+ {
+-	unsigned long fp, thread_base, ksp;
++	unsigned long fp, ksp;
+ 	struct thread_info *tp;
+ 	int count = 0;
+ #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+@@ -2173,7 +2173,6 @@ void show_stack(struct task_struct *tsk, unsigned long *_ksp)
+ 		flushw_all();
+ 
+ 	fp = ksp + STACK_BIAS;
+-	thread_base = (unsigned long) tp;
+ 
+ 	printk("Call Trace:\n");
+ 	do {
+-- 
+1.7.4.1
+

@@ -620,6 +620,7 @@ Patch31: linux-2.6-utrace.patch
 Patch32: linux-2.6-utrace-ptrace.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
+Patch151: sparc64_fix_build_errors_with_gcc460.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
@@ -1192,6 +1193,7 @@ ApplyPatch linux-2.6-utrace-ptrace.patch
 # SPARC64
 #
 ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
+ApplyPatch sparc64_fix_build_errors_with_gcc460.patch
 
 #
 # Exec shield
@@ -1970,6 +1972,9 @@ fi
 # and build.
 
 %changelog
+* Wed Mar 09 2011 Dennis Gilmore <dennis@ausil.us> 
+- apply sparc64 gcc-4.6.0 buildfix patch
+
 * Wed Mar 09 2011 Ben Skeggs <bskeggs@redhat.com> 2.6.38-0.rc8.git0.2
 - nouveau: allow max clients on nv4x (679629), better error reporting
 
