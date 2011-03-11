@@ -1,15 +1,19 @@
 #!/bin/bash
 
+KORG26="http://ftp.kernel.org/pub/linux/kernel/v2.6"
+KORG26SNAPS="${KORG26}/snapshots"
+KORG26TESTING="${KORG26}/testing"
+
 if [ ! -f /usr/bin/curl ]; then
   echo yum install curl
   exit 0
 fi
 
 # Current kernel bits
-if [ `grep -c ^patch upstream` -ge 1 ]; then
-  export OLD=`grep ^patch upstream | tail -n1 | sed s/patch-// | sed s/\.bz2//`
+if [ `grep -c patch-2.6 sources` -ge 1 ]; then
+  export OLD=`grep patch-2.6 sources | awk '{print $2}' | tail -n1 | sed s/patch-// | sed s/\.bz2//`
 else
-  export OLD=`grep linux-2.6 upstream | tail -n1 | sed s/linux-// | sed s/\.tar\.bz2//`
+  export OLD=`grep linux-2.6 sources | awk '{print $2}' | tail -n1 | sed s/linux-// | sed s/\.tar\.bz2//`
 fi
 export OLDBASE=`echo $OLD | sed s/-/\ /g | sed s/2\.6\.// | awk '{ print $1 }'`
 if [ `echo $OLD | grep -c rc` -ge 1 ]; then
@@ -97,58 +101,39 @@ if [ "$NEWRC" -eq 0 -a "$NEWGIT" -eq 0 ]; then
   perl -p -i -e 's/^%define\ rcrev.*/\%define\ rcrev\ 0/' kernel.spec
   perl -p -i -e 's/^%define\ gitrev.*/\%define\ gitrev\ 0/' kernel.spec
 
-  grep -v kernel-2.6.$OLD_TARBALL_BASE .cvsignore >.cvsignore.tmp ; mv .cvsignore.tmp .cvsignore
-  echo kernel-2.6.$NEWBASE >> .cvsignore
+  grep -v kernel-2.6.$OLD_TARBALL_BASE .gitignore >.gitignore.tmp ; mv .gitignore.tmp .gitignore
+  echo kernel-2.6.$NEWBASE >> .gitignore
 
-  for i in upstream sources .cvsignore
+  for i in sources .gitignore
   do
    grep -v linux-2.6.$OLD_TARBALL_BASE.tar.bz2 $i > .$i.tmp; mv .$i.tmp $i
    grep -v patch-2.6.$OLDBASE-rc$OLDRC.bz2 $i > .$i.tmp; mv .$i.tmp $i
    grep -v patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2 $i > .$i.tmp; mv .$i.tmp $i
   done
 
-  echo linux-2.6.$NEWBASE.tar.bz2 >> upstream
-
   rm -f linux-2.6.$OLD_TARBALL_BASE.tar.bz2
-  rm -f linux-2.6.$OLD_TARBALL_BASE.tar.bz2.sign
   rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2
-  rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2.sign
   rm -f patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2
-  rm -f patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2.sign
 
-  cvs remove linux-2.6.$OLD_TARBALL_BASE.tar.bz2.sign
-  cvs remove patch-2.6.$OLDBASE-rc$OLDRC.bz2.sign
-  cvs remove patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2.sign
+  curl -O $KORG26/linux-$NEW.tar.bz2
+  fedpkg upload linux-$NEW.tar.bz2
 
-  make download
-  make upload FILES=linux-$NEW.tar.bz2
-
-  cvs add linux-$NEW.tar.bz2.sign
-
-  bumpspecfile.py kernel.spec "- $NEW"
-  make clog
-  echo FIXME! Fix up fedora_cvs_origin
-  make verrel
   exit 1
 fi
 
 if [ "$OLDRC" != "$NEWRC" ]; then
   echo "Different rc. Rebasing from $OLDRC to $NEWRC"
   perl -p -i -e 's/^%define\ rcrev.*/\%define\ rcrev\ $ENV{"NEWRC"}/' kernel.spec
-  perl -p -i -e 's/$ENV{OLDBASE}-rc$ENV{OLDRC}.bz2/$ENV{NEWBASE}-rc$ENV{NEWRC}.bz2/' .cvsignore
-  perl -p -i -e 's/$ENV{OLDBASE}-rc$ENV{OLDRC}.bz2/$ENV{NEWBASE}-rc$ENV{NEWRC}.bz2/' upstream
+  perl -p -i -e 's/$ENV{OLDBASE}-rc$ENV{OLDRC}.bz2/$ENV{NEWBASE}-rc$ENV{NEWRC}.bz2/' .gitignore
   grep -v patch-2.6.$OLDBASE-rc$OLDRC.bz2 sources > .sources.tmp; mv .sources.tmp sources
-  grep -v patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2 .cvsignore >.cvsignore.tmp ; mv .cvsignore.tmp .cvsignore
-  if [ `grep -c patch-2.6.$NEWBASE-rc$NEWRC.bz2 upstream` -eq 0 ]; then
-    echo patch-2.6.$NEWBASE-rc$NEWRC.bz2 >> .cvsignore
-    echo patch-2.6.$NEWBASE-rc$NEWRC.bz2 >> upstream
+  grep -v patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2 .gitignore >.gitignore.tmp ; mv .gitignore.tmp .gitignore
+  if [ `grep -c patch-2.6.$NEWBASE-rc$NEWRC.bz2 sources` -eq 0 ]; then
+    echo patch-2.6.$NEWBASE-rc$NEWRC.bz2 >> .gitignore
   fi
   rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2
-  rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2.sign
-  cvs remove patch-2.6.$OLDBASE-rc$OLDRC.bz2.sign
-  make download
-  make upload FILES=patch-2.6.$NEWBASE-rc$NEWRC.bz2
-  cvs add patch-2.6.$NEWBASE-rc$NEWRC.bz2.sign
+
+  curl -O $KORG26TESTING/patch-2.6.$NEWBASE-rc$NEWRC.bz2
+  fedpkg upload FILES=patch-2.6.$NEWBASE-rc$NEWRC.bz2
 
   # Another awkward (albeit unlikely) corner case.
   # Moving from say 26-rc3-git1 to 26-rc4-git1
@@ -167,32 +152,27 @@ if [ "$OLDGIT" != "$NEWGIT" ]; then
   perl -p -i -e 's/^%define\ gitrev.*/\%define\ gitrev\ $ENV{"NEWGIT"}/' kernel.spec
   if [ "$OLDGIT" -ne 0 ]; then
     if [ "$NEWGIT" -ne 0 ]; then
-      perl -p -i -e 's/$ENV{OLD}/$ENV{NEW}/' .cvsignore
-      perl -p -i -e 's/$ENV{OLD}/$ENV{NEW}/' upstream
+      perl -p -i -e 's/$ENV{OLD}/$ENV{NEW}/' .gitignore
     fi
     grep -v patch-$OLD.bz2 sources > .sources.tmp; mv .sources.tmp sources
-    grep -v patch-$OLD.bz2 upstream > .upstream.tmp; mv .upstream.tmp upstream
   else
-    echo patch-$NEW.bz2 >> .cvsignore
-    echo patch-$NEW.bz2 >> upstream
+    echo patch-$NEW.bz2 >> .gitignore
   fi
 
-  make download
-  make upload FILES=patch-$NEW.bz2
+  if [ "$NEWGIT" -ne 0 ]; then
+  	curl -O $KORG26SNAPS/patch-$NEW.bz2
+  fi
+  fedpkg upload patch-$NEW.bz2
 
-  cvs add patch-$NEW.bz2.sign
   if [ "$OLDGIT" -ne 0 ]; then
     rm -f patch-$OLD.bz2
-    rm -f patch-$OLD.bz2.sign
-    cvs remove patch-$OLD.bz2.sign
   fi
 fi
 
 if [ "$OLDRC" != "$NEWRC" -o "$OLDGIT" != "$NEWGIT" ]; then
   perl -p -i -e 's|^ApplyPatch\ git-linus.diff|#ApplyPatch\ git-linus.diff|' kernel.spec
   > git-linus.diff
-  bumpspecfile.py kernel.spec "- $NEW"
-  make clog
+  fedpkg clog
   exit 1
 else
   exit 0
