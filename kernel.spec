@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1972,6 +1972,9 @@ fi
 # and build.
 
 %changelog
+* Thu Mar 10 2011 Chuck Ebbert <cebbert@redhat.com>
+- Linux 2.6.38-rc8-git3
+
 * Thu Mar 10 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-0.rc8.git2.1
 - Linux 2.6.38-rc8-git2
 
