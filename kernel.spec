@@ -670,7 +670,6 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # nouveau + drm fixes
 Patch1810: drm-nouveau-updates.patch
-Patch1819: drm-intel-big-hammer.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
@@ -1303,7 +1302,6 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
-ApplyPatch drm-intel-big-hammer.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 ApplyPatch drm-intel-edp-fixes.patch
@@ -1972,6 +1970,9 @@ fi
 # and build.
 
 %changelog
+* Tue Mar 15 2011 Adam Jackson <ajax@redhat.com>
+- drm-intel-big-hammer.patch: Drop.
+
 * Tue Mar 15 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.38-1
 - Linux 2.6.38
 
