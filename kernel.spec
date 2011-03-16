@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -153,7 +153,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -1970,6 +1970,14 @@ fi
 # and build.
 
 %changelog
+* Wed Mar 16 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git1.1
+- Test out scripts/rebase.sh on 2.6.38-git1.
+- Enable fhandle syscalls (ugh. conditional syscalls... update
+  CONFIG_EXPORTFS to =y, since it's now a bool.)
+- CONFIG_XEN_DEBUG [i386,x86_64] =n, but possibly should be -debug
+  conditional. Needs a xen user to benchmark and see how bad the overhead
+  is.
+
 * Tue Mar 15 2011 Adam Jackson <ajax@redhat.com>
 - drm-intel-big-hammer.patch: Drop.
 
