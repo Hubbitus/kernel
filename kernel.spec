@@ -720,7 +720,6 @@ Patch12018: neuter_intel_microcode_load.patch
 Patch12101: apple_backlight.patch
 Patch12102: efifb_update.patch
 Patch12200: acpi_reboot.patch
-Patch12210: efi_default_physical.patch
 
 # Runtime power management
 Patch12202: linux-2.6-ehci-check-port-status.patch
@@ -1347,7 +1346,6 @@ ApplyPatch neuter_intel_microcode_load.patch
 ApplyPatch apple_backlight.patch
 ApplyPatch efifb_update.patch
 ApplyPatch acpi_reboot.patch
-ApplyPatch efi_default_physical.patch
 
 # Runtime PM
 ApplyPatch linux-2.6-ehci-check-port-status.patch
@@ -1970,6 +1968,10 @@ fi
 # and build.
 
 %changelog
+* Thu Mar 17 2011 Matthew Garrett <mjg@redhat.com>
+- drop efi_default_physical.patch - it's actually setting up something that's
+  neither physical nor virtual, and it's probably breaking EFI boots
+
 * Wed Mar 16 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git1.1
 - Test out scripts/rebase.sh on 2.6.38-git1.
 - Enable fhandle syscalls (ugh. conditional syscalls... update
