@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -620,7 +620,6 @@ Patch31: linux-2.6-utrace.patch
 Patch32: linux-2.6-utrace-ptrace.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
-Patch151: sparc64_fix_build_errors_with_gcc460.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
@@ -706,9 +705,6 @@ Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 # NFSv4
 
 # patches headed upstream
-
-Patch12001: perf-gcc460-build-fixes.patch
-
 Patch12010: add-appleir-usb-driver.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -722,7 +718,6 @@ Patch12102: efifb_update.patch
 Patch12200: acpi_reboot.patch
 
 # Runtime power management
-Patch12202: linux-2.6-ehci-check-port-status.patch
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
@@ -1191,7 +1186,6 @@ ApplyPatch linux-2.6-utrace-ptrace.patch
 # SPARC64
 #
 ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
-ApplyPatch sparc64_fix_build_errors_with_gcc460.patch
 
 #
 # Exec shield
@@ -1303,7 +1297,7 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
-ApplyPatch drm-intel-edp-fixes.patch
+#ApplyPatch drm-intel-edp-fixes.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
 #ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
@@ -1334,8 +1328,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
 
 # Patches headed upstream
-ApplyPatch perf-gcc460-build-fixes.patch
-
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch add-appleir-usb-driver.patch
@@ -1348,7 +1340,6 @@ ApplyPatch efifb_update.patch
 ApplyPatch acpi_reboot.patch
 
 # Runtime PM
-ApplyPatch linux-2.6-ehci-check-port-status.patch
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ### Broken by implicit notify support & ACPICA rebase
 ###ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
@@ -1968,6 +1959,15 @@ fi
 # and build.
 
 %changelog
+* Fri Mar 18 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git6.0
+- Update to 2.6.38-git6
+- CONFIG_IP_SET modules and associated netfilter goo.
+- New network packet scheduler modules (sch, choke, mqprio.)
+- Enable DMI sysfs interface (built-in) on ia64, x86_64, i386.
+- Explicitly set USB storage goo as modular.
+- Drop merged patches, nil-ify drm-nouveau-updates, fix context in crash.ko
+  Kconfig diff.
+
 * Thu Mar 17 2011 Matthew Garrett <mjg@redhat.com>
 - drop efi_default_physical.patch - it's actually setting up something that's
   neither physical nor virtual, and it's probably breaking EFI boots
