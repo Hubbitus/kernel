@@ -4546,6 +4546,6 @@ CONFIG_TCM_PSCSI=m
 
 CONFIG_HWSPINLOCK=m
 
-CONFIG_PSTORE=y
+# CONFIG_PSTORE is not set ### XXX BROKEN 2011-03-18 due to get_sb removal
 
 # CONFIG_AVERAGE is not set
