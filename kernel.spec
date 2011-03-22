@@ -1960,6 +1960,7 @@ fi
 - Fix context in add-appleir-usb-driver.patch
 - Enable firewire ALSA modules, HP accelerometer driver.
 - Re-enable PSTORE, seems to be fixed.
+- Fix utrace-ptrace for upstream smp_lock removal.
 
 * Fri Mar 18 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git6.0
 - Update to 2.6.38-git6

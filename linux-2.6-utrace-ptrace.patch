@@ -48,7 +48,7 @@ new file mode 100644
 index ...a5bcb9e 100644  
 --- /dev/null
 +++ b/kernel/ptrace-utrace.c
-@@ -0,0 +1,1187 @@
+@@ -0,0 +1,1186 @@
 +/*
 + * linux/kernel/ptrace.c
 + *
@@ -65,7 +65,6 @@ index ...a5bcb9e 100644
 +#include <linux/mm.h>
 +#include <linux/highmem.h>
 +#include <linux/pagemap.h>
-+#include <linux/smp_lock.h>
 +#include <linux/ptrace.h>
 +#include <linux/utrace.h>
 +#include <linux/security.h>
