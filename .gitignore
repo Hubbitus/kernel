@@ -3,4 +3,4 @@ patch-*.bz2
 clog
 *.rpm
 kernel-2.6.*/
-patch-2.6.38-git6.bz2
+patch-2.6.38-git11.bz2

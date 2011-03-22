@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -724,8 +724,6 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12421: fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1348,9 +1346,6 @@ ApplyPatch acpi_reboot.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-# rhbz#662344,600690
-ApplyPatch fs-call-security_d_instantiate-in-d_obtain_alias.patch
-
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1959,6 +1954,13 @@ fi
 # and build.
 
 %changelog
+* Tue Mar 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git11.0
+- Update to 2.6.38-git11
+- Drop merged fs-call-security_d_instantiate-in-d_obtain_alias.patch
+- Fix context in add-appleir-usb-driver.patch
+- Enable firewire ALSA modules, HP accelerometer driver.
+- Re-enable PSTORE, seems to be fixed.
+
 * Fri Mar 18 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git6.0
 - Update to 2.6.38-git6
 - CONFIG_IP_SET modules and associated netfilter goo.
