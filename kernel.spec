@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 11
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1954,6 +1954,10 @@ fi
 # and build.
 
 %changelog
+* Wed Mar 23 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Update to 2.6.38-git12
+- Enable I2C_DIOLAN_U2C USB i2c adapter [all], I2C_PXA [i686].
+
 * Tue Mar 22 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git11.0
 - Update to 2.6.38-git11
 - Drop merged fs-call-security_d_instantiate-in-d_obtain_alias.patch

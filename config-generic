@@ -2150,6 +2150,8 @@ CONFIG_I2C_TINY_USB=m
 # CONFIG_I2C_DESIGNWARE is not set
 # CONFIG_I2C_XILINX is not set
 
+CONFIG_I2C_DIOLAN_U2C=m
+
 #
 # I2C Hardware Sensors Chip support
 #
