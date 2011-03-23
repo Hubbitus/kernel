@@ -640,6 +640,7 @@ Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch393: acpi-ec-add-delay-before-write.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
+Patch399: acpi_battery-fribble-sysfs-files-from-a-resume-notifier.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
@@ -1215,6 +1216,7 @@ ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
+ApplyPatch acpi_battery-fribble-sysfs-files-from-a-resume-notifier.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-sizeof-structs.patch
@@ -1954,6 +1956,11 @@ fi
 # and build.
 
 %changelog
+* Wed Mar 23 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Re-create ACPI battery sysfs files on resume from suspend, fixes the
+  upstream changes to the dropped
+  acpi-update-battery-information-on-notification-0x81.patch.
+
 * Wed Mar 23 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Update to 2.6.38-git12
 - Enable I2C_DIOLAN_U2C USB i2c adapter [all], I2C_PXA [i686].
