@@ -644,7 +644,6 @@ Patch399: acpi_battery-fribble-sysfs-files-from-a-resume-notifier.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
-Patch454: thinkpad-acpi-fix-backlight.patch
 
 Patch460: linux-2.6-serial-460800.patch
 
@@ -697,7 +696,6 @@ Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 
 #Patch2916: lirc-staging-2.6.36-fixes.patch
-#Patch2917: hdpvr-ir-enable.patch
 
 Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 
@@ -1257,8 +1255,6 @@ ApplyPatch die-floppy-die.patch
 
 ApplyPatch linux-2.6.30-no-pcspkr-modalias.patch
 
-#ApplyPatch thinkpad-acpi-fix-backlight.patch
-
 # Allow to use 480600 baud on 16C950 UARTs
 ApplyPatch linux-2.6-serial-460800.patch
 
@@ -1321,8 +1317,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # http://www.lirc.org/
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
-# enable IR receiver on Hauppauge HD PVR (v4l-dvb merge pending)
-#ApplyPatch hdpvr-ir-enable.patch
 
 # rhbz#664852
 ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
@@ -1956,6 +1950,11 @@ fi
 # and build.
 
 %changelog
+* Fri Mar 25 2011 Chuck Ebbert <cebbert@redhat.com>
+- Drop unused patches already applied upstream:
+  hdpvr-ir-enable.patch
+  thinkpad-acpi-fix-backlight.patch
+
 * Wed Mar 23 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Re-create ACPI battery sysfs files on resume from suspend, fixes the
   upstream changes to the dropped
