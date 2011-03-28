@@ -632,7 +632,6 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
-Patch386: pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
@@ -707,8 +706,6 @@ Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 Patch12010: add-appleir-usb-driver.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
-
-Patch12017: prevent-runtime-conntrack-changes.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
@@ -1230,8 +1227,6 @@ ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
-# rhbz#638912
-#ApplyPatch pci-_osc-supported-field-should-contain-supported-features-not-enabled-ones.patch
 
 #ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
