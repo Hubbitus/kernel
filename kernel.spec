@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Tue Mar 29 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Disable qla4xxx (CONFIG_SCSI_QLA_ISCSI) driver on powerpc32 (#686199)
+
 * Tue Mar 29 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc1.git0.0
 - ... and then 2.6.39-rc1
 
