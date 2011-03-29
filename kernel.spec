@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 19
+%define gitrev 21
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1941,6 +1941,10 @@ fi
 # and build.
 
 %changelog
+* Tue Mar 29 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git21.0
+- Update to snapshot 2.6.38-git21
+- Enable some new x86{_64} platform drivers.
+
 * Mon Mar 28 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc0.git19.0
 - Update to snapshot 2.6.38-git19
 - Drop upstream patches:
