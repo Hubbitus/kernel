@@ -137,7 +137,6 @@ CONFIG_VIRTUALIZATION=y
 # CONFIG_MEMSTICK is not set
 
 # CONFIG_IPMI_HANDLER is not set
-# CONFIG_TCG_TPM is not set
 
 # PPC gets sad with debug alloc (bz 448598)
 # CONFIG_DEBUG_PAGEALLOC is not set
