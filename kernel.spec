@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Thu Mar 31 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc1.git1.0
+- Update to snapshot 2.6.39-rc1-git1
+
 * Tue Mar 29 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Disable CONFIG_IMA, CONFIG_TCG_TPM on powerpc (#689468)
 
