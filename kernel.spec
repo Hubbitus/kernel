@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1941,6 +1941,10 @@ fi
 # and build.
 
 %changelog
+* Sat Apr 02 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc1.git3.0
+- Update to snapshot 2.6.39-rc1-git3
+- generic: CONFIG_USB_VL600=m
+
 * Thu Mar 31 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc1.git1.0
 - Update to snapshot 2.6.39-rc1-git1
 
