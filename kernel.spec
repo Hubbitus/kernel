@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Wed Apr 06 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc2.git0.0
+- Update to 2.6.39-rc2
+
 * Tue Apr 05 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc1.git5.0
 - Update to git snapshot 2.6.39-rc1-git5
 - (Not test-built before commit since my rawr box is down atm.)
