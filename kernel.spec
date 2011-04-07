@@ -673,6 +673,7 @@ Patch1824: drm-intel-next.patch
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1826: drm-intel-edp-fixes.patch
 Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
+Patch1828: drm-intel-eeebox-eb1007-quirk.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1289,6 +1290,7 @@ ApplyPatch linux-2.6-intel-iommu-igfx.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
 #ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
+ApplyPatch drm-intel-eeebox-eb1007-quirk.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1941,6 +1943,10 @@ fi
 # and build.
 
 %changelog
+* Thu Apr 07 2011 Hans de Goede <hdegoede@redhat.com>
+- Add a no lvds quirk for the Asus EB1007 to the i915 drm driver,
+  this fixes gnome-shell not working on it
+
 * Wed Apr 06 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc2.git0.0
 - Update to 2.6.39-rc2
 
