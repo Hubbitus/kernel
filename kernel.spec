@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -709,7 +709,6 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12102: efifb_update.patch
 Patch12200: acpi_reboot.patch
 
 # Runtime power management
@@ -1323,7 +1322,6 @@ ApplyPatch add-appleir-usb-driver.patch
 ApplyPatch neuter_intel_microcode_load.patch
 
 # various fixes for Apple and EFI
-ApplyPatch efifb_update.patch
 ApplyPatch acpi_reboot.patch
 
 # Runtime PM
@@ -1943,6 +1941,10 @@ fi
 # and build.
 
 %changelog
+* Mon Apr 11 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc2.git3.0
+- Update to git snapshot 2.6.39-rc2-git3
+- efifb_update.patch: drop, upstream.
+
 * Thu Apr 07 2011 Hans de Goede <hdegoede@redhat.com>
 - Add a no lvds quirk for the Asus EB1007 to the i915 drm driver,
   this fixes gnome-shell not working on it
