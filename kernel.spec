@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Wed Apr 13 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc3.git2.0
+- Update to snapshot 2.6.39-rc3-git2
+
 * Mon Apr 11 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc2.git3.0
 - Update to git snapshot 2.6.39-rc2-git3
 - efifb_update.patch: drop, upstream.
