@@ -133,7 +133,7 @@ if [ "$OLDRC" != "$NEWRC" ]; then
   rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2
 
   curl -O $KORG26TESTING/patch-2.6.$NEWBASE-rc$NEWRC.bz2
-  fedpkg upload FILES=patch-2.6.$NEWBASE-rc$NEWRC.bz2
+  fedpkg upload patch-2.6.$NEWBASE-rc$NEWRC.bz2
 
   # Another awkward (albeit unlikely) corner case.
   # Moving from say 26-rc3-git1 to 26-rc4-git1
