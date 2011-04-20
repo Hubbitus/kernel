@@ -1941,6 +1941,10 @@ fi
 # and build.
 
 %changelog
+* Tue Apr 19 2011 Dave Jones <davej@redhat.com>
+- Build USB_SERIAL in instead of modular.
+  Enable USB_SERIAL_CONSOLE.
+
 * Wed Apr 13 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc3.git2.0
 - Update to snapshot 2.6.39-rc3-git2
 
