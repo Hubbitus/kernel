@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
 %define gitrev 2
 # Set rpm version accordingly
@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Wed Apr 20 2011 Dave Jones <davej@redhat.com> 2.6.39-0.rc4.git2.0
+- Update to 2.6.39-rc4-git2
+
 * Tue Apr 19 2011 Dave Jones <davej@redhat.com>
 - Build USB_SERIAL in instead of modular.
   Enable USB_SERIAL_CONSOLE.
