@@ -1941,6 +1941,10 @@ fi
 # and build.
 
 %changelog
+* Sun Apr 24 2011 Kyle McMartin <kmcmartin@redhat.com>
+- ppc64: disable TUNE_CELL, which causes problems with illegal instuctions
+  being generated on non-Cell PPC machines. (#698256)
+
 * Wed Apr 20 2011 Dave Jones <davej@redhat.com> 2.6.39-0.rc4.git2.0
 - Update to 2.6.39-rc4-git2
 
