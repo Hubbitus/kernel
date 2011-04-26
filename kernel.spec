@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -1941,6 +1941,9 @@ fi
 # and build.
 
 %changelog
+* Tue Apr 26 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Update to 2.6.39-rc4-git8
+
 * Sun Apr 24 2011 Kyle McMartin <kmcmartin@redhat.com>
 - ppc64: disable TUNE_CELL, which causes problems with illegal instuctions
   being generated on non-Cell PPC machines. (#698256)
