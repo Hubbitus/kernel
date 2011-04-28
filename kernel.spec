@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1941,6 +1941,11 @@ fi
 # and build.
 
 %changelog
+* Thu Apr 28 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc5.git1.0
+- Update to snapshot 2.6.39-rc5-git1
+- Edit scripts/rebase.sh to not keep appending to .gitignore when the new
+  .bz2 files are covered by wildcards.
+
 * Wed Apr 27 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Linux 2.6.39-rc5
 

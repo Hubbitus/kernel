@@ -124,12 +124,7 @@ fi
 if [ "$OLDRC" != "$NEWRC" ]; then
   echo "Different rc. Rebasing from $OLDRC to $NEWRC"
   perl -p -i -e 's/^%define\ rcrev.*/\%define\ rcrev\ $ENV{"NEWRC"}/' kernel.spec
-  perl -p -i -e 's/$ENV{OLDBASE}-rc$ENV{OLDRC}.bz2/$ENV{NEWBASE}-rc$ENV{NEWRC}.bz2/' .gitignore
   grep -v patch-2.6.$OLDBASE-rc$OLDRC.bz2 sources > .sources.tmp; mv .sources.tmp sources
-  grep -v patch-2.6.$OLDBASE-rc$OLDRC-git$OLDGIT.bz2 .gitignore >.gitignore.tmp ; mv .gitignore.tmp .gitignore
-  if [ `grep -c patch-2.6.$NEWBASE-rc$NEWRC.bz2 sources` -eq 0 ]; then
-    echo patch-2.6.$NEWBASE-rc$NEWRC.bz2 >> .gitignore
-  fi
   rm -f patch-2.6.$OLDBASE-rc$OLDRC.bz2
 
   curl -O $KORG26TESTING/patch-2.6.$NEWBASE-rc$NEWRC.bz2
@@ -151,12 +146,7 @@ if [ "$OLDGIT" != "$NEWGIT" ]; then
   fi
   perl -p -i -e 's/^%define\ gitrev.*/\%define\ gitrev\ $ENV{"NEWGIT"}/' kernel.spec
   if [ "$OLDGIT" -ne 0 ]; then
-    if [ "$NEWGIT" -ne 0 ]; then
-      perl -p -i -e 's/$ENV{OLD}/$ENV{NEW}/' .gitignore
-    fi
     grep -v patch-$OLD.bz2 sources > .sources.tmp; mv .sources.tmp sources
-  else
-    echo patch-$NEW.bz2 >> .gitignore
   fi
 
   if [ "$NEWGIT" -ne 0 ]; then
