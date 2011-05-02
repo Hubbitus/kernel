@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -695,8 +695,6 @@ Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
 
 #Patch2916: lirc-staging-2.6.36-fixes.patch
-
-Patch2918: flexcop-fix-xlate_proc_name-warning.patch
 
 # fs fixes
 
@@ -1310,9 +1308,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # http://www.lirc.org/
 #ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
-
-# rhbz#664852
-ApplyPatch flexcop-fix-xlate_proc_name-warning.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1941,6 +1936,9 @@ fi
 # and build.
 
 %changelog
+* Sun May 01 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Update to snapshot 2.6.39-rc5-git5
+
 * Thu Apr 28 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc5.git1.0
 - Update to snapshot 2.6.39-rc5-git1
 - Edit scripts/rebase.sh to not keep appending to .gitignore when the new
