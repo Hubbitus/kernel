@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1936,6 +1936,9 @@ fi
 # and build.
 
 %changelog
+* Sat May 07 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Update to snapshot 2.6.39-rc6-git5
+
 * Wed May 04 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Update to snapshot 2.6.39-rc6-git2
 
