@@ -1936,6 +1936,9 @@ fi
 # and build.
 
 %changelog
+* Mon May 08 2011 Chuck Ebbert <cebbert@redhat.com>
+- Enable CONFIG_FB_UDL (#634636)
+
 * Sat May 07 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Update to snapshot 2.6.39-rc6-git5
 
