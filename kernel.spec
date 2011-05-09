@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1936,7 +1936,7 @@ fi
 # and build.
 
 %changelog
-* Mon May 08 2011 Chuck Ebbert <cebbert@redhat.com>
+* Mon May 08 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.39-0.rc6.git6.0
 - Enable CONFIG_FB_UDL (#634636)
 
 * Sat May 07 2011 Kyle McMartin <kmcmartin@redhat.com>
