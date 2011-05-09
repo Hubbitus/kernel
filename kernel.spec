@@ -614,11 +614,6 @@ Patch09: linux-2.6-upstream-reverts.patch
 # Standalone patches
 Patch20: linux-2.6-hotfixes.patch
 
-Patch29: linux-2.6-utrace-revert-make-ptrace-functions-static.patch
-Patch30: linux-2.6-tracehook.patch
-Patch31: linux-2.6-utrace.patch
-Patch32: linux-2.6-utrace-ptrace.patch
-
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
@@ -1154,12 +1149,6 @@ ApplyOptionalPatch linux-2.6-compile-fixes.patch
 ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
 ApplyPatch linux-2.6-hotfixes.patch
-
-# Roland's utrace ptrace replacement.
-#ApplyPatch linux-2.6-utrace-revert-make-ptrace-functions-static.patch
-#ApplyPatch linux-2.6-tracehook.patch
-#ApplyPatch linux-2.6-utrace.patch
-#ApplyPatch linux-2.6-utrace-ptrace.patch
 
 # Architecture patches
 # x86(-64)
@@ -1936,6 +1925,9 @@ fi
 # and build.
 
 %changelog
+* Mon May 09 2011 Dave Jones <davej@redhat.com>
+- Remove remnants of non-upstreamed utrace bits.
+
 * Mon May 08 2011 Chuck Ebbert <cebbert@redhat.com> 2.6.39-0.rc6.git6.0
 - Enable CONFIG_FB_UDL (#634636)
 
