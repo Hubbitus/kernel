@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 2.6.%{upstream_sublevel}
 %endif
@@ -1925,6 +1925,9 @@ fi
 # and build.
 
 %changelog
+* Tue May 09 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git0.0
+- Linux 2.6.39-rc7
+
 * Mon May 09 2011 Dave Jones <davej@redhat.com>
 - Remove remnants of non-upstreamed utrace bits.
 
