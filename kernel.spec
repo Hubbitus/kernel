@@ -711,6 +711,10 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
+Patch12400: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
+Patch12401: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
+Patch12402: mm-slub-default-slub_max_order-to-0.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1316,6 +1320,10 @@ ApplyPatch acpi_reboot.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+
+ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
+ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
+ApplyPatch mm-slub-default-slub_max_order-to-0.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1925,6 +1933,9 @@ fi
 # and build.
 
 %changelog
+* Wed May 11 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Pull in some SLUB fixes from Mel Gorman for testing.
+
 * Tue May 09 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git0.0
 - Linux 2.6.39-rc7
 
