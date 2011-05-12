@@ -17,7 +17,7 @@ relied on that if it was present and usable.
 
 Patch (2) switched the checking for erratum 400 to use the new
 framework. But the original code checked for an explicit model range
-first, then used OSVW if the CPU was not within that range. Patch (1)
+first, then used OSVW if the CPU was not within that range. Patch (2)
 also inexplicably added a second model range (for Family 10h) that
 was never in the original code.
 
