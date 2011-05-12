@@ -715,6 +715,8 @@ Patch12400: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocati
 Patch12401: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12402: mm-slub-default-slub_max_order-to-0.patch
 
+Patch12500: x86-amd-fix-another-erratum-400-bug.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1325,6 +1327,8 @@ ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocatio
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-slub-default-slub_max_order-to-0.patch
 
+ApplyPatch x86-amd-fix-another-erratum-400-bug.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1933,6 +1937,9 @@ fi
 # and build.
 
 %changelog
+* Thu May 12 2011 Chuck Ebbert <cebbert@redhat.com>
+- Fix yet another bug in AMD erratum checking (#704059)
+
 * Thu May 12 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git3.0
 - Switch on release builds until 2.6.39 releases and we branch off 2.6.40-git.
 
