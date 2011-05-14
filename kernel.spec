@@ -1942,6 +1942,7 @@ fi
   used to host mockroots for mass rebuilds.
 - Drop IMA disabling patch, which is no longer necessary since it's run time
   (but unused) cost is now minimized.
+- Switch NF_CONNTRACK to modular, it'll get autoloaded where necessary.
 
 * Sat May 14 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git6.0
 - Update to 2.6.39-rc7-git6
