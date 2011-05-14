@@ -1,9 +1,23 @@
-From owner-linux-mm@kvack.org Wed May 11 11:29:53 2011
-From: Mel Gorman <mgorman@suse.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 2/3] mm: slub: Do not take expensive steps for SLUBs speculative high-order allocations
-Date: Wed, 11 May 2011 16:29:32 +0100
-Message-Id: <1305127773-10570-3-git-send-email-mgorman@suse.de>
+From linux-fsdevel-owner@vger.kernel.org Fri May 13 10:04:18 2011
+From:	Mel Gorman <mgorman@suse.de>
+To:	Andrew Morton <akpm@linux-foundation.org>
+Cc:	James Bottomley <James.Bottomley@HansenPartnership.com>,
+	Colin King <colin.king@canonical.com>,
+	Raghavendra D Prabhu <raghu.prabhu13@gmail.com>,
+	Jan Kara <jack@suse.cz>, Chris Mason <chris.mason@oracle.com>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	Rik van Riel <riel@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+	linux-mm <linux-mm@kvack.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	Mel Gorman <mgorman@suse.de>
+Subject: [PATCH 3/4] mm: slub: Do not take expensive steps for SLUBs speculative high-order allocations
+Date:	Fri, 13 May 2011 15:03:23 +0100
+Message-Id: <1305295404-12129-4-git-send-email-mgorman@suse.de>
+X-Mailing-List:	linux-fsdevel@vger.kernel.org
 
 To avoid locking and per-cpu overhead, SLUB optimisically uses
 high-order allocations and falls back to lower allocations if they
@@ -13,14 +27,13 @@ benefit of using high-order pages in SLUB. On a desktop system, two
 users report that the system is getting stalled with kswapd using large
 amounts of CPU.
 
-This patch prevents SLUB taking any expensive steps when trying to
-use high-order allocations. Instead, it is expected to fall back to
-smaller orders more aggressively. Testing from users was somewhat
-inconclusive on how much this helped but local tests showed it made
-a positive difference. It makes sense that falling back to order-0
-allocations is faster than entering compaction or direct reclaim.
+This patch prevents SLUB taking any expensive steps when trying to use
+high-order allocations. Instead, it is expected to fall back to smaller
+orders more aggressively. Testing was somewhat inconclusive on how much
+this helped but it makes sense that falling back to order-0 allocations
+is faster than entering compaction or direct reclaim.
 
-Signed-off-yet: Mel Gorman <mgorman@suse.de>
+Signed-off-by: Mel Gorman <mgorman@suse.de>
 ---
  mm/page_alloc.c |    3 ++-
  mm/slub.c       |    3 ++-
@@ -48,7 +61,7 @@ index 9f8a97b..057f1e2 100644
  		 * Not worth trying to allocate harder for
  		 * __GFP_NOMEMALLOC even if it can't schedule.
 diff --git a/mm/slub.c b/mm/slub.c
-index 98c358d..1071723 100644
+index 98c358d..c5797ab 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
 @@ -1170,7 +1170,8 @@ static struct page *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
@@ -56,18 +69,10 @@ index 98c358d..1071723 100644
  	 * so we fall-back to the minimum order allocation.
  	 */
 -	alloc_gfp = (flags | __GFP_NOWARN | __GFP_NORETRY | __GFP_NO_KSWAPD) & ~__GFP_NOFAIL;
-+	alloc_gfp = (flags | __GFP_NOWARN | __GFP_NORETRY | __GFP_NO_KSWAPD) &
-+			~(__GFP_NOFAIL | __GFP_WAIT);
++	alloc_gfp = (flags | __GFP_NOWARN | __GFP_NO_KSWAPD) &
++			~(__GFP_NOFAIL | __GFP_WAIT | __GFP_REPEAT);
  
  	page = alloc_slab_page(alloc_gfp, node, oo);
  	if (unlikely(!page)) {
 -- 
 1.7.3.4
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
-
