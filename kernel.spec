@@ -619,6 +619,8 @@ Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
+Patch170: tmpfs-implement-generic-xattr-support.patch
+
 Patch200: linux-2.6-debug-sizeof-structs.patch
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
@@ -627,8 +629,6 @@ Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 Patch380: linux-2.6-defaults-pci_no_msi.patch
 Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
-
-Patch385: ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1181,6 +1181,7 @@ ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 #
 # bugfixes to drivers and filesystems
 #
+ApplyPatch tmpfs-implement-generic-xattr-support.patch
 
 # ext4
 
@@ -1217,8 +1218,6 @@ ApplyPatch linux-2.6-defaults-pci_no_msi.patch
 ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
-
-#ApplyPatch ima-allow-it-to-be-completely-disabled-and-default-off.patch
 
 #
 # SCSI Bits.
@@ -1937,6 +1936,13 @@ fi
 # and build.
 
 %changelog
+* Sat May 14 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git6.1
+- tmpfs: implement generic xattr support
+  Merge Eric Paris' patch to add xattr support to tmpfs, so that it can be
+  used to host mockroots for mass rebuilds.
+- Drop IMA disabling patch, which is no longer necessary since it's run time
+  (but unused) cost is now minimized.
+
 * Sat May 14 2011 Kyle McMartin <kmcmartin@redhat.com> 2.6.39-0.rc7.git6.0
 - Update to 2.6.39-rc7-git6
 
