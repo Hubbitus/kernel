@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -51,13 +51,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
 # which yields a base_sublevel of 21.
-%define base_sublevel 38
+%define base_sublevel 39
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -1938,6 +1938,9 @@ fi
 # and build.
 
 %changelog
+* Thu May 19 2011 Dave Jones <davej@redhat.com>
+- Update to 2.6.39 final.
+
 * Sat May 14 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Update to v2 of Mel Gorman's SLUB patchset
 
