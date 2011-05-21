@@ -716,8 +716,6 @@ Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocati
 Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
-Patch12500: x86-amd-fix-another-erratum-400-bug.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1328,8 +1326,6 @@ ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocatio
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
-ApplyPatch x86-amd-fix-another-erratum-400-bug.patch
-
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1938,6 +1934,9 @@ fi
 # and build.
 
 %changelog
+* Fri May 20 2011 Chuck Ebbert <cebbert@redhat.com>
+- Drop broken fix for stalls on AMD processors.
+
 * Fri May 20 2011 Dave Jones <davej@redhat.com>
 - Rebuild to fix versioning.
 
