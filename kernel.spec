@@ -716,6 +716,9 @@ Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocati
 Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
+Patch12410: hid-multitouch-add-support-for-elo-touchsystems.patch
+Patch12411: bluetooth-device-ids-for-ath3k-on-pegatron-lucid-tablets.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1326,6 +1329,9 @@ ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocatio
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
+ApplyPatch hid-multitouch-add-support-for-elo-touchsystems.patch
+ApplyPatch bluetooth-device-ids-for-ath3k-on-pegatron-lucid-tablets.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1934,6 +1940,11 @@ fi
 # and build.
 
 %changelog
+* Tue May 24 2011 Kyle McMartin <kmcmartin@redhat.com>
+- hid-multitouch: add support for elo touchsystems panels (requested
+  by hadess, backported from hid-next)
+- bluetooth: add support for more ath3k devices (Ditto.)
+
 * Fri May 20 2011 Chuck Ebbert <cebbert@redhat.com>
 - Drop broken fix for stalls on AMD processors.
 
