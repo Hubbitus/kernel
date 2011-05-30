@@ -623,8 +623,6 @@ Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
-Patch170: tmpfs-implement-generic-xattr-support.patch
-
 Patch200: linux-2.6-debug-sizeof-structs.patch
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
@@ -706,8 +704,6 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
-Patch12200: acpi_reboot.patch
-
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -715,13 +711,9 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch12400: mm-vmscan-correct-use-pgdat_balanced-in-sleeping_prematurely.patch
 Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
 Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
-
-Patch12410: hid-multitouch-add-support-for-elo-touchsystems.patch
-Patch12411: bluetooth-device-ids-for-ath3k-on-pegatron-lucid-tablets.patch
 
 %endif
 
@@ -1181,13 +1173,12 @@ ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
 #
 # Exec shield
 #
-ApplyPatch linux-2.6-i386-nx-emulation.patch
+#ApplyPatch linux-2.6-i386-nx-emulation.patch ###FIX
 ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 
 #
 # bugfixes to drivers and filesystems
 #
-ApplyPatch tmpfs-implement-generic-xattr-support.patch
 
 # ext4
 
@@ -1316,9 +1307,6 @@ ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
 
-# various fixes for Apple and EFI
-ApplyPatch acpi_reboot.patch
-
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ### Broken by implicit notify support & ACPICA rebase
@@ -1328,13 +1316,9 @@ ApplyPatch acpi_reboot.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-ApplyPatch mm-vmscan-correct-use-pgdat_balanced-in-sleeping_prematurely.patch
 ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
-
-ApplyPatch hid-multitouch-add-support-for-elo-touchsystems.patch
-ApplyPatch bluetooth-device-ids-for-ath3k-on-pegatron-lucid-tablets.patch
 
 # END OF PATCH APPLICATIONS
 
