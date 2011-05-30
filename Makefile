@@ -55,6 +55,9 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS is not set/CONFIG_DEBUG_OBJECTS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_FREE is not set/CONFIG_DEBUG_OBJECTS_FREE=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_TIMERS is not set/CONFIG_DEBUG_OBJECTS_TIMERS=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_WORK is not set/CONFIG_DEBUG_OBJECTS_WORK=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_RCU_HEAD is not set/CONFIG_DEBUG_OBJECTS_RCU_HEAD=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_X86_PTDUMP is not set/CONFIG_X86_PTDUMP=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CAN_DEBUG_DEVICES is not set/CONFIG_CAN_DEBUG_DEVICES=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_MODULE_FORCE_UNLOAD is not set/CONFIG_MODULE_FORCE_UNLOAD=y/' config-nodebug
@@ -79,7 +82,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/CONFIG_IWLWIFI_DEVICE_TRACING=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_WORK is not set/CONFIG_DEBUG_OBJECTS_WORK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_DEBUG is not set/CONFIG_DMADEVICES_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_VDEBUG is not set/CONFIG_DMADEVICES_VDEBUG=y/' config-nodebug
@@ -91,7 +93,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PER_CPU_MAPS is not set/CONFIG_DEBUG_PER_CPU_MAPS=y/' config-nodebug
 	@perl -pi -e 's/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/' config-nodebug
 	#@perl -pi -e 's/# CONFIG_PCI_DEFAULT_USE_CRS is not set/CONFIG_PCI_DEFAULT_USE_CRS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 
 	@perl -pi -e 's/# CONFIG_DEBUG_SET_MODULE_RONX is not set/CONFIG_DEBUG_SET_MODULE_RONX=y/' config-nodebug
@@ -134,6 +135,9 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS=y/# CONFIG_DEBUG_OBJECTS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_FREE=y/# CONFIG_DEBUG_OBJECTS_FREE is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_TIMERS=y/# CONFIG_DEBUG_OBJECTS_TIMERS is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_WORK=y/# CONFIG_DEBUG_OBJECTS_WORK is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_RCU_HEAD=y/# CONFIG_DEBUG_OBJECTS_RCU_HEAD is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_X86_PTDUMP=y/# CONFIG_X86_PTDUMP is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CAN_DEBUG_DEVICES=y/# CONFIG_CAN_DEBUG_DEVICES is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_MODULE_FORCE_UNLOAD=y/# CONFIG_MODULE_FORCE_UNLOAD is not set/' config-nodebug
@@ -158,7 +162,6 @@ release:
 	@perl -pi -e 's/CONFIG_ATH_DEBUG=y/# CONFIG_ATH_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CARL9170_DEBUGFS=y/# CONFIG_CARL9170_DEBUGFS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_IWLWIFI_DEVICE_TRACING=y/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_WORK=y/# CONFIG_DEBUG_OBJECTS_WORK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_DEBUG=y/# CONFIG_DMADEVICES_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_VDEBUG=y/# CONFIG_DMADEVICES_VDEBUG is not set/' config-nodebug
@@ -170,7 +173,6 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_PER_CPU_MAPS=y/# CONFIG_DEBUG_PER_CPU_MAPS is not set/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/' config-nodebug
 	#@perl -pi -e 's/CONFIG_PCI_DEFAULT_USE_CRS=y/# CONFIG_PCI_DEFAULT_USE_CRS is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_TEST_LIST_SORT=y/# CONFIG_TEST_LIST_SORT is not set/' config-nodebug
 
 	@perl -pi -e 's/CONFIG_DEBUG_SET_MODULE_RONX=y/# CONFIG_DEBUG_SET_MODULE_RONX is not set/' config-nodebug
