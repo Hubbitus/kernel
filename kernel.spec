@@ -1173,7 +1173,7 @@ ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
 #
 # Exec shield
 #
-#ApplyPatch linux-2.6-i386-nx-emulation.patch ###FIX
+ApplyPatch linux-2.6-i386-nx-emulation.patch
 ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 
 #
