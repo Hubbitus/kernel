@@ -583,7 +583,8 @@ Patch01: %{stable_patch_01}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
+### HAX we're using -rc$x tarballs to make transitioning easier
+# Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
 %if 0%{?gitrev}
 Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
 %endif
