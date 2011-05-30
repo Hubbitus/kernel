@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -57,7 +57,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
 # which yields a base_sublevel of 21.
-%define base_sublevel 39
+%define base_sublevel 0
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -75,18 +75,19 @@ Summary: The Linux kernel
 %define stable_base %(echo $((%{stable_update} - 1)))
 %endif
 %endif
-%define rpmversion 2.6.%{base_sublevel}%{?stablerev}
+%define rpmversion 3.%{base_sublevel}%{?stablerev}
 
 ## The not-released-kernel case ##
 %else
 # The next upstream release sublevel (base_sublevel+1)
-%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
+# % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
+%define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 1
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
-%define rpmversion 2.6.%{upstream_sublevel}
+%define rpmversion 3.%{upstream_sublevel}
 %endif
 # Nb: The above rcrev and gitrev values automagically define Patch00 and Patch01 below.
 
@@ -184,7 +185,8 @@ Summary: The Linux kernel
 %endif
 
 # The kernel tarball/base version
-%define kversion 2.6.%{base_sublevel}
+# % define kversion 3.%{base_sublevel}
+%define kversion 3.%{base_sublevel}-rc%rcrev
 
 %define make_target bzImage
 
@@ -528,7 +530,8 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %define debuginfo_args --strict-build-id
 %endif
 
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
+# Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc1.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -567,11 +570,11 @@ Source1000: config-local
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-%define    stable_patch_00  patch-2.6.%{base_sublevel}.%{stable_base}.bz2
+%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.bz2
 Patch00: %{stable_patch_00}
 %endif
 %if 0%{?stable_rc}
-%define    stable_patch_01  patch-2.6.%{base_sublevel}.%{stable_update}-rc%{stable_rc}.bz2
+%define    stable_patch_01  patch-3.%{base_sublevel}.%{stable_update}-rc%{stable_rc}.bz2
 Patch01: %{stable_patch_01}
 %endif
 
@@ -580,14 +583,14 @@ Patch01: %{stable_patch_01}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-2.6.%{upstream_sublevel}-rc%{rcrev}.bz2
+Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
 %if 0%{?gitrev}
-Patch01: patch-2.6.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
+Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Patch00: patch-2.6.%{base_sublevel}-git%{gitrev}.bz2
+Patch00: patch-3.%{base_sublevel}-git%{gitrev}.bz2
 %endif
 %endif
 %endif
@@ -986,20 +989,20 @@ ApplyOptionalPatch()
 
 # Update to latest upstream.
 %if 0%{?released_kernel}
-%define vanillaversion 2.6.%{base_sublevel}
+%define vanillaversion 3.%{base_sublevel}
 # non-released_kernel case
 %else
 %if 0%{?rcrev}
-%define vanillaversion 2.6.%{upstream_sublevel}-rc%{rcrev}
+%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}
 %if 0%{?gitrev}
-%define vanillaversion 2.6.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
+%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-%define vanillaversion 2.6.%{base_sublevel}-git%{gitrev}
+%define vanillaversion 3.%{base_sublevel}-git%{gitrev}
 %else
-%define vanillaversion 2.6.%{base_sublevel}
+%define vanillaversion 3.%{base_sublevel}
 %endif
 %endif
 %endif
@@ -1012,7 +1015,7 @@ ApplyOptionalPatch()
 
 # Build a list of the other top-level kernel tree directories.
 # This will be used to hardlink identical vanilla subdirs.
-sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-2.6.*' \
+sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-3.*' \
             | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
 if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
@@ -1066,14 +1069,14 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    ApplyPatch patch-2.6.%{upstream_sublevel}-rc%{rcrev}.bz2
+    # ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
 %if 0%{?gitrev}
-    ApplyPatch patch-2.6.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
+    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    ApplyPatch patch-2.6.%{base_sublevel}-git%{gitrev}.bz2
+    ApplyPatch patch-3.%{base_sublevel}-git%{gitrev}.bz2
 %endif
 %endif
 
