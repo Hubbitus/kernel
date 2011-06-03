@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -602,6 +602,8 @@ Patch00: patch-3.%{base_sublevel}-git%{gitrev}.bz2
 
 Patch02: git-linus.diff
 
+Patch03: linux-3.0-fix-uts-release.patch
+
 # we also need compile fixes for -vanilla
 Patch04: linux-2.6-compile-fixes.patch
 
@@ -1140,6 +1142,7 @@ done
 
 ApplyOptionalPatch git-linus.diff
 
+ApplyPatch linux-3.0-fix-uts-release.patch
 ApplyPatch linux-2.6-makefile-after_link.patch
 
 #
@@ -1928,6 +1931,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jun 01 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc1.git0.2
+- Fix utsname for 3.0-rc1
+
 * Mon May 30 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc1.git0.1
 - Linux 3.0-rc1 (won't build until module-init-tools gets an update.)
 
