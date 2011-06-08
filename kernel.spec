@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -83,7 +83,7 @@ Summary: The Linux kernel
 # % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -531,7 +531,7 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %endif
 
 # Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc1.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc2.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -1931,6 +1931,11 @@ fi
 # and build.
 
 %changelog
+* Wed Jun 08 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc2.git0.1
+- Update to 3.0-rc2, rebase utsname fix.
+- Build IPv6 into the kernel for a variety of reasons
+  (http://lists.fedoraproject.org/pipermail/kernel/2011-June/003105.html)
+
 * Mon Jun 06 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc1.git0.3
 - Conflict with module-init-tools older than 3.13 to ensure the
   3.0 transition is handled correctly.

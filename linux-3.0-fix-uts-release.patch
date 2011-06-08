@@ -6,7 +6,7 @@ index afb8e0d..e435bf5 100644
  VERSION = 3
  PATCHLEVEL = 0
 -SUBLEVEL = 0
- EXTRAVERSION = -rc1
+ EXTRAVERSION = -rc2
  NAME = Sneaky Weasel
  
 @@ -378,9 +377,9 @@ KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
