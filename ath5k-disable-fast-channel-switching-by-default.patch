@@ -1,0 +1,74 @@
+From 8fa0f2e505a58f6694a94f68d90e509530e68679 Mon Sep 17 00:00:00 2001
+From: Nick Kossifidis <mickflemm@gmail.com>
+Date: Thu, 2 Jun 2011 03:09:48 +0300
+Subject: ath5k: Disable fast channel switching by default
+
+Disable fast channel change by default on AR2413/AR5413 due to
+some bug reports (it still works for me but it's better to be safe).
+Add a module parameter "fastchanswitch" in case anyone wants to enable
+it and play with it.
+
+Signed-off-by: Nick Kossifidis <mickflemm@gmail.com>
+Tested-by: Sedat Dilek <sedat.dilek@gmail.com>
+Signed-off-by: John W. Linville <linville@tuxdriver.com>
+---
+ drivers/net/wireless/ath/ath5k/base.c  |   11 ++++++++++-
+ drivers/net/wireless/ath/ath5k/reset.c |    5 ++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath5k/base.c b/drivers/net/wireless/ath/ath5k/base.c
+index 2204762..b6c5d37 100644
+--- a/drivers/net/wireless/ath/ath5k/base.c
++++ b/drivers/net/wireless/ath/ath5k/base.c
+@@ -72,6 +72,11 @@ static int modparam_all_channels;
+ module_param_named(all_channels, modparam_all_channels, bool, S_IRUGO);
+ MODULE_PARM_DESC(all_channels, "Expose all channels the device can use.");
+ 
++static int modparam_fastchanswitch;
++module_param_named(fastchanswitch, modparam_fastchanswitch, bool, S_IRUGO);
++MODULE_PARM_DESC(fastchanswitch, "Enable fast channel switching for AR2413/AR5413 radios.");
++
++
+ /* Module info */
+ MODULE_AUTHOR("Jiri Slaby");
+ MODULE_AUTHOR("Nick Kossifidis");
+@@ -2686,6 +2691,7 @@ ath5k_reset(struct ath5k_softc *sc, struct ieee80211_channel *chan,
+ 	struct ath5k_hw *ah = sc->ah;
+ 	struct ath_common *common = ath5k_hw_common(ah);
+ 	int ret, ani_mode;
++	bool fast;
+ 
+ 	ATH5K_DBG(sc, ATH5K_DEBUG_RESET, "resetting\n");
+ 
+@@ -2705,7 +2711,10 @@ ath5k_reset(struct ath5k_softc *sc, struct ieee80211_channel *chan,
+ 	ath5k_drain_tx_buffs(sc);
+ 	if (chan)
+ 		sc->curchan = chan;
+-	ret = ath5k_hw_reset(ah, sc->opmode, sc->curchan, chan != NULL,
++
++	fast = ((chan != NULL) && modparam_fastchanswitch) ? 1 : 0;
++
++	ret = ath5k_hw_reset(ah, sc->opmode, sc->curchan, fast,
+ 								skip_pcu);
+ 	if (ret) {
+ 		ATH5K_ERR(sc, "can't reset hardware (%d)\n", ret);
+diff --git a/drivers/net/wireless/ath/ath5k/reset.c b/drivers/net/wireless/ath/ath5k/reset.c
+index 3510de2..126a4ea 100644
+--- a/drivers/net/wireless/ath/ath5k/reset.c
++++ b/drivers/net/wireless/ath/ath5k/reset.c
+@@ -1124,8 +1124,11 @@ int ath5k_hw_reset(struct ath5k_hw *ah, enum nl80211_iftype op_mode,
+ 			/* Non fatal, can happen eg.
+ 			 * on mode change */
+ 			ret = 0;
+-		} else
++		} else {
++			ATH5K_DBG(ah->ah_sc, ATH5K_DEBUG_RESET,
++				"fast chan change successful\n");
+ 			return 0;
++		}
+ 	}
+ 
+ 	/*
+-- 
+1.7.5.2
+

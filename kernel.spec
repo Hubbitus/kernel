@@ -718,6 +718,7 @@ Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
 Patch12404: revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
+Patch12405: ath5k-disable-fast-channel-switching-by-default.patch
 
 %endif
 
@@ -1328,6 +1329,9 @@ ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 # rhbz#710921
 ApplyPatch revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
 
+# rhbz#709122
+ApplyPatch ath5k-disable-fast-channel-switching-by-default.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1936,6 +1940,10 @@ fi
 # and build.
 
 %changelog
+* Thu Jun 09 2011 Kyle McMartin <kmcmartin@redhat.com>
+- ath5k-disable-fast-channel-switching-by-default.patch (rhbz#709122)
+  (korgbz#34992) [a99168ee in wireless-next]
+
 * Thu Jun 09 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc2.git0.2
 - rhbz#710921: revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
 
