@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -717,6 +717,8 @@ Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocati
 Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
+Patch12404: revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1322,6 +1324,9 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
+
+# rhbz#710921
+ApplyPatch revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1931,6 +1936,9 @@ fi
 # and build.
 
 %changelog
+* Thu Jun 09 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc2.git0.2
+- rhbz#710921: revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
+
 * Wed Jun 08 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc2.git0.1
 - Update to 3.0-rc2, rebase utsname fix.
 - Build IPv6 into the kernel for a variety of reasons
