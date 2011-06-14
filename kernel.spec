@@ -83,7 +83,7 @@ Summary: The Linux kernel
 # % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -433,7 +433,7 @@ Summary: The Linux kernel
 # First the general kernel 2.6 required versions as per
 # Documentation/Changes
 #
-%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1
+%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1, device-mapper-libs < 2.02.84-2
 
 #
 # Then a series of requirements that are distribution specific, either
@@ -531,7 +531,7 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %endif
 
 # Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc2.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc3.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -672,7 +672,6 @@ Patch1824: drm-intel-next.patch
 Patch1825: drm-intel-make-lvds-work.patch
 Patch1826: drm-intel-edp-fixes.patch
 Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
-Patch1828: drm-intel-eeebox-eb1007-quirk.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -716,9 +715,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
 Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
-
-Patch12404: revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
-Patch12405: ath5k-disable-fast-channel-switching-by-default.patch
 
 %endif
 
@@ -1284,7 +1280,6 @@ ApplyPatch linux-2.6-intel-iommu-igfx.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
 #ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
-ApplyPatch drm-intel-eeebox-eb1007-quirk.patch
 
 # linux1394 git patches
 #ApplyPatch linux-2.6-firewire-git-update.patch
@@ -1325,12 +1320,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
 ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
-
-# rhbz#710921
-ApplyPatch revert-ftrace-remove-unnecessary-disabling-of-irqs.patch
-
-# rhbz#709122
-ApplyPatch ath5k-disable-fast-channel-switching-by-default.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1940,6 +1929,15 @@ fi
 # and build.
 
 %changelog
+* Tue Jun 14 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Update to 3.0-rc3, add another conflicts to deal with 2 digit
+  versions (libdm.)
+- Simplify linux-3.0-fix-uts-release.patch now that SUBLEVEL is optional.
+- revert-ftrace-remove-unnecessary-disabling-of-irqs.patch: drop upstreamed
+  patch.
+- drm-intel-eeebox-eb1007-quirk.patch: ditto.
+- ath5k-disable-fast-channel-switching-by-default.patch: ditto.
+
 * Thu Jun 09 2011 Kyle McMartin <kmcmartin@redhat.com>
 - ath5k-disable-fast-channel-switching-by-default.patch (rhbz#709122)
   (korgbz#34992) [a99168ee in wireless-next]
