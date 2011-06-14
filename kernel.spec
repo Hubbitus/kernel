@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -433,7 +433,7 @@ Summary: The Linux kernel
 # First the general kernel 2.6 required versions as per
 # Documentation/Changes
 #
-%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1, device-mapper-libs < 2.02.84-2
+%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1, device-mapper-libs < 1.02.63-2
 
 #
 # Then a series of requirements that are distribution specific, either
@@ -1929,6 +1929,10 @@ fi
 # and build.
 
 %changelog
+* Tue Jun 14 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git0.3
+- Fix libdm conflict (whose bright idea was it to give subpackages differing
+  version numbers?)
+
 * Tue Jun 14 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Update to 3.0-rc3, add another conflicts to deal with 2 digit
   versions (libdm.)
