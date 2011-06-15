@@ -433,7 +433,7 @@ Summary: The Linux kernel
 # First the general kernel 2.6 required versions as per
 # Documentation/Changes
 #
-%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1, device-mapper-libs < 1.02.63-2
+%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, module-init-tools < 3.13-1, device-mapper-libs < 1.02.63-2, mdadm < 3.2.1-5
 
 #
 # Then a series of requirements that are distribution specific, either
@@ -1929,6 +1929,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jun 15 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Conflict with pre-3.2.1-5 versions of mdadm. (#710646)
+
 * Wed Jun 15 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Build in aesni-intel on i686 for symmetry with 64-bit.
 
