@@ -1929,6 +1929,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jun 15 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Build in aesni-intel on i686 for symmetry with 64-bit.
+
 * Tue Jun 14 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git0.3
 - Fix libdm conflict (whose bright idea was it to give subpackages differing
   version numbers?)
