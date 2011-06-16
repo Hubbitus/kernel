@@ -1317,9 +1317,10 @@ ApplyPatch neuter_intel_microcode_load.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
-ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
-ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
+### disable, riel reports they aggravate a VM_BUG_ON
+#ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
+#ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
+#ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1929,6 +1930,10 @@ fi
 # and build.
 
 %changelog
+* Thu Jun 16 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Disable mm patches which had been submitted against 2.6.39, as Rik reports
+  they seem to aggravate a VM_BUG_ON. More investigation is necessary.
+
 * Wed Jun 15 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Conflict with pre-3.2.1-5 versions of mdadm. (#710646)
 
