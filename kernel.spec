@@ -670,10 +670,6 @@ Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
-# linux1394 git patches
-Patch2200: linux-2.6-firewire-git-update.patch
-Patch2201: linux-2.6-firewire-git-pending.patch
-
 # Quiet boot fixes
 # silence the ACPI blacklist code
 Patch2802: linux-2.6-silence-acpi-blacklist.patch
@@ -1258,10 +1254,6 @@ ApplyPatch linux-2.6-intel-iommu-igfx.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
 #ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
-
-# linux1394 git patches
-#ApplyPatch linux-2.6-firewire-git-update.patch
-#ApplyOptionalPatch linux-2.6-firewire-git-pending.patch
 
 # silence the ACPI blacklist code
 ApplyPatch linux-2.6-silence-acpi-blacklist.patch
@@ -1905,6 +1897,7 @@ fi
 - linux-2.6-defaults-pci_use_crs.patch: ditto.
 - linux-2.6-selinux-mprotect-checks.patch: upstream a while ago.
 - drop some more unapplied crud.
+- We haven't applied firewire patches in a dogs age.
 
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git5.1
 - Try updating to a git snapshot for the first time in 3.0-rc,
