@@ -618,7 +618,6 @@ Patch09: linux-2.6-upstream-reverts.patch
 # Git trees.
 
 # Standalone patches
-Patch20: linux-2.6-hotfixes.patch
 
 Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 
@@ -1135,7 +1134,6 @@ ApplyOptionalPatch linux-2.6-compile-fixes.patch
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
-ApplyPatch linux-2.6-hotfixes.patch
 
 # Architecture patches
 # x86(-64)
@@ -1883,6 +1881,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jun 17 2011 Dave Jones <davej@redhat.com>
+- drop qcserial 'compile fix' that was just duplicating an include.
+
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com>
 - linux-2.6-defaults-pci_no_msi.patch: drop, haven't toggled the default
   in many moons.
