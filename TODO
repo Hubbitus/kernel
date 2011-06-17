@@ -1,40 +1,17 @@
 # Put stuff likely to go upstream (in decreasing likelyhood) at the top.
-#
-
-* linux-2.6-firewire-git-update.patch
-	perpetual updates from git trees.
 
 * linux-2.6-compile-fixes.patch
-* linux-2.6-hotfixes.patch
 	Empty
 
-* linux-2.6-build-nonintconfig.patch
-* linux-2.6-debug-nmi-timeout.patch
-* linux-2.6-debug-spinlock-taint.patch
 * linux-2.6-debug-taint-vm.patch
 * linux-2.6-debug-vm-would-have-oomkilled.patch
 	TODO: Push upstream
 
 * linux-2.6-acpi-video-dos.patch
 * linux-2.6-defaults-acpi-video.patch
+* linux-2.6-defaults-aspm.patch
 	Fedora policy decisions
 	Turn into CONFIG_ options and upstream ?
-
-* linux-2.6-crash-driver.patch
-	Unlikely to go upstream.
-	https://bugzilla.redhat.com/show_bug.cgi?id=492803
-
-* linux-2.6-debug-always-inline-kzalloc.patch
-	Sent upstream Sep 25 2008
-
-* linux-2.6-debug-sizeof-structs.patch
-	Fedora local debug stuff.
-
-* linux-2.6-utrace.patch
-	utrace
-
-* linux-2.6-defaults-pci_no_msi.patch
-	Fedora local choices uninteresting to upstream
 
 * linux-2.6-input-kill-stupid-messages.patch
 * linux-2.6-silence-acpi-blacklist.patch
@@ -42,20 +19,45 @@
 * linux-2.6-silence-noise.patch
 	Fedora local 'hush' patches.  (Some will go upstream next time)
 
-* linux-2.6-execshield.patch
-	Not interesting to upstream.
-
-* lirc-2.6.33.patch
-* hdpvr-ir-enable.patch
-	jarod working on upstreaming
-
-* linux-2.6-selinux-mprotect-checks.patch
-* linux-2.6-sparc-selinux-mprotect-checks.patch
-	Newer version might go upstream at some point.
-
 * linux-2.6-serial-460800.patch
 	Probably not upstreamable.
 	http://marc.theaimsgroup.com/?l=linux-kernel&m=112687270832687&w=2
 	https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=126403
 	http://lkml.org/lkml/2006/8/2/208
 
+* linux-2.6-crash-driver.patch
+	Unlikely to go upstream.
+	https://bugzilla.redhat.com/show_bug.cgi?id=492803
+
+--------
+currently undocumented:
+
+acpi-ec-add-delay-before-write.patch
+add-appleir-usb-driver.patch
+die-floppy-die.patch
+disable-i8042-check-on-apple-mac.patch
+dmar-disable-when-ricoh-multifunction.patch
+drm-intel-make-lvds-work.patch
+drm-intel-next.patch
+drm-nouveau-updates.patch
+fix_xen_guest_on_old_EC2.patch
+hda_intel-prealloc-4mb-dmabuffer.patch
+linux-2.6.29-sparc-IOC_TYPECHECK.patch
+linux-2.6.30-no-pcspkr-modalias.patch
+linux-2.6-32bit-mmap-exec-randomization.patch
+linux-2.6-acpi-debug-infinite-loop.patch
+linux-2.6-e1000-ich9-montevina.patch
+linux-2.6-enable-more-pci-autosuspend.patch
+linux-2.6-i386-nx-emulation.patch
+linux-2.6-input-kill-stupid-messages.patch
+linux-2.6-intel-iommu-igfx.patch
+linux-2.6-makefile-after_link.patch
+linux-2.6-upstream-reverts.patch
+linux-2.6-usb-pci-autosuspend.patch
+linux-2.6-v4l-dvb-experimental.patch
+linux-2.6-v4l-dvb-fixes.patch
+linux-2.6-v4l-dvb-update.patch
+linux-2.6-v4l-dvb-uvcvideo-update.patch
+linux-3.0-fix-uts-release.patch
+neuter_intel_microcode_load.patch
+runtime_pm_fixups.patch
