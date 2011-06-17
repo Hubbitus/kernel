@@ -626,7 +626,6 @@ Patch161: linux-2.6-i386-nx-emulation.patch
 
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
-Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
 Patch383: linux-2.6-defaults-aspm.patch
 
@@ -1184,7 +1183,6 @@ ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-taint-vm.patch
 ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
-ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 
 #
 # PCI
@@ -1882,6 +1880,8 @@ fi
 * Fri Jun 17 2011 Dave Jones <davej@redhat.com>
 - drop qcserial 'compile fix' that was just duplicating an include.
 - drop struct sizeof debug patch. (no real value. not upstreamable)
+- drop linux-2.6-debug-always-inline-kzalloc.patch.
+  Can't recall why this was added. Can easily re-add if deemed necessary.
 
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com>
 - linux-2.6-defaults-pci_no_msi.patch: drop, haven't toggled the default
