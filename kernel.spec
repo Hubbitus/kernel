@@ -630,7 +630,6 @@ Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
 
-Patch381: linux-2.6-defaults-pci_use_crs.patch
 Patch383: linux-2.6-defaults-aspm.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
@@ -1211,7 +1210,6 @@ ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
 #
 # PCI
 #
-ApplyPatch linux-2.6-defaults-pci_use_crs.patch
 # enable ASPM by default on hardware we expect to work
 ApplyPatch linux-2.6-defaults-aspm.patch
 
@@ -1930,6 +1928,7 @@ fi
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com>
 - linux-2.6-defaults-pci_no_msi.patch: drop, haven't toggled the default
   in many moons.
+- linux-2.6-defaults-pci_use_crs.patch: ditto.
 
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git5.1
 - Try updating to a git snapshot for the first time in 3.0-rc,

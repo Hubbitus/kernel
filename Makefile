@@ -92,7 +92,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_PER_CPU_MAPS is not set/CONFIG_DEBUG_PER_CPU_MAPS=y/' config-nodebug
 	@perl -pi -e 's/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/' config-nodebug
-	#@perl -pi -e 's/# CONFIG_PCI_DEFAULT_USE_CRS is not set/CONFIG_PCI_DEFAULT_USE_CRS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 
 	@perl -pi -e 's/# CONFIG_DEBUG_SET_MODULE_RONX is not set/CONFIG_DEBUG_SET_MODULE_RONX=y/' config-nodebug
@@ -172,7 +171,6 @@ release:
 	#@perl -pi -e 's/CONFIG_KDB_KEYBOARD=y/# CONFIG_KDB_KEYBOARD is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_PER_CPU_MAPS=y/# CONFIG_DEBUG_PER_CPU_MAPS is not set/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CRYPTO_MANAGER_DISABLE_TESTS is not set/CONFIG_CRYPTO_MANAGER_DISABLE_TESTS=y/' config-nodebug
-	#@perl -pi -e 's/CONFIG_PCI_DEFAULT_USE_CRS=y/# CONFIG_PCI_DEFAULT_USE_CRS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_TEST_LIST_SORT=y/# CONFIG_TEST_LIST_SORT is not set/' config-nodebug
 
 	@perl -pi -e 's/CONFIG_DEBUG_SET_MODULE_RONX=y/# CONFIG_DEBUG_SET_MODULE_RONX is not set/' config-nodebug
