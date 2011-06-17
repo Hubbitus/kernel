@@ -679,8 +679,6 @@ Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 
-Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
-
 # fs fixes
 
 # NFSv4
@@ -1260,8 +1258,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
-
-###FIX###ApplyPatch linux-2.6-v4l-dvb-add-lgdt3304-support.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
