@@ -624,7 +624,6 @@ Patch150: linux-2.6.29-sparc-IOC_TYPECHECK.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
-Patch200: linux-2.6-debug-sizeof-structs.patch
 Patch202: linux-2.6-debug-taint-vm.patch
 Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 Patch204: linux-2.6-debug-always-inline-kzalloc.patch
@@ -1183,7 +1182,6 @@ ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 
 # Various low-impact patches to aid debugging.
-ApplyPatch linux-2.6-debug-sizeof-structs.patch
 ApplyPatch linux-2.6-debug-taint-vm.patch
 ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 ApplyPatch linux-2.6-debug-always-inline-kzalloc.patch
@@ -1883,6 +1881,7 @@ fi
 %changelog
 * Fri Jun 17 2011 Dave Jones <davej@redhat.com>
 - drop qcserial 'compile fix' that was just duplicating an include.
+- drop struct sizeof debug patch. (no real value. not upstreamable)
 
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com>
 - linux-2.6-defaults-pci_no_msi.patch: drop, haven't toggled the default
