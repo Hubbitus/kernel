@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -944,7 +944,7 @@ ApplyPatch()
   fi
 %if !%{using_upstream_branch}
   if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
-    if [ "${patch:0:10}" != "patch-3." ] ; then
+    if [ "${patch:0:8}" != "patch-3." ] ; then
       echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
       exit 1
     fi
@@ -1930,6 +1930,11 @@ fi
 # and build.
 
 %changelog
+* Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git5.1
+- Try updating to a git snapshot for the first time in 3.0-rc,
+  update to 3.0-rc3-git5
+- Fix a subtle bug I introduced in 3.0-rc1, "patch-3." is 9 letters, not 10.
+
 * Thu Jun 16 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Disable mm patches which had been submitted against 2.6.39, as Rik reports
   they seem to aggravate a VM_BUG_ON. More investigation is necessary.
