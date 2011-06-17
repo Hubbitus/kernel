@@ -666,7 +666,6 @@ Patch1810: drm-nouveau-updates.patch
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
-Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1251,9 +1250,6 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
-# rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
-#  where intelObj->mt == NULL)
-#ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
 
 # silence the ACPI blacklist code
 ApplyPatch linux-2.6-silence-acpi-blacklist.patch
@@ -1896,6 +1892,7 @@ fi
   in many moons.
 - linux-2.6-defaults-pci_use_crs.patch: ditto.
 - linux-2.6-selinux-mprotect-checks.patch: upstream a while ago.
+- drm-i915-gen4-has-non-power-of-two-strides.patch: drop buggy bugfix
 - drop some more unapplied crud.
 - We haven't applied firewire patches in a dogs age.
 
