@@ -646,8 +646,6 @@ Patch470: die-floppy-die.patch
 
 Patch510: linux-2.6-silence-noise.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
-Patch570: linux-2.6-selinux-mprotect-checks.patch
-Patch580: linux-2.6-sparc-selinux-mprotect-checks.patch
 
 Patch610: hda_intel-prealloc-4mb-dmabuffer.patch
 
@@ -668,7 +666,6 @@ Patch1810: drm-nouveau-updates.patch
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
-Patch1826: drm-intel-edp-fixes.patch
 Patch1827: drm-i915-gen4-has-non-power-of-two-strides.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
@@ -688,9 +685,6 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 Patch2910: linux-2.6-v4l-dvb-add-lgdt3304-support.patch
-Patch2912: linux-2.6-v4l-dvb-ir-core-update.patch
-
-#Patch2916: lirc-staging-2.6.36-fixes.patch
 
 # fs fixes
 
@@ -709,10 +703,6 @@ Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
-
-Patch12401: mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
-Patch12402: mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
-Patch12403: mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
 %endif
 
@@ -1242,12 +1232,6 @@ ApplyPatch linux-2.6-silence-noise.patch
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch linux-2.6-silence-fbcon-logo.patch
 
-# Fix the SELinux mprotect checks on executable mappings
-#ApplyPatch linux-2.6-selinux-mprotect-checks.patch
-# Fix SELinux for sparc
-# FIXME: Can we drop this now? See updated linux-2.6-selinux-mprotect-checks.patch
-#ApplyPatch linux-2.6-sparc-selinux-mprotect-checks.patch
-
 # Changes to upstream defaults.
 
 
@@ -1271,7 +1255,6 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
-#ApplyPatch drm-intel-edp-fixes.patch
 # rhbz#681285 (i965: crash in brw_wm_surface_state.c::prepare_wm_surfaces()
 #  where intelObj->mt == NULL)
 #ApplyPatch drm-i915-gen4-has-non-power-of-two-strides.patch
@@ -1289,12 +1272,8 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
-#ApplyPatch linux-2.6-v4l-dvb-ir-core-update.patch
 
 ###FIX###ApplyPatch linux-2.6-v4l-dvb-add-lgdt3304-support.patch
-
-# http://www.lirc.org/
-#ApplyOptionalPatch lirc-staging-2.6.36-fixes.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -1311,11 +1290,6 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
-
-### disable, riel reports they aggravate a VM_BUG_ON
-#ApplyPatch mm-slub-do-not-wake-kswapd-for-slubs-speculative-high-order-allocations.patch
-#ApplyPatch mm-slub-do-not-take-expensive-steps-for-slubs-speculative-high-order-allocations.patch
-#ApplyPatch mm-vmscan-if-kswapd-has-been-running-too-long-allow-it-to-sleep.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1929,6 +1903,8 @@ fi
 - linux-2.6-defaults-pci_no_msi.patch: drop, haven't toggled the default
   in many moons.
 - linux-2.6-defaults-pci_use_crs.patch: ditto.
+- linux-2.6-selinux-mprotect-checks.patch: upstream a while ago.
+- drop some more unapplied crud.
 
 * Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git5.1
 - Try updating to a git snapshot for the first time in 3.0-rc,
