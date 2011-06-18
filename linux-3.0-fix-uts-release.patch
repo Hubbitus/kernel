@@ -7,6 +7,6 @@ index 0499c2e..86b01e8 100644
  PATCHLEVEL = 0
 -SUBLEVEL = 0
 +SUBLEVEL =
- EXTRAVERSION = -rc3-git5
+ EXTRAVERSION = -rc3-git6
  NAME = Sneaky Weasel
  

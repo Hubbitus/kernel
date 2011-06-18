@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -1877,6 +1877,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jun 17 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc3.git6.1
+- Update to 3.0-rc3-git6
+
 * Fri Jun 17 2011 Dave Jones <davej@redhat.com>
 - drop qcserial 'compile fix' that was just duplicating an include.
 - drop struct sizeof debug patch. (no real value. not upstreamable)
