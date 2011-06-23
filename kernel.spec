@@ -691,6 +691,7 @@ Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
+Patch12304: iwlagn-fix-dma-direction.patch
 
 %endif
 
@@ -1265,6 +1266,7 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+ApplyPatch iwlagn-fix-dma-direction.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1880,6 +1882,7 @@ fi
 - Linux 3.0-rc4-git3
 - Drop linux-3.0-fix-uts-release.patch, and instead just perl the Makefile
 - linux-2.6-silence-noise.patch: fix context
+- iwlagn-fix-dma-direction.patch: fix DMAR errors (for me at least)
 
 * Wed Jun 22 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc4.git0.2
 - Re-enable debuginfo generation. Thanks to Richard Jones for noticing... no
