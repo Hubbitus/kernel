@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -602,8 +602,6 @@ Patch00: patch-3.%{base_sublevel}-git%{gitrev}.bz2
 
 Patch02: git-linus.diff
 
-Patch03: linux-3.0-fix-uts-release.patch
-
 # we also need compile fixes for -vanilla
 Patch04: linux-2.6-compile-fixes.patch
 
@@ -1119,7 +1117,6 @@ done
 
 ApplyOptionalPatch git-linus.diff
 
-ApplyPatch linux-3.0-fix-uts-release.patch
 ApplyPatch linux-2.6-makefile-after_link.patch
 
 #
@@ -1372,8 +1369,10 @@ BuildKernel() {
 
     # make sure EXTRAVERSION says what we want it to say
     perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = %{?stablerev}-%{release}.%{_target_cpu}${Flavour:+.${Flavour}}/" Makefile
+    perl -p -i -e 's/^SUBLEVEL.*/SUBLEVEL = /' Makefile
 
     # if pre-rc1 devel kernel, must fix up SUBLEVEL for our versioning scheme
+    ### XXX this will probably be dead code in 3.0 --kyle
     %if !0%{?rcrev}
     %if 0%{?gitrev}
     perl -p -i -e 's/^SUBLEVEL.*/SUBLEVEL = %{upstream_sublevel}/' Makefile
@@ -1877,6 +1876,11 @@ fi
 # and build.
 
 %changelog
+* Thu Jun 23 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc4.git3.1
+- Linux 3.0-rc4-git3
+- Drop linux-3.0-fix-uts-release.patch, and instead just perl the Makefile
+- linux-2.6-silence-noise.patch: fix context
+
 * Wed Jun 22 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc4.git0.2
 - Re-enable debuginfo generation. Thanks to Richard Jones for noticing... no
   wonder builds had been so quick lately.
