@@ -1878,6 +1878,9 @@ fi
 # and build.
 
 %changelog
+* Mon Jun 27 2011 Dave Jones <davej@redhat.com>
+- Disable CONFIG_CRYPTO_MANAGER_DISABLE_TESTS, as this also disables FIPS (rhbz 716942)
+
 * Thu Jun 23 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc4.git3.1
 - Linux 3.0-rc4-git3
 - Drop linux-3.0-fix-uts-release.patch, and instead just perl the Makefile
