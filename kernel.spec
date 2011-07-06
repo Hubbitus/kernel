@@ -1878,6 +1878,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jul 06 2011 Chuck Ebbert <cebbert@redhat.com>
+- Set CONFIG_X86_RESERVE_LOW=640 as requested by mjg
+
 * Mon Jul 04 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc6.git0.1
 - Linux 3.0-rc6
 - [generic] SCSI_ISCI=m, because why not
