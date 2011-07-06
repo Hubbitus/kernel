@@ -1390,8 +1390,8 @@ BuildKernel() {
     echo USING ARCH=$Arch
 
     make -s ARCH=$Arch oldnoconfig >/dev/null
-    make ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
-    make ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
+    make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
+    make -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
     # Start installing the results
 %if %{with_debuginfo}
@@ -1878,9 +1878,6 @@ fi
 # and build.
 
 %changelog
-* Wed Jul 06 2011 Dave Jones <davej@redhat.com>
-- Don't suppress output from make. (rhbz #716563)
-
 * Mon Jul 04 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc6.git0.1
 - Linux 3.0-rc6
 - [generic] SCSI_ISCI=m, because why not
