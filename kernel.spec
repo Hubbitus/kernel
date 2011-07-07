@@ -1878,6 +1878,10 @@ fi
 # and build.
 
 %changelog
+* Thu Jul 07 2011 Dave Jones <davej@redhat.com>
+- Centralise CPU_FREQ options into config-generic.
+  Switch to using ondemand by default. (rhbz 713572)
+
 * Wed Jul 06 2011 Chuck Ebbert <cebbert@redhat.com>
 - Set CONFIG_X86_RESERVE_LOW=640 as requested by mjg
 
