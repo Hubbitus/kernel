@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -691,7 +691,6 @@ Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
-Patch12304: iwlagn-fix-dma-direction.patch
 
 %endif
 
@@ -1266,7 +1265,6 @@ ApplyPatch neuter_intel_microcode_load.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
-ApplyPatch iwlagn-fix-dma-direction.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1878,6 +1876,11 @@ fi
 # and build.
 
 %changelog
+* Sun Jul 10 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc6.git6.1
+- Linux 3.0-rc6-git6
+- iwlagn-fix-dma-direction.patch: drop.
+- Revert CONFIG_X86_RESERVE_LOW=640, it breaks booting on x86_64.
+
 * Thu Jul 07 2011 Dave Jones <davej@redhat.com>
 - Centralise CPU_FREQ options into config-generic.
   Switch to using ondemand by default. (rhbz 713572)
