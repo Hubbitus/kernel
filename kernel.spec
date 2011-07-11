@@ -1876,6 +1876,9 @@ fi
 # and build.
 
 %changelog
+* Mon Jul 11 2011 Dave Jones <davej@redhat.com>
+- Change BINFMT_MISC to be modular. (rhbz 695415)
+
 * Sun Jul 10 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc6.git6.1
 - Linux 3.0-rc6-git6
 - iwlagn-fix-dma-direction.patch: drop.
