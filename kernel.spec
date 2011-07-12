@@ -685,6 +685,8 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
+Patch12019: linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
+
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -1256,6 +1258,8 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
+
+ApplyPatch linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1876,6 +1880,9 @@ fi
 # and build.
 
 %changelog
+* Tue Jul 12 2011 John W. Linville <linville@redhat.com>
+- rt2x00: Add device ID for RT539F device. (rhbz 720594)
+
 * Tue Jul 12 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc7.git0.1
 - Linux 3.0-rc7, hopefully the last before the Great Renumbering becomes
   official.
