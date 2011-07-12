@@ -83,9 +83,9 @@ Summary: The Linux kernel
 # % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -531,7 +531,7 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %endif
 
 # Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc6.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc7.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -1876,6 +1876,10 @@ fi
 # and build.
 
 %changelog
+* Tue Jul 12 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc7.git0.1
+- Linux 3.0-rc7, hopefully the last before the Great Renumbering becomes
+  official.
+
 * Mon Jul 11 2011 Dave Jones <davej@redhat.com>
 - Change BINFMT_MISC to be modular. (rhbz 695415)
 
