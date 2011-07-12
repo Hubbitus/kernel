@@ -687,6 +687,8 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12019: linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
 
+Patch12020: linux-2.6-zd1211rw-fix-invalid-signal-values-from-device.patch
+
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -1199,6 +1201,8 @@ ApplyPatch linux-2.6-defaults-aspm.patch
 ApplyPatch hda_intel-prealloc-4mb-dmabuffer.patch
 
 # Networking
+
+ApplyPatch linux-2.6-zd1211rw-fix-invalid-signal-values-from-device.patch
 
 # Misc fixes
 # The input layer spews crap no-one cares about.
@@ -1880,6 +1884,9 @@ fi
 # and build.
 
 %changelog
+* Tue Jul 12 2011 John W. Linville <linville@redhat.com>
+- zd1211rw: fix invalid signal values from device (rhbz 720093)
+
 * Tue Jul 12 2011 John W. Linville <linville@redhat.com>
 - rt2x00: Add device ID for RT539F device. (rhbz 720594)
 
