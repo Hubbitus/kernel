@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -1884,6 +1884,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jul 13 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc7.git1.1
+- Update to snapshot 3.0-rc7-git1 for intel drm fixes.
+
 * Tue Jul 12 2011 John W. Linville <linville@redhat.com>
 - zd1211rw: fix invalid signal values from device (rhbz 720093)
 
