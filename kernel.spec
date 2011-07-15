@@ -696,6 +696,8 @@ Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
+Patch20000: utrace.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1273,6 +1275,9 @@ ApplyPatch linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+
+# utrace.
+ApplyPatch utrace.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1884,6 +1889,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 15 2011 Dave Jones <davej@redhat.com>
+- Bring back utrace until uprobes gets merged upstream.
+
 * Wed Jul 13 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0-0.rc7.git1.1
 - Update to snapshot 3.0-rc7-git1 for intel drm fixes.
 
