@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -1889,6 +1889,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 15 2011 Dave Jones <davej@redhat.com> 3.0-0.rc7.git3.1
+- 3.0-rc7-git3
+
 * Fri Jul 15 2011 Dave Jones <davej@redhat.com>
 - Bring back utrace until uprobes gets merged upstream.
 
