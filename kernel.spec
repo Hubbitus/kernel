@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -1889,6 +1889,9 @@ fi
 # and build.
 
 %changelog
+* Wed Jul 20 2011 Chuck Ebbert <cebbert@redhat.com> 3.0-0.rc7.git8.1
+- 3.0-rc7-git8
+
 * Fri Jul 15 2011 Dave Jones <davej@redhat.com> 3.0-0.rc7.git3.1
 - 3.0-rc7-git3
 
