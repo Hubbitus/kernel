@@ -1889,6 +1889,9 @@ fi
 # and build.
 
 %changelog
+* Thu Jul 21 2011 Dave Jones <davej@redhat.com>
+- Switch BLK_DEV_RAM to be modular (rhbz 720833)
+
 * Wed Jul 20 2011 Chuck Ebbert <cebbert@redhat.com> 3.0-0.rc7.git8.1
 - 3.0-rc7-git8
 
