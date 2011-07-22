@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -75,7 +75,7 @@ Summary: The Linux kernel
 %define stable_base %(echo $((%{stable_update} - 1)))
 %endif
 %endif
-%define rpmversion 3.%{base_sublevel}%{?stablerev}
+%define rpmversion 3.%{base_sublevel}.%{stable_update}
 
 ## The not-released-kernel case ##
 %else
@@ -83,11 +83,11 @@ Summary: The Linux kernel
 # % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 0
 # Set rpm version accordingly
-%define rpmversion 3.%{upstream_sublevel}
+%define rpmversion 3.%{upstream_sublevel}.0
 %endif
 # Nb: The above rcrev and gitrev values automagically define Patch00 and Patch01 below.
 
@@ -185,8 +185,7 @@ Summary: The Linux kernel
 %endif
 
 # The kernel tarball/base version
-# % define kversion 3.%{base_sublevel}
-%define kversion 3.%{base_sublevel}-rc%rcrev
+%define kversion 3.%{base_sublevel}
 
 %define make_target bzImage
 
@@ -530,8 +529,7 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %define debuginfo_args --strict-build-id
 %endif
 
-# Source0: ftp://ftp.kernel.org/pub/linux/kernel/v2.6/linux-%{kversion}.tar.bz2
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.0-rc7.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -583,8 +581,7 @@ Patch01: %{stable_patch_01}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-### HAX we're using -rc$x tarballs to make transitioning easier
-# Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
+Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
 %if 0%{?gitrev}
 Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
 %endif
@@ -1045,7 +1042,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    # ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
+    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
 %if 0%{?gitrev}
     ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
 %endif
@@ -1382,7 +1379,6 @@ BuildKernel() {
 
     # make sure EXTRAVERSION says what we want it to say
     perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = %{?stablerev}-%{release}.%{_target_cpu}${Flavour:+.${Flavour}}/" Makefile
-    perl -p -i -e 's/^SUBLEVEL.*/SUBLEVEL = /' Makefile
 
     # if pre-rc1 devel kernel, must fix up SUBLEVEL for our versioning scheme
     ### XXX this will probably be dead code in 3.0 --kyle
@@ -1889,6 +1885,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 22 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0.0-1
+- Linux 3.0, but really 3.0.0 (sigh)
+
 * Thu Jul 21 2011 Chuck Ebbert <cebbert@redhat.com>  3.0-0.rc7.git10.1
 - 3.0-rc7-git10
 - Use ext4 for ext2 and ext3 filesystems (CONFIG_EXT4_USE_FOR_EXT23=y)
