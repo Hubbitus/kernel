@@ -746,7 +746,7 @@ operate.
 %package bootwrapper
 Summary: Boot wrapper files for generating combined kernel + initrd images
 Group: Development/System
-Requires: gzip
+Requires: gzip binutils
 %description bootwrapper
 Kernel-bootwrapper contains the wrapper code which makes bootable "zImage"
 files combining both kernel and initial ramdisk.
@@ -1885,6 +1885,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 22 2011 Dave Jones <davej@redhat.com>
+- bootwrapper needs objcopy. Add it to requires: (wwoods)
+
 * Fri Jul 22 2011 Kyle McMartin <kmcmartin@redhat.com> 3.0.0-1
 - Linux 3.0, but really 3.0.0 (sigh)
 
