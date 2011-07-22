@@ -85,7 +85,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 8
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}
 %endif
@@ -1889,7 +1889,8 @@ fi
 # and build.
 
 %changelog
-* Thu Jul 21 2011 Chuck Ebbert <cebbert@redhat.com>
+* Thu Jul 21 2011 Chuck Ebbert <cebbert@redhat.com>  3.0-0.rc7.git10.1
+- 3.0-rc7-git10
 - Use ext4 for ext2 and ext3 filesystems (CONFIG_EXT4_USE_FOR_EXT23=y)
 
 * Thu Jul 21 2011 Dave Jones <davej@redhat.com>
