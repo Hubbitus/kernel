@@ -1889,6 +1889,9 @@ fi
 # and build.
 
 %changelog
+* Thu Jul 21 2011 Chuck Ebbert <cebbert@redhat.com>
+- Use ext4 for ext2 and ext3 filesystems (CONFIG_EXT4_USE_FOR_EXT23=y)
+
 * Thu Jul 21 2011 Dave Jones <davej@redhat.com>
 - Switch BLK_DEV_RAM to be modular (rhbz 720833)
 
