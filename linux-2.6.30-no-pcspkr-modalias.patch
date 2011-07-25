@@ -7,5 +7,5 @@ diff -up linux-2.6.30.noarch/drivers/input/misc/pcspkr.c.jx linux-2.6.30.noarch/
  MODULE_LICENSE("GPL");
 -MODULE_ALIAS("platform:pcspkr");
  
- #if defined(CONFIG_MIPS) || defined(CONFIG_X86)
- /* Use the global PIT lock ! */
+ static int pcspkr_event(struct input_dev *dev, unsigned int type, unsigned int code, int value)
+ {

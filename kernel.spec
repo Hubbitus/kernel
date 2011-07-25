@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -80,12 +80,11 @@ Summary: The Linux kernel
 ## The not-released-kernel case ##
 %else
 # The next upstream release sublevel (base_sublevel+1)
-# % define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
-%define upstream_sublevel 0
+%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -639,8 +638,6 @@ Patch470: die-floppy-die.patch
 Patch510: linux-2.6-silence-noise.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
 
-Patch610: hda_intel-prealloc-4mb-dmabuffer.patch
-
 Patch700: linux-2.6-e1000-ich9-montevina.patch
 
 Patch800: linux-2.6-crash-driver.patch
@@ -681,10 +678,6 @@ Patch12010: add-appleir-usb-driver.patch
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12018: neuter_intel_microcode_load.patch
-
-Patch12019: linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
-
-Patch12020: linux-2.6-zd1211rw-fix-invalid-signal-values-from-device.patch
 
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
@@ -1197,11 +1190,8 @@ ApplyPatch linux-2.6-defaults-aspm.patch
 # ACPI
 
 # ALSA
-ApplyPatch hda_intel-prealloc-4mb-dmabuffer.patch
 
 # Networking
-
-ApplyPatch linux-2.6-zd1211rw-fix-invalid-signal-values-from-device.patch
 
 # Misc fixes
 # The input layer spews crap no-one cares about.
@@ -1262,8 +1252,6 @@ ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
 
-ApplyPatch linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
-
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
 ### Broken by implicit notify support & ACPICA rebase
@@ -1274,7 +1262,7 @@ ApplyPatch linux-2.6-rt2x00-Add-device-ID-for-RT539F-device.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # utrace.
-ApplyPatch utrace.patch
+#ApplyPatch utrace.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1885,6 +1873,11 @@ fi
 # and build.
 
 %changelog
+* Mon Jul 25 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Linux 3.0-git3
+- Drop hda_intel-prealloc-4mb-dmabuffer.patch, set new
+  CONFIG_SND_HDA_PREALLOC_SIZE=4096 for similar effect.
+
 * Fri Jul 22 2011 Dave Jones <davej@redhat.com>
 - bootwrapper needs objcopy. Add it to requires: (wwoods)
 
