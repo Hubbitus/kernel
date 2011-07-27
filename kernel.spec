@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1873,6 +1873,10 @@ fi
 # and build.
 
 %changelog
+* Wed Jul 27 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.0-git9
+- Move CONFIG_JUMP_LABEL to config-generic now that powerpc has it too
+
 * Mon Jul 25 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Linux 3.0-git3
 - Drop hda_intel-prealloc-4mb-dmabuffer.patch, set new
