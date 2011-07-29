@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -679,6 +679,8 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12018: neuter_intel_microcode_load.patch
 
+Patch12021: udlfb-bind-framebuffer-to-interface.patch
+
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -1251,6 +1253,8 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch neuter_intel_microcode_load.patch
+
+ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1873,6 +1877,10 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 29 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.0-git11
+- Backport patch to correct udlfb removal events (rhbz 726163)
+
 * Thu Jul 28 2011 Dave Jones <davej@redhat.com>
 - module-init-tools needs to be a prereq not a conflict.
 
