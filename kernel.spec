@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1372,11 +1372,10 @@ BuildKernel() {
     # make sure EXTRAVERSION says what we want it to say
     perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = %{?stablerev}-%{release}.%{_target_cpu}${Flavour:+.${Flavour}}/" Makefile
 
-    # if pre-rc1 devel kernel, must fix up SUBLEVEL for our versioning scheme
-    ### XXX this will probably be dead code in 3.0 --kyle
+    # if pre-rc1 devel kernel, must fix up PATCHLEVEL for our versioning scheme
     %if !0%{?rcrev}
     %if 0%{?gitrev}
-    perl -p -i -e 's/^SUBLEVEL.*/SUBLEVEL = %{upstream_sublevel}/' Makefile
+    perl -p -i -e 's/^PATCHLEVEL.*/PATCHLEVEL = %{upstream_sublevel}/' Makefile
     %endif
     %endif
 
@@ -1877,6 +1876,9 @@ fi
 # and build.
 
 %changelog
+* Fri Jul 29 2011 Josh Boyer <jwboyer@redhat.com>
+- Adjust Makefile sedding to account for 3.x release style
+
 * Fri Jul 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.0-git11
 - Backport patch to correct udlfb removal events (rhbz 726163)
