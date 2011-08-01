@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 14
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1875,7 +1875,19 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 
+#  ___________________________________________________________
+# / This branch is for Fedora 17. You probably want to commit \
+# \ to the F-16 branch instead, or in addition to this one.   /
+#  -----------------------------------------------------------
+#         \   ^__^
+#          \  (@@)\_______
+#             (__)\       )\/\
+#                 ||----w |
+#                 ||     ||
 %changelog
+* Mon Aug 01 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.0-git14
+
 * Sat Jul 30 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.0-git12
 
