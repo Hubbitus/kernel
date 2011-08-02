@@ -1281,6 +1281,7 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 chmod +x scripts/checkpatch.pl
 
+# This Prevents scripts/setlocalversion from mucking with our version numbers.
 touch .scmversion
 
 # only deal with configs if we are going to build for the arch
