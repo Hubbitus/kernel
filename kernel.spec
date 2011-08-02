@@ -1891,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 02 2011 Dave Jones <davej@redhat.com>
+- Change USB_SERIAL_OPTION back to modular. (rhbz 727680)
+
 * Tue Aug 02 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.0-git17
 - Add patch to fix backtrace in cdc_ncm driver (rhbz 720128)
