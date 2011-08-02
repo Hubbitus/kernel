@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 16
+%define gitrev 17
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -681,6 +681,9 @@ Patch12018: neuter_intel_microcode_load.patch
 
 Patch12021: udlfb-bind-framebuffer-to-interface.patch
 
+Patch12022: fix-cdc-ncm-dma-stack-vars.patch
+Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
+
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
 Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
@@ -1255,6 +1258,8 @@ ApplyPatch add-appleir-usb-driver.patch
 ApplyPatch neuter_intel_microcode_load.patch
 
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
+ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
+ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1509,7 +1514,7 @@ BuildKernel() {
     }
 
     collect_modules_list networking \
-    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register'
+    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt2x00(pci|usb)_probe'
     collect_modules_list block \
     			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler'
     collect_modules_list drm \
@@ -1885,6 +1890,13 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 02 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.0-git17
+- Add patch to fix backtrace in cdc_ncm driver (rhbz 720128)
+- Add patch to fix backtrace in usm-realtek driver (rhbz 720054)
+- Add change from Yanko Kaneti to get the rt2x00 drivers in modules.networking
+  (rhbz 708314)
+
 * Tue Aug 02 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.0-git16
 
