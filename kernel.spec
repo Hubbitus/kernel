@@ -1271,7 +1271,7 @@ ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 # utrace.
-#ApplyPatch utrace.patch
+ApplyPatch utrace.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1891,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 03 2011 Dave Jones <davej@redhat.com>
+- Re-apply the rebased utrace
+
 * Wed Aug 03 2011 John W. Linville <linville@redhat.com>
 - Disable CONFIG_BCMA since no driver currently uses it (rhbz 727796)
 
