@@ -1891,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 03 2011 John W. Linville <linville@redhat.com>
+- Disable CONFIG_BCMA since no driver currently uses it (rhbz 727796)
+
 * Tue Aug 02 2011 Dave Jones <davej@redhat.com>
 - Change USB_SERIAL_OPTION back to modular. (rhbz 727680)
 
