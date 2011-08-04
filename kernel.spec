@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 17
+%define gitrev 19
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -683,6 +683,8 @@ Patch12021: udlfb-bind-framebuffer-to-interface.patch
 
 Patch12022: fix-cdc-ncm-dma-stack-vars.patch
 Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
+Patch12024: epoll-fix-spurious-lockdep-warnings.patch
+Patch12025: rcu-prevent-early-schedule.patch
 
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
@@ -1260,6 +1262,8 @@ ApplyPatch neuter_intel_microcode_load.patch
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
 ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
+ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
+ApplyPatch rcu-prevent-early-schedule.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1891,6 +1895,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 04 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.0-git19
+- Add patch to fix epoll backtrace (rhbz 722472)
+- Add trial patch to fix rhbz 726877
+
 * Wed Aug 03 2011 Dave Jones <davej@redhat.com>
 - Re-apply the rebased utrace
 
