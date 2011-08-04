@@ -677,8 +677,6 @@ Patch12010: add-appleir-usb-driver.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch12018: neuter_intel_microcode_load.patch
-
 Patch12021: udlfb-bind-framebuffer-to-interface.patch
 
 Patch12022: fix-cdc-ncm-dma-stack-vars.patch
@@ -1256,8 +1254,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch add-appleir-usb-driver.patch
-
-ApplyPatch neuter_intel_microcode_load.patch
 
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
@@ -1895,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 04 2011 Dave Jones <davej@redhat.com>
+- Drop neuter_intel_microcode_load.patch (rhbz 690930)
+
 * Thu Aug 04 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.0-git19
 - Add patch to fix epoll backtrace (rhbz 722472)
