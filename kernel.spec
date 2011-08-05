@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 19
+%define gitrev 21
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1891,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 05 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux-3.0-git21
+
 * Thu Aug 04 2011 Dave Jones <davej@redhat.com>
 - Drop neuter_intel_microcode_load.patch (rhbz 690930)
 
