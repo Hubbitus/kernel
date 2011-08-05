@@ -1891,6 +1891,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 05 2011 Dave Jones <davej@redhat.com>
+- Deselect CONFIG_DECNET. Unmaintained, and rubbish.
+
 * Fri Aug 05 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.0-git21
 
