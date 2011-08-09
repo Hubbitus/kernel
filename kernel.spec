@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1897,6 +1897,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 08 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux-3.1-rc1-git1
+
 * Mon Aug 08 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc1
 - Adjust Makefile munging for new 3.x numbering scheme
