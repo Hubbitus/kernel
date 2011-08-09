@@ -1897,6 +1897,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 09 2011 Dave Jones <davej@redhat.com>
+- Enable CONFIG_SAMSUNG_LAPTOP (rhbz 729363)
+
 * Mon Aug 08 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc1-git1
 
