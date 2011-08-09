@@ -1898,6 +1898,9 @@ fi
 #                 ||     ||
 %changelog
 * Tue Aug 09 2011 Dave Jones <davej@redhat.com>
+- ptrace_report_syscall: check if TIF_SYSCALL_EMU is defined
+
+* Tue Aug 09 2011 Dave Jones <davej@redhat.com>
 - Enable CONFIG_SAMSUNG_LAPTOP (rhbz 729363)
 
 * Mon Aug 08 2011 Josh Boyer <jwboyer@redhat.com>
