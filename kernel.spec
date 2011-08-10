@@ -396,6 +396,11 @@ Summary: The Linux kernel
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
 %define with_up 0
+# we only build headers on the base arm arches
+# just like we used to only build them on i386 for x86
+%ifnarch armv5tel armv7hl
+%define with_headers 0
+%endif
 %define with_perf 0
 %endif
 
