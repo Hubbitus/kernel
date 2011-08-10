@@ -233,8 +233,8 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel-tegra and omap is only built on arm
-%ifnarch %{arm}
+# kernel-tegra and omap is only built on armv7 hard and softfp
+%ifnarch armv7hl armv7l
 %define with_tegra 0
 %define with_omap 0
 %endif
