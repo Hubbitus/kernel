@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -543,6 +543,7 @@ Source24: config-rhel-generic
 
 Source30: config-x86-generic
 Source31: config-i686-PAE
+Source32: config-x86-32-generic
 
 Source40: config-x86_64-generic
 
@@ -1897,6 +1898,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 10 2011 Josh Boyer <jwboyer@redhat.com>
+- Make sure all the config-* files are in Sources
+
 * Wed Aug 10 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc1-git2
 
