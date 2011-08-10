@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1897,6 +1897,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 10 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux-3.1-rc1-git2
+
 * Tue Aug 09 2011 Dave Jones <davej@redhat.com>
 - ptrace_report_syscall: check if TIF_SYSCALL_EMU is defined
 
