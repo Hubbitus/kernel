@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1898,6 +1898,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 11 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux-3.1-rc1-git6
+- Make ide_pmac a module (rhbz 730039)
+
 * Thu Aug 11 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc1-git3
 
