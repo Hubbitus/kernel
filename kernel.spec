@@ -395,7 +395,10 @@ Summary: The Linux kernel
 %define hdrarch arm
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
+# we build a up kernel on armv5tel. its used for qemu.
+%ifnarch armv5tel
 %define with_up 0
+%endif
 # we only build headers on the base arm arches
 # just like we used to only build them on i386 for x86
 %ifnarch armv5tel armv7hl
