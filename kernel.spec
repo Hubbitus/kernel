@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -684,7 +684,7 @@ Patch12021: udlfb-bind-framebuffer-to-interface.patch
 Patch12022: fix-cdc-ncm-dma-stack-vars.patch
 Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
-Patch12025: rcu-prevent-early-schedule.patch
+Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
@@ -1261,7 +1261,7 @@ ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
 ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
-ApplyPatch rcu-prevent-early-schedule.patch
+ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1898,6 +1898,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 15 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux-3.1-rc2
+- Replace trial patch for rhbz 726877 with a better fix
+
 * Thu Aug 11 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc1-git6
 - Make ide_pmac a module (rhbz 730039)
