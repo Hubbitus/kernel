@@ -113,8 +113,8 @@ Summary: The Linux kernel
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
 # kernel-firmware
 %define with_firmware  %{?_with_firmware:     1} %{?!_with_firmware:     0}
-# tools/perf
-%define with_perf      %{?_without_perf:      0} %{?!_without_perf:      1}
+# tools
+%define with_tools     %{?_without_tools:     0} %{?!_without_tools:     1}
 # kernel-debuginfo
 %define with_debuginfo %{?_without_debuginfo: 0} %{?!_without_debuginfo: 1}
 # kernel-bootwrapper (for creating zImages from kernel + initrd)
@@ -268,7 +268,7 @@ Summary: The Linux kernel
 %endif
 %define with_smp 0
 %define with_pae 0
-%define with_perf 0
+%define with_tools 0
 %endif
 
 %define all_x86 i386 i686
@@ -299,7 +299,7 @@ Summary: The Linux kernel
 %ifarch noarch
 %define with_up 0
 %define with_headers 0
-%define with_perf 0
+%define with_tools 0
 %define all_arch_configs kernel-%{version}-*.config
 %define with_firmware  %{?_with_firmware:     1} %{?!_with_firmware:     0}
 %endif
@@ -348,7 +348,7 @@ Summary: The Linux kernel
 %define image_install_path boot
 %define make_target image
 %define kernel_image arch/s390/boot/image
-%define with_perf 0
+%define with_tools 0
 %endif
 
 %ifarch sparc64
@@ -357,7 +357,7 @@ Summary: The Linux kernel
 %define make_target image
 %define kernel_image arch/sparc/boot/image
 %define image_install_path boot
-%define with_perf 0
+%define with_tools 0
 %endif
 
 %ifarch sparcv9
@@ -434,7 +434,7 @@ Summary: The Linux kernel
 %define with_smp 0
 %define with_pae 0
 %define with_debuginfo 0
-%define with_perf 0
+%define with_tools 0
 %define _enable_debug_packages 0
 %endif
 
@@ -531,7 +531,7 @@ BuildRequires: xmlto, asciidoc
 %if %{with_sparse}
 BuildRequires: sparse >= 0.4.1
 %endif
-%if %{with_perf}
+%if %{with_tools}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed)
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
@@ -790,21 +790,23 @@ Group: Development/Debug
 This package is required by %{name}-debuginfo subpackages.
 It provides the kernel source files common to all builds.
 
-%if %{with_perf}
-%package -n perf
-Summary: Performance monitoring for the Linux kernel
+%if %{with_tools}
+%package -n kernel-tools
+Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
-%description -n perf
-This package provides the perf tool and the supporting documentation.
+Obsoletes: perf
+%description -n kernel-tools
+This package contains the tools/ directory from the kernel source
+- the perf tool and the supporting documentation.
 
-%package -n perf-debuginfo
-Summary: Debug information for package perf
+%package -n kernel-tools-debuginfo
+Summary: Debug information for package kernel-tools
 Group: Development/Debug
 Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
 AutoReqProv: no
-%description -n perf-debuginfo
-This package provides debug information for package perf.
+%description -n kernel-tools-debuginfo
+This package provides debug information for package kernel-tools.
 
 # Note that this pattern only works right to match the .build-id
 # symlinks because of the trailing nonmatching alternation and
@@ -1656,7 +1658,7 @@ BuildKernel %make_target %kernel_image smp
 
 %global perf_make \
   make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
-%if %{with_perf}
+%if %{with_tools}
 %{perf_make} all
 %{perf_make} man || %{doc_build_fail}
 %endif
@@ -1714,7 +1716,7 @@ xargs -0 --no-run-if-empty %{__install} -m 444 -t $man9dir $m
 ls $man9dir | grep -q '' || > $man9dir/BROKEN
 %endif # with_doc
 
-%if %{with_perf}
+%if %{with_tools}
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
 
@@ -1883,8 +1885,8 @@ fi
 %{_datadir}/man/man9/*
 %endif
 
-%if %{with_perf}
-%files -n perf
+%if %{with_tools}
+%files -n kernel-tools
 %defattr(-,root,root)
 %{_bindir}/perf
 %dir %{_libexecdir}/perf-core
@@ -1892,7 +1894,7 @@ fi
 %{_mandir}/man[1-8]/*
 
 %if %{with_debuginfo}
-%files -f perf-debuginfo.list -n perf-debuginfo
+%files -f perf-debuginfo.list -n kernel-tools-debuginfo
 %defattr(-,root,root)
 %endif
 %endif
@@ -1970,6 +1972,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 16 2011 Dave Jones <davej@redhat.com>
+- Prepare for packaging more of tools/ by renaming 'perf' subpackage
+  to kernel-tools
+
 * Tue Aug 16 2011 Dennis Gilmore <dennis@ausil.us>
 +- add config for arm tegra devices
 +- setup kernel to build omap image (patch from David Marlin)
