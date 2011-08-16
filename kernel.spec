@@ -650,6 +650,7 @@ Patch800: linux-2.6-crash-driver.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
+Patch1556: xen-blkfront-name-adjust.patch
 
 # DRM
 
@@ -687,6 +688,9 @@ Patch12022: fix-cdc-ncm-dma-stack-vars.patch
 Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
 Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
+Patch12026: block-stray-block-put-after-teardown.patch
+Patch12027: usb-add-quirk-for-logitech-webcams.patch
+
 
 # Runtime power management
 Patch12203: linux-2.6-usb-pci-autosuspend.patch
@@ -694,6 +698,8 @@ Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
 Patch12205: runtime_pm_fixups.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
+
+Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
 Patch20000: utrace.patch
 
@@ -1233,6 +1239,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
+ApplyPatch xen-blkfront-name-adjust.patch
 
 # DRM core
 
@@ -1264,6 +1271,8 @@ ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
 ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
+ApplyPatch block-stray-block-put-after-teardown.patch
+ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -1273,6 +1282,8 @@ ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
+
+ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -1902,6 +1913,7 @@ fi
 %changelog
 * Tue Aug 16 2011 Josh Boyer <jwboyer@redhat.com>
 - Bring ARM config changes from David Marlin forward
+- Sync a handful of patches from f16
 
 * Mon Aug 15 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc2
