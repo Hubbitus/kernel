@@ -16,7 +16,7 @@ diff -up linux-2.6.39.armv7l/arch/arm/mach-omap2/board-omap3beagle.c.fdt linux-2
 @@ -600,4 +605,5 @@ MACHINE_START(OMAP3_BEAGLE, "OMAP3 Beagl
  	.init_irq	= omap3_beagle_init_irq,
  	.init_machine	= omap3_beagle_init,
- 	.timer		= &omap_timer,
+ 	.timer		= &omap3_secure_timer,
 +	.dt_compat      = omap3_beagle_dt_match,
  MACHINE_END
 diff -up linux-2.6.39.armv7l/arch/arm/mach-omap2/board-omap4panda.c.fdt linux-2.6.39.armv7l/arch/arm/mach-omap2/board-omap4panda.c
@@ -37,6 +37,6 @@ diff -up linux-2.6.39.armv7l/arch/arm/mach-omap2/board-omap4panda.c.fdt linux-2.
 @@ -717,4 +722,5 @@ MACHINE_START(OMAP4_PANDA, "OMAP4 Panda 
  	.init_irq	= gic_init_irq,
  	.init_machine	= omap4_panda_init,
- 	.timer		= &omap_timer,
+ 	.timer		= &omap4_timer,
 +	.dt_compat      = omap4_panda_match,
  MACHINE_END
