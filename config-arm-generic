@@ -156,6 +156,13 @@ CONFIG_MMC_SDHCI_PXAV2=m
 
 CONFIG_FTGMAC100=m
 
+# disable TPM on arm at least on the trimslices it causes havoc
+# CONFIG_TCG_TPM is not set
+# CONFIG_IMA is not set
+
+# ERROR: "__bswapsi2" [drivers/staging/crystalhd/crystalhd.ko] undefined!
+# CONFIG_CRYSTALHD is not set
+
 # these modules all fail with missing __bad_udelay
 # http://www.spinics.net/lists/arm/msg15615.html provides some background
 # CONFIG_SUNGEM is not set
