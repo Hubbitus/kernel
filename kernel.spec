@@ -381,6 +381,7 @@ Summary: The Linux kernel
 %ifarch %{arm}
 %define all_arch_configs kernel-%{version}-arm*.config
 %define image_install_path boot
+%define asmarch arm
 %define hdrarch arm
 %define make_target vmlinux
 %define kernel_image vmlinux
@@ -558,7 +559,8 @@ Source70: config-s390x
 
 Source90: config-sparc64-generic
 
-Source100: config-arm
+Source100: config-arm-generic
+Source110: config-arm-omap-generic
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -1898,6 +1900,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 16 2011 Josh Boyer <jwboyer@redhat.com>
+- Bring ARM config changes from David Marlin forward
+
 * Mon Aug 15 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux-3.1-rc2
 - Replace trial patch for rhbz 726877 with a better fix
