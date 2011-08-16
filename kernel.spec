@@ -121,6 +121,10 @@ Summary: The Linux kernel
 %define with_bootwrapper %{?_without_bootwrapper: 0} %{?!_without_bootwrapper: 1}
 # Want to build a the vsdo directories installed
 %define with_vdso_install %{?_without_vdso_install: 0} %{?!_without_vdso_install: 1}
+# ARM OMAP (Beagle/Panda Board)
+%define with_omap      %{?_without_omap:      0} %{?!_without_omap:      1}
+# kernel-tegra (only valid for arm)
+%define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
 
 # Build the kernel-doc package, but don't fail the build if it botches.
 # Here "true" means "continue" and "false" means "fail the build".
@@ -227,6 +231,12 @@ Summary: The Linux kernel
 # kernel-PAE is only built on i686.
 %ifnarch i686
 %define with_pae 0
+%endif
+
+# kernel-tegra and omap is only built on arm
+%ifnarch %{arm}
+%define with_tegra 0
+%define with_omap 0
 %endif
 
 # if requested, only build base kernel
@@ -383,8 +393,10 @@ Summary: The Linux kernel
 %define image_install_path boot
 %define asmarch arm
 %define hdrarch arm
-%define make_target vmlinux
-%define kernel_image vmlinux
+%define make_target bzImage
+%define kernel_image arch/arm/boot/zImage
+%define with_up 0
+%define with_perf 0
 %endif
 
 %if %{nopatches}
@@ -407,7 +419,7 @@ Summary: The Linux kernel
 # Which is a BadThing(tm).
 
 # We only build kernel-headers on the following...
-%define nobuildarches i386 s390 sparc sparcv9 %{arm}
+%define nobuildarches i386 s390 sparc sparcv9
 
 %ifarch %nobuildarches
 %define with_up 0
@@ -561,6 +573,7 @@ Source90: config-sparc64-generic
 
 Source100: config-arm-generic
 Source110: config-arm-omap-generic
+Source111: config-arm-tegra
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -703,6 +716,9 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
 Patch20000: utrace.patch
 
+# Flattened devicetree support
+Patch21000: arm-omap-dt-compat.patch
+Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -893,6 +909,19 @@ input and output, etc.
 This variant of the kernel has numerous debugging options enabled.
 It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
+
+
+%define variant_summary The Linux kernel compiled for TI-OMAP boards
+%kernel_variant_package omap
+%description omap
+This package includes a version of the Linux kernel with support for
+TI-OMAP based systems, i.e., BeagleBoard-xM.
+
+%define variant_summary The Linux kernel compiled for tegra boards
+%kernel_variant_package tegra
+%description tegra
+This package includes a version of the Linux kernel with support for
+nvidia tegra based systems, i.e., trimslice, ac-100.
 
 
 %prep
@@ -1156,6 +1185,12 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 # SPARC64
 #
 ApplyPatch linux-2.6.29-sparc-IOC_TYPECHECK.patch
+
+#
+# ARM
+#
+ApplyPatch arm-omap-dt-compat.patch
+ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 
 #
 # Exec shield
@@ -1595,6 +1630,14 @@ BuildKernel %make_target %kernel_image PAEdebug
 BuildKernel %make_target %kernel_image PAE
 %endif
 
+%if %{with_omap}
+BuildKernel %make_target %kernel_image omap
+%endif
+
+%if %{with_tegra}
+BuildKernel %make_target %kernel_image tegra
+%endif
+
 %if %{with_up}
 BuildKernel %make_target %kernel_image
 %endif
@@ -1787,6 +1830,12 @@ fi}\
 %kernel_variant_post -v PAEdebug -r (kernel|kernel-smp)
 %kernel_variant_preun PAEdebug
 
+%kernel_variant_preun omap
+%kernel_variant_post -v omap
+
+%kernel_variant_preun tegra
+%kernel_variant_post -v tegra
+
 if [ -x /sbin/ldconfig ]
 then
     /sbin/ldconfig -X || exit $?
@@ -1897,6 +1946,8 @@ fi
 %kernel_variant_files %{with_debug} debug
 %kernel_variant_files %{with_pae} PAE
 %kernel_variant_files %{with_pae_debug} PAEdebug
+%kernel_variant_files %{with_omap} omap
+%kernel_variant_files %{with_tegra} tegra
 
 # plz don't put in a version string unless you're going to tag
 # and build.
@@ -1911,6 +1962,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 16 2011 Dennis Gilmore <dennis@ausil.us>
++- add config for arm tegra devices
++- setup kernel to build omap image (patch from David Marlin)
++- setup kernel to build tegra image based on omap work
++- add arm device tree patches
+
 * Tue Aug 16 2011 Josh Boyer <jwboyer@redhat.com>
 - Bring ARM config changes from David Marlin forward
 - Sync a handful of patches from f16
