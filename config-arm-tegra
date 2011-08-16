@@ -76,12 +76,3 @@ CONFIG_CPU_FREQ_TABLE=y
 CONFIG_CPU_FREQ_STAT=y
 CONFIG_CPU_FREQ_STAT_DETAILS=y
 
-
-# these modules all fail with missing __bad_udelay
-# http://www.spinics.net/lists/arm/msg15615.html provides some background
-# CONFIG_SUNGEM is not set
-# CONFIG_FB_SAVAGE is not set
-# CONFIG_FB_RADEON is not set
-# CONFIG_DRM_RADEON is not set
-# CONFIG_ATM_HE is not set
-# CONFIG_SCSI_ACARD is not set
