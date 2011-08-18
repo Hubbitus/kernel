@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -804,7 +804,14 @@ Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
 Obsoletes: perf
-Provides: perf
+Provides:  perf
+Provides:  cpupowerutils = 1:009-0.6.p1
+Obsoletes: cpupowerutils < 1:009-0.6.p1
+Provides:  cpufreq-utils = 1:009-0.6.p1
+Provides:  cpufrequtils = 1:009-0.6.p1
+Obsoletes: cpufreq-utils < 1:009-0.6.p1
+Obsoletes: cpufrequtils < 1:009-0.6.p1
+Obsoletes: cpuspeed < 1:1.5-16
 %description -n kernel-tools
 This package contains the tools/ directory from the kernel source
 - the perf tool and the supporting documentation.
@@ -813,6 +820,7 @@ This package contains the tools/ directory from the kernel source
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
+Requires: kernel-tools = %{version}-%{release}
 %description -n kernel-tools-devel
 This package contains the development files for the tools/ directory from
 the kernel source.
@@ -2062,6 +2070,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 18 2011 Josh Boyer <jwboyer@redhat.com>
+- Adjust provides/obsoletes to replace the cpupowerutils package
+
 * Thu Aug 18 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix perf build against rawhide glibc
 - Add BR for gettext for cpupower translations
