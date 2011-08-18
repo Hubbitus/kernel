@@ -1830,11 +1830,13 @@ rm -rf $RPM_BUILD_ROOT
 ### scripts
 ###
 
+%if %{with_tools}
 %post -n kernel-tools
 /sbin/ldconfig
 
 %postun -n kernel-tools
 /sbin/ldconfig
+%endif
 
 #
 # This macro defines a %%post script for a kernel*-devel package.
