@@ -443,6 +443,9 @@ Summary: The Linux kernel
 %define with_pae_debug %{with_debug}
 %endif
 
+# Architectures we build tools/cpupower on
+%define cpupowerarchs %{ix86} x86_64 ppc ppc64
+
 #
 # Three sets of minimum package version requirements in the form of Conflicts:
 # to versions below the minimum
@@ -532,7 +535,7 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_tools}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed)
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) pciutils-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 
@@ -586,6 +589,10 @@ Source111: config-arm-tegra
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
 Source1000: config-local
+
+# Sources for kernel-tools
+Source2000: cpupower.service
+Source2001: cpupower.config
 
 # Here should be only the patches up to the upstream canonical Linus tree.
 
@@ -796,9 +803,18 @@ Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
 Obsoletes: perf
+Provides: perf
 %description -n kernel-tools
 This package contains the tools/ directory from the kernel source
 - the perf tool and the supporting documentation.
+
+%package -n kernel-tools-devel
+Summary: Assortment of tools for the Linux kernel
+Group: Development/System
+License: GPLv2
+%description -n kernel-tools-devel
+This package contains the development files for the tools/ directory from
+the kernel source.
 
 %package -n kernel-tools-debuginfo
 Summary: Debug information for package kernel-tools
@@ -812,7 +828,7 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|XXX' -o perf-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|XXX' -o kernel-tools-debuginfo.list}
 %endif
 
 
@@ -1656,11 +1672,30 @@ BuildKernel %make_target %kernel_image
 BuildKernel %make_target %kernel_image smp
 %endif
 
-%global perf_make \
-  make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
 %if %{with_tools}
-%{perf_make} all
-%{perf_make} man || %{doc_build_fail}
+# perf
+make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} all
+make %{?_smp_mflags} -C tools/perf -s V=1 prefix=%{_prefix} man || %{doc_build_fail}
+
+%ifarch %{cpupowerarchs}
+# cpupower
+# make sure version-gen.sh is executable.
+chmod +x tools/power/cpupower/utils/version-gen.sh
+make %{?_smp_mflags} -C tools/power/cpupower CPUFRQ_BENCH=false
+# this is fairly unnecessary at the moment.  The x86_64 dir just contains
+# symlinks to the i386 dir in the tarball, but patch hates that.  We'll just
+# build the i386 dir in all cases for now.
+#ifarch {ix86}
+    cd tools/power/cpupower/debug/i386
+    make %{?_smp_mflags} centrino-decode powernow-k8-decode
+    cd -
+#endif
+#ifarch x86_64
+#    cd tools/power/cpupower/debug/x86_64
+#    make {?_smp_mflags}
+#    cd -
+#endif
+%endif
 %endif
 
 %if %{with_doc}
@@ -1716,13 +1751,9 @@ xargs -0 --no-run-if-empty %{__install} -m 444 -t $man9dir $m
 ls $man9dir | grep -q '' || > $man9dir/BROKEN
 %endif # with_doc
 
-%if %{with_tools}
-# perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install
-
-# perf man pages (note: implicit rpm magic compresses them later)
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-man || %{doc_build_fail}
-%endif
+# We have to do the headers install before the tools install because the
+# kernel headers_install will remove any header files in /usr/include that
+# it doesn't install itself.
 
 %if %{with_headers}
 # Install kernel headers
@@ -1748,6 +1779,37 @@ rm -f $RPM_BUILD_ROOT/usr/include/asm*/io.h
 rm -f $RPM_BUILD_ROOT/usr/include/asm*/irq.h
 %endif
 
+%if %{with_tools}
+# perf tool binary and supporting scripts/binaries
+make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install
+
+# perf man pages (note: implicit rpm magic compresses them later)
+make -C tools/perf  -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-man || %{doc_build_fail}
+
+%ifarch %{cpupowerarchs}
+make -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFRQ_BENCH=false install
+rm -f %{buildroot}%{_libdir}/*.{a,la}
+%find_lang cpupower
+mv cpupower.lang ../
+#ifarch #{ix86}
+    cd tools/power/cpupower/debug/i386
+    install -m755 centrino-decode %{buildroot}%{_bindir}/centrino-decode
+    install -m755 powernow-k8-decode %{buildroot}%{_bindir}/powernow-k8-decode
+    cd -
+#endif
+#ifarch x86_64
+#    cd tools/power/cpupower/debug/x86_64
+#    install -m755 powernow-k8-decode {buildroot}{_bindir}/powernow-k8-decode
+#    cd -
+#endif
+chmod 0755 %{buildroot}%{_libdir}/libcpupower.so*
+mkdir -p %{buildroot}%{_unitdir} %{buildroot}%{_sysconfdir}/sysconfig
+install -m644 %{SOURCE2000} %{buildroot}%{_unitdir}/cpupower.service
+install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
+%endif
+
+%endif
+
 %if %{with_firmware}
 %{build_firmware}
 %endif
@@ -1768,6 +1830,12 @@ rm -rf $RPM_BUILD_ROOT
 ### scripts
 ###
 
+%post -n kernel-tools
+/sbin/ldconfig
+
+%postun -n kernel-tools
+/sbin/ldconfig
+
 #
 # This macro defines a %%post script for a kernel*-devel package.
 #	%%kernel_devel_post [<subpackage>]
@@ -1786,6 +1854,7 @@ then\
      done)\
 fi\
 %{nil}
+
 
 # This macro defines a %%posttrans script for a kernel package.
 #	%%kernel_variant_posttrans [<subpackage>]
@@ -1886,16 +1955,32 @@ fi
 %endif
 
 %if %{with_tools}
-%files -n kernel-tools
+%files -n kernel-tools -f cpupower.lang
 %defattr(-,root,root)
 %{_bindir}/perf
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
 %{_mandir}/man[1-8]/*
 
+%ifarch %{cpupowerarchs}
+%{_bindir}/cpupower
+%{_bindir}/centrino-decode
+%{_bindir}/powernow-k8-decode
+%{_libdir}/libcpupower.so.0
+%{_libdir}/libcpupower.so.0.0.0
+%{_unitdir}/cpupower.service
+%config(noreplace) %{_sysconfdir}/sysconfig/cpupower
+%endif
+
 %if %{with_debuginfo}
-%files -f perf-debuginfo.list -n kernel-tools-debuginfo
+%files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
 %defattr(-,root,root)
+%endif
+
+%ifarch %{cpupowerarchs}
+%files -n kernel-tools-devel
+%{_libdir}/libcpupower.so
+%{_includedir}/cpufreq.h
 %endif
 %endif
 
@@ -1972,6 +2057,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 17 2011 Josh Boyer <jwboyer@redhat.com>
+- Create the kernel-tools subpackages based on a start by davej
+
 * Tue Aug 16 2011 Dave Jones <davej@redhat.com>
 - Prepare for packaging more of tools/ by renaming 'perf' subpackage
   to kernel-tools
