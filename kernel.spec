@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2060,6 +2060,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Aug 17 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc2-git4
 - Create the kernel-tools subpackages based on a start by davej
 
 * Tue Aug 16 2011 Dave Jones <davej@redhat.com>
