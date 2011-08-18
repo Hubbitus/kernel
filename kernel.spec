@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -535,7 +535,7 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_tools}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) pciutils-devel
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) pciutils-devel gettext
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 
@@ -718,6 +718,7 @@ Patch12024: epoll-fix-spurious-lockdep-warnings.patch
 Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
+Patch12028: fix-perf-build.patch
 
 
 # Runtime power management
@@ -1334,6 +1335,8 @@ ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
+
+ApplyPatch fix-perf-build.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -2059,6 +2062,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 18 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix perf build against rawhide glibc
+- Add BR for gettext for cpupower translations
+
 * Wed Aug 17 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc2-git4
 - Create the kernel-tools subpackages based on a start by davej
