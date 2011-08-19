@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -720,6 +720,7 @@ Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12028: fix-perf-build.patch
 Patch12029: crypto-register-cryptd-first.patch
+Patch12030: btrfs-use-do_div.patch
 
 
 # Runtime power management
@@ -1347,6 +1348,7 @@ ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 ApplyPatch fix-perf-build.patch
 ApplyPatch crypto-register-cryptd-first.patch
+ApplyPatch btrfs-use-do_div.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -2072,6 +2074,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 19 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch from upstream to fix 64-bit divide error in btrfs
+
 * Fri Aug 19 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc2-git5
 - Change XHCI to builtin (rhbz 731706)

@@ -1,0 +1,38 @@
+From: Liu Bo <liubo2009 <at> cn.fujitsu.com>
+Subject: [PATCH] Btrfs: use do_div to avoid compile errors on 32bit box
+Date: 2011-08-19 09:48:44 GMT (3 hours and 36 minutes ago)
+
+When doing div operation of u64 type, we need to be careful and use do_div
+to avoid compile ERROR on 32bit box:
+
+"ERROR: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+make[1]: *** [__modpost] Error 1
+
+Signed-off-by: Liu Bo <liubo2009 <at> cn.fujitsu.com>
+---
+ fs/btrfs/extent-tree.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 80d6148..9b495ce 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -6796,14 +6796,14 @@ int btrfs_can_relocate(struct btrfs_root *root, u64 bytenr)
+ 	index = get_block_group_index(block_group);
+ 	if (index == 0) {
+ 		dev_min = 4;
+-		min_free /= 2;
++		do_div(min_free, 2);
+ 	} else if (index == 1) {
+ 		dev_min = 2;
+ 	} else if (index == 2) {
+ 		min_free *= 2;
+ 	} else if (index == 3) {
+ 		dev_min = fs_devices->rw_devices;
+-		min_free /= dev_min;
++		do_div(min_free, dev_min);
+ 	}
+
+ 	mutex_lock(&root->fs_info->chunk_mutex);
+-- 
+1.6.5.2
