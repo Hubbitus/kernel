@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2074,6 +2074,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 20 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc2-git8
+
 * Sat Aug 20 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc2-git7
 - Add a provides/obsoletes for cpupowerutils-devel
