@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -697,6 +697,8 @@ Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 
+Patch3000: rcutree-avoid-false-quiescent-states.patch
+
 # fs fixes
 
 # NFSv4
@@ -1307,6 +1309,8 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 #ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 # Patches headed upstream
+ApplyPatch rcutree-avoid-false-quiescent-states.patch
+
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch add-appleir-usb-driver.patch
@@ -2039,6 +2043,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 12 2011 Josh Boyer <jwboyer@redhat.com>
+- Avoid false quiescent states in rcutree with CONFIG_RCU_FAST_NO_HZ. (rhbz 577968)
+
 * Fri Sep 09 2011 Josh Boyer <jwboyer@redhat.com>
 - Change to 64K page size for ppc64 kernels (rhbz 736751)
 
