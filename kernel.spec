@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 9
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -717,8 +717,8 @@ Patch12024: epoll-fix-spurious-lockdep-warnings.patch
 Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
-Patch12028: fix-perf-build.patch
 Patch12029: crypto-register-cryptd-first.patch
+Patch12030: fix-intel-duplicate-backlight.patch
 
 
 # Runtime power management
@@ -1345,8 +1345,8 @@ ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
-ApplyPatch fix-perf-build.patch
 ApplyPatch crypto-register-cryptd-first.patch
+ApplyPatch fix-intel-duplicate-backlight.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -2072,6 +2072,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 22 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc3
+- Add patch to fix duplicate backlight registration (rhbz 732202)
+
 * Mon Aug 22 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc2-git9
 
