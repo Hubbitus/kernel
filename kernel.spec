@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -719,7 +719,6 @@ Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12028: fix-perf-build.patch
 Patch12029: crypto-register-cryptd-first.patch
-Patch12030: btrfs-use-do_div.patch
 
 
 # Runtime power management
@@ -1348,7 +1347,6 @@ ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 ApplyPatch fix-perf-build.patch
 ApplyPatch crypto-register-cryptd-first.patch
-ApplyPatch btrfs-use-do_div.patch
 
 # Runtime PM
 #ApplyPatch linux-2.6-usb-pci-autosuspend.patch
@@ -2074,6 +2072,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 22 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc2-git9
+
 * Sat Aug 20 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc2-git8
 
