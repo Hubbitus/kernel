@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -729,6 +729,7 @@ Patch12205: runtime_pm_fixups.patch
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
+Patch13004: iwlagn-revert-max-aggregate-size.patch
 
 Patch20000: utrace.patch
 
@@ -1358,6 +1359,7 @@ ApplyPatch fix-intel-duplicate-backlight.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
+ApplyPatch iwlagn-revert-max-aggregate-size.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2072,6 +2074,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 24 2011 Josh Boyer <jwboyer@redhat.com>
+- Revert 'iwlwifi: advertise max aggregate size'. (rhbz 708747)
+
 * Mon Aug 22 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc3
 - Add patch to fix duplicate backlight registration (rhbz 732202)
