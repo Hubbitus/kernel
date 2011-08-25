@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -711,7 +711,6 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12021: udlfb-bind-framebuffer-to-interface.patch
 
-Patch12022: fix-cdc-ncm-dma-stack-vars.patch
 Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
 Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
@@ -1339,7 +1338,6 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 ApplyPatch add-appleir-usb-driver.patch
 
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
-ApplyPatch fix-cdc-ncm-dma-stack-vars.patch
 ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
@@ -2074,6 +2072,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 25 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc3-git3
+
 * Wed Aug 24 2011 Josh Boyer <jwboyer@redhat.com>
 - Revert 'iwlwifi: advertise max aggregate size'. (rhbz 708747)
 
