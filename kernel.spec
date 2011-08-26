@@ -648,7 +648,6 @@ Patch09: linux-2.6-upstream-reverts.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
 Patch202: linux-2.6-debug-taint-vm.patch
-Patch203: linux-2.6-debug-vm-would-have-oomkilled.patch
 
 Patch383: linux-2.6-defaults-aspm.patch
 
@@ -1233,7 +1232,6 @@ ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-taint-vm.patch
-ApplyPatch linux-2.6-debug-vm-would-have-oomkilled.patch
 
 #
 # PCI
@@ -2035,6 +2033,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 26 2011 Dave Jones <davej@redhat.com>
+- Drop linux-2.6-debug-vm-would-have-oomkilled.patch
+  The oom-killer heuristics have improved enough that this should
+  never be necessary (and it probably doesn't dtrt any more)
+
 * Fri Aug 26 2011 Dave Jones <davej@redhat.com>
 - Drop linux-2.6-32bit-mmap-exec-randomization.patch
   Outlived it's usefulness (and made of ugly)

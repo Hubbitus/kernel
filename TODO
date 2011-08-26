@@ -4,7 +4,6 @@
 	Empty
 
 * linux-2.6-debug-taint-vm.patch
-* linux-2.6-debug-vm-would-have-oomkilled.patch
 	TODO: Push upstream
 
 * linux-2.6-acpi-video-dos.patch
