@@ -657,7 +657,6 @@ Patch383: linux-2.6-defaults-aspm.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
-Patch393: acpi-ec-add-delay-before-write.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
@@ -1257,7 +1256,6 @@ ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 # ACPI
 ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
-ApplyPatch acpi-ec-add-delay-before-write.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 
 # Various low-impact patches to aid debugging.
@@ -2070,6 +2068,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 26 2011 Dave Jones <davej@redhat.com>
+- Drop acpi-ec-add-delay-before-write.patch (rhbz 733690)
+
 * Fri Aug 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc3-git5
 

@@ -47,7 +47,6 @@
 * linux-2.6-usb-pci-autosuspend.patch
 * linux-2.6-enable-more-pci-autosuspend.patch
 * linux-2.6-acpi-debug-infinite-loop.patch
-* acpi-ec-add-delay-before-write.patch
   Responsible: mjg59
 
 * linux-2.6-v4l-dvb-experimental.patch
