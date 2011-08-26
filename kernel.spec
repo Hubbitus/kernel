@@ -1199,19 +1199,13 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
-
-#
-# Intel IOMMU
-#
+ApplyPatch linux-2.6-i386-nx-emulation.patch
 
 #
 # ARM
 #
 ApplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
-
-# NX Emulation
-ApplyPatch linux-2.6-i386-nx-emulation.patch
 
 #
 # bugfixes to drivers and filesystems
