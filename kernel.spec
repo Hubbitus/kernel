@@ -718,12 +718,6 @@ Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12029: crypto-register-cryptd-first.patch
 Patch12030: fix-intel-duplicate-backlight.patch
 
-
-# Runtime power management
-Patch12203: linux-2.6-usb-pci-autosuspend.patch
-Patch12204: linux-2.6-enable-more-pci-autosuspend.patch
-Patch12205: runtime_pm_fixups.patch
-
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
@@ -1344,12 +1338,6 @@ ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 ApplyPatch crypto-register-cryptd-first.patch
 ApplyPatch fix-intel-duplicate-backlight.patch
-
-# Runtime PM
-#ApplyPatch linux-2.6-usb-pci-autosuspend.patch
-### Broken by implicit notify support & ACPICA rebase
-###ApplyPatch linux-2.6-enable-more-pci-autosuspend.patch
-#ApplyPatch runtime_pm_fixups.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch

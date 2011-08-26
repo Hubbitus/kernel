@@ -43,9 +43,6 @@
   One half of the remaining exec-shield diff.
   davej bugged Ingo again on Jun 17 2011 about upstreaming.
 
-* runtime_pm_fixups.patch
-* linux-2.6-usb-pci-autosuspend.patch
-* linux-2.6-enable-more-pci-autosuspend.patch
 * linux-2.6-acpi-debug-infinite-loop.patch
   Responsible: mjg59
 
