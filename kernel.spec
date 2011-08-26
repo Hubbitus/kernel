@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1694,20 +1694,17 @@ make %{?_smp_mflags} -C tools/perf -s V=1 prefix=%{_prefix} man || %{doc_build_f
 # cpupower
 # make sure version-gen.sh is executable.
 chmod +x tools/power/cpupower/utils/version-gen.sh
-make %{?_smp_mflags} -C tools/power/cpupower CPUFRQ_BENCH=false
-# this is fairly unnecessary at the moment.  The x86_64 dir just contains
-# symlinks to the i386 dir in the tarball, but patch hates that.  We'll just
-# build the i386 dir in all cases for now.
-#ifarch {ix86}
+make %{?_smp_mflags} -C tools/power/cpupower CPUFREQ_BENCH=false
+%ifarch %{ix86}
     cd tools/power/cpupower/debug/i386
     make %{?_smp_mflags} centrino-decode powernow-k8-decode
     cd -
-#endif
-#ifarch x86_64
-#    cd tools/power/cpupower/debug/x86_64
-#    make {?_smp_mflags}
-#    cd -
-#endif
+%endif
+%ifarch x86_64
+    cd tools/power/cpupower/debug/x86_64
+    make %{?_smp_mflags} centrino-decode powernow-k8-decode
+    cd -
+%endif
 %endif
 %endif
 
@@ -1800,21 +1797,22 @@ make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%
 make -C tools/perf  -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-man || %{doc_build_fail}
 
 %ifarch %{cpupowerarchs}
-make -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFRQ_BENCH=false install
+make -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFREQ_BENCH=false install
 rm -f %{buildroot}%{_libdir}/*.{a,la}
 %find_lang cpupower
 mv cpupower.lang ../
-#ifarch #{ix86}
+%ifarch %{ix86}
     cd tools/power/cpupower/debug/i386
     install -m755 centrino-decode %{buildroot}%{_bindir}/centrino-decode
     install -m755 powernow-k8-decode %{buildroot}%{_bindir}/powernow-k8-decode
     cd -
-#endif
-#ifarch x86_64
-#    cd tools/power/cpupower/debug/x86_64
-#    install -m755 powernow-k8-decode {buildroot}{_bindir}/powernow-k8-decode
-#    cd -
-#endif
+%endif
+%ifarch x86_64
+    cd tools/power/cpupower/debug/x86_64
+    install -m755 centrino-decode %{buildroot}%{_bindir}/centrino-decode
+    install -m755 powernow-k8-decode %{buildroot}%{_bindir}/powernow-k8-decode
+    cd -
+%endif
 chmod 0755 %{buildroot}%{_libdir}/libcpupower.so*
 mkdir -p %{buildroot}%{_unitdir} %{buildroot}%{_sysconfdir}/sysconfig
 install -m644 %{SOURCE2000} %{buildroot}%{_unitdir}/cpupower.service
@@ -2072,6 +2070,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 26 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc3-git5
+
 * Thu Aug 25 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc3-git3
 
