@@ -23,9 +23,6 @@
   Rolandware that is used by the debuginfo generation.
   Possibly upstreamable ?
 
-* linux-2.6.29-sparc-IOC_TYPECHECK.patch
-  Responsible: Spot/Dennis.
-
 * linux-2.6-v4l-dvb-uvcvideo-update.patch
   Responsible: Hans.
 
