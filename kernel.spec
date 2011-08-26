@@ -2034,6 +2034,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Aug 26 2011 Dave Jones <davej@redhat.com>
+- Enable CONFIG_DETECT_HUNG_TASK for debug builds & rawhide.
+
+* Fri Aug 26 2011 Dave Jones <davej@redhat.com>
 - Drop linux-2.6-debug-vm-would-have-oomkilled.patch
   The oom-killer heuristics have improved enough that this should
   never be necessary (and it probably doesn't dtrt any more)
