@@ -2033,6 +2033,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 27 2011 Dave Jones <davej@redhat.com>
+- Fix get_gate_vma usage in i386 NX emulation
+  Fix up dependancy on the dropped randomization patch.
+
 * Sat Aug 27 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc3-git6
 
