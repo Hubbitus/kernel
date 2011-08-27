@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VER=$(make verrel)
+VER=$(fedpkg verrel)
 ver=$(echo $VER | sed -e 's/-/ /g' | awk '{print $2}')
 rev=$(echo $VER | sed -e 's/-/ /g' | awk '{print $3}')
 
