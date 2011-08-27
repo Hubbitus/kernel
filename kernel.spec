@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2033,6 +2033,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 27 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc3-git6
+
 * Fri Aug 26 2011 Dave Jones <davej@redhat.com>
 - Enable CONFIG_DETECT_HUNG_TASK for debug builds & rawhide.
 
