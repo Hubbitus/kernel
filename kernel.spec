@@ -82,9 +82,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -713,7 +713,6 @@ Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12029: crypto-register-cryptd-first.patch
-Patch12030: fix-intel-duplicate-backlight.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
@@ -1316,7 +1315,6 @@ ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 ApplyPatch crypto-register-cryptd-first.patch
-ApplyPatch fix-intel-duplicate-backlight.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -2035,6 +2033,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 29 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc4
+
 * Sat Aug 27 2011 Dave Jones <davej@redhat.com>
 - Fix get_gate_vma usage in i386 NX emulation
 - Bring back the 32bit mmap randomization patch for now.
