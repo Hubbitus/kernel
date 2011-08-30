@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -655,6 +655,7 @@ Patch383: linux-2.6-defaults-aspm.patch
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
+Patch395: acpi-ensure-thermal-limits-match-cpu-freq.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
 Patch452: linux-2.6.30-no-pcspkr-modalias.patch
@@ -1230,6 +1231,7 @@ ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
+ApplyPatch acpi-ensure-thermal-limits-match-cpu-freq.patch
 
 # Various low-impact patches to aid debugging.
 ApplyPatch linux-2.6-debug-taint-vm.patch
@@ -2033,6 +2035,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 30 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix rhbz 606017
+
 * Mon Aug 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc4
 
