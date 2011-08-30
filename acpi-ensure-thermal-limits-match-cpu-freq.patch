@@ -1,3 +1,8 @@
+From 9a056a5843ff83db987d6e18625f4a2ee64b5450 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Tue, 30 Aug 2011 10:07:24 -0400
+Subject: [PATCH] ACPI: Ensure thermal limits match CPU frequencies
+
 The ACPI thermal management code supports slowing down a CPU when it's
 overheating. Right now that's done by choosing to run it at 100%, 75%, 50%
 or 25% of full speed. However, most CPUs do not allow an arbitrary
@@ -9,9 +14,22 @@ so it uses actual frequencies rather than percentages.
 Reported by: Gene Snider <snider6982@comcast.net>
 Signed-off-by: Matthew Garrett <mjg@redhat.com>
 ---
+ drivers/acpi/Kconfig             |    1 +
  drivers/acpi/processor_thermal.c |   45 +++++++++++++++++++++----------------
- 1 files changed, 25 insertions(+), 20 deletions(-)
+ 2 files changed, 26 insertions(+), 20 deletions(-)
 
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index de0e3df..7d1bdb5 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -185,6 +185,7 @@ config ACPI_PROCESSOR
+ 	tristate "Processor"
+ 	select THERMAL
+ 	select CPU_IDLE
++	select CPU_FREQ_TABLE
+ 	default y
+ 	help
+ 	  This driver installs ACPI as the idle handler for Linux and uses
 diff --git a/drivers/acpi/processor_thermal.c b/drivers/acpi/processor_thermal.c
 index 870550d..1c4eb60 100644
 --- a/drivers/acpi/processor_thermal.c
@@ -124,5 +142,5 @@ index 870550d..1c4eb60 100644
  	if (pr->flags.throttling)
  		max_state += (pr->throttling.state_count -1);
 -- 
-1.7.6.1
+1.7.6
 
