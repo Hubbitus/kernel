@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -720,6 +720,7 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch13004: iwlagn-revert-max-aggregate-size.patch
+Patch13005: ucvideo-fix-crash-when-linking-entities.patch
 
 Patch20000: utrace.patch
 
@@ -1325,6 +1326,7 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch iwlagn-revert-max-aggregate-size.patch
+ApplyPatch ucvideo-fix-crash-when-linking-entities.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2037,6 +2039,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 07 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix oops when linking entities in ucvideo (rhbz 735437)
+
 * Fri Sep 02 2011 Dave Jones <davej@redhat.com>
 - utrace: s390: fix the compile problem with traps.c (rhbz 735118)
 
