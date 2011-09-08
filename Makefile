@@ -36,13 +36,11 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_SLAB is not set/CONFIG_DEBUG_SLAB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_MUTEXES is not set/CONFIG_DEBUG_MUTEXES=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_RT_MUTEXES is not set/CONFIG_DEBUG_RT_MUTEXES=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_RWSEMS is not set/CONFIG_DEBUG_RWSEMS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_LOCK_ALLOC is not set/CONFIG_DEBUG_LOCK_ALLOC=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_PROVE_LOCKING is not set/CONFIG_PROVE_LOCKING=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_PROVE_RCU is not set/CONFIG_PROVE_RCU=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SPINLOCK is not set/CONFIG_DEBUG_SPINLOCK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_VM is not set/CONFIG_DEBUG_VM=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_SLEEP_IN_IRQ is not set/CONFIG_DEBUG_SLEEP_IN_IRQ=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAULT_INJECTION is not set/CONFIG_FAULT_INJECTION=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAILSLAB is not set/CONFIG_FAILSLAB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAIL_PAGE_ALLOC is not set/CONFIG_FAIL_PAGE_ALLOC=y/' config-nodebug
@@ -66,7 +64,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_DMA_API_DEBUG is not set/CONFIG_DMA_API_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_PM_TEST_SUSPEND is not set/CONFIG_PM_TEST_SUSPEND=y/' config-generic
 	@perl -pi -e 's/# CONFIG_PM_ADVANCED_DEBUG is not set/CONFIG_PM_ADVANCED_DEBUG=y/' config-generic
-	@perl -pi -e 's/# CONFIG_BOOT_TRACER is not set/CONFIG_BOOT_TRACER=y/' config-generic
 	@perl -pi -e 's/# CONFIG_B43_DEBUG is not set/CONFIG_B43_DEBUG=y/' config-generic
 	@perl -pi -e 's/# CONFIG_B43LEGACY_DEBUG is not set/CONFIG_B43LEGACY_DEBUG=y/' config-generic
 	@perl -pi -e 's/# CONFIG_MMIOTRACE is not set/CONFIG_MMIOTRACE=y/' config-nodebug
@@ -77,7 +74,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_EXT4_DEBUG is not set/CONFIG_EXT4_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_PERF_USE_VMALLOC is not set/CONFIG_DEBUG_PERF_USE_VMALLOC=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_JBD2_DEBUG is not set/CONFIG_JBD2_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_CFQ_IOSCHED is not set/CONFIG_DEBUG_CFQ_IOSCHED=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_DEBUG_BLK_CGROUP is not set/CONFIG_DEBUG_BLK_CGROUP=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DRBD_FAULT_INJECTION is not set/CONFIG_DRBD_FAULT_INJECTION=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
@@ -116,13 +113,11 @@ release:
 	@perl -pi -e 's/CONFIG_DEBUG_SLAB=y/# CONFIG_DEBUG_SLAB is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_MUTEXES=y/# CONFIG_DEBUG_MUTEXES is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_RT_MUTEXES=y/# CONFIG_DEBUG_RT_MUTEXES is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_RWSEMS=y/# CONFIG_DEBUG_RWSEMS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_LOCK_ALLOC=y/# CONFIG_DEBUG_LOCK_ALLOC is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_PROVE_LOCKING=y/# CONFIG_PROVE_LOCKING is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_PROVE_RCU=y/# CONFIG_PROVE_RCU is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_SPINLOCK=y/# CONFIG_DEBUG_SPINLOCK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_VM=y/# CONFIG_DEBUG_VM is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_SLEEP_IN_IRQ=y/# CONFIG_DEBUG_SLEEP_IN_IRQ is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_FAULT_INJECTION=y/# CONFIG_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_FAILSLAB=y/# CONFIG_FAILSLAB is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_FAIL_PAGE_ALLOC=y/# CONFIG_FAIL_PAGE_ALLOC is not set/' config-nodebug
@@ -144,9 +139,8 @@ release:
 	@perl -pi -e 's/CONFIG_SYSCTL_SYSCALL_CHECK=y/# CONFIG_SYSCTL_SYSCALL_CHECK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_NOTIFIERS=y/# CONFIG_DEBUG_NOTIFIERS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMA_API_DEBUG=y/# CONFIG_DMA_API_DEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_PM_TEST_SUSPEND=y/#\ CONFIG_PM_TEST_SUSPEND\ is\ not\ set/' config-generic
-	@perl -pi -e 's/CONFIG_PM_ADVANCED_DEBUG=y/#\ CONFIG_PM_ADVANCED_DEBUG\ is\ not\ set/' config-generic
-	@perl -pi -e 's/CONFIG_BOOT_TRACER=y/#\ CONFIG_BOOT_TRACER\ is\ not\ set/' config-generic
+	@perl -pi -e 's/CONFIG_PM_TEST_SUSPEND=y/# CONFIG_PM_TEST_SUSPEND is not set/' config-generic
+	@perl -pi -e 's/CONFIG_PM_ADVANCED_DEBUG=y/# CONFIG_PM_ADVANCED_DEBUG is not set/' config-generic
 	@perl -pi -e 's/CONFIG_B43_DEBUG=y/# CONFIG_B43_DEBUG is not set/' config-generic
 	@perl -pi -e 's/CONFIG_B43LEGACY_DEBUG=y/# CONFIG_B43LEGACY_DEBUG is not set/' config-generic
 	@perl -pi -e 's/CONFIG_MMIOTRACE=y/# CONFIG_MMIOTRACE is not set/' config-nodebug
@@ -157,7 +151,7 @@ release:
 	@perl -pi -e 's/CONFIG_EXT4_DEBUG=y/# CONFIG_EXT4_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_PERF_USE_VMALLOC=y/# CONFIG_DEBUG_PERF_USE_VMALLOC is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_JBD2_DEBUG=y/# CONFIG_JBD2_DEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DEBUG_CFQ_IOSCHED=y/# CONFIG_DEBUG_CFQ_IOSCHED is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_BLK_CGROUP=y/# CONFIG_DEBUG_BLK_CGROUP is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DRBD_FAULT_INJECTION=y/# CONFIG_DRBD_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_ATH_DEBUG=y/# CONFIG_ATH_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CARL9170_DEBUGFS=y/# CONFIG_CARL9170_DEBUGFS is not set/' config-nodebug
