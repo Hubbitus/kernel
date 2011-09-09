@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2039,6 +2039,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 09 2011 Josh Boyer <jwboyer@redhat.com>
+- Change to 64K page size for ppc64 kernels (rhbz 736751)
+
 * Wed Sep 07 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc5 (locally generated patch from git as kernel.org is down)
 - Add patch to fix oops when linking entities in ucvideo (rhbz 735437)
