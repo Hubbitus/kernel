@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -2044,6 +2044,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Sep 12 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc6
 - Avoid false quiescent states in rcutree with CONFIG_RCU_FAST_NO_HZ. (rhbz 577968)
 
 * Fri Sep 09 2011 Josh Boyer <jwboyer@redhat.com>
