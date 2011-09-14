@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -724,6 +724,10 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch13004: iwlagn-revert-max-aggregate-size.patch
 Patch13005: ucvideo-fix-crash-when-linking-entities.patch
 
+Patch13006: add-macbookair41-trackpad.patch
+Patch13007: add-macbookair41-keyboard.patch
+Patch13008: add-macbookair41-btusb.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1331,6 +1335,10 @@ ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch iwlagn-revert-max-aggregate-size.patch
 ApplyPatch ucvideo-fix-crash-when-linking-entities.patch
+
+ApplyPatch add-macbookair41-trackpad.patch
+ApplyPatch add-macbookair41-keyboard.patch
+ApplyPatch add-macbookair41-btusb.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2043,6 +2051,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 14 2011 Josh Boyer <jwboyer@redhat.com>
+- Add support for Macbook Air 4,1 keyboard, trackpad, and bluetooth
+
 * Mon Sep 12 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc6
 - Avoid false quiescent states in rcutree with CONFIG_RCU_FAST_NO_HZ. (rhbz 577968)

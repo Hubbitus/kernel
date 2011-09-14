@@ -1,0 +1,67 @@
+Path: news.gmane.org!not-for-mail
+From: Pieter-Augustijn Van Malleghem <p-a-rJAIWvhRp0CZIoH1IeqzKA@public.gmane.org>
+Newsgroups: gmane.linux.bluez.kernel
+Subject: [PATCH] Add MacBookAir4,1 support
+Date: Wed, 7 Sep 2011 02:28:10 -0400
+Lines: 18
+Approved: news@gmane.org
+Message-ID: <20110907062810.GA4755@Caligula>
+NNTP-Posting-Host: lo.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Trace: dough.gmane.org 1315376918 16651 80.91.229.12 (7 Sep 2011 06:28:38 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Wed, 7 Sep 2011 06:28:38 +0000 (UTC)
+To: linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Original-X-From: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org Wed Sep 07 08:28:35 2011
+Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Envelope-to: glbk-linux-bluetooth-1dZseelyfdZg9hUCZPvPmw@public.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by lo.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>)
+	id 1R1Bce-00013w-IP
+	for glbk-linux-bluetooth-1dZseelyfdZg9hUCZPvPmw@public.gmane.org; Wed, 07 Sep 2011 08:28:32 +0200
+Original-Received: (majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org) by vger.kernel.org via listexpand
+	id S1755760Ab1IGG22 (ORCPT
+	<rfc822;glbk-linux-bluetooth@m.gmane.org>);
+	Wed, 7 Sep 2011 02:28:28 -0400
+Original-Received: from mail-qy0-f174.google.com ([209.85.216.174]:48109 "EHLO
+	mail-qy0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1756054Ab1IGG2V (ORCPT
+	<rfc822;linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>);
+	Wed, 7 Sep 2011 02:28:21 -0400
+Original-Received: by qyk7 with SMTP id 7so455185qyk.19
+        for <linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>; Tue, 06 Sep 2011 23:28:20 -0700 (PDT)
+Original-Received: by 10.224.192.6 with SMTP id do6mr4345154qab.189.1315376900296;
+        Tue, 06 Sep 2011 23:28:20 -0700 (PDT)
+Original-Received: from Caligula ([140.247.187.88])
+        by mx.google.com with ESMTPS id dr7sm2176040qab.26.2011.09.06.23.28.19
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 06 Sep 2011 23:28:19 -0700 (PDT)
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
+Original-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Precedence: bulk
+List-ID: <linux-bluetooth.vger.kernel.org>
+X-Mailing-List: linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Xref: news.gmane.org gmane.linux.bluez.kernel:16281
+Archived-At: <http://permalink.gmane.org/gmane.linux.bluez.kernel/16281>
+
+This patch against current git adds the hardware ID for the Apple 
+MacBookAir4,1, released in July 2011. The device features a BCM2046 
+USB chip. The patch was inspired by the previous modifications adding 
+support for the MacBookAir3,x. 
+
+Signed-off-by: Pieter-Augustijn Van Malleghem <p-a-rJAIWvhRp0CZIoH1IeqzKA@public.gmane.org>
+--- linux/drivers/bluetooth/btusb.c	2011-09-06 23:41:57.000000000 -0400
++++ patched/drivers/bluetooth/btusb.c	2011-09-06 23:50:27.000000000 -0400
+@@ -72,6 +72,9 @@
+ 	/* Apple MacBookAir3,1, MacBookAir3,2 */
+ 	{ USB_DEVICE(0x05ac, 0x821b) },
+ 
++	/* Apple MacBookAir4,1 */
++	{ USB_DEVICE(0x05ac, 0x821f) },
++
+ 	/* Apple MacBookPro8,2 */
+ 	{ USB_DEVICE(0x05ac, 0x821a) },
+ 
