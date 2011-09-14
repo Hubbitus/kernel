@@ -2055,6 +2055,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 14 2011 Neil Horman <nhorman@redhat.com>
+- Enable CONFIG_IP_VS_IPV6 (bz 738194)
+
 * Wed Sep 14 2011 Josh Boyer <jwboyer@redhat.com>
 - Add support for Macbook Air 4,1 keyboard, trackpad, and bluetooth
 - Add patch to fix HVCS on ppc64 (rhbz 738096)
