@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -730,6 +730,10 @@ Patch13008: add-macbookair41-btusb.patch
 
 Patch13009: hvcs_pi_buf_alloc.patch
 
+Patch13010: ibmveth-Fix-DMA-unmap-error.patch
+Patch13011: ibmveth-Fix-issue-with-DMA-mapping-failure.patch
+Patch13012: ibmveth-Checksum-offload-is-always-disabled.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1343,6 +1347,10 @@ ApplyPatch add-macbookair41-keyboard.patch
 ApplyPatch add-macbookair41-btusb.patch
 
 ApplyPatch hvcs_pi_buf_alloc.patch
+
+ApplyPatch ibmveth-Fix-DMA-unmap-error.patch
+ApplyPatch ibmveth-Fix-issue-with-DMA-mapping-failure.patch
+ApplyPatch ibmveth-Checksum-offload-is-always-disabled.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2061,6 +2069,7 @@ fi
 * Wed Sep 14 2011 Josh Boyer <jwboyer@redhat.com>
 - Add support for Macbook Air 4,1 keyboard, trackpad, and bluetooth
 - Add patch to fix HVCS on ppc64 (rhbz 738096)
+- Add various ibmveth driver fixes (rhbz 733766)
 
 * Mon Sep 12 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc6

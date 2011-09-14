@@ -1,0 +1,78 @@
+Path: news.gmane.org!not-for-mail
+From: Anton Blanchard <anton@samba.org>
+Newsgroups: gmane.linux.network
+Subject: [PATCH 1/4] ibmveth: Fix DMA unmap error
+Date: Thu, 08 Sep 2011 10:41:03 +1000
+Lines: 32
+Approved: news@gmane.org
+Message-ID: <20110908004121.570234962@samba.org>
+References: <20110908004102.355674129@samba.org>
+NNTP-Posting-Host: lo.gmane.org
+X-Trace: dough.gmane.org 1315442763 18071 80.91.229.12 (8 Sep 2011 00:46:03 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Thu, 8 Sep 2011 00:46:03 +0000 (UTC)
+Cc: netdev@vger.kernel.org
+To: Santiago Leon <santil@linux.vnet.ibm.com>,
+	brking@linux.vnet.ibm.com, rcj@linux.vnet.ibm.com
+Original-X-From: netdev-owner@vger.kernel.org Thu Sep 08 02:45:56 2011
+Return-path: <netdev-owner@vger.kernel.org>
+Envelope-to: linux-netdev-2@lo.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by lo.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <netdev-owner@vger.kernel.org>)
+	id 1R1Ska-0001cA-40
+	for linux-netdev-2@lo.gmane.org; Thu, 08 Sep 2011 02:45:52 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1757671Ab1IHAp3 (ORCPT <rfc822;linux-netdev-2@m.gmane.org>);
+	Wed, 7 Sep 2011 20:45:29 -0400
+Original-Received: from ozlabs.org ([203.10.76.45]:42999 "EHLO ozlabs.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1757658Ab1IHAp1 (ORCPT <rfc822;netdev@vger.kernel.org>);
+	Wed, 7 Sep 2011 20:45:27 -0400
+Original-Received: from localhost (ppp121-44-79-234.lns20.syd6.internode.on.net [121.44.79.234])
+	(using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+	(Client did not present a certificate)
+	by ozlabs.org (Postfix) with ESMTPSA id ACF33B6F8E;
+	Thu,  8 Sep 2011 10:45:24 +1000 (EST)
+X-Mailbox-Line: From anton@samba.org Thu Sep  8 10:41:21 2011
+User-Agent: quilt/0.48-1
+Content-Disposition: inline; filename=ibmveth_1.patch
+Original-Sender: netdev-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <netdev.vger.kernel.org>
+X-Mailing-List: netdev@vger.kernel.org
+Xref: news.gmane.org gmane.linux.network:205933
+Archived-At: <http://permalink.gmane.org/gmane.linux.network/205933>
+
+From: Brian King <brking@linux.vnet.ibm.com>
+
+Commit 6e8ab30ec677 (ibmveth: Add scatter-gather support) introduced a
+DMA mapping API inconsistency resulting in dma_unmap_page getting
+called on memory mapped via dma_map_single. This was seen when
+CONFIG_DMA_API_DEBUG was enabled. Fix up this API usage inconsistency.
+
+Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
+Acked-by: Anton Blanchard <anton@samba.org>
+Cc: <stable@kernel.org> # v2.6.37+
+---
+
+Index: linux-build/drivers/net/ibmveth.c
+===================================================================
+--- linux-build.orig/drivers/net/ibmveth.c	2011-09-08 08:00:16.842856634 +1000
++++ linux-build/drivers/net/ibmveth.c	2011-09-08 09:45:43.163851274 +1000
+@@ -1026,7 +1026,12 @@ retry_bounce:
+ 		netdev->stats.tx_bytes += skb->len;
+ 	}
+ 
+-	for (i = 0; i < skb_shinfo(skb)->nr_frags + 1; i++)
++	dma_unmap_single(&adapter->vdev->dev,
++			 descs[0].fields.address,
++			 descs[0].fields.flags_len & IBMVETH_BUF_LEN_MASK,
++			 DMA_TO_DEVICE);
++
++	for (i = 1; i < skb_shinfo(skb)->nr_frags + 1; i++)
+ 		dma_unmap_page(&adapter->vdev->dev, descs[i].fields.address,
+ 			       descs[i].fields.flags_len & IBMVETH_BUF_LEN_MASK,
+ 			       DMA_TO_DEVICE);
+
+

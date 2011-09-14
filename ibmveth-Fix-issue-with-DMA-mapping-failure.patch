@@ -1,0 +1,93 @@
+Path: news.gmane.org!not-for-mail
+From: Anton Blanchard <anton@samba.org>
+Newsgroups: gmane.linux.network
+Subject: [PATCH 2/4] ibmveth: Fix issue with DMA mapping failure
+Date: Thu, 08 Sep 2011 10:41:04 +1000
+Lines: 47
+Approved: news@gmane.org
+Message-ID: <20110908004121.669225190@samba.org>
+References: <20110908004102.355674129@samba.org>
+NNTP-Posting-Host: lo.gmane.org
+X-Trace: dough.gmane.org 1315442760 18037 80.91.229.12 (8 Sep 2011 00:46:00 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Thu, 8 Sep 2011 00:46:00 +0000 (UTC)
+Cc: netdev@vger.kernel.org
+To: Santiago Leon <santil@linux.vnet.ibm.com>,
+	brking@linux.vnet.ibm.com, rcj@linux.vnet.ibm.com
+Original-X-From: netdev-owner@vger.kernel.org Thu Sep 08 02:45:55 2011
+Return-path: <netdev-owner@vger.kernel.org>
+Envelope-to: linux-netdev-2@lo.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by lo.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <netdev-owner@vger.kernel.org>)
+	id 1R1Ska-0001cA-M3
+	for linux-netdev-2@lo.gmane.org; Thu, 08 Sep 2011 02:45:53 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1757665Ab1IHApa (ORCPT <rfc822;linux-netdev-2@m.gmane.org>);
+	Wed, 7 Sep 2011 20:45:30 -0400
+Original-Received: from ozlabs.org ([203.10.76.45]:60840 "EHLO ozlabs.org"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1757659Ab1IHAp1 (ORCPT <rfc822;netdev@vger.kernel.org>);
+	Wed, 7 Sep 2011 20:45:27 -0400
+Original-Received: from localhost (ppp121-44-79-234.lns20.syd6.internode.on.net [121.44.79.234])
+	(using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+	(Client did not present a certificate)
+	by ozlabs.org (Postfix) with ESMTPSA id 56E01B6F97;
+	Thu,  8 Sep 2011 10:45:25 +1000 (EST)
+X-Mailbox-Line: From anton@samba.org Thu Sep  8 10:41:21 2011
+User-Agent: quilt/0.48-1
+Content-Disposition: inline; filename=ibmveth_dma_mapping_error.patch
+Original-Sender: netdev-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <netdev.vger.kernel.org>
+X-Mailing-List: netdev@vger.kernel.org
+Xref: news.gmane.org gmane.linux.network:205931
+Archived-At: <http://permalink.gmane.org/gmane.linux.network/205931>
+
+descs[].fields.address is 32bit which truncates any dma mapping
+errors so dma_mapping_error() fails to catch it.
+
+Use a dma_addr_t to do the comparison. With this patch I was able
+to transfer many gigabytes of data with IOMMU fault injection set
+at 10% probability.
+
+Signed-off-by: Anton Blanchard <anton@samba.org>
+Cc: <stable@kernel.org> # v2.6.37+
+---
+
+Index: linux-build/drivers/net/ibmveth.c
+===================================================================
+--- linux-build.orig/drivers/net/ibmveth.c	2011-09-01 15:01:18.066844039 +1000
++++ linux-build/drivers/net/ibmveth.c	2011-09-01 15:03:34.299079796 +1000
+@@ -930,6 +930,7 @@ static netdev_tx_t ibmveth_start_xmit(st
+ 	union ibmveth_buf_desc descs[6];
+ 	int last, i;
+ 	int force_bounce = 0;
++	dma_addr_t dma_addr;
+ 
+ 	/*
+ 	 * veth handles a maximum of 6 segments including the header, so
+@@ -994,17 +995,16 @@ retry_bounce:
+ 	}
+ 
+ 	/* Map the header */
+-	descs[0].fields.address = dma_map_single(&adapter->vdev->dev, skb->data,
+-						 skb_headlen(skb),
+-						 DMA_TO_DEVICE);
+-	if (dma_mapping_error(&adapter->vdev->dev, descs[0].fields.address))
++	dma_addr = dma_map_single(&adapter->vdev->dev, skb->data,
++				  skb_headlen(skb), DMA_TO_DEVICE);
++	if (dma_mapping_error(&adapter->vdev->dev, dma_addr))
+ 		goto map_failed;
+ 
+ 	descs[0].fields.flags_len = desc_flags | skb_headlen(skb);
++	descs[0].fields.address = dma_addr;
+ 
+ 	/* Map the frags */
+ 	for (i = 0; i < skb_shinfo(skb)->nr_frags; i++) {
+-		unsigned long dma_addr;
+ 		skb_frag_t *frag = &skb_shinfo(skb)->frags[i];
+ 
+ 		dma_addr = dma_map_page(&adapter->vdev->dev, frag->page,
+
+
