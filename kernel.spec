@@ -734,6 +734,8 @@ Patch13010: ibmveth-Fix-DMA-unmap-error.patch
 Patch13011: ibmveth-Fix-issue-with-DMA-mapping-failure.patch
 Patch13012: ibmveth-Checksum-offload-is-always-disabled.patch
 
+Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1351,6 +1353,8 @@ ApplyPatch hvcs_pi_buf_alloc.patch
 ApplyPatch ibmveth-Fix-DMA-unmap-error.patch
 ApplyPatch ibmveth-Fix-issue-with-DMA-mapping-failure.patch
 ApplyPatch ibmveth-Checksum-offload-is-always-disabled.patch
+
+ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2063,6 +2067,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 14 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix deadlock in ppc64 icswx (rhbz 737984)
+
 * Wed Sep 14 2011 Neil Horman <nhorman@redhat.com>
 - Enable CONFIG_IP_VS_IPV6 (bz 738194)
 
