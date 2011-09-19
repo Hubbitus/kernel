@@ -2067,6 +2067,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 19 2011 Dave Jones <davej@redhat.com>
+- Merge some improvements to the 32bit mmap randomisation from Kees Cook.
+
 * Wed Sep 14 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix deadlock in ppc64 icswx (rhbz 737984)
 
