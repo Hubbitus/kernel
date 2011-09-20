@@ -2067,6 +2067,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 20 2011 Dave Jones <davej@redhat.com>
+- Limit 32-bit x86 kernels to 32 processors.
+
 * Mon Sep 19 2011 Dave Jones <davej@redhat.com>
 - Merge some improvements to the 32bit mmap randomisation from Kees Cook.
 
