@@ -2053,6 +2053,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 22 2011 Dave Jones <davej@redhat.com>
+- Make CONFIG_XEN_PLATFORM_PCI=y (rhbz 740664)
+
 * Thu Sep 22 2011 Dennis Gilmore <dennis@ausil.us>
 - build a vmlinux image on sparc64 
 
