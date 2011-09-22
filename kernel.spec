@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -721,18 +721,11 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
-Patch13004: iwlagn-revert-max-aggregate-size.patch
 Patch13005: ucvideo-fix-crash-when-linking-entities.patch
 
-Patch13006: add-macbookair41-trackpad.patch
 Patch13007: add-macbookair41-keyboard.patch
-Patch13008: add-macbookair41-btusb.patch
 
 Patch13009: hvcs_pi_buf_alloc.patch
-
-Patch13010: ibmveth-Fix-DMA-unmap-error.patch
-Patch13011: ibmveth-Fix-issue-with-DMA-mapping-failure.patch
-Patch13012: ibmveth-Checksum-offload-is-always-disabled.patch
 
 Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
 
@@ -1341,18 +1334,11 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-ApplyPatch iwlagn-revert-max-aggregate-size.patch
 ApplyPatch ucvideo-fix-crash-when-linking-entities.patch
 
-ApplyPatch add-macbookair41-trackpad.patch
 ApplyPatch add-macbookair41-keyboard.patch
-ApplyPatch add-macbookair41-btusb.patch
 
 ApplyPatch hvcs_pi_buf_alloc.patch
-
-ApplyPatch ibmveth-Fix-DMA-unmap-error.patch
-ApplyPatch ibmveth-Fix-issue-with-DMA-mapping-failure.patch
-ApplyPatch ibmveth-Checksum-offload-is-always-disabled.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
 
@@ -2067,6 +2053,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 21 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc7
+
 * Tue Sep 20 2011 Dave Jones <davej@redhat.com>
 - Limit 32-bit x86 kernels to 32 processors.
 
