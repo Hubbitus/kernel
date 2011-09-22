@@ -354,8 +354,8 @@ Summary: The Linux kernel
 %ifarch sparc64
 %define asmarch sparc
 %define all_arch_configs kernel-%{version}-sparc64*.config
-%define make_target image
-%define kernel_image arch/sparc/boot/image
+%define make_target vmlinux
+%define kernel_image vmlinux
 %define image_install_path boot
 %define with_tools 0
 %endif
@@ -2053,6 +2053,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 22 2011 Dennis Gilmore <dennis@ausil.us>
+- build a vmlinux image on sparc64 
+
 * Wed Sep 21 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc7
 
