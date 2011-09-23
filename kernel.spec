@@ -695,7 +695,6 @@ Patch2802: linux-2.6-silence-acpi-blacklist.patch
 Patch2899: linux-2.6-v4l-dvb-fixes.patch
 Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
-Patch2902: linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 Patch3000: rcutree-avoid-false-quiescent-states.patch
 
@@ -1311,7 +1310,6 @@ ApplyPatch linux-2.6-silence-acpi-blacklist.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
-#ApplyPatch linux-2.6-v4l-dvb-uvcvideo-update.patch
 
 # Patches headed upstream
 ApplyPatch rcutree-avoid-false-quiescent-states.patch
