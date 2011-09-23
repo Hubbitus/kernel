@@ -1,16 +1,29 @@
-# Put stuff likely to go upstream (in decreasing likelyhood) at the top.
-
-* linux-2.6-compile-fixes.patch
-	Empty
+**** Queued for 3.2 ***********************************************************************************
 
 * linux-2.6-debug-taint-vm.patch
-	(on its way upstream, should be there for 3.2)
+* epoll-fix-spurious-lockdep-warnings.patch
+* hvcs_pi_buf_alloc.patch
+* acpi-ensure-thermal-limits-match-cpu-freq.patch
+* rcu-avoid-just-onlined-cpu-resched.patch
+* rcutree-avoid-false-quiescent-states.patch
+* revert-efi-rtclock.patch
+* block-stray-block-put-after-teardown.patch
+* crypto-register-cryptd-first.patch
+* efi-dont-map-boot-services-on-32bit.patch
+* powerpc-Fix-deadlock-in-icswx-code.patch
+* udlfb-bind-framebuffer-to-interface.patch
+* ums-realtek-driver-uses-stack-memory-for-DMA.patch
+* usb-add-quirk-for-logitech-webcams.patch
+* add-macbookair41-keyboard.patch
+* ucvideo-fix-crash-when-linking-entities.patch
+
+**** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 
 * linux-2.6-acpi-video-dos.patch
 * linux-2.6-defaults-acpi-video.patch
 * linux-2.6-defaults-aspm.patch
-disable-i8042-check-on-apple-mac.patch
-linux-2.6.30-no-pcspkr-modalias.patch
+* disable-i8042-check-on-apple-mac.patch
+* linux-2.6.30-no-pcspkr-modalias.patch
 * die-floppy-die.patch
 	Fedora policy decisions
 	Turn into CONFIG_ options and upstream ?
@@ -47,7 +60,7 @@ linux-2.6.30-no-pcspkr-modalias.patch
   Responsible: j-rod
 
 * dmar-disable-when-ricoh-multifunction.patch
-  Added Octoboer 2010
+  Added October 2010
 
 * drm-intel-make-lvds-work.patch
   Around since forever. Wtf ?
@@ -56,13 +69,25 @@ linux-2.6.30-no-pcspkr-modalias.patch
   Invert igfx_off/igfx_on option. Around since forever. Upstreamable ?
   Mustard ? Config option ?
 
-*************************************************************************
+* arm-omap-dt-compat.patch
+* arm-smsc-support-reading-mac-address-from-device-tree.patch
+  reponsible: Dennis
+
+***********************************************************************************
 
 'MUSTARD' patches.  Fedora local patches that are very unlikely to go upstream.
 
 * linux-2.6-32bit-mmap-exec-randomization.patch
   One half of the remaining exec-shield diff.
-  davej bugged Ingo again on Jun 17 2011 about upstreaming.
+  - davej bugged Ingo again on Jun 17 2011 about upstreaming, no response.
+  - mailed Linus asking for opinions in August 2011. He still hates it.
+   "Ugh. Certainly not in this form. That patch is just disgusting." ..
+   "I think that with NX and now SMEP, if you really care about security,
+    you'd better be using a CPU that supports 64-bit operations anyway."
+   As well as the increased randomisation, there's a key part of this patch
+   that means that DSOs get loaded in the ASCII-Armor area on 32bit.
+   (Addresses have topmost byte == 0)
+   See also https://bugzilla.redhat.com/show_bug.cgi?id=734239
 
 * linux-2.6-i386-nx-emulation.patch
   The ugly segment hack part of exec-shield that Linus hates.
@@ -76,4 +101,7 @@ linux-2.6.30-no-pcspkr-modalias.patch
   Intel hates it. Davej has an SDV that needs it.
   Low maintenence, and worth hanging onto until it gets replaced
   with something that fails in a different way.
+
+* utrace.patch
+  Hopefully it'll die when uprobes gets upstream.
 
