@@ -41,8 +41,10 @@ linux-2.6.30-no-pcspkr-modalias.patch
   Responsible: Justin.
 
 * add-appleir-usb-driver.patch
-  Added September 2009, but had been around even before that. Wtf ?
-  Responsible: Bastien
+  Added September 2009, but had been around even before that.
+  " NACKed upstream with "i'll implement this in the ir framework" or something
+  and never got around to it."
+  Responsible: j-rod
 
 * dmar-disable-when-ricoh-multifunction.patch
   Added Octoboer 2010
