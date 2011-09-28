@@ -5168,14 +5168,14 @@ index 4194664..1a50090 100644
  		unlock_task_sighand(child, &flags);
  		ret = 0;
 @@ -760,7 +772,7 @@ int ptrace_request(struct task_struct *child, long request,
- 		 * of this trap and now.  Trigger re-trap immediately.
- 		 */
- 		if (child->jobctl & JOBCTL_TRAP_NOTIFY)
--			signal_wake_up(child, true);
-+			ptrace_signal_wake_up(child, true);
- 
+ 			 * start of this trap and now.  Trigger re-trap.
+ 			 */
+ 			if (child->jobctl & JOBCTL_TRAP_NOTIFY)
+-				signal_wake_up(child, true);
++				ptrace_signal_wake_up(child, true);
+ 			ret = 0;
+ 		}
  		unlock_task_sighand(child, &flags);
- 		ret = 0;
 diff --git a/kernel/signal.c b/kernel/signal.c
 index 3e8e0b1..0dc6abb 100644
 --- a/kernel/signal.c
