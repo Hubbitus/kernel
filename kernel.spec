@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2051,6 +2051,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 29 2011 Josh Boyer <jwboyer@redhat.com>
+- Update logitech USB quirk patch
+
 * Tue Sep 27 2011 Chuck Ebbert <cebbert@redhat.com>
 - Linux 3.1-rc8
 - New option: CONFIG_ARM_ERRATA_764369 is not set
