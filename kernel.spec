@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 9
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -720,7 +720,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
-Patch13005: ucvideo-fix-crash-when-linking-entities.patch
 
 Patch13007: add-macbookair41-keyboard.patch
 
@@ -1332,7 +1331,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-ApplyPatch ucvideo-fix-crash-when-linking-entities.patch
 
 ApplyPatch add-macbookair41-keyboard.patch
 
@@ -2051,6 +2049,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 05 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-rc9
+
 * Thu Sep 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Update logitech USB quirk patch
 
