@@ -645,6 +645,7 @@ Patch09: linux-2.6-upstream-reverts.patch
 
 # Standalone patches
 
+Patch100: taint-vbox.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
@@ -1203,6 +1204,8 @@ ApplyOptionalPatch linux-2.6-compile-fixes.patch
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
+
+ApplyPatch taint-vbox.patch
 
 # Architecture patches
 # x86(-64)
@@ -2049,6 +2052,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 06 2011 Dave Jones <davej@redhat.com>
+- Taint if virtualbox modules have been loaded.
+
 * Wed Oct 05 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-rc9
 
