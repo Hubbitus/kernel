@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -733,6 +733,10 @@ Patch20000: utrace.patch
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
+
+#rhbz #722509
+Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1340,6 +1344,9 @@ ApplyPatch add-macbookair41-keyboard.patch
 ApplyPatch hvcs_pi_buf_alloc.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
+
+#rhbz #722509
+ApplyPatch mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2052,6 +2059,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 06 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix base frequency check for Ricoh e823 devices (rhbz 722509)
+
 * Thu Oct 06 2011 Dave Jones <davej@redhat.com>
 - Taint if virtualbox modules have been loaded.
 
