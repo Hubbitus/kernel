@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2059,6 +2059,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 11 2011 Josh Boyer <jwboyer@redhat.com>
+- Disable CONFIG_XEN_BALLOON_MEMORY_HOTPLUG (rhbz 744408)
+
 * Thu Oct 06 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix base frequency check for Ricoh e823 devices (rhbz 722509)
 
