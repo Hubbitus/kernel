@@ -685,6 +685,8 @@ Patch1810: drm-nouveau-updates.patch
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
+# rhbz#729882, https://bugs.freedesktop.org/attachment.cgi?id=49069
+Patch1826: drm-i915-sdvo-lvds-is-digital.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1308,6 +1310,7 @@ ApplyOptionalPatch drm-nouveau-updates.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
+ApplyPatch drm-i915-sdvo-lvds-is-digital.patch
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # silence the ACPI blacklist code
@@ -2063,6 +2066,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 13 2011 Adam Jackson <ajax@redhat.com>
+- drm/i915: Treat SDVO LVDS as digital when parsing EDID (#729882)
+
 * Thu Oct 13 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch from Stanislaw Gruszka to fix iwlagn NULL dereference (rhbz 744155)
 
