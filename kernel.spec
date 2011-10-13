@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -728,6 +728,8 @@ Patch13009: hvcs_pi_buf_alloc.patch
 
 Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
 
+Patch13014: iwlagn-fix-ht_params-NULL-pointer-dereference.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1344,6 +1346,8 @@ ApplyPatch add-macbookair41-keyboard.patch
 ApplyPatch hvcs_pi_buf_alloc.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
+
+ApplyPatch iwlagn-fix-ht_params-NULL-pointer-dereference.patch
 
 #rhbz #722509
 ApplyPatch mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
@@ -2059,6 +2063,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 13 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Stanislaw Gruszka to fix iwlagn NULL dereference (rhbz 744155)
+
 * Tue Oct 11 2011 Josh Boyer <jwboyer@redhat.com>
 - Disable CONFIG_XEN_BALLOON_MEMORY_HOTPLUG (rhbz 744408)
 
