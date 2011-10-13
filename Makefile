@@ -309,3 +309,12 @@ tag-$(branch-upstream) := $(shell \
 	sed -n 's/^.*  *//;s/\.bz2$$//;s/patch-/v/;/^v/h;$${g;p}' sources)
 endif
 endif
+
+ifeq ($(MAKECMDGOALS),me a sandwich)
+.PHONY: me a sandwich
+me a:
+	@:
+
+sandwich:
+	@[ `id -u` -ne 0 ] && echo "What? Make it yourself." || echo Okay.
+endif
