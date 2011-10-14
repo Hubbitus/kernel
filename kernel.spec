@@ -2066,6 +2066,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 14 2011 Dave Jones <davej@redhat.com>
+- Disable CONFIG_ACPI_PROCFS_POWER which is supposed to be going away soon.
+
 * Thu Oct 13 2011 Josh Boyer <jwboyer@redhat.com>
 - Update usb-add-quirk-for-logitech-webcams.patch with C600 ID (rhbz 742010)
 
