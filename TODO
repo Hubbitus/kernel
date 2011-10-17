@@ -17,6 +17,7 @@
 * add-macbookair41-keyboard.patch
 * ucvideo-fix-crash-when-linking-entities.patch
 * mmc-Always-check-for-lower-base-frequency-quirk-for-.patch (also CC'd stable)
+* 000[12]-mm-*
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 
