@@ -711,6 +711,7 @@ Patch12010: add-appleir-usb-driver.patch
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12021: udlfb-bind-framebuffer-to-interface.patch
+Patch12022: x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
 
 Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
@@ -1341,6 +1342,8 @@ ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 ApplyPatch crypto-register-cryptd-first.patch
+
+ApplyPatch x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -2074,6 +2077,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 18 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix invalid EFI remap calls from Matt Fleming
+
 * Mon Oct 17 2011 Josh Boyer <jwboyer@redhat.com>
 - Add two patches to fix stalls in khugepaged (rhbz 735946)
 
