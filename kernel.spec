@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 9
+%define rcrev 10
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -746,6 +746,9 @@ Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
+# rhbz #746485
+Patch21030: cputimer-cure-lock-inversion.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1368,6 +1371,9 @@ ApplyPatch utrace.patch
 #rhbz #735946
 ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
+
+# rhbz #746485
+ApplyPatch cputimer-cure-lock-inversion.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2077,6 +2083,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 19 2011 Chuck Ebbert <cebbert@redhat.com>
+- Sync with F16
+- Linux 3.1-rc10
+- Copy nouveau updates patch from F16
+- Fix deadlock in POSIX cputimer code (rhbz #746485)
+
 * Tue Oct 18 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix invalid EFI remap calls from Matt Fleming
 
