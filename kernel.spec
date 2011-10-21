@@ -473,7 +473,7 @@ Summary: The Linux kernel
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, module-init-tools >= 3.16-2, initscripts >= 8.11.1-1, grubby >= 7.0.10-1
+%define kernel_prereq  fileutils, module-init-tools >= 3.16-2, initscripts >= 8.11.1-1, grubby >= 8.3-1
 %define initrd_prereq  dracut >= 001-7
 
 #
@@ -2090,6 +2090,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 21 2011 Chuck Ebbert <cebbert@redhat.com>
+- Require grubby >= 8.3-1 like F16 does.
+
 * Fri Oct 21 2011 Dave Jones <davej@redhat.com>
 - Lower severity of Radeon lockup messages.
 
