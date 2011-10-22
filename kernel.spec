@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 10
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -749,9 +749,6 @@ Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
-# rhbz #746485
-Patch21030: cputimer-cure-lock-inversion.patch
-
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1378,9 +1375,6 @@ ApplyPatch utrace.patch
 #rhbz #735946
 ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
-
-# rhbz #746485
-ApplyPatch cputimer-cure-lock-inversion.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2090,8 +2084,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Oct 21 2011 Chuck Ebbert <cebbert@redhat.com>
+* Fri Oct 21 2011 Chuck Ebbert <cebbert@redhat.com> 3.1.0-0.rc10.git1.1
 - Require grubby >= 8.3-1 like F16 does.
+- Update to upstream HEAD (v3.1-rc10-42-g2efd7c0).
 
 * Fri Oct 21 2011 Dave Jones <davej@redhat.com>
 - Lower severity of Radeon lockup messages.
