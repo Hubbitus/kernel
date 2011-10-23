@@ -125,6 +125,31 @@ Summary: The Linux kernel
 %define with_omap      %{?_without_omap:      0} %{?!_without_omap:      1}
 # kernel-tegra (only valid for arm)
 %define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
+#
+# Additional options for user-friendly one-off kernel building:
+#
+# Only build the base kernel (--with baseonly):
+%define with_baseonly  %{?_with_baseonly:     1} %{?!_with_baseonly:     0}
+# Only build the smp kernel (--with smponly):
+%define with_smponly   %{?_with_smponly:      1} %{?!_with_smponly:      0}
+# Only build the pae kernel (--with paeonly):
+%define with_paeonly   %{?_with_paeonly:      1} %{?!_with_paeonly:      0}
+# Only build the debug kernel (--with dbgonly):
+%define with_dbgonly   %{?_with_dbgonly:      1} %{?!_with_dbgonly:      0}
+#
+# should we do C=1 builds with sparse
+%define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
+
+# Set debugbuildsenabled to 1 for production (build separate debug kernels)
+#  and 0 for rawhide (all kernels are debug kernels).
+# See also 'make debug' and 'make release'.
+%define debugbuildsenabled 0
+
+# Want to build a vanilla kernel build without any non-upstream patches?
+%define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
+
+# We need to remember if the user has explicitly requested without_debug
+%define requested_nodebug !%{with_debug}
 
 # Build the kernel-doc package, but don't fail the build if it botches.
 # Here "true" means "continue" and "false" means "fail the build".
@@ -139,28 +164,6 @@ Summary: The Linux kernel
 %define with_doc 0
 %define doc_build_fail true
 %endif
-
-# Additional options for user-friendly one-off kernel building:
-#
-# Only build the base kernel (--with baseonly):
-%define with_baseonly  %{?_with_baseonly:     1} %{?!_with_baseonly:     0}
-# Only build the smp kernel (--with smponly):
-%define with_smponly   %{?_with_smponly:      1} %{?!_with_smponly:      0}
-# Only build the pae kernel (--with paeonly):
-%define with_paeonly   %{?_with_paeonly:      1} %{?!_with_paeonly:      0}
-# Only build the debug kernel (--with dbgonly):
-%define with_dbgonly   %{?_with_dbgonly:      1} %{?!_with_dbgonly:      0}
-
-# should we do C=1 builds with sparse
-%define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
-
-# Set debugbuildsenabled to 1 for production (build separate debug kernels)
-#  and 0 for rawhide (all kernels are debug kernels).
-# See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
-
-# Want to build a vanilla kernel build without any non-upstream patches?
-%define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
 
 # pkg_release is what we'll fill in for the rpm Release: field
 %if 0%{?released_kernel}
@@ -559,6 +562,7 @@ Source11: genkey
 Source14: find-provides
 Source15: merge.pl
 
+Source19: Makefile.release
 Source20: Makefile.config
 Source21: config-debug
 Source22: config-nodebug
@@ -1182,6 +1186,14 @@ ApplyPatch %{stable_patch_01}
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/config-* .
 cp %{SOURCE15} .
+
+%if !%{debugbuildsenabled}
+%if %{requested_nodebug}
+# The normal build is a really debug build and the user has explicitly requested
+# without_debug. Change the config files into non-debug versions.
+make -f %{SOURCE19} config-release
+%endif
+%endif
 
 # Dynamically generate kernel .config files from config-* files
 make -f %{SOURCE20} VERSION=%{version} configs
@@ -2084,6 +2096,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Oct 23 2011 Chuck Ebbert <cebbert@redhat.com>
+- Make rpmbuild option "without_debug" work properly on rawhide.
+
 * Fri Oct 21 2011 Chuck Ebbert <cebbert@redhat.com> 3.1.0-0.rc10.git1.1
 - Require grubby >= 8.3-1 like F16 does.
 - Update to upstream HEAD (v3.1-rc10-42-g2efd7c0).
