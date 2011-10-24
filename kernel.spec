@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -705,6 +705,10 @@ Patch2802: linux-2.6-silence-acpi-blacklist.patch
 Patch2899: linux-2.6-v4l-dvb-fixes.patch
 Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
+
+Patch2903: media-DiBcom-protect-the-I2C-bufer-access.patch
+Patch2904: media-dib0700-protect-the-dib0700-buffer-access.patch
+Patch2905: media-dib0700-correct-error-message.patch
 
 Patch3000: rcutree-avoid-false-quiescent-states.patch
 
@@ -1380,6 +1384,10 @@ ApplyPatch iwlagn-fix-ht_params-NULL-pointer-dereference.patch
 
 #rhbz #722509
 ApplyPatch mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
+
+ApplyPatch media-DiBcom-protect-the-I2C-bufer-access.patch
+ApplyPatch media-dib0700-protect-the-dib0700-buffer-access.patch
+ApplyPatch media-dib0700-correct-error-message.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2096,6 +2104,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 24 2011 Josh Boyer <jwboyer@redhat.com>
+- Backport 3 fixed from linux-next to fix dib0700 playback (rhbz 733827)
+
 * Mon Oct 24 2011 Chuck Ebbert <cebbert@redhat.com> 3.1.0-1
 - Linux 3.1
 
