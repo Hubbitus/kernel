@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -57,7 +57,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
 # which yields a base_sublevel of 21.
-%define base_sublevel 0
+%define base_sublevel 1
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -2096,6 +2096,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 24 2011 Chuck Ebbert <cebbert@redhat.com> 3.1.0-1
+- Linux 3.1
+
 * Sun Oct 23 2011 Chuck Ebbert <cebbert@redhat.com>
 - Make rpmbuild option "without_debug" work properly on rawhide.
 
