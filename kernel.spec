@@ -758,6 +758,10 @@ Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
+#rhbz 748691
+Patch21030: be2net-non-member-vlan-pkts-not-received-in-promisco.patch
+Patch21031: benet-remove-bogus-unlikely-on-vlan-check.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1397,6 +1401,10 @@ ApplyPatch utrace.patch
 #rhbz #735946
 ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
+
+#rhbz 748691
+ApplyPatch be2net-non-member-vlan-pkts-not-received-in-promisco.patch
+ApplyPatch benet-remove-bogus-unlikely-on-vlan-check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2107,6 +2115,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Oct 25 2011 Josh Boyer <jwboyer@redhat.com>
+- CVE-2011-3347: be2net: promiscuous mode and non-member VLAN packets DoS (rhbz 748691)
 - CVE-2011-1083: excessive in kernel CPU consumption when creating large nested epoll structures (rhbz 748668)
 
 * Mon Oct 24 2011 Josh Boyer <jwboyer@redhat.com>
