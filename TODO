@@ -20,6 +20,7 @@
 * 000[12]-mm-*
 * x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch (also CC'd to
  stable)
+* epoll-limit-paths.patch (in linux-next via -mm tree)
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 

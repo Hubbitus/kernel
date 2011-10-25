@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -730,6 +730,7 @@ Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12029: crypto-register-cryptd-first.patch
+Patch12030: epoll-limit-paths.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
@@ -1360,6 +1361,7 @@ ApplyPatch add-appleir-usb-driver.patch
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
+ApplyPatch epoll-limit-paths.patch
 ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
@@ -2104,6 +2106,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 25 2011 Josh Boyer <jwboyer@redhat.com>
+- CVE-2011-1083: excessive in kernel CPU consumption when creating large nested epoll structures (rhbz 748668)
+
 * Mon Oct 24 2011 Josh Boyer <jwboyer@redhat.com>
 - Backport 3 fixed from linux-next to fix dib0700 playback (rhbz 733827)
 
