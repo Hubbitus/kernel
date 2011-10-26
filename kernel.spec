@@ -407,11 +407,6 @@ Summary: The Linux kernel
 %define with_perf 0
 %endif
 
-%if %{nopatches}
-# XXX temporary until last vdso patches are upstream
-%define vdso_arches ppc ppc64
-%endif
-
 # Should make listnewconfig fail if there's config options
 # printed out?
 %if %{nopatches}%{using_upstream_branch}
@@ -2084,6 +2079,7 @@ fi
 * Wed Oct 26 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Drop kernel-firmware subpackage. We've had linux-firmware around for
   enough releases now.
+- ppc64/ppc vdso patches have been upstream for ages.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix XFS memory corruption (rhbz 749166)
