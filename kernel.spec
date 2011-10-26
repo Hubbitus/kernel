@@ -276,7 +276,7 @@ Summary: The Linux kernel
 
 %if %{with_vdso_install}
 # These arches install vdso/ directories.
-%define vdso_arches %{all_x86} x86_64 ppc ppc64
+%define vdso_arches %{all_x86} x86_64 ppc ppc64 s390 s390x
 %endif
 
 # Overrides for generic default options
@@ -2080,6 +2080,7 @@ fi
 - Drop kernel-firmware subpackage. We've had linux-firmware around for
   enough releases now.
 - ppc64/ppc vdso patches have been upstream for ages.
+- Install vdso on s390/s390x.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix XFS memory corruption (rhbz 749166)
