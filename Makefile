@@ -17,12 +17,6 @@ help:
 
 include Makefile.config
 
-ifndef KVERSION
-KVERSION := $(shell awk '$$1 == "%define" && $$2 == "base_sublevel" { \
-				print "2.6." $$3 \
-			 }' $(SPECFILE))
-endif
-
 prep:
 	fedpkg -v prep --arch=$(PREPARCH)
 
@@ -112,16 +106,8 @@ release: config-release
 
 include Makefile.release
 
-reconfig:
-	@rm -f kernel-*-config
-	@VERSION=$(KVERSION) make -f Makefile.config configs
-	@scripts/reconfig.sh
-
 unused-kernel-patches:
 	@for f in *.patch; do if [ -e $$f ]; then (egrep -q "^Patch[[:digit:]]+:[[:space:]]+$$f" $(SPECFILE) || echo "Unused:    $$f") && egrep -q "^ApplyPatch[[:space:]]+$$f|^ApplyOptionalPatch[[:space:]]+$$f" $(SPECFILE) || echo "Unapplied: $$f"; fi; done
-
-# since i386 isn't a target...
-compile compile-short: DIST_DEFINES += --target $(shell uname -m)
 
 # 'make local' also needs to build the noarch firmware package
 local: noarch
@@ -136,112 +122,6 @@ vanilla-%: $(SPECFILE:.spec=-vanilla.spec)
 $(SPECFILE:.spec=-vanilla.spec): $(SPECFILE)
 	@rm -f $@
 	(echo %define nopatches 1; cat $<) > $@
-
-#scratch-build: NAME = $(shell rpm $(RPM_DEFINES) $(DIST_DEFINES) -q --qf "%{NAME}\n" --specfile $(SPECFILE)| head -1)
-#scratch-build: test-srpm
-#	$(BUILD_CLIENT) build $(BUILD_FLAGS) --scratch $(TARGET) \
-#			$(SRCRPMDIR)/$(NAME)-$(VERSION)-$(RELEASE).src.rpm
-
-# Dismal kludge for building via brew from cvs after "make vanilla-tag".
-ifdef BEEHIVE_SRPM_BUILD
-export CHECKOUT_TAG ?= $(shell sed s/^.// CVS/Tag)
-tag-pattern = $(TAG_NAME)-$(TAG_VERSION)-0_%_$(TAG_RELEASE)
-ifeq (,$(filter-out $(tag-pattern),$(CHECKOUT_TAG)))
-variant := $(patsubst $(tag-pattern),%,$(CHECKOUT_TAG))
-srpm: SPECFILE := $(wildcard $(SPECFILE:.spec=-$(variant).spec) \
-			     $(SPECFILE:.spec=.t.$(variant).spec))
-srpm beehive-sprm: RELEASE := 0.$(variant).$(RELEASE)
-endif
-endif
-
-#
-# Hacks for building kernel rpms from upstream code plus local GIT branches.
-# Use "make git/BRANCH/TARGET" like "make TARGET".
-# Use "make git/BRANCH-fedora/TARGET" to include Fedora patches on top.
-#
-ifndef GIT_SPEC
-git/%:
-	@$(MAKE) GIT_SPEC=$(subst /,-,$(*D)) git-$(*F)
-else
-git-%: $(SPECFILE:.spec=.t.$(GIT_SPEC).spec)
-	@$(MAKE) GIT_SPEC= $* SPECFILE=$<
-endif
-
-#
-# Your git-branches.mk file can define GIT_DIR, e.g.:
-#	GIT_DIR = ${HOME}/kernel/.git
-# Make sure GIT_AUTHOR_NAME and GIT_AUTHOR_EMAIL are also set
-# or your rpm changelogs will look like crap.
-#
-# For each branch it can define a variable branch-BRANCH or tag-BRANCH
-# giving the parent of BRANCH to diff against in a separate patch.  If
-# the parent is unknown, it will use $(branch-upstream) defaulting to
-# "refs/remotes/upstream/master".
-#
-# Defining tag-BRANCH means the tag corresponds to an upstream patch in
-# the sources file, so that is used instead of generating a patch with
-# git.  If there is no tag-upstream defined, it will figure out a vNNN
-# tag or vNNN-gitN pseudo-tag from the last patch in the sources file.
-# For example:
-#	tag-some-hacks = v2.6.21-rc5
-#	branch-more-hacks = some-hacks
-# Leads to patches:
-#	git diff v2.6.21-rc5..more-hacks > linux-2.6.21-rc5-some-hacks.patch
-#	git diff some-hacks..more-hacks > linux-2.6.21-rc5-more-hacks.patch
-# Whereas having no git-branches.mk at all but doing
-# "make GIT_DIR=... git/mybranch/test-srpm" does:
-#	id=`cat patch-2.6.21-rc5-git4.id` # auto-fetched via upstream file
-#	git diff $id..upstream > linux-2.6.21-rc5-git4-upstream.patch
-#	git diff upstream..mybranch > linux-2.6.21-rc5-git4-mybranch.patch
-# If the upstream patch (or any branch patch) is empty it's left out.
-#
-git-branches.mk:;
--include git-branches.mk
-
-branch-upstream ?= refs/remotes/upstream/master
-
-ifdef GIT_DIR
-export GIT_DIR
-export GIT_AUTHOR_NAME
-export GIT_AUTHOR_EMAIL
-gen-patches ?= gen-patches
-
-ifndef havespec
-$(SPECFILE:.spec=.t.%-fedora.spec): $(SPECFILE) $(gen-patches) FORCE
-	./$(gen-patches) --fedora < $< > $@ $(gen-patches-args)
-$(SPECFILE:.spec=.t.%.spec): $(SPECFILE) $(gen-patches) FORCE
-	./$(gen-patches) < $< > $@ $(gen-patches-args)
-.PRECIOUS: $(SPECFILE:.spec=.t.%.spec) $(SPECFILE:.spec=.t.%-fedora.spec)
-endif
-
-spec-%: $(SPECFILE:.spec=.t.%.spec) ;
-$(SPECFILE):;
-FORCE:;
-
-branch-of-* = $(firstword $(head-$*) $*)
-gen-patches-args = --name $* v$(KVERSION) $(call heads,$(branch-of-*))
-define heads
-$(if $(tag-$1),$(filter-out v$(KVERSION),$(tag-$1)),\
-     $(call heads,$(firstword $(branch-$1) $(branch-upstream)))) $1
-endef
-
-files-%-fedora:
-	@echo $(SPECFILE:.spec=.t.$*-fedora.spec)
-	@$(call list-patches,$(branch-of-*))
-files-%:
-	@echo $(SPECFILE:.spec=.t.$*.spec)
-	@$(call list-patches,$(branch-of-*))
-define list-patches
-$(if $(tag-$1),version=$(patsubst v%,%,$(tag-$1)),\
-     $(call list-patches,$(firstword $(branch-$1) $(branch-upstream)))); \
-echo linux-$${version}-$(patsubst refs/remotes/%/master,%,$1).patch
-endef
-
-ifndef tag-$(branch-upstream)
-tag-$(branch-upstream) := $(shell \
-	sed -n 's/^.*  *//;s/\.bz2$$//;s/patch-/v/;/^v/h;$${g;p}' sources)
-endif
-endif
 
 ifeq ($(MAKECMDGOALS),me a sandwich)
 .PHONY: me a sandwich
