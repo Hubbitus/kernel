@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 5
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -82,7 +82,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 10
+%define rcrev 0
 # The git snapshot level
 %define gitrev 1
 # Set rpm version accordingly
@@ -688,23 +688,17 @@ Patch2903: media-DiBcom-protect-the-I2C-bufer-access.patch
 Patch2904: media-dib0700-protect-the-dib0700-buffer-access.patch
 Patch2905: media-dib0700-correct-error-message.patch
 
-Patch3000: rcutree-avoid-false-quiescent-states.patch
-
 # fs fixes
 
 # NFSv4
 
 # patches headed upstream
-Patch12010: add-appleir-usb-driver.patch
-
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12021: udlfb-bind-framebuffer-to-interface.patch
 Patch12022: x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
 
-Patch12023: ums-realtek-driver-uses-stack-memory-for-DMA.patch
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
-Patch12025: rcu-avoid-just-onlined-cpu-resched.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12029: crypto-register-cryptd-first.patch
@@ -715,13 +709,10 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
-Patch13007: add-macbookair41-keyboard.patch
-
 Patch13009: hvcs_pi_buf_alloc.patch
 
 Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
-
-Patch13014: iwlagn-fix-ht_params-NULL-pointer-dereference.patch
+Patch13014: select-regmap-from-wm8400.patch
 
 Patch20000: utrace.patch
 
@@ -735,10 +726,6 @@ Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 #rhbz #735946
 Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
-
-#rhbz 748691
-Patch21030: be2net-non-member-vlan-pkts-not-received-in-promisco.patch
-Patch21031: benet-remove-bogus-unlikely-on-vlan-check.patch
 
 #rhbz 749166
 Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
@@ -1309,17 +1296,11 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # Patches headed upstream
-ApplyPatch rcutree-avoid-false-quiescent-states.patch
-
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-ApplyPatch add-appleir-usb-driver.patch
-
 ApplyPatch udlfb-bind-framebuffer-to-interface.patch
-ApplyPatch ums-realtek-driver-uses-stack-memory-for-DMA.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch epoll-limit-paths.patch
-ApplyPatch rcu-avoid-just-onlined-cpu-resched.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
@@ -1333,13 +1314,10 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
-ApplyPatch add-macbookair41-keyboard.patch
 
 ApplyPatch hvcs_pi_buf_alloc.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
-
-ApplyPatch iwlagn-fix-ht_params-NULL-pointer-dereference.patch
 
 #rhbz #722509
 ApplyPatch mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
@@ -1355,9 +1333,7 @@ ApplyPatch utrace.patch
 ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
-#rhbz 748691
-ApplyPatch be2net-non-member-vlan-pkts-not-received-in-promisco.patch
-ApplyPatch benet-remove-bogus-unlikely-on-vlan-check.patch
+ApplyPatch select-regmap-from-wm8400.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2041,6 +2017,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git1
+
 * Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.1.0-5
 - Rebuilt for glibc bug#747377
 

@@ -1,3 +1,6 @@
+From: Nelson Elhage <nelhage@nelhage.com>
+Subject: epoll: fix suprious lockdep warnings
+
 epoll can acquire multiple ep->mutex on multiple "struct eventpoll"s
 at once in the case where one epoll fd is monitoring another epoll
 fd. This is perfectly OK, since we're careful about the lock ordering,

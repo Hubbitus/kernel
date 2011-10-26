@@ -1,5 +1,17 @@
+From 77c78bac236c7b07d390be65f357c85a79cce890 Mon Sep 17 00:00:00 2001
+From: Dave Jones <davej@redhat.com>
+Date: Wed, 26 Oct 2011 18:44:26 -0400
+Subject: [PATCH] Add more debugging information to the VM subsystem
+
+Dump modules in bad_page, and print taint information in other areas
+---
+ mm/page_alloc.c |    1 +
+ mm/slab.c       |    8 ++++----
+ mm/slub.c       |    2 +-
+ 3 files changed, 6 insertions(+), 5 deletions(-)
+
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 4e8985a..70d0853 100644
+index 6e8ecb6..83a0205 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
 @@ -318,6 +318,7 @@ static void bad_page(struct page *page)
@@ -11,10 +23,10 @@ index 4e8985a..70d0853 100644
  out:
  	/* Leave bad fields for debug, except PageBuddy could make trouble */
 diff --git a/mm/slab.c b/mm/slab.c
-index d96e223..6f8905b 100644
+index 708efe8..114a66d 100644
 --- a/mm/slab.c
 +++ b/mm/slab.c
-@@ -1886,8 +1886,8 @@ static void check_poison_obj(struct kmem_cache *cachep, void *objp)
+@@ -1927,8 +1927,8 @@ static void check_poison_obj(struct kmem_cache *cachep, void *objp)
  			/* Print header */
  			if (lines == 0) {
  				printk(KERN_ERR
@@ -25,22 +37,22 @@ index d96e223..6f8905b 100644
  				print_objinfo(cachep, objp, 0);
  			}
  			/* Hexdump the affected line */
-@@ -2985,8 +2985,8 @@ static void check_slabp(struct kmem_cache *cachep, struct slab *slabp)
+@@ -3037,8 +3037,8 @@ static void check_slabp(struct kmem_cache *cachep, struct slab *slabp)
  	if (entries != cachep->num - slabp->inuse) {
  bad:
  		printk(KERN_ERR "slab: Internal list corruption detected in "
 -				"cache '%s'(%d), slabp %p(%d). Hexdump:\n",
 -			cachep->name, cachep->num, slabp, slabp->inuse);
-+				"cache '%s'(%d), slabp %p(%d). Tainted(%s). Hexdump:\n",
++				"cache '%s'(%d), slabp %p(%d). Tainted(%s) Hexdump:\n",
 +			cachep->name, cachep->num, slabp, slabp->inuse, print_tainted());
- 		for (i = 0;
- 		     i < sizeof(*slabp) + cachep->num * sizeof(kmem_bufctl_t);
- 		     i++) {
+ 		print_hex_dump(KERN_ERR, "", DUMP_PREFIX_OFFSET, 16, 1, slabp,
+ 			sizeof(*slabp) + cachep->num * sizeof(kmem_bufctl_t),
+ 			1);
 diff --git a/mm/slub.c b/mm/slub.c
-index 35f351f..e7ccb39 100644
+index 95215aa..bbec29e 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -472,7 +472,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
+@@ -570,7 +570,7 @@ static void slab_bug(struct kmem_cache *s, char *fmt, ...)
  	va_end(args);
  	printk(KERN_ERR "========================================"
  			"=====================================\n");
@@ -49,3 +61,6 @@ index 35f351f..e7ccb39 100644
  	printk(KERN_ERR "----------------------------------------"
  			"-------------------------------------\n\n");
  }
+-- 
+1.7.6.4
+
