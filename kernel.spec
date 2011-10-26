@@ -2060,6 +2060,9 @@ fi
 - Install vdso on s390/s390x.
 - Fedora 8 was a very long time ago... fancy_debuginfo turns into
   with_debuginfo in the glorious future.
+- Disable CONFIG_CC_OPTIMIZE_FOR_SIZE, upstream consensus is -O2 has
+  generated better code than -Os for a while
+  (https://lkml.org/lkml/2009/11/26/57)
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4077: xfs: potential buffer overflow in xfs_readlink() (rhbz 749166)
