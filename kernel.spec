@@ -2062,7 +2062,7 @@ fi
   with_debuginfo in the glorious future.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
-- Add patch to fix XFS memory corruption (rhbz 749166)
+- CVE-2011-4077: xfs: potential buffer overflow in xfs_readlink() (rhbz 749166)
 
 * Tue Oct 25 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-3347: be2net: promiscuous mode and non-member VLAN packets DoS (rhbz 748691)
