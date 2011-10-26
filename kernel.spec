@@ -547,7 +547,6 @@ Source20: Makefile.config
 Source21: config-debug
 Source22: config-nodebug
 Source23: config-generic
-Source24: config-rhel-generic
 
 Source30: config-x86-generic
 Source31: config-i686-PAE
@@ -1171,18 +1170,8 @@ make -f %{SOURCE19} config-release
 # Dynamically generate kernel .config files from config-* files
 make -f %{SOURCE20} VERSION=%{version} configs
 
-%if %{?all_arch_configs:1}%{!?all_arch_configs:0}
-#if a rhel kernel, apply the rhel config options
-%if 0%{?rhel}
-  for i in %{all_arch_configs}
-  do
-    mv $i $i.tmp
-    ./merge.pl config-rhel-generic $i.tmp > $i
-    rm $i.tmp
-  done
-%endif
-
 # Merge in any user-provided local config option changes
+%if %{?all_arch_configs:1}%{!?all_arch_configs:0}
 for i in %{all_arch_configs}
 do
   mv $i $i.tmp
@@ -2065,6 +2054,7 @@ fi
   (https://lkml.org/lkml/2009/11/26/57)
 - Drop vanilla-% targets, and other Makefile cruft which has been bit
   rotting for years.
+- Dump %rhel config bits which are not used in Fedora.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4077: xfs: potential buffer overflow in xfs_readlink() (rhbz 749166)
