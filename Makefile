@@ -20,6 +20,13 @@ include Makefile.config
 prep:
 	fedpkg -v prep --arch=$(PREPARCH)
 
+noarch:
+	fedpkg -v local --arch=noarch
+
+# 'make local' also needs to build the noarch firmware package
+local: noarch
+	fedpkg -v local
+
 extremedebug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PAGEALLOC is not set/CONFIG_DEBUG_PAGEALLOC=y/' config-nodebug
 
@@ -108,9 +115,6 @@ include Makefile.release
 
 unused-kernel-patches:
 	@for f in *.patch; do if [ -e $$f ]; then (egrep -q "^Patch[[:digit:]]+:[[:space:]]+$$f" $(SPECFILE) || echo "Unused:    $$f") && egrep -q "^ApplyPatch[[:space:]]+$$f|^ApplyOptionalPatch[[:space:]]+$$f" $(SPECFILE) || echo "Unapplied: $$f"; fi; done
-
-# 'make local' also needs to build the noarch firmware package
-local: noarch
 
 #
 # Hacks for building vanilla (unpatched) kernel rpms.
