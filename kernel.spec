@@ -536,7 +536,6 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %endif
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.bz2
-# Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-3.1-rc1.tar.bz2
 
 Source11: genkey
 Source14: find-provides
@@ -2055,6 +2054,7 @@ fi
 - Drop vanilla-% targets, and other Makefile cruft which has been bit
   rotting for years.
 - Dump %rhel config bits which are not used in Fedora.
+- Drop dead Source0 hacks from the 2.6->3.0 transition.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4077: xfs: potential buffer overflow in xfs_readlink() (rhbz 749166)
