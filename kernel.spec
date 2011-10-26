@@ -2063,6 +2063,8 @@ fi
 - Disable CONFIG_CC_OPTIMIZE_FOR_SIZE, upstream consensus is -O2 has
   generated better code than -Os for a while
   (https://lkml.org/lkml/2009/11/26/57)
+- Drop vanilla-% targets, and other Makefile cruft which has been bit
+  rotting for years.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4077: xfs: potential buffer overflow in xfs_readlink() (rhbz 749166)
