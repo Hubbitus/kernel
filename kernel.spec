@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -762,6 +762,9 @@ Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 Patch21030: be2net-non-member-vlan-pkts-not-received-in-promisco.patch
 Patch21031: benet-remove-bogus-unlikely-on-vlan-check.patch
 
+#rhbz 749166
+Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1262,6 +1265,7 @@ ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 # ext4
 
 # xfs
+ApplyPatch xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
 # btrfs
 
@@ -2114,6 +2118,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix XFS memory corruption (rhbz 749166)
+
 * Tue Oct 25 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-3347: be2net: promiscuous mode and non-member VLAN packets DoS (rhbz 748691)
 - CVE-2011-1083: excessive in kernel CPU consumption when creating large nested epoll structures (rhbz 748668)
