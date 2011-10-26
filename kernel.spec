@@ -111,8 +111,6 @@ Summary: The Linux kernel
 %define with_doc       %{?_without_doc:       0} %{?!_without_doc:       1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
-# kernel-firmware
-%define with_firmware  %{?_with_firmware:     1} %{?!_with_firmware:     0}
 # tools
 %define with_tools     %{?_without_tools:     0} %{?!_without_tools:     1}
 # kernel-debuginfo
@@ -304,7 +302,6 @@ Summary: The Linux kernel
 %define with_headers 0
 %define with_tools 0
 %define all_arch_configs kernel-%{version}-*.config
-%define with_firmware  %{?_with_firmware:     1} %{?!_with_firmware:     0}
 %endif
 
 # bootwrapper is only on ppc
@@ -494,11 +491,7 @@ Provides: kernel-modeset = 1\
 Provides: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
-%if %{with_firmware}\
-Requires(pre): kernel-firmware >= %{rpmversion}-%{pkg_release}\
-%else\
 Requires(pre): linux-firmware >= 20100806-2\
-%endif\
 Requires(post): /sbin/new-kernel-pkg\
 Requires(preun): /sbin/new-kernel-pkg\
 Conflicts: %{kernel_dot_org_conflicts}\
@@ -800,19 +793,6 @@ header files define structures and constants that are needed for
 building most standard programs and are also needed for rebuilding the
 glibc package.
 
-%package firmware
-Summary: Firmware files used by the Linux kernel
-Group: Development/System
-# This is... complicated.
-# Look at the WHENCE file.
-License: GPL+ and GPLv2+ and MIT and Redistributable, no modification permitted
-%if "x%{?variant}" != "x"
-Provides: kernel-firmware = %{rpmversion}-%{pkg_release}
-%endif
-%description firmware
-Kernel-firmware includes firmware files required for some devices to
-operate.
-
 %package bootwrapper
 Summary: Boot wrapper files for generating combined kernel + initrd images
 Group: Development/System
@@ -1053,12 +1033,6 @@ ApplyOptionalPatch()
     ApplyPatch $patch ${1+"$@"}
   fi
 }
-
-# we don't want a .config file when building firmware: it just confuses the build system
-%define build_firmware \
-   mv .config .config.firmware_save \
-   make INSTALL_FW_PATH=$RPM_BUILD_ROOT/lib/firmware firmware_install \
-   mv .config.firmware_save .config
 
 # First we unpack the kernel tarball.
 # If this isn't the first make prep, we use links to the existing clean tarball
@@ -1561,7 +1535,7 @@ BuildKernel() {
 
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer
     # Override $(mod-fw) because we don't want it to install any firmware
-    # We'll do that ourselves with 'make firmware_install'
+    # we'll get it from the linux-firmware package and we don't want conflicts
     make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_install KERNELRELEASE=$KernelVer mod-fw=
 %ifarch %{vdso_arches}
     make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT vdso_install KERNELRELEASE=$KernelVer
@@ -1869,10 +1843,6 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
 
 %endif
 
-%if %{with_firmware}
-%{build_firmware}
-%endif
-
 %if %{with_bootwrapper}
 make DESTDIR=$RPM_BUILD_ROOT bootwrapper_install WRAPPER_OBJDIR=%{_libdir}/kernel-wrapper WRAPPER_DTSDIR=%{_libdir}/kernel-wrapper/dts
 %endif
@@ -1989,13 +1959,6 @@ fi
 %files headers
 %defattr(-,root,root)
 /usr/include/*
-%endif
-
-%if %{with_firmware}
-%files firmware
-%defattr(-,root,root)
-/lib/firmware/*
-%doc linux-%{kversion}.%{_target_cpu}/firmware/WHENCE
 %endif
 
 %if %{with_bootwrapper}
@@ -2118,6 +2081,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 26 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Drop kernel-firmware subpackage. We've had linux-firmware around for
+  enough releases now.
+
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix XFS memory corruption (rhbz 749166)
 
