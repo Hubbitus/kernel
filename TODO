@@ -117,6 +117,3 @@ Spec file/config todos/cleanups
 
 * Remove all of the RHEL stuff.  It isn't maintained in fedora at all and is
 just cruft
-
-* Drop all the with_firmware stuff in the spec.  All releases should be using
-the linux-firmware package by now
