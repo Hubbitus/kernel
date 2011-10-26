@@ -529,16 +529,8 @@ BuildRequires: sparse >= 0.4.1
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) pciutils-devel gettext
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
-
-%define fancy_debuginfo 0
 %if %{with_debuginfo}
-%if 0%{?fedora} >= 8 || 0%{?rhel} >= 6
-%define fancy_debuginfo 1
-%endif
-%endif
-
-%if %{fancy_debuginfo}
-# Fancy new debuginfo generation introduced in Fedora 8.
+# Fancy new debuginfo generation introduced in Fedora 8/RHEL 6.
 BuildRequires: rpm-build >= 4.4.2.1-4
 %define debuginfo_args --strict-build-id
 %endif
@@ -1443,7 +1435,7 @@ cd ..
 %define sparse_mflags	C=1
 %endif
 
-%if %{fancy_debuginfo}
+%if %{with_debuginfo}
 # This override tweaks the kernel makefiles so that we run debugedit on an
 # object before embedding it.  When we later run find-debuginfo.sh, it will
 # run debugedit again.  The edits it does change the build ID bits embedded
@@ -1592,19 +1584,17 @@ BuildKernel() {
     # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
     cp $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/.config $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/config/auto.conf
 
-%if %{fancy_debuginfo}
+%if %{with_debuginfo}
     if test -s vmlinux.id; then
       cp vmlinux.id $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/vmlinux.id
     else
       echo >&2 "*** ERROR *** no vmlinux build ID! ***"
       exit 1
     fi
-%endif
 
     #
     # save the vmlinux file for kernel debugging into the kernel-debuginfo rpm
     #
-%if %{with_debuginfo}
     mkdir -p $RPM_BUILD_ROOT%{debuginfodir}/lib/modules/$KernelVer
     cp vmlinux $RPM_BUILD_ROOT%{debuginfodir}/lib/modules/$KernelVer
 %endif
@@ -1741,13 +1731,11 @@ find Documentation -type d | xargs chmod u+w
 # This macro is used by %%install, so we must redefine it before that.
 %define debug_package %{nil}
 
-%if %{fancy_debuginfo}
+%if %{with_debuginfo}
 %define __debug_install_post \
   /usr/lib/rpm/find-debuginfo.sh %{debuginfo_args} %{_builddir}/%{?buildsubdir}\
 %{nil}
-%endif
 
-%if %{with_debuginfo}
 %ifnarch noarch
 %global __debug_package 1
 %files -f debugfiles.list debuginfo-common-%{_target_cpu}
@@ -2036,19 +2024,8 @@ fi
 /usr/src/kernels/%{KVERREL}%{?2:.%{2}}\
 %if %{with_debuginfo}\
 %ifnarch noarch\
-%if %{fancy_debuginfo}\
 %{expand:%%files -f debuginfo%{?2}.list %{?2:%{2}-}debuginfo}\
-%else\
-%{expand:%%files %{?2:%{2}-}debuginfo}\
-%endif\
 %defattr(-,root,root)\
-%if !%{fancy_debuginfo}\
-%if "%{elf_image_install_path}" != ""\
-%{debuginfodir}/%{elf_image_install_path}/*-%{KVERREL}%{?2:.%{2}}.debug\
-%endif\
-%{debuginfodir}/lib/modules/%{KVERREL}%{?2:.%{2}}\
-%{debuginfodir}/usr/src/kernels/%{KVERREL}%{?2:.%{2}}\
-%endif\
 %endif\
 %endif\
 %endif\
@@ -2081,6 +2058,8 @@ fi
   enough releases now.
 - ppc64/ppc vdso patches have been upstream for ages.
 - Install vdso on s390/s390x.
+- Fedora 8 was a very long time ago... fancy_debuginfo turns into
+  with_debuginfo in the glorious future.
 
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix XFS memory corruption (rhbz 749166)
