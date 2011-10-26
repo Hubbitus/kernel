@@ -116,17 +116,6 @@ include Makefile.release
 unused-kernel-patches:
 	@for f in *.patch; do if [ -e $$f ]; then (egrep -q "^Patch[[:digit:]]+:[[:space:]]+$$f" $(SPECFILE) || echo "Unused:    $$f") && egrep -q "^ApplyPatch[[:space:]]+$$f|^ApplyOptionalPatch[[:space:]]+$$f" $(SPECFILE) || echo "Unapplied: $$f"; fi; done
 
-#
-# Hacks for building vanilla (unpatched) kernel rpms.
-# Use "make vanilla-TARGET" like "make TARGET" (make vanilla-scratch-build).
-#
-vanilla-%: $(SPECFILE:.spec=-vanilla.spec)
-	@$(MAKE) $* SPECFILE=$<
-
-$(SPECFILE:.spec=-vanilla.spec): $(SPECFILE)
-	@rm -f $@
-	(echo %define nopatches 1; cat $<) > $@
-
 ifeq ($(MAKECMDGOALS),me a sandwich)
 .PHONY: me a sandwich
 me a:
