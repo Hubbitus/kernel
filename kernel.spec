@@ -281,8 +281,8 @@ Summary: The Linux kernel
 
 # Overrides for generic default options
 
-# only ppc and alphav56 need separate smp kernels
-%ifnarch ppc alphaev56
+# only ppc needs a separate smp kernel
+%ifnarch ppc 
 %define with_smp 0
 %endif
 
@@ -309,8 +309,8 @@ Summary: The Linux kernel
 %define with_bootwrapper 0
 %endif
 
-# sparse blows up on ppc64 alpha and sparc64
-%ifarch ppc64 ppc alpha sparc64
+# sparse blows up on ppc64 and sparc64
+%ifarch ppc64 ppc sparc64
 %define with_sparse 0
 %endif
 
@@ -372,13 +372,6 @@ Summary: The Linux kernel
 %define make_target vmlinux
 %define kernel_image vmlinux
 %define kernel_image_elf 1
-%endif
-
-%ifarch alpha alphaev56
-%define all_arch_configs kernel-%{version}-alpha*.config
-%define image_install_path boot
-%define make_target vmlinux
-%define kernel_image vmlinux
 %endif
 
 %ifarch %{arm}
@@ -502,7 +495,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 %{sparc} s390 s390x alpha alphaev56 %{arm}
+ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 %{sparc} s390 s390x %{arm}
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
@@ -2010,6 +2003,7 @@ fi
 %changelog
 * Thu Oct 27 2011 Josh Boyer <jwboyer@redhat.com>
 - Drop ia64
+- Drop alpha
 
 * Wed Oct 26 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Make some config changes caught during a review:
