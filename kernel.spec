@@ -2021,6 +2021,7 @@ fi
 - Make some config changes caught during a review:
  - CONFIG_SOC_CAMERA: disable, it's only for some ARM boards
  - CONFIG_MEDIA_ALTERA_CI=m: needed for some DVB boards
+ - CONFIG_DEBUG_BLK_CGROUP: stop setting it twice...
 
 * Wed Oct 26 2011 Chuck Ebbert <cebbert@redhat.com>
 - Add build option "--with=release" to build a non-debug kernel in rawhide.
