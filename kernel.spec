@@ -137,6 +137,9 @@ Summary: The Linux kernel
 #
 # should we do C=1 builds with sparse
 %define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
+#
+# build a release kernel on rawhide
+%define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
@@ -145,9 +148,6 @@ Summary: The Linux kernel
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
-
-# We need to remember if the user has explicitly requested without_debug
-%define requested_nodebug !%{with_debug}
 
 # Build the kernel-doc package, but don't fail the build if it botches.
 # Here "true" means "continue" and "false" means "fail the build".
@@ -1146,9 +1146,9 @@ cp $RPM_SOURCE_DIR/config-* .
 cp %{SOURCE15} .
 
 %if !%{debugbuildsenabled}
-%if %{requested_nodebug}
+%if %{with_release}
 # The normal build is a really debug build and the user has explicitly requested
-# without_debug. Change the config files into non-debug versions.
+# a release kernel. Change the config files into non-debug versions.
 make -f %{SOURCE19} config-release
 %endif
 %endif
@@ -2017,6 +2017,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 26 2011 Chuck Ebbert <cebbert@redhat.com>
+- Add build option "--with=release" to build a non-debug kernel in rawhide.
+
 * Wed Oct 26 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git1
 
