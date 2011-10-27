@@ -4,18 +4,13 @@
 * epoll-fix-spurious-lockdep-warnings.patch
 * hvcs_pi_buf_alloc.patch
 * acpi-ensure-thermal-limits-match-cpu-freq.patch
-* rcu-avoid-just-onlined-cpu-resched.patch
-* rcutree-avoid-false-quiescent-states.patch
 * revert-efi-rtclock.patch
 * block-stray-block-put-after-teardown.patch
 * crypto-register-cryptd-first.patch
 * efi-dont-map-boot-services-on-32bit.patch
 * powerpc-Fix-deadlock-in-icswx-code.patch
 * udlfb-bind-framebuffer-to-interface.patch
-* ums-realtek-driver-uses-stack-memory-for-DMA.patch
-* usb-add-quirk-for-logitech-webcams.patch
-* add-macbookair41-keyboard.patch
-* ucvideo-fix-crash-when-linking-entities.patch
+* usb-add-quirk-for-logitech-webcams.patch (reworked, sent upstream)
 * mmc-Always-check-for-lower-base-frequency-quirk-for-.patch (also CC'd stable)
 * 000[12]-mm-*
 * x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch (also CC'd to
