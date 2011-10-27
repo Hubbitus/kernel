@@ -374,13 +374,6 @@ Summary: The Linux kernel
 %define kernel_image_elf 1
 %endif
 
-%ifarch ia64
-%define all_arch_configs kernel-%{version}-ia64*.config
-%define image_install_path boot/efi/EFI/redhat
-%define make_target compressed
-%define kernel_image vmlinux.gz
-%endif
-
 %ifarch alpha alphaev56
 %define all_arch_configs kernel-%{version}-alpha*.config
 %define image_install_path boot
@@ -509,7 +502,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ia64 %{sparc} s390 s390x alpha alphaev56 %{arm}
+ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 %{sparc} s390 s390x alpha alphaev56 %{arm}
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
@@ -557,8 +550,6 @@ Source50: config-powerpc-generic
 Source51: config-powerpc32-generic
 Source52: config-powerpc32-smp
 Source53: config-powerpc64
-
-Source60: config-ia64-generic
 
 Source70: config-s390x
 
@@ -2017,6 +2008,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 27 2011 Josh Boyer <jwboyer@redhat.com>
+- Drop ia64
+
 * Wed Oct 26 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Make some config changes caught during a review:
  - CONFIG_SOC_CAMERA: disable, it's only for some ARM boards
