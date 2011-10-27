@@ -2017,6 +2017,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 26 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Make some config changes caught during a review:
+ - CONFIG_SOC_CAMERA: disable, it's only for some ARM boards
+ - CONFIG_MEDIA_ALTERA_CI=m: needed for some DVB boards
+
 * Wed Oct 26 2011 Chuck Ebbert <cebbert@redhat.com>
 - Add build option "--with=release" to build a non-debug kernel in rawhide.
 
