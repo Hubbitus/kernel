@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -631,6 +631,7 @@ Patch452: linux-2.6.30-no-pcspkr-modalias.patch
 Patch460: linux-2.6-serial-460800.patch
 
 Patch470: die-floppy-die.patch
+Patch471: floppy-Remove-_hlt-related-functions.patch
 
 Patch510: linux-2.6-silence-noise.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
@@ -647,15 +648,12 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 # DRM
 
 # nouveau + drm fixes
-Patch1810: drm-nouveau-updates.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 # make sure the lvds comes back on lid open
 Patch1825: drm-intel-make-lvds-work.patch
 # rhbz#729882, https://bugs.freedesktop.org/attachment.cgi?id=49069
 Patch1826: drm-i915-sdvo-lvds-is-digital.patch
-
-Patch1850: drm-lower-severity-radeon-lockup.diff
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1230,6 +1228,7 @@ ApplyPatch linux-2.6-input-kill-stupid-messages.patch
 
 # stop floppy.ko from autoloading during udev...
 ApplyPatch die-floppy-die.patch
+ApplyPatch floppy-Remove-_hlt-related-functions.patch
 
 ApplyPatch linux-2.6.30-no-pcspkr-modalias.patch
 
@@ -1259,14 +1258,11 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 # DRM core
 
 # Nouveau DRM
-ApplyOptionalPatch drm-nouveau-updates.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch drm-i915-sdvo-lvds-is-digital.patch
-
-ApplyPatch drm-lower-severity-radeon-lockup.diff
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -2001,6 +1997,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 28 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git2
+
 * Thu Oct 27 2011 Josh Boyer <jwboyer@redhat.com>
 - Drop ia64
 - Drop alpha
