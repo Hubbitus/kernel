@@ -1932,7 +1932,6 @@ fi
 %files -n python-perf
 %defattr(-,root,root)
 %{python_sitearch}
-%endif
 
 %if %{with_debuginfo}
 %files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
