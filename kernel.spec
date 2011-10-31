@@ -800,6 +800,17 @@ This package provides debug information for package kernel-tools.
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
 %{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|XXX' -o kernel-tools-debuginfo.list}
+
+%package -n python-perf
+Summary: Python bindings for apps which will manipulate perf events
+Group: Development/Libraries
+%description -n python-perf
+The python-perf package contains a module that permits applications
+written in the Python programming language to use the interface
+to manipulate perf events.
+
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
 %endif
 
 
@@ -1734,6 +1745,9 @@ rm -f $RPM_BUILD_ROOT/usr/include/asm*/irq.h
 # perf tool binary and supporting scripts/binaries
 make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install
 
+# python-perf extension
+make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-python_ext
+
 # perf man pages (note: implicit rpm magic compresses them later)
 make -C tools/perf  -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-man || %{doc_build_fail}
 
@@ -1915,6 +1929,11 @@ fi
 %config(noreplace) %{_sysconfdir}/sysconfig/cpupower
 %endif
 
+%files -n python-perf
+%defattr(-,root,root)
+%{python_sitearch}
+%endif
+
 %if %{with_debuginfo}
 %files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
 %defattr(-,root,root)
@@ -1989,6 +2008,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 31 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Build a python-perf subpackage.
+
 * Mon Oct 31 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git3.  Happy Halloween.
 
