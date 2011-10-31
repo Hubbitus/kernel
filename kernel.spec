@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -677,7 +677,6 @@ Patch2905: media-dib0700-correct-error-message.patch
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch12021: udlfb-bind-framebuffer-to-interface.patch
 Patch12022: x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
 
 Patch12024: epoll-fix-spurious-lockdep-warnings.patch
@@ -701,9 +700,6 @@ Patch20000: utrace.patch
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
-
-#rhbz #722509
-Patch21002: mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 
 #rhbz #735946
 Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
@@ -1278,7 +1274,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-ApplyPatch udlfb-bind-framebuffer-to-interface.patch
 ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch epoll-limit-paths.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
@@ -1298,9 +1293,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch hvcs_pi_buf_alloc.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
-
-#rhbz #722509
-ApplyPatch mmc-Always-check-for-lower-base-frequency-quirk-for-.patch
 
 ApplyPatch media-DiBcom-protect-the-I2C-bufer-access.patch
 ApplyPatch media-dib0700-protect-the-dib0700-buffer-access.patch
@@ -1997,6 +1989,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 31 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git3.  Happy Halloween.
+
 * Fri Oct 28 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git2
 

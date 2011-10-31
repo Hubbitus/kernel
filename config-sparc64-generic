@@ -43,6 +43,7 @@ CONFIG_I2C_ALI1535=m
 # CONFIG_VGASTATE is not set
 # CONFIG_FB_DDC is not set
 # CONFIG_FB_BW2 is not set
+# CONFIG_FB_GRVGA is not set
 CONFIG_FB_CG3=y
 CONFIG_FB_CG6=y
 # CONFIG_FB_RIVA is not set

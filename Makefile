@@ -47,6 +47,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_FAIL_PAGE_ALLOC is not set/CONFIG_FAIL_PAGE_ALLOC=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAIL_IO_TIMEOUT is not set/CONFIG_FAIL_IO_TIMEOUT=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAIL_MAKE_REQUEST is not set/CONFIG_FAIL_MAKE_REQUEST=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_FAIL_MMC_REQUEST is not set/CONFIG_FAIL_MMC_REQUEST=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAULT_INJECTION_DEBUG_FS is not set/CONFIG_FAULT_INJECTION_DEBUG_FS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_FAULT_INJECTION_STACKTRACE_FILTER is not set/CONFIG_FAULT_INJECTION_STACKTRACE_FILTER=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SG is not set/CONFIG_DEBUG_SG=y/' config-nodebug
