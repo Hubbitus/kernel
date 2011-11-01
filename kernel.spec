@@ -111,6 +111,8 @@ Summary: The Linux kernel
 %define with_doc       %{?_without_doc:       0} %{?!_without_doc:       1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
+# perf
+%define with_perf      %{?_without_perf:      0} %{?!_without_perf:      1}
 # tools
 %define with_tools     %{?_without_tools:     0} %{?!_without_tools:     1}
 # kernel-debuginfo
@@ -270,6 +272,7 @@ Summary: The Linux kernel
 %define with_smp 0
 %define with_pae 0
 %define with_tools 0
+%define with_perf 0
 %endif
 
 %define all_x86 i386 i686
@@ -301,6 +304,7 @@ Summary: The Linux kernel
 %define with_up 0
 %define with_headers 0
 %define with_tools 0
+%define with_perf 0
 %define all_arch_configs kernel-%{version}-*.config
 %endif
 
@@ -415,6 +419,7 @@ Summary: The Linux kernel
 %define with_smp 0
 %define with_pae 0
 %define with_debuginfo 0
+%define with_perf 0
 %define with_tools 0
 %define _enable_debug_packages 0
 %endif
@@ -511,8 +516,11 @@ BuildRequires: xmlto, asciidoc
 %if %{with_sparse}
 BuildRequires: sparse >= 0.4.1
 %endif
+%if %{with_perf}
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed)
+%endif
 %if %{with_tools}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) pciutils-devel gettext
+BuildRequires: pciutils-devel gettext
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
@@ -760,6 +768,41 @@ Group: Development/Debug
 This package is required by %{name}-debuginfo subpackages.
 It provides the kernel source files common to all builds.
 
+%if %{with_perf}
+%package -n perf
+Summary: Performance monitoring for the Linux kernel
+Group: Development/System
+License: GPLv2
+%description -n perf
+This package contains the perf tool, which enables performance monitoring
+of the Linux kernel.
+
+%package -n perf-debuginfo
+Summary: Debug information for package perf
+Group: Development/Debug
+Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
+AutoReqProv: no
+%description -n perf-debuginfo
+This package provides debug information for the perf package.
+
+# Note that this pattern only works right to match the .build-id
+# symlinks because of the trailing nonmatching alternation and
+# the leading .*, because of find-debuginfo.sh's buggy handling
+# of matching the pattern against the symlinks file.
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|XXX' -o perf-debuginfo.list}
+
+%package -n python-perf
+Summary: Python bindings for apps which will manipulate perf events
+Group: Development/Libraries
+%description -n python-perf
+The python-perf package contains a module that permits applications
+written in the Python programming language to use the interface
+to manipulate perf events.
+
+%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
+%endif # with_perf
+
 %if %{with_tools}
 %package -n kernel-tools
 Summary: Assortment of tools for the Linux kernel
@@ -776,7 +819,7 @@ Obsoletes: cpufrequtils < 1:009-0.6.p1
 Obsoletes: cpuspeed < 1:1.5-16
 %description -n kernel-tools
 This package contains the tools/ directory from the kernel source
-- the perf tool and the supporting documentation.
+and the supporting documentation.
 
 %package -n kernel-tools-devel
 Summary: Assortment of tools for the Linux kernel
@@ -801,19 +844,9 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|XXX' -o kernel-tools-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|XXX' -o kernel-tools-debuginfo.list}
 
-%package -n python-perf
-Summary: Python bindings for apps which will manipulate perf events
-Group: Development/Libraries
-%description -n python-perf
-The python-perf package contains a module that permits applications
-written in the Python programming language to use the interface
-to manipulate perf events.
-
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
-
-%endif
+%endif # with_tools
 
 
 #
@@ -1644,11 +1677,13 @@ BuildKernel %make_target %kernel_image
 BuildKernel %make_target %kernel_image smp
 %endif
 
-%if %{with_tools}
+%if %{with_perf}
 # perf
 make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} all
 make %{?_smp_mflags} -C tools/perf -s V=1 prefix=%{_prefix} man || %{doc_build_fail}
+%endif
 
+%if %{with_tools}
 %ifarch %{cpupowerarchs}
 # cpupower
 # make sure version-gen.sh is executable.
@@ -1746,7 +1781,7 @@ rm -f $RPM_BUILD_ROOT/usr/include/asm*/io.h
 rm -f $RPM_BUILD_ROOT/usr/include/asm*/irq.h
 %endif
 
-%if %{with_tools}
+%if %{with_perf}
 # perf tool binary and supporting scripts/binaries
 make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install
 
@@ -1755,7 +1790,9 @@ make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%
 
 # perf man pages (note: implicit rpm magic compresses them later)
 make -C tools/perf  -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-man || %{doc_build_fail}
+%endif
 
+%if %{with_tools}
 %ifarch %{cpupowerarchs}
 make -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFREQ_BENCH=false install
 rm -f %{buildroot}%{_libdir}/*.{a,la}
@@ -1916,14 +1953,27 @@ fi
 %{_datadir}/man/man9/*
 %endif
 
-%if %{with_tools}
-%files -n kernel-tools -f cpupower.lang
+%if %{with_perf}
+%files -n perf
 %defattr(-,root,root)
 %{_bindir}/perf
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
-%{_mandir}/man[1-8]/*
+%{_mandir}/man[1-8]/perf*
 
+%files -n python-perf
+%defattr(-,root,root)
+%{python_sitearch}
+
+%if %{with_debuginfo}
+%files -f perf-debuginfo.list -n perf-debuginfo
+%defattr(-,root,root)
+%endif
+%endif # with_perf
+
+%if %{with_tools}
+%files -n kernel-tools -f cpupower.lang
+%defattr(-,root,root)
 %ifarch %{cpupowerarchs}
 %{_bindir}/cpupower
 %{_bindir}/centrino-decode
@@ -1931,12 +1981,9 @@ fi
 %{_libdir}/libcpupower.so.0
 %{_libdir}/libcpupower.so.0.0.0
 %{_unitdir}/cpupower.service
+%{_mandir}/man[1-8]/cpupower*
 %config(noreplace) %{_sysconfdir}/sysconfig/cpupower
 %endif
-
-%files -n python-perf
-%defattr(-,root,root)
-%{python_sitearch}
 
 %if %{with_debuginfo}
 %files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
@@ -1948,7 +1995,7 @@ fi
 %{_libdir}/libcpupower.so
 %{_includedir}/cpufreq.h
 %endif
-%endif
+%endif # with_perf
 
 # This is %%{image_install_path} on an arch where that includes ELF files,
 # or empty otherwise.
@@ -2012,6 +2059,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 01 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Restore perf sub-package so that sparc64 and s390x get their
+  perf back.
+
 * Mon Oct 31 2011 Josh Boyer <jwboyer@redhat.com>
 -CVE-2011-4097: oom_badness() integer overflow (rhbz 750402)
 
