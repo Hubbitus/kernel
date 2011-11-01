@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 0
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -708,6 +708,8 @@ Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 #rhbz 749166
 Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
+Patch21070: oom-fix-integer-overflow-of-points.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1317,6 +1319,9 @@ ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
 ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
 ApplyPatch select-regmap-from-wm8400.patch
+
+#rhbz 750402
+ApplyPatch oom-fix-integer-overflow-of-points.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2007,6 +2012,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 31 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix integer overflow of points in oom_badness (rhbz 750402)
+
 * Mon Oct 31 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Build a python-perf subpackage.
 
