@@ -9,9 +9,7 @@
 * crypto-register-cryptd-first.patch
 * efi-dont-map-boot-services-on-32bit.patch
 * powerpc-Fix-deadlock-in-icswx-code.patch
-* udlfb-bind-framebuffer-to-interface.patch
 * usb-add-quirk-for-logitech-webcams.patch (reworked, sent upstream)
-* mmc-Always-check-for-lower-base-frequency-quirk-for-.patch (also CC'd stable)
 * 000[12]-mm-*
 * x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch (also CC'd to
  stable)
