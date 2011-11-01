@@ -2013,7 +2013,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Oct 31 2011 Josh Boyer <jwboyer@redhat.com>
-- Add patch to fix integer overflow of points in oom_badness (rhbz 750402)
+-CVE-2011-4097: oom_badness() integer overflow (rhbz 750402)
 
 * Mon Oct 31 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Build a python-perf subpackage.
