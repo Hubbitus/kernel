@@ -388,13 +388,13 @@ Summary: The Linux kernel
 # we build a up kernel on armv5tel. its used for qemu.
 %ifnarch armv5tel
 %define with_up 0
+%define with_perf 0
 %endif
 # we only build headers on the base arm arches
 # just like we used to only build them on i386 for x86
 %ifnarch armv5tel armv7hl
 %define with_headers 0
 %endif
-%define with_perf 0
 %endif
 
 # Should make listnewconfig fail if there's config options
@@ -2059,6 +2059,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 01 2011 Dave Jones <davej@redhat.com>
+- allow building the perf rpm for ARM (rhbz 741325)
+
 * Tue Nov 01 2011 Dave Jones <davej@redhat.com>
 - Add another Sony laptop to the nonvs blacklist. (rhbz 641789)
 
