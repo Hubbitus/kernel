@@ -2059,6 +2059,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 01 2011 Dave Jones <davej@redhat.com>
+- Add another Sony laptop to the nonvs blacklist. (rhbz 641789)
+
 * Tue Nov 01 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Restore perf sub-package so that sparc64 and s390x get their
   perf back.
