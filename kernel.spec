@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -623,8 +623,6 @@ Patch100: taint-vbox.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
-Patch202: linux-2.6-debug-taint-vm.patch
-
 Patch383: linux-2.6-defaults-aspm.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
@@ -674,10 +672,6 @@ Patch2899: linux-2.6-v4l-dvb-fixes.patch
 Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
 
-Patch2903: media-DiBcom-protect-the-I2C-bufer-access.patch
-Patch2904: media-dib0700-protect-the-dib0700-buffer-access.patch
-Patch2905: media-dib0700-correct-error-message.patch
-
 # fs fixes
 
 # NFSv4
@@ -685,12 +679,8 @@ Patch2905: media-dib0700-correct-error-message.patch
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch12022: x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
-
-Patch12024: epoll-fix-spurious-lockdep-warnings.patch
 Patch12026: block-stray-block-put-after-teardown.patch
 Patch12027: usb-add-quirk-for-logitech-webcams.patch
-Patch12029: crypto-register-cryptd-first.patch
 Patch12030: epoll-limit-paths.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
@@ -708,10 +698,6 @@ Patch20000: utrace.patch
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
-
-#rhbz #735946
-Patch21020: 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
-Patch21021: 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
 #rhbz 749166
 Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
@@ -1245,9 +1231,6 @@ ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
 ApplyPatch acpi-ensure-thermal-limits-match-cpu-freq.patch
 ApplyPatch acpi-sony-nonvs-blacklist.patch
 
-# Various low-impact patches to aid debugging.
-ApplyPatch linux-2.6-debug-taint-vm.patch
-
 #
 # PCI
 #
@@ -1320,14 +1303,9 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-ApplyPatch epoll-fix-spurious-lockdep-warnings.patch
 ApplyPatch epoll-limit-paths.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
 ApplyPatch usb-add-quirk-for-logitech-webcams.patch
-
-ApplyPatch crypto-register-cryptd-first.patch
-
-ApplyPatch x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -1340,16 +1318,8 @@ ApplyPatch hvcs_pi_buf_alloc.patch
 
 ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
 
-ApplyPatch media-DiBcom-protect-the-I2C-bufer-access.patch
-ApplyPatch media-dib0700-protect-the-dib0700-buffer-access.patch
-ApplyPatch media-dib0700-correct-error-message.patch
-
 # utrace.
 ApplyPatch utrace.patch
-
-#rhbz #735946
-ApplyPatch 0001-mm-vmscan-Limit-direct-reclaim-for-higher-order-allo.patch
-ApplyPatch 0002-mm-Abort-reclaim-compaction-if-compaction-can-procee.patch
 
 ApplyPatch select-regmap-from-wm8400.patch
 
@@ -2059,6 +2029,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 01 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git4
+
 * Tue Nov 01 2011 Dave Jones <davej@redhat.com>
 - allow building the perf rpm for ARM (rhbz 741325)
 

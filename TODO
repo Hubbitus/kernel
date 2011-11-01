@@ -1,18 +1,12 @@
 **** Queued for 3.2 ***********************************************************************************
 
-* linux-2.6-debug-taint-vm.patch
-* epoll-fix-spurious-lockdep-warnings.patch
 * hvcs_pi_buf_alloc.patch
 * acpi-ensure-thermal-limits-match-cpu-freq.patch
 * revert-efi-rtclock.patch
 * block-stray-block-put-after-teardown.patch
-* crypto-register-cryptd-first.patch
 * efi-dont-map-boot-services-on-32bit.patch
 * powerpc-Fix-deadlock-in-icswx-code.patch
 * usb-add-quirk-for-logitech-webcams.patch (reworked, sent upstream)
-* 000[12]-mm-*
-* x86-efi-Calling-__pa-with-an-ioremap-address-is-invalid.patch (also CC'd to
- stable)
 * epoll-limit-paths.patch (in linux-next via -mm tree)
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
