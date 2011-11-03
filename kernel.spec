@@ -51,7 +51,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be prepended with "0.", so
 # for example a 3 here will become 0.3
 #
-%global baserelease 1
+%global baserelease 0
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2029,6 +2029,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 03 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git5
+
 * Tue Nov 01 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git4
 
