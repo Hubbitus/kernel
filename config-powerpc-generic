@@ -356,3 +356,6 @@ CONFIG_RFKILL_GPIO=m
 # CONFIG_IBM_EMAC is not set
 # CONFIG_NET_VENDOR_PASEMI is not set
 # CONFIG_NET_VENDOR_TOSHIBA is not set
+
+# Disable btrfs until it is shown to work with 64k pages (rhbz 747079)
+# CONFIG_BTRFS_FS is not set
