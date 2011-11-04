@@ -84,7 +84,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -691,7 +691,6 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch13009: hvcs_pi_buf_alloc.patch
 
 Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
-Patch13014: select-regmap-from-wm8400.patch
 
 Patch20000: utrace.patch
 
@@ -1320,8 +1319,6 @@ ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
 
 # utrace.
 ApplyPatch utrace.patch
-
-ApplyPatch select-regmap-from-wm8400.patch
 
 #rhbz 750402
 ApplyPatch oom-fix-integer-overflow-of-points.patch
@@ -2029,6 +2026,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 04 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git6
+
 * Thu Nov 03 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git5
 
