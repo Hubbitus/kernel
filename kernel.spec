@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -702,6 +702,8 @@ Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
 Patch21070: oom-fix-integer-overflow-of-points.patch
 
+Patch21071: modsplit-post-merge.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1322,6 +1324,8 @@ ApplyPatch utrace.patch
 
 #rhbz 750402
 ApplyPatch oom-fix-integer-overflow-of-points.patch
+
+ApplyPatch modsplit-post-merge.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2029,6 +2033,7 @@ fi
 * Mon Nov 07 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git7
 - Drop override for XEN_MAX_DOMAIN_MEMORY (rhbz 751789)
+- Add fixes from git://openlinux.windriver.com/people/paulg/modsplit-post-merge
 
 * Fri Nov 04 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git6
