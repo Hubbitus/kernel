@@ -176,3 +176,5 @@ CONFIG_FTGMAC100=m
 # CONFIG_ATM_HE is not set
 # CONFIG_SCSI_ACARD is not set
 # CONFIG_ARM_KPROBES_TEST is not set
+# CONFIG_PL330_DMA is not set
+# CONFIG_VIDEO_S5K6AA is not set

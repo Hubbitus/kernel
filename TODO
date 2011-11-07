@@ -1,11 +1,9 @@
 **** Queued for 3.2 ***********************************************************************************
 
-* hvcs_pi_buf_alloc.patch
 * acpi-ensure-thermal-limits-match-cpu-freq.patch
 * revert-efi-rtclock.patch
 * block-stray-block-put-after-teardown.patch
 * efi-dont-map-boot-services-on-32bit.patch
-* powerpc-Fix-deadlock-in-icswx-code.patch
 * usb-add-quirk-for-logitech-webcams.patch (reworked, sent upstream)
 * epoll-limit-paths.patch (in linux-next via -mm tree)
 
@@ -101,6 +99,3 @@
 ***********************************************************************************
 
 Spec file/config todos/cleanups
-
-* Remove all of the RHEL stuff.  It isn't maintained in fedora at all and is
-just cruft

@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -690,10 +690,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
-
-Patch13009: hvcs_pi_buf_alloc.patch
-
-Patch13013: powerpc-Fix-deadlock-in-icswx-code.patch
 
 Patch20000: utrace.patch
 
@@ -1320,11 +1316,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-
-
-ApplyPatch hvcs_pi_buf_alloc.patch
-
-ApplyPatch powerpc-Fix-deadlock-in-icswx-code.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2035,6 +2026,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 07 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.1-git7
+- Drop override for XEN_MAX_DOMAIN_MEMORY (rhbz 751789)
+
 * Fri Nov 04 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git6
 
