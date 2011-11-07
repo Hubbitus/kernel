@@ -48,10 +48,13 @@ Summary: The Linux kernel
 # reset this by hand to 1 (or to 0 and then use rpmdev-bumpspec).
 # scripts/rebase.sh should be made to do that for you, actually.
 #
-# For non-released -rc kernels, this will be prepended with "0.", so
-# for example a 3 here will become 0.3
+# NOTE: baserelease must be > 0 or bad things will happen if you switch
+#       to a released kernel (released version will be < rc version)
 #
-%global baserelease 0
+# For non-released -rc kernels, this will be appended after the rcX and
+# gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
+#
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -966,6 +969,11 @@ exit 1
 echo "Cannot build --with smponly, smp build is disabled"
 exit 1
 %endif
+%endif
+
+%if !%{baserelease}
+echo "baserelease must be greater than zero"
+exit 1
 %endif
 
 # more sanity checking; do it quietly
