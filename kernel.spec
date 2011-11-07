@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -700,6 +700,10 @@ Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 #rhbz 749166
 Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
+#rhbz 731365
+Patch21062: mac80211-fix-remain_off_channel-regression.patch
+Patch21063: mac80211-config-hw-when-going-back-on-channel.patch
+
 Patch21070: oom-fix-integer-overflow-of-points.patch
 
 Patch21071: modsplit-post-merge.patch
@@ -1326,6 +1330,10 @@ ApplyPatch utrace.patch
 ApplyPatch oom-fix-integer-overflow-of-points.patch
 
 ApplyPatch modsplit-post-merge.patch
+
+#rhbz 731365
+ApplyPatch mac80211-fix-remain_off_channel-regression.patch
+ApplyPatch mac80211-config-hw-when-going-back-on-channel.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2034,6 +2042,7 @@ fi
 - Linux 3.1-git7
 - Drop override for XEN_MAX_DOMAIN_MEMORY (rhbz 751789)
 - Add fixes from git://openlinux.windriver.com/people/paulg/modsplit-post-merge
+- Add two patches to fix mac80211 issues (rhbz 731365)
 
 * Fri Nov 04 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git6
