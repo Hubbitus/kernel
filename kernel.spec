@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 7
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -700,13 +700,7 @@ Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 #rhbz 749166
 Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
-#rhbz 731365
-Patch21062: mac80211-fix-remain_off_channel-regression.patch
-Patch21063: mac80211-config-hw-when-going-back-on-channel.patch
-
 Patch21070: oom-fix-integer-overflow-of-points.patch
-
-Patch21071: modsplit-post-merge.patch
 
 %endif
 
@@ -1328,12 +1322,6 @@ ApplyPatch utrace.patch
 
 #rhbz 750402
 ApplyPatch oom-fix-integer-overflow-of-points.patch
-
-ApplyPatch modsplit-post-merge.patch
-
-#rhbz 731365
-ApplyPatch mac80211-fix-remain_off_channel-regression.patch
-ApplyPatch mac80211-config-hw-when-going-back-on-channel.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2038,6 +2026,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 08 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.2-rc1
+
 * Mon Nov 07 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.1-git7
 - Drop override for XEN_MAX_DOMAIN_MEMORY (rhbz 751789)
