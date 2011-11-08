@@ -702,6 +702,8 @@ Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
 Patch21070: oom-fix-integer-overflow-of-points.patch
 
+Patch21080: sysfs-msi-irq-per-device.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1322,6 +1324,9 @@ ApplyPatch utrace.patch
 
 #rhbz 750402
 ApplyPatch oom-fix-integer-overflow-of-points.patch
+
+# Add msi irq ennumeration in sysfs for devices
+ApplyPatch sysfs-msi-irq-per-device.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2026,6 +2031,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 08 2011 Neil Horman <nhorman@redhat.com>
+- Add msi irq ennumeration per dev in sysfs (bz 744012)
+
 * Tue Nov 08 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc1
 
