@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -786,6 +786,18 @@ written in the Python programming language to use the interface
 to manipulate perf events.
 
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+
+%package -n python-perf-debuginfo
+Summary: Debug information for package perf python bindings
+Group: Development/Debug
+Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
+AutoReqProv: no
+%description -n python-perf-debuginfo
+This package provides debug information for the perf python bindings.
+
+# the python_sitearch macro should already be defined from above
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{python_sitearch}/perf.so(\.debug)?|XXX' -o python-perf-debuginfo.list}
+
 
 %endif # with_perf
 
@@ -1940,6 +1952,9 @@ fi
 %if %{with_debuginfo}
 %files -f perf-debuginfo.list -n perf-debuginfo
 %defattr(-,root,root)
+
+%files -f python-perf-debuginfo.list -n python-perf-debuginfo
+%defattr(-,root,root)
 %endif
 %endif # with_perf
 
@@ -2031,6 +2046,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 08 2011 Josh Boyer <jwboyer@redhat.com>
+- Add python-perf-debuginfo package (rhbz 752140)
+
 * Tue Nov 08 2011 Neil Horman <nhorman@redhat.com>
 - Add msi irq ennumeration per dev in sysfs (bz 744012)
 
