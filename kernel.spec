@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2046,6 +2046,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 10 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.2-rc1-git2
+
 * Wed Nov 09 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc1-git1
 - Enable the brcm80211 modules now that they have left staging
