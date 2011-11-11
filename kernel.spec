@@ -704,6 +704,8 @@ Patch21070: oom-fix-integer-overflow-of-points.patch
 
 Patch21080: sysfs-msi-irq-per-device.patch
 
+Patch21090: bcma-brcmsmac-compat.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1339,6 +1341,9 @@ ApplyPatch oom-fix-integer-overflow-of-points.patch
 
 # Add msi irq ennumeration in sysfs for devices
 ApplyPatch sysfs-msi-irq-per-device.patch
+
+# Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
+ApplyPatch bcma-brcmsmac-compat.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2046,6 +2051,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 11 2011 John W. Linville <linville@redhat.com>
+- Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
+
 * Thu Nov 10 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc1-git2
 
