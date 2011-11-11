@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -706,6 +706,8 @@ Patch21080: sysfs-msi-irq-per-device.patch
 
 Patch21090: bcma-brcmsmac-compat.patch
 
+Patch21091: pci-Rework-ASPM-disable-code.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1344,6 +1346,8 @@ ApplyPatch sysfs-msi-irq-per-device.patch
 
 # Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
 ApplyPatch bcma-brcmsmac-compat.patch
+
+ApplyPatch pci-Rework-ASPM-disable-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2051,6 +2055,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 11 2011 Josh Boyer <jwboyer@redhat.com>
+- Add reworked pci ASPM patch from Matthew Garrett
+
 * Fri Nov 11 2011 John W. Linville <linville@redhat.com>
 - Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
 
