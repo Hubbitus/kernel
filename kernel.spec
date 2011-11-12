@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -699,9 +699,6 @@ Patch20000: utrace.patch
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 
-#rhbz 749166
-Patch21050: xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
-
 Patch21070: oom-fix-integer-overflow-of-points.patch
 
 Patch21080: sysfs-msi-irq-per-device.patch
@@ -1235,7 +1232,6 @@ ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 # ext4
 
 # xfs
-ApplyPatch xfs-Fix-possible-memory-corruption-in-xfs_readlink.patch
 
 # btrfs
 
@@ -2057,6 +2053,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Nov 12 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.2-rc1-git3
+
 * Fri Nov 11 2011 Chuck Ebbert <cebbert@redhat.com>
 - Use the same naming scheme as rawhide for -stable RC kernels
   (e.g. 3.1.1-0.rc1.1 instead of 3.1.1-1.rc1)
