@@ -693,6 +693,9 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
+#rhbz 751165
+Patch13010: ip6_tunnel-copy-parms.name-after-register_netdevice.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1335,6 +1338,9 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
+
+#rhbz 751165
+ApplyPatch ip6_tunnel-copy-parms.name-after-register_netdevice.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2061,6 +2067,7 @@ fi
 %changelog
 * Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
 - Patch from Joshua Roys to add rtl8192* to modules.networking (rhbz 753645)
+- Add patch to fix ip6_tunnel naming (rhbz 751165)
 
 * Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4131: nfs4_getfacl decoding kernel oops (rhbz 753236)
