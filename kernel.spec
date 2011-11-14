@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -706,6 +706,9 @@ Patch21080: sysfs-msi-irq-per-device.patch
 Patch21090: bcma-brcmsmac-compat.patch
 
 Patch21091: pci-Rework-ASPM-disable-code.patch
+
+#rhbz 753236
+Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 %endif
 
@@ -1346,6 +1349,9 @@ ApplyPatch sysfs-msi-irq-per-device.patch
 ApplyPatch bcma-brcmsmac-compat.patch
 
 ApplyPatch pci-Rework-ASPM-disable-code.patch
+
+#rhbz 753236
+ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2053,6 +2059,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
+- CVE-2011-4131: nfs4_getfacl decoding kernel oops (rhbz 753236)
+- Linux 3.2-rc1-git4
+
 * Sat Nov 12 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc1-git3
 
