@@ -645,6 +645,7 @@ Patch470: die-floppy-die.patch
 Patch471: floppy-Remove-_hlt-related-functions.patch
 
 Patch510: linux-2.6-silence-noise.patch
+Patch520: quite-apm.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
 
 Patch700: linux-2.6-e1000-ich9-montevina.patch
@@ -1319,6 +1320,7 @@ ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # silence the ACPI blacklist code
 ApplyPatch linux-2.6-silence-acpi-blacklist.patch
+ApplyPatch quite-apm.patch
 
 # V4L/DVB updates/fixes/experimental drivers
 #  apply if non-empty
@@ -2068,6 +2070,7 @@ fi
 * Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
 - Patch from Joshua Roys to add rtl8192* to modules.networking (rhbz 753645)
 - Add patch to fix ip6_tunnel naming (rhbz 751165)
+- Quite warning in apm_cpu_idle (rhbz 753776)
 
 * Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4131: nfs4_getfacl decoding kernel oops (rhbz 753236)
