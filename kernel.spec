@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1598,7 +1598,7 @@ BuildKernel() {
     }
 
     collect_modules_list networking \
-    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt2x00(pci|usb)_probe'
+    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe'
     collect_modules_list block \
     			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler'
     collect_modules_list drm \
@@ -2059,6 +2059,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
+- Patch from Joshua Roys to add rtl8192* to modules.networking (rhbz 753645)
+
 * Mon Nov 14 2011 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4131: nfs4_getfacl decoding kernel oops (rhbz 753236)
 - Linux 3.2-rc1-git4
