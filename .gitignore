@@ -4,3 +4,4 @@ clog
 *.rpm
 *.orig
 kernel-[23].*/
+/compat-wireless-2011-11-15.tar.bz2
