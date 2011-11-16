@@ -1682,10 +1682,12 @@ BuildKernel %make_target %kernel_image
 BuildKernel %make_target %kernel_image smp
 %endif
 
+%global perf_make \
+  make %{?_smp_mflags} -C tools/perf -s V=1 EXTRA_CFLAGS="-Wno-error=array-bounds" HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
-make %{?_smp_mflags} -C tools/perf -s V=1 EXTRA_CFLAGS="-Wno-error=array-bounds" HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} all
-make %{?_smp_mflags} -C tools/perf -s V=1 prefix=%{_prefix} man || %{doc_build_fail}
+%{perf_make} all
+%{perf_make} man || %{doc_build_fail}
 %endif
 
 %if %{with_tools}
@@ -1788,13 +1790,13 @@ rm -f $RPM_BUILD_ROOT/usr/include/asm*/irq.h
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install
 
 # python-perf extension
-make -C tools/perf -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-python_ext
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
 
 # perf man pages (note: implicit rpm magic compresses them later)
-make -C tools/perf  -s V=1 DESTDIR=$RPM_BUILD_ROOT HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} install-man || %{doc_build_fail}
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-man || %{doc_build_fail}
 %endif
 
 %if %{with_tools}
@@ -2070,6 +2072,8 @@ fi
 * Wed Nov 16 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Work around #663080 and restore building 'perf' on s390x (we don't need
   kernel-tools since cpuspeed isn't needed on s390...)
+- Restore %{perf_make} to ensure CFLAGS doesn't change across building
+  perf.
 
 * Wed Nov 16 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc2-git1
