@@ -1684,7 +1684,7 @@ BuildKernel %make_target %kernel_image smp
 
 %if %{with_perf}
 # perf
-make %{?_smp_mflags} -C tools/perf -s V=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} all
+make %{?_smp_mflags} -C tools/perf -s V=1 EXTRA_CFLAGS="-Wno-error=array-bounds" HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix} all
 make %{?_smp_mflags} -C tools/perf -s V=1 prefix=%{_prefix} man || %{doc_build_fail}
 %endif
 
@@ -2067,6 +2067,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Nov 16 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Work around #663080 and restore building 'perf' on s390x (we don't need
+  kernel-tools since cpuspeed isn't needed on s390...)
+
 * Wed Nov 16 2011 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.2-rc2-git1
 
