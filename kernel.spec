@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2106,6 +2106,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 17 2011 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.2-rc2-git2
+
 * Thu Nov 17 2011 Kyle McMartin <kmcmartin@redhat.com>
 - Drop Obsoletes/Provides from kernel-tools onto perf.
 
