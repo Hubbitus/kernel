@@ -825,8 +825,6 @@ This package provides debug information for the perf python bindings.
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
-Obsoletes: perf
-Provides:  perf
 Provides:  cpupowerutils = 1:009-0.6.p1
 Obsoletes: cpupowerutils < 1:009-0.6.p1
 Provides:  cpufreq-utils = 1:009-0.6.p1
@@ -2108,6 +2106,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 17 2011 Kyle McMartin <kmcmartin@redhat.com>
+- Drop Obsoletes/Provides from kernel-tools onto perf.
+
 * Wed Nov 16 2011 John W. Linville <linville@redhat.com>
 - Add compat-wireless as an option for kernel build
 
