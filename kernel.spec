@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -702,9 +702,6 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
-
-#rhbz 751165
-Patch13010: ip6_tunnel-copy-parms.name-after-register_netdevice.patch
 
 Patch20000: utrace.patch
 
@@ -1347,9 +1344,6 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-
-#rhbz 751165
-ApplyPatch ip6_tunnel-copy-parms.name-after-register_netdevice.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2106,6 +2100,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 21 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git5.1
+- Linux 3.2-rc2-git5
+
 * Sun Nov 20 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git4.1
 - Linux 3.2-rc2-git4
 
