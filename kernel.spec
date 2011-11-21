@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2100,6 +2100,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 21 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git6.1
+- Linux 3.2-rc2-git6
+- Update utrace.patch from Oleg Nesterov
+
 * Mon Nov 21 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git5.1
 - Linux 3.2-rc2-git5
 
