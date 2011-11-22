@@ -994,7 +994,7 @@ exit 1
 %endif
 %endif
 
-%if !%{baserelease}
+%if "%{baserelease}" == "0"
 echo "baserelease must be greater than zero"
 exit 1
 %endif
