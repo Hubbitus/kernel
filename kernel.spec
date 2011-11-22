@@ -147,7 +147,7 @@ Summary: The Linux kernel
 %define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
 # Include driver backports (e.g. compat-wireless) in the kernel build.
-%define with_backports %{?_with_backports:    1} %{?!_with_backports:    0}
+%define with_backports %{?_without_backports: 0} %{?!_without_backports: 1}
 
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
@@ -202,9 +202,18 @@ Summary: The Linux kernel
 %define kversion 3.%{base_sublevel}
 
 # The compat-wireless version
-# (If this is less than kversion, make sure with_backports is turned-off.)
-# (For rawhide, use a snapshot version anyway...)
-%define cwversion 2011-11-15
+%define cwversion 2011-12-01
+
+#######################################################################
+# If cwversion is less than kversion, make sure with_backports is
+# turned-off.
+#
+# For rawhide, disable with_backports immediately after a rebase...
+#
+# (Uncomment the '#' and both spaces below to disable with_backports.)
+#
+# % define with_backports 0
+#######################################################################
 
 %define make_target bzImage
 
@@ -472,7 +481,7 @@ Summary: The Linux kernel
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, module-init-tools >= 3.16-2, initscripts >= 8.11.1-1, grubby >= 8.3-1
+%define kernel_prereq  fileutils, module-init-tools >= 3.16-4, initscripts >= 8.11.1-1, grubby >= 8.3-1
 %define initrd_prereq  dracut >= 001-7
 
 #
@@ -572,6 +581,8 @@ Source90: config-sparc64-generic
 Source100: config-arm-generic
 Source110: config-arm-omap-generic
 Source111: config-arm-tegra
+
+Source200: config-backports
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -716,6 +727,9 @@ Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 #rhbz 590880
 Patch21030: alps.patch
+
+# compat-wireless patches
+Patch50000: compat-wireless-config-fixups.patch
 
 %endif
 
@@ -1215,6 +1229,16 @@ make -f %{SOURCE19} config-release
 # Dynamically generate kernel .config files from config-* files
 make -f %{SOURCE20} VERSION=%{version} configs
 
+%if %{with_backports}
+# Turn-off bits provided by compat-wireless
+for i in %{all_arch_configs}
+do
+  mv $i $i.tmp
+  ./merge.pl %{SOURCE200} $i.tmp > $i
+  rm $i.tmp
+done
+%endif
+
 # Merge in any user-provided local config option changes
 %if %{?all_arch_configs:1}%{!?all_arch_configs:0}
 for i in %{all_arch_configs}
@@ -1367,8 +1391,10 @@ ApplyPatch oom-fix-integer-overflow-of-points.patch
 # Add msi irq ennumeration in sysfs for devices
 ApplyPatch sysfs-msi-irq-per-device.patch
 
+%if !%{with_backports}
 # Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
 ApplyPatch bcma-brcmsmac-compat.patch
+%endif
 
 ApplyPatch pci-Rework-ASPM-disable-code.patch
 
@@ -1437,6 +1463,15 @@ cd ..
 
 # Extract the compat-wireless bits
 %setup -q -n kernel-%{kversion}%{?dist} -T -D -a 1
+
+cd compat-wireless-%{cwversion}
+
+ApplyPatch compat-wireless-config-fixups.patch
+
+# Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
+ApplyPatch bcma-brcmsmac-compat.patch
+
+cd ..
 
 %endif
 
@@ -1722,7 +1757,6 @@ BuildKernel() {
 %if %{with_backports}
 
     cd ../compat-wireless-%{cwversion}/
-    make clean
 
     make KLIB_BUILD=../linux-%{kversion}.%{_target_cpu} \
 	KMODPATH_ARG="INSTALL_MOD_PATH=$RPM_BUILD_ROOT" \
@@ -2177,6 +2211,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 02 2011 John W. Linville <linville@redhat.com> 
+- Revise compat-wireless configuration
+- Update compat-wireless snapshot
+- Enable with-backports by default
+
 * Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc4.git1.4.fc17
 - Backport ALPS touchpad patches from input/next branch (rhbz #590880)
 - Apply patch from John Linville to reverse modules-extra dependency order

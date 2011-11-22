@@ -1,0 +1,64 @@
+diff -up compat-wireless-3.2-rc1-1/config.mk.orig compat-wireless-3.2-rc1-1/config.mk
+--- compat-wireless-3.2-rc1-1/config.mk.orig	2011-11-22 13:09:50.422879313 -0500
++++ compat-wireless-3.2-rc1-1/config.mk	2011-11-22 13:10:28.870398679 -0500
+@@ -14,6 +14,9 @@ else
+ include $(KLIB_BUILD)/.config
+ endif
+ 
++# Enable SSB module (needs to be visible in compat_autoconf.h)
++CONFIG_SSB=m
++
+ ifneq ($(wildcard $(KLIB_BUILD)/Makefile),)
+ 
+ COMPAT_LATEST_VERSION = 1
+diff -up compat-wireless-3.2-rc1-1/drivers/misc/eeprom/Makefile.orig compat-wireless-3.2-rc1-1/drivers/misc/eeprom/Makefile
+--- compat-wireless-3.2-rc1-1/drivers/misc/eeprom/Makefile.orig	2011-11-22 13:09:50.423879301 -0500
++++ compat-wireless-3.2-rc1-1/drivers/misc/eeprom/Makefile	2011-11-22 13:10:28.871398662 -0500
+@@ -1,3 +1,3 @@
+-obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
++#obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
+ obj-$(CONFIG_EEPROM_93XX46)	+= eeprom_93xx46.o
+ obj-$(CONFIG_EEPROM_DIGSY_MTC_CFG) += digsy_mtc_eeprom.o
+diff -up compat-wireless-3.2-rc1-1/drivers/net/ethernet/atheros/Makefile.orig compat-wireless-3.2-rc1-1/drivers/net/ethernet/atheros/Makefile
+--- compat-wireless-3.2-rc1-1/drivers/net/ethernet/atheros/Makefile.orig	2011-11-22 13:09:50.423879301 -0500
++++ compat-wireless-3.2-rc1-1/drivers/net/ethernet/atheros/Makefile	2011-11-22 13:10:28.871398662 -0500
+@@ -2,7 +2,7 @@
+ # Makefile for the Atheros network device drivers.
+ #
+ 
+-obj-$(CONFIG_ATL1) += atlx/
+-obj-$(CONFIG_ATL2) += atlx/
+-obj-$(CONFIG_ATL1E) += atl1e/
+-obj-$(CONFIG_ATL1C) += atl1c/
++#obj-$(CONFIG_ATL1) += atlx/
++#obj-$(CONFIG_ATL2) += atlx/
++#obj-$(CONFIG_ATL1E) += atl1e/
++#obj-$(CONFIG_ATL1C) += atl1c/
+diff -up compat-wireless-3.2-rc1-1/drivers/net/usb/Makefile.orig compat-wireless-3.2-rc1-1/drivers/net/usb/Makefile
+--- compat-wireless-3.2-rc1-1/drivers/net/usb/Makefile.orig	2011-11-22 13:09:50.424879289 -0500
++++ compat-wireless-3.2-rc1-1/drivers/net/usb/Makefile	2011-11-22 13:10:28.872398646 -0500
+@@ -2,7 +2,7 @@
+ # Makefile for USB Network drivers
+ #
+ 
+-obj-$(CONFIG_USB_NET_COMPAT_CDCETHER)	+= cdc_ether.o
+-obj-$(CONFIG_USB_NET_COMPAT_RNDIS_HOST)	+= rndis_host.o
+-obj-$(CONFIG_USB_COMPAT_USBNET)	+= usbnet.o
++#obj-$(CONFIG_USB_NET_COMPAT_CDCETHER)	+= cdc_ether.o
++#obj-$(CONFIG_USB_NET_COMPAT_RNDIS_HOST)	+= rndis_host.o
++#obj-$(CONFIG_USB_COMPAT_USBNET)	+= usbnet.o
+ 
+diff -up compat-wireless-3.2-rc1-1/Makefile.orig compat-wireless-3.2-rc1-1/Makefile
+--- compat-wireless-3.2-rc1-1/Makefile.orig	2011-11-22 13:10:37.165294951 -0500
++++ compat-wireless-3.2-rc1-1/Makefile	2011-11-22 13:10:47.335167758 -0500
+@@ -41,8 +41,8 @@ endif
+ 
+ endif
+ 
+-obj-$(CONFIG_COMPAT_BLUETOOTH) += net/bluetooth/
+-obj-$(CONFIG_COMPAT_BLUETOOTH_MODULES) += drivers/bluetooth/
++#obj-$(CONFIG_COMPAT_BLUETOOTH) += net/bluetooth/
++#obj-$(CONFIG_COMPAT_BLUETOOTH_MODULES) += drivers/bluetooth/
+ 
+ else
+ 
