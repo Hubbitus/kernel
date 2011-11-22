@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -695,7 +695,6 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12026: block-stray-block-put-after-teardown.patch
-Patch12027: usb-add-quirk-for-logitech-webcams.patch
 Patch12030: epoll-limit-paths.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
@@ -1337,7 +1336,6 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 ApplyPatch epoll-limit-paths.patch
 ApplyPatch block-stray-block-put-after-teardown.patch
-ApplyPatch usb-add-quirk-for-logitech-webcams.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -2100,6 +2098,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 22 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git7.1
+- Linux 3.2-rc2-git7
+
 * Mon Nov 21 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git6.1
 - Linux 3.2-rc2-git6
 - Update utrace.patch from Oleg Nesterov

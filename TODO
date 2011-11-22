@@ -4,7 +4,6 @@
 * revert-efi-rtclock.patch
 * block-stray-block-put-after-teardown.patch
 * efi-dont-map-boot-services-on-32bit.patch
-* usb-add-quirk-for-logitech-webcams.patch (reworked, sent upstream)
 * epoll-limit-paths.patch (in linux-next via -mm tree)
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
