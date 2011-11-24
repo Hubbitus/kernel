@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 8
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -600,9 +600,9 @@ Patch01: %{stable_patch_01}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
+Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
+Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
@@ -1133,9 +1133,9 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.bz2
+    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.bz2
+    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
@@ -2098,6 +2098,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 24 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc3.git0.1
+- Linux 3.2-rc3.  Gobble.
+
 * Wed Nov 23 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc2.git8.1
 - Linux 3.2-rc2-git8
 
