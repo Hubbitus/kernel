@@ -545,8 +545,6 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.bz2
 Source1: compat-wireless-%{cwversion}.tar.bz2
 
-Source11: genkey
-Source14: find-provides
 Source15: merge.pl
 
 Source19: Makefile.release
