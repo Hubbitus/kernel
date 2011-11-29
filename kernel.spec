@@ -615,8 +615,6 @@ Patch00: patch-3.%{base_sublevel}-git%{gitrev}.bz2
 ### BRANCH PATCH ###
 %endif
 
-Patch02: git-linus.diff
-
 # we also need compile fixes for -vanilla
 Patch04: linux-2.6-compile-fixes.patch
 
@@ -1226,8 +1224,6 @@ do
   rm $i.tmp
 done
 %endif
-
-ApplyOptionalPatch git-linus.diff
 
 ApplyPatch linux-2.6-makefile-after_link.patch
 
