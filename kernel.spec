@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2096,6 +2096,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc3.git1.1
+- Linux 3.2-rc3-git1
+
 * Thu Nov 24 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc3.git0.1
 - Linux 3.2-rc3.  Gobble.
 
