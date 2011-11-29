@@ -716,6 +716,9 @@ Patch21091: pci-Rework-ASPM-disable-code.patch
 #rhbz 753236
 Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
+#rhbz 755154
+Patch21200: rtlwifi-fix-lps_lock-deadlock.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1375,6 +1378,9 @@ ApplyPatch pci-Rework-ASPM-disable-code.patch
 
 #rhbz 753236
 ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
+
+#rhbz 755154
+ApplyPatch rtlwifi-fix-lps_lock-deadlock.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2172,6 +2178,7 @@ fi
 * Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Add modules-extra subpackage
 - Drop drm-intel-make-lvds-work.patch (rhbz #731296)
+- Add patch to fix deadlock in rtlwifi (rhbz #755154)
 
 * Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc3.git1.1
 - Linux 3.2-rc3-git1
