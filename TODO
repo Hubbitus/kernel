@@ -51,9 +51,6 @@
 * dmar-disable-when-ricoh-multifunction.patch
   Added October 2010
 
-* drm-intel-make-lvds-work.patch
-  Around since forever. Wtf ?
-
 * linux-2.6-intel-iommu-igfx.patch
   Invert igfx_off/igfx_on option. Around since forever. Upstreamable ?
   Mustard ? Config option ?

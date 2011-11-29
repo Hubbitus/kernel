@@ -670,8 +670,6 @@ Patch1555: fix_xen_guest_on_old_EC2.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
-# make sure the lvds comes back on lid open
-Patch1825: drm-intel-make-lvds-work.patch
 # rhbz#729882, https://bugs.freedesktop.org/attachment.cgi?id=49069
 Patch1826: drm-i915-sdvo-lvds-is-digital.patch
 
@@ -1335,7 +1333,6 @@ ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
-ApplyPatch drm-intel-make-lvds-work.patch
 ApplyPatch drm-i915-sdvo-lvds-is-digital.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
@@ -2174,6 +2171,7 @@ fi
 %changelog
 * Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Add modules-extra subpackage
+- Drop drm-intel-make-lvds-work.patch (rhbz #731296)
 
 * Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc3.git1.1
 - Linux 3.2-rc3-git1
