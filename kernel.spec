@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2171,6 +2171,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 01 2011 Dave Jones <davej@redhat.com>
+- Linux 3.2-rc3-git2 (b930c26416c4ea6855726fd977145ccea9afbdda)
+
 * Tue Nov 29 2011 Josh Boyer <jwboyer@redhat.com>
 - Add modules-extra subpackage
 - Drop drm-intel-make-lvds-work.patch (rhbz #731296)
