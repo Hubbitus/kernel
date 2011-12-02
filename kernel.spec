@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -713,9 +713,6 @@ Patch21091: pci-Rework-ASPM-disable-code.patch
 
 #rhbz 753236
 Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
-
-#rhbz 755154
-Patch21200: rtlwifi-fix-lps_lock-deadlock.patch
 
 %endif
 
@@ -1374,9 +1371,6 @@ ApplyPatch pci-Rework-ASPM-disable-code.patch
 
 #rhbz 753236
 ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
-
-#rhbz 755154
-ApplyPatch rtlwifi-fix-lps_lock-deadlock.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2171,6 +2165,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 02 2011 Dave Jones <davej@redhat.com>
+- Linux 3.2-rc4-git1 (5983fe2b29df5885880d7fa3b91aca306c7564ef)
+  dropped: rtlwifi-fix-lps_lock-deadlock.patch (applied upstream)
+
 * Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com>
 - Adjust Requires for modules-extra pacakge to rely on kernel-uname-r
 
