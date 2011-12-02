@@ -2165,6 +2165,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 02 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git1.3.fc17
+- Enable Poulsbo DRM.
+
 * Fri Dec 02 2011 Dave Jones <davej@redhat.com>
 - Linux 3.2-rc4-git1 (5983fe2b29df5885880d7fa3b91aca306c7564ef)
   dropped: rtlwifi-fix-lps_lock-deadlock.patch (applied upstream)
