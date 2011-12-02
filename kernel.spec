@@ -2165,6 +2165,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com>
+- Put ssb.ko back in the main kernel package
+
 * Fri Dec 02 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git1.3.fc17
 - Enable Poulsbo DRM.
 
