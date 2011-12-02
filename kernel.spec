@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -907,7 +907,7 @@ Provides: kernel%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{version}-%{release}
 Provides: kernel-modules-extra-%{_target_cpu} = %{version}-%{release}%{?1:.%{1}}\
 Provides: kernel-modules-extra = %{version}-%{release}%{?1:.%{1}}\
 Provides: kernel-modules-extra-uname-r = %{KVERREL}%{?1:.%{1}}\
-Requires: kernel%{?1:-%{1}}-%{_target_cpu} = %{version}-%{release}%{?1:.%{1}}\
+Requires: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
@@ -2171,6 +2171,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com>
+- Adjust Requires for modules-extra pacakge to rely on kernel-uname-r
+
 * Thu Dec 01 2011 Dave Jones <davej@redhat.com>
 - Linux 3.2-rc4
 
