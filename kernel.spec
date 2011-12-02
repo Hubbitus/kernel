@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -714,6 +714,9 @@ Patch21091: pci-Rework-ASPM-disable-code.patch
 #rhbz 753236
 Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
+#rhbz 590880
+Patch21030: alps.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1371,6 +1374,9 @@ ApplyPatch pci-Rework-ASPM-disable-code.patch
 
 #rhbz 753236
 ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
+
+#rhbz 590880
+ApplyPatch alps.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2171,7 +2177,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com>
+* Fri Dec 02 2011 Josh Boyer <jwboyer@redhat.com> 3.2.0-0.rc4.git1.4.fc17
+- Backport ALPS touchpad patches from input/next branch (rhbz #590880)
 - Apply patch from John Linville to reverse modules-extra dependency order
 - Put ssb.ko back in the main kernel package
 
