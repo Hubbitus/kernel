@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2171,6 +2171,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 01 2011 Dave Jones <davej@redhat.com>
+- Linux 3.2-rc4
+
 * Thu Dec 01 2011 Dave Jones <davej@redhat.com>
 - Linux 3.2-rc3-git2 (b930c26416c4ea6855726fd977145ccea9afbdda)
 
