@@ -730,6 +730,7 @@ Patch21030: alps.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
+Patch50001: compat-add-module_usb_driver-and-module_platform_driver.patch
 
 %endif
 
@@ -1467,6 +1468,7 @@ cd ..
 cd compat-wireless-%{cwversion}
 
 ApplyPatch compat-wireless-config-fixups.patch
+ApplyPatch compat-add-module_usb_driver-and-module_platform_driver.patch
 
 # Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
 ApplyPatch bcma-brcmsmac-compat.patch
@@ -2211,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Dec 03 2011 John W. Linville <linville@redhat.com> 
+- Add compat-wireless patch to define module_usb_driver
+
 * Fri Dec 02 2011 John W. Linville <linville@redhat.com> 
 - Revise compat-wireless configuration
 - Update compat-wireless snapshot
