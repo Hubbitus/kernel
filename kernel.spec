@@ -2213,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 05 2011 Dave Jones <davej@redhat.com>
+- Enable CONFIG_BSD_ACCT_V3. Should be safe since psacct-6.5.4-4.fc14.
+
 * Mon Dec 05 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git2.1.fc17
 - Linux 3.2-rc4-git2 (8e8da023f5af71662867729db5547dc54786093c)
 
