@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2213,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 05 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git2.1.fc17
+- Linux 3.2-rc4-git2 (8e8da023f5af71662867729db5547dc54786093c)
+
 * Sat Dec 03 2011 John W. Linville <linville@redhat.com> 
 - Add compat-wireless patch to define module_usb_driver
 
