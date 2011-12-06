@@ -2213,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 06 2011 Josh Boyer <jwboyer@redhat.com>
+- Move 802.1q back into the main kernel package
+
 * Mon Dec 05 2011 Josh Boyer <jwboyer@redhat.com>
 - Only print the apm_cpu_idle message once (rhbz #760341)
 

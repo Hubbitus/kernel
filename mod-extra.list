@@ -32,7 +32,6 @@ l2tp_eth.ko
 l2tp_ip.ko
 l2tp_netlink.ko
 l2tp_ppp.ko
-8021q.ko
 llc.ko
 ipx.ko
 appletalk.ko
