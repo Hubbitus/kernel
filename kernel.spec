@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2213,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 06 2011 Dave Jones <davej@redhat.com>
+- Linux 3.2-rc4-git2 (45e713efe2fa574b6662e7fb63fae9497c5e03d4)
+
 * Tue Dec 06 2011 Josh Boyer <jwboyer@redhat.com>
 - Move 802.1q and yenta_socket back into the main kernel package
 
