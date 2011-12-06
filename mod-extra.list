@@ -1,5 +1,4 @@
 aer_inject.ko
-yenta_socket.ko
 tcp_bic.ko
 tcp_westwood.ko
 tcp_htcp.ko
