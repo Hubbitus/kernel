@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2213,6 +2213,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 06 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git4.2.fc17
+- Linux 3.2-rc4-git2 (b835c0f47f725d864bf2545f10c733b754bb6d51)
+
 * Tue Dec 06 2011 Dave Jones <davej@redhat.com>
 - Turn on DEBUG_PAGEALLOC for a day.
 
