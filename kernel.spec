@@ -2214,6 +2214,9 @@ fi
 #                 ||     ||
 %changelog
 * Tue Dec 06 2011 Dave Jones <davej@redhat.com>
+- Turn on DEBUG_PAGEALLOC for a day.
+
+* Tue Dec 06 2011 Dave Jones <davej@redhat.com>
 - Linux 3.2-rc4-git2 (45e713efe2fa574b6662e7fb63fae9497c5e03d4)
 
 * Tue Dec 06 2011 Josh Boyer <jwboyer@redhat.com>
