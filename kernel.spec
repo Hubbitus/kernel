@@ -2219,6 +2219,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 07 2011 Dave Jones <davej@redhat.com>
+- Turn DEBUG_PAGEALLOC back off.
+
 * Wed Dec 07 2011 Chuck Ebbert <cebbert@redhat.com>
 - Attempt to fix rhbz #736815 by printing spaces before the brackets
 
