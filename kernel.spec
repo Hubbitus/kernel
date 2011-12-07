@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2219,6 +2219,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 07 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc4.git5.2
+- Linux 3.2-rc4-git5 (77a7300abad7fe01891b400e88d746f97307ee5a)
+
 * Wed Dec 07 2011 Dave Jones <davej@redhat.com>
 - Turn DEBUG_PAGEALLOC back off.
 
