@@ -728,6 +728,9 @@ Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 #rhbz 590880
 Patch21030: alps.patch
 
+# rhbz 736815
+Patch21040: x86-code-dump-fix-truncation.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-add-module_usb_driver-and-module_platform_driver.patch
@@ -1404,6 +1407,9 @@ ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 #rhbz 590880
 ApplyPatch alps.patch
+
+# rhbz 736815
+ApplyPatch x86-code-dump-fix-truncation.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2213,6 +2219,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 07 2011 Chuck Ebbert <cebbert@redhat.com>
+- Attempt to fix rhbz #736815 by printing spaces before the brackets
+
 * Tue Dec 06 2011 Dave Jones <davej@redhat.com> 3.2.0-0.rc4.git4.2.fc17
 - Linux 3.2-rc4-git2 (b835c0f47f725d864bf2545f10c733b754bb6d51)
 

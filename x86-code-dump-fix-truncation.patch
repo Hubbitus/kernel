@@ -1,0 +1,70 @@
+After this patch, kernel code dumps have been sometimes truncated
+in the system log:
+
+ commit 9d90c8d9cde929cbc575098e825d7c29d9f45054
+ "printk: do not mangle valid userspace syslog prefixes"
+
+The new code is interpreting the bracketed code byte as a loglevel
+when it happens to have a legal value for that. Fix it by prefixing
+the output with a space.
+
+Signed-off-by: Chuck Ebbert <cebbert@redhat.com>
+---
+RHBZ #736815
+
+--- a/arch/x86/kernel/dumpstack_32.c
++++ b/arch/x86/kernel/dumpstack_32.c
+@@ -105,7 +105,7 @@ void show_registers(struct pt_regs *regs
+ 		printk(KERN_EMERG "Stack:\n");
+ 		show_stack_log_lvl(NULL, regs, &regs->sp, 0, KERN_EMERG);
+ 
+-		printk(KERN_EMERG "Code: ");
++		printk(KERN_EMERG "Code:");
+ 
+ 		ip = (u8 *)regs->ip - code_prologue;
+ 		if (ip < (u8 *)PAGE_OFFSET || probe_kernel_address(ip, c)) {
+@@ -116,13 +116,13 @@ void show_registers(struct pt_regs *regs
+ 		for (i = 0; i < code_len; i++, ip++) {
+ 			if (ip < (u8 *)PAGE_OFFSET ||
+ 					probe_kernel_address(ip, c)) {
+-				printk(" Bad EIP value.");
++				printk("  Bad EIP value.");
+ 				break;
+ 			}
+ 			if (ip == (u8 *)regs->ip)
+-				printk("<%02x> ", c);
++				printk(" <%02x>", c);
+ 			else
+-				printk("%02x ", c);
++				printk(" %02x", c);
+ 		}
+ 	}
+ 	printk("\n");
+--- a/arch/x86/kernel/dumpstack_64.c
++++ b/arch/x86/kernel/dumpstack_64.c
+@@ -273,7 +273,7 @@ void show_registers(struct pt_regs *regs
+ 		show_stack_log_lvl(NULL, regs, (unsigned long *)sp,
+ 				   0, KERN_EMERG);
+ 
+-		printk(KERN_EMERG "Code: ");
++		printk(KERN_EMERG "Code:");
+ 
+ 		ip = (u8 *)regs->ip - code_prologue;
+ 		if (ip < (u8 *)PAGE_OFFSET || probe_kernel_address(ip, c)) {
+@@ -284,13 +284,13 @@ void show_registers(struct pt_regs *regs
+ 		for (i = 0; i < code_len; i++, ip++) {
+ 			if (ip < (u8 *)PAGE_OFFSET ||
+ 					probe_kernel_address(ip, c)) {
+-				printk(" Bad RIP value.");
++				printk("  Bad RIP value.");
+ 				break;
+ 			}
+ 			if (ip == (u8 *)regs->ip)
+-				printk("<%02x> ", c);
++				printk(" <%02x>", c);
+ 			else
+-				printk("%02x ", c);
++				printk(" %02x", c);
+ 		}
+ 	}
+ 	printk("\n");
