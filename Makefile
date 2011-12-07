@@ -81,7 +81,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/CONFIG_IWLWIFI_DEVICE_TRACING=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_STRICT_USER_COPY_CHECKS is not set/CONFIG_DEBUG_STRICT_USER_COPY_CHECKS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_DEBUG is not set/CONFIG_DMADEVICES_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMADEVICES_VDEBUG is not set/CONFIG_DMADEVICES_VDEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/CONFIG_CEPH_LIB_PRETTYDEBUG=y/' config-nodebug
