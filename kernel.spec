@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -730,6 +730,9 @@ Patch21030: alps.patch
 
 # rhbz 736815
 Patch21040: x86-code-dump-fix-truncation.patch
+
+#rhbz 717735
+Patch21045: nfs-client-freezer.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1410,6 +1413,9 @@ ApplyPatch alps.patch
 
 # rhbz 736815
 ApplyPatch x86-code-dump-fix-truncation.patch
+
+#rhbz 717735
+ApplyPatch nfs-client-freezer.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2219,6 +2225,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 08 2011 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Jeff Layton to fix suspend with NFS (rhbz #717735)
+
 * Wed Dec 07 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc4.git5.2
 - Linux 3.2-rc4-git5 (77a7300abad7fe01891b400e88d746f97307ee5a)
 
