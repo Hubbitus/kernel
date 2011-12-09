@@ -1,0 +1,16 @@
+diff -up compat-wireless-2011-12-01/drivers/net/wireless/ath/ath9k/rc.c.orig compat-wireless-2011-12-01/drivers/net/wireless/ath/ath9k/rc.c
+--- compat-wireless-2011-12-01/drivers/net/wireless/ath/ath9k/rc.c.orig	2011-12-09 10:08:18.951768673 -0500
++++ compat-wireless-2011-12-01/drivers/net/wireless/ath/ath9k/rc.c	2011-12-09 10:08:38.224527731 -0500
+@@ -1615,6 +1615,7 @@ static struct rate_control_ops ath_rate_
+ #endif
+ };
+ 
++#ifdef CONFIG_ATH9K_RATE_CONTROL
+ int ath_rate_control_register(void)
+ {
+ 	return ieee80211_rate_control_register(&ath_rate_ops);
+@@ -1624,3 +1625,4 @@ void ath_rate_control_unregister(void)
+ {
+ 	ieee80211_rate_control_unregister(&ath_rate_ops);
+ }
++#endif

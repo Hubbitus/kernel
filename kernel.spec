@@ -1474,6 +1474,9 @@ cd ..
 
 %if %{with_backports}
 
+# Always start fresh
+rm -rf compat-wireless-%{cwversion}
+
 # Extract the compat-wireless bits
 %setup -q -n kernel-%{kversion}%{?dist} -T -D -a 1
 
@@ -2225,6 +2228,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 09 2011 John W. Linville <linville@redhat.com>
+- Do a better job of cleaning-up compat-wireless between builds
+
 * Fri Dec 09 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc4.git6.1
 - Linux 3.2-rc4-git6 (09d9673d53005fdf40de4c759425893904292236)
 
