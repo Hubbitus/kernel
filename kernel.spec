@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2228,6 +2228,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Dec 11 2011 Kyle McMartin <kyle@redhat.com> - 3.0.0-0.rc5.git0.1
+- Linux 3.2-rc5
+
 * Fri Dec 09 2011 John W. Linville <linville@redhat.com>
 - Do a better job of cleaning-up compat-wireless between builds
 
