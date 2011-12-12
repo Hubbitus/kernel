@@ -147,7 +147,7 @@ Summary: The Linux kernel
 %define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
 # Include driver backports (e.g. compat-wireless) in the kernel build.
-%define with_backports %{?_without_backports: 0} %{?!_without_backports: 1}
+%define with_backports %{?_with_backports:    1} %{?!_with_backports:    0}
 
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
@@ -2229,6 +2229,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 12 2011 John W. Linville <linville@redhat.com>
+- Turn-off backports until TAINT_OOT_MODULE issue is resolved
+
 * Mon Dec 12 2011 Josh Boyer <jwboyer@redhat.com>
 - Disable backports on arches where we don't actually build a kernel (or config)
 
