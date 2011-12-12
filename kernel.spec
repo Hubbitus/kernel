@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -443,6 +443,7 @@ Summary: The Linux kernel
 %define with_debuginfo 0
 %define with_perf 0
 %define with_tools 0
+%define with_backports 0
 %define _enable_debug_packages 0
 %endif
 
@@ -2228,6 +2229,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 12 2011 Josh Boyer <jwboyer@redhat.com>
+- Disable backports on arches where we don't actually build a kernel (or config)
+
 * Sun Dec 11 2011 Kyle McMartin <kyle@redhat.com> - 3.0.0-0.rc5.git0.1
 - Linux 3.2-rc5
 
