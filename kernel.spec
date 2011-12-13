@@ -2231,6 +2231,7 @@ fi
 %changelog
 * Tue Dec 13 2011 Josh Boyer <jwboyer@redhat.com>
 - mod-extras: Don't fail the build if a module is listed that isn't built
+- Remove extraneous settings and enable Radeon KMS for powerpc (via Will Woods)
 
 * Mon Dec 12 2011 John W. Linville <linville@redhat.com>
 - Turn-off backports until TAINT_OOT_MODULE issue is resolved
