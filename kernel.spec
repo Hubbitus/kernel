@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1739,7 +1739,7 @@ BuildKernel() {
     for mod in `cat mod-extra3.list`
     do
       # get the path for the module
-      modpath=`grep /$mod modnames`
+      modpath=`grep /$mod modnames` ||:
       [ -z "$modpath" ]  && continue;
       echo $modpath >> dep.list
     done
@@ -2229,6 +2229,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 13 2011 Josh Boyer <jwboyer@redhat.com>
+- mod-extras: Don't fail the build if a module is listed that isn't built
+
 * Mon Dec 12 2011 John W. Linville <linville@redhat.com>
 - Turn-off backports until TAINT_OOT_MODULE issue is resolved
 
