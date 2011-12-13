@@ -2229,6 +2229,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 13 2011 Dave Jones <davej@redhat.com>
+- Disable FDDI/SKFP.
+
 * Tue Dec 13 2011 Josh Boyer <jwboyer@redhat.com>
 - mod-extras: Don't fail the build if a module is listed that isn't built
 - Remove extraneous settings and enable Radeon KMS for powerpc (via Will Woods)
