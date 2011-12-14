@@ -464,7 +464,7 @@ Summary: The Linux kernel
 # First the general kernel 2.6 required versions as per
 # Documentation/Changes
 #
-%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.0.7-12, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, device-mapper-libs < 1.02.63-2, mdadm < 3.2.1-5
+%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.2.5-7.fc17, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, device-mapper-libs < 1.02.63-2, mdadm < 3.2.1-5
 
 #
 # Then a series of requirements that are distribution specific, either
@@ -697,6 +697,7 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 # fs fixes
 
 # NFSv4
+Patch1101: linux-3.1-keys-remove-special-keyring.patch
 
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -1297,6 +1298,7 @@ ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 # eCryptfs
 
 # NFSv4
+ApplyPatch linux-3.1-keys-remove-special-keyring.patch
 
 # USB
 
@@ -2229,6 +2231,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 14 2011 Steve Dickson <steved@redhat.com>
+- Enabled the in-kernel idmapper.
+- keyring: allow special keyrings to be cleared
+
 * Wed Dec 14 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc5.git2.1
 - Linux 3.2-rc5-git2 (373da0a2a33018d560afcb2c77f8842985d79594)
 
