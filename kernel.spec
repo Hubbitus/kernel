@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2231,6 +2231,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 15 2011 Josh Boyer <jwboyer@redhat.com> - 3.2.0-0.rc5.git3.1
+- Linux 3.2-rc5-git3 (55b02d2f4445ad625213817a1736bf2884d32547)
+
 * Thu Dec 15 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc5.git2.4
 - Disable Intel IOMMU by default.
 
