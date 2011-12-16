@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2233,6 +2233,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 16 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc5.git4.1
+- Linux 3.2-rc5-git4 (6f12d2ee52dcf97dcefdadbd500e7650311eaa6a)
+
 * Fri Dec 16 2011 Ben Skeggs <bskeggs@redhat.com>
 - Add patch to do a better job of dealing with busted EDID headers (rhbz#751589)
 
