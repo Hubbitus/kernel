@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -676,6 +676,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # DRM
+Patch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -1361,6 +1362,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # DRM core
+ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # Nouveau DRM
 
@@ -2231,6 +2233,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 16 2011 Ben Skeggs <bskeggs@redhat.com>
+- Add patch to do a better job of dealing with busted EDID headers (rhbz#751589)
+
 * Thu Dec 15 2011 Josh Boyer <jwboyer@redhat.com> - 3.2.0-0.rc5.git3.1
 - Linux 3.2-rc5-git3 (55b02d2f4445ad625213817a1736bf2884d32547)
 

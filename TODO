@@ -6,6 +6,9 @@
 * efi-dont-map-boot-services-on-32bit.patch
 * epoll-limit-paths.patch (in linux-next via -mm tree)
 
+**** Queued for 3.3 ***********************************************************************************
+drm-edid-try-harder-to-fix-up-broken-headers.patch
+
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 
 * linux-2.6-acpi-video-dos.patch
