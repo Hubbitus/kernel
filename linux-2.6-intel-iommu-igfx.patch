@@ -1,4 +1,4 @@
-From e13491e4c394907ffdd834aeccca279213818079 Mon Sep 17 00:00:00 2001
+From 602e1f209dd983e40d989e871cd253e8187899b8 Mon Sep 17 00:00:00 2001
 From: drago01 <drago01@gmail.com>
 Date: Wed, 26 Oct 2011 13:37:27 -0400
 Subject: [PATCH] Default to igfx_off
@@ -21,10 +21,10 @@ Reviewed-by: Adam Jackson <ajax@redhat.com>
  2 files changed, 10 insertions(+), 10 deletions(-)
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index a8ba119..8ddc43a 100644
+index 81c287f..ee5693b 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
-@@ -998,12 +998,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+@@ -1014,12 +1014,11 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
  			Enable intel iommu driver.
  		off
  			Disable intel iommu driver.
@@ -43,12 +43,12 @@ index a8ba119..8ddc43a 100644
  			With this option iommu will not optimize to look
  			for io virtual address below 32-bit forcing dual
 diff --git a/drivers/iommu/intel-iommu.c b/drivers/iommu/intel-iommu.c
-index be1953c..2e23af1 100644
+index bdc447f..240db6b 100644
 --- a/drivers/iommu/intel-iommu.c
 +++ b/drivers/iommu/intel-iommu.c
-@@ -404,7 +404,8 @@ int dmar_disabled = 0;
- int dmar_disabled = 1;
- #endif /*CONFIG_INTEL_IOMMU_DEFAULT_ON*/
+@@ -408,7 +408,8 @@ int dmar_disabled = 1;
+ int intel_iommu_enabled = 0;
+ EXPORT_SYMBOL_GPL(intel_iommu_enabled);
  
 -static int dmar_map_gfx = 1;
 +/* disabled by default; causes way too many issues */
@@ -56,7 +56,7 @@ index be1953c..2e23af1 100644
  static int dmar_forcedac;
  static int intel_iommu_strict;
  static int intel_iommu_superpage = 1;
-@@ -429,10 +430,10 @@ static int __init intel_iommu_setup(char *str)
+@@ -433,10 +434,10 @@ static int __init intel_iommu_setup(char *str)
  		} else if (!strncmp(str, "off", 3)) {
  			dmar_disabled = 1;
  			printk(KERN_INFO "Intel-IOMMU: disabled\n");
@@ -71,5 +71,5 @@ index be1953c..2e23af1 100644
  			printk(KERN_INFO
  				"Intel-IOMMU: Forcing DAC for PCI devices\n");
 -- 
-1.7.6.4
+1.7.7.4
 

@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -681,8 +681,6 @@ Patch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
-# rhbz#729882, https://bugs.freedesktop.org/attachment.cgi?id=49069
-Patch1826: drm-i915-sdvo-lvds-is-digital.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1368,7 +1366,6 @@ ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
-ApplyPatch drm-i915-sdvo-lvds-is-digital.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -2233,6 +2230,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Dec 17 2011 Josh Boyer <jwboyer@redhat.com> - 3.2.0-0.rc6.git0.1
+- Linux 3.2-rc6
+
 * Fri Dec 16 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc5.git4.1
 - Linux 3.2-rc5-git4 (6f12d2ee52dcf97dcefdadbd500e7650311eaa6a)
 
