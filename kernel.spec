@@ -2230,6 +2230,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 19 2011 Dave Jones <davej@redhat.com>
+- Disable IMA. (Forces TPM on, which may be undesirable: See 733964, 746097)
+  Move TPM modules to modules-extra
+
 * Mon Dec 19 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc6.git1.1
 - Linux 3.2-rc6-git1 (390f998509bf049019df0b078c0a6606e0d57fb4)
 

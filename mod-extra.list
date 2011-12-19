@@ -194,3 +194,7 @@ ma600-sir.ko
 mcp2120-sir.ko
 toim3232-sir.ko
 pps_core.ko
+tpm_atmel
+tpm_infineon
+tpm_nsc
+tpm_tis
