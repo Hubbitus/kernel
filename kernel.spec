@@ -2231,6 +2231,9 @@ fi
 #                 ||     ||
 %changelog
 * Mon Dec 19 2011 Dave Jones <davej@redhat.com>
+- Switch x86-code-dump-fix-truncation.patch to use the pending upstream fix.
+
+* Mon Dec 19 2011 Dave Jones <davej@redhat.com>
 - Disable IMA. (Forces TPM on, which may be undesirable: See 733964, 746097)
   Move TPM modules to modules-extra
 
