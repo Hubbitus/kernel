@@ -147,7 +147,7 @@ Summary: The Linux kernel
 %define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
 # Include driver backports (e.g. compat-wireless) in the kernel build.
-%define with_backports %{?_with_backports:    1} %{?!_with_backports:    0}
+%define with_backports %{?_without_backports: 0} %{?!_without_backports: 1}
 
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
@@ -202,7 +202,7 @@ Summary: The Linux kernel
 %define kversion 3.%{base_sublevel}
 
 # The compat-wireless version
-%define cwversion 2011-12-01
+%define cwversion 2011-12-18
 
 #######################################################################
 # If cwversion is less than kversion, make sure with_backports is
@@ -665,6 +665,7 @@ Patch471: floppy-Remove-_hlt-related-functions.patch
 Patch510: linux-2.6-silence-noise.patch
 Patch520: quite-apm.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
+Patch540: modpost-add-option-to-allow-external-modules-to-avoi.patch
 
 Patch700: linux-2.6-e1000-ich9-montevina.patch
 
@@ -737,7 +738,7 @@ Patch21045: nfs-client-freezer.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
-Patch50001: compat-add-module_usb_driver-and-module_platform_driver.patch
+Patch50001: compat-wireless-integrated-build.patch
 
 %endif
 
@@ -1345,6 +1346,11 @@ ApplyPatch linux-2.6-silence-noise.patch
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch linux-2.6-silence-fbcon-logo.patch
 
+%if %{with_backports}
+# modpost: add option to allow external modules to avoid taint
+ApplyPatch modpost-add-option-to-allow-external-modules-to-avoi.patch
+%endif
+
 # Changes to upstream defaults.
 
 
@@ -1485,10 +1491,7 @@ rm -rf compat-wireless-%{cwversion}
 cd compat-wireless-%{cwversion}
 
 ApplyPatch compat-wireless-config-fixups.patch
-ApplyPatch compat-add-module_usb_driver-and-module_platform_driver.patch
-
-# Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
-ApplyPatch bcma-brcmsmac-compat.patch
+ApplyPatch compat-wireless-integrated-build.patch
 
 cd ..
 
@@ -2230,6 +2233,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 19 2011 John W. Linville <linville@redhat.com>
+- modpost: add option to allow external modules to avoid taint
+- Make integrated compat-wireless take advantage of the above
+- Turn-on backports again, since TAINT_OOT_MODULE issue is resolved
+- Update compat-wireless snapshot from 2011-12-18
+
 * Mon Dec 19 2011 Dave Jones <davej@redhat.com>
 - Switch x86-code-dump-fix-truncation.patch to use the pending upstream fix.
 

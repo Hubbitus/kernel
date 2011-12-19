@@ -12,6 +12,11 @@
 # CONFIG_B44 is not set
 
 #
+# Prevent b43 and brcmsmac from competing
+#
+# CONFIG_B43_BCMA is not set
+
+#
 # These have to be turned-on again since compat-wireless does not
 # provide them...
 #
