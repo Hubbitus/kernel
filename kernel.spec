@@ -677,7 +677,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # DRM
-Patch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
+#atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -1366,7 +1366,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # DRM core
-ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
+#ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # Nouveau DRM
 
@@ -2235,6 +2235,7 @@ fi
 %changelog
 * Tue Dec 20 2011 Josh Boyer <jwboyer@redhat.com>
 - Include crtsaves.o for ppc64 as well (rhbz #769415)
+- Drop EDID headers patch from 751589 for now (rhbz #769103)
 
 * Mon Dec 19 2011 John W. Linville <linville@redhat.com>
 - modpost: add option to allow external modules to avoid taint
