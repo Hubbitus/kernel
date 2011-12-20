@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1643,7 +1643,7 @@ BuildKernel() {
     fi
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*.o
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*/*.o
-%ifarch ppc
+%ifarch ppc ppc64
     cp -a --parents arch/powerpc/lib/crtsavres.[So] $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
 %endif
     if [ -d arch/%{asmarch}/include ]; then
@@ -2233,7 +2233,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Dec 19 2011 John W. Linville <linville@redhat.com>
+* Tue Dec 20 2011 Josh Boyer <jwboyer@redhat.com>
+- Include crtsaves.o for ppc64 as well (rhbz #769415)
+
+* Mon Dec 19 2011 John W. Linville <linville@redhat.com>
 - modpost: add option to allow external modules to avoid taint
 - Make integrated compat-wireless take advantage of the above
 - Turn-on backports again, since TAINT_OOT_MODULE issue is resolved
