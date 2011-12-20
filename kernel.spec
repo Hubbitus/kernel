@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -716,8 +716,6 @@ Patch20000: utrace.patch
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 
-Patch21070: oom-fix-integer-overflow-of-points.patch
-
 Patch21080: sysfs-msi-irq-per-device.patch
 
 Patch21090: bcma-brcmsmac-compat.patch
@@ -729,9 +727,6 @@ Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 #rhbz 590880
 Patch21030: alps.patch
-
-# rhbz 736815
-Patch21040: x86-code-dump-fix-truncation.patch
 
 #rhbz 717735
 Patch21045: nfs-client-freezer.patch
@@ -1400,9 +1395,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 # utrace.
 ApplyPatch utrace.patch
 
-#rhbz 750402
-ApplyPatch oom-fix-integer-overflow-of-points.patch
-
 # Add msi irq ennumeration in sysfs for devices
 ApplyPatch sysfs-msi-irq-per-device.patch
 
@@ -1418,9 +1410,6 @@ ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
 #rhbz 590880
 ApplyPatch alps.patch
-
-# rhbz 736815
-ApplyPatch x86-code-dump-fix-truncation.patch
 
 #rhbz 717735
 ApplyPatch nfs-client-freezer.patch
@@ -2233,6 +2222,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 20 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc6.git2.1
+- Linux 3.2-rc6-git2 (a4a4923919f2d43583789b1f3603f4e5600d8321)
+
 * Tue Dec 20 2011 Josh Boyer <jwboyer@redhat.com>
 - Include crtsaves.o for ppc64 as well (rhbz #769415)
 - Drop EDID headers patch from 751589 for now (rhbz #769103)
