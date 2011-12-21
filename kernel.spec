@@ -375,6 +375,7 @@ Summary: The Linux kernel
 %define make_target image
 %define kernel_image arch/s390/boot/image
 %define with_tools 0
+%define with_backports 0
 %endif
 
 %ifarch sparc64
