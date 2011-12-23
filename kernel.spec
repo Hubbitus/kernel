@@ -732,7 +732,6 @@ Patch20000: utrace.patch
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
-Patch21002: pci-fix-ats-compile.patch
 
 Patch21080: sysfs-msi-irq-per-device.patch
 
@@ -1313,7 +1312,6 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 ApplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
-ApplyPatch pci-fix-ats-compile.patch
 
 #
 # bugfixes to drivers and filesystems
