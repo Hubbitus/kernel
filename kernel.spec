@@ -2280,6 +2280,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 23 2011 Dennis Gilmore <dennis@ausil.us> 
+- build imx highbank and kirkwood kernels on arm
+- clean up arm config options
+
 * Thu Dec 22 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc6.git3.1
 - Linux 3.2-rc6-git3 (ecefc36b41ac0fe92d76273a23faf27b2da13411)
 
