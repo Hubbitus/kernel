@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2280,6 +2280,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Dec 24 2011 Kyle McMartin <kyle@redhat.com> - 3.2.0-0.rc7.git0.1
+- Linux 3.2-rc7
+
 * Fri Dec 23 2011 Dennis Gilmore <dennis@ausil.us> 
 - build imx highbank and kirkwood kernels on arm
 - clean up arm config options
