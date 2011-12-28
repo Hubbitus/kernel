@@ -2280,6 +2280,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 28 2011 Dave Jones <davej@redhat.com>
+- Disable unnecessary CONFIG_NET_DCCPPROBE
+
 * Wed Dec 28 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc7.git1.1
 - Linux 3.2-rc7-git1 (371de6e4e0042adf4f9b54c414154f57414ddd37)
 
