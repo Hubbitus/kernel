@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2280,6 +2280,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 30 2011 Dave Jones <davej@redhat.com> - 3.2.0-0.rc7.git2.1
+- Linux 3.2-rc7-git2 (89307babf966165171547f105e2253dec261cfa5)
+
 * Wed Dec 28 2011 Dave Jones <davej@redhat.com>
 - Disable unnecessary CONFIG_NET_DCCPPROBE
 
