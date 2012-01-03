@@ -2286,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 03 2012 John W. Linville <linville@redhat.com> 
+- Avoid unnecessary modprobe invocations during compat-wireless build
+
 * Tue Jan 03 2012 Josh Boyer <jwboyer@redhat.com>
 - Add bluetooth support for BCM20102A0 21e3 (rhbz 770233)
 
