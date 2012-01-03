@@ -2280,6 +2280,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 03 2012 John W. Linville <linville@redhat.com> 
+- Re-enable CONFIG_RT2800PCI_RT53XX in compat-wireless build (rhbz #720594)
+
 * Mon Jan 02 2012 Dave Jones <davej@redhat.com> - 3.2.0-0.rc7.git4.1
 - Linux 3.2-rc7-git4 (115e8e705e4be071b9e06ff72578e3b603f2ba65)
 
