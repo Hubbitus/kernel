@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -747,6 +747,9 @@ Patch21030: alps.patch
 
 #rhbz 717735
 Patch21045: nfs-client-freezer.patch
+
+#rhbz 770233
+Patch21065: Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1447,6 +1450,9 @@ ApplyPatch alps.patch
 
 #rhbz 717735
 ApplyPatch nfs-client-freezer.patch
+
+#rhbz 770233
+ApplyPatch Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2280,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Add bluetooth support for BCM20102A0 21e3 (rhbz 770233)
+
 * Tue Jan 03 2012 John W. Linville <linville@redhat.com> 
 - Re-enable CONFIG_RT2800PCI_RT53XX in compat-wireless build (rhbz #720594)
 
