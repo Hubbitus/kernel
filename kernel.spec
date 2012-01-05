@@ -753,7 +753,8 @@ Patch21065: Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
-Patch50001: compat-wireless-integrated-build.patch
+Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
+Patch50002: compat-wireless-integrated-build.patch
 
 %endif
 
@@ -1501,9 +1502,6 @@ done
 # end of kernel config
 %endif
 
-# get rid of unwanted files resulting from patch fuzz
-find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
-
 # remove unnecessary SCM files
 find . -name .gitignore -exec rm -f {} \; >/dev/null
 
@@ -1520,11 +1518,15 @@ rm -rf compat-wireless-%{cwversion}
 cd compat-wireless-%{cwversion}
 
 ApplyPatch compat-wireless-config-fixups.patch
+ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
 
 cd ..
 
 %endif
+
+# get rid of unwanted files resulting from patch fuzz
+find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
 
 ###
 ### build
@@ -2287,6 +2289,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 05 2012 John W. Linville <linville@redhat.com>
+- Patch compat-wireless build to avoid "pr_fmt redefined" warnings
+- Disable CONFIG_BRCMFMAC builds (needs unknown symbol __bad_udelay)
+- Include compat-wireless in removal of files resulting from patch fuzz
+
 * Thu Jan 05 2012 Josh Boyer <jwboyer@redhat.com>
 - Move the depmod file removal below the compat-wireless build to make sure we
   clean them all out
