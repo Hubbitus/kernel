@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -60,7 +60,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
 # which yields a base_sublevel of 21.
-%define base_sublevel 1
+%define base_sublevel 2
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -566,7 +566,7 @@ BuildRequires: rpm-build >= 4.4.2.1-4
 %define debuginfo_args --strict-build-id
 %endif
 
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.bz2
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
 Source1: compat-wireless-%{cwversion}.tar.bz2
 
 Source15: merge.pl
@@ -2286,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 04 2012 Dave Jones <davej@redhat.com> 3.2.0-1
+- Linux 3.2
+
 * Wed Jan 04 2012 Dave Jones <davej@redhat.com> 3.2.0-0.rc7.git5.1
 - Linux 3.2-rc7-git5 (157e8bf8b4823bfcdefa6c1548002374b61f61df)
 
