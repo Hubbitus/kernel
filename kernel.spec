@@ -2289,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 05 2012 Adam Jackson <ajax@redhat.com>
+- Disable unsupported DRI1-only DRM drivers: i810, r128, tdfx
+
 * Thu Jan 05 2012 John W. Linville <linville@redhat.com>
 - Patch compat-wireless build to avoid "pr_fmt redefined" warnings
 - Disable CONFIG_BRCMFMAC builds (needs unknown symbol __bad_udelay)
