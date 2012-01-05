@@ -2286,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 05 2012 Dave Jones <davej@redhat.com>
+- CONFIG_DEBUG_SET_MODULE_RONX should always be set.
+
 * Thu Jan 05 2012 Dave Jones <davej@redhat.com> - 3.2.0-3
 - Reenable debugging options.
 
