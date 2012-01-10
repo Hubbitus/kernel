@@ -752,6 +752,7 @@ Patch21045: nfs-client-freezer.patch
 Patch21065: Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
+Patch21071: ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1458,6 +1459,8 @@ ApplyPatch nfs-client-freezer.patch
 ApplyPatch Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
+
+ApplyPatch ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2295,6 +2298,7 @@ fi
 %changelog
 * Tue Jan 10 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix ext4 compatibility with ext2 mount option (rhbz 770172)
+- Fix ext4 corrupted bitmap error path (pointed out by Eric Sandeen)
 
 * Thu Jan 05 2012 Adam Jackson <ajax@redhat.com>
 - Disable unsupported DRI1-only DRM drivers: i810, r128, tdfx
