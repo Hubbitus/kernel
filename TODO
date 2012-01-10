@@ -9,6 +9,7 @@
 **** Queued for 3.3 ***********************************************************************************
 drm-edid-try-harder-to-fix-up-broken-headers.patch
 Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
+ext4-Support-check-none-nocheck-mount-options.patch
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 
