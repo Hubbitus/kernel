@@ -208,7 +208,7 @@ Summary: The Linux kernel
 %define kversion 3.%{base_sublevel}
 
 # The compat-wireless version
-%define cwversion 2011-12-18
+%define cwversion 2012-01-09
 
 #######################################################################
 # If cwversion is less than kversion, make sure with_backports is
@@ -2296,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 10 2012 John W. Linville <linville@redhat.com>
+- Update compat-wireless snapshot with version from 2012-01-09
+
 * Tue Jan 10 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix ext4 compatibility with ext2 mount option (rhbz 770172)
 - Fix ext4 corrupted bitmap error path (pointed out by Eric Sandeen)
