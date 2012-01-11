@@ -754,6 +754,9 @@ Patch21065: Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 Patch21071: ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
 
+#rhbz 769766
+Patch21072: mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1461,6 +1464,8 @@ ApplyPatch Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 
 ApplyPatch ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
+
+ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 11 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch from Stanislaw Gruszka to fix NULL ptr deref in mac80211 (rhbz 769766)
+
 * Tue Jan 10 2012 John W. Linville <linville@redhat.com>
 - Update compat-wireless snapshot with version from 2012-01-09
 
