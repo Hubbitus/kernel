@@ -2317,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Disable PLIP, Enable PPP BSDCOMP, Disable SLIP
+
 * Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com>
 - Fix verbose logging messages in the rtl8192cu driver (rhbz 728740)
 
