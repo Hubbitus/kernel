@@ -2318,6 +2318,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Disable Calgary IOMMU
+
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Disable MTD
 
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
