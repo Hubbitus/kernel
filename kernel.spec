@@ -2318,6 +2318,10 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Enable CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK
+  (On by default in rawhide/-debug)
+
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Disable memory hotplug on x86-64
 
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>

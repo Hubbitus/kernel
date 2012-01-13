@@ -92,6 +92,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_ATOMIC_SLEEP is not set/CONFIG_DEBUG_ATOMIC_SLEEP=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DETECT_HUNG_TASK is not set/CONFIG_DETECT_HUNG_TASK=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/' config-nodebug
 
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
