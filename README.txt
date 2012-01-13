@@ -34,12 +34,27 @@ Instead of having to maintain a config file for every arch variant we build on,
 the kernel spec uses a nested system of configs.  At the top level, is
 config-generic. Add options here that should be present in every possible
 config on all architectures.
+
 Beneath this are per-arch overrides. For example config-x86-generic add
 additional x86 specific options, and also _override_ any options that were
 set in config-generic.
+
+The heirarchy looks like this..
+
+                           config-generic
+                                 |
+                         config-x86-generic
+                         |                |
+             config-x86-32-generic   config-x86-64-generic
+
+An option set in a lower level will override the same option set in one
+of the higher levels.
+
+
 There exist two additional overrides, config-debug, and config-nodebug,
 which override -generic, and the per-arch overrides. It is documented
 further below.
+
 
 debug options.
 --------------
