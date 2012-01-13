@@ -228,8 +228,7 @@ CONFIG_PARAVIRT=y
 CONFIG_PARAVIRT_TIME_ACCOUNTING=y
 # CONFIG_PARAVIRT_DEBUG is not set
 
-# PARAVIRT_SPINLOCKS has a 5% perf hit
-# FIXME: Still true ? References?
+# PARAVIRT_SPINLOCKS has a 5% perf hit on native hw (see kconfig)
 # CONFIG_PARAVIRT_SPINLOCKS is not set
 
 CONFIG_KVM_CLOCK=y
