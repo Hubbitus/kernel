@@ -2318,6 +2318,10 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Flannel shirts, Grunge music, IOMega ZIP drives, PCMCIA & ISA SCSI
+  controllers. The 90s were _awesome_. But it's time to move on.
+
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Disable PLIP, Enable PPP BSDCOMP, Disable SLIP
 
 * Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com>
