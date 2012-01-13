@@ -2318,6 +2318,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Disable NFC drivers.
+
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Enable CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK
   (On by default in rawhide/-debug)
 
