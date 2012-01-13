@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -761,10 +761,14 @@ Patch21072: mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
+#rhbz 728740
+Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
+Patch50003: compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
 %endif
 
@@ -1475,6 +1479,9 @@ ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
+#rhbz 728740
+ApplyPatch rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1540,6 +1547,7 @@ cd compat-wireless-%{cwversion}
 ApplyPatch compat-wireless-config-fixups.patch
 ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
+ApplyPatch compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
 cd ..
 
@@ -2309,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix verbose logging messages in the rtl8192cu driver (rhbz 728740)
+
 * Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-2
 - CVE-2012-0045 kvm: syscall instruction induced guest panic (rhbz 773392)
 
