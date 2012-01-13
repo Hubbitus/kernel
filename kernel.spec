@@ -2318,6 +2318,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
+- Disable MTD
+
+* Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Flannel shirts, Grunge music, IOMega ZIP drives, PCMCIA & ISA SCSI
   controllers. The 90s were _awesome_. But it's time to move on.
 
