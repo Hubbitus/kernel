@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -66,7 +66,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -615,7 +615,7 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.bz2
+%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
 Patch00: %{stable_patch_00}
 %endif
 %if 0%{?stable_rc}
@@ -2301,6 +2301,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-1
+- Linux 3.1.2
+- Change stable patch compression format to xz
+
 * Wed Jan 11 2012 Josh Boyer <jwboyer@redhat.com>
 - Patch from Stanislaw Gruszka to fix NULL ptr deref in mac80211 (rhbz 769766)
 
