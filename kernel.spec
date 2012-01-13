@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -756,6 +756,10 @@ Patch21071: ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
 
 #rhbz 769766
 Patch21072: mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
+
+#rhbz 773392
+Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
+Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1466,6 +1470,10 @@ ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 ApplyPatch ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
 
 ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
+
+#rhbz 773392
+ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
+ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2309,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-2
+- CVE-2012-0045 kvm: syscall instruction induced guest panic (rhbz 773392)
+
 * Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-1
 - Linux 3.1.2
 - Change stable patch compression format to xz
