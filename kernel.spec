@@ -1973,7 +1973,7 @@ man9dir=$RPM_BUILD_ROOT%{_datadir}/man/man9
 
 # copy the source over
 mkdir -p $docdir
-tar -f - --exclude=man --exclude='.*' -c Documentation | tar xf - -C $docdir
+tar -h -f - --exclude=man --exclude='.*' -c Documentation | tar xf - -C $docdir
 
 # Install man pages for the kernel API.
 mkdir -p $man9dir
@@ -2317,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 15 2012 Josh Boyer <jwboyer@redhat.com>
+- Avoid packaging symlinks for kernel-doc files (rhbz 767351)
+
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Disable NFC drivers.
 
