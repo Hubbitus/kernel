@@ -1548,6 +1548,7 @@ ApplyPatch compat-wireless-config-fixups.patch
 ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
 ApplyPatch compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
 cd ..
 
@@ -2319,6 +2320,7 @@ fi
 %changelog
 * Sun Jan 15 2012 Josh Boyer <jwboyer@redhat.com>
 - Avoid packaging symlinks for kernel-doc files (rhbz 767351)
+- Apply mac80211 NULL ptr deref fix to compat-wireless too (rhbz 769766)
 
 * Fri Jan 13 2012 Dave Jones <davej@redhat.com>
 - Disable NFC drivers.
