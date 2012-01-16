@@ -770,6 +770,8 @@ Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
 Patch50003: compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
+Patch50100: brcmfmac-gcc47.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1550,6 +1552,8 @@ ApplyPatch compat-wireless-integrated-build.patch
 ApplyPatch compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
+ApplyPatch brcmfmac-gcc47.patch
+
 cd ..
 
 %endif
@@ -2318,6 +2322,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 16 2012 John W. Linville <linville@redhat.com>
+- Re-enable CONFIG_BRCMFMAC builds (found work-around for GCC 4.7 builds)
+
 * Sun Jan 15 2012 Josh Boyer <jwboyer@redhat.com>
 - Avoid packaging symlinks for kernel-doc files (rhbz 767351)
 - Apply mac80211 NULL ptr deref fix to compat-wireless too (rhbz 769766)

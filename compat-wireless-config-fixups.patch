@@ -29,15 +29,6 @@ diff -up compat-wireless-2011-12-18/config.mk.orig compat-wireless-2011-12-18/co
  CONFIG_RT2800USB_UNKNOWN=y
  endif #CONFIG_CRC_CCITT
  CONFIG_RT2X00_LIB_USB=m
-@@ -615,7 +618,7 @@ CONFIG_ATH6KL=m
- endif #CONFIG_COMPAT_KERNEL_2_6_27
- 
- ifndef CONFIG_COMPAT_KERNEL_2_6_29
--CONFIG_BRCMFMAC=m
-+# CONFIG_BRCMFMAC=m
- endif #CONFIG_COMPAT_KERNEL_2_6_29
- 
- endif #CONFIG_MMC
 diff -up compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile.orig compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile
 --- compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile.orig	2012-01-05 13:54:21.214595837 -0500
 +++ compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile	2012-01-05 13:54:27.274520077 -0500
