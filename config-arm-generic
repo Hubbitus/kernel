@@ -194,3 +194,6 @@ CONFIG_ARM_ERRATA_751472=y
 # CONFIG_MX3_IPU is not set
 # CONFIG_MX3_IPU_IRQS is not set
 
+# CONFIG_NET_VENDOR_CIRRUS is not set
+# CONFIG_CS89x0 is not set
+

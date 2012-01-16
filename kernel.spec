@@ -2322,6 +2322,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 16 2012 Dave Jones <davej@redhat.com>
+- Disable ISA
+
 * Mon Jan 16 2012 John W. Linville <linville@redhat.com>
 - Re-enable CONFIG_BRCMFMAC builds (found work-around for GCC 4.7 builds)
 
