@@ -76,3 +76,5 @@ config-release:
 
 	# Change defaults back to sane things.
 	@perl -pi -e 's/CONFIG_NR_CPUS=512/CONFIG_NR_CPUS=256/' config-x86_64-generic
+	# Disable UAS for release until it's ready.
+	@perl -pi -e 's/CONFIG_USB_UAS=m/# CONFIG_USB_UAS is not set/' config-generic
