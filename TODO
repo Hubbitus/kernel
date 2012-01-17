@@ -1,7 +1,5 @@
 Config TODOs:
-* disable CONFIG_ISA everywhere.
 * review & disable a bunch of the I2C, RTC, DVB, SOUND options.
-* clean up CONFIG_BLK_DEV_AMD74XX
 
 
 Spec file TODOs:

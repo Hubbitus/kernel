@@ -96,8 +96,6 @@ CONFIG_PCI_DIRECT=y
 # SHPC has half-arsed PCI probing, which makes it load on too many systems
 # CONFIG_HOTPLUG_PCI_SHPC is not set
 
-CONFIG_BLK_DEV_AMD74XX=y
-
 CONFIG_I2C_ALI1535=m
 CONFIG_I2C_ALI15X3=m
 CONFIG_I2C_ALI1563=m
