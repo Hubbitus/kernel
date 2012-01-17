@@ -98,7 +98,7 @@ debug:
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
 
-	@perl -pi -e 's/CONFIG_NR_CPUS=256/CONFIG_NR_CPUS=512/' config-x86_64-generic
+	@perl -pi -e 's/# CONFIG_MAXSMP is not set/CONFIG_MAXSMP=y/' config-x86-generic
 
 	# Try out UAS in rawhide builds.
 	@perl -pi -e 's/# CONFIG_USB_UAS is not set/CONFIG_USB_UAS=m/' config-generic
