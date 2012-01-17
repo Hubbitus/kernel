@@ -2322,6 +2322,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 17 2012 Dave Jones <davej@redhat.com>
+- Give KMEMLEAK a try again.
+
 * Mon Jan 16 2012 Dave Jones <davej@redhat.com>
 - Disable ISA
 

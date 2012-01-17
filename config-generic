@@ -3697,7 +3697,7 @@ CONFIG_HEADERS_CHECK=y
 # DEBUG options that don't get enabled/disabled with 'make debug/release'
 #
 # Kmemleak still produces a lot of false positives.
-# CONFIG_DEBUG_KMEMLEAK is not set
+CONFIG_DEBUG_KMEMLEAK=y
 #
 # This generates a huge amount of dmesg spew
 # CONFIG_DEBUG_KOBJECT is not set
