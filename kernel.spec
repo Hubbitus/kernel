@@ -2365,7 +2365,7 @@ fi
 - CVE-2012-0045 kvm: syscall instruction induced guest panic (rhbz 773392)
 
 * Fri Jan 13 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-1
-- Linux 3.1.2
+- Linux 3.2.1
 - Change stable patch compression format to xz
 
 * Wed Jan 11 2012 Josh Boyer <jwboyer@redhat.com>
