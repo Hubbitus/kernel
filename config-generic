@@ -3696,11 +3696,6 @@ CONFIG_HEADERS_CHECK=y
 
 # DEBUG options that don't get enabled/disabled with 'make debug/release'
 
-CONFIG_DEBUG_KMEMLEAK=y
-CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=1024
-# CONFIG_DEBUG_KMEMLEAK_TEST is not set
-CONFIG_DEBUG_KMEMLEAK_DEFAULT_OFF=y
-
 # This generates a huge amount of dmesg spew
 # CONFIG_DEBUG_KOBJECT is not set
 #
