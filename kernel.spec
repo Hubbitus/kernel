@@ -767,6 +767,9 @@ Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 #rhbz 782681
 Patch21085: proc-clean-up-and-fix-proc-pid-mem-handling.patch
 
+#rhbz 782696
+Patch21086: Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1489,6 +1492,9 @@ ApplyPatch rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
 #rhbz 782681
 ApplyPatch proc-clean-up-and-fix-proc-pid-mem-handling.patch
+
+#rhbz 782696
+ApplyPatch Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2330,6 +2336,8 @@ fi
 %changelog
 * Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com>
 - CVE-2012-0056 proc: clean up and fix /proc/<pid>/mem (rhbz 782681)
+- CVE-2012-0058 Unused iocbs in a batch should not be accounted as active
+  (rhbz 782696)
 
 * Tue Jan 17 2012 Dave Jones <davej@redhat.com>
 - Rawhide builds now use MAXSMP on x86.
