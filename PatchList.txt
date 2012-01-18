@@ -4,13 +4,18 @@
 * revert-efi-rtclock.patch
 * block-stray-block-put-after-teardown.patch
 * efi-dont-map-boot-services-on-32bit.patch
-* epoll-limit-paths.patch (in linux-next via -mm tree)
 
 **** Queued for 3.3 ***********************************************************************************
 drm-edid-try-harder-to-fix-up-broken-headers.patch
 Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
 ext4-Support-check-none-nocheck-mount-options.patch
 ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
+proc-clean-up-and-fix-proc-pid-mem-handling.patch
+proc-fix-null-pointer-deref-in-proc_pid_permission.patch
+procfs-add-hidepid-and-gid-mount-options.patch
+procfs-parse-mount-options.patch
+epoll-limit-paths.patch 
+Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
 
 **** Other stuff that should go upstream (in decreasing likelyhood) ************************************
 
