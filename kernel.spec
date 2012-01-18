@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 6
+%global baserelease 7
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -763,6 +763,11 @@ Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 #rhbz 728740
 Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+
+#rhbz 782686
+Patch21082: procfs-parse-mount-options.patch
+Patch21083: procfs-add-hidepid-and-gid-mount-options.patch
+Patch21084: proc-fix-null-pointer-deref-in-proc_pid_permission.patch
 
 #rhbz 782681
 Patch21085: proc-clean-up-and-fix-proc-pid-mem-handling.patch
@@ -1489,6 +1494,11 @@ ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 #rhbz 728740
 ApplyPatch rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+
+#rhbz 782686
+ApplyPatch procfs-parse-mount-options.patch
+ApplyPatch procfs-add-hidepid-and-gid-mount-options.patch
+ApplyPatch proc-fix-null-pointer-deref-in-proc_pid_permission.patch
 
 #rhbz 782681
 ApplyPatch proc-clean-up-and-fix-proc-pid-mem-handling.patch
@@ -2335,6 +2345,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com>
+- /proc/pid/* information leak (rhbz 782686)
 - CVE-2012-0056 proc: clean up and fix /proc/<pid>/mem (rhbz 782681)
 - CVE-2012-0058 Unused iocbs in a batch should not be accounted as active
   (rhbz 782696)
