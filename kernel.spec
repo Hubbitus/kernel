@@ -764,6 +764,9 @@ Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 #rhbz 728740
 Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
+#rhbz 782681
+Patch21085: proc-clean-up-and-fix-proc-pid-mem-handling.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1483,6 +1486,9 @@ ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 #rhbz 728740
 ApplyPatch rtl8192cu-Fix-WARNING-on-suspend-resume.patch
+
+#rhbz 782681
+ApplyPatch proc-clean-up-and-fix-proc-pid-mem-handling.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2322,6 +2328,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com>
+- CVE-2012-0056 proc: clean up and fix /proc/<pid>/mem (rhbz 782681)
+
 * Tue Jan 17 2012 Dave Jones <davej@redhat.com>
 - Rawhide builds now use MAXSMP on x86.
 - For release builds, set x86-64 to support 64 CPUs.
