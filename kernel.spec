@@ -2344,7 +2344,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com>
+* Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-7
 - /proc/pid/* information leak (rhbz 782686)
 - CVE-2012-0056 proc: clean up and fix /proc/<pid>/mem (rhbz 782681)
 - CVE-2012-0058 Unused iocbs in a batch should not be accounted as active
