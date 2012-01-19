@@ -50,7 +50,7 @@ index 51a1766..27c762f 100644
  					     init_once);
  }
  
-+static int proc_show_options(struct seq_file *seq, struct dentry *root)
++static int proc_show_options(struct seq_file *seq, struct vfsmount *vfs)
 +{
 +	return 0;
 +}

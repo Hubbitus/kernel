@@ -262,9 +262,9 @@ index 27c762f..84fd323 100644
 +++ b/fs/proc/inode.c
 @@ -106,6 +106,14 @@ void __init proc_init_inodecache(void)
  
- static int proc_show_options(struct seq_file *seq, struct dentry *root)
+ static int proc_show_options(struct seq_file *seq, struct vfsmount *vfs)
  {
-+	struct super_block *sb = root->d_sb;
++	struct super_block *sb = vfs->mnt_sb;
 +	struct pid_namespace *pid = sb->s_fs_info;
 +
 +	if (pid->pid_gid)
