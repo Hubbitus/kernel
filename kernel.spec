@@ -2344,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 19 2012 Dennis Gilmore <dennis@ausil.us>
+- dont build TOUCHSCREEN_EETI on arm 
+
 * Wed Jan 18 2012 Josh Boyer <jwboyer@redhat.com> 3.2.1-8
 - Fix broken procfs backport (rhbz 782961)
 
