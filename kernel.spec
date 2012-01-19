@@ -1860,9 +1860,10 @@ BuildKernel() {
 
     cd ../compat-wireless-%{cwversion}/
 
-    make KLIB_BUILD=../linux-%{kversion}.%{_target_cpu} \
+    make -s ARCH=$Arch V=1 %{?_smp_mflags} \
+	KLIB_BUILD=../linux-%{kversion}.%{_target_cpu} \
 	KMODPATH_ARG="INSTALL_MOD_PATH=$RPM_BUILD_ROOT" \
-	KMODDIR="backports" install-modules
+	KMODDIR="backports" install-modules %{?sparse_mflags}
 
     # mark modules executable so that strip-to-file can strip them
     find $RPM_BUILD_ROOT/lib/modules/$KernelVer/backports -name "*.ko" \
@@ -2344,6 +2345,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 19 2012 John W. Linville <linville@redhat.com>
+- Pass the same make options to compat-wireless as to the base kernel
+
 * Thu Jan 19 2012 Dennis Gilmore <dennis@ausil.us>
 - dont build TOUCHSCREEN_EETI on arm 
 
