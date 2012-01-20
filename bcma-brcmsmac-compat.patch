@@ -22,14 +22,15 @@ diff -up linux-3.1.x86_64/drivers/bcma/host_pci.c.orig linux-3.1.x86_64/drivers/
  	{ 0, },
  };
  MODULE_DEVICE_TABLE(pci, bcma_pci_bridge_tbl);
-diff -up linux-3.1.x86_64/drivers/net/wireless/brcm80211/Kconfig.orig linux-3.1.x86_64/drivers/net/wireless/brcm80211/Kconfig
---- linux-3.1.x86_64/drivers/net/wireless/brcm80211/Kconfig.orig	2011-11-10 11:42:31.764930961 -0500
-+++ linux-3.1.x86_64/drivers/net/wireless/brcm80211/Kconfig	2011-11-10 11:42:33.613907846 -0500
-@@ -5,7 +5,6 @@ config BRCMSMAC
+diff --git a/drivers/net/wireless/brcm80211/Kconfig b/drivers/net/wireless/brcm80211/Kconfig
+index cd6375d..caa0302 100644
+--- a/drivers/net/wireless/brcm80211/Kconfig
++++ b/drivers/net/wireless/brcm80211/Kconfig
+@@ -4,7 +4,6 @@ config BRCMUTIL
+ config BRCMSMAC
  	tristate "Broadcom IEEE802.11n PCIe SoftMAC WLAN driver"
- 	depends on PCI
  	depends on MAC80211
--	depends on BCMA=n
+-	depends on BCMA
  	select BRCMUTIL
  	select FW_LOADER
  	select CRC_CCITT

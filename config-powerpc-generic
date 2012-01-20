@@ -352,3 +352,11 @@ CONFIG_RFKILL_GPIO=m
 
 # Disable btrfs until it is shown to work with 64k pages (rhbz 747079)
 # CONFIG_BTRFS_FS is not set
+#
+# CONFIG_CPU_IDLE is not set
+# CONFIG_OF_SELFTEST is not set
+# CONFIG_TOUCHSCREEN_AUO_PIXCIR is not set
+# CONFIG_INPUT_GP2A is not set
+# CONFIG_INPUT_GPIO_TILT_POLLED is not set
+CONFIG_STRICT_DEVMEM=y
+

@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 8
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -66,7 +66,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 0
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 1
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -218,7 +218,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to disable with_backports.)
 #
-# % define with_backports 0
+%define with_backports 0
 #######################################################################
 
 %define make_target bzImage
@@ -719,8 +719,7 @@ Patch1101: linux-3.1-keys-remove-special-keyring.patch
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch12026: block-stray-block-put-after-teardown.patch
-Patch12030: epoll-limit-paths.patch
+#atch12026: block-stray-block-put-after-teardown.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
@@ -733,53 +732,20 @@ Patch20000: utrace.patch
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 
-#rhbz 753236
-Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
-
-#rhbz 590880
-Patch21030: alps.patch
-
-#rhbz 717735
-Patch21045: nfs-client-freezer.patch
-
-#rhbz 770233
-Patch21065: Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
-
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
-Patch21071: ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
-
-#rhbz 769766
-Patch21072: mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
 #rhbz 773392
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
-#rhbz 728740
-Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
-
-Patch21080: sysfs-msi-irq-per-device.patch
-
-#rhbz 782686
-Patch21082: procfs-parse-mount-options.patch
-Patch21083: procfs-add-hidepid-and-gid-mount-options.patch
-Patch21084: proc-fix-null-pointer-deref-in-proc_pid_permission.patch
-
-#rhbz 782681
-Patch21085: proc-clean-up-and-fix-proc-pid-mem-handling.patch
-
-#rhbz 782696
-Patch21086: Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
-
 Patch21090: bcma-brcmsmac-compat.patch
 
-Patch21091: pci-Rework-ASPM-disable-code.patch
+Patch21091: kmemleak.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
-Patch50003: compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
 Patch50100: brcmfmac-gcc47.patch
 
@@ -1341,7 +1307,7 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 # ARM
 #
-ApplyPatch arm-omap-dt-compat.patch
+#pplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 
 #
@@ -1448,8 +1414,7 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-ApplyPatch epoll-limit-paths.patch
-ApplyPatch block-stray-block-put-after-teardown.patch
+#pplyPatch block-stray-block-put-after-teardown.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -1458,54 +1423,20 @@ ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 # utrace.
-ApplyPatch utrace.patch
-
-# Add msi irq ennumeration in sysfs for devices
-ApplyPatch sysfs-msi-irq-per-device.patch
+# pplyPatch utrace.patch
 
 %if !%{with_backports}
 # Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
 ApplyPatch bcma-brcmsmac-compat.patch
 %endif
 
-ApplyPatch pci-Rework-ASPM-disable-code.patch
-
-#rhbz 753236
-ApplyPatch nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
-
-#rhbz 590880
-ApplyPatch alps.patch
-
-#rhbz 717735
-ApplyPatch nfs-client-freezer.patch
-
-#rhbz 770233
-ApplyPatch Bluetooth-Add-support-for-BCM20702A0-0a5c-21e3.patch
-
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
-
-ApplyPatch ext4-Fix-error-handling-on-inode-bitmap-corruption.patch
-
-ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
 #rhbz 773392
 ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
-#rhbz 728740
-ApplyPatch rtl8192cu-Fix-WARNING-on-suspend-resume.patch
-
-#rhbz 782686
-ApplyPatch procfs-parse-mount-options.patch
-ApplyPatch procfs-add-hidepid-and-gid-mount-options.patch
-ApplyPatch proc-fix-null-pointer-deref-in-proc_pid_permission.patch
-
-#rhbz 782681
-ApplyPatch proc-clean-up-and-fix-proc-pid-mem-handling.patch
-
-#rhbz 782696
-ApplyPatch Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
-
+ApplyPatch kmemleak.patch
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1571,8 +1502,6 @@ cd compat-wireless-%{cwversion}
 ApplyPatch compat-wireless-config-fixups.patch
 ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
-ApplyPatch compat-wireless-rtl8192cu-Fix-WARNING-on-suspend-resume.patch
-ApplyPatch mac80211-fix-rx-key-NULL-ptr-deref-in-promiscuous-mode.patch
 
 ApplyPatch brcmfmac-gcc47.patch
 
@@ -2345,6 +2274,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 20 2012 Josh Boyer <jwboyer@redhat.com>
+- Rebase to Linux 3.3-rc1
+
 * Thu Jan 19 2012 John W. Linville <linville@redhat.com>
 - Pass the same make options to compat-wireless as to the base kernel
 

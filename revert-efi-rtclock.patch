@@ -1,8 +1,16 @@
+commit d80d983c0fbfe0b0f6bd83c4279e1077c31e7fe4
+Author: Josh Boyer <jwboyer@redhat.com>
+Date:   Fri Jan 20 10:12:15 2012 -0500
+
+    Revert "x86: Serialize EFI time accesses on rtc_lock"
+    
+    This reverts commit ef68c8f87ed13f65df867dddf36c0e185b27b942.
+
 diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index 3ae4128..e17c6d2 100644
+index 4cf9bd0..457e37a 100644
 --- a/arch/x86/platform/efi/efi.c
 +++ b/arch/x86/platform/efi/efi.c
-@@ -89,50 +89,26 @@ early_param("add_efi_memmap", setup_add_efi_memmap);
+@@ -90,50 +90,26 @@ early_param("add_efi_memmap", setup_add_efi_memmap);
  
  static efi_status_t virt_efi_get_time(efi_time_t *tm, efi_time_cap_t *tc)
  {
@@ -59,7 +67,7 @@ index 3ae4128..e17c6d2 100644
  }
  
  static efi_status_t virt_efi_get_variable(efi_char16_t *name,
-@@ -232,14 +208,11 @@ static efi_status_t __init phys_efi_set_virtual_address_map(
+@@ -233,15 +209,12 @@ static efi_status_t __init phys_efi_set_virtual_address_map(
  static efi_status_t __init phys_efi_get_time(efi_time_t *tm,
  					     efi_time_cap_t *tc)
  {
@@ -68,7 +76,8 @@ index 3ae4128..e17c6d2 100644
  
 -	spin_lock_irqsave(&rtc_lock, flags);
  	efi_call_phys_prelog();
- 	status = efi_call_phys2(efi_phys.get_time, tm, tc);
+ 	status = efi_call_phys2(efi_phys.get_time, virt_to_phys(tm),
+ 				virt_to_phys(tc));
  	efi_call_phys_epilog();
 -	spin_unlock_irqrestore(&rtc_lock, flags);
  	return status;
