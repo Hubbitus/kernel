@@ -733,12 +733,6 @@ Patch20000: utrace.patch
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 
-Patch21080: sysfs-msi-irq-per-device.patch
-
-Patch21090: bcma-brcmsmac-compat.patch
-
-Patch21091: pci-Rework-ASPM-disable-code.patch
-
 #rhbz 753236
 Patch21029: nfsv4-include-bitmap-in-nfsv4_get_acl_data.patch
 
@@ -764,6 +758,8 @@ Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 #rhbz 728740
 Patch21076: rtl8192cu-Fix-WARNING-on-suspend-resume.patch
 
+Patch21080: sysfs-msi-irq-per-device.patch
+
 #rhbz 782686
 Patch21082: procfs-parse-mount-options.patch
 Patch21083: procfs-add-hidepid-and-gid-mount-options.patch
@@ -774,6 +770,10 @@ Patch21085: proc-clean-up-and-fix-proc-pid-mem-handling.patch
 
 #rhbz 782696
 Patch21086: Unused-iocbs-in-a-batch-should-not-be-accounted-as-a.patch
+
+Patch21090: bcma-brcmsmac-compat.patch
+
+Patch21091: pci-Rework-ASPM-disable-code.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
