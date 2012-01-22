@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2274,7 +2274,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Jan 20 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc1.git0.2
+* Sun Jan 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git0.3
+- Disable NVME as it doesn't build on 32-bit
+
+* Fri Jan 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git0.2
 - Disable debugging options.
 
 * Fri Jan 20 2012 Josh Boyer <jwboyer@redhat.com>
