@@ -719,8 +719,6 @@ Patch1101: linux-3.1-keys-remove-special-keyring.patch
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-#atch12026: block-stray-block-put-after-teardown.patch
-
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13002: revert-efi-rtclock.patch
@@ -741,6 +739,8 @@ Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 Patch21090: bcma-brcmsmac-compat.patch
 
 Patch21091: kmemleak.patch
+
+Patch21092: mac80211-fix-work-removal-on-deauth-request.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1414,8 +1414,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-#pplyPatch block-stray-block-put-after-teardown.patch
-
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
@@ -1437,6 +1435,8 @@ ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 ApplyPatch kmemleak.patch
+ApplyPatch mac80211-fix-work-removal-on-deauth-request.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2183,8 +2183,10 @@ fi
 %defattr(-,root,root)
 %ifarch %{cpupowerarchs}
 %{_bindir}/cpupower
+%ifarch %{ix86} x86_64
 %{_bindir}/centrino-decode
 %{_bindir}/powernow-k8-decode
+%endif
 %{_libdir}/libcpupower.so.0
 %{_libdir}/libcpupower.so.0.0.0
 %{_unitdir}/cpupower.service
@@ -2274,6 +2276,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 23 2012 Josh Boyer <jwboyer@redhat.com>
+- Add mac80211 deauth fix pointed out by Stanislaw Gruszka
+- Add arch guards in files section for kernel-tools subpackage
+
 * Sun Jan 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git0.3
 - Disable NVME as it doesn't build on 32-bit
 
