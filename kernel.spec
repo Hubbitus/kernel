@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2276,6 +2276,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git1.1
+- Linux 3.3-rc1-git1 (upstream c1aab02dac690af7ff634d8e1cb3be6a04387eef)
+
 * Mon Jan 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git0.4
 - Reenable debugging options.
 
