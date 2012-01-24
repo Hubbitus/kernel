@@ -2276,6 +2276,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 24 2012 Josh Boyer <jwboyer@redhat.com>
+- Re-enable the ARCMSR module (rhbz 784287)
+
 * Tue Jan 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git1.1
 - Linux 3.3-rc1-git1 (upstream c1aab02dac690af7ff634d8e1cb3be6a04387eef)
 
