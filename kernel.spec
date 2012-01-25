@@ -736,6 +736,9 @@ Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
+#rhbz 783211
+Patch21087: fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
+
 Patch21091: kmemleak.patch
 
 # compat-wireless patches
@@ -744,6 +747,7 @@ Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
 
 Patch50100: brcmfmac-gcc47.patch
+
 
 %endif
 
@@ -1426,6 +1430,9 @@ ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 ApplyPatch kmemleak.patch
+
+#rhbz 783211
+ApplyPatch fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2268,6 +2275,8 @@ fi
 %changelog
 * Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com>
 - Update utrace.patch from Oleg Nesterov
+- Add patch to invalidate parent cache when fsync is called on a partition 
+  (rhbz 783211)
 
 * Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git2.1
 - Linux 3.3-rc1-git2 (upstream f8275f9694b8adf9f3498e747ea4c3e8b984499b)
