@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -736,11 +736,7 @@ Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
-Patch21090: bcma-brcmsmac-compat.patch
-
 Patch21091: kmemleak.patch
-
-Patch21092: mac80211-fix-work-removal-on-deauth-request.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1423,11 +1419,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 # utrace.
 # pplyPatch utrace.patch
 
-%if !%{with_backports}
-# Remove overlap between bcma/b43 and brcmsmac and reenable bcm4331
-ApplyPatch bcma-brcmsmac-compat.patch
-%endif
-
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 
 #rhbz 773392
@@ -1435,7 +1426,6 @@ ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 ApplyPatch kmemleak.patch
-ApplyPatch mac80211-fix-work-removal-on-deauth-request.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2276,6 +2266,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git2.1
+- Linux 3.3-rc1-git2 (upstream f8275f9694b8adf9f3498e747ea4c3e8b984499b)
+
 * Tue Jan 24 2012 Josh Boyer <jwboyer@redhat.com>
 - Re-enable the ARCMSR module (rhbz 784287)
 - Re-enable the LIRC_STAGING drivers (rhbz 784398)
