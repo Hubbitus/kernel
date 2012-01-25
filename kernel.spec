@@ -208,7 +208,7 @@ Summary: The Linux kernel
 %define kversion 3.%{base_sublevel}
 
 # The compat-wireless version
-%define cwversion 2012-01-09
+%define cwversion 2012-01-26
 
 #######################################################################
 # If cwversion is less than kversion, make sure with_backports is
@@ -218,7 +218,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to disable with_backports.)
 #
-%define with_backports 0
+# % define with_backports 0
 #######################################################################
 
 %define make_target bzImage
@@ -745,8 +745,9 @@ Patch21091: kmemleak.patch
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
-
-Patch50100: brcmfmac-gcc47.patch
+Patch50003: compat-wireless-use-kconfig_h.patch
+Patch50004: compat-move-br_port_exists-to-compat-2_6_36_h.patch
+Patch50005: compat-wireless-fix-some-config-options.patch
 
 
 %endif
@@ -1498,8 +1499,9 @@ cd compat-wireless-%{cwversion}
 ApplyPatch compat-wireless-config-fixups.patch
 ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
-
-ApplyPatch brcmfmac-gcc47.patch
+ApplyPatch compat-wireless-use-kconfig_h.patch
+ApplyPatch compat-move-br_port_exists-to-compat-2_6_36_h.patch
+ApplyPatch compat-wireless-fix-some-config-options.patch
 
 cd ..
 
@@ -1784,6 +1786,9 @@ BuildKernel() {
 %if %{with_backports}
 
     cd ../compat-wireless-%{cwversion}/
+
+    install -m 644 config.mk \
+	$RPM_BUILD_ROOT/boot/config.mk-compat-wireless-%{cwversion}-$KernelVer
 
     make -s ARCH=$Arch V=1 %{?_smp_mflags} \
 	KLIB_BUILD=../linux-%{kversion}.%{_target_cpu} \
@@ -2224,6 +2229,7 @@ fi
 /lib/modules/%{KVERREL}%{?2:.%{2}}/source\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/updates\
 %if %{with_backports}\
+/boot/config.mk-compat-wireless-%{cwversion}-%{KVERREL}%{?2:.%{2}}\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/backports\
 %endif\
 %ifarch %{vdso_arches}\
@@ -2272,6 +2278,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 27 2012 John W. Linville <linville@redhat.com>
+- Update compat-wireless with snapshot from 2012-01-26
+- Drop brcmfmac GCC 4.7 compatibility patch (included in above)
+- Include config.mk from compat-wireless build in files for installation
+
 * Fri Jan 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git4.1
 - Linux 3.3-rc1-git4 (upstream 74ea15d909b31158f9b63190a95b52bc05586d4b)
 - Enable the non-staging GMA500 driver (rhbz 785053)

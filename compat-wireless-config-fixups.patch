@@ -1,6 +1,6 @@
-diff -up compat-wireless-2011-12-18/config.mk.orig compat-wireless-2011-12-18/config.mk
---- compat-wireless-2011-12-18/config.mk.orig	2012-01-05 13:54:21.214595837 -0500
-+++ compat-wireless-2011-12-18/config.mk	2012-01-05 13:54:35.668415136 -0500
+diff -up compat-wireless-2012-01-24/config.mk.orig compat-wireless-2012-01-24/config.mk
+--- compat-wireless-2012-01-24/config.mk.orig	2012-01-24 16:12:12.000000000 -0500
++++ compat-wireless-2012-01-24/config.mk	2012-01-25 13:34:20.315899694 -0500
 @@ -14,6 +14,9 @@ else
  include $(KLIB_BUILD)/.config
  endif
@@ -11,33 +11,15 @@ diff -up compat-wireless-2011-12-18/config.mk.orig compat-wireless-2011-12-18/co
  ifneq ($(wildcard $(KLIB_BUILD)/Makefile),)
  
  COMPAT_LATEST_VERSION = 3
-@@ -395,7 +398,7 @@ ifdef CONFIG_CRC_CCITT
- CONFIG_RT2800PCI=m
- CONFIG_RT2800PCI_RT33XX=y
- CONFIG_RT2800PCI_RT35XX=y
--# CONFIG_RT2800PCI_RT53XX=y
-+CONFIG_RT2800PCI_RT53XX=y
- endif #CONFIG_CRC_CCITT
- NEED_RT2X00=y
- 
-@@ -525,7 +528,7 @@ ifdef CONFIG_CRC_CCITT
- CONFIG_RT2800USB=m
- CONFIG_RT2800USB_RT33XX=y
- CONFIG_RT2800USB_RT35XX=y
--# CONFIG_RT2800USB_RT53XX=y
-+CONFIG_RT2800USB_RT53XX=y
- CONFIG_RT2800USB_UNKNOWN=y
- endif #CONFIG_CRC_CCITT
- CONFIG_RT2X00_LIB_USB=m
-diff -up compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile.orig compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile
---- compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile.orig	2012-01-05 13:54:21.214595837 -0500
-+++ compat-wireless-2011-12-18/drivers/misc/eeprom/Makefile	2012-01-05 13:54:27.274520077 -0500
+diff -up compat-wireless-2012-01-24/drivers/misc/eeprom/Makefile.orig compat-wireless-2012-01-24/drivers/misc/eeprom/Makefile
+--- compat-wireless-2012-01-24/drivers/misc/eeprom/Makefile.orig	2012-01-24 16:12:15.000000000 -0500
++++ compat-wireless-2012-01-24/drivers/misc/eeprom/Makefile	2012-01-25 13:34:20.316899682 -0500
 @@ -1 +1 @@
 -obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
 +#obj-$(CONFIG_EEPROM_93CX6)	+= eeprom_93cx6.o
-diff -up compat-wireless-2011-12-18/drivers/net/ethernet/atheros/Makefile.orig compat-wireless-2011-12-18/drivers/net/ethernet/atheros/Makefile
---- compat-wireless-2011-12-18/drivers/net/ethernet/atheros/Makefile.orig	2012-01-05 13:54:21.215595824 -0500
-+++ compat-wireless-2011-12-18/drivers/net/ethernet/atheros/Makefile	2012-01-05 13:54:27.275520064 -0500
+diff -up compat-wireless-2012-01-24/drivers/net/ethernet/atheros/Makefile.orig compat-wireless-2012-01-24/drivers/net/ethernet/atheros/Makefile
+--- compat-wireless-2012-01-24/drivers/net/ethernet/atheros/Makefile.orig	2012-01-24 16:12:13.000000000 -0500
++++ compat-wireless-2012-01-24/drivers/net/ethernet/atheros/Makefile	2012-01-25 13:34:20.316899682 -0500
 @@ -2,7 +2,7 @@
  # Makefile for the Atheros network device drivers.
  #
@@ -50,9 +32,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/ethernet/atheros/Makefile.orig c
 +#obj-$(CONFIG_ATL2) += atlx/
 +#obj-$(CONFIG_ATL1E) += atl1e/
 +#obj-$(CONFIG_ATL1C) += atl1c/
-diff -up compat-wireless-2011-12-18/drivers/net/usb/Makefile.orig compat-wireless-2011-12-18/drivers/net/usb/Makefile
---- compat-wireless-2011-12-18/drivers/net/usb/Makefile.orig	2012-01-05 13:54:21.215595824 -0500
-+++ compat-wireless-2011-12-18/drivers/net/usb/Makefile	2012-01-05 13:54:27.275520064 -0500
+diff -up compat-wireless-2012-01-24/drivers/net/usb/Makefile.orig compat-wireless-2012-01-24/drivers/net/usb/Makefile
+--- compat-wireless-2012-01-24/drivers/net/usb/Makefile.orig	2012-01-24 16:12:15.000000000 -0500
++++ compat-wireless-2012-01-24/drivers/net/usb/Makefile	2012-01-25 13:34:20.316899682 -0500
 @@ -2,7 +2,7 @@
  # Makefile for USB Network drivers
  #
@@ -64,21 +46,21 @@ diff -up compat-wireless-2011-12-18/drivers/net/usb/Makefile.orig compat-wireles
 +#obj-$(CONFIG_USB_NET_COMPAT_RNDIS_HOST)	+= rndis_host.o
 +#obj-$(CONFIG_USB_COMPAT_USBNET)	+= usbnet.o
  
-diff -up compat-wireless-2011-12-18/Makefile.orig compat-wireless-2011-12-18/Makefile
---- compat-wireless-2011-12-18/Makefile.orig	2012-01-05 13:54:21.216595811 -0500
-+++ compat-wireless-2011-12-18/Makefile	2012-01-05 13:54:27.276520051 -0500
-@@ -8,8 +8,8 @@ endif
- export KLIB_BUILD ?=	$(KLIB)/build
- # Sometimes not available in the path
+diff -up compat-wireless-2012-01-24/Makefile.orig compat-wireless-2012-01-24/Makefile
+--- compat-wireless-2012-01-24/Makefile.orig	2012-01-24 16:12:12.000000000 -0500
++++ compat-wireless-2012-01-24/Makefile	2012-01-25 13:34:58.502422295 -0500
+@@ -10,8 +10,8 @@ export KLIB_BUILD ?=	$(KLIB)/build
  MODPROBE := /sbin/modprobe
+ 
+ ifneq ($(wildcard $(MODPROBE)),)
 -MADWIFI=$(shell $(MODPROBE) -l ath_pci)
 -OLD_IWL=$(shell $(MODPROBE) -l iwl4965)
 +MADWIFI=""
 +OLD_IWL=""
+ endif
  
  DESTDIR?=
- 
-@@ -41,8 +41,8 @@ endif
+@@ -44,8 +44,8 @@ endif
  
  endif
  
