@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1417,7 +1417,7 @@ ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 # utrace.
-# pplyPatch utrace.patch
+ApplyPatch utrace.patch
 
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 
@@ -2266,6 +2266,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com>
+- Update utrace.patch from Oleg Nesterov
+
 * Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git2.1
 - Linux 3.3-rc1-git2 (upstream f8275f9694b8adf9f3498e747ea4c3e8b984499b)
 
