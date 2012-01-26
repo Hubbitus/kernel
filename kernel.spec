@@ -722,7 +722,6 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
-Patch13002: revert-efi-rtclock.patch
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
 Patch20000: utrace.patch
@@ -1418,7 +1417,6 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
-ApplyPatch revert-efi-rtclock.patch
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 # utrace.
@@ -2274,6 +2272,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 26 2012 Josh Boyer <jwboyer@redhat.com>
+- Drop revert-efi-rtclock.patch.  Issue was fixed by upstream commit 47997d75
+
 * Wed Jan 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build perf/tools on ARM sfp/hfp not just sfp
 
