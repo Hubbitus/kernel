@@ -424,12 +424,13 @@ Summary: The Linux kernel
 # we build a up kernel on armv5tel. its used for qemu.
 %ifnarch armv5tel
 %define with_up 0
-%define with_perf 0
 %endif
-# we only build headers on the base arm arches
+# we only build headers/perf/tools on the base arm arches
 # just like we used to only build them on i386 for x86
 %ifnarch armv5tel armv7hl
 %define with_headers 0
+%define with_perf 0
+%define with_tools 0
 %endif
 %endif
 
@@ -467,7 +468,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 ppc ppc64
+%define cpupowerarchs %{ix86} x86_64 ppc ppc64 %{arm}
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts:
@@ -2273,6 +2274,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
++* Wed Jan 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
++- Build perf/tools on ARM sfp/hfp not just sfp
+
 * Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git3.1
 - Linux 3.3-rc1-git3 (upstream aaad641eadfd3e74b0fbb68fcf539b9cef0415d0)
 - Update utrace.patch from Oleg Nesterov
