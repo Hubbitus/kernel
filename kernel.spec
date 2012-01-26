@@ -2274,8 +2274,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-+* Wed Jan 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
-+- Build perf/tools on ARM sfp/hfp not just sfp
+* Wed Jan 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build perf/tools on ARM sfp/hfp not just sfp
 
 * Wed Jan 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git3.1
 - Linux 3.3-rc1-git3 (upstream aaad641eadfd3e74b0fbb68fcf539b9cef0415d0)
