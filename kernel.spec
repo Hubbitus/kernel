@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2272,6 +2272,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git4.1
+- Linux 3.3-rc1-git4 (upstream 74ea15d909b31158f9b63190a95b52bc05586d4b)
+- Enable the non-staging GMA500 driver (rhbz 785053)
+
 * Thu Jan 26 2012 Josh Boyer <jwboyer@redhat.com>
 - Drop revert-efi-rtclock.patch.  Issue was fixed by upstream commit 47997d75
 - Enable CONFIG_EFI_STUB per Matthew Garrett

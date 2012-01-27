@@ -396,8 +396,9 @@ CONFIG_RELOCATABLE=y
 # Depends on HOTPLUG_PCI_PCIE
 CONFIG_BLK_DEV_PCIESSD_MTIP32XX=m
 
-# Figure out how this relates to DRM_PSB in staging because confused
-# CONFIG_DRM_GMA500 is not set
+CONFIG_DRM_GMA500=m
+# CONFIG_DRM_GMA600 is not set
+# CONFIG_DRM_GMA3600 is not set
 
 # Maybe enable in debug kernels?
 # CONFIG_DEBUG_NMI_SELFTEST is not set
