@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2278,6 +2278,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git5.1
+- Linux 3.3-rc1-git5 (upstream 0a9626575400879d1d5e6bc8768188b938d7c501)
+
 * Fri Jan 27 2012 John W. Linville <linville@redhat.com>
 - Update compat-wireless with snapshot from 2012-01-26
 - Drop brcmfmac GCC 4.7 compatibility patch (included in above)
