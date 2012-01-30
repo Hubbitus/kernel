@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -740,6 +740,8 @@ Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 Patch21087: fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
 
 Patch21091: kmemleak.patch
+
+Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1431,6 +1433,8 @@ ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 ApplyPatch kmemleak.patch
+
+ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
 #rhbz 783211
 ApplyPatch fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
@@ -2281,6 +2285,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git6.1
+- Linux 3.3-rc1-git6 (upstream 6bc2b95ee602659c1be6fac0f6aadeb0c5c29a5d)
+- Add patch from Kay Sievers for udlfb device removal
+- utrace patch to allow calling internal functions from atomic context from
+  Oleg Nesterov
+
 * Mon Jan 30 2012 John W. Linville <linville@redhat.com>
 - ath9k: use WARN_ON_ONCE in ath_rc_get_highest_rix
 

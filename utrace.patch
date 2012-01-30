@@ -4683,3 +4683,73 @@ index 0000000..c817a46
 +	seq_printf(m, "Utrace:\t%lx\n", p->utrace_flags);
 +}
 
+Add the new UTRACE_ATTACH_ATOMIC flag for utrace_attach_task().
+If it is set, UTRACE_ATTACH_CREATE uses GFP_ATOMIC for memory
+allocations and thus it can be used in atomic context.
+
+Suggested-by: Mark Wielaard <mjw@redhat.com>
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ include/linux/utrace.h |    1 +
+ kernel/utrace.c        |   12 ++++++++----
+ 2 files changed, 9 insertions(+), 4 deletions(-)
+
+diff --git a/include/linux/utrace.h b/include/linux/utrace.h
+index f37373b..46959af 100644
+--- a/include/linux/utrace.h
++++ b/include/linux/utrace.h
+@@ -317,6 +317,7 @@ static inline enum utrace_syscall_action utrace_syscall_action(u32 action)
+ #define UTRACE_ATTACH_MATCH_MASK	0x000f
+ #define UTRACE_ATTACH_CREATE		0x0010 /* Attach a new engine.  */
+ #define UTRACE_ATTACH_EXCLUSIVE		0x0020 /* Refuse if existing match.  */
++#define UTRACE_ATTACH_ATOMIC		0x0040 /* For _CREATE, don't sleep  */
+ 
+ /**
+  * struct utrace_engine - per-engine structure
+diff --git a/kernel/utrace.c b/kernel/utrace.c
+index c817a46..a169e1b 100644
+--- a/kernel/utrace.c
++++ b/kernel/utrace.c
+@@ -113,9 +113,9 @@ void task_utrace_unlock(struct task_struct *task)
+  *
+  * This returns false only in case of a memory allocation failure.
+  */
+-static bool utrace_task_alloc(struct task_struct *task)
++static bool utrace_task_alloc(struct task_struct *task, gfp_t gfp_flags)
+ {
+-	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, GFP_KERNEL);
++	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, gfp_flags);
+ 	if (unlikely(!utrace))
+ 		return false;
+ 	spin_lock_init(&utrace->lock);
+@@ -295,6 +295,7 @@ struct utrace_engine *utrace_attach_task(
+ {
+ 	struct utrace *utrace = task_utrace_struct(target);
+ 	struct utrace_engine *engine;
++	gfp_t gfp_flags;
+ 	int ret;
+ 
+ 	if (!(flags & UTRACE_ATTACH_CREATE)) {
+@@ -317,13 +318,16 @@ struct utrace_engine *utrace_attach_task(
+ 		 */
+ 		return ERR_PTR(-EPERM);
+ 
++	gfp_flags = (flags & UTRACE_ATTACH_ATOMIC)
++				? GFP_ATOMIC : GFP_KERNEL;
++
+ 	if (!utrace) {
+-		if (unlikely(!utrace_task_alloc(target)))
++		if (unlikely(!utrace_task_alloc(target, gfp_flags)))
+ 			return ERR_PTR(-ENOMEM);
+ 		utrace = task_utrace_struct(target);
+ 	}
+ 
+-	engine = kmem_cache_alloc(utrace_engine_cachep, GFP_KERNEL);
++	engine = kmem_cache_alloc(utrace_engine_cachep, gfp_flags);
+ 	if (unlikely(!engine))
+ 		return ERR_PTR(-ENOMEM);
+ 
+-- 
+1.5.5.1
+
+
