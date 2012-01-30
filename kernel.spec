@@ -749,6 +749,7 @@ Patch50003: compat-wireless-use-kconfig_h.patch
 Patch50004: compat-move-br_port_exists-to-compat-2_6_36_h.patch
 Patch50005: compat-wireless-fix-some-config-options.patch
 
+Patch50100: ath9k-use-WARN_ON_ONCE-in-ath_rc_get_highest_rix.patch
 
 %endif
 
@@ -1502,6 +1503,8 @@ ApplyPatch compat-wireless-integrated-build.patch
 ApplyPatch compat-wireless-use-kconfig_h.patch
 ApplyPatch compat-move-br_port_exists-to-compat-2_6_36_h.patch
 ApplyPatch compat-wireless-fix-some-config-options.patch
+
+ApplyPatch ath9k-use-WARN_ON_ONCE-in-ath_rc_get_highest_rix.patch
 
 cd ..
 
@@ -2278,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 30 2012 John W. Linville <linville@redhat.com>
+- ath9k: use WARN_ON_ONCE in ath_rc_get_highest_rix
+
 * Sun Jan 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git5.1
 - Linux 3.3-rc1-git5 (upstream 0a9626575400879d1d5e6bc8768188b938d7c501)
 
