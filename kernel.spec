@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2285,6 +2285,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 31 2012 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.3-rc2
+
 * Tue Jan 31 2012 Dave Jones <davej@redhat.com>
 - Distributed switch architecture & drivers can be modular in 3.3.
 
