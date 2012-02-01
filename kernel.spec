@@ -2286,7 +2286,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Jan 31 2012 Dave Jones <davej@redhat.com>
-- Distributed switch architecture drivers can be modular in 3.3.
+- Distributed switch architecture & drivers can be modular in 3.3.
 
 * Mon Jan 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc1.git6.1
 - Linux 3.3-rc1-git6 (upstream 6bc2b95ee602659c1be6fac0f6aadeb0c5c29a5d)
