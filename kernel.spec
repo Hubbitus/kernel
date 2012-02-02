@@ -421,6 +421,7 @@ Summary: The Linux kernel
 %define hdrarch arm
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
+%define with_backports 0
 # we build a up kernel on armv5tel. its used for qemu.
 %ifnarch armv5tel
 %define with_up 0
@@ -2285,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 02 2012 Dennis Gilmore <dennis@ausil.us>
+- disable compat-wireless on arm arches
+
 * Wed Feb 01 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc2.git1.1
 - Linux 3.3-rc2-git1 (upstream ce106ad31016b5da1168496cd0454a6290555f84)
 
