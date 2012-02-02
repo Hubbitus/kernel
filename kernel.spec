@@ -2291,7 +2291,7 @@ fi
 - build in CACHE_L2X0 on the imx kernel
 - dont build the module for imx21 usb since its not something we support
 
-* Thu Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git2.1
+* Thu Feb 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git2.1
 - Linux 3.3-rc2-git2 (upstream 24b36da33c64368775f4ef9386d44dce1d2bc8cf)
 
 * Thu Feb 02 2012 Dennis Gilmore <dennis@ausil.us>
