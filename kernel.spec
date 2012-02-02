@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2286,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git2.1
+- Linux 3.3-rc2-git2 (upstream 24b36da33c64368775f4ef9386d44dce1d2bc8cf)
+
 * Thu Feb 02 2012 Dennis Gilmore <dennis@ausil.us>
 - disable compat-wireless on arm arches
 
