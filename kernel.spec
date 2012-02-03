@@ -744,6 +744,8 @@ Patch21091: kmemleak.patch
 
 Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
+Patch21093: rt2x00_fix_MCU_request_failures.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1440,6 +1442,9 @@ ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 #rhbz 783211
 ApplyPatch fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
 
+#rhbz 772772
+ApplyPatch rt2x00_fix_MCU_request_failures.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1510,6 +1515,7 @@ ApplyPatch compat-move-br_port_exists-to-compat-2_6_36_h.patch
 ApplyPatch compat-wireless-fix-some-config-options.patch
 
 ApplyPatch ath9k-use-WARN_ON_ONCE-in-ath_rc_get_highest_rix.patch
+ApplyPatch rt2x00_fix_MCU_request_failures.patch
 
 cd ..
 
@@ -2286,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch from Jakub Kicinski to fix rt2x00 MCU requests (rhbz 772772)
+
 * Thu Feb 02 2012 Dennis Gilmore <dennis@ausil.us>
 - disable TOUCHSCREEN_EGALAX on arm arches
 - build in CACHE_L2X0 on the imx kernel
