@@ -2286,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Goodbye iSeries.  Only sfr loved you and even he's moved on
+
 * Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git3.2
 - Drop patch that was NAKed upstream (rhbz 783211)
 
