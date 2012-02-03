@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2292,7 +2292,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com>
+* Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git3.1
+- Linux 3.3-rc2-git3 (upstream 7f06db34e55af8fc33cf3d6d46d869cb7a372b5d)
 - Patch from Jakub Kicinski to fix rt2x00 MCU requests (rhbz 772772)
 
 * Thu Feb 02 2012 Dennis Gilmore <dennis@ausil.us>
