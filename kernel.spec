@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -736,9 +736,6 @@ Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 #rhbz 773392
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
-
-#rhbz 783211
-Patch21087: fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
 
 Patch21091: kmemleak.patch
 
@@ -1438,9 +1435,6 @@ ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 ApplyPatch kmemleak.patch
 
 ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
-
-#rhbz 783211
-ApplyPatch fs-Inval-cache-for-parent-block-device-if-fsync-called-on-part.patch
 
 #rhbz 772772
 ApplyPatch rt2x00_fix_MCU_request_failures.patch
@@ -2292,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git3.2
+- Drop patch that was NAKed upstream (rhbz 783211)
+
 * Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git3.1
 - Linux 3.3-rc2-git3 (upstream 7f06db34e55af8fc33cf3d6d46d869cb7a372b5d)
 - Patch from Jakub Kicinski to fix rt2x00 MCU requests (rhbz 772772)
