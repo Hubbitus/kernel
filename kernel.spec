@@ -422,8 +422,8 @@ Summary: The Linux kernel
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
 %define with_backports 0
-# we build a up kernel on armv5tel. its used for qemu.
-%ifnarch armv5tel
+# we build a up kernel on base softfp/hardfp platforms. its used for qemu.
+%ifnarch armv5tel armv7hl
 %define with_up 0
 %endif
 # we only build headers/perf/tools on the base arm arches
@@ -2299,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb  6 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build an ARM hardfp base versatile/qemu kernel
+
 * Mon Feb 06 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git4.1
 - Linux 3.3-rc2-git4 (upstream 23783f817bceedd6d4e549385e3f400ea64059e5)
 - Build and ship turbostat and x86_energy_perf_policy in kernel-tools
