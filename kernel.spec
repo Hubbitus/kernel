@@ -208,7 +208,7 @@ Summary: The Linux kernel
 %define kversion 3.%{base_sublevel}
 
 # The compat-wireless version
-%define cwversion 2012-01-26
+%define cwversion 2012-02-05
 
 #######################################################################
 # If cwversion is less than kversion, make sure with_backports is
@@ -747,11 +747,6 @@ Patch21093: rt2x00_fix_MCU_request_failures.patch
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
 Patch50002: compat-wireless-integrated-build.patch
-Patch50003: compat-wireless-use-kconfig_h.patch
-Patch50004: compat-move-br_port_exists-to-compat-2_6_36_h.patch
-Patch50005: compat-wireless-fix-some-config-options.patch
-
-Patch50100: ath9k-use-WARN_ON_ONCE-in-ath_rc_get_highest_rix.patch
 
 %endif
 
@@ -1504,11 +1499,7 @@ cd compat-wireless-%{cwversion}
 ApplyPatch compat-wireless-config-fixups.patch
 ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
 ApplyPatch compat-wireless-integrated-build.patch
-ApplyPatch compat-wireless-use-kconfig_h.patch
-ApplyPatch compat-move-br_port_exists-to-compat-2_6_36_h.patch
-ApplyPatch compat-wireless-fix-some-config-options.patch
 
-ApplyPatch ath9k-use-WARN_ON_ONCE-in-ath_rc_get_highest_rix.patch
 ApplyPatch rt2x00_fix_MCU_request_failures.patch
 
 cd ..
@@ -2286,6 +2277,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 06 2012 John W. Linville <linville@redhat.com>
+- Update compat-wireless snapshot from 2012-02-05
+
 * Fri Feb 03 2012 Josh Boyer <jwboyer@redhat.com>
 - Goodbye iSeries.  Only sfr loved you and even he's moved on
 

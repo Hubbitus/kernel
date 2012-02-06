@@ -1,6 +1,6 @@
-diff -up compat-wireless-2011-12-18/compat/crc8.c.orig compat-wireless-2011-12-18/compat/crc8.c
---- compat-wireless-2011-12-18/compat/crc8.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/compat/crc8.c	2012-01-05 13:40:29.271996550 -0500
+diff -up compat-wireless-2012-02-05/compat/crc8.c.orig compat-wireless-2012-02-05/compat/crc8.c
+--- compat-wireless-2012-02-05/compat/crc8.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/compat/crc8.c	2012-02-06 11:53:01.617278318 -0500
 @@ -14,6 +14,7 @@
   * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   */
@@ -9,9 +9,9 @@ diff -up compat-wireless-2011-12-18/compat/crc8.c.orig compat-wireless-2011-12-1
  #define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
  
  #include <linux/module.h>
-diff -up compat-wireless-2011-12-18/drivers/bcma/bcma_private.h.orig compat-wireless-2011-12-18/drivers/bcma/bcma_private.h
---- compat-wireless-2011-12-18/drivers/bcma/bcma_private.h.orig	2011-12-18 16:10:34.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/bcma/bcma_private.h	2012-01-05 13:40:29.271996550 -0500
+diff -up compat-wireless-2012-02-05/drivers/bcma/bcma_private.h.orig compat-wireless-2012-02-05/drivers/bcma/bcma_private.h
+--- compat-wireless-2012-02-05/drivers/bcma/bcma_private.h.orig	2012-02-05 16:10:33.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/bcma/bcma_private.h	2012-02-06 11:53:01.618278306 -0500
 @@ -1,6 +1,7 @@
  #ifndef LINUX_BCMA_PRIVATE_H_
  #define LINUX_BCMA_PRIVATE_H_
@@ -20,9 +20,9 @@ diff -up compat-wireless-2011-12-18/drivers/bcma/bcma_private.h.orig compat-wire
  #ifndef pr_fmt
  #define pr_fmt(fmt)		KBUILD_MODNAME ": " fmt
  #endif
-diff -up compat-wireless-2011-12-18/drivers/net/ethernet/broadcom/b44.c.orig compat-wireless-2011-12-18/drivers/net/ethernet/broadcom/b44.c
---- compat-wireless-2011-12-18/drivers/net/ethernet/broadcom/b44.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/ethernet/broadcom/b44.c	2012-01-05 13:40:29.273996525 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/ethernet/broadcom/b44.c.orig compat-wireless-2012-02-05/drivers/net/ethernet/broadcom/b44.c
+--- compat-wireless-2012-02-05/drivers/net/ethernet/broadcom/b44.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/ethernet/broadcom/b44.c	2012-02-06 11:53:01.620278282 -0500
 @@ -10,6 +10,7 @@
   * Distribute under GPL.
   */
@@ -31,9 +31,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/ethernet/broadcom/b44.c.orig com
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c.orig compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c
---- compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c.orig	2012-01-05 13:44:54.137685272 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c	2012-01-05 13:44:56.589654617 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c.orig compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c.orig	2012-02-05 16:10:33.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/aiutils.c	2012-02-06 11:53:01.621278269 -0500
 @@ -16,6 +16,7 @@
   * File contents: support functions for PCI/PCIe
   */
@@ -42,9 +42,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/aiut
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/delay.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/dma.c.orig compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/dma.c
---- compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/dma.c.orig	2012-01-05 13:44:23.579067307 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/dma.c	2012-01-05 13:44:43.324820451 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/dma.c.orig compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/dma.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/dma.c.orig	2012-02-05 16:10:33.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/brcm80211/brcmsmac/dma.c	2012-02-06 11:53:01.622278256 -0500
 @@ -14,6 +14,7 @@
   * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   */
@@ -53,9 +53,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/brcm80211/brcmsmac/dma.
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/slab.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/3945-mac.c.orig compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/3945-mac.c
---- compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/3945-mac.c.orig	2012-01-05 13:41:22.852326703 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/3945-mac.c	2012-01-05 13:41:31.209222227 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/3945-mac.c.orig compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/3945-mac.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/3945-mac.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/3945-mac.c	2012-02-06 11:53:01.625278218 -0500
 @@ -27,6 +27,7 @@
   *
   *****************************************************************************/
@@ -64,9 +64,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/3945-mac.c.ori
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/4965-mac.c.orig compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/4965-mac.c
---- compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/4965-mac.c.orig	2012-01-05 13:41:47.962012787 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/4965-mac.c	2012-01-05 13:41:41.547092984 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/4965-mac.c.orig compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/4965-mac.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/4965-mac.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/iwlegacy/4965-mac.c	2012-02-06 11:53:01.630278156 -0500
 @@ -27,6 +27,7 @@
   *
   *****************************************************************************/
@@ -75,9 +75,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/iwlegacy/4965-mac.c.ori
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/cfg.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/cfg.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/cfg.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/cfg.c	2012-01-05 13:40:44.681803897 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/cfg.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/cfg.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/cfg.c.orig	2012-02-05 16:10:35.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/cfg.c	2012-02-06 11:53:01.630278156 -0500
 @@ -6,6 +6,7 @@
   *
   */
@@ -86,9 +86,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/cfg.c.orig com
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/hardirq.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_cs.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_cs.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_cs.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_cs.c	2012-01-05 13:40:44.682803885 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_cs.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_cs.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_cs.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_cs.c	2012-02-06 11:53:01.631278143 -0500
 @@ -21,6 +21,7 @@
  
  */
@@ -97,9 +97,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_cs.c.orig c
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/module.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_sdio.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_sdio.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_sdio.c.orig	2011-12-18 16:10:36.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_sdio.c	2012-01-05 13:40:44.683803873 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_sdio.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_sdio.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_sdio.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_sdio.c	2012-02-06 11:53:01.631278143 -0500
 @@ -26,6 +26,7 @@
   * if_sdio_card_to_host() to pad the data.
   */
@@ -108,9 +108,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_sdio.c.orig
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_spi.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_spi.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_spi.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_spi.c	2012-01-05 13:40:44.685803849 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_spi.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_spi.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_spi.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_spi.c	2012-02-06 11:53:01.631278143 -0500
 @@ -17,6 +17,7 @@
   * (at your option) any later version.
   */
@@ -119,9 +119,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_spi.c.orig 
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/hardirq.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_usb.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_usb.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_usb.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_usb.c	2012-01-05 13:40:44.686803837 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_usb.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_usb.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_usb.c.orig	2012-02-05 16:10:35.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/if_usb.c	2012-02-06 11:53:01.632278130 -0500
 @@ -2,6 +2,7 @@
   * This file contains functions used in USB interface module.
   */
@@ -130,9 +130,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/if_usb.c.orig 
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/delay.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/main.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/main.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/main.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/main.c	2012-01-05 13:40:44.687803825 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/main.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/main.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/main.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/main.c	2012-02-06 11:53:01.632278130 -0500
 @@ -4,6 +4,7 @@
   * thread etc..
   */
@@ -141,17 +141,17 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/main.c.orig co
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/module.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/mesh.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/mesh.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/mesh.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/mesh.c	2012-01-05 13:40:44.688803813 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/mesh.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/mesh.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/mesh.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/mesh.c	2012-02-06 11:53:01.633278118 -0500
 @@ -1,3 +1,4 @@
 +#undef pr_fmt
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/delay.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/rx.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas/rx.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas/rx.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas/rx.c	2012-01-05 13:40:44.689803801 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas/rx.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas/rx.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas/rx.c.orig	2012-02-05 16:10:35.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas/rx.c	2012-02-06 11:53:01.633278118 -0500
 @@ -2,6 +2,7 @@
   * This file contains the handling of RX in wlan driver.
   */
@@ -160,9 +160,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas/rx.c.orig comp
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/etherdevice.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/cmd.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/cmd.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/cmd.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/cmd.c	2012-01-05 13:40:44.690803789 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/cmd.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/cmd.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/cmd.c.orig	2012-02-05 16:10:36.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/cmd.c	2012-02-06 11:53:01.633278118 -0500
 @@ -7,6 +7,7 @@
   *  the Free Software Foundation; either version 2 of the License, or (at
   *  your option) any later version.
@@ -171,9 +171,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/cmd.c.orig 
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/hardirq.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/if_usb.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/if_usb.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/if_usb.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/if_usb.c	2012-01-05 13:40:44.691803776 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/if_usb.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/if_usb.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/if_usb.c.orig	2012-02-05 16:10:36.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/if_usb.c	2012-02-06 11:53:01.634278106 -0500
 @@ -9,6 +9,7 @@
   */
  #define DRV_NAME "lbtf_usb"
@@ -182,9 +182,9 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/if_usb.c.or
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include "libertas_tf.h"
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/main.c.orig compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/main.c
---- compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/main.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/main.c	2012-01-05 13:40:44.692803763 -0500
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/main.c.orig compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/main.c
+--- compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/main.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/libertas_tf/main.c	2012-02-06 11:53:01.634278106 -0500
 @@ -7,6 +7,7 @@
   *  the Free Software Foundation; either version 2 of the License, or (at
   *  your option) any later version.
@@ -193,130 +193,31 @@ diff -up compat-wireless-2011-12-18/drivers/net/wireless/libertas_tf/main.c.orig
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/hardirq.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/base.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/base.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/base.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/base.c	2012-01-05 13:40:44.693803750 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/base.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/base.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/cam.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/cam.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192de/sw.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192de/sw.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/hw.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/hw.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/phy.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/phy.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/rf.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/rf.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/sw.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/rtl8192se/sw.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/usb.c.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/usb.c
+diff -up compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/wifi.h.orig compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/wifi.h
+--- compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/wifi.h.orig	2012-02-06 11:53:38.798813484 -0500
++++ compat-wireless-2012-02-05/drivers/net/wireless/rtlwifi/wifi.h	2012-02-06 11:53:47.489704835 -0500
+@@ -30,6 +30,7 @@
+ #ifndef __RTL_WIFI_H__
+ #define __RTL_WIFI_H__
  
 +#undef pr_fmt
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
- #include <linux/ip.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/cam.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/cam.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/cam.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/cam.c	2012-01-05 13:40:44.694803737 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/export.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192c/fw_common.c	2012-01-05 13:40:44.694803737 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/firmware.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/hw.c	2012-01-05 13:40:44.695803725 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include "../wifi.h"
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192cu/mac.c	2012-01-05 13:40:44.695803725 -0500
-@@ -27,6 +27,7 @@
-  *
- ****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/module.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192de/sw.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192de/sw.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192de/sw.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192de/sw.c	2012-01-05 13:40:44.695803725 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/vmalloc.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/hw.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/hw.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/hw.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/hw.c	2012-01-05 13:40:44.696803713 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include "../wifi.h"
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/phy.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/phy.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/phy.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/phy.c	2012-01-05 13:40:44.696803713 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include "../wifi.h"
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/rf.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/rf.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/rf.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/rf.c	2012-01-05 13:40:44.697803701 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include "../wifi.h"
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/sw.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/sw.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/sw.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/rtl8192se/sw.c	2012-01-05 13:40:44.697803701 -0500
-@@ -27,6 +27,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/vmalloc.h>
-diff -up compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/usb.c.orig compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/usb.c
---- compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/usb.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/drivers/net/wireless/rtlwifi/usb.c	2012-01-05 13:40:44.697803701 -0500
-@@ -25,6 +25,7 @@
-  *
-  *****************************************************************************/
- 
-+#undef pr_fmt
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
- #include <linux/usb.h>
-diff -up compat-wireless-2011-12-18/net/wireless/core.c.orig compat-wireless-2011-12-18/net/wireless/core.c
---- compat-wireless-2011-12-18/net/wireless/core.c.orig	2011-12-18 16:10:35.000000000 -0500
-+++ compat-wireless-2011-12-18/net/wireless/core.c	2012-01-05 13:40:44.698803689 -0500
+ #include <linux/sched.h>
+diff -up compat-wireless-2012-02-05/net/wireless/core.c.orig compat-wireless-2012-02-05/net/wireless/core.c
+--- compat-wireless-2012-02-05/net/wireless/core.c.orig	2012-02-05 16:10:38.000000000 -0500
++++ compat-wireless-2012-02-05/net/wireless/core.c	2012-02-06 11:53:01.640278030 -0500
 @@ -4,6 +4,7 @@
   * Copyright 2006-2010		Johannes Berg <johannes@sipsolutions.net>
   */
@@ -325,9 +226,9 @@ diff -up compat-wireless-2011-12-18/net/wireless/core.c.orig compat-wireless-201
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/if.h>
-diff -up compat-wireless-2011-12-18/net/wireless/lib80211.c.orig compat-wireless-2011-12-18/net/wireless/lib80211.c
---- compat-wireless-2011-12-18/net/wireless/lib80211.c.orig	2011-12-18 16:10:34.000000000 -0500
-+++ compat-wireless-2011-12-18/net/wireless/lib80211.c	2012-01-05 13:40:44.698803689 -0500
+diff -up compat-wireless-2012-02-05/net/wireless/lib80211.c.orig compat-wireless-2012-02-05/net/wireless/lib80211.c
+--- compat-wireless-2012-02-05/net/wireless/lib80211.c.orig	2012-02-05 16:10:31.000000000 -0500
++++ compat-wireless-2012-02-05/net/wireless/lib80211.c	2012-02-06 11:53:01.640278030 -0500
 @@ -13,6 +13,7 @@
   *
   */
@@ -336,9 +237,9 @@ diff -up compat-wireless-2011-12-18/net/wireless/lib80211.c.orig compat-wireless
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/module.h>
-diff -up compat-wireless-2011-12-18/net/wireless/lib80211_crypt_tkip.c.orig compat-wireless-2011-12-18/net/wireless/lib80211_crypt_tkip.c
---- compat-wireless-2011-12-18/net/wireless/lib80211_crypt_tkip.c.orig	2011-12-18 16:10:34.000000000 -0500
-+++ compat-wireless-2011-12-18/net/wireless/lib80211_crypt_tkip.c	2012-01-05 13:40:44.698803689 -0500
+diff -up compat-wireless-2012-02-05/net/wireless/lib80211_crypt_tkip.c.orig compat-wireless-2012-02-05/net/wireless/lib80211_crypt_tkip.c
+--- compat-wireless-2012-02-05/net/wireless/lib80211_crypt_tkip.c.orig	2012-02-05 16:10:31.000000000 -0500
++++ compat-wireless-2012-02-05/net/wireless/lib80211_crypt_tkip.c	2012-02-06 11:53:01.641278018 -0500
 @@ -10,6 +10,7 @@
   * more details.
   */
@@ -347,10 +248,10 @@ diff -up compat-wireless-2011-12-18/net/wireless/lib80211_crypt_tkip.c.orig comp
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/err.h>
-diff -up compat-wireless-2011-12-18/net/wireless/reg.c.orig compat-wireless-2011-12-18/net/wireless/reg.c
---- compat-wireless-2011-12-18/net/wireless/reg.c.orig	2011-12-18 16:10:34.000000000 -0500
-+++ compat-wireless-2011-12-18/net/wireless/reg.c	2012-01-05 13:40:44.699803676 -0500
-@@ -33,6 +33,7 @@
+diff -up compat-wireless-2012-02-05/net/wireless/reg.c.orig compat-wireless-2012-02-05/net/wireless/reg.c
+--- compat-wireless-2012-02-05/net/wireless/reg.c.orig	2012-02-05 16:10:31.000000000 -0500
++++ compat-wireless-2012-02-05/net/wireless/reg.c	2012-02-06 11:53:01.641278018 -0500
+@@ -42,6 +42,7 @@
   *
   */
  
@@ -358,9 +259,9 @@ diff -up compat-wireless-2011-12-18/net/wireless/reg.c.orig compat-wireless-2011
  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
  
  #include <linux/kernel.h>
-diff -up compat-wireless-2011-12-18/patches/98-pr_fmt.patch.orig compat-wireless-2011-12-18/patches/98-pr_fmt.patch
---- compat-wireless-2011-12-18/patches/98-pr_fmt.patch.orig	2012-01-05 13:39:36.552655633 -0500
-+++ compat-wireless-2011-12-18/patches/98-pr_fmt.patch	2012-01-05 13:39:36.553655620 -0500
+diff -up compat-wireless-2012-02-05/patches/98-pr_fmt.patch.orig compat-wireless-2012-02-05/patches/98-pr_fmt.patch
+--- compat-wireless-2012-02-05/patches/98-pr_fmt.patch.orig	2012-02-06 11:53:01.641278018 -0500
++++ compat-wireless-2012-02-05/patches/98-pr_fmt.patch	2012-02-06 11:53:01.641278018 -0500
 @@ -0,0 +1,346 @@
 +The way the compat-* header files are included causes the default
 +pr_fmt definition from <linux/kernel.h> to be evaluated for every file.
