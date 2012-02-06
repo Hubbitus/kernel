@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -737,11 +737,11 @@ Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
-Patch21091: kmemleak.patch
-
 Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
 Patch21093: rt2x00_fix_MCU_request_failures.patch
+
+Patch21094: power-x86-destdir.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1427,12 +1427,12 @@ ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
 ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
-ApplyPatch kmemleak.patch
-
 ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
 #rhbz 772772
 ApplyPatch rt2x00_fix_MCU_request_failures.patch
+
+ApplyPatch power-x86-destdir.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -1885,6 +1885,14 @@ make %{?_smp_mflags} -C tools/power/cpupower CPUFREQ_BENCH=false
     make %{?_smp_mflags} centrino-decode powernow-k8-decode
     cd -
 %endif
+%ifarch %{ix86} x86_64
+   cd tools/power/x86/x86_energy_perf_policy/
+   make
+   cd -
+   cd tools/power/x86/turbostat
+   make
+   cd -
+%endif #turbostat/x86_energy_perf_policy
 %endif
 %endif
 
@@ -2001,7 +2009,15 @@ mkdir -p %{buildroot}%{_unitdir} %{buildroot}%{_sysconfdir}/sysconfig
 install -m644 %{SOURCE2000} %{buildroot}%{_unitdir}/cpupower.service
 install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
 %endif
-
+%ifarch %{ix86} x86_64
+   mkdir -p %{buildroot}%{_mandir}/man8
+   cd tools/power/x86/x86_energy_perf_policy
+   make DESTDIR=%{buildroot} install
+   cd -
+   cd tools/power/x86/turbostat
+   make DESTDIR=%{buildroot} install
+   cd -
+%endif #turbostat/x86_energy_perf_policy
 %endif
 
 %if %{with_bootwrapper}
@@ -2192,6 +2208,12 @@ fi
 %{_unitdir}/cpupower.service
 %{_mandir}/man[1-8]/cpupower*
 %config(noreplace) %{_sysconfdir}/sysconfig/cpupower
+%ifarch %{ix86} x86_64
+%{_bindir}/x86_energy_perf_policy
+%{_mandir}/man8/x86_energy_perf_policy*
+%{_bindir}/turbostat
+%{_mandir}/man8/turbostat*
+%endif
 %endif
 
 %if %{with_debuginfo}
@@ -2277,6 +2299,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 06 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc2.git4.1
+- Linux 3.3-rc2-git4 (upstream 23783f817bceedd6d4e549385e3f400ea64059e5)
+- Build and ship turbostat and x86_energy_perf_policy in kernel-tools
+
 * Mon Feb 06 2012 John W. Linville <linville@redhat.com>
 - Update compat-wireless snapshot from 2012-02-05
 
