@@ -2312,6 +2312,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 07 2012 Chris Wright <chrisw@redhat.com>
+- Enable Open vSwitch
+
 * Tue Feb 07 2012 Justin M. Forbes <jforbes@redhat.com>
 - Add virtio-scsi support
 
