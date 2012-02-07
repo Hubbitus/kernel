@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -742,6 +742,9 @@ Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 Patch21093: rt2x00_fix_MCU_request_failures.patch
 
 Patch21094: power-x86-destdir.patch
+
+Patch21095: hfsplus-Change-finder_info-to-u32.patch
+Patch21096: hfsplus-Add-an-ioctl-to-bless-files.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1433,6 +1436,9 @@ ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 ApplyPatch rt2x00_fix_MCU_request_failures.patch
 
 ApplyPatch power-x86-destdir.patch
+
+ApplyPatch hfsplus-Change-finder_info-to-u32.patch
+ApplyPatch hfsplus-Add-an-ioctl-to-bless-files.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2299,6 +2305,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 07 2012 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.3-rc2-git5 (upstream 8597559a78e1cde158b999212bc9543682638eb1)
+- Add hfsplus file blessing patches from Matthew Garrett
+
 * Mon Feb  6 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build an ARM hardfp base versatile/qemu kernel
 
