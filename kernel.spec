@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -733,10 +733,6 @@ Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
-
-#rhbz 773392
-Patch21073: KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
-Patch21074: KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
@@ -1427,10 +1423,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch utrace.patch
 
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
-
-#rhbz 773392
-ApplyPatch KVM-x86-extend-struct-x86_emulate_ops-with-get_cpuid.patch
-ApplyPatch KVM-x86-fix-missing-checks-in-syscall-emulation.patch
 
 ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
@@ -2312,6 +2304,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 07 2012 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.3-rc2-git6 (upstream 6bd113f1f4a8c0d05c4dbadb300319e0e3526db4)
+
 * Tue Feb 07 2012 Chris Wright <chrisw@redhat.com>
 - Enable Open vSwitch
 
