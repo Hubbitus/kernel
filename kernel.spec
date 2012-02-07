@@ -694,6 +694,7 @@ Patch800: linux-2.6-crash-driver.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
+Patch1556: linux-3.3-virtio-scsi.patch
 
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
@@ -1415,6 +1416,7 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
+ApplyPatch linux-3.3-virtio-scsi.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -2310,6 +2312,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 07 2012 Justin M. Forbes <jforbes@redhat.com>
+- Add virtio-scsi support
+
 * Tue Feb 07 2012 Josh Boyer <jwboyer@redhat.com>
 - Make build/ point to /usr/src/kernels instead of being relative (rhbz 788125)
 
