@@ -718,6 +718,9 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 
 # NFSv4
 Patch1101: linux-3.1-keys-remove-special-keyring.patch
+Patch1102: linux-3.3-newidmapper-01.patch
+Patch1103: linux-3.3-newidmapper-02.patch
+Patch1104: linux-3.3-newidmapper-03.patch
 
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -1327,6 +1330,9 @@ ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 
 # NFSv4
 ApplyPatch linux-3.1-keys-remove-special-keyring.patch
+ApplyPatch linux-3.3-newidmapper-01.patch
+ApplyPatch linux-3.3-newidmapper-02.patch
+ApplyPatch linux-3.3-newidmapper-03.patch
 
 # USB
 
@@ -2313,6 +2319,7 @@ fi
 * Wed Feb 08 2012 Josh Boyer <jwboyer@redhat.com>
 - CVE-2011-4086 jbd2: unmapped buffer with _Unwritten or _Delay flags set can
   lead to DoS (rhbz 788260)
+- Add new upstream NFS id mapping patches from Steve Dickson
 
 * Tue Feb 07 2012 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.3-rc2-git6 (upstream 6bd113f1f4a8c0d05c4dbadb300319e0e3526db4)
