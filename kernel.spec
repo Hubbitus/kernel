@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -742,6 +742,9 @@ Patch21094: power-x86-destdir.patch
 
 Patch21095: hfsplus-Change-finder_info-to-u32.patch
 Patch21096: hfsplus-Add-an-ioctl-to-bless-files.patch
+
+#rhbz 788260
+Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1433,6 +1436,9 @@ ApplyPatch power-x86-destdir.patch
 
 ApplyPatch hfsplus-Change-finder_info-to-u32.patch
 ApplyPatch hfsplus-Add-an-ioctl-to-bless-files.patch
+
+#rhbz 788269
+ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2304,6 +2310,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 08 2012 Josh Boyer <jwboyer@redhat.com>
+- CVE-2011-4086 jbd2: unmapped buffer with _Unwritten or _Delay flags set can
+  lead to DoS (rhbz 788260)
+
 * Tue Feb 07 2012 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.3-rc2-git6 (upstream 6bd113f1f4a8c0d05c4dbadb300319e0e3526db4)
 
