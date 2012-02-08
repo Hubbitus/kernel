@@ -749,6 +749,9 @@ Patch21096: hfsplus-Add-an-ioctl-to-bless-files.patch
 #rhbz 788260
 Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
+#rhbz 787373
+Patch21234: Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1445,6 +1448,9 @@ ApplyPatch hfsplus-Add-an-ioctl-to-bless-files.patch
 
 #rhbz 788269
 ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
+
+#rhbz 787373
+ApplyPatch Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2317,6 +2323,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Feb 08 2012 Josh Boyer <jwboyer@redhat.com>
+- Remove a bogus inline declaration that broke ARM and ppc builds (rhbz 787373)
 - CVE-2011-4086 jbd2: unmapped buffer with _Unwritten or _Delay flags set can
   lead to DoS (rhbz 788260)
 - Add new upstream NFS id mapping patches from Steve Dickson

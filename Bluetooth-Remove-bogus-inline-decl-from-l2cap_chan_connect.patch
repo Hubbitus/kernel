@@ -1,0 +1,49 @@
+From 9a4b860f36f995ecda36d8312a56ae1d34a6c541 Mon Sep 17 00:00:00 2001
+From: Johan Hedberg <johan.hedberg@intel.com>
+Date: Sun, 8 Jan 2012 22:51:16 +0200
+Subject: [PATCH] Bluetooth: Remove bogus inline declaration from
+ l2cap_chan_connect
+
+As reported by Dan Carpenter this function causes a Sparse warning and
+shouldn't be declared inline:
+
+include/net/bluetooth/l2cap.h:837:30 error: marked inline, but without a
+definition"
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+Acked-by: Marcel Holtmann <marcel@holtmann.org>
+---
+ include/net/bluetooth/l2cap.h |    2 +-
+ net/bluetooth/l2cap_core.c    |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/net/bluetooth/l2cap.h b/include/net/bluetooth/l2cap.h
+index 68f5891..124f7cf 100644
+--- a/include/net/bluetooth/l2cap.h
++++ b/include/net/bluetooth/l2cap.h
+@@ -834,7 +834,7 @@ int l2cap_add_scid(struct l2cap_chan *chan,  __u16 scid);
+ struct l2cap_chan *l2cap_chan_create(struct sock *sk);
+ void l2cap_chan_close(struct l2cap_chan *chan, int reason);
+ void l2cap_chan_destroy(struct l2cap_chan *chan);
+-inline int l2cap_chan_connect(struct l2cap_chan *chan, __le16 psm, u16 cid,
++int l2cap_chan_connect(struct l2cap_chan *chan, __le16 psm, u16 cid,
+ 								bdaddr_t *dst);
+ int l2cap_chan_send(struct l2cap_chan *chan, struct msghdr *msg, size_t len,
+ 								u32 priority);
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index faf0b11..980abdb 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -1120,7 +1120,7 @@ static struct l2cap_chan *l2cap_global_chan_by_psm(int state, __le16 psm, bdaddr
+ 	return c1;
+ }
+ 
+-inline int l2cap_chan_connect(struct l2cap_chan *chan, __le16 psm, u16 cid, bdaddr_t *dst)
++int l2cap_chan_connect(struct l2cap_chan *chan, __le16 psm, u16 cid, bdaddr_t *dst)
+ {
+ 	struct sock *sk = chan->sk;
+ 	bdaddr_t *src = &bt_sk(sk)->src;
+-- 
+1.7.6.5
+
