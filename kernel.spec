@@ -729,6 +729,8 @@ Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
+Patch14000: bsg-fix-sysfs-link-remove-warning.patch
+
 Patch20000: utrace.patch
 
 # Flattened devicetree support
@@ -1430,6 +1432,8 @@ ApplyPatch linux-3.3-virtio-scsi.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
+
+ApplyPatch bsg-fix-sysfs-link-remove-warning.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2322,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 09 2012 Dave Jones <davej@redhat.com>
+- bsg: fix sysfs link remove warning (#787281)
+
 * Thu Feb 09 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc3.git0.2
 - Disable debugging options.
 
