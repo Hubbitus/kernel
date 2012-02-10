@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2326,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.3-rc3-git1 (upstream 19e00f2f1d5273dbc52eab0ebc315cae3aa44b2a)
+
 * Thu Feb 09 2012 Dave Jones <davej@redhat.com>
 - bsg: fix sysfs link remove warning (#787281)
 
