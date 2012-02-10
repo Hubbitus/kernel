@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2326,7 +2326,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Feb 10 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc3.git1.2
+* Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git2.1
+- Linux 3.3-rc3-git2 (upstream 612b8507c5d545feed2437b3d2239929cac7688d)
+
+* Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git1.2
 - Reenable debugging options.
 
 * Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com>
