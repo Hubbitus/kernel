@@ -754,6 +754,9 @@ Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 #rhbz 787373
 Patch21234: Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 
+#rhbz 754518
+Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1455,6 +1458,9 @@ ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 #rhbz 787373
 ApplyPatch Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
+
+#rhbz 754518
+ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2326,6 +2332,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch to prevent NULL pointer dereference in sd_revalidate_disk (rhbz 754518)
+
 * Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git2.1
 - Linux 3.3-rc3-git2 (upstream 612b8507c5d545feed2437b3d2239929cac7688d)
 
