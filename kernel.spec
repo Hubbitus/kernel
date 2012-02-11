@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2332,6 +2332,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Feb 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git3.1
+- Linux 3.3-rc3-git3 (upstream 8df54d622a120058ee8bec38743c9b8f091c8e58)
+
 * Fri Feb 10 2012 Josh Boyer <jwboyer@redhat.com>
 - Patch to prevent NULL pointer dereference in sd_revalidate_disk (rhbz 754518)
 
