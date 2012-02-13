@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -728,8 +728,6 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
-
-Patch14000: bsg-fix-sysfs-link-remove-warning.patch
 
 Patch20000: utrace.patch
 
@@ -1435,8 +1433,6 @@ ApplyPatch linux-3.3-virtio-scsi.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-
-ApplyPatch bsg-fix-sysfs-link-remove-warning.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2332,6 +2328,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 13 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git4.1
+- Linux 3.3-rc3-git4 (upstream 3ec1e88b33a3bdd852ce8e014052acec7a9da8b5)
+
 * Sat Feb 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git3.1
 - Linux 3.3-rc3-git3 (upstream 8df54d622a120058ee8bec38743c9b8f091c8e58)
 
