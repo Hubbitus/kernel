@@ -761,6 +761,9 @@ Patch21236: autofs4-lockdep.patch
 Patch21237: mcelog-rcu-splat.patch
 Patch21238: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
+#rhbz 790367
+Patch21239: s390x-enable-keys-compat.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1469,6 +1472,9 @@ ApplyPatch autofs4-lockdep.patch
 
 ApplyPatch mcelog-rcu-splat.patch
 ApplyPatch x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
+
+#rhbz 790367
+ApplyPatch s390x-enable-keys-compat.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2343,6 +2349,7 @@ fi
 * Tue Feb 14 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix RCU usage during cpu idle (rhbz 789641)
 - Add patch to fix mce rcu splat (rhbz 789644)
+- Patch to enable CONFIG_KEYS_COMPAT on s390 from David Howells (rhbz 790367)
 
 * Tue Feb 14 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git5.1
 - Linux 3.3-rc3-git5 (upstream ce5afed937f0a823d3b00c9459409c3f5f2fbd5d)
