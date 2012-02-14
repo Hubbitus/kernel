@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2334,6 +2334,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 14 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git5.1
+- Linux 3.3-rc3-git5 (upstream ce5afed937f0a823d3b00c9459409c3f5f2fbd5d)
+
 * Tue Feb 14 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM components in Makefile.config
 
