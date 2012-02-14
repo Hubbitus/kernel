@@ -755,6 +755,9 @@ Patch21234: Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
+#rhbz 714828
+Patch21236: autofs4-lockdep.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1457,6 +1460,9 @@ ApplyPatch Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+
+#rhbz 714828
+ApplyPatch autofs4-lockdep.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2328,6 +2334,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 13 2012 Josh Boyer <jwboyer@redhat.com>
+- Apply patch to fix autofs4 lockdep splat (rhbz 714828)
+
 * Mon Feb 13 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git4.1
 - Linux 3.3-rc3-git4 (upstream 3ec1e88b33a3bdd852ce8e014052acec7a9da8b5)
 
