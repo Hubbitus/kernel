@@ -2334,6 +2334,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 14 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM components in Makefile.config
+
 * Mon Feb 13 2012 Josh Boyer <jwboyer@redhat.com>
 - Apply patch to fix autofs4 lockdep splat (rhbz 714828)
 
