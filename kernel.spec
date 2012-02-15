@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2349,6 +2349,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com - 3.3.0-0.rc3.git6.1
+- Linux 3.3-rc3-git6 (upstream c38e23456278e967f094b08247ffc3711b1029b2)
+
 * Wed Feb 15 2012 Adam Jackson <ajax@redhat.com>
 - Add patch and config change for vgem.ko
 
