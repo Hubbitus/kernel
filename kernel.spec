@@ -2227,6 +2227,7 @@ fi
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
+%doc linux-%{kversion}.%{_target_cpu}/tools/perf/Documentation/examples.txt
 
 %files -n python-perf
 %defattr(-,root,root)
@@ -2351,6 +2352,7 @@ fi
 - Add patch to fix mce rcu splat (rhbz 789644)
 - Patch to enable CONFIG_KEYS_COMPAT on s390 from David Howells (rhbz 790367)
 - Modify sd_revalidate_disk patch to do a WARN_ONCE instead of silently skip
+- Install perf examples as suggested by Jason Baron
 
 * Tue Feb 14 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git5.1
 - Linux 3.3-rc3-git5 (upstream ce5afed937f0a823d3b00c9459409c3f5f2fbd5d)
