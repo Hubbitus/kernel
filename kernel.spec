@@ -735,6 +735,7 @@ Patch20000: utrace.patch
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
+Patch21004: arm-tegra-nvec-kconfig.patch
 
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 
@@ -1330,6 +1331,7 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 #pplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
+ApplyPatch arm-tegra-nvec-kconfig.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2349,6 +2351,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 15 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM configs to 3.3 kernel
+- use mainline cpu freq options
+
 * Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com - 3.3.0-0.rc3.git6.2
 - Linux 3.3-rc3-git6 (upstream c38e23456278e967f094b08247ffc3711b1029b2)
 - Require newer linux-firmware package for updated bnx2/bnx2x drivers
