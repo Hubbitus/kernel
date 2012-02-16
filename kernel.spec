@@ -1331,7 +1331,7 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 #pplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
-ApplyPatch arm-tegra-nvec-kconfig.patch
+#ApplyPatch arm-tegra-nvec-kconfig.patch
 
 #
 # bugfixes to drivers and filesystems
