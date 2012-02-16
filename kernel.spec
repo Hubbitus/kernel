@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -516,7 +516,7 @@ Provides: kernel-modeset = 1\
 Provides: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
-Requires(pre): linux-firmware >= 20100806-2\
+Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
 Requires(post): /sbin/new-kernel-pkg\
 Requires(preun): /sbin/new-kernel-pkg\
 Conflicts: %{kernel_dot_org_conflicts}\
@@ -2349,8 +2349,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com - 3.3.0-0.rc3.git6.1
+* Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com - 3.3.0-0.rc3.git6.2
 - Linux 3.3-rc3-git6 (upstream c38e23456278e967f094b08247ffc3711b1029b2)
+- Require newer linux-firmware package for updated bnx2/bnx2x drivers
 
 * Wed Feb 15 2012 Adam Jackson <ajax@redhat.com>
 - Add patch and config change for vgem.ko
