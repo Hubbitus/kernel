@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2351,11 +2351,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 17 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git7.1
+- Linux 3.3-rc3-git7 (upstream 4903062b5485f0e2c286a23b44c9b59d9b017d53)
+
 * Wed Feb 15 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM configs to 3.3 kernel
 - use mainline cpu freq options
 
-* Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com - 3.3.0-0.rc3.git6.2
+* Wed Feb 15 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git6.2
 - Linux 3.3-rc3-git6 (upstream c38e23456278e967f094b08247ffc3711b1029b2)
 - Require newer linux-firmware package for updated bnx2/bnx2x drivers
 
