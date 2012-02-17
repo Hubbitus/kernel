@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -729,6 +729,8 @@ Patch12016: disable-i8042-check-on-apple-mac.patch
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
 
 Patch13003: efi-dont-map-boot-services-on-32bit.patch
+
+Patch14000: hibernate-freeze-filesystems.patch
 
 Patch20000: utrace.patch
 
@@ -1446,6 +1448,8 @@ ApplyPatch linux-3.3-virtio-scsi.patch
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
+
+ApplyPatch hibernate-freeze-filesystems.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2351,6 +2355,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 17 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git7.2
+- Freeze all filesystems during system suspend/hibernate.
+
 * Fri Feb 17 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc3.git7.1
 - Linux 3.3-rc3-git7 (upstream 4903062b5485f0e2c286a23b44c9b59d9b017d53)
 
