@@ -1335,7 +1335,7 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 #pplyPatch arm-omap-dt-compat.patch
 ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
-#ApplyPatch arm-tegra-nvec-kconfig.patch
+ApplyPatch arm-tegra-nvec-kconfig.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2359,6 +2359,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Feb 19 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Further updates to ARM config
+- Fix and re-enable Tegra NVEC patch
+
 * Fri Feb 17 2012 Dave Jones <davej@redhat.com>
 - improve handling of null rate in LIS3LV02Dx accelerometer driver. (rhbz 785814)
 
