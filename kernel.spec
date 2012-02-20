@@ -1618,6 +1618,13 @@ BuildKernel() {
     # make sure EXTRAVERSION says what we want it to say
     perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}.%{_target_cpu}${Flavour:+.${Flavour}}/" Makefile
 
+    %if !%{debugbuildsenabled}
+    %if !%{with_release}
+    # we're building a rawhide kernel where debug is the "norm".
+    perl -p -i -e "s/^EXTRAVERSION.*/EXTRAVERSION = -%{release}.%{_target_cpu}${Flavour:+.${Flavour}}.debug/" Makefile
+    %endif
+    %endif
+
     # if pre-rc1 devel kernel, must fix up PATCHLEVEL for our versioning scheme
     %if !0%{?rcrev}
     %if 0%{?gitrev}
