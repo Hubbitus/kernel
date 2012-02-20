@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -733,6 +733,8 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
+
+Patch14020: nfs-oops-getacl.patch
 
 Patch20000: utrace.patch
 
@@ -1454,6 +1456,8 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
+
+ApplyPatch nfs-oops-getacl.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2366,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 20 2012 Dave Jones <davej@redhat.com>
+- NFSv4: Fix an Oops in the NFSv4 getacl code
+
 * Mon Feb 20 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc4.git0.2
 - Reenable debugging options.
 
