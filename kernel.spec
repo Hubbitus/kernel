@@ -772,6 +772,9 @@ Patch21238: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 #rhbz 790367
 Patch21239: s390x-enable-keys-compat.patch
 
+#rhbz 795544
+Patch21240: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1491,6 +1494,9 @@ ApplyPatch x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 790367
 ApplyPatch s390x-enable-keys-compat.patch
+
+#rhbz 795544
+ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2370,13 +2376,16 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 20 2012 Josh Boyer <jwboyer@redhat.com>
+- Avoid using stack variables in ums_realtek (again) (rhbz 795544)
+
 * Mon Feb 20 2012 Dave Jones <davej@redhat.com>
 - NFSv4: Fix an Oops in the NFSv4 getacl code
 
-* Mon Feb 20 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc4.git0.2
+* Mon Feb 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git0.2
 - Reenable debugging options.
 
-* Sun Feb 19 2012 Josh Boyer <jwboyer@gmail.com> - 3.3.0-0.rc4.git0.1
+* Sun Feb 19 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git0.1
 - Linux 3.3-rc4
 - Disable debugging options.
 
