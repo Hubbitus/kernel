@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2365,7 +2365,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.1
+* Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.2
+- Enable rtl8712 driver (rhbz 699618)
 - Linux 3.3-rc4-git1 (upstream 27e74da9800289e69ba907777df1e2085231eff7)
 
 * Mon Feb 20 2012 Dave Jones <davej@redhat.com>

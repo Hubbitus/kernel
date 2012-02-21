@@ -4273,7 +4273,8 @@ CONFIG_USB_ATMEL=m
 # CONFIG_EASYCAP is not set
 # CONFIG_SOLO6X10 is not set
 # CONFIG_ACPI_QUICKSTART is not set
-# CONFIG_R8712U is not set
+CONFIG_R8712U=m # Larry Finger maintains this (rhbz 699618)
+# CONFIG_R8712_AP is not set
 # CONFIG_ATH6K_LEGACY is not set
 # CONFIG_USB_ENESTORAGE is not set
 # CONFIG_BCM_WIMAX is not set
