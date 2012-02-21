@@ -26,6 +26,13 @@ CONFIG_ZBOOT_ROM_BSS=0
 
 CONFIG_ATAGS_PROC=y
 
+CONFIG_CPU_IDLE=y
+# CONFIG_CPU_IDLE_GOV_LADDER is not set
+ONFIG_CPU_IDLE_GOV_MENU=y
+
+CONFIG_NO_HZ=y
+CONFIG_HIGH_RES_TIMERS=y
+
 # CONFIG_FPE_NWFPE is not set
 CONFIG_FPE_FASTFPE=y
 CONFIG_VFP=y
@@ -47,11 +54,6 @@ CONFIG_HW_PERF_EVENTS=y
 # CONFIG_UACCESS_WITH_MEMCPY is not set
 
 CONFIG_CMDLINE="console=ttyAM0,115200 root=/dev/sda1 rootdelay=20"
-
-CONFIG_NO_HZ=y
-CONFIG_HIGH_RES_TIMERS=y
-
-# CONFIG_CPU_IDLE is not set
 
 CONFIG_LEDS=y
 CONFIG_LEDS_CPU=y
@@ -181,6 +183,7 @@ CONFIG_LSM_MMAP_MIN_ADDR=32768
 # CONFIG_DRM_RADEON is not set
 # CONFIG_ATM_HE is not set
 # CONFIG_SCSI_ACARD is not set
+# CONFIG_SFC is not set
 
 # these all currently fail due to missing symbols __bad_udelay or
 # error: implicit declaration of function ‘iowrite32be’

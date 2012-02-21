@@ -269,8 +269,10 @@ Summary: The Linux kernel
 %define with_tegra 0
 %define with_omap 0
 %define with_imx 0
-%define with_highbank 0
 %endif
+
+# disable highbank ARM kernels for the time being
+%define with_highbank 0
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -2369,6 +2371,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 21 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- update ARM configs to F-17 branch
+
 * Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com>
 - ext4: fix resize when resizing within single group (rhbz 786454)
 - imon: don't wedge hardware after early callbacks (rhbz 781832)
