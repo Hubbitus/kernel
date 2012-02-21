@@ -717,6 +717,7 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch2902: imon-dont-wedge-hardware-after-early-callbacks.patch
 
 # fs fixes
+Patch4000: ext4-fix-resize-when-resizing-within-single-group.patch
 
 # NFSv4
 Patch1101: linux-3.1-keys-remove-special-keyring.patch
@@ -1346,6 +1347,7 @@ ApplyPatch arm-tegra-nvec-kconfig.patch
 #
 
 # ext4
+ApplyPatch ext4-fix-resize-when-resizing-within-single-group.patch
 
 # xfs
 
@@ -2368,6 +2370,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com>
+- ext4: fix resize when resizing within single group (rhbz 786454)
 - imon: don't wedge hardware after early callbacks (rhbz 781832)
 
 * Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.2
