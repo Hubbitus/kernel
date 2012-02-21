@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -714,6 +714,7 @@ Patch2802: linux-2.6-silence-acpi-blacklist.patch
 Patch2899: linux-2.6-v4l-dvb-fixes.patch
 Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
+Patch2902: imon-dont-wedge-hardware-after-early-callbacks.patch
 
 # fs fixes
 
@@ -1444,6 +1445,7 @@ ApplyPatch quite-apm.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
+ApplyPatch imon-dont-wedge-hardware-after-early-callbacks.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -2365,6 +2367,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com>
+- imon: don't wedge hardware after early callbacks (rhbz 781832)
+
 * Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.2
 - Enable rtl8712 driver (rhbz 699618)
 - Linux 3.3-rc4-git1 (upstream 27e74da9800289e69ba907777df1e2085231eff7)
