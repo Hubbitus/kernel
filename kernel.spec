@@ -762,18 +762,19 @@ Patch21234: Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+Patch21236: scsi-fix-sd_revalidate_disk-oops.patch
 
 #rhbz 714828
-Patch21236: autofs4-lockdep.patch
+Patch21240: autofs4-lockdep.patch
 
-Patch21237: mcelog-rcu-splat.patch
-Patch21238: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
+Patch21250: mcelog-rcu-splat.patch
+Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 790367
-Patch21239: s390x-enable-keys-compat.patch
+Patch21270: s390x-enable-keys-compat.patch
 
 #rhbz 795544
-Patch21240: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
+Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1485,6 +1486,7 @@ ApplyPatch Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+ApplyPatch scsi-fix-sd_revalidate_disk-oops.patch
 
 #rhbz 714828
 ApplyPatch autofs4-lockdep.patch
@@ -2376,6 +2378,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 20 2012 Dave Jones <davej@redhat.com>
+- Do not call drivers when invalidating partitions for -ENOMEDIUM
+
 * Mon Feb 20 2012 Josh Boyer <jwboyer@redhat.com>
 - Avoid using stack variables in ums_realtek (again) (rhbz 795544)
 
