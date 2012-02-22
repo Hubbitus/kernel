@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1492,7 +1492,6 @@ ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch scsi-fix-sd_revalidate_disk-oops.patch
 
 ApplyPatch mcelog-rcu-splat.patch
-ApplyPatch x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 790367
 ApplyPatch s390x-enable-keys-compat.patch
@@ -2371,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.4
+- Drop x86-Avoid-invoking-RCU-when-CPU-is-idle.patch (rhbz 795050)
+
 * Tue Feb 21 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - update ARM configs to F-17 branch
 
