@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2370,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git2.1
+- Linux 3.3-rc4-git2 (upstream 719741d9986572d64b47c35c09f5e7bb8d389400)
+
 * Tue Feb 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git1.4
 - Drop x86-Avoid-invoking-RCU-when-CPU-is-idle.patch (rhbz 795050)
 
