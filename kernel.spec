@@ -1208,7 +1208,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
       cp -rl $sharedir/vanilla-%{kversion} .
     else
 %setup -q -n kernel-%{kversion}%{?dist} -c
-      mv linux-%{KVERREL} vanilla-%{kversion}
+      mv linux-%{kversion} vanilla-%{kversion}
     fi
 
   fi
