@@ -2366,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 23 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Further ARM config updates
+
 * Wed Feb 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git3.1
 - Linux 3.3-rc4-git3 (upstream 45196cee28a5bcfb6ddbe2bffa4270cbed66ae4b)
 
