@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -737,8 +737,6 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
-
-Patch14020: nfs-oops-getacl.patch
 
 Patch20000: utrace.patch
 
@@ -1463,8 +1461,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
-
-ApplyPatch nfs-oops-getacl.patch
 
 # utrace.
 ApplyPatch utrace.patch
@@ -2370,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git3.1
+- Linux 3.3-rc4-git3 (upstream 45196cee28a5bcfb6ddbe2bffa4270cbed66ae4b)
+
 * Wed Feb 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git2.1
 - Linux 3.3-rc4-git2 (upstream 719741d9986572d64b47c35c09f5e7bb8d389400)
 
