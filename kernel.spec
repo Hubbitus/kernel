@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2366,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 24 2012 Josh Boyer <jwboyer@redhat.com>
+- Linux 3.3-rc4-git4 (upstream bb4c7e9a9908548b458f34afb2fee74dc0d49f90)
+
 * Thu Feb 23 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Further ARM config updates
 
