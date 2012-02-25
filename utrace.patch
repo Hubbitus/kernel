@@ -1,4 +1,8 @@
-utrace for 3.3-rc1 kernel, on top of dcd6c92267155e70a94b3927bce681ce74b80d1f.
+From d007ce2c3f1f67624fde5e6b7ccc00566b7df9c3 Mon Sep 17 00:00:00 2001
+From: Oleg Nesterov <oleg@redhat.com>
+Date: Sat, 25 Feb 2012 07:29:40 -0500
+Subject: [PATCH] utrace for 3.3-rc4 kernel, on top of
+ b52b80023f262ce8a0ffdcb490acb23e8678377a.
 
 The split-out series is available in the git repository at:
 
@@ -55,7 +59,7 @@ Signed-off-by: Oleg Nesterov <oleg@redhat.com>
  include/linux/sched.h             |   25 +-
  include/linux/signal.h            |    2 +
  include/linux/tracehook.h         |   59 +-
- include/linux/utrace.h            |  773 ++++++++++++
+ include/linux/utrace.h            |  774 ++++++++++++
  init/Kconfig                      |    9 +
  kernel/Makefile                   |    1 +
  kernel/exit.c                     |    5 +
@@ -63,8 +67,8 @@ Signed-off-by: Oleg Nesterov <oleg@redhat.com>
  kernel/ptrace.c                   |   57 +-
  kernel/sched/core.c               |    2 +-
  kernel/signal.c                   |   97 ++-
- kernel/utrace.c                   | 2462 +++++++++++++++++++++++++++++++++++++
- 19 files changed, 4069 insertions(+), 56 deletions(-)
+ kernel/utrace.c                   | 2466 +++++++++++++++++++++++++++++++++++++
+ 19 files changed, 4074 insertions(+), 56 deletions(-)
  create mode 100644 Documentation/DocBook/utrace.tmpl
  create mode 100644 include/linux/utrace.h
  create mode 100644 kernel/utrace.c
@@ -721,10 +725,10 @@ index 5026738..97687f3 100644
  	clear_tsk_thread_flag(child, TIF_SYSCALL_EMU);
  #endif
 diff --git a/fs/exec.c b/fs/exec.c
-index aeb135c..36a0cbe 100644
+index 92ce83a..87ff31f 100644
 --- a/fs/exec.c
 +++ b/fs/exec.c
-@@ -1401,9 +1401,12 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
+@@ -1402,9 +1402,12 @@ int search_binary_handler(struct linux_binprm *bprm,struct pt_regs *regs)
  			 */
  			bprm->recursion_depth = depth;
  			if (retval >= 0) {
@@ -810,7 +814,7 @@ index c2f1f6a..236b920 100644
  
  		if (child->ptrace & PT_SEIZED)
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 4032ec1..e95c1dc 100644
+index 7d379a6..a3c4599 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
 @@ -185,16 +185,17 @@ print_cfs_rq(struct seq_file *m, int cpu, struct cfs_rq *cfs_rq)
@@ -870,7 +874,7 @@ index 4032ec1..e95c1dc 100644
     	u32 parent_exec_id;
     	u32 self_exec_id;
 diff --git a/include/linux/signal.h b/include/linux/signal.h
-index 7987ce7..c320549 100644
+index 7987ce74..c320549 100644
 --- a/include/linux/signal.h
 +++ b/include/linux/signal.h
 @@ -239,6 +239,8 @@ static inline int valid_signal(unsigned long sig)
@@ -999,10 +1003,10 @@ index a71a292..a1bac95 100644
  
 diff --git a/include/linux/utrace.h b/include/linux/utrace.h
 new file mode 100644
-index 0000000..f37373b
+index 0000000..46959af
 --- /dev/null
 +++ b/include/linux/utrace.h
-@@ -0,0 +1,773 @@
+@@ -0,0 +1,774 @@
 +/*
 + * utrace infrastructure interface for debugging user processes
 + *
@@ -1322,6 +1326,7 @@ index 0000000..f37373b
 +#define UTRACE_ATTACH_MATCH_MASK	0x000f
 +#define UTRACE_ATTACH_CREATE		0x0010 /* Attach a new engine.  */
 +#define UTRACE_ATTACH_EXCLUSIVE		0x0020 /* Refuse if existing match.  */
++#define UTRACE_ATTACH_ATOMIC		0x0040 /* For _CREATE, don't sleep  */
 +
 +/**
 + * struct utrace_engine - per-engine structure
@@ -1809,7 +1814,7 @@ index 2d9de86..6c6749d 100644
  obj-$(CONFIG_AUDITSYSCALL) += auditsc.o
  obj-$(CONFIG_AUDIT_WATCH) += audit_watch.o
 diff --git a/kernel/exit.c b/kernel/exit.c
-index 294b170..16108a5 100644
+index 4b4042f..b1e0518 100644
 --- a/kernel/exit.c
 +++ b/kernel/exit.c
 @@ -169,6 +169,8 @@ void release_task(struct task_struct * p)
@@ -1839,18 +1844,18 @@ index 294b170..16108a5 100644
  
  	validate_creds_for_do_exit(tsk);
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 051f090..e103101 100644
+index e2cd3e2..fa40928 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -66,6 +66,7 @@
- #include <linux/user-return-notifier.h>
+@@ -67,6 +67,7 @@
  #include <linux/oom.h>
  #include <linux/khugepaged.h>
+ #include <linux/signalfd.h>
 +#include <linux/utrace.h>
  
  #include <asm/pgtable.h>
  #include <asm/pgalloc.h>
-@@ -169,6 +170,8 @@ void free_task(struct task_struct *tsk)
+@@ -170,6 +171,8 @@ void free_task(struct task_struct *tsk)
  	free_thread_info(tsk->stack);
  	rt_mutex_debug_task_free(tsk);
  	ftrace_graph_exit_task(tsk);
@@ -1859,7 +1864,7 @@ index 051f090..e103101 100644
  	free_task_struct(tsk);
  }
  EXPORT_SYMBOL(free_task);
-@@ -1092,6 +1095,8 @@ static struct task_struct *copy_process(unsigned long clone_flags,
+@@ -1115,6 +1118,8 @@ static struct task_struct *copy_process(unsigned long clone_flags,
  	if (!p)
  		goto fork_out;
  
@@ -1868,7 +1873,7 @@ index 051f090..e103101 100644
  	ftrace_graph_init_task(p);
  
  	rt_mutex_init_task(p);
-@@ -1527,6 +1532,8 @@ long do_fork(unsigned long clone_flags,
+@@ -1550,6 +1555,8 @@ long do_fork(unsigned long clone_flags,
  			init_completion(&vfork);
  		}
  
@@ -1877,7 +1882,7 @@ index 051f090..e103101 100644
  		/*
  		 * We set PF_STARTING at creation in case tracing wants to
  		 * use this to distinguish a fully live task from one that
-@@ -1538,6 +1545,8 @@ long do_fork(unsigned long clone_flags,
+@@ -1561,6 +1568,8 @@ long do_fork(unsigned long clone_flags,
  		wake_up_new_task(p);
  
  		/* forking complete and child started to run, tell ptracer */
@@ -2017,10 +2022,10 @@ index 00ab2ca..a7024b8 100644
  		}
  		unlock_task_sighand(child, &flags);
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index df00cb0..24dfee4 100644
+index 5255c9d..f1719b8 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -1172,7 +1172,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
+@@ -1167,7 +1167,7 @@ unsigned long wait_task_inactive(struct task_struct *p, long match_state)
  		 * is actually now running somewhere else!
  		 */
  		while (task_running(rq, p)) {
@@ -2216,10 +2221,10 @@ index c73c428..0508d93 100644
  		trace_signal_deliver(signr, info, ka);
 diff --git a/kernel/utrace.c b/kernel/utrace.c
 new file mode 100644
-index 0000000..c817a46
+index 0000000..a169e1b
 --- /dev/null
 +++ b/kernel/utrace.c
-@@ -0,0 +1,2462 @@
+@@ -0,0 +1,2466 @@
 +/*
 + * utrace infrastructure interface for debugging user processes
 + *
@@ -2335,9 +2340,9 @@ index 0000000..c817a46
 + *
 + * This returns false only in case of a memory allocation failure.
 + */
-+static bool utrace_task_alloc(struct task_struct *task)
++static bool utrace_task_alloc(struct task_struct *task, gfp_t gfp_flags)
 +{
-+	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, GFP_KERNEL);
++	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, gfp_flags);
 +	if (unlikely(!utrace))
 +		return false;
 +	spin_lock_init(&utrace->lock);
@@ -2517,6 +2522,7 @@ index 0000000..c817a46
 +{
 +	struct utrace *utrace = task_utrace_struct(target);
 +	struct utrace_engine *engine;
++	gfp_t gfp_flags;
 +	int ret;
 +
 +	if (!(flags & UTRACE_ATTACH_CREATE)) {
@@ -2539,13 +2545,16 @@ index 0000000..c817a46
 +		 */
 +		return ERR_PTR(-EPERM);
 +
++	gfp_flags = (flags & UTRACE_ATTACH_ATOMIC)
++				? GFP_ATOMIC : GFP_KERNEL;
++
 +	if (!utrace) {
-+		if (unlikely(!utrace_task_alloc(target)))
++		if (unlikely(!utrace_task_alloc(target, gfp_flags)))
 +			return ERR_PTR(-ENOMEM);
 +		utrace = task_utrace_struct(target);
 +	}
 +
-+	engine = kmem_cache_alloc(utrace_engine_cachep, GFP_KERNEL);
++	engine = kmem_cache_alloc(utrace_engine_cachep, gfp_flags);
 +	if (unlikely(!engine))
 +		return ERR_PTR(-ENOMEM);
 +
@@ -4682,74 +4691,6 @@ index 0000000..c817a46
 +{
 +	seq_printf(m, "Utrace:\t%lx\n", p->utrace_flags);
 +}
-
-Add the new UTRACE_ATTACH_ATOMIC flag for utrace_attach_task().
-If it is set, UTRACE_ATTACH_CREATE uses GFP_ATOMIC for memory
-allocations and thus it can be used in atomic context.
-
-Suggested-by: Mark Wielaard <mjw@redhat.com>
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- include/linux/utrace.h |    1 +
- kernel/utrace.c        |   12 ++++++++----
- 2 files changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/include/linux/utrace.h b/include/linux/utrace.h
-index f37373b..46959af 100644
---- a/include/linux/utrace.h
-+++ b/include/linux/utrace.h
-@@ -317,6 +317,7 @@ static inline enum utrace_syscall_action utrace_syscall_action(u32 action)
- #define UTRACE_ATTACH_MATCH_MASK	0x000f
- #define UTRACE_ATTACH_CREATE		0x0010 /* Attach a new engine.  */
- #define UTRACE_ATTACH_EXCLUSIVE		0x0020 /* Refuse if existing match.  */
-+#define UTRACE_ATTACH_ATOMIC		0x0040 /* For _CREATE, don't sleep  */
- 
- /**
-  * struct utrace_engine - per-engine structure
-diff --git a/kernel/utrace.c b/kernel/utrace.c
-index c817a46..a169e1b 100644
---- a/kernel/utrace.c
-+++ b/kernel/utrace.c
-@@ -113,9 +113,9 @@ void task_utrace_unlock(struct task_struct *task)
-  *
-  * This returns false only in case of a memory allocation failure.
-  */
--static bool utrace_task_alloc(struct task_struct *task)
-+static bool utrace_task_alloc(struct task_struct *task, gfp_t gfp_flags)
- {
--	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, GFP_KERNEL);
-+	struct utrace *utrace = kmem_cache_zalloc(utrace_cachep, gfp_flags);
- 	if (unlikely(!utrace))
- 		return false;
- 	spin_lock_init(&utrace->lock);
-@@ -295,6 +295,7 @@ struct utrace_engine *utrace_attach_task(
- {
- 	struct utrace *utrace = task_utrace_struct(target);
- 	struct utrace_engine *engine;
-+	gfp_t gfp_flags;
- 	int ret;
- 
- 	if (!(flags & UTRACE_ATTACH_CREATE)) {
-@@ -317,13 +318,16 @@ struct utrace_engine *utrace_attach_task(
- 		 */
- 		return ERR_PTR(-EPERM);
- 
-+	gfp_flags = (flags & UTRACE_ATTACH_ATOMIC)
-+				? GFP_ATOMIC : GFP_KERNEL;
-+
- 	if (!utrace) {
--		if (unlikely(!utrace_task_alloc(target)))
-+		if (unlikely(!utrace_task_alloc(target, gfp_flags)))
- 			return ERR_PTR(-ENOMEM);
- 		utrace = task_utrace_struct(target);
- 	}
- 
--	engine = kmem_cache_alloc(utrace_engine_cachep, GFP_KERNEL);
-+	engine = kmem_cache_alloc(utrace_engine_cachep, gfp_flags);
- 	if (unlikely(!engine))
- 		return ERR_PTR(-ENOMEM);
- 
 -- 
-1.5.5.1
-
+1.7.9.1
 

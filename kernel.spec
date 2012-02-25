@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -716,7 +716,6 @@ Patch2802: linux-2.6-silence-acpi-blacklist.patch
 Patch2899: linux-2.6-v4l-dvb-fixes.patch
 Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
-Patch2902: imon-dont-wedge-hardware-after-early-callbacks.patch
 
 # fs fixes
 Patch4000: ext4-fix-resize-when-resizing-within-single-group.patch
@@ -1447,7 +1446,6 @@ ApplyPatch quite-apm.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
-ApplyPatch imon-dont-wedge-hardware-after-early-callbacks.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
@@ -2366,6 +2364,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Feb 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc4.git5.1
+- Linux 3.3-rc4-git5 (upstream b52b80023f262ce8a0ffdcb490acb23e8678377a)
+
 * Fri Feb 24 2012 Josh Boyer <jwboyer@redhat.com>
 - Linux 3.3-rc4-git4 (upstream bb4c7e9a9908548b458f34afb2fee74dc0d49f90)
 
