@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -774,6 +774,8 @@ Patch21270: s390x-enable-keys-compat.patch
 #rhbz 795544
 Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
+Patch21291: fix-autofs4-build.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1492,6 +1494,8 @@ ApplyPatch s390x-enable-keys-compat.patch
 
 #rhbz 795544
 ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
+
+ApplyPatch fix-autofs4-build.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2364,6 +2368,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Feb 26 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git0.3
+- Add patch from Linus Torvalds to fix 32-bit autofs4 build
+
 * Sat Feb 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git0.2
 - Disable debugging options.
 
