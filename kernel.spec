@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -771,6 +771,9 @@ Patch21270: s390x-enable-keys-compat.patch
 #rhbz 795544
 Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
+#rhbz 727865 730007
+Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1486,6 +1489,9 @@ ApplyPatch s390x-enable-keys-compat.patch
 
 #rhbz 795544
 ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
+
+#rhbz 727865 730007
+ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2358,6 +2364,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 27 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix regression in FADT revision checks (rhbz 730007 727865)
+
 * Mon Feb 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git1.1
 - Linux 3.3-rc5-git1 (upstream 500dd2370e77c9551ba298bdeeb91b02d8402199)
 - Reenable debugging options.
