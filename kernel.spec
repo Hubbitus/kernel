@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -758,9 +758,6 @@ Patch21096: hfsplus-Add-an-ioctl-to-bless-files.patch
 #rhbz 788260
 Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
-#rhbz 787373
-Patch21234: Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
-
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 Patch21236: scsi-fix-sd_revalidate_disk-oops.patch
@@ -773,8 +770,6 @@ Patch21270: s390x-enable-keys-compat.patch
 
 #rhbz 795544
 Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
-
-Patch21291: fix-autofs4-build.patch
 
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
@@ -1480,9 +1475,6 @@ ApplyPatch hfsplus-Add-an-ioctl-to-bless-files.patch
 #rhbz 788269
 ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
-#rhbz 787373
-ApplyPatch Bluetooth-Remove-bogus-inline-decl-from-l2cap_chan_connect.patch
-
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch scsi-fix-sd_revalidate_disk-oops.patch
@@ -1494,8 +1486,6 @@ ApplyPatch s390x-enable-keys-compat.patch
 
 #rhbz 795544
 ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
-
-ApplyPatch fix-autofs4-build.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2368,7 +2358,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Feb 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git0.4
+* Mon Feb 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git1.1
+- Linux 3.3-rc5-git1 (upstream 500dd2370e77c9551ba298bdeeb91b02d8402199)
 - Reenable debugging options.
 
 * Sun Feb 26 2012 Josh Boyer <jwboyer@redhat.com> - 3.3.0-0.rc5.git0.3
