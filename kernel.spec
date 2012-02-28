@@ -774,6 +774,9 @@ Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 #rhbz 727865 730007
 Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
+#rhbz 798296
+Patch21301: cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1492,6 +1495,9 @@ ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 #rhbz 727865 730007
 ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
+
+#rhbz 798296
+ApplyPatch cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2364,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 28 2012 Justin M. Forbes <jforbes@redhat.com> 
+- CVE-2012-1090 CIFS: fix dentry refcount leak when opening a FIFO on lookup (rhbz 798296)
+
 * Tue Feb 28 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc5.git2.1
 - Linux v3.3-rc5-88-g586c6e7
 
