@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2364,6 +2364,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 28 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc5.git2.1
+- Linux v3.3-rc5-88-g586c6e7
+
 * Mon Feb 27 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix regression in FADT revision checks (rhbz 730007 727865)
 
