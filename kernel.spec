@@ -2370,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 28 2012 Dave Jones <davej@redhat.com>
+- Disable CONFIG_USB_DEVICEFS (Deprecated).
+
 * Tue Feb 28 2012 Justin M. Forbes <jforbes@redhat.com> 
 - CVE-2012-1090 CIFS: fix dentry refcount leak when opening a FIFO on lookup (rhbz 798296)
 

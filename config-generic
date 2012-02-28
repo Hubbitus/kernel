@@ -3022,7 +3022,10 @@ CONFIG_USB_SUPPORT=y
 #
 # Miscellaneous USB options
 #
-CONFIG_USB_DEVICEFS=y
+
+# Deprecated.
+# CONFIG_USB_DEVICEFS is not set
+
 # CONFIG_USB_DYNAMIC_MINORS is not set
 CONFIG_USB_SUSPEND=y
 
