@@ -16,4 +16,7 @@ popd
 
 mv /tmp/patch-$VER-git.xz .
 
+perl -p -i -e 's|%global baserelease.*|%global baserelease 1|' kernel.spec
+
+#FIXME: Need the right gitN number for the version to be correct.
 rpmdev-bumpspec -c "Linux $DESC" kernel.spec
