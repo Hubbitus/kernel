@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -777,6 +777,9 @@ Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
 #rhbz 798296
 Patch21301: cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
 
+#rhbz 728478
+Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
+
 # compat-wireless patches
 Patch50000: compat-wireless-config-fixups.patch
 Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
@@ -1498,6 +1501,9 @@ ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 #rhbz 798296
 ApplyPatch cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
+
+#rhbz 728478
+ApplyPatch sony-laptop-Enable-keyboard-backlight-by-default.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2370,6 +2376,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 28 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch to enable keyboard backlight on Sony laptops (rhbz 728478)
+
 * Tue Feb 28 2012 Dave Jones <davej@redhat.com>
 - Disable CONFIG_USB_DEVICEFS (Deprecated).
 
