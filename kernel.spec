@@ -218,7 +218,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to disable with_backports.)
 #
-# % define with_backports 0
+%define with_backports 0
 #######################################################################
 
 %define make_target bzImage
@@ -2376,6 +2376,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 29 2012 John W. Linville <linville@redhat.com>
+- Disable with_backports (pending removal)
+- Disable a number of drivers for ancient wireless LAN cards
+- Disable iwm3200-related drivers (hardware never released)
+- Disable "thin firmware" version of libertas driver (libertas_tf)
+
 * Tue Feb 28 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch to enable keyboard backlight on Sony laptops (rhbz 728478)
 
