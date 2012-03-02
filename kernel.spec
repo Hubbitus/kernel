@@ -705,6 +705,7 @@ Patch1800: drm-vgem.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
+Patch1825: drm-intel-crtc-dpms-fix.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1442,6 +1443,7 @@ ApplyPatch drm-vgem.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
+ApplyPatch drm-intel-crtc-dpms-fix.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -2380,6 +2382,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 02 2012 Adam Jackson <ajax@redhat.com>
+- drm-intel-crtc-dpms-fix.patch: Fix system hang on gen2 kit on DPMS (#730853)
+
 * Thu Mar 01 2012 Dave Jones <davej@redhat.com>
 - temporarily switch to low-performance polling IRQ mode when
   unexpected IRQs occur.
