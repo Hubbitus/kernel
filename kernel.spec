@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -566,8 +566,11 @@ BuildRequires: pciutils-devel gettext
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
 # Fancy new debuginfo generation introduced in Fedora 8/RHEL 6.
-BuildRequires: rpm-build >= 4.4.2.1-4
-%define debuginfo_args --strict-build-id
+# The -r flag to find-debuginfo.sh to invoke eu-strip --reloc-debug-sections
+# reduces the number of relocations in kernel module .ko.debug files and was
+# introduced with rpm 4.9 and elfutils 0.153.
+BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
+%define debuginfo_args --strict-build-id -r
 %endif
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
@@ -2388,6 +2391,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 05 2012 Mark Wielaard <mark@klomp.org>
+- Add -r to debuginfo_args to invoke eu-strip --reloc-debug-sections.
+
 * Fri Mar 02 2012 Justin M. Forbes <jforbes@redhat.com> 
 - Disable threading in hibernate compression/decompression
 
