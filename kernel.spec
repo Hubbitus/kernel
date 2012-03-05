@@ -54,7 +54,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -85,9 +85,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -708,7 +708,6 @@ Patch1800: drm-vgem.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
-Patch1825: drm-intel-crtc-dpms-fix.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -768,9 +767,6 @@ Patch21236: scsi-fix-sd_revalidate_disk-oops.patch
 
 Patch21250: mcelog-rcu-splat.patch
 Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
-
-#rhbz 790367
-Patch21270: s390x-enable-keys-compat.patch
 
 #rhbz 795544
 Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
@@ -1449,7 +1445,6 @@ ApplyPatch drm-vgem.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
-ApplyPatch drm-intel-crtc-dpms-fix.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -1499,9 +1494,6 @@ ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch scsi-fix-sd_revalidate_disk-oops.patch
 
 ApplyPatch mcelog-rcu-splat.patch
-
-#rhbz 790367
-ApplyPatch s390x-enable-keys-compat.patch
 
 #rhbz 795544
 ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
@@ -2391,6 +2383,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 05 2012 Dave Jones <davej@redhat.com>
+- Linux 3.3-rc6
+
 * Mon Mar 05 2012 John W. Linville <linville@redhat.com>
 - Turn-off CONFIG_B43_BCMA_EXTRA to avoid b43/brcmsmac overlap
 
