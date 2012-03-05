@@ -2391,6 +2391,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 05 2012 John W. Linville <linville@redhat.com>
+- Turn-off CONFIG_B43_BCMA_EXTRA to avoid b43/brcmsmac overlap
+
 * Mon Mar 05 2012 Mark Wielaard <mark@klomp.org>
 - Add -r to debuginfo_args to invoke eu-strip --reloc-debug-sections.
 
