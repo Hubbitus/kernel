@@ -1,0 +1,8 @@
+%pubring kernel.pub
+%secring kernel.sec
+Key-Type: RSA
+Key-Length: 2048
+Name-Real: Fedora Project
+Name-Comment: Kernel Module GPG key
+%commit
+

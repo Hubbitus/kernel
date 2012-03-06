@@ -8,6 +8,14 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
+# Sign modules on x86.  Make sure the config files match this setting if more
+# architectures are added.
+%ifarch %{ix86} x86_64
+%global signmodules 1
+%else
+%global signmodules 0
+%endif
+
 # Save original buildid for later if it's defined
 %if 0%{?buildid:1}
 %global orig_buildid %{buildid}
@@ -54,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -573,8 +581,16 @@ BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
 %define debuginfo_args --strict-build-id -r
 %endif
 
+%if %{signmodules}
+BuildRequires: gnupg
+%endif
+
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
 Source1: compat-wireless-%{cwversion}.tar.bz2
+
+%if %{signmodules}
+Source11: genkey
+%endif
 
 Source15: merge.pl
 Source16: mod-extra.list
@@ -696,6 +712,7 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
+Patch900: modsign-20111207.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1430,6 +1447,7 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
+ApplyPatch modsign-20111207.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -1556,6 +1574,30 @@ done
 # remove unnecessary SCM files
 find . -name .gitignore -exec rm -f {} \; >/dev/null
 
+%if %{signmodules}
+cat <<EOF
+###
+### Now generating a PGP key pair to be used for signing modules.
+###
+### If this takes a long time, you might wish to run rngd in the background to
+### keep the supply of entropy topped up.  It needs to be run as root, and
+### should use a hardware random number generator if one is available, eg:
+###
+###     rngd -r /dev/hwrandom
+###
+### If one isn't available, the pseudo-random number generator can be used:
+###
+###     rngd -r /dev/urandom
+###
+EOF
+gpg --homedir . --batch --gen-key %{SOURCE11}
+cat <<EOF
+###
+### Key pair generated.
+###
+EOF
+%endif
+
 cd ..
 
 %if %{with_backports}
@@ -1580,6 +1622,7 @@ cd ..
 
 # get rid of unwanted files resulting from patch fuzz
 find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
+
 
 ###
 ### build
@@ -1679,6 +1722,14 @@ BuildKernel() {
     # Override $(mod-fw) because we don't want it to install any firmware
     # we'll get it from the linux-firmware package and we don't want conflicts
     make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_install KERNELRELEASE=$KernelVer mod-fw=
+
+%if %{signmodules}
+        if [ -z "$(readelf -n $(find fs/ -name \*.ko | head -n 1) | grep module.sig)" ]; then
+            echo "ERROR: modules are NOT signed" >&2;
+            exit 1;
+        fi
+%endif
+
 %ifarch %{vdso_arches}
     make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT vdso_install KERNELRELEASE=$KernelVer
     if [ ! -s ldconfig-kernel.conf ]; then
@@ -2377,6 +2428,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 07 2012 Josh Boyer <jwboyer@redhat.com>
+- Add modsign for x86 builds
+
 * Wed Mar 07 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc6.git2.2
 - Disable debugging options.
 
