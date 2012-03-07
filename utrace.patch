@@ -1873,15 +1873,15 @@ index e2cd3e2..fa40928 100644
  	ftrace_graph_init_task(p);
  
  	rt_mutex_init_task(p);
-@@ -1550,6 +1555,8 @@ long do_fork(unsigned long clone_flags,
- 			init_completion(&vfork);
+@@ -1583,6 +1583,8 @@ long do_fork(unsigned long clone_flags,
+ 			get_task_struct(p);
  		}
  
 +		UTRACE_HOOK(current, CLONE, report_clone(clone_flags, p));
 +
- 		/*
- 		 * We set PF_STARTING at creation in case tracing wants to
- 		 * use this to distinguish a fully live task from one that
+ 		wake_up_new_task(p);
+ 
+ 		/* forking complete and child started to run, tell ptracer */
 @@ -1561,6 +1568,8 @@ long do_fork(unsigned long clone_flags,
  		wake_up_new_task(p);
  

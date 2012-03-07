@@ -87,7 +87,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -773,9 +773,6 @@ Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 #rhbz 727865 730007
 Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
-
-#rhbz 798296
-Patch21301: cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
 
 #rhbz 728478
 Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
@@ -1500,9 +1497,6 @@ ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 #rhbz 727865 730007
 ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
-
-#rhbz 798296
-ApplyPatch cifs-fix-dentry-refcount-leak-when-opening-a-FIFO.patch
 
 #rhbz 728478
 ApplyPatch sony-laptop-Enable-keyboard-backlight-by-default.patch
@@ -2383,6 +2377,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 07 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc6.git1.1
+- Linux v3.3-rc6-131-g097d591
+
 * Mon Mar 05 2012 Dave Jones <davej@redhat.com>
 - Linux 3.3-rc6
 
