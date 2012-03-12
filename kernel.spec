@@ -277,10 +277,8 @@ Summary: The Linux kernel
 %define with_tegra 0
 %define with_omap 0
 %define with_imx 0
-%endif
-
-# disable highbank ARM kernels for the time being
 %define with_highbank 0
+%endif
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -763,6 +761,10 @@ Patch20000: utrace.patch
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
+
+# highbank patches
+# Highbank clock functions need to be EXPORT for module builds
+Patch21010: highbank-export-clock-functions.patch
 
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 
@@ -1527,6 +1529,9 @@ ApplyPatch disable-threading-in-compression-for-hibernate.patch
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
 ApplyPatch weird-root-dentry-name-debug.patch
+
+#Highbank clock functions
+ApplyPatch highbank-export-clock-functions.patch 
 
 # END OF PATCH APPLICATIONS
 
@@ -2432,6 +2437,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 12 2012 Mark Langsdorf <mark.langsdorf@calxeda.com>
+- Re-enable highbank config option and add new config file to support it
+
 * Mon Mar 12 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc7.git0.5
 - Reenable debugging options.
 
