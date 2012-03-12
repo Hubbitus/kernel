@@ -66,8 +66,8 @@ Summary: The Linux kernel
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
-# on top of -- for example, 2.6.22-rc7-git1 starts with a 2.6.21 base,
-# which yields a base_sublevel of 21.
+# on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
+# which yields a base_sublevel of 0.
 %define base_sublevel 2
 
 ## If this is a released kernel ##
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2432,6 +2432,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 12 2012 Dave Jones <davej@redhat.com>
+- Linux 3.3-rc7
+
 * Wed Mar 07 2012 Dave Jones <davej@redhat.com>
 - Add debug patch for bugs 787171/766277
 
