@@ -160,9 +160,6 @@ Summary: The Linux kernel
 # build a release kernel on rawhide
 %define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
-# Include driver backports (e.g. compat-wireless) in the kernel build.
-%define with_backports %{?_without_backports: 0} %{?!_without_backports: 1}
-
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
@@ -214,20 +211,6 @@ Summary: The Linux kernel
 
 # The kernel tarball/base version
 %define kversion 3.%{base_sublevel}
-
-# The compat-wireless version
-%define cwversion 2012-02-05
-
-#######################################################################
-# If cwversion is less than kversion, make sure with_backports is
-# turned-off.
-#
-# For rawhide, disable with_backports immediately after a rebase...
-#
-# (Uncomment the '#' and both spaces below to disable with_backports.)
-#
-%define with_backports 0
-#######################################################################
 
 %define make_target bzImage
 
@@ -396,7 +379,6 @@ Summary: The Linux kernel
 %define make_target image
 %define kernel_image arch/s390/boot/image
 %define with_tools 0
-%define with_backports 0
 %endif
 
 %ifarch sparc64
@@ -429,7 +411,6 @@ Summary: The Linux kernel
 %define hdrarch arm
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
-%define with_backports 0
 # we build a up kernel on base softfp/hardfp platforms. its used for qemu.
 %ifnarch armv5tel armv7hl
 %define with_up 0
@@ -467,7 +448,6 @@ Summary: The Linux kernel
 %define with_debuginfo 0
 %define with_perf 0
 %define with_tools 0
-%define with_backports 0
 %define _enable_debug_packages 0
 %endif
 
@@ -584,7 +564,6 @@ BuildRequires: gnupg
 %endif
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
-Source1: compat-wireless-%{cwversion}.tar.bz2
 
 %if %{signmodules}
 Source11: genkey
@@ -620,8 +599,6 @@ Source111: config-arm-tegra
 Source112: config-arm-kirkwood
 Source113: config-arm-imx
 Source114: config-arm-highbank
-
-Source200: config-backports
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -703,7 +680,6 @@ Patch471: floppy-Remove-_hlt-related-functions.patch
 Patch510: linux-2.6-silence-noise.patch
 Patch520: quite-apm.patch
 Patch530: linux-2.6-silence-fbcon-logo.patch
-Patch540: modpost-add-option-to-allow-external-modules-to-avoi.patch
 
 Patch700: linux-2.6-e1000-ich9-montevina.patch
 
@@ -802,11 +778,6 @@ Patch21303: disable-threading-in-compression-for-hibernate.patch
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
-
-# compat-wireless patches
-Patch50000: compat-wireless-config-fixups.patch
-Patch50001: compat-wireless-pr_fmt-warning-avoidance.patch
-Patch50002: compat-wireless-integrated-build.patch
 
 %endif
 
@@ -1323,16 +1294,6 @@ make -f %{SOURCE19} config-release
 # Dynamically generate kernel .config files from config-* files
 make -f %{SOURCE20} VERSION=%{version} configs
 
-%if %{with_backports}
-# Turn-off bits provided by compat-wireless
-for i in %{all_arch_configs}
-do
-  mv $i $i.tmp
-  ./merge.pl %{SOURCE200} $i.tmp > $i
-  rm $i.tmp
-done
-%endif
-
 # Merge in any user-provided local config option changes
 %if %{?all_arch_configs:1}%{!?all_arch_configs:0}
 for i in %{all_arch_configs}
@@ -1435,11 +1396,6 @@ ApplyPatch linux-2.6-silence-noise.patch
 
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch linux-2.6-silence-fbcon-logo.patch
-
-%if %{with_backports}
-# modpost: add option to allow external modules to avoid taint
-ApplyPatch modpost-add-option-to-allow-external-modules-to-avoi.patch
-%endif
 
 # Changes to upstream defaults.
 
@@ -1580,6 +1536,9 @@ done
 # end of kernel config
 %endif
 
+# get rid of unwanted files resulting from patch fuzz
+find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
+
 # remove unnecessary SCM files
 find . -name .gitignore -exec rm -f {} \; >/dev/null
 
@@ -1608,30 +1567,6 @@ EOF
 %endif
 
 cd ..
-
-%if %{with_backports}
-
-# Always start fresh
-rm -rf compat-wireless-%{cwversion}
-
-# Extract the compat-wireless bits
-%setup -q -n kernel-%{kversion}%{?dist} -T -D -a 1
-
-cd compat-wireless-%{cwversion}
-
-ApplyPatch compat-wireless-config-fixups.patch
-ApplyPatch compat-wireless-pr_fmt-warning-avoidance.patch
-ApplyPatch compat-wireless-integrated-build.patch
-
-ApplyPatch rt2x00_fix_MCU_request_failures.patch
-
-cd ..
-
-%endif
-
-# get rid of unwanted files resulting from patch fuzz
-find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
-
 
 ###
 ### build
@@ -1763,9 +1698,6 @@ BuildKernel() {
     # dirs for additional modules per module-init-tools, kbuild/modules.txt
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/extra
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/updates
-%if %{with_backports}
-    mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/backports
-%endif
     # first copy everything
     cp --parents `find  -type f -name "Makefile*" -o -name "Kconfig*"` $RPM_BUILD_ROOT/lib/modules/$KernelVer/build
     cp Module.symvers $RPM_BUILD_ROOT/lib/modules/$KernelVer/build
@@ -1906,6 +1838,12 @@ BuildKernel() {
     rm mod-extra.list mod-extra2.list mod-extra3.list
     popd
 
+    # remove files that will be auto generated by depmod at rpm -i time
+    for i in alias alias.bin builtin.bin ccwmap dep dep.bin ieee1394map inputmap isapnpmap ofmap pcimap seriomap symbols symbols.bin usbmap
+    do
+      rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$i
+    done
+
     # Move the devel headers out of the root file system
     mkdir -p $RPM_BUILD_ROOT/usr/src/kernels
     mv $RPM_BUILD_ROOT/lib/modules/$KernelVer/build $RPM_BUILD_ROOT/$DevelDir
@@ -1918,33 +1856,6 @@ BuildKernel() {
 
     # prune junk from kernel-devel
     find $RPM_BUILD_ROOT/usr/src/kernels -name ".*.cmd" -exec rm -f {} \;
-
-%if %{with_backports}
-
-    cd ../compat-wireless-%{cwversion}/
-
-    install -m 644 config.mk \
-	$RPM_BUILD_ROOT/boot/config.mk-compat-wireless-%{cwversion}-$KernelVer
-
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} \
-	KLIB_BUILD=../linux-%{KVERREL} \
-	KMODPATH_ARG="INSTALL_MOD_PATH=$RPM_BUILD_ROOT" \
-	KMODDIR="backports" install-modules %{?sparse_mflags}
-
-    # mark modules executable so that strip-to-file can strip them
-    find $RPM_BUILD_ROOT/lib/modules/$KernelVer/backports -name "*.ko" \
-	-type f | xargs --no-run-if-empty chmod u+x
-
-    cd -
-
-%endif
-
-    # remove files that will be auto generated by depmod at rpm -i time
-    for i in alias alias.bin builtin.bin ccwmap dep dep.bin ieee1394map inputmap isapnpmap ofmap pcimap seriomap symbols symbols.bin usbmap
-    do
-      rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$i
-    done
-
 }
 
 ###
@@ -2387,10 +2298,6 @@ fi
 /lib/modules/%{KVERREL}%{?2:.%{2}}/build\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/source\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/updates\
-%if %{with_backports}\
-/boot/config.mk-compat-wireless-%{cwversion}-%{KVERREL}%{?2:.%{2}}\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/backports\
-%endif\
 %ifarch %{vdso_arches}\
 /lib/modules/%{KVERREL}%{?2:.%{2}}/vdso\
 /etc/ld.so.conf.d/kernel-%{KVERREL}%{?2:.%{2}}.conf\
@@ -2437,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 13 2012 John W. Linville <linville@redhat.com>
+- Remove infrastructure related to compat-wireless integration
+
 * Mon Mar 12 2012 Mark Langsdorf <mark.langsdorf@calxeda.com>
 - Re-enable highbank config option and add new config file to support it
 
