@@ -775,6 +775,9 @@ Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
 # Disable threading in hibernate compression
 Patch21303: disable-threading-in-compression-for-hibernate.patch
 
+#rhbz 803809 CVE-2012-1179
+Patch21304: mm-thp-fix-pmd_bad-triggering.patch
+
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
@@ -1485,6 +1488,9 @@ ApplyPatch disable-threading-in-compression-for-hibernate.patch
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
 ApplyPatch weird-root-dentry-name-debug.patch
+
+#rhbz 803809 CVE-2012-1179
+ApplyPatch mm-thp-fix-pmd_bad-triggering.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
@@ -2344,6 +2350,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 15 2012 Justin M. Forbes <jforbes@redhat.com>
+- CVE-2012-1179 fix pmd_bad() triggering in code paths holding mmap_sem read mode (rhbz 803809)
+
 * Wed Mar 14 2012 Josh Boyer <jwboyer@redhat.com>
 - Fixup irqpoll patch to only activate on machines with ASM108x PCI bridge
 
