@@ -2344,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 14 2012 Josh Boyer <jwboyer@redhat.com>
+- Fixup irqpoll patch to only activate on machines with ASM108x PCI bridge
+
 * Tue Mar 13 2012 John W. Linville <linville@redhat.com>
 - Remove infrastructure related to compat-wireless integration
 
