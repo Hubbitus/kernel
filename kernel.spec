@@ -699,6 +699,7 @@ Patch1800: drm-vgem.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
+Patch1825: drm-i915-dp-stfu.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1419,6 +1420,7 @@ ApplyPatch drm-vgem.patch
 
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
+ApplyPatch drm-i915-dp-stfu.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -2342,6 +2344,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 16 2012 Adam Jackson <ajax@redhat.com>
+- drm-i915-dp-stfu.patch: Muzzle a bunch of DP WARN()s.  They're not wrong,
+  but they're not helpful at this point.
+
 * Fri Mar 16 2012 Dave Jones <davej@redhat.com> - 3.3.0-0.rc7.git2.1
 - Linux v3.3-rc7-103-g0c4d067
 
