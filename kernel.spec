@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 5
+%global baserelease 6
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2350,6 +2350,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 16 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix irqpoll patch to really only apply for ASM108x machines (rhbz 800520)
+
 * Thu Mar 15 2012 Justin M. Forbes <jforbes@redhat.com>
 - CVE-2012-1179 fix pmd_bad() triggering in code paths holding mmap_sem read mode (rhbz 803809)
 

@@ -174,17 +174,34 @@ Josh Boyer <jwboyer@redhat.com>
   *  functioning device sharing an IRQ with the failing one)
   */
  static void
-@@ -302,19 +332,24 @@ void note_interrupt(unsigned int irq, st
+@@ -269,6 +299,8 @@ try_misrouted_irq(unsigned int irq, stru
+ void note_interrupt(unsigned int irq, struct irq_desc *desc,
+ 		    irqreturn_t action_ret)
+ {
++	int unhandled_thresh = 999000;
++
+ 	if (desc->istate & IRQS_POLL_INPROGRESS)
+ 		return;
+ 
+@@ -302,19 +334,31 @@ void note_interrupt(unsigned int irq, st
  	}
  
  	desc->irq_count++;
 -	if (likely(desc->irq_count < 100000))
-+	if (likely(desc->irq_count < 10))
- 		return;
+-		return;
++	if (!irq_poll_and_retry)
++		if (likely(desc->irq_count < 100000))
++			return;
++	else
++		if (likely(desc->irq_count < 10))
++			return;
  
  	desc->irq_count = 0;
 -	if (unlikely(desc->irqs_unhandled > 99900)) {
-+	if (unlikely(desc->irqs_unhandled >= 9)) {
++	if (irq_poll_and_retry)
++		unhandled_thresh = 9;
++
++	if (unlikely(desc->irqs_unhandled >= unhandled_thresh)) {
  		/*
 -		 * The interrupt is stuck
 +		 * The interrupt might be stuck
