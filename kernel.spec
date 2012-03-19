@@ -1171,6 +1171,21 @@ ApplyOptionalPatch()
 sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-3.*' \
             | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
+# Delete all old stale trees.
+if [ -d kernel-%{kversion}%{?dist} ]; then
+  cd kernel-%{kversion}%{?dist}
+  for i in linux-*
+  do
+     # Just in case we ctrl-c'd a prep already
+     rm -rf deleteme.%{_target_cpu}
+     # Move away the stale away, and delete in background.
+     mv $i deleteme-$i
+     rm -rf deleteme* &
+  done
+  cd ..
+fi
+
+# Generate new tree
 if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 
   if [ -d kernel-%{kversion}%{?dist}/vanilla-%{kversion} ]; then
@@ -1247,14 +1262,6 @@ else
 fi
 
 # Now build the fedora kernel tree.
-if [ -d linux-%{KVERREL} ]; then
-  # Just in case we ctrl-c'd a prep already
-  rm -rf deleteme.%{_target_cpu}
-  # Move away the stale away, and delete in background.
-  mv linux-%{KVERREL} deleteme.%{_target_cpu}
-  rm -rf deleteme.%{_target_cpu} &
-fi
-
 cp -rl vanilla-%{vanillaversion} linux-%{KVERREL}
 
 cd linux-%{KVERREL}
