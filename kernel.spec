@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 2
+%define base_sublevel 3
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -2344,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 18 2012 Dave Jones <davej@redhat.com>
+- Linux 3.3
+
 * Fri Mar 16 2012 Adam Jackson <ajax@redhat.com>
 - drm-i915-dp-stfu.patch: Muzzle a bunch of DP WARN()s.  They're not wrong,
   but they're not helpful at this point.
