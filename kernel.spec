@@ -424,14 +424,6 @@ Summary: The Linux kernel
 %endif
 %endif
 
-# Should make listnewconfig fail if there's config options
-# printed out?
-%if %{nopatches}%{using_upstream_branch}
-%define listnewconfig_fail 0
-%else
-%define listnewconfig_fail 1
-%endif
-
 # To temporarily exclude an architecture from being built, add it to
 # %%nobuildarches. Do _NOT_ use the ExclusiveArch: line, because if we
 # don't build kernel-headers then the new build system will no longer let
@@ -1517,18 +1509,10 @@ rm -f kernel-%{version}-*debug.config
 %endif
 
 # now run oldconfig over all the config files
-for i in *.config
+for i in kernel-*-$(uname -p)*.config
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
-  make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
-%if %{listnewconfig_fail}
-  if [ -s .newoptions ]; then
-    cat .newoptions
-    exit 1
-  fi
-%endif
-  rm -f .newoptions
   make ARCH=$Arch oldnoconfig
   echo "# $Arch" > configs/$i
   cat .config >> configs/$i
