@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -766,6 +766,9 @@ Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
 
 #rhbz 803809 CVE-2012-1179
 Patch21304: mm-thp-fix-pmd_bad-triggering.patch
+
+#rhbz 804007
+Patch21305: mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1477,6 +1480,9 @@ ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 #rhbz 728478
 ApplyPatch sony-laptop-Enable-keyboard-backlight-by-default.patch
+
+#rhbz 804007
+ApplyPatch mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
 
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
@@ -2335,6 +2341,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 20 2012 Josh Boyer <jwboyer@redhat.com>
+- mac80211: fix possible tid_rx->reorder_timer use after free
+  from Stanislaw Gruska (rhbz 804007)
+
 * Mon Mar 19 2012 Dave Jones <davej@redhat.com> - 3.3.0-3
 - Reenable debugging options.
 
