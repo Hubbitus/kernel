@@ -1,0 +1,5 @@
+Linux 3.4 rebase notes:
+
+* Look at the CPU modalias patches from Andi.  See if they are sufficient to
+  build the cpufreq drivers as modules again (rhbz 713572 but mostly to just
+  make this person in IRC be quiet)
