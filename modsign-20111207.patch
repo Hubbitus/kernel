@@ -7359,3 +7359,34 @@ index 5e77c2a..e40f9b68 100644
 -- 
 1.7.9.1
 
+diff --git  a/security/keys/crypto_rsa.c b/security/keys/crypto_rsa.c
+--- a/security/keys/crypto_rsa.c
+--- b/security/keys/crypto_rsa.c
+@@ -219,15 +219,24 @@ 
+ 	kenter("");
+ 
+ 	/* (1) Check the signature size against the public key modulus size */
+-	k = (mpi_get_nbits(key->rsa.n) + 7) / 8;
++	k = mpi_get_nbits(key->rsa.n);
++	tsize = mpi_get_nbits(sig->rsa.s);
+ 
+-	tsize = (mpi_get_nbits(sig->rsa.s) + 7) / 8;
++	/* According to RFC 4880 sec 3.2, length of MPI is computed starting
++	 * from most significant bit.
++	 * So the RFC 3447 sec 8.2.2 size check must be relaxed to conform
++	 * with shorter signatures.
++	 * Fail here only if signature length is longer than modulus size.
++	 */
+ 	pr_devel("step 1: k=%zu size(S)=%zu\n", k, tsize);
+-	if (tsize != k) {
++	if (k < tsize) {
+ 		ret = -EBADMSG;
+ 		goto error;
+ 	}
+ 
++	/* Round up to octets */
++	k = (k + 7) / 8;
++
+ 	/* (2b) Apply the RSAVP1 verification primitive to the public key */
+ 	ret = RSAVP1(key, sig->rsa.s, &m);
+ 	if (ret < 0)
