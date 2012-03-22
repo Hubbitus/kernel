@@ -113,7 +113,7 @@ index 16570aa..827ebaf 100644
  
  source "drivers/scsi/pcmcia/Kconfig"
 diff --git a/drivers/scsi/Makefile b/drivers/scsi/Makefile
-index 2b88749..351b28b 100644
+index e4c1a69..ad24e06 100644
 --- a/drivers/scsi/Makefile
 +++ b/drivers/scsi/Makefile
 @@ -141,6 +141,7 @@ obj-$(CONFIG_SCSI_CXGB4_ISCSI)	+= libiscsi.o libiscsi_tcp.o cxgbi/
@@ -122,8 +122,8 @@ index 2b88749..351b28b 100644
  obj-$(CONFIG_SCSI_PMCRAID)	+= pmcraid.o
 +obj-$(CONFIG_SCSI_VIRTIO)	+= virtio_scsi.o
  obj-$(CONFIG_VMWARE_PVSCSI)	+= vmw_pvscsi.o
+ obj-$(CONFIG_HYPERV_STORAGE)	+= hv_storvsc.o
  
- obj-$(CONFIG_ARM)		+= arm/
 diff --git a/drivers/scsi/virtio_scsi.c b/drivers/scsi/virtio_scsi.c
 new file mode 100644
 index 0000000..3f87ae0

@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 5
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -609,7 +609,7 @@ Source2001: cpupower.config
 Patch00: %{stable_patch_00}
 %endif
 %if 0%{?stable_rc}
-%define    stable_patch_01  patch-3.%{base_sublevel}.%{stable_update}-rc%{stable_rc}.bz2
+%define    stable_patch_01  patch-3.%{base_sublevel}.%{stable_update}-rc%{stable_rc}.xz
 Patch01: %{stable_patch_01}
 %endif
 
@@ -625,7 +625,7 @@ Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Patch00: patch-3.%{base_sublevel}-git%{gitrev}.bz2
+Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
@@ -708,7 +708,6 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch4000: ext4-fix-resize-when-resizing-within-single-group.patch
 
 # NFSv4
-Patch1101: linux-3.1-keys-remove-special-keyring.patch
 Patch1102: linux-3.3-newidmapper-01.patch
 Patch1103: linux-3.3-newidmapper-02.patch
 Patch1104: linux-3.3-newidmapper-03.patch
@@ -724,8 +723,6 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
-Patch20000: utrace.patch
-
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
@@ -739,12 +736,7 @@ Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 
 Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
-Patch21093: rt2x00_fix_MCU_request_failures.patch
-
 Patch21094: power-x86-destdir.patch
-
-Patch21095: hfsplus-Change-finder_info-to-u32.patch
-Patch21096: hfsplus-Add-an-ioctl-to-bless-files.patch
 
 #rhbz 788260
 Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
@@ -754,9 +746,6 @@ Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 Patch21250: mcelog-rcu-splat.patch
 Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
-
-#rhbz 795544
-Patch21280: ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 #rhbz 727865 730007
 Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
@@ -1182,11 +1171,13 @@ if [ -d kernel-%{kversion}%{?dist} ]; then
   cd kernel-%{kversion}%{?dist}
   for i in linux-*
   do
-     # Just in case we ctrl-c'd a prep already
-     rm -rf deleteme.%{_target_cpu}
-     # Move away the stale away, and delete in background.
-     mv $i deleteme-$i
-     rm -rf deleteme* &
+     if [ -d $i ]; then
+       # Just in case we ctrl-c'd a prep already
+       rm -rf deleteme.%{_target_cpu}
+       # Move away the stale away, and delete in background.
+       mv $i deleteme-$i
+       rm -rf deleteme* &
+     fi
   done
   cd ..
 fi
@@ -1250,7 +1241,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{base_sublevel}-git%{gitrev}.bz2
+    ApplyPatch patch-3.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 
@@ -1332,8 +1323,8 @@ ApplyPatch linux-2.6-i386-nx-emulation.patch
 #
 # ARM
 #
-#pplyPatch arm-omap-dt-compat.patch
-ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
+#ApplyPatch arm-omap-dt-compat.patch
+#ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 
 #
@@ -1351,7 +1342,6 @@ ApplyPatch ext4-fix-resize-when-resizing-within-single-group.patch
 # eCryptfs
 
 # NFSv4
-ApplyPatch linux-3.1-keys-remove-special-keyring.patch
 ApplyPatch linux-3.3-newidmapper-01.patch
 ApplyPatch linux-3.3-newidmapper-02.patch
 ApplyPatch linux-3.3-newidmapper-03.patch
@@ -1448,24 +1438,16 @@ ApplyPatch dmar-disable-when-ricoh-multifunction.patch
 
 ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
-ApplyPatch hibernate-freeze-filesystems.patch
+# FIXME: REBASE
+#ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
-
-# utrace.
-ApplyPatch utrace.patch
 
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 
 ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
 
-#rhbz 772772
-ApplyPatch rt2x00_fix_MCU_request_failures.patch
-
 ApplyPatch power-x86-destdir.patch
-
-ApplyPatch hfsplus-Change-finder_info-to-u32.patch
-ApplyPatch hfsplus-Add-an-ioctl-to-bless-files.patch
 
 #rhbz 788269
 ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
@@ -1474,9 +1456,6 @@ ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 ApplyPatch mcelog-rcu-splat.patch
-
-#rhbz 795544
-ApplyPatch ums_realtek-do-not-use-stack-memory-for-DMA-in-__do_.patch
 
 #rhbz 727865 730007
 ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
@@ -2353,6 +2332,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.1
+- Linux v3.3-4074-g5375871
+
 * Wed Mar 21 2012 Josh Boyer <jwboyer@redhat.com>
 - Ship hmac file for vmlinuz for FIPS-140 (rhbz 805538)
 
