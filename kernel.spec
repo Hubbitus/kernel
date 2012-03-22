@@ -766,6 +766,8 @@ Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
+Patch23000: fix-dentry-hash.patch
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -1472,6 +1474,8 @@ ApplyPatch shlib_base_randomize.patch
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
 ApplyPatch weird-root-dentry-name-debug.patch
+
+ApplyPatch fix-dentry-hash.patch
 
 #rhbz 803809 CVE-2012-1179
 ApplyPatch mm-thp-fix-pmd_bad-triggering.patch
@@ -2332,6 +2336,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 22 2012 Dave Jones <davej@redhat.com>
+- Fix dentry hash collisions that prevented boot with selinux enabled (rhbz 805371)
+
 * Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.1
 - Linux v3.3-4074-g5375871
 
