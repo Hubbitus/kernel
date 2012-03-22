@@ -2336,10 +2336,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Thu Mar 22 2012 Dave Jones <davej@redhat.com>
+* Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.2
 - Fix occasional EBADMSG from signed modules. (rhbz 804345)
 
-* Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.2
+* Thu Mar 22 2012 Dave Jones <davej@redhat.com>
 - Fix dentry hash collisions that prevented boot with selinux enabled (rhbz 805371)
 
 * Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.1
