@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -653,8 +653,6 @@ Patch100: taint-vbox.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
 
-Patch383: linux-2.6-defaults-aspm.patch
-
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
@@ -682,7 +680,6 @@ Patch900: modsign-20111207.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
-Patch1556: linux-3.3-virtio-scsi.patch
 
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
@@ -708,9 +705,6 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 Patch4000: ext4-fix-resize-when-resizing-within-single-group.patch
 
 # NFSv4
-Patch1102: linux-3.3-newidmapper-01.patch
-Patch1103: linux-3.3-newidmapper-02.patch
-Patch1104: linux-3.3-newidmapper-03.patch
 
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
@@ -734,8 +728,6 @@ Patch21010: highbank-export-clock-functions.patch
 
 Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
 
-Patch21092: udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
-
 Patch21094: power-x86-destdir.patch
 
 #rhbz 788260
@@ -744,7 +736,6 @@ Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
-Patch21250: mcelog-rcu-splat.patch
 Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 727865 730007
@@ -752,9 +743,6 @@ Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 #rhbz 728478
 Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
-
-#rhbz 803809 CVE-2012-1179
-Patch21304: mm-thp-fix-pmd_bad-triggering.patch
 
 #rhbz 804007
 Patch21305: mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
@@ -765,8 +753,6 @@ Patch21306: shlib_base_randomize.patch
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
-
-Patch23000: fix-dentry-hash.patch
 
 %endif
 
@@ -1344,9 +1330,6 @@ ApplyPatch ext4-fix-resize-when-resizing-within-single-group.patch
 # eCryptfs
 
 # NFSv4
-ApplyPatch linux-3.3-newidmapper-01.patch
-ApplyPatch linux-3.3-newidmapper-02.patch
-ApplyPatch linux-3.3-newidmapper-03.patch
 
 # USB
 
@@ -1362,8 +1345,6 @@ ApplyPatch acpi-sony-nonvs-blacklist.patch
 #
 # PCI
 #
-# enable ASPM by default on hardware we expect to work
-ApplyPatch linux-2.6-defaults-aspm.patch
 
 #
 # SCSI Bits.
@@ -1433,7 +1414,6 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
-ApplyPatch linux-3.3-virtio-scsi.patch
 
 # rhbz#605888
 ApplyPatch dmar-disable-when-ricoh-multifunction.patch
@@ -1447,8 +1427,6 @@ ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
 
-ApplyPatch udlfb-remove-sysfs-framebuffer-device-with-USB-disconnect.patch
-
 ApplyPatch power-x86-destdir.patch
 
 #rhbz 788269
@@ -1456,8 +1434,6 @@ ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-ApplyPatch mcelog-rcu-splat.patch
 
 #rhbz 727865 730007
 ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
@@ -1474,11 +1450,6 @@ ApplyPatch shlib_base_randomize.patch
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
 ApplyPatch weird-root-dentry-name-debug.patch
-
-ApplyPatch fix-dentry-hash.patch
-
-#rhbz 803809 CVE-2012-1179
-ApplyPatch mm-thp-fix-pmd_bad-triggering.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
@@ -2336,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 26 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git2.1
+- Linux v3.3-6972-ge22057c
+
 * Thu Mar 22 2012 Dave Jones <davej@redhat.com> 3.4.0-0.rc0.git1.2
 - Fix occasional EBADMSG from signed modules. (rhbz 804345)
 
