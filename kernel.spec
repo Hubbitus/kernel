@@ -652,6 +652,7 @@ Patch09: linux-2.6-upstream-reverts.patch
 Patch100: taint-vbox.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
+Patch162: nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1307,6 +1308,7 @@ ApplyPatch taint-vbox.patch
 # x86(-64)
 ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 ApplyPatch linux-2.6-i386-nx-emulation.patch
+ApplyPatch nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 #
 # ARM
@@ -2307,6 +2309,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 29 2012 Josh Boyer <jwboyer@redhat.com>
+- Drop __cpuinitdata on disable_nx for x86_32 (rhbz 808075)
+
 * Wed Mar 28 2012 Josh Boyer <jwboyer@redhat.com>
 - Move 9p modules back to main package for KVM (rhbz 807733)
 
