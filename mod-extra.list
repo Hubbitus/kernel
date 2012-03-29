@@ -155,8 +155,6 @@ sysv.ko
 ufs.ko
 ncpfs.ko
 coda.ko
-9p.ko
-9pnet.ko
 act200l-sir.ko
 ali-ircc.ko
 esi-sir.ko

@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -652,6 +652,7 @@ Patch09: linux-2.6-upstream-reverts.patch
 Patch100: taint-vbox.patch
 Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
 Patch161: linux-2.6-i386-nx-emulation.patch
+Patch162: nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1298,6 +1299,7 @@ ApplyPatch taint-vbox.patch
 # x86(-64)
 ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
 ApplyPatch linux-2.6-i386-nx-emulation.patch
+ApplyPatch nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 #
 # ARM
@@ -2291,6 +2293,12 @@ fi
 %changelog
 * Thu Mar 29 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git4.1
 - Linux v3.3-8839-gb5174fa
+
+* Thu Mar 29 2012 Josh Boyer <jwboyer@redhat.com>
+- Drop __cpuinitdata on disable_nx for x86_32 (rhbz 808075)
+
+* Wed Mar 28 2012 Josh Boyer <jwboyer@redhat.com>
+- Move 9p modules back to main package for KVM (rhbz 807733)
 
 * Wed Mar 28 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git3.1
 - Linux v3.3-7919-g6658a69
