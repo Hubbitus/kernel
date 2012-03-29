@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -702,7 +702,6 @@ Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
 
 # fs fixes
-Patch4000: ext4-fix-resize-when-resizing-within-single-group.patch
 
 # NFSv4
 
@@ -726,12 +725,7 @@ Patch21004: arm-tegra-nvec-kconfig.patch
 # Highbank clock functions need to be EXPORT for module builds
 Patch21010: highbank-export-clock-functions.patch
 
-Patch21070: ext4-Support-check-none-nocheck-mount-options.patch
-
 Patch21094: power-x86-destdir.patch
-
-#rhbz 788260
-Patch21233: jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -740,9 +734,6 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 727865 730007
 Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
-
-#rhbz 728478
-Patch21302: sony-laptop-Enable-keyboard-backlight-by-default.patch
 
 #rhbz 804007
 Patch21305: mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
@@ -1320,7 +1311,6 @@ ApplyPatch arm-tegra-nvec-kconfig.patch
 #
 
 # ext4
-ApplyPatch ext4-fix-resize-when-resizing-within-single-group.patch
 
 # xfs
 
@@ -1425,21 +1415,13 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
-ApplyPatch ext4-Support-check-none-nocheck-mount-options.patch
-
 ApplyPatch power-x86-destdir.patch
-
-#rhbz 788269
-ApplyPatch jbd2-clear-BH_Delay-and-BH_Unwritten-in-journal_unmap_buf.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 #rhbz 727865 730007
 ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
-
-#rhbz 728478
-ApplyPatch sony-laptop-Enable-keyboard-backlight-by-default.patch
 
 #rhbz 804007
 ApplyPatch mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
@@ -2307,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 29 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git4.1
+- Linux v3.3-8839-gb5174fa
+
 * Wed Mar 28 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git3.1
 - Linux v3.3-7919-g6658a69
 
