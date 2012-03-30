@@ -1466,7 +1466,7 @@ rm -f kernel-%{version}-*debug.config
 %endif
 
 # now run oldconfig over all the config files
-for i in kernel-*-$(uname -p)*.config
+for i in kernel-*-%{_target_cpu}*.config
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
@@ -2291,6 +2291,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 30 2012 Dave Jones <davej@redhat.com>
+- Change config parsing to use {_target_cpu} (From Niels de Vos)
+
 * Thu Mar 29 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git4.1
 - Linux v3.3-8839-gb5174fa
 
