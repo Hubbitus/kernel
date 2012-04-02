@@ -1457,8 +1457,14 @@ done
 rm -f kernel-%{version}-*debug.config
 %endif
 
-# now run oldconfig over all the config files
-for i in kernel-*-%{_target_cpu}*.config
+arch=%{_target_cpu}
+# Koji preps as noarch. Pick the config file for the arch.
+if [ "%{_target_cpu}" -eq "noarch" ]; then
+  arch=$(uname -p)
+fi
+
+# now run oldconfig over the config files
+for i in kernel-*-$arch-*.config
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
@@ -2283,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 02 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git0.2
+- Fix config since koji preps as noarch
+
 * Mon Apr 02 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git0.2
 - Disable debugging options.
 
