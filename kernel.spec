@@ -1457,21 +1457,17 @@ done
 rm -f kernel-%{version}-*debug.config
 %endif
 
-arch=%{_target_cpu}
-# Koji preps as noarch. Pick the config file for the arch.
-if [ "%{_target_cpu}" -eq "noarch" ]; then
-  arch=$(uname -p)
+# run oldconfig over the config files (except when noarch)
+if [ "%{_target_cpu}" != "noarch" ]; then
+  for i in kernel-*-%{_target_cpu}-*.config
+  do
+    mv $i .config
+    Arch=`head -1 .config | cut -b 3-`
+    make ARCH=$Arch oldnoconfig
+    echo "# $Arch" > configs/$i
+    cat .config >> configs/$i
+  done
 fi
-
-# now run oldconfig over the config files
-for i in kernel-*-$arch-*.config
-do
-  mv $i .config
-  Arch=`head -1 .config | cut -b 3-`
-  make ARCH=$Arch oldnoconfig
-  echo "# $Arch" > configs/$i
-  cat .config >> configs/$i
-done
 # end of kernel config
 %endif
 
