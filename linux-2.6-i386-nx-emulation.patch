@@ -333,9 +333,9 @@ index 4d42300..4cb14a1 100644
 +#endif /*CONFIG_X86_32*/
 +
  	tsk->thread.error_code = error_code;
- 	tsk->thread.trap_no = 13;
+ 	tsk->thread.trap_nr = X86_TRAP_GP;
  
-@@ -650,19 +745,37 @@ do_device_not_available(struct pt_regs *regs, long error_code)
+@@ -650,20 +745,37 @@ do_device_not_available(struct pt_regs *regs, long error_code)
  }
  
  #ifdef CONFIG_X86_32
@@ -362,10 +362,11 @@ index 4d42300..4cb14a1 100644
 -	info.si_errno = 0;
 -	info.si_code = ILL_BADSTK;
 -	info.si_addr = NULL;
--	if (notify_die(DIE_TRAP, "iret exception",
--			regs, error_code, 32, SIGILL) == NOTIFY_STOP)
+-	if (notify_die(DIE_TRAP, "iret exception", regs, error_code,
+-			X86_TRAP_IRET, SIGILL) == NOTIFY_STOP)
 -		return;
--	do_trap(32, SIGILL, "iret exception", regs, error_code, &info);
+-	do_trap(X86_TRAP_IRET, SIGILL, "iret exception", regs, error_code,
+-		&info);
 +	cpu = get_cpu();
 +	ok = check_lazy_exec_limit(cpu, regs, error_code);
 +	put_cpu();

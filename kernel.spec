@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -657,7 +657,6 @@ Patch162: nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
-Patch395: acpi-ensure-thermal-limits-match-cpu-freq.patch
 Patch396: acpi-sony-nonvs-blacklist.patch
 
 Patch450: linux-2.6-input-kill-stupid-messages.patch
@@ -732,9 +731,6 @@ Patch21094: power-x86-destdir.patch
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
-
-#rhbz 727865 730007
-Patch21300: ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 #rhbz 804007
 Patch21305: mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
@@ -1331,7 +1327,6 @@ ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch linux-2.6-defaults-acpi-video.patch
 ApplyPatch linux-2.6-acpi-video-dos.patch
 ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
-ApplyPatch acpi-ensure-thermal-limits-match-cpu-freq.patch
 ApplyPatch acpi-sony-nonvs-blacklist.patch
 
 #
@@ -1421,9 +1416,6 @@ ApplyPatch power-x86-destdir.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-#rhbz 727865 730007
-ApplyPatch ACPICA-Fix-regression-in-FADT-revision-checks.patch
 
 #rhbz 804007
 ApplyPatch mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
@@ -2291,6 +2283,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 02 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1
+- Linux v3.4-rc1
+
+* Fri Mar 30 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git5.1
+- Linux v3.3-9295-gf52b69f
+
 * Thu Mar 29 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc0.git4.1
 - Linux v3.3-8839-gb5174fa
 
