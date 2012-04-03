@@ -738,6 +738,9 @@ Patch21305: mac80211-fix-possible-tid_rx-reorder_timer-use-after-free.patch
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
 
+#rhbz 806433
+Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
+
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
@@ -1429,6 +1432,9 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
+
+#rhbz 806433
+ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2285,6 +2291,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix crash in uvc_video_clock_update from Laurent Pinchart (rhbz 806433)
+
 * Mon Apr 02 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git0.2
 - Fix config since koji preps as noarch
 
