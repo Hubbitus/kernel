@@ -1459,7 +1459,7 @@ rm -f kernel-%{version}-*debug.config
 
 # run oldconfig over the config files (except when noarch)
 if [ "%{_target_cpu}" != "noarch" ]; then
-  for i in kernel-*-%{_target_cpu}-*.config
+  for i in kernel-*-%{_target_cpu}*.config
   do
     mv $i .config
     Arch=`head -1 .config | cut -b 3-`
