@@ -1,0 +1,71 @@
+On Tue, Apr 03, 2012 at 12:50:55PM -0400, Dave Jones wrote:
+ > On Tue, Apr 03, 2012 at 06:33:43PM +0200, David Sterba wrote:
+ >  > On Tue, Apr 03, 2012 at 12:20:23PM -0400, Dave Jones wrote:
+ >  > > I see a lot of these ..
+ >  > > 
+ >  > > btrfs: __btrfs_end_transaction -EIO abored=1802201963 (no super error)
+ >  > 
+ >  > 1802201963 == 0x6b6b6b6b
+ >  > 
+ >  > #define POISON_FREE     0x6b    /* for use-after-free poisoning */
+ >  > 
+ >  > hmm
+ > 
+ > wait, what...
+ > 
+ >  535         memset(trans, 0, sizeof(*trans));
+ >  536         kmem_cache_free(btrfs_trans_handle_cachep, trans);
+ >  537 
+ >  538         if (throttle)
+ >  539                 btrfs_run_delayed_iputs(root);
+ >  540 
+ >  541         if (trans->aborted ||
+ >  542             root->fs_info->fs_state & BTRFS_SUPER_FLAG_ERROR) {
+ >  543                 return -EIO;
+ >  544         }
+ > 
+ > that looks like a pretty clear use-after-free.
+
+Ok, trying this..
+
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 8da29e8..11b77a5 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -480,6 +480,7 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+ 	struct btrfs_transaction *cur_trans = trans->transaction;
+ 	struct btrfs_fs_info *info = root->fs_info;
+ 	int count = 0;
++	int err = 0;
+ 
+ 	if (--trans->use_count) {
+ 		trans->block_rsv = trans->orig_rsv;
+@@ -532,18 +533,18 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+ 
+ 	if (current->journal_info == trans)
+ 		current->journal_info = NULL;
+-	memset(trans, 0, sizeof(*trans));
+-	kmem_cache_free(btrfs_trans_handle_cachep, trans);
+ 
+ 	if (throttle)
+ 		btrfs_run_delayed_iputs(root);
+ 
+ 	if (trans->aborted ||
+ 	    root->fs_info->fs_state & BTRFS_SUPER_FLAG_ERROR) {
+-		return -EIO;
++		err = -EIO;
+ 	}
+ 
+-	return 0;
++	memset(trans, 0, sizeof(*trans));
++	kmem_cache_free(btrfs_trans_handle_cachep, trans);
++	return err;
+ }
+ 
+ int btrfs_end_transaction(struct btrfs_trans_handle *trans,
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/

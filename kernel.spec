@@ -702,6 +702,7 @@ Patch2900: linux-2.6-v4l-dvb-update.patch
 Patch2901: linux-2.6-v4l-dvb-experimental.patch
 
 # fs fixes
+Patch4000: btrfs-use-after-free.patch
 
 # NFSv4
 
@@ -1313,6 +1314,7 @@ ApplyPatch arm-tegra-nvec-kconfig.patch
 # xfs
 
 # btrfs
+ApplyPatch btrfs-use-after-free.patch
 
 
 # eCryptfs
@@ -2285,6 +2287,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git1.2
+- BTRFS use after free patch
+
 * Tue Apr 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git1.2
 - Reenable debugging options.
 
