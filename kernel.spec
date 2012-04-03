@@ -735,11 +735,12 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
 
+#rhbz 806433
+Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
+
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
-# 
-Patch22100: patch-3.4-rc1-git1.xz
 
 %endif
 
@@ -1425,7 +1426,9 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-ApplyPatch patch-3.4-rc1-git1.xz
+
+#rhbz 806433
+ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2287,6 +2290,9 @@ fi
 
 * Tue Apr 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git1.1
 - Linux v3.4-rc1-144-g01627d9
+
+* Tue Apr 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix crash in uvc_video_clock_update from Laurent Pinchart (rhbz 806433)
 
 * Mon Apr 02 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git0.2
 - Fix config since koji preps as noarch
