@@ -739,7 +739,7 @@ Patch21306: shlib_base_randomize.patch
 #rhbz 806433
 Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
-#rhbz 806676
+#rhbz 806676 807632
 Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
@@ -1435,7 +1435,7 @@ ApplyPatch highbank-export-clock-functions.patch
 #rhbz 806433
 ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
-#rhbz 806676
+#rhbz 806676 807632
 ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 # END OF PATCH APPLICATIONS
@@ -2294,7 +2294,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Apr 04 2012 Josh Boyer <jwboyer@redhat.com>
-- Disable runtime PM for hotpluggable ATA ports (rhbz 806676)
+- Disable runtime PM for hotpluggable ATA ports (rhbz 806676 807632)
 
 * Tue Apr 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git1.2
 - BTRFS use after free patch
