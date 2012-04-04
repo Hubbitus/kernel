@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -738,6 +738,9 @@ Patch21306: shlib_base_randomize.patch
 
 #rhbz 806433
 Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
+
+#rhbz 806676
+Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1431,6 +1434,9 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #rhbz 806433
 ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
+
+#rhbz 806676
+ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2287,6 +2293,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 04 2012 Josh Boyer <jwboyer@redhat.com>
+- Disable runtime PM for hotpluggable ATA ports (rhbz 806676)
+
 * Tue Apr 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git1.2
 - BTRFS use after free patch
 
