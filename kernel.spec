@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -665,7 +665,6 @@ Patch452: linux-2.6.30-no-pcspkr-modalias.patch
 Patch460: linux-2.6-serial-460800.patch
 
 Patch470: die-floppy-die.patch
-Patch471: floppy-Remove-_hlt-related-functions.patch
 
 Patch510: linux-2.6-silence-noise.patch
 Patch520: quite-apm.patch
@@ -1355,7 +1354,6 @@ ApplyPatch linux-2.6-input-kill-stupid-messages.patch
 
 # stop floppy.ko from autoloading during udev...
 ApplyPatch die-floppy-die.patch
-ApplyPatch floppy-Remove-_hlt-related-functions.patch
 
 ApplyPatch linux-2.6.30-no-pcspkr-modalias.patch
 
@@ -2295,6 +2293,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 05 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git2.1
+- Linux v3.4-rc1-246-g6c216ec
+- Turn off CONFIG_RCU_FAST_NO_HZ until it is fixed upstream
+
 * Thu Apr 05 2012 Dave Jones <davej@redhat.com>
 - Better watermark the number of pages used by hibernation I/O (Bojan Smojver) (rhbz 785384)
 
