@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2293,6 +2293,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 06 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git3.1
+- Linux v3.4-rc1-349-g314489b
+
 * Thu Apr 05 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc1.git2.1
 - Linux v3.4-rc1-246-g6c216ec
 - Turn off CONFIG_RCU_FAST_NO_HZ until it is fixed upstream
