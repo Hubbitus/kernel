@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,10 @@ Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 #rhbz 806676 807632
 Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
+
+#rhbz 809014
+Patch21390: x86-Use-correct-byte-sized-register-constraint-in-__xchg_op.patch
+Patch21391: x86-Use-correct-byte-sized-register-constraint-in-__add.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1443,6 +1447,10 @@ ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 #rhbz 806676 807632
 ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
+
+#rhbz 809014
+ApplyPatch x86-Use-correct-byte-sized-register-constraint-in-__xchg_op.patch
+ApplyPatch x86-Use-correct-byte-sized-register-constraint-in-__add.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2299,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 10 2012 Josh Boyer <jwboyer@redhat.com>
+- Backport fixes for correct register constraints in cmpxchg.h (rhbz 809014)
+
 * Mon Apr 09 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc2.git0.3
 - Reenable debugging options.
 
