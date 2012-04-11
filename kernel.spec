@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 11 2012 Justin M. Forbes <jforbes@redhat.com>
+- enable HyperV drivers
+
 * Wed Apr 11 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc2.git1.1
 - Linux v3.4-rc2-23-g923e9a1
 
