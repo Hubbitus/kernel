@@ -586,7 +586,7 @@ Source70: config-s390x
 Source90: config-sparc64-generic
 
 Source100: config-arm-generic
-Source110: config-arm-omap-generic
+Source110: config-arm-omap
 Source111: config-arm-tegra
 Source112: config-arm-kirkwood
 Source113: config-arm-imx
