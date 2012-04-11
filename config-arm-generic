@@ -221,4 +221,4 @@ CONFIG_OMAP4_ERRATA_I688=y
 CONFIG_OF_GPIO=y
 
 # http://lists.infradead.org/pipermail/linux-arm-kernel/2012-March/091404.html
-KALLSYMS_EXTRA_PASS=1
+KALLSYMS_EXTRA_PASS=y
