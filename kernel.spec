@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 11 2012 Dennis Gilmore <dennis@ausil.us>
+- set KALLSYMS_EXTRA_PASS=1 on arm arches
+
 * Wed Apr 11 2012 Justin M. Forbes <jforbes@redhat.com>
 - enable HyperV drivers
 
