@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -735,9 +735,6 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
-
-#rhbz 806433
-Patch21360: uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 #rhbz 806676 807632
 Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
@@ -1441,9 +1438,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-#rhbz 806433
-ApplyPatch uvcvideo-Fix-race-induced-crash-in-uvc_video_clock_update.patch
 
 #rhbz 806676 807632
 ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
@@ -2312,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 12 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc2.git2.1
+- Linux v3.4-rc2-174-gecca5c3
+
 * Thu Apr 12 2012 Dennis Gilmore <dennis@ausil.us>
 - KALLSYMS_EXTRA_PASS=1 has to be passed in on the command line so do so only for arm
 
