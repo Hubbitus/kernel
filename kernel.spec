@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -738,10 +738,6 @@ Patch21306: shlib_base_randomize.patch
 
 #rhbz 806676 807632
 Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
-
-#rhbz 809014
-Patch21390: x86-Use-correct-byte-sized-register-constraint-in-__xchg_op.patch
-Patch21391: x86-Use-correct-byte-sized-register-constraint-in-__add.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1441,10 +1437,6 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #rhbz 806676 807632
 ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
-
-#rhbz 809014
-ApplyPatch x86-Use-correct-byte-sized-register-constraint-in-__xchg_op.patch
-ApplyPatch x86-Use-correct-byte-sized-register-constraint-in-__add.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2306,6 +2298,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 13 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc2.git3.1
+- Linux v3.4-rc2-269-g4166fb6
+
 * Thu Apr 12 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc2.git2.1
 - Linux v3.4-rc2-174-gecca5c3
 
