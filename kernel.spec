@@ -2295,6 +2295,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 16 2012 John W. Linville <linville@redhat.com>
+- Disable CONFIG_WIRELESS_EXT_SYSFS (long deprecated upstream)
+
 * Mon Apr 16 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc3.git0.1
 - Linux v3.4-rc3
 - Disable debugging options.
