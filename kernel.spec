@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,9 @@ Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch21620: vgaarb-vga_default_device.patch
+
+Patch21700: x86-microcode-Fix-sysfs-warning-during-module-unload-on-unsupported-CPUs.patch
+Patch21701: x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPUs.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1439,6 +1442,10 @@ ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
+
+#rhbz 797559
+ApplyPatch x86-microcode-Fix-sysfs-warning-during-module-unload-on-unsupported-CPUs.patch
+ApplyPatch x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPUs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 17 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix oops on invalid AMD microcode load (rhbz 797559)
+
 * Mon Apr 16 2012 Josh Boyer <jwboyer@redhat.com>
 - Add and use vga_default_device patches (requested by Matthew Garrett)
 - Enable Apple gmux driver
