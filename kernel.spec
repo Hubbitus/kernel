@@ -740,6 +740,8 @@ Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
+Patch21620: vgaarb-vga_default_device.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1434,6 +1436,9 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #rhbz 806676 807632
 ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
+
+#vgaarb patches.  blame mjg59
+ApplyPatch vgaarb-vga_default_device.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2301,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Apr 16 2012 Josh Boyer <jwboyer@redhat.com>
+- Add and use vga_default_device patches (requested by Matthew Garrett)
 - Enable Apple gmux driver
 
 * Mon Apr 16 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc3.git0.2
