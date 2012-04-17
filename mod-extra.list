@@ -15,6 +15,7 @@ dccp_ipv4.ko
 dccp_ipv6.ko
 dccp.ko
 dccp_probe.ko
+dlm.ko
 sctp.ko
 sctp_probe.ko
 rds.ko
@@ -146,8 +147,12 @@ uio_aec.ko
 uio_pci_generic.ko
 gfs2.ko
 ocfs2.ko
-ocfs2_stackglue.ko
 ocfs2_dlm.ko
+ocfs2_dlmfs.ko
+ocfs2_nodemanager.ko
+ocfs2_stackglue.ko
+ocfs2_stack_o2cb.ko
+ocfs2_stack_user.ko
 cuse.ko
 affs.ko
 befs.ko
