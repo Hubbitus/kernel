@@ -750,6 +750,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
+# END OF PATCH DEFINITIONS
+
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
