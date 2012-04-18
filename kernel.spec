@@ -735,8 +735,8 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
 
-#rhbz 806676 807632
-Patch21385: libata-disable-runtime-pm-for-hotpluggable-port.patch
+#rhbz 807632
+Patch21385: libata-forbid-port-runtime-pm-by-default.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1439,8 +1439,8 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
 
-#rhbz 806676 807632
-ApplyPatch libata-disable-runtime-pm-for-hotpluggable-port.patch
+#rhbz 807632
+ApplyPatch libata-forbid-port-runtime-pm-by-default.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
@@ -2309,6 +2309,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 18 2012 Josh Boyer <jwboyer@redhat.com>
+- Change patch to resolve libata hotplug (rhbz 807632)
+
 * Tue Apr 17 2012 Josh Boyer <jwboyer@redhat.com>
 - Move the dlm module to modules-extra (rhbz 811547)
 
