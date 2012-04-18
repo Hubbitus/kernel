@@ -727,6 +727,8 @@ Patch21010: highbank-export-clock-functions.patch
 
 Patch21094: power-x86-destdir.patch
 
+Patch21098: hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1422,6 +1424,8 @@ ApplyPatch hibernate-watermark.patch
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 ApplyPatch power-x86-destdir.patch
+
+ApplyPatch hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -2310,6 +2314,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Apr 18 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix hfsplus bless ioctl with hardlinks (from Matthew Garrett)
 - Change patch to resolve libata hotplug (rhbz 807632)
 
 * Tue Apr 17 2012 Josh Boyer <jwboyer@redhat.com>
