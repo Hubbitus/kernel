@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -737,9 +737,6 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
 
-#rhbz 807632
-Patch21385: libata-forbid-port-runtime-pm-by-default.patch
-
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch21620: vgaarb-vga_default_device.patch
@@ -752,8 +749,11 @@ Patch22000: weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
-#rhbz 814149 814155
+#rhbz 814149 814155 CVE-2012-2121
 Patch22006: KVM-unmap-pages-from-the-iommu-when-slots-are-removed.patch
+
+#rhbz 814278 814289 CVE-2012-2119
+Patch22007: macvtap-zerocopy-validate-vector-length.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1446,9 +1446,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
 
-#rhbz 807632
-ApplyPatch libata-forbid-port-runtime-pm-by-default.patch
-
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
 
@@ -1456,8 +1453,11 @@ ApplyPatch vgaarb-vga_default_device.patch
 ApplyPatch x86-microcode-Fix-sysfs-warning-during-module-unload-on-unsupported-CPUs.patch
 ApplyPatch x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPUs.patch
 
-#rhbz 814149 814155
+#rhbz 814149 814155 CVE-2012-2121
 ApplyPatch KVM-unmap-pages-from-the-iommu-when-slots-are-removed.patch
+
+#rhbz 814278 814289 CVE-2012-2119
+ApplyPatch macvtap-zerocopy-validate-vector-length.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2319,8 +2319,15 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 19 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc3.git3.1
+- Linux v3.4-rc3-65-g9b7f43a
+
 * Thu Apr 19 2012 Justin M. Forbes <jforbes@redhat.com>
-- Fix KVM device assignment page leak (rhbz 814149 814155)
+- CVE-2012-2119 macvtap: zerocopy: vector length is not validated before
+  pinning user pages (rhbz 814278 814289)
+
+* Thu Apr 19 2012 Justin M. Forbes <jforbes@redhat.com>
+- CVE-2012-2121: Fix KVM device assignment page leak (rhbz 814149 814155)
 
 * Wed Apr 18 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc3.git2.1
 - Linux v3.4-rc3-36-g592fe89
