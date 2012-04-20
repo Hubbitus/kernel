@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1771,11 +1771,21 @@ BuildKernel() {
       for mod in `echo $depends | sed -e 's/,/ /g'`
       do
         match=`grep "^$mod.ko" mod-extra.list` ||:
-        if [ -n "$match" ]
+        if [ -z "$match" ]
         then
           continue
         else
-          echo $mod.ko >> req.list
+          # check if the module we're looking at is in mod-extra too.  if so
+          # we don't need to mark the dep as required
+          mod2=`basename $dep`
+          match2=`grep "^$mod2" mod-extra.list` ||:
+          if [ -n "$match2" ]
+          then
+            continue
+            #echo $mod2 >> notreq.list
+          else
+            echo $mod.ko >> req.list
+          fi
         fi
       done
     done
@@ -2313,6 +2323,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 20 2012 Josh Boyer <jwboyer@redhat.com>
+- Move the dlm module to modules-extra and do additional cleanup (rhbz 811547)
+
 * Fri Apr 20 2012 Justin M. Forbes <jforbes@redhat.com> - 3.4.0-0.rc3.git4.1
 - Linux v3.4-rc3-89-gc6f5c93
 

@@ -32,7 +32,6 @@ l2tp_eth.ko
 l2tp_ip.ko
 l2tp_netlink.ko
 l2tp_ppp.ko
-llc.ko
 ipx.ko
 appletalk.ko
 ipddp.ko
@@ -90,6 +89,8 @@ mptbase.ko
 mptctl.ko
 mptfc.ko
 i2400m.ko
+i2400m-usb.ko
+i2400m-sdio.ko
 hisax.ko
 hysdn.ko
 isdn.ko
@@ -142,9 +143,6 @@ umc.ko
 uwb.ko
 whci.ko
 hwa-rc.ko
-uio.ko
-uio_aec.ko
-uio_pci_generic.ko
 gfs2.ko
 ocfs2.ko
 ocfs2_dlm.ko
@@ -173,7 +171,6 @@ ksdazzle-sir.ko
 ma600-sir.ko
 mcp2120-sir.ko
 toim3232-sir.ko
-pps_core.ko
 tpm_atmel.ko
 tpm_infineon.ko
 tpm_nsc.ko
