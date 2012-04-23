@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -751,6 +751,8 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 814278 814289 CVE-2012-2119
 Patch22007: macvtap-zerocopy-validate-vector-length.patch
+
+Patch22011: input-synaptics-fix-regression-with-image-sensor-trackpads.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1452,6 +1454,8 @@ ApplyPatch x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPU
 
 #rhbz 814278 814289 CVE-2012-2119
 ApplyPatch macvtap-zerocopy-validate-vector-length.patch
+
+ApplyPatch input-synaptics-fix-regression-with-image-sensor-trackpads.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2323,6 +2327,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 23 2012 Peter Hutterer <peter.hutterer@redhat.com>
+- Fix regression on clickpads
+
 * Mon Apr 23 2012 Josh Boyer <jwboyer@gmail.com> - 3.4.0-0.rc4.git0.2
 - Add GMA3600 (Cedarview) support (rhbz 810686) 
 - Reenable debugging options.

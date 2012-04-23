@@ -1,0 +1,38 @@
+From 899c612d74d4a242158a4db20367388d6299c028 Mon Sep 17 00:00:00 2001
+From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Date: Fri, 20 Apr 2012 22:34:49 -0700
+Subject: [PATCH] Input: synaptics - fix regression with "image sensor"
+ trackpads
+
+commit 7968a5dd492ccc38345013e534ad4c8d6eb60ed1
+Input: synaptics - add support for Relative mode
+
+Accidentally broke support for advanced gestures (multitouch)
+on some trackpads such as the one in my ThinkPad X220 by
+incorretly changing the condition for enabling them. This
+restores it.
+
+Signed-off-by: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC: stable@kernel.org [3.3]
+Signed-off-by: Dmitry Torokhov <dtor@mail.ru>
+---
+ drivers/input/mouse/synaptics.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index 8081a0a..a4b14a4 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -274,7 +274,8 @@ static int synaptics_set_advanced_gesture_mode(struct psmouse *psmouse)
+ 	static unsigned char param = 0xc8;
+ 	struct synaptics_data *priv = psmouse->private;
+ 
+-	if (!SYN_CAP_ADV_GESTURE(priv->ext_cap_0c))
++	if (!(SYN_CAP_ADV_GESTURE(priv->ext_cap_0c) ||
++	      SYN_CAP_IMAGE_SENSOR(priv->ext_cap_0c)))
+ 		return 0;
+ 
+ 	if (psmouse_sliced_command(psmouse, SYN_QUE_MODEL))
+-- 
+1.7.10
+
