@@ -1,9 +1,11 @@
-Hi Rafael,
+From: Bojan Smojver <bojan@rexursive.com>
+Date: Sun, 22 Apr 2012 20:32:32 +0000 (+0200)
+Subject: PM / Hibernate: fix the number of pages used for hibernate/thaw buffering
+X-Git-Tag: next-20120423~31^2
+X-Git-Url: http://git.kernel.org/?p=linux%2Fkernel%2Fgit%2Fnext%2Flinux-next.git;a=commitdiff_plain;h=e9cbc5a6270be7aa9c42d9b15293ba9ac7161262
 
-One more version. Heeding Per's suggestion to optimise when
-CONFIG_HIGHMEM is not configured.
+PM / Hibernate: fix the number of pages used for hibernate/thaw buffering
 
----------------------------------------
 Hibernation/thaw fixes/improvements:
 
 1. Calculate the number of required free pages based on non-high memory
@@ -25,13 +27,13 @@ threading patch.
 6. Dispense with bit shifting arithmetic to improve readability.
 
 Signed-off-by: Bojan Smojver <bojan@rexursive.com>
-Signed-off-by: Per Olofsson <pelle@debian.org>
+Reviewed-by: Per Olofsson <pelle@debian.org>
+Cc: stable@vger.kernel.org
+Signed-off-by: Rafael J. Wysocki <rjw@sisk.pl>
 ---
- kernel/power/swap.c |   76 +++++++++++++++++++++++++++++++++++++++------------
- 1 files changed, 58 insertions(+), 18 deletions(-)
 
 diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 8742fd0..8a1c293 100644
+index 8742fd0..11e22c0 100644
 --- a/kernel/power/swap.c
 +++ b/kernel/power/swap.c
 @@ -6,7 +6,7 @@
@@ -43,30 +45,17 @@ index 8742fd0..8a1c293 100644
   *
   * This file is released under the GPLv2.
   *
-@@ -51,6 +51,36 @@
+@@ -51,6 +51,23 @@
  
  #define MAP_PAGE_ENTRIES	(PAGE_SIZE / sizeof(sector_t) - 1)
  
 +/*
 + * Number of free pages that are not high.
 + */
-+#ifdef CONFIG_HIGHMEM
-+static unsigned long low_free_pages(void)
-+{
-+	struct zone *zone;
-+	unsigned long free = 0;
-+
-+	for_each_populated_zone(zone)
-+		if (!is_highmem(zone))
-+			free += zone_page_state(zone, NR_FREE_PAGES);
-+	return free;
-+}
-+#else
 +static inline unsigned long low_free_pages(void)
 +{
-+	return nr_free_pages();
++	return nr_free_pages() - nr_free_highpages();
 +}
-+#endif
 +
 +/*
 + * Number of pages required to be kept free while writing the image. Always
@@ -80,7 +69,7 @@ index 8742fd0..8a1c293 100644
  struct swap_map_page {
  	sector_t entries[MAP_PAGE_ENTRIES];
  	sector_t next_swap;
-@@ -72,7 +102,7 @@ struct swap_map_handle {
+@@ -72,7 +89,7 @@ struct swap_map_handle {
  	sector_t cur_swap;
  	sector_t first_sector;
  	unsigned int k;
@@ -89,7 +78,7 @@ index 8742fd0..8a1c293 100644
  	u32 crc32;
  };
  
-@@ -265,14 +295,17 @@ static int write_page(void *buf, sector_t offset, struct bio **bio_chain)
+@@ -265,14 +282,17 @@ static int write_page(void *buf, sector_t offset, struct bio **bio_chain)
  		return -ENOSPC;
  
  	if (bio_chain) {
@@ -109,7 +98,7 @@ index 8742fd0..8a1c293 100644
  			if (src) {
  				copy_page(src, buf);
  			} else {
-@@ -316,8 +349,7 @@ static int get_swap_writer(struct swap_map_handle *handle)
+@@ -316,8 +336,7 @@ static int get_swap_writer(struct swap_map_handle *handle)
  		goto err_rel;
  	}
  	handle->k = 0;
@@ -119,7 +108,7 @@ index 8742fd0..8a1c293 100644
  	handle->first_sector = handle->cur_swap;
  	return 0;
  err_rel:
-@@ -351,12 +383,17 @@ static int swap_write_page(struct swap_map_handle *handle, void *buf,
+@@ -351,12 +370,17 @@ static int swap_write_page(struct swap_map_handle *handle, void *buf,
  		clear_page(handle->cur);
  		handle->cur_swap = offset;
  		handle->k = 0;
@@ -143,38 +132,78 @@ index 8742fd0..8a1c293 100644
  	}
   out:
  	return error;
-@@ -404,7 +441,7 @@ static int swap_writer_finish(struct swap_map_handle *handle,
+@@ -403,8 +427,9 @@ static int swap_writer_finish(struct swap_map_handle *handle,
+ /* Maximum number of threads for compression/decompression. */
  #define LZO_THREADS	3
  
- /* Maximum number of pages for read buffering. */
+-/* Maximum number of pages for read buffering. */
 -#define LZO_READ_PAGES	(MAP_PAGE_ENTRIES * 8)
-+#define LZO_READ_PAGES	8192
++/* Minimum/maximum number of pages for read buffering. */
++#define LZO_MIN_RD_PAGES	1024
++#define LZO_MAX_RD_PAGES	8192
  
  
  /**
-@@ -615,10 +652,10 @@ static int save_image_lzo(struct swap_map_handle *handle,
+@@ -615,12 +640,6 @@ static int save_image_lzo(struct swap_map_handle *handle,
  	}
  
  	/*
 -	 * Adjust number of free pages after all allocations have been done.
 -	 * We don't want to run out of pages when writing.
+-	 */
+-	handle->nr_free_pages = nr_free_pages() >> 1;
+-
+-	/*
+ 	 * Start the CRC32 thread.
+ 	 */
+ 	init_waitqueue_head(&crc->go);
+@@ -641,6 +660,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
+ 		goto out_clean;
+ 	}
+ 
++	/*
 +	 * Adjust the number of required free pages after all allocations have
 +	 * been done. We don't want to run out of pages when writing.
- 	 */
--	handle->nr_free_pages = nr_free_pages() >> 1;
++	 */
 +	handle->reqd_free_pages = reqd_free_pages();
++
+ 	printk(KERN_INFO
+ 		"PM: Using %u thread(s) for compression.\n"
+ 		"PM: Compressing and saving image data (%u pages) ...     ",
+@@ -1051,7 +1076,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	unsigned i, thr, run_threads, nr_threads;
+ 	unsigned ring = 0, pg = 0, ring_size = 0,
+ 	         have = 0, want, need, asked = 0;
+-	unsigned long read_pages;
++	unsigned long read_pages = 0;
+ 	unsigned char **page = NULL;
+ 	struct dec_data *data = NULL;
+ 	struct crc_data *crc = NULL;
+@@ -1063,7 +1088,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	nr_threads = num_online_cpus() - 1;
+ 	nr_threads = clamp_val(nr_threads, 1, LZO_THREADS);
+ 
+-	page = vmalloc(sizeof(*page) * LZO_READ_PAGES);
++	page = vmalloc(sizeof(*page) * LZO_MAX_RD_PAGES);
+ 	if (!page) {
+ 		printk(KERN_ERR "PM: Failed to allocate LZO page\n");
+ 		ret = -ENOMEM;
+@@ -1128,15 +1153,22 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 	}
  
  	/*
- 	 * Start the CRC32 thread.
-@@ -1129,14 +1166,17 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 
- 	/*
- 	 * Adjust number of pages for read buffering, in case we are short.
-+	 * Never take more than half of all available low pages.
+-	 * Adjust number of pages for read buffering, in case we are short.
++	 * Set the number of pages for read buffering.
++	 * This is complete guesswork, because we'll only know the real
++	 * picture once prepare_image() is called, which is much later on
++	 * during the image load phase. We'll assume the worst case and
++	 * say that none of the image pages are from high memory.
  	 */
 -	read_pages = (nr_free_pages() - snapshot_get_image_size()) >> 1;
-+	read_pages = (low_free_pages() - snapshot_get_image_size()) / 2;
- 	read_pages = clamp_val(read_pages, LZO_CMP_PAGES, LZO_READ_PAGES);
+-	read_pages = clamp_val(read_pages, LZO_CMP_PAGES, LZO_READ_PAGES);
++	if (low_free_pages() > snapshot_get_image_size())
++		read_pages = (low_free_pages() - snapshot_get_image_size()) / 2;
++	read_pages = clamp_val(read_pages, LZO_MIN_RD_PAGES, LZO_MAX_RD_PAGES);
  
  	for (i = 0; i < read_pages; i++) {
  		page[i] = (void *)__get_free_page(i < LZO_CMP_PAGES ?
@@ -186,13 +215,3 @@ index 8742fd0..8a1c293 100644
  		if (!page[i]) {
  			if (i < LZO_CMP_PAGES) {
  				ring_size = i;
----------------------------------------
-
--- 
-Bojan
-
---
-To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at  http://www.tux.org/lkml/
