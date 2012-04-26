@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -740,9 +740,6 @@ Patch21306: shlib_base_randomize.patch
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch21620: vgaarb-vga_default_device.patch
-
-Patch21700: x86-microcode-Fix-sysfs-warning-during-module-unload-on-unsupported-CPUs.patch
-Patch21701: x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPUs.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1450,10 +1447,6 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
-
-#rhbz 797559
-ApplyPatch x86-microcode-Fix-sysfs-warning-during-module-unload-on-unsupported-CPUs.patch
-ApplyPatch x86-microcode-Ensure-that-module-is-only-loaded-for-supported-AMD-CPUs.patch
 
 #rhbz 814278 814289 CVE-2012-2119
 ApplyPatch macvtap-zerocopy-validate-vector-length.patch
@@ -2333,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 26 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc4.git2.1
+- Linux v3.4-rc4-135-g2300fd6
+
 * Tue Apr 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc4.git1.1
 - Linux v3.4-rc4-95-g95f7147
 
