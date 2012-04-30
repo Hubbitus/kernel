@@ -1,6 +1,8 @@
+* Post 3.5:
+- Check if PaulMcK has fixed CONFIG_RCU_FAST_NO_HZ
+
 Config TODOs:
 * review & disable a bunch of the I2C, RTC, DVB, SOUND options.
-
 
 Spec file TODOs:
 
