@@ -753,6 +753,9 @@ Patch22011: input-synaptics-fix-regression-with-image-sensor-trackpads.patch
 #rhbz 802106
 Patch22012: ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
 
+#rhbz 817298
+Patch22013: ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1453,6 +1456,9 @@ ApplyPatch input-synaptics-fix-regression-with-image-sensor-trackpads.patch
 
 #rhbz 802106
 ApplyPatch ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
+
+#rhbz 817298
+ApplyPatch ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2324,14 +2330,17 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Apr 30 2012 Josh Boyer <jwboyer@gmail.com> - 3.4.0-0.rc5.git0.3
+* Mon Apr 30 2012 Josh Boyer <jwboyer@redhat.com>
+- Backport ipw2x00 nl80211 cipher suite reporting (rhbz 817298)
+
+* Mon Apr 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git0.3
 - Reenable debugging options.
 
-* Mon Apr 30 2012 Josh Boyer <jwboyer@gmail.com> - 3.4.0-0.rc5.git0.2
+* Mon Apr 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git0.2
 - Linux v3.4-rc5
 - Disable debugging options.
 
-* Sat Apr 28 2012 Josh Boyer <jwboyer@gmail.com> - 3.4.0-0.rc4.git4.1
+* Sat Apr 28 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc4.git4.1
 - Linux v3.4-rc4-308-gf7b0069
 
 * Fri Apr 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc4.git3.1
