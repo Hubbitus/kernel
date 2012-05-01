@@ -748,8 +748,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 814278 814289 CVE-2012-2119
 Patch22007: macvtap-zerocopy-validate-vector-length.patch
 
-Patch22011: input-synaptics-fix-regression-with-image-sensor-trackpads.patch
-
 #rhbz 802106
 Patch22012: ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
 
@@ -1451,8 +1449,6 @@ ApplyPatch vgaarb-vga_default_device.patch
 
 #rhbz 814278 814289 CVE-2012-2119
 ApplyPatch macvtap-zerocopy-validate-vector-length.patch
-
-ApplyPatch input-synaptics-fix-regression-with-image-sensor-trackpads.patch
 
 #rhbz 802106
 ApplyPatch ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
@@ -2331,6 +2327,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue May 01 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git2.1
+- Drop merged patch.  Drink coffee before doing build.
 - Linux v3.4-rc5-34-g655861e
 
 * Mon Apr 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git1.1
