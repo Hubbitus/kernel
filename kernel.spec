@@ -2326,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 02 2012 Josh Boyer <jwboyer@redhat.com>
+- Disable PCIEPORTBUS on ppc64 per IBM request
+
 * Wed May 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git3.1
 - Linux v3.4-rc5-62-g529acf5
 
