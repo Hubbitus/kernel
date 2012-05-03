@@ -715,12 +715,16 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
+# ARM
 # Flattened devicetree support
 Patch21000: arm-omap-dt-compat.patch
 Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
-Patch21004: arm-tegra-nvec-kconfig.patch
 
-# highbank patches
+# ARM tegra
+Patch21004: arm-tegra-nvec-kconfig.patch
+Patch21005: arm-tegra-usb-no-reset-linux33.patch
+
+# ARM highbank patches
 # Highbank clock functions need to be EXPORT for module builds
 Patch21010: highbank-export-clock-functions.patch
 
@@ -1317,6 +1321,7 @@ ApplyPatch nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 #ApplyPatch arm-omap-dt-compat.patch
 #ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
+ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2326,6 +2331,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May  3 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Patch for disconnect issues with storage attached to a tegra-ehci controller
+
 * Thu May 03 2012 Justin M. Forbes <jforbes@redhat.com>
 - Reenable slip and add to module-extras (rhbz 818308)
 
