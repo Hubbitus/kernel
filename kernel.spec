@@ -2326,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 03 2012 Justin M. Forbes <jforbes@redhat.com>
+- Reenable slip and add to module-extras (rhbz 818308)
+
 * Wed May 02 2012 Josh Boyer <jwboyer@redhat.com>
 - Disable PCIEPORTBUS on ppc64 per IBM request
 
