@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -751,9 +751,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 814278 814289 CVE-2012-2119
 Patch22007: macvtap-zerocopy-validate-vector-length.patch
-
-#rhbz 802106
-Patch22012: ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
 
 #rhbz 817298
 Patch22013: ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
@@ -1454,9 +1451,6 @@ ApplyPatch vgaarb-vga_default_device.patch
 
 #rhbz 814278 814289 CVE-2012-2119
 ApplyPatch macvtap-zerocopy-validate-vector-length.patch
-
-#rhbz 802106
-ApplyPatch ipw2200-Fix-race-condition-in-the-command-completion-acknowledge.patch
 
 #rhbz 817298
 ApplyPatch ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
@@ -2331,6 +2325,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 04 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc5.git4.1
+- Linux v3.4-rc5-183-g0a6ba09
+
 * Thu May 03 2012 Dennis Gilmore <dennis@ausil.us>
 - enable omap KMS driver
 
