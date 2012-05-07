@@ -705,6 +705,8 @@ Patch2901: linux-2.6-v4l-dvb-experimental.patch
 # NFSv4
 
 # patches headed upstream
+Patch10000: fs-proc-devtree-remove_proc_entry.patch
+
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch12303: dmar-disable-when-ricoh-multifunction.patch
@@ -1414,6 +1416,8 @@ ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
 ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
 
 # Patches headed upstream
+ApplyPatch fs-proc-devtree-remove_proc_entry.patch
+
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 # rhbz#605888
@@ -2325,6 +2329,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 07 2012 Dave Jones <davej@redhat.com>
+- Remove /proc/device-tree when openfirmware init fails. (rhbz 818378)
+
 * Mon May 07 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git0.1
 - Linux v3.4-rc6
 - Disable debugging options.
