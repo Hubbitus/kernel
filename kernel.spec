@@ -255,18 +255,19 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel-tegra, omap, imx and highbank are only built on armv7 hard and softfp
+# kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hard and softfp
 %ifnarch armv7hl armv7l
-%define with_tegra 0
+%define with_up 0
 %define with_omap 0
+%endif
+%define with_tegra 0
 %define with_imx 0
 %define with_highbank 0
-%endif
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
-%define with_kirkwood 0
 %endif
+%define with_kirkwood 0
 
 # if requested, only build base kernel
 %if %{with_baseonly}
@@ -411,10 +412,6 @@ Summary: The Linux kernel
 %define hdrarch arm
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
-# we build a up kernel on base softfp/hardfp platforms. its used for qemu.
-%ifnarch armv5tel armv7hl
-%define with_up 0
-%endif
 # we only build headers/perf/tools on the base arm arches
 # just like we used to only build them on i386 for x86
 %ifnarch armv5tel armv7hl
@@ -591,6 +588,7 @@ Source111: config-arm-tegra
 Source112: config-arm-kirkwood
 Source113: config-arm-imx
 Source114: config-arm-highbank
+Source115: config-arm-versatile
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -2329,6 +2327,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May  8 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Restructure ARM configs to minimise duplication and pull all generic options
+
 * Tue May 08 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git1.1
 - Linux v3.4-rc6-20-g789505b
 
