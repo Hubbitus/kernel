@@ -255,19 +255,19 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hard and softfp
+# kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
 %define with_up 0
-%define with_omap 0
-%endif
-%define with_tegra 0
 %define with_imx 0
 %define with_highbank 0
+%define with_omap 0
+%define with_tegra 0
+%endif
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
-%endif
 %define with_kirkwood 0
+%endif
 
 # if requested, only build base kernel
 %if %{with_baseonly}
@@ -2329,6 +2329,7 @@ fi
 %changelog
 * Tue May  8 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Restructure ARM configs to minimise duplication and pull all generic options
+- Spilt Versatile config and use Express chip into dedicated config for qemu
 
 * Tue May 08 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git1.1
 - Linux v3.4-rc6-20-g789505b
