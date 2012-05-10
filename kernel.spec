@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -257,7 +257,6 @@ Summary: The Linux kernel
 
 # kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
-%define with_up 0
 %define with_imx 0
 %define with_highbank 0
 %define with_omap 0
@@ -2327,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git2.2
+- Fix normal kernel builds
+
 * Thu May 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git2.1
 - Linux v3.4-rc6-41-g7ee94d9
 
