@@ -2327,6 +2327,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 10 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in MMC on VExpress so we can boot using qemu
+
 * Tue May  8 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Restructure ARM configs to minimise duplication and pull all generic options
 - Spilt Versatile config and use Express chip into dedicated config for qemu
