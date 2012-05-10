@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2327,6 +2327,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 10 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git2.1
+- Linux v3.4-rc6-41-g7ee94d9
+
 * Thu May 10 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build in MMC on VExpress so we can boot using qemu
 
