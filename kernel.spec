@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2326,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 11 2012 Josh Boyer <jwboyer@redaht.com>
+- Enable CONFIG_SUNRPC_DEBUG (pointed out by Jeff Layton)
+
 * Fri May 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git3.1
 - Linux v3.4-rc6-76-gd60b9c1
 
