@@ -2327,6 +2327,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri May 11 2012 Josh Boyer <jwboyer@redaht.com>
+- Enable CONFIG_NFSD_FAULT_INJECTION on debug builds (suggested by Jeff Layton)
 - Enable CONFIG_SUNRPC_DEBUG (pointed out by Jeff Layton)
 
 * Fri May 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc6.git3.1

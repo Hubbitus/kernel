@@ -51,6 +51,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_EXT4_DEBUG=y/# CONFIG_EXT4_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_PERF_USE_VMALLOC=y/# CONFIG_DEBUG_PERF_USE_VMALLOC is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_JBD2_DEBUG=y/# CONFIG_JBD2_DEBUG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_NFSD_FAULT_INJECTION=y/# CONFIG_NFSD_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_BLK_CGROUP=y/# CONFIG_DEBUG_BLK_CGROUP is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DRBD_FAULT_INJECTION=y/# CONFIG_DRBD_FAULT_INJECTION is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_ATH_DEBUG=y/# CONFIG_ATH_DEBUG is not set/' config-nodebug
