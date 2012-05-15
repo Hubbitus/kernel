@@ -413,6 +413,9 @@ Summary: The Linux kernel
 %define kernel_image arch/arm/boot/zImage
 # we only build headers/perf/tools on the base arm arches
 # just like we used to only build them on i386 for x86
+%ifarch armv5tel
+%define with_up 0
+%endif
 %ifnarch armv5tel armv7hl
 %define with_headers 0
 %define with_perf 0
@@ -2332,6 +2335,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 15 2012 Dennis Gilmore <dennis@ausil.us> 
+- dont build a up kernel on armv5tel
+
 * Tue May 15 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc7.git1.1
 - Fixup atl1c register programming (rhbz 749276)
 - Linux v3.4-rc7-21-gb6255ee
