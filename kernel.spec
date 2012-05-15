@@ -754,6 +754,9 @@ Patch22007: macvtap-zerocopy-validate-vector-length.patch
 #rhbz 817298
 Patch22013: ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
 
+#rhbz 749276
+Patch22018: atl1c_net_next_update-3.4.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1455,6 +1458,9 @@ ApplyPatch macvtap-zerocopy-validate-vector-length.patch
 
 #rhbz 817298
 ApplyPatch ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
+
+#rhbz 749276
+ApplyPatch atl1c_net_next_update-3.4.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2327,6 +2333,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue May 15 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc7.git1.1
+- Fixup atl1c register programming (rhbz 749276)
 - Linux v3.4-rc7-21-gb6255ee
 
 * Tue May 15 2012 Dennis Gilmore <dennis@ausil.us> 
