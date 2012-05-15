@@ -176,3 +176,4 @@ tpm_infineon.ko
 tpm_nsc.ko
 tpm_tis.ko
 slip.ko
+nilfs2.ko

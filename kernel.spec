@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2335,6 +2335,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 15 2012 Josh Boyer <jwboyer@redhat.com>
+- Enable Nilfs2 and put it in modules-extra (rhbz 821702)
+
 * Tue May 15 2012 Dennis Gilmore <dennis@ausil.us> 
 - dont build a up kernel on armv5tel
 
