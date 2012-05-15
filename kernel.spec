@@ -2326,6 +2326,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 15 2012 Dennis Gilmore <dennis@ausil.us> 
+- make sure smp is on in generic arm config
+- tweak vexpress config
+
 * Mon May 14 2012 Josh Boyer <jwboyer@redhat.com>
 - Enable DRM_VIA again per Adam Jackson
 
