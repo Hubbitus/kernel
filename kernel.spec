@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2335,6 +2335,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 16 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc7.git2.1
+- Linux v3.4-rc7-24-g568b445
+
 * Tue May 15 2012 Josh Boyer <jwboyer@redhat.com>
 - Enable Nilfs2 and put it in modules-extra (rhbz 821702)
 
