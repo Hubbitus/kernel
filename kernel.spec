@@ -2335,6 +2335,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 17 2012 Josh Boyer <jwboyer@redhat.com>
+- Enable cpu_idle drivers for ppc64/pseries (requested by Ben Herrenschmidt)
+
 * Wed May 16 2012 Josh Boyer <jwboyer@redhat.com>
 - Update the vgaarb patches to pick up a small switcheroo fix from airlied
 
