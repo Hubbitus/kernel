@@ -2335,6 +2335,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 21 2012 Josh Boyer <jwboyer@redhat.com>
+- Bump NR_CPUS to 128 on x86_64
+
 * Sun May 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-0.rc7.git6.1
 - Linux v3.4-rc7-124-gd6c77973
 
