@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -750,15 +750,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 814278 814289 CVE-2012-2119
-Patch22007: macvtap-zerocopy-validate-vector-length.patch
-
-#rhbz 817298
-Patch22013: ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
-
-#rhbz 749276
-Patch22018: atl1c_net_next_update-3.4.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1455,15 +1446,6 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
-
-#rhbz 814278 814289 CVE-2012-2119
-ApplyPatch macvtap-zerocopy-validate-vector-length.patch
-
-#rhbz 817298
-ApplyPatch ipw2x00-add-supported-cipher-suites-to-wiphy-initialization.patch
-
-#rhbz 749276
-ApplyPatch atl1c_net_next_update-3.4.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2335,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git1.2
+- Linux v3.4-1622-g31a6710
+
 * Mon May 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.4.0-2
 - Reenable debugging options.
 
