@@ -675,7 +675,7 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
-Patch900: modsign-20111207.patch
+Patch900: modsign-20120510.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1382,7 +1382,7 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-20111207.patch
+ApplyPatch modsign-20120510.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -1495,27 +1495,7 @@ find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
 find . -name .gitignore -exec rm -f {} \; >/dev/null
 
 %if %{signmodules}
-cat <<EOF
-###
-### Now generating a PGP key pair to be used for signing modules.
-###
-### If this takes a long time, you might wish to run rngd in the background to
-### keep the supply of entropy topped up.  It needs to be run as root, and
-### should use a hardware random number generator if one is available, eg:
-###
-###     rngd -r /dev/hwrandom
-###
-### If one isn't available, the pseudo-random number generator can be used:
-###
-###     rngd -r /dev/urandom
-###
-EOF
-gpg --homedir . --batch --gen-key %{SOURCE11}
-cat <<EOF
-###
-### Key pair generated.
-###
-EOF
+cp %{SOURCE11} .
 %endif
 
 cd ..
@@ -2317,6 +2297,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 21 2012 Josh Boyer <jwboyer@redhat.com>
+- Update the modsign patchset to the most recent version
+
 * Mon May 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git1.2
 - Linux v3.4-1622-g31a6710
 

@@ -1,5 +1,7 @@
-%pubring kernel.pub
-%secring kernel.sec
+%pubring modsign.pub
+%secring modsign.sec
+%no-protection: yes
+%transient-key: yes
 Key-Type: RSA
 Key-Length: 2048
 Name-Real: Fedora Project
