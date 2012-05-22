@@ -411,6 +411,8 @@ CONFIG_DRM_GMA500=m
 # CONFIG_DRM_GMA600 is not set
 CONFIG_DRM_GMA3600=y
 
+CONFIG_RCU_FANOUT_LEAF=16
+
 # Maybe enable in debug kernels?
 # CONFIG_DEBUG_NMI_SELFTEST is not set
 

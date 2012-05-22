@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2297,7 +2297,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue May 22 2012 Josh Boyer <jwboyer@gmail.com> - 3.5.0-0.rc0.git2.1
+* Tue May 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git3.1
+- Linux v3.4-2580-g72c04af
+
+* Tue May 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git2.1
 - Linux v3.4-2285-g2e32180
 
 * Mon May 21 2012 Josh Boyer <jwboyer@redhat.com>
