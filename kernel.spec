@@ -688,6 +688,7 @@ Patch1800: drm-vgem.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 Patch1825: drm-i915-dp-stfu.patch
+Patch1826: drm-i915-lvds-dual-channel.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -1400,6 +1401,7 @@ ApplyPatch drm-vgem.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
+ApplyPatch drm-i915-lvds-dual-channel.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -2303,6 +2305,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 23 2012 Adam Jackson <ajax@redhat.com>
+- drm-i915-lvds-dual-channel.patch: Scrape LVDS dual-channel-ness from the
+  VBT instead of just making things up. (#819343)
+
 * Wed May 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git4.1
 - Add patch to fix perf build
 - Linux v3.4-4842-g61011677
