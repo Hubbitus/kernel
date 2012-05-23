@@ -1,5 +1,5 @@
 diff --git a/arch/x86/include/asm/desc.h b/arch/x86/include/asm/desc.h
-index e95822d..00b222f 100644
+index 8bf1c06..49f8ab2 100644
 --- a/arch/x86/include/asm/desc.h
 +++ b/arch/x86/include/asm/desc.h
 @@ -5,6 +5,7 @@
@@ -8,9 +8,9 @@ index e95822d..00b222f 100644
  
 +#include <linux/mm_types.h>
  #include <linux/smp.h>
+ #include <linux/percpu.h>
  
- static inline void fill_ldt(struct desc_struct *desc, const struct user_desc *info)
-@@ -99,6 +100,9 @@ static inline int desc_empty(const void *ptr)
+@@ -100,6 +101,9 @@ static inline int desc_empty(const void *ptr)
  
  #define load_TLS(t, cpu)			native_load_tls(t, cpu)
  #define set_ldt					native_set_ldt
@@ -20,7 +20,7 @@ index e95822d..00b222f 100644
  
  #define write_ldt_entry(dt, entry, desc)	native_write_ldt_entry(dt, entry, desc)
  #define write_gdt_entry(dt, entry, desc, type)	native_write_gdt_entry(dt, entry, desc, type)
-@@ -404,4 +408,25 @@ static inline void set_system_intr_gate_ist(int n, void *addr, unsigned ist)
+@@ -405,4 +409,25 @@ static inline void set_system_intr_gate_ist(int n, void *addr, unsigned ist)
  	_set_gate(n, GATE_INTERRUPT, addr, 0x3, ist, __KERNEL_CS);
  }
  
@@ -73,10 +73,10 @@ index 5f55e69..aba94f0 100644
  
  #ifdef CONFIG_SMP
 diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
-index a7d2db9..cc4ad60 100644
+index aa0f913..016fcf6 100644
 --- a/arch/x86/include/asm/paravirt.h
 +++ b/arch/x86/include/asm/paravirt.h
-@@ -298,6 +298,12 @@ static inline void set_ldt(const void *addr, unsigned entries)
+@@ -299,6 +299,12 @@ static inline void set_ldt(const void *addr, unsigned entries)
  {
  	PVOP_VCALL2(pv_cpu_ops.set_ldt, addr, entries);
  }
@@ -104,10 +104,10 @@ index 8e8b9a4..cca421e 100644
  	void (*load_tls)(struct thread_struct *t, unsigned int cpu);
  #ifdef CONFIG_X86_64
 diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
-index d43cad7..07da281 100644
+index 82f29e7..d8597f2 100644
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -839,6 +839,22 @@ static void __cpuinit identify_cpu(struct cpuinfo_x86 *c)
+@@ -841,6 +841,22 @@ static void __cpuinit identify_cpu(struct cpuinfo_x86 *c)
  	/* Filter out anything that depends on CPUID levels we don't have */
  	filter_cpuid_features(c, true);
  
@@ -131,10 +131,10 @@ index d43cad7..07da281 100644
  	if (!c->x86_model_id[0]) {
  		const char *p;
 diff --git a/arch/x86/kernel/paravirt.c b/arch/x86/kernel/paravirt.c
-index d90272e..cc594fc 100644
+index 9ce8859..d19990c 100644
 --- a/arch/x86/kernel/paravirt.c
 +++ b/arch/x86/kernel/paravirt.c
-@@ -358,6 +358,9 @@ struct pv_cpu_ops pv_cpu_ops = {
+@@ -360,6 +360,9 @@ struct pv_cpu_ops pv_cpu_ops = {
  	.read_tscp = native_read_tscp,
  	.load_tr_desc = native_load_tr_desc,
  	.set_ldt = native_set_ldt,
@@ -145,10 +145,10 @@ index d90272e..cc594fc 100644
  	.load_idt = native_load_idt,
  	.store_gdt = native_store_gdt,
 diff --git a/arch/x86/kernel/process_32.c b/arch/x86/kernel/process_32.c
-index 324cd72..95618a4 100644
+index 01d8d40..4c2ece1 100644
 --- a/arch/x86/kernel/process_32.c
 +++ b/arch/x86/kernel/process_32.c
-@@ -249,7 +249,10 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
+@@ -191,7 +191,10 @@ int copy_thread(unsigned long clone_flags, unsigned long sp,
  void
  start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
  {
@@ -159,7 +159,7 @@ index 324cd72..95618a4 100644
  	regs->fs		= 0;
  	regs->ds		= __USER_DS;
  	regs->es		= __USER_DS;
-@@ -257,6 +260,11 @@ start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
+@@ -199,6 +202,11 @@ start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
  	regs->cs		= __USER_CS;
  	regs->ip		= new_ip;
  	regs->sp		= new_sp;
@@ -171,7 +171,7 @@ index 324cd72..95618a4 100644
  	/*
  	 * Free the old FP and other extended state
  	 */
-@@ -321,6 +329,9 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
+@@ -264,6 +272,9 @@ __switch_to(struct task_struct *prev_p, struct task_struct *next_p)
  	 */
  	lazy_save_gs(prev->gs);
  
@@ -181,7 +181,7 @@ index 324cd72..95618a4 100644
  	/*
  	 * Load the per-thread Thread-Local Storage descriptor.
  	 */
-@@ -389,3 +400,40 @@ unsigned long get_wchan(struct task_struct *p)
+@@ -334,3 +345,40 @@ unsigned long get_wchan(struct task_struct *p)
  	return 0;
  }
  
@@ -223,10 +223,10 @@ index 324cd72..95618a4 100644
 +	set_user_cs(&mm->context.user_cs, 0);
 +}
 diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 4d42300..4cb14a1 100644
+index 92d5756..662c2f9 100644
 --- a/arch/x86/kernel/traps.c
 +++ b/arch/x86/kernel/traps.c
-@@ -107,6 +107,78 @@ static inline void preempt_conditional_cli(struct pt_regs *regs)
+@@ -108,6 +108,78 @@ static inline void preempt_conditional_cli(struct pt_regs *regs)
  	dec_preempt_count();
  }
  
@@ -305,7 +305,7 @@ index 4d42300..4cb14a1 100644
  static void __kprobes
  do_trap(int trapnr, int signr, char *str, struct pt_regs *regs,
  	long error_code, siginfo_t *info)
-@@ -263,6 +335,29 @@ do_general_protection(struct pt_regs *regs, long error_code)
+@@ -268,6 +340,29 @@ do_general_protection(struct pt_regs *regs, long error_code)
  	if (!user_mode(regs))
  		goto gp_in_kernel;
  
@@ -335,7 +335,7 @@ index 4d42300..4cb14a1 100644
  	tsk->thread.error_code = error_code;
  	tsk->thread.trap_nr = X86_TRAP_GP;
  
-@@ -650,20 +745,37 @@ do_device_not_available(struct pt_regs *regs, long error_code)
+@@ -646,20 +741,37 @@ do_device_not_available(struct pt_regs *regs, long error_code)
  }
  
  #ifdef CONFIG_X86_32
@@ -413,7 +413,7 @@ index 410531d..eb040ad 100644
  		       "missing in CPU!\n");
  	} else {
 diff --git a/arch/x86/mm/tlb.c b/arch/x86/mm/tlb.c
-index d6c0418..c15b765 100644
+index 3804471..3c7805c 100644
 --- a/arch/x86/mm/tlb.c
 +++ b/arch/x86/mm/tlb.c
 @@ -7,6 +7,7 @@
@@ -438,10 +438,10 @@ index d6c0418..c15b765 100644
  	 * orig_rax contains the negated interrupt vector.
  	 * Use that to determine where the sender put the data.
 diff --git a/arch/x86/xen/enlighten.c b/arch/x86/xen/enlighten.c
-index 12eb07b..c48ed49 100644
+index c0f5fac..2040256 100644
 --- a/arch/x86/xen/enlighten.c
 +++ b/arch/x86/xen/enlighten.c
-@@ -354,6 +354,24 @@ static void xen_set_ldt(const void *addr, unsigned entries)
+@@ -446,6 +446,24 @@ static void xen_set_ldt(const void *addr, unsigned entries)
  	xen_mc_issue(PARAVIRT_LAZY_CPU);
  }
  
@@ -466,7 +466,7 @@ index 12eb07b..c48ed49 100644
  static void xen_load_gdt(const struct desc_ptr *dtr)
  {
  	unsigned long va = dtr->address;
-@@ -994,6 +1012,9 @@ static const struct pv_cpu_ops xen_cpu_ops __initconst = {
+@@ -1119,6 +1137,9 @@ static const struct pv_cpu_ops xen_cpu_ops __initconst = {
  
  	.load_tr_desc = paravirt_nop,
  	.set_ldt = xen_set_ldt,
@@ -477,10 +477,10 @@ index 12eb07b..c48ed49 100644
  	.load_idt = xen_load_idt,
  	.load_tls = xen_load_tls,
 diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 81878b7..2536ec3 100644
+index 16f7354..611f1c6 100644
 --- a/fs/binfmt_elf.c
 +++ b/fs/binfmt_elf.c
-@@ -711,6 +711,16 @@ static int load_elf_binary(struct linux_binprm *bprm, struct pt_regs *regs)
+@@ -708,6 +708,16 @@ static int load_elf_binary(struct linux_binprm *bprm, struct pt_regs *regs)
  	if (retval)
  		goto out_free_dentry;
  
@@ -498,10 +498,10 @@ index 81878b7..2536ec3 100644
  	current->mm->def_flags = def_flags;
  
 diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 7d379a6..90ccb05 100644
+index 28fa9d0..c961aa8 100644
 --- a/include/linux/sched.h
 +++ b/include/linux/sched.h
-@@ -102,6 +102,9 @@ struct fs_struct;
+@@ -101,6 +101,9 @@ struct fs_struct;
  struct perf_event_context;
  struct blk_plug;
  
@@ -512,7 +512,7 @@ index 7d379a6..90ccb05 100644
   * List of flags we want to share for kernel threads,
   * if only because they are not used by them anyway.
 diff --git a/mm/mmap.c b/mm/mmap.c
-index 3f758c7..0e29e1b 100644
+index 69a1889..5172f68 100644
 --- a/mm/mmap.c
 +++ b/mm/mmap.c
 @@ -46,6 +46,18 @@
@@ -534,7 +534,7 @@ index 3f758c7..0e29e1b 100644
  static void unmap_region(struct mm_struct *mm,
  		struct vm_area_struct *vma, struct vm_area_struct *prev,
  		unsigned long start, unsigned long end);
-@@ -424,6 +436,8 @@ __vma_link(struct mm_struct *mm, struct vm_area_struct *vma,
+@@ -426,6 +438,8 @@ __vma_link(struct mm_struct *mm, struct vm_area_struct *vma,
  	struct vm_area_struct *prev, struct rb_node **rb_link,
  	struct rb_node *rb_parent)
  {
@@ -543,7 +543,7 @@ index 3f758c7..0e29e1b 100644
  	__vma_link_list(mm, vma, prev, rb_parent);
  	__vma_link_rb(mm, vma, rb_link, rb_parent);
  }
-@@ -478,6 +492,8 @@ __vma_unlink(struct mm_struct *mm, struct vm_area_struct *vma,
+@@ -479,6 +493,8 @@ __vma_unlink(struct mm_struct *mm, struct vm_area_struct *vma,
  	rb_erase(&vma->vm_rb, &mm->mm_rb);
  	if (mm->mmap_cache == vma)
  		mm->mmap_cache = prev;
@@ -552,7 +552,7 @@ index 3f758c7..0e29e1b 100644
  }
  
  /*
-@@ -794,6 +810,8 @@ struct vm_area_struct *vma_merge(struct mm_struct *mm,
+@@ -795,6 +811,8 @@ struct vm_area_struct *vma_merge(struct mm_struct *mm,
  		} else					/* cases 2, 5, 7 */
  			err = vma_adjust(prev, prev->vm_start,
  				end, prev->vm_pgoff, NULL);
@@ -561,7 +561,7 @@ index 3f758c7..0e29e1b 100644
  		if (err)
  			return NULL;
  		khugepaged_enter_vma_merge(prev);
-@@ -1952,10 +1970,14 @@ static int __split_vma(struct mm_struct * mm, struct vm_area_struct * vma,
+@@ -2009,10 +2027,14 @@ static int __split_vma(struct mm_struct * mm, struct vm_area_struct * vma,
  	if (new->vm_ops && new->vm_ops->open)
  		new->vm_ops->open(new);
  
@@ -578,7 +578,7 @@ index 3f758c7..0e29e1b 100644
  		err = vma_adjust(vma, vma->vm_start, addr, vma->vm_pgoff, new);
  
  	/* Success. */
-@@ -2266,6 +2266,7 @@ void exit_mmap(struct mm_struct *mm)
+@@ -2312,6 +2334,7 @@ void exit_mmap(struct mm_struct *mm)
  
  	free_pgtables(&tlb, vma, FIRST_USER_ADDRESS, 0);
  	tlb_finish_mmu(&tlb, 0, -1);
@@ -587,7 +587,7 @@ index 3f758c7..0e29e1b 100644
  	/*
  	 * Walk the list again, actually closing and freeing it,
 diff --git a/mm/mprotect.c b/mm/mprotect.c
-index 5a688a2..128d996 100644
+index a409926..5e05c67 100644
 --- a/mm/mprotect.c
 +++ b/mm/mprotect.c
 @@ -25,9 +25,14 @@

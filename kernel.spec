@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2299,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git4.1
+- Linux v3.4-4842-g61011677
+
 * Wed May 23 2012 Dennis Gilmore <dennis@ausil.us> 
 - add patch to fix ftbfs on tegra due to sdhci MODULE_DEVICE_TABLE mismatch
 - dont make a arm config file we do not use it anywhere 
