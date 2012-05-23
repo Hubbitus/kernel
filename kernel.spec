@@ -725,6 +725,7 @@ Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
+Patch21006: arm-tegra-sdhci-module-fix.patch
 
 # ARM highbank patches
 # Highbank clock functions need to be EXPORT for module builds
@@ -1315,6 +1316,7 @@ ApplyPatch nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 #ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-sdhci-module-fix.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2297,6 +2299,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 23 2012 Dennis Gilmore <dennis@ausil.us> 
+- add patch to fix ftbfs on tegra due to sdhci MODULE_DEVICE_TABLE mismatch
+- dont make a arm config file we do not use it anywhere 
+
 * Tue May 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git3.1
 - Linux v3.4-2580-g72c04af
 
