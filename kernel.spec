@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -747,8 +747,6 @@ Patch21306: shlib_base_randomize.patch
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch21620: vgaarb-vga_default_device.patch
-
-Patch21621: perf-Fix-trace-event-perl.c-build.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1452,8 +1450,6 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
-
-ApplyPatch perf-Fix-trace-event-perl.c-build.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2305,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git5.1
+- Linux v3.4-5161-g56edab3
+
 * Wed May 23 2012 Adam Jackson <ajax@redhat.com>
 - drm-i915-lvds-dual-channel.patch: Scrape LVDS dual-channel-ness from the
   VBT instead of just making things up. (#819343)
