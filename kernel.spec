@@ -747,6 +747,8 @@ Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch21620: vgaarb-vga_default_device.patch
 
+Patch21621: perf-Fix-trace-event-perl.c-build.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1448,6 +1450,8 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
+
+ApplyPatch perf-Fix-trace-event-perl.c-build.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2304,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed May 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git4.1
+- Add patch to fix perf build
 - Linux v3.4-4842-g61011677
 
 * Wed May 23 2012 Dennis Gilmore <dennis@ausil.us> 
