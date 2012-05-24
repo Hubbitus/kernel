@@ -2307,6 +2307,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 24 2012 Dennis Gilmore <dennis@ausil.us>
+- enable XGI_FB on kirkwood for openrd
+- enable DeviceTree support on kirkwood
+- enable dreamplug support on kerkwood 
+
 * Thu May 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git6.1
 - Linux v3.4-5722-gf936991
 
