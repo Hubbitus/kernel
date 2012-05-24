@@ -2301,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 24 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Don't build Nokia ARM device support
+
 * Wed May 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git5.1
 - Linux v3.4-5161-g56edab3
 
