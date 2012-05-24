@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -752,6 +752,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+#rhbz 822825 822821 CVE-2012-2372
+Patch22021: mm-pmd_read_atomic-fix-32bit-PAE-pmd-walk-vs-pmd_populate-SMP-race-condition.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1450,6 +1453,9 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #vgaarb patches.  blame mjg59
 ApplyPatch vgaarb-vga_default_device.patch
+
+#rhbz 822825 822821 CVE-2012-2372
+ApplyPatch mm-pmd_read_atomic-fix-32bit-PAE-pmd-walk-vs-pmd_populate-SMP-race-condition.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 24 2012 Josh Boyer <jwboyer@redhat.com>
+- CVE-2012-2372 mm: 32bit PAE pmd walk vs populate SMP race (rhbz 822821 822825)
+
 * Thu May 24 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Don't build Nokia ARM device support
 
