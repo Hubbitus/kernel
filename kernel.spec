@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git6.1
+- Linux v3.4-5722-gf936991
+
 * Thu May 24 2012 Josh Boyer <jwboyer@redhat.com>
 - CVE-2012-2372 mm: 32bit PAE pmd walk vs populate SMP race (rhbz 822821 822825)
 
