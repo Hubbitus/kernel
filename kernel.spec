@@ -738,8 +738,6 @@ Patch21098: hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
-Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
-
 #rhbz 804957 CVE-2012-1568
 Patch21306: shlib_base_randomize.patch
 
