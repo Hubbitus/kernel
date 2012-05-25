@@ -100,7 +100,6 @@ CONFIG_HOTPLUG_PCI_PCIE=y
 CONFIG_HOTPLUG_PCI_FAKE=m
 
 # CONFIG_ISA is not set
-# CONFIG_MCA is not set
 # CONFIG_SCx200 is not set
 
 #
