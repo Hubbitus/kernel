@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 25 2012 Mauro Carvalho Chehab <mchehab@redhat.com>
+- Don't manually customise tuners/frontends (rhbz 825203)
+
 * Thu May 24 2012 Dennis Gilmore <dennis@ausil.us>
 - enable XGI_FB on kirkwood for openrd
 - enable DeviceTree support on kirkwood
