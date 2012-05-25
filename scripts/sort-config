@@ -4,9 +4,9 @@ FC=($(fedpkg verrel | awk -F. '{print $NF}'))
 
 SRC=($(ls config-* 2>/dev/null))
 
-TGT=($(ls kernel-*.$FC/linux-*.noarch/configs/kernel-*-*.config \
-          kernel-*.$FC/linux-*.noarch/configs/kernel-*-*-debug.config 2>/dev/null))
-TGT1=(${TGT[*]#kernel-*.$FC/linux-*.noarch/configs/kernel-*-})
+TGT=($(ls kernel-*.$FC/linux-*.$2/configs/kernel-*-*.config \
+          kernel-*.$FC/linux-*.$2/configs/kernel-*-*-debug.config 2>/dev/null))
+TGT1=(${TGT[*]#kernel-*.$FC/linux-*.$2/configs/kernel-*-})
 
 ALL_OPTS="cdfimn"
 
@@ -66,11 +66,11 @@ rm -f $TEMPFILES
 SRCFILE=config-$1
 [ ! -f $SRCFILE ] && echo "Input file" $SRCFILE "missing" && exit 2
 
-TGTFILE=kernel-*.$FC/linux-*.noarch/configs/kernel-*-$2.config
+TGTFILE=kernel-*.$FC/linux-*.$2/configs/kernel-*-$2.config
 [ ! -f $TGTFILE ] && echo "No target file matching" $TGTFILE "exists" && exit 2
 
 [ "$FIND_IMPOSS" ] && \
-   find kernel-*.$FC/*.noarch -name Kconfig\* -type f \
+   find kernel-*.$FC/*.$2 -name Kconfig\* -type f \
    | xargs egrep -s -h '^[[:space:]]*(menu)?config[[:space:]]+' \
    | sed -r 's/^[[:space:]]*(menu)?config[[:space:]]+/CONFIG_/' \
    | sort | uniq >xx98
