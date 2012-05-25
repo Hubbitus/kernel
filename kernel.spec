@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -688,7 +688,6 @@ Patch1800: drm-vgem.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 Patch1825: drm-i915-dp-stfu.patch
-Patch1826: drm-i915-lvds-dual-channel.patch
 
 Patch1900: linux-2.6-intel-iommu-igfx.patch
 
@@ -745,8 +744,6 @@ Patch21260: x86-Avoid-invoking-RCU-when-CPU-is-idle.patch
 Patch21306: shlib_base_randomize.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
-
-Patch21620: vgaarb-vga_default_device.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1402,7 +1399,6 @@ ApplyPatch drm-vgem.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
-ApplyPatch drm-i915-lvds-dual-channel.patch
 
 ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
@@ -1450,9 +1446,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-#vgaarb patches.  blame mjg59
-ApplyPatch vgaarb-vga_default_device.patch
 
 #rhbz 822825 822821 CVE-2012-2372
 ApplyPatch mm-pmd_read_atomic-fix-32bit-PAE-pmd-walk-vs-pmd_populate-SMP-race-condition.patch
@@ -2307,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git7.1
+- Linux v3.4-7644-g07acfc2
+
 * Fri May 25 2012 Mauro Carvalho Chehab <mchehab@redhat.com>
 - Don't manually customise tuners/frontends (rhbz 825203)
 
