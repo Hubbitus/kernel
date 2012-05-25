@@ -269,8 +269,6 @@ CONFIG_BLK_DEV_THROTTLING=y
 #
 # CONFIG_IDE is not set
 
-CONFIG_BLK_DEV_IDE=y
-
 #
 # Please see Documentation/ide.txt for help/info on IDE drives
 #
