@@ -182,6 +182,8 @@ CONFIG_FW_LOADER=y
 # CONFIG_FIRMWARE_IN_KERNEL is not set
 CONFIG_EXTRA_FIRMWARE=""
 
+# CONFIG_CMA is not set
+
 # CONFIG_SPI is not set
 
 #
