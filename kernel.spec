@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -676,6 +676,7 @@ Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
 Patch900: modsign-20120510.patch
+Patch901: modsign-fix-elf-rel.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1384,6 +1385,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
 ApplyPatch modsign-20120510.patch
+ApplyPatch modsign-fix-elf-rel.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -2298,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 30 2012 Josh Boyer <jwboyer@redhat.com>
+- modsign: Fix 32bit ELF table interpretation from David Howells (rhbz 825944)
+
 * Tue May 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git9.1
 - Linux v3.4-8261-ga01ee16
 
