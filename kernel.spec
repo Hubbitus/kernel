@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -748,6 +748,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+#rhbz 826983
+Patch22002: drm-cirrus-qemu-fix-crash.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1443,6 +1446,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
+
+# rhbz 826983
+ApplyPatch drm-cirrus-qemu-fix-crash.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2294,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 31 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git10.2
+- Fix crash in cirrus qemu driver from Dave Airlie (rhbz 826983)
+
 * Thu May 31 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git10.1
 - Linux v3.4-9208-gaf56e0a
 
