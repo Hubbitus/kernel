@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -748,9 +748,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 822825 822821 CVE-2012-2372
-Patch22021: mm-pmd_read_atomic-fix-32bit-PAE-pmd-walk-vs-pmd_populate-SMP-race-condition.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1446,9 +1443,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-#rhbz 822825 822821 CVE-2012-2372
-ApplyPatch mm-pmd_read_atomic-fix-32bit-PAE-pmd-walk-vs-pmd_populate-SMP-race-condition.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 31 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git10.1
+- Linux v3.4-9208-gaf56e0a
+
 * Wed May 30 2012 Josh Boyer <jwboyer@redhat.com>
 - modsign: Fix 32bit ELF table interpretation from David Howells (rhbz 825944)
 

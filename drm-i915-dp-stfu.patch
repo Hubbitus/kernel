@@ -1,8 +1,8 @@
 diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
-index 71c7096..5defdd5 100644
+index 296cfc2..516e1e2 100644
 --- a/drivers/gpu/drm/i915/intel_dp.c
 +++ b/drivers/gpu/drm/i915/intel_dp.c
-@@ -347,7 +347,7 @@ intel_dp_check_edp(struct intel_dp *intel_dp)
+@@ -350,7 +350,7 @@ intel_dp_check_edp(struct intel_dp *intel_dp)
  	if (!is_edp(intel_dp))
  		return;
  	if (!ironlake_edp_have_panel_power(intel_dp) && !ironlake_edp_have_panel_vdd(intel_dp)) {
@@ -11,7 +11,7 @@ index 71c7096..5defdd5 100644
  		DRM_DEBUG_KMS("Status 0x%08x Control 0x%08x\n",
  			      I915_READ(PCH_PP_STATUS),
  			      I915_READ(PCH_PP_CONTROL));
-@@ -397,7 +397,7 @@ intel_dp_aux_ch(struct intel_dp *intel_dp,
+@@ -400,7 +400,7 @@ intel_dp_aux_ch(struct intel_dp *intel_dp,
  	}
  
  	if (try == 3) {
@@ -20,7 +20,7 @@ index 71c7096..5defdd5 100644
  		     I915_READ(ch_ctl));
  		return -EBUSY;
  	}
-@@ -1018,8 +1018,8 @@ static void ironlake_edp_panel_vdd_on(struct intel_dp *intel_dp)
+@@ -1024,8 +1024,8 @@ static void ironlake_edp_panel_vdd_on(struct intel_dp *intel_dp)
  		return;
  	DRM_DEBUG_KMS("Turn eDP VDD on\n");
  
@@ -31,7 +31,7 @@ index 71c7096..5defdd5 100644
  
  	intel_dp->want_panel_vdd = true;
  
-@@ -1084,7 +1084,8 @@ static void ironlake_edp_panel_vdd_off(struct intel_dp *intel_dp, bool sync)
+@@ -1090,7 +1090,8 @@ static void ironlake_edp_panel_vdd_off(struct intel_dp *intel_dp, bool sync)
  		return;
  
  	DRM_DEBUG_KMS("Turn eDP VDD off %d\n", intel_dp->want_panel_vdd);
@@ -41,14 +41,13 @@ index 71c7096..5defdd5 100644
  
  	intel_dp->want_panel_vdd = false;
  
-@@ -1154,7 +1155,9 @@ static void ironlake_edp_panel_off(struct intel_dp *intel_dp)
+@@ -1160,7 +1161,8 @@ static void ironlake_edp_panel_off(struct intel_dp *intel_dp)
  
  	DRM_DEBUG_KMS("Turn eDP power off\n");
  
--	WARN(intel_dp->want_panel_vdd, "Cannot turn power off while VDD is on\n");
-+	if (intel_dp->want_panel_vdd)
-+		DRM_ERROR("Cannot turn power off while VDD is on\n");
-+
- 	ironlake_panel_vdd_off_sync(intel_dp); /* finish any pending work */
+-	WARN(!intel_dp->want_panel_vdd, "Need VDD to turn off panel\n");
++	if (!intel_dp->want_panel_vdd)
++		DRM_ERROR("Need VDD to turn off panel\n");
  
  	pp = ironlake_get_pp_control(dev_priv);
+ 	pp &= ~(POWER_TARGET_ON | PANEL_POWER_RESET | EDP_BLC_ENABLE);
