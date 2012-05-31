@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -689,8 +689,6 @@ Patch1800: drm-vgem.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 Patch1825: drm-i915-dp-stfu.patch
-
-Patch1900: linux-2.6-intel-iommu-igfx.patch
 
 # Quiet boot fixes
 # silence the ACPI blacklist code
@@ -1399,8 +1397,6 @@ ApplyPatch drm-vgem.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
-
-ApplyPatch linux-2.6-intel-iommu-igfx.patch
 
 # silence the ACPI blacklist code
 ApplyPatch linux-2.6-silence-acpi-blacklist.patch
@@ -2300,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 31 2012 Josh Boyer <jwboyer@redhat.com>
+- Per Adam Jackson, drop linux-2.6-intel-iommu-igfx.patch
+
 * Thu May 31 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git10.2
 - Fix crash in cirrus qemu driver from Dave Airlie (rhbz 826983)
 
