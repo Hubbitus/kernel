@@ -4133,7 +4133,7 @@ index 1cc1c5a..b64dab0 100644
 @@ -29,14 +29,17 @@ struct mod_arch_specific
  };
  
- #ifdef __s390x__
+ #ifdef CONFIG_64BIT
 +#define MODULES_ARE_ELF64
  #define ElfW(x) Elf64_ ## x
  #define ELFW(x) ELF64_ ## x
