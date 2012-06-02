@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jun 02 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM OMAP updates
+
 * Sat Jun 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git12.1
 - Linux v3.4-10115-g829f51d
 
