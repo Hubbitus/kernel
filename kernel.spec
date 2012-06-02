@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 11
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -746,9 +746,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 826983
-Patch22002: drm-cirrus-qemu-fix-crash.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1442,9 +1439,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-# rhbz 826983
-ApplyPatch drm-cirrus-qemu-fix-crash.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jun 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git12.1
+- Linux v3.4-10115-g829f51d
+
 * Fri Jun 01 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc0.git11.1
 - Linux v3.4-9547-gfb21aff
 
