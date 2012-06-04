@@ -650,9 +650,6 @@ Patch09: linux-2.6-upstream-reverts.patch
 # Standalone patches
 
 Patch100: taint-vbox.patch
-Patch160: linux-2.6-32bit-mmap-exec-randomization.patch
-Patch161: linux-2.6-i386-nx-emulation.patch
-Patch162: nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -736,9 +733,6 @@ Patch21098: hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-#rhbz 804957 CVE-2012-1568
-Patch21306: shlib_base_randomize.patch
 
 Patch21400: unhandled-irqs-switch-to-polling.patch
 
@@ -1300,9 +1294,6 @@ ApplyPatch taint-vbox.patch
 
 # Architecture patches
 # x86(-64)
-ApplyPatch linux-2.6-32bit-mmap-exec-randomization.patch
-ApplyPatch linux-2.6-i386-nx-emulation.patch
-ApplyPatch nx-emu-remove-cpuinitdata-for-disable_nx-on-x86_32.patch
 
 #
 # ARM
@@ -1426,9 +1417,6 @@ ApplyPatch hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-#rhbz 804957 CVE-2012-1568
-ApplyPatch shlib_base_randomize.patch
 
 ApplyPatch unhandled-irqs-switch-to-polling.patch
 
@@ -2290,6 +2278,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 04 2012 Dave Jones <davej@redhat.com>
+- Remove 32bit NX emulation.
+
 * Mon Jun 04 2012 Josh Boyer <jwboyer@redhat.com>
 - Remove modules.{devname,softdep} to prevent RPM verify errors (rhbz 650807)
 
