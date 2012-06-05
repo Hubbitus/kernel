@@ -2278,6 +2278,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 05 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM config options for 3.5
+- Enable MTD/UBI/JFFS2 on ARM platforms
+
 * Mon Jun 04 2012 Dave Jones <davej@redhat.com>
 - Remove 32bit NX emulation.
 

@@ -22,7 +22,6 @@ CONFIG_CPU_HAS_PMU=y
 # Need to verify whether these are generic or vexpress specific
 CONFIG_ARM_AMBA=y
 
-CONFIG_USE_GENERIC_SMP_HELPERS=y
 CONFIG_VFP=y
 CONFIG_VFPv3=y
 
