@@ -142,8 +142,7 @@ CONFIG_PERF_EVENTS=y
 CONFIG_EVENT_PROFILE=y
 
 CONFIG_KVM_BOOK3S_64=m
-#-- Enable _HV once publicly available POWER7 hardware can use it
-# CONFIG_KVM_BOOK3S_64_HV is not set
+CONFIG_KVM_BOOK3S_64_HV=y
 # CONFIG_KVM_EXIT_TIMING is not set
 
 #-- bz#607175
