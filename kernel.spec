@@ -257,11 +257,11 @@ Summary: The Linux kernel
 
 # kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
-%define with_imx 0
 %define with_highbank 0
 %define with_omap 0
 %define with_tegra 0
 %endif
+%define with_imx 0
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -714,9 +714,8 @@ Patch14000: hibernate-freeze-filesystems.patch
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
-# Flattened devicetree support
-Patch21000: arm-omap-dt-compat.patch
-Patch21001: arm-smsc-support-reading-mac-address-from-device-tree.patch
+# OMAP
+Patch21000: arm-omap-dsp-inc.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -1298,8 +1297,7 @@ ApplyPatch taint-vbox.patch
 #
 # ARM
 #
-#ApplyPatch arm-omap-dt-compat.patch
-#ApplyPatch arm-smsc-support-reading-mac-address-from-device-tree.patch
+ApplyPatch arm-omap-dsp-inc.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2278,6 +2276,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jun 10 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Temporarily disable ARM imx kernel due to missing clk patches
+- Add patch to fix OMAP build
+- Drop DTB mac patches as rejected upstream
+- General ARM cleanups
+
 * Sat Jun 09 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc2.git0.1
 - Linux v3.5-rc2
 
