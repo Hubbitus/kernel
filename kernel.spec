@@ -715,7 +715,7 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
 # OMAP
-Patch21000: arm-omap-dsp-inc.patch
+Patch21000: arm-omap-3.5-fixes.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -1297,7 +1297,7 @@ ApplyPatch taint-vbox.patch
 #
 # ARM
 #
-ApplyPatch arm-omap-dsp-inc.patch
+ApplyPatch arm-omap-3.5-fixes.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
