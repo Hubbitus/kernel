@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -739,6 +739,10 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+#rhbz 825491
+Patch22023: iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
+Patch22024: iwlwifi-dont-mess-up-the-SCD-when-removing-a-key.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1425,6 +1429,10 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
+
+#rhbz 825491
+ApplyPatch iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
+ApplyPatch iwlwifi-dont-mess-up-the-SCD-when-removing-a-key.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2276,6 +2284,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com>
+- Add two upstream commits to fix flaky iwlwifi (rhbz 825491)
+
 * Sun Jun 10 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Temporarily disable ARM imx kernel due to missing clk patches
 - Add patch to fix OMAP build
