@@ -740,6 +740,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
+#rhbz 829016
+Patch22022: thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
+
 #rhbz 825491
 Patch22023: iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
 Patch22024: iwlwifi-dont-mess-up-the-SCD-when-removing-a-key.patch
@@ -1429,6 +1432,8 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
+
+ApplyPatch thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
 
 #rhbz 825491
 ApplyPatch iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
@@ -2285,6 +2290,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc2.git0.3
+- Add patch to fix xen domU 32bit (rhbz 829016)
 - Reenable debugging options.
 
 * Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com>
