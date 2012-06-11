@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -938,6 +938,7 @@ Group: System Environment/Kernel\
 Provides: kernel%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{version}-%{release}\
 Provides: kernel-modules-extra-%{_target_cpu} = %{version}-%{release}%{?1:.%{1}}\
 Provides: kernel-modules-extra = %{version}-%{release}%{?1:.%{1}}\
+Provides: installonlypkg(kernel-module)\
 Provides: kernel-modules-extra-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
 AutoReqProv: no\
@@ -2289,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com> 
+- Add virtual provides for kernel-module to kernel-modules-extra (rhbz 770444)
+
 * Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.5.0-0.rc2.git0.3
 - Add patch to fix xen domU 32bit (rhbz 829016)
 - Reenable debugging options.
