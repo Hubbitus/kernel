@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 12 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM: build in rtc modules so time gets set right on boot
+
 * Mon Jun 11 2012 Josh Boyer <jwboyer@redhat.com> 
 - Add virtual provides for kernel-module to kernel-modules-extra (rhbz 770444)
 
