@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -742,10 +742,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 829016
 Patch22022: thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
-
-#rhbz 825491
-Patch22023: iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
-Patch22024: iwlwifi-dont-mess-up-the-SCD-when-removing-a-key.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1435,10 +1431,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 ApplyPatch highbank-export-clock-functions.patch 
 
 ApplyPatch thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
-
-#rhbz 825491
-ApplyPatch iwlwifi-disable-the-buggy-chain-extension-feature-in-HW.patch
-ApplyPatch iwlwifi-dont-mess-up-the-SCD-when-removing-a-key.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2282,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 18 2012 Josh Boyer <jwboyer@redhat.com> - -3.5.0-0.rc3.git0.1
+- Linux v3.5-rc3
+
 * Tue Jun 12 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM: build in rtc modules so time gets set right on boot
 
