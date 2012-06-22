@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -712,6 +712,8 @@ Patch13003: efi-dont-map-boot-services-on-32bit.patch
 Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
+
+Patch20000: uprobes-3.5-tip.patch
 
 # ARM
 # OMAP
@@ -1412,6 +1414,8 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 #ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
+
+ApplyPatch uprobes-3.5-tip.patch
 
 ApplyPatch power-x86-destdir.patch
 
@@ -2282,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 22 2012 Josh Boyer <jwboyer@redhat.com>
+- Add uprobe backports from -tip from Anton Arapov
+
 * Wed Jun 20 2012 Josh Boyer <jwboyer@redhat.com>
 - Fix incorrect logic in irqpoll patch
 
