@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -717,7 +717,6 @@ Patch20000: uprobes-3.5-tip.patch
 
 # ARM
 # OMAP
-Patch21000: arm-omap-3.5-fixes.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -730,8 +729,6 @@ Patch21010: highbank-export-clock-functions.patch
 
 Patch21094: power-x86-destdir.patch
 
-Patch21098: hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
-
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -741,9 +738,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 829016
-Patch22022: thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1303,7 +1297,6 @@ ApplyPatch taint-vbox.patch
 #
 # ARM
 #
-ApplyPatch arm-omap-3.5-fixes.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -1419,8 +1412,6 @@ ApplyPatch uprobes-3.5-tip.patch
 
 ApplyPatch power-x86-destdir.patch
 
-ApplyPatch hfsplus-Fix-bless-ioctl-when-used-with-hardlinks.patch
-
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1433,8 +1424,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-ApplyPatch thp-avoid-atomic64_read-in-pmd_read_atomic-for-32bit-PAE.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2286,6 +2275,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git0.1
+- Disable debugging options.
+
+* Mon Jun 25 2012 Justin M. Forbes <jforbes@redhat.com>
+- Linux 3.5-rc4
+
 * Fri Jun 22 2012 Josh Boyer <jwboyer@redhat.com>
 - Add uprobe backports from -tip from Anton Arapov
 
