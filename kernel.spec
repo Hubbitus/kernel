@@ -717,6 +717,7 @@ Patch20000: uprobes-3.5-tip.patch
 
 # ARM
 # OMAP
+Patch21000: arm-omap-fixmtd.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -1297,6 +1298,7 @@ ApplyPatch taint-vbox.patch
 #
 # ARM
 #
+ApplyPatch arm-omap-fixmtd.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2275,6 +2277,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix ARM OMAP build
+
 * Mon Jun 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git0.1
 - Disable debugging options.
 
