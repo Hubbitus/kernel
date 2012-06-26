@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2277,6 +2277,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 26 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git1.1
+- Linux v3.5-rc4-52-gaace99e
+
 * Mon Jun 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix ARM OMAP build
 - re-enable IMX kernel now it builds again
