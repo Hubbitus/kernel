@@ -257,11 +257,11 @@ Summary: The Linux kernel
 
 # kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
+%define with_imx 0
 %define with_highbank 0
 %define with_omap 0
 %define with_tegra 0
 %endif
-%define with_imx 0
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -2279,6 +2279,7 @@ fi
 %changelog
 * Mon Jun 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix ARM OMAP build
+- re-enable IMX kernel now it builds again
 
 * Mon Jun 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git0.1
 - Disable debugging options.
