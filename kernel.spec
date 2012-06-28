@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -713,7 +713,10 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
+Patch14015: team-update-from-net-next.patch
+
 Patch20000: uprobes-3.5-tip.patch
+
 
 # ARM
 # OMAP
@@ -1409,6 +1412,8 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 #ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
+
+ApplyPatch team-update-from-net-next.patch
 
 ApplyPatch uprobes-3.5-tip.patch
 
@@ -2277,6 +2282,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 28 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git3.1
+- Linux v3.5-rc4-98-g47b514c
+- Team driver update
+
 * Wed Jun 27 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git2.1
 - Linux v3.5-rc4-59-gd1346a6
 
