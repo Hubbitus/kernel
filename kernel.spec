@@ -1652,6 +1652,12 @@ BuildKernel() {
     if [ -d arch/%{asmarch}/include ]; then
       cp -a --parents arch/%{asmarch}/include $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
     fi
+    # include the machine specific headers for ARM variants, if available.
+%ifarch %{arm}
+    if [ -d arch/%{asmarch}/mach-${Flavour}/include ]; then
+      cp -a --parents arch/%{asmarch}/mach-${Flavour}/include $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
+    fi
+%endif
     cp -a include $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include
 
     # Make sure the Makefile and version.h have a matching timestamp so that
@@ -2282,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 28 2012 Dennis Gilmore <dennis@ausil.us>
+- include the mach- headers on arm arches if they are available
+
 * Thu Jun 28 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git3.1
 - Linux v3.5-rc4-98-g47b514c
 - Team driver update
