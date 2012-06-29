@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 29 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc4.git4.1
+- Linux v3.5-rc4-211-g9acc7bd
+
 * Thu Jun 28 2012 Dennis Gilmore <dennis@ausil.us>
 - include the mach- headers on arm arches if they are available
 
