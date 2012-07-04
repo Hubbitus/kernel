@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+#rhbz 828824
+Patch22043: rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1429,6 +1432,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
+
+#rhbz 828824
+ApplyPatch rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2286,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 4 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch from Stanislaw Gruszka to fix rt2x00 USB access point (rhbz 828824)
+
 * Tue Jul 03 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc5.git1.1
 - Linux v3.5-rc5-6-g9d4056a
 
