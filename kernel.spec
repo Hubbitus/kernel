@@ -2292,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 05 2012 Dennis Gilmore <dennis@ausil.us>
+- enable cpu frequency scaling on omap systems
+
 * Thu Jul 05 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc5.git2.1
 - Linux v3.5-rc5-98-g9e85a6f
 
