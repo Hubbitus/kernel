@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2292,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 05 2012 Josh Boyer <jwboyer@redhat.com>
+- Move sch_htb module into main kernel package (rhbz 836185)
+
 * Thu Jul 05 2012 Dennis Gilmore <dennis@ausil.us>
 - enable cpu frequency scaling on omap systems
 

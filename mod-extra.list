@@ -46,7 +46,6 @@ sch_drr.ko
 sch_dsmark.ko
 sch_gred.ko
 sch_hfsc.ko
-sch_htb.ko
 sch_ingress.ko
 sch_mqprio.ko
 sch_multiq.ko
