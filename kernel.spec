@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -744,6 +744,10 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 828824
 Patch22043: rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
+
+#Fix FIPS for aesni hardare
+Patch22050: crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
+Patch22051: crypto-aesni-intel-fix-wrong-kfree-pointer.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1435,6 +1439,10 @@ ApplyPatch highbank-export-clock-functions.patch
 
 #rhbz 828824
 ApplyPatch rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
+
+#Fix FIPS for aesni hardare
+ApplyPatch crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
+ApplyPatch crypto-aesni-intel-fix-wrong-kfree-pointer.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2292,6 +2300,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 11 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc6.git2.1
+- Linux v3.5-rc6-40-g055c9fa
+- Fix FIPS for aesni hardware (rhbz 839239)
+
 * Tue Jul 10 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc6.git1.1
 - Linux v3.5-rc6-22-g2437fcc
 
