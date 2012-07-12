@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2300,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 12 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc6.git3.1
+- Linux v3.5-rc6-117-g918227b
+
 * Wed Jul 11 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc6.git2.1
 - Linux v3.5-rc6-40-g055c9fa
 - Fix FIPS for aesni hardware (rhbz 839239)
