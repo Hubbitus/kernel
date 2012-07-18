@@ -1,83 +1,437 @@
-From d093caa39460495390c94556f0680218223168c2 Mon Sep 17 00:00:00 2001
+From d1ff3781d12ad616073b4f1f3b04cef22d8c7c21 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 15:55:49 +0100
-Subject: [PATCH 01/36] MPILIB: Export some more symbols
+Date: Wed, 18 Jul 2012 13:12:20 +0100
+Subject: [PATCH 01/27] MPILIB: Provide count_leading/trailing_zeros() based
+ on arch functions
 
-Export some more symbols for use by the DSA key subtype.
+Provide count_leading/trailing_zeros() macros based on extant arch bit scanning
+functions rather than reimplementing from scratch in MPILIB.
+
+Whilst we're at it, turn count_foo_zeros(n, x) into n = count_foo_zeros(x).
+
+Also move the definition to asm-generic as other people may be interested in
+using it.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Dmitry Kasatkin <dmitry.kasatkin@intel.com>
+Cc: Arnd Bergmann <arnd@arndb.com>
 ---
- lib/mpi/mpi-cmp.c  |    2 ++
- lib/mpi/mpi-div.c  |    1 +
- lib/mpi/mpi-inv.c  |    1 +
- lib/mpi/mpi-mpow.c |    1 +
- lib/mpi/mpi-mul.c  |    1 +
- 5 files changed, 6 insertions(+)
+ include/asm-generic/bitops/count_zeros.h |   57 ++++++++++++
+ lib/mpi/longlong.h                       |  138 +-----------------------------
+ lib/mpi/mpi-bit.c                        |    2 +-
+ lib/mpi/mpi-div.c                        |    2 +-
+ lib/mpi/mpi-pow.c                        |    4 +-
+ lib/mpi/mpi-scan.c                       |    2 +-
+ lib/mpi/mpih-div.c                       |    8 +-
+ 7 files changed, 68 insertions(+), 145 deletions(-)
+ create mode 100644 include/asm-generic/bitops/count_zeros.h
 
-diff --git a/lib/mpi/mpi-cmp.c b/lib/mpi/mpi-cmp.c
-index 914bc42..1871e7b 100644
---- a/lib/mpi/mpi-cmp.c
-+++ b/lib/mpi/mpi-cmp.c
-@@ -39,6 +39,7 @@ int mpi_cmp_ui(MPI u, unsigned long v)
- 	else
- 		return -1;
- }
-+EXPORT_SYMBOL_GPL(mpi_cmp_ui);
+diff --git a/include/asm-generic/bitops/count_zeros.h b/include/asm-generic/bitops/count_zeros.h
+new file mode 100644
+index 0000000..97520d2
+--- /dev/null
++++ b/include/asm-generic/bitops/count_zeros.h
+@@ -0,0 +1,57 @@
++/* Count leading and trailing zeros functions
++ *
++ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#ifndef _ASM_GENERIC_BITOPS_COUNT_ZEROS_H_
++#define _ASM_GENERIC_BITOPS_COUNT_ZEROS_H_
++
++#include <asm/bitops.h>
++
++/**
++ * count_leading_zeros - Count the number of zeros from the MSB back
++ * @x: The value
++ *
++ * Count the number of leading zeros from the MSB going towards the LSB in @x.
++ *
++ * If the MSB of @x is set, the result is 0.
++ * If only the LSB of @x is set, then the result is BITS_PER_LONG-1.
++ * If @x is 0 then the result is COUNT_LEADING_ZEROS_0.
++ */
++static inline int count_leading_zeros(unsigned long x)
++{
++	if (sizeof(x) == 4)
++		return BITS_PER_LONG - fls(x);
++	else
++		return BITS_PER_LONG - fls64(x);
++}
++
++#define COUNT_LEADING_ZEROS_0 BITS_PER_LONG
++
++/**
++ * count_trailing_zeros - Count the number of zeros from the LSB forwards
++ * @x: The value
++ *
++ * Count the number of trailing zeros from the LSB going towards the MSB in @x.
++ *
++ * If the LSB of @x is set, the result is 0.
++ * If only the MSB of @x is set, then the result is BITS_PER_LONG-1.
++ * If @x is 0 then the result is COUNT_TRAILING_ZEROS_0.
++ */
++static inline int count_trailing_zeros(unsigned long x)
++{
++#define COUNT_TRAILING_ZEROS_0 (-1)
++
++	if (sizeof(x) == 4)
++		return ffs(x);
++	else
++		return (x != 0) ? __ffs(x) : COUNT_TRAILING_ZEROS_0;
++}
++
++#endif /* _ASM_GENERIC_BITOPS_COUNT_ZEROS_H_ */
+diff --git a/lib/mpi/longlong.h b/lib/mpi/longlong.h
+index 29f9862..678ce4f 100644
+--- a/lib/mpi/longlong.h
++++ b/lib/mpi/longlong.h
+@@ -19,6 +19,8 @@
+  * the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+  * MA 02111-1307, USA. */
  
- int mpi_cmp(MPI u, MPI v)
- {
-@@ -66,3 +67,4 @@ int mpi_cmp(MPI u, MPI v)
- 		return 1;
- 	return -1;
- }
-+EXPORT_SYMBOL_GPL(mpi_cmp);
++#include <asm-generic/bitops/count_zeros.h>
++
+ /* You have to define the following before including this file:
+  *
+  * UWtype -- An unsigned type, default type for operations (typically a "word")
+@@ -146,12 +148,6 @@ do { \
+ 	: "1" ((USItype)(n1)), \
+ 		"r" ((USItype)(n0)), \
+ 		"r" ((USItype)(d)))
+-
+-#define count_leading_zeros(count, x) \
+-	__asm__ ("clz %0,%1" \
+-	: "=r" ((USItype)(count)) \
+-	: "r" ((USItype)(x)))
+-#define COUNT_LEADING_ZEROS_0 32
+ #endif /* __a29k__ */
+ 
+ #if defined(__alpha) && W_TYPE_SIZE == 64
+@@ -298,11 +294,6 @@ extern UDItype __udiv_qrnnd();
+ 	: "1" ((USItype)(nh)), \
+ 		"0" ((USItype)(nl)), \
+ 		"g" ((USItype)(d)))
+-#define count_leading_zeros(count, x) \
+-	__asm__ ("bsch/1 %1,%0" \
+-	: "=g" (count) \
+-	: "g" ((USItype)(x)), \
+-	     "0" ((USItype)0))
+ #endif
+ 
+ /***************************************
+@@ -354,27 +345,6 @@ do { USItype __r; \
+ } while (0)
+ extern USItype __udiv_qrnnd();
+ #endif /* LONGLONG_STANDALONE */
+-#define count_leading_zeros(count, x) \
+-do { \
+-	USItype __tmp; \
+-	__asm__ ( \
+-	"ldi             1,%0\n" \
+-	"extru,=	%1,15,16,%%r0  ; Bits 31..16 zero?\n" \
+-	"extru,tr	%1,15,16,%1    ; No.  Shift down, skip add.\n" \
+-	"ldo		16(%0),%0      ; Yes.	Perform add.\n" \
+-	"extru,=	%1,23,8,%%r0   ; Bits 15..8 zero?\n" \
+-	"extru,tr	%1,23,8,%1     ; No.  Shift down, skip add.\n" \
+-	"ldo		8(%0),%0       ; Yes.	Perform add.\n" \
+-	"extru,=	%1,27,4,%%r0   ; Bits 7..4 zero?\n" \
+-	"extru,tr	%1,27,4,%1     ; No.  Shift down, skip add.\n" \
+-	"ldo		4(%0),%0       ; Yes.	Perform add.\n" \
+-	"extru,=	%1,29,2,%%r0   ; Bits 3..2 zero?\n" \
+-	"extru,tr	%1,29,2,%1     ; No.  Shift down, skip add.\n" \
+-	"ldo		2(%0),%0       ; Yes.	Perform add.\n" \
+-	"extru		%1,30,1,%1     ; Extract bit 1.\n" \
+-	"sub		%0,%1,%0       ; Subtract it.              " \
+-	: "=r" (count), "=r" (__tmp) : "1" (x)); \
+-} while (0)
+ #endif /* hppa */
+ 
+ /***************************************
+@@ -457,15 +427,6 @@ do { \
+ 	: "0" ((USItype)(n0)), \
+ 	     "1" ((USItype)(n1)), \
+ 	     "rm" ((USItype)(d)))
+-#define count_leading_zeros(count, x) \
+-do { \
+-	USItype __cbtmp; \
+-	__asm__ ("bsrl %1,%0" \
+-	: "=r" (__cbtmp) : "rm" ((USItype)(x))); \
+-	(count) = __cbtmp ^ 31; \
+-} while (0)
+-#define count_trailing_zeros(count, x) \
+-	__asm__ ("bsfl %1,%0" : "=r" (count) : "rm" ((USItype)(x)))
+ #ifndef UMUL_TIME
+ #define UMUL_TIME 40
+ #endif
+@@ -536,15 +497,6 @@ do { \
+ 	     "dI" ((USItype)(d))); \
+ 	(r) = __rq.__i.__l; (q) = __rq.__i.__h; \
+ } while (0)
+-#define count_leading_zeros(count, x) \
+-do { \
+-	USItype __cbtmp; \
+-	__asm__ ("scanbit %1,%0" \
+-	: "=r" (__cbtmp) \
+-	: "r" ((USItype)(x))); \
+-	(count) = __cbtmp ^ 31; \
+-} while (0)
+-#define COUNT_LEADING_ZEROS_0 (-32)	/* sic */
+ #if defined(__i960mx)		/* what is the proper symbol to test??? */
+ #define rshift_rhlc(r, h, l, c) \
+ do { \
+@@ -603,11 +555,6 @@ do { \
+ 	: "0" ((USItype)(n0)), \
+ 	     "1" ((USItype)(n1)), \
+ 	     "dmi" ((USItype)(d)))
+-#define count_leading_zeros(count, x) \
+-	__asm__ ("bfffo %1{%b2:%b2},%0" \
+-	: "=d" ((USItype)(count)) \
+-	: "od" ((USItype)(x)), "n" (0))
+-#define COUNT_LEADING_ZEROS_0 32
+ #else /* not mc68020 */
+ #define umul_ppmm(xh, xl, a, b) \
+ do { USItype __umul_tmp1, __umul_tmp2; \
+@@ -664,15 +611,6 @@ do { USItype __umul_tmp1, __umul_tmp2; \
+ 	     "rJ" ((USItype)(bh)), \
+ 	     "rJ" ((USItype)(al)), \
+ 	     "rJ" ((USItype)(bl)))
+-#define count_leading_zeros(count, x) \
+-do { \
+-	USItype __cbtmp; \
+-	__asm__ ("ff1 %0,%1" \
+-	: "=r" (__cbtmp) \
+-	: "r" ((USItype)(x))); \
+-	(count) = __cbtmp ^ 31; \
+-} while (0)
+-#define COUNT_LEADING_ZEROS_0 63	/* sic */
+ #if defined(__m88110__)
+ #define umul_ppmm(wh, wl, u, v) \
+ do { \
+@@ -779,12 +717,6 @@ do { \
+ 	: "0" (__xx.__ll), \
+ 	     "g" ((USItype)(d))); \
+ 	(r) = __xx.__i.__l; (q) = __xx.__i.__h; })
+-#define count_trailing_zeros(count, x) \
+-do { \
+-	__asm__("ffsd      %2,%0" \
+-	: "=r"((USItype) (count)) \
+-	: "0"((USItype) 0), "r"((USItype) (x))); \
+-	} while (0)
+ #endif /* __ns32000__ */
+ 
+ /***************************************
+@@ -855,11 +787,6 @@ do { \
+ 		"rI" ((USItype)(al)), \
+ 		"r" ((USItype)(bl))); \
+ } while (0)
+-#define count_leading_zeros(count, x) \
+-	__asm__ ("{cntlz|cntlzw} %0,%1" \
+-	: "=r" ((USItype)(count)) \
+-	: "r" ((USItype)(x)))
+-#define COUNT_LEADING_ZEROS_0 32
+ #if defined(_ARCH_PPC)
+ #define umul_ppmm(ph, pl, m0, m1) \
+ do { \
+@@ -1001,19 +928,6 @@ do { \
+ } while (0)
+ #define UMUL_TIME 20
+ #define UDIV_TIME 200
+-#define count_leading_zeros(count, x) \
+-do { \
+-	if ((x) >= 0x10000) \
+-		__asm__ ("clz     %0,%1" \
+-		: "=r" ((USItype)(count)) \
+-		: "r" ((USItype)(x) >> 16)); \
+-	else { \
+-		__asm__ ("clz   %0,%1" \
+-		: "=r" ((USItype)(count)) \
+-		: "r" ((USItype)(x))); \
+-		(count) += 16; \
+-	} \
+-} while (0)
+ #endif /* RT/ROMP */
+ 
+ /***************************************
+@@ -1142,13 +1056,6 @@ do { \
+ 	"rI" ((USItype)(d)) \
+ 	: "%g1" __AND_CLOBBER_CC)
+ #define UDIV_TIME 37
+-#define count_leading_zeros(count, x) \
+-	__asm__ ("scan %1,0,%0" \
+-	: "=r" ((USItype)(x)) \
+-	: "r" ((USItype)(count)))
+-/* Early sparclites return 63 for an argument of 0, but they warn that future
+-	implementations might change this.  Therefore, leave COUNT_LEADING_ZEROS_0
+-	undefined.  */
+ #endif /* __sparclite__ */
+ #endif /* __sparc_v8__ */
+ 	/* Default to sparc v7 versions of umul_ppmm and udiv_qrnnd.  */
+@@ -1454,47 +1361,6 @@ do { \
+ #define udiv_qrnnd __udiv_qrnnd_c
+ #endif
+ 
+-#undef count_leading_zeros
+-#if !defined(count_leading_zeros)
+-	extern
+-#ifdef __STDC__
+-			const
+-#endif
+-			unsigned char __clz_tab[];
+-#define count_leading_zeros(count, x) \
+-do { \
+-	UWtype __xr = (x); \
+-	UWtype __a; \
+-	\
+-	if (W_TYPE_SIZE <= 32) { \
+-		__a = __xr < ((UWtype) 1 << 2*__BITS4) \
+-		? (__xr < ((UWtype) 1 << __BITS4) ? 0 : __BITS4) \
+-		: (__xr < ((UWtype) 1 << 3*__BITS4) ?  2*__BITS4 : 3*__BITS4); \
+-	} \
+-	else { \
+-		for (__a = W_TYPE_SIZE - 8; __a > 0; __a -= 8) \
+-			if (((__xr >> __a) & 0xff) != 0) \
+-				break; \
+-	} \
+-	\
+-	(count) = W_TYPE_SIZE - (__clz_tab[__xr >> __a] + __a); \
+-} while (0)
+-	/* This version gives a well-defined value for zero. */
+-#define COUNT_LEADING_ZEROS_0 W_TYPE_SIZE
+-#endif
+-
+-#if !defined(count_trailing_zeros)
+-/* Define count_trailing_zeros using count_leading_zeros.  The latter might be
+-	defined in asm, but if it is not, the C version above is good enough.  */
+-#define count_trailing_zeros(count, x) \
+-do { \
+-	UWtype __ctz_x = (x); \
+-	UWtype __ctz_c; \
+-	count_leading_zeros(__ctz_c, __ctz_x & -__ctz_x); \
+-	(count) = W_TYPE_SIZE - 1 - __ctz_c; \
+-} while (0)
+-#endif
+-
+ #ifndef UDIV_NEEDS_NORMALIZATION
+ #define UDIV_NEEDS_NORMALIZATION 0
+ #endif
+diff --git a/lib/mpi/mpi-bit.c b/lib/mpi/mpi-bit.c
+index 0c50536..3fc00bf 100644
+--- a/lib/mpi/mpi-bit.c
++++ b/lib/mpi/mpi-bit.c
+@@ -45,7 +45,7 @@ unsigned mpi_get_nbits(MPI a)
+ 	if (a->nlimbs) {
+ 		mpi_limb_t alimb = a->d[a->nlimbs - 1];
+ 		if (alimb)
+-			count_leading_zeros(n, alimb);
++			n = count_leading_zeros(alimb);
+ 		else
+ 			n = BITS_PER_MPI_LIMB;
+ 		n = BITS_PER_MPI_LIMB - n + (a->nlimbs - 1) * BITS_PER_MPI_LIMB;
 diff --git a/lib/mpi/mpi-div.c b/lib/mpi/mpi-div.c
-index f68cbbb..fed3405 100644
+index f68cbbb..51f105c 100644
 --- a/lib/mpi/mpi-div.c
 +++ b/lib/mpi/mpi-div.c
-@@ -59,6 +59,7 @@ nomem:
- 		mpi_free(temp_divisor);
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(mpi_fdiv_r);
+@@ -217,7 +217,7 @@ int mpi_tdiv_qr(MPI quot, MPI rem, MPI num, MPI den)
+ 	} else			/* Put quotient at top of remainder. */
+ 		qp = rp + dsize;
  
- /****************
-  * Division rounding the quotient towards -infinity.
-diff --git a/lib/mpi/mpi-inv.c b/lib/mpi/mpi-inv.c
-index 0951f98..bfc5ca1 100644
---- a/lib/mpi/mpi-inv.c
-+++ b/lib/mpi/mpi-inv.c
-@@ -185,3 +185,4 @@ cleanup:
- 	mpi_free(v);
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(mpi_invm);
-diff --git a/lib/mpi/mpi-mpow.c b/lib/mpi/mpi-mpow.c
-index 7328d0d..b8b22e5 100644
---- a/lib/mpi/mpi-mpow.c
-+++ b/lib/mpi/mpi-mpow.c
-@@ -132,3 +132,4 @@ nomem:
- err_out:
- 	return rc;
- }
-+EXPORT_SYMBOL_GPL(mpi_mulpowm);
-diff --git a/lib/mpi/mpi-mul.c b/lib/mpi/mpi-mul.c
-index 1f3219e..3d514b9 100644
---- a/lib/mpi/mpi-mul.c
-+++ b/lib/mpi/mpi-mul.c
-@@ -192,3 +192,4 @@ int mpi_mulm(MPI w, MPI u, MPI v, MPI m)
- 		return -ENOMEM;
- 	return mpi_fdiv_r(w, w, m);
- }
-+EXPORT_SYMBOL_GPL(mpi_mulm);
+-	count_leading_zeros(normalization_steps, dp[dsize - 1]);
++	normalization_steps = count_leading_zeros(dp[dsize - 1]);
+ 
+ 	/* Normalize the denominator, i.e. make its most significant bit set by
+ 	 * shifting it NORMALIZATION_STEPS bits to the left.  Also shift the
+diff --git a/lib/mpi/mpi-pow.c b/lib/mpi/mpi-pow.c
+index 67f3e79..5464c87 100644
+--- a/lib/mpi/mpi-pow.c
++++ b/lib/mpi/mpi-pow.c
+@@ -77,7 +77,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
+ 	mp = mp_marker = mpi_alloc_limb_space(msize);
+ 	if (!mp)
+ 		goto enomem;
+-	count_leading_zeros(mod_shift_cnt, mod->d[msize - 1]);
++	mod_shift_cnt = count_leading_zeros(mod->d[msize - 1]);
+ 	if (mod_shift_cnt)
+ 		mpihelp_lshift(mp, mod->d, msize, mod_shift_cnt);
+ 	else
+@@ -169,7 +169,7 @@ int mpi_powm(MPI res, MPI base, MPI exp, MPI mod)
+ 
+ 		i = esize - 1;
+ 		e = ep[i];
+-		count_leading_zeros(c, e);
++		c = count_leading_zeros(e);
+ 		e = (e << c) << 1;	/* shift the exp bits to the left, lose msb */
+ 		c = BITS_PER_MPI_LIMB - 1 - c;
+ 
+diff --git a/lib/mpi/mpi-scan.c b/lib/mpi/mpi-scan.c
+index b2da5ad..58556b5 100644
+--- a/lib/mpi/mpi-scan.c
++++ b/lib/mpi/mpi-scan.c
+@@ -125,7 +125,7 @@ unsigned mpi_trailing_zeros(const MPI a)
+ 			unsigned nn;
+ 			mpi_limb_t alimb = a->d[n];
+ 
+-			count_trailing_zeros(nn, alimb);
++			nn = count_trailing_zeros(alimb);
+ 			count += nn;
+ 			break;
+ 		}
+diff --git a/lib/mpi/mpih-div.c b/lib/mpi/mpih-div.c
+index cde1aae..d6483792 100644
+--- a/lib/mpi/mpih-div.c
++++ b/lib/mpi/mpih-div.c
+@@ -65,7 +65,7 @@ mpihelp_mod_1(mpi_ptr_t dividend_ptr, mpi_size_t dividend_size,
+ 	    && (UDIV_TIME - (2 * UMUL_TIME + 6)) * dividend_size > UDIV_TIME) {
+ 		int normalization_steps;
+ 
+-		count_leading_zeros(normalization_steps, divisor_limb);
++		normalization_steps = count_leading_zeros(divisor_limb);
+ 		if (normalization_steps) {
+ 			mpi_limb_t divisor_limb_inverted;
+ 
+@@ -142,7 +142,7 @@ mpihelp_mod_1(mpi_ptr_t dividend_ptr, mpi_size_t dividend_size,
+ 		if (UDIV_NEEDS_NORMALIZATION) {
+ 			int normalization_steps;
+ 
+-			count_leading_zeros(normalization_steps, divisor_limb);
++			normalization_steps = count_leading_zeros(divisor_limb);
+ 			if (normalization_steps) {
+ 				divisor_limb <<= normalization_steps;
+ 
+@@ -421,7 +421,7 @@ mpihelp_divmod_1(mpi_ptr_t quot_ptr,
+ 	    && (UDIV_TIME - (2 * UMUL_TIME + 6)) * dividend_size > UDIV_TIME) {
+ 		int normalization_steps;
+ 
+-		count_leading_zeros(normalization_steps, divisor_limb);
++		normalization_steps = count_leading_zeros(divisor_limb);
+ 		if (normalization_steps) {
+ 			mpi_limb_t divisor_limb_inverted;
+ 
+@@ -496,7 +496,7 @@ mpihelp_divmod_1(mpi_ptr_t quot_ptr,
+ 		if (UDIV_NEEDS_NORMALIZATION) {
+ 			int normalization_steps;
+ 
+-			count_leading_zeros(normalization_steps, divisor_limb);
++			normalization_steps = count_leading_zeros(divisor_limb);
+ 			if (normalization_steps) {
+ 				divisor_limb <<= normalization_steps;
+ 
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 8c5366bc5c1c9ecaa1104d769f60c7b83ed342a9 Mon Sep 17 00:00:00 2001
+From 7611bb8e543cb2255c69bfb5edd85ed0d2cdb9e9 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:15:09 +0100
-Subject: [PATCH 05/36] KEYS: Create a key type that can be used for general
+Date: Wed, 18 Jul 2012 13:12:20 +0100
+Subject: [PATCH 02/27] KEYS: Create a key type that can be used for general
  cryptographic operations
 
 Create a key type that can be used for general cryptographic operations, such
@@ -700,13 +1054,13 @@ index 0000000..33d279b
 +module_init(crypto_key_init);
 +module_exit(crypto_key_cleanup);
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From e8d4b12988cd23815f1a5f4654d819f5a0a2194b Mon Sep 17 00:00:00 2001
+From 23d7c6d8927420846af94823a90de1c24120bfea Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:15:57 +0100
-Subject: [PATCH 06/36] KEYS: Add signature verification facility
+Date: Wed, 18 Jul 2012 13:12:20 +0100
+Subject: [PATCH 03/27] KEYS: Add signature verification facility
 
 Add a facility whereby a key subtype may be asked to verify a signature against
 the data it is purported to have signed.
@@ -738,12 +1092,12 @@ This adds four routines:
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- Documentation/security/keys-crypto.txt |  101 +++++++++++++++++++++++++++++
+ Documentation/security/keys-crypto.txt |  101 ++++++++++++++++++++++++++++
  include/keys/crypto-subtype.h          |   21 ++++++
  include/keys/crypto-type.h             |    9 +++
  security/keys/crypto/Makefile          |    2 +-
- security/keys/crypto/crypto_verify.c   |  111 ++++++++++++++++++++++++++++++++
- 5 files changed, 243 insertions(+), 1 deletion(-)
+ security/keys/crypto/crypto_verify.c   |  112 ++++++++++++++++++++++++++++++++
+ 5 files changed, 244 insertions(+), 1 deletion(-)
  create mode 100644 security/keys/crypto/crypto_verify.c
 
 diff --git a/Documentation/security/keys-crypto.txt b/Documentation/security/keys-crypto.txt
@@ -957,10 +1311,10 @@ index 36db1d5..67001bc 100644
 +crypto_keys-y := crypto_type.o crypto_verify.o
 diff --git a/security/keys/crypto/crypto_verify.c b/security/keys/crypto/crypto_verify.c
 new file mode 100644
-index 0000000..65f734c
+index 0000000..3f2964b
 --- /dev/null
 +++ b/security/keys/crypto/crypto_verify.c
-@@ -0,0 +1,111 @@
+@@ -0,0 +1,112 @@
 +/* Signature verification with a crypto key
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -976,6 +1330,7 @@ index 0000000..65f734c
 +
 +#include <keys/crypto-subtype.h>
 +#include <linux/module.h>
++#include <linux/err.h>
 +#include "crypto_keys.h"
 +
 +/**
@@ -1073,13 +1428,13 @@ index 0000000..65f734c
 +}
 +EXPORT_SYMBOL_GPL(verify_sig_cancel);
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From db170ec4f4df7d8f188134c9c9a3e2736ec0dbff Mon Sep 17 00:00:00 2001
+From 2fd136dec4682c1fa2609a7a94cf0353c334615c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:16:46 +0100
-Subject: [PATCH 07/36] KEYS: Asymmetric public-key algorithm crypto key
+Date: Wed, 18 Jul 2012 13:12:20 +0100
+Subject: [PATCH 04/27] KEYS: Asymmetric public-key algorithm crypto key
  subtype
 
 Add a subtype for supporting asymmetric public-key encryption algorithms such
@@ -1299,25 +1654,59 @@ index 0000000..81ed603
 +
 +#endif /* _LINUX_PUBLIC_KEY_H */
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 07f1001d10c926d28b92f0a32dbb57131a0f0942 Mon Sep 17 00:00:00 2001
+From ba785b97c90fc4403b2124dc2cecc842ba49be54 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:30:18 +0100
-Subject: [PATCH 08/36] KEYS: RSA signature verification algorithm
+Date: Wed, 18 Jul 2012 13:12:21 +0100
+Subject: [PATCH 05/27] KEYS: RSA: Add exports from MPILIB
 
-Implement the RSA algorithm (PKCS#1 / RFC3447).  At this time, only signature
-verification is supported.  This uses the asymmetric public key subtype to hold
-its key data.
+Export mpi_cmp() and mpi_cmp_ui() from the MPI library for use by RSA.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ lib/mpi/mpi-cmp.c |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/lib/mpi/mpi-cmp.c b/lib/mpi/mpi-cmp.c
+index 914bc42..1871e7b 100644
+--- a/lib/mpi/mpi-cmp.c
++++ b/lib/mpi/mpi-cmp.c
+@@ -39,6 +39,7 @@ int mpi_cmp_ui(MPI u, unsigned long v)
+ 	else
+ 		return -1;
+ }
++EXPORT_SYMBOL_GPL(mpi_cmp_ui);
+ 
+ int mpi_cmp(MPI u, MPI v)
+ {
+@@ -66,3 +67,4 @@ int mpi_cmp(MPI u, MPI v)
+ 		return 1;
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(mpi_cmp);
+-- 
+1.7.10.4
+
+
+From 650edd748b92eea0622ecb26a5ee81c7b582d04c Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 18 Jul 2012 16:15:36 +0100
+Subject: [PATCH 06/27] KEYS: RSA: Implement signature verification algorithm
+ [PKCS#1 / RFC3447]
+
+Implement RSA public key cryptography [PKCS#1 / RFC3447].  At this time, only
+the signature verification algorithm is supported.  This uses the asymmetric
+public key subtype to hold its key data.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  security/keys/crypto/Kconfig      |    7 +
  security/keys/crypto/Makefile     |    1 +
- security/keys/crypto/crypto_rsa.c |  282 +++++++++++++++++++++++++++++++++++++
+ security/keys/crypto/crypto_rsa.c |  264 +++++++++++++++++++++++++++++++++++++
  security/keys/crypto/public_key.h |    2 +
- 4 files changed, 292 insertions(+)
+ 4 files changed, 274 insertions(+)
  create mode 100644 security/keys/crypto/crypto_rsa.c
 
 diff --git a/security/keys/crypto/Kconfig b/security/keys/crypto/Kconfig
@@ -1346,10 +1735,10 @@ index 6384306..b6b1a5a 100644
 +obj-$(CONFIG_CRYPTO_KEY_PKEY_ALGO_RSA) += crypto_rsa.o
 diff --git a/security/keys/crypto/crypto_rsa.c b/security/keys/crypto/crypto_rsa.c
 new file mode 100644
-index 0000000..beb5181
+index 0000000..845285c
 --- /dev/null
 +++ b/security/keys/crypto/crypto_rsa.c
-@@ -0,0 +1,282 @@
+@@ -0,0 +1,264 @@
 +/* RSA asymmetric public-key algorithm [RFC3447]
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -1419,7 +1808,7 @@ index 0000000..beb5181
 +};
 +
 +static const struct {
-+	const u8 const *data;
++	const u8 *data;
 +	size_t size;
 +} RSA_ASN1_templates[PKEY_HASH__LAST] = {
 +#define _(X) { RSA_digest_info_##X, sizeof(RSA_digest_info_##X) }
@@ -1595,24 +1984,6 @@ index 0000000..beb5181
 +	if (ret < 0)
 +		goto error;
 +
-+#if 0
-+	{
-+		int i;
-+		printk("H:  ");
-+		for (i = 0; i < sig->digest_size; i++)
-+			printk("%02x", H[i]);
-+		printk("\n");
-+	}
-+
-+	{
-+		int i;
-+		printk("EM: 00");
-+		for (i = 0; i < k - 1; i++)
-+			printk("%02x", EM[i]);
-+		printk("\n");
-+	}
-+#endif
-+
 +	ret = RSA_verify(H, EM - 1, k, sig->digest_size,
 +			 RSA_ASN1_templates[sig->pkey_hash_algo].data,
 +			 RSA_ASN1_templates[sig->pkey_hash_algo].size);
@@ -1646,13 +2017,14 @@ index 81ed603..7913615 100644
   * Asymmetric public key data
   */
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From a1ac402f327ab537a629c4d365b3f5461eaecb82 Mon Sep 17 00:00:00 2001
+From 7da10c257377762e1a6ac747b48791cf610ba4c5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:30:20 +0100
-Subject: [PATCH 09/36] Fix signature verification for shorter signatures
+Date: Wed, 18 Jul 2012 16:15:39 +0100
+Subject: [PATCH 07/27] KEYS: RSA: Fix signature verification for shorter
+ signatures
 
 gpg can produce a signature file where length of signature is less than the
 modulus size because the amount of space an MPI takes up is kept as low as
@@ -1670,7 +2042,7 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 11 insertions(+), 3 deletions(-)
 
 diff --git a/security/keys/crypto/crypto_rsa.c b/security/keys/crypto/crypto_rsa.c
-index beb5181..cc5cd95 100644
+index 845285c..a4a63be 100644
 --- a/security/keys/crypto/crypto_rsa.c
 +++ b/security/keys/crypto/crypto_rsa.c
 @@ -219,15 +219,23 @@ static int RSA_verify_signature(const struct public_key *key,
@@ -1701,13 +2073,13 @@ index beb5181..cc5cd95 100644
  	ret = RSAVP1(key, sig->rsa.s, &m);
  	if (ret < 0)
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From d682ea629a2494aab705468d1479058a03fd7879 Mon Sep 17 00:00:00 2001
+From 4366c59a624398d1aba4d6651191ba880da9e694 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:30:23 +0100
-Subject: [PATCH 10/36] PGPLIB: PGP definitions (RFC 4880)
+Date: Wed, 18 Jul 2012 16:15:52 +0100
+Subject: [PATCH 08/27] PGPLIB: PGP definitions (RFC 4880)
 
 Provide some useful PGP definitions from RFC 4880.  These describe details of
 public key crypto as used by crypto keys for things like signature
@@ -1932,13 +2304,13 @@ index 0000000..1359f64
 +
 +#endif /* _LINUX_PGP_H */
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 651d6e549374b13b2d0473db17df90ab66abf855 Mon Sep 17 00:00:00 2001
+From 0409a338e01de5025cec2a1b291442651163aafd Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:33:28 +0100
-Subject: [PATCH 11/36] PGPLIB: Basic packet parser
+Date: Wed, 18 Jul 2012 16:17:46 +0100
+Subject: [PATCH 09/27] PGPLIB: Basic packet parser
 
 Provide a simple parser that extracts the packets from a PGP packet blob and
 passes the desirous ones to the given processor function:
@@ -1959,21 +2331,38 @@ This is configured on with CONFIG_PGP_LIBRARY.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- include/linux/pgp.h                |   25 ++++
+ include/linux/pgplib.h             |   47 +++++++
  security/keys/crypto/Kconfig       |    6 +
  security/keys/crypto/Makefile      |    1 +
- security/keys/crypto/pgp_library.c |  254 ++++++++++++++++++++++++++++++++++++
- 4 files changed, 286 insertions(+)
+ security/keys/crypto/pgp_library.c |  268 ++++++++++++++++++++++++++++++++++++
+ 4 files changed, 322 insertions(+)
+ create mode 100644 include/linux/pgplib.h
  create mode 100644 security/keys/crypto/pgp_library.c
 
-diff --git a/include/linux/pgp.h b/include/linux/pgp.h
-index 1359f64..235270a 100644
---- a/include/linux/pgp.h
-+++ b/include/linux/pgp.h
-@@ -203,4 +203,29 @@ struct pgp_key_v4_packet {
- 	u8 key_material[0];
- } __packed;
- 
+diff --git a/include/linux/pgplib.h b/include/linux/pgplib.h
+new file mode 100644
+index 0000000..a045b3a
+--- /dev/null
++++ b/include/linux/pgplib.h
+@@ -0,0 +1,47 @@
++/* PGP library definitions (RFC 4880)
++ *
++ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#ifndef _LINUX_PGPLIB_H
++#define _LINUX_PGPLIB_H
++
++#if defined(CONFIG_PGP_LIBRARY) || defined(CONFIG_PGP_LIBRARY_MODULE)
++
++#include <linux/pgp.h>
++
 +/*
 + * PGP library packet parser
 + */
@@ -1999,7 +2388,10 @@ index 1359f64..235270a 100644
 +extern int pgp_parse_public_key(const u8 **_data, size_t *_datalen,
 +				struct pgp_parse_pubkey *pk);
 +
- #endif /* _LINUX_PGP_H */
++
++#endif /* CONFIG_PGP_LIBRARY */
++
++#endif /* _LINUX_PGPLIB_H */
 diff --git a/security/keys/crypto/Kconfig b/security/keys/crypto/Kconfig
 index 4e3777e..88ce0e2 100644
 --- a/security/keys/crypto/Kconfig
@@ -2025,10 +2417,10 @@ index b6b1a5a..5fbe54e 100644
 +obj-$(CONFIG_PGP_LIBRARY) += pgp_library.o
 diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
 new file mode 100644
-index 0000000..685660f
+index 0000000..af396d6
 --- /dev/null
 +++ b/security/keys/crypto/pgp_library.c
-@@ -0,0 +1,254 @@
+@@ -0,0 +1,268 @@
 +/* PGP packet parser (RFC 4880)
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -2040,7 +2432,7 @@ index 0000000..685660f
 + * 2 of the Licence, or (at your option) any later version.
 + */
 +#define pr_fmt(fmt) "PGP: "fmt
-+#include <linux/pgp.h>
++#include <linux/pgplib.h>
 +#include <linux/errno.h>
 +#include <linux/kernel.h>
 +#include <linux/module.h>
@@ -2071,9 +2463,9 @@ index 0000000..685660f
 + * *_data and *_datalen will have been updated and *_headerlen will be set to
 + * hold the length of the packet header.
 + */
-+ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
-+				enum pgp_packet_tag *_type,
-+				u8 *_headerlen)
++static ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
++				       enum pgp_packet_tag *_type,
++				       u8 *_headerlen)
 +{
 +	enum pgp_packet_tag type;
 +	const u8 *data = *_data;
@@ -2117,10 +2509,19 @@ index 0000000..685660f
 +			*_headerlen = 3;
 +			break;
 +		case 0xff:
-+			pr_debug("Five-byte packet length not supported\n");
-+			return -EBADMSG;
++			/* Five-byte length */
++			if (datalen < 5)
++				goto short_packet;
++			size =  data[1] << 24;
++			size |= data[2] << 16;
++			size |= data[3] << 8;
++			size |= data[4];
++			data += 5;
++			datalen -= 5;
++			*_headerlen = 6;
++			break;
 +		default:
-+			pr_debug("Error parsing packet length\n");
++			pr_debug("Partial body length packet not supported\n");
 +			return -EBADMSG;
 +		}
 +	} else {
@@ -2168,6 +2569,8 @@ index 0000000..685660f
 +	pr_devel("datalen=%zu size=%zu", datalen, size);
 +	if (datalen < size)
 +		goto short_packet;
++	if ((int)size < 0)
++		goto too_big;
 +
 +	*_data = data;
 +	*_datalen = datalen;
@@ -2178,6 +2581,9 @@ index 0000000..685660f
 +short_packet:
 +	pr_debug("Attempt to parse short packet\n");
 +	return -EBADMSG;
++too_big:
++	pr_debug("Signature subpacket size >2G\n");
++	return -EMSGSIZE;
 +}
 +
 +/**
@@ -2284,13 +2690,13 @@ index 0000000..685660f
 +}
 +EXPORT_SYMBOL_GPL(pgp_parse_public_key);
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 1123a360effa696546dbce1273c680b45c5cf946 Mon Sep 17 00:00:00 2001
+From 2a76433139dbdc6d57d38da6ceb79ce05ab603a4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:33:30 +0100
-Subject: [PATCH 12/36] PGPLIB: Signature parser
+Date: Wed, 18 Jul 2012 16:21:24 +0100
+Subject: [PATCH 10/27] PGPLIB: Signature parser
 
 Provide some PGP signature parsing helpers:
 
@@ -2308,15 +2714,15 @@ Provide some PGP signature parsing helpers:
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- include/linux/pgp.h                |   24 ++++
- security/keys/crypto/pgp_library.c |  277 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 301 insertions(+)
+ include/linux/pgplib.h             |   25 ++++
+ security/keys/crypto/pgp_library.c |  280 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 305 insertions(+)
 
-diff --git a/include/linux/pgp.h b/include/linux/pgp.h
-index 235270a..ab1a8fa 100644
---- a/include/linux/pgp.h
-+++ b/include/linux/pgp.h
-@@ -228,4 +228,28 @@ struct pgp_parse_pubkey {
+diff --git a/include/linux/pgplib.h b/include/linux/pgplib.h
+index a045b3a..34594a9 100644
+--- a/include/linux/pgplib.h
++++ b/include/linux/pgplib.h
+@@ -41,6 +41,31 @@ struct pgp_parse_pubkey {
  extern int pgp_parse_public_key(const u8 **_data, size_t *_datalen,
  				struct pgp_parse_pubkey *pk);
  
@@ -2332,24 +2738,27 @@ index 235270a..ab1a8fa 100644
 +				 struct pgp_parse_sig_context *ctx);
 +
 +struct pgp_sig_parameters {
++	enum pgp_signature_version version : 8;
 +	enum pgp_signature_type signature_type : 8;
++	enum pgp_pubkey_algo pubkey_algo : 8;
++	enum pgp_hash_algo hash_algo : 8;
 +	union {
 +		struct pgp_key_ID issuer;
 +		__be32 issuer32[2];
 +	};
-+	enum pgp_pubkey_algo pubkey_algo : 8;
-+	enum pgp_hash_algo hash_algo : 8;
 +};
 +
 +extern int pgp_parse_sig_params(const u8 **_data, size_t *_datalen,
 +				struct pgp_sig_parameters *p);
 +
- #endif /* _LINUX_PGP_H */
+ 
+ #endif /* CONFIG_PGP_LIBRARY */
+ 
 diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index 685660f..f6b831f 100644
+index af396d6..c9218df 100644
 --- a/security/keys/crypto/pgp_library.c
 +++ b/security/keys/crypto/pgp_library.c
-@@ -252,3 +252,280 @@ int pgp_parse_public_key(const u8 **_data, size_t *_datalen,
+@@ -266,3 +266,283 @@ int pgp_parse_public_key(const u8 **_data, size_t *_datalen,
  	return 0;
  }
  EXPORT_SYMBOL_GPL(pgp_parse_public_key);
@@ -2366,8 +2775,8 @@ index 685660f..f6b831f 100644
 + * *_data and *_datalen will have been updated and *_headerlen will be set to
 + * hold the length of the packet header.
 + */
-+ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
-+				    enum pgp_sig_subpkt_type *_type)
++static ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
++					   enum pgp_sig_subpkt_type *_type)
 +{
 +	enum pgp_sig_subpkt_type type;
 +	const u8 *data = *_data;
@@ -2409,18 +2818,17 @@ index 685660f..f6b831f 100644
 +	}
 +
 +	/* The type octet is included in the size */
-+	if (size == 0) {
-+		pr_debug("Signature subpacket size can't be zero\n");
-+		return -EBADMSG;
-+	}
++	pr_devel("datalen=%zu size=%zu", datalen, size);
++	if (datalen < size)
++		goto short_subpacket;
++	if (size == 0)
++		goto very_short_subpacket;
++	if ((int)size < 0)
++		goto too_big;
 +
 +	type = *data++ & ~PGP_SIG_SUBPKT_TYPE_CRITICAL_MASK;
 +	datalen--;
 +	size--;
-+
-+	pr_devel("datalen=%zu size=%zu", datalen, size);
-+	if (datalen < size)
-+		goto short_subpacket;
 +
 +	*_data = data;
 +	*_datalen = datalen;
@@ -2428,9 +2836,15 @@ index 685660f..f6b831f 100644
 +	pr_devel("Found subpkt type=%u size=%zd\n", type, size);
 +	return size;
 +
++very_short_subpacket:
++	pr_debug("Signature subpacket size can't be zero\n");
++	return -EBADMSG;
 +short_subpacket:
 +	pr_debug("Attempt to parse short signature subpacket\n");
 +	return -EBADMSG;
++too_big:
++	pr_debug("Signature subpacket size >2G\n");
++	return -EMSGSIZE;
 +}
 +
 +/**
@@ -2441,8 +2855,8 @@ index 685660f..f6b831f 100644
 + *
 + * Parse a set of PGP signature subpackets [RFC 4880: 5.2.3].
 + */
-+int pgp_parse_sig_subpkts(const u8 *data, size_t datalen,
-+			  struct pgp_parse_sig_context *ctx)
++static int pgp_parse_sig_subpkts(const u8 *data, size_t datalen,
++				 struct pgp_parse_sig_context *ctx)
 +{
 +	enum pgp_sig_subpkt_type type;
 +	ssize_t pktlen;
@@ -2470,7 +2884,6 @@ index 685660f..f6b831f 100644
 +
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(pgp_parse_sig_subpkts);
 +
 +struct pgp_parse_sig_params_ctx {
 +	struct pgp_parse_sig_context base;
@@ -2514,7 +2927,7 @@ index 685660f..f6b831f 100644
 + * Parse the basic parameters from a PGP signature packet [RFC 4880: 5.2] that
 + * are needed to start off a signature verification operation.  The only ones
 + * actually necessary are the signature type (which affects how the data is
-+ * transformed) and the has algorithm.
++ * transformed) and the hash algorithm.
 + *
 + * We also extract the public key algorithm and the issuer's key ID as we'll
 + * need those to determine if we actually have the public key available.  If
@@ -2526,7 +2939,6 @@ index 685660f..f6b831f 100644
 +int pgp_parse_sig_params(const u8 **_data, size_t *_datalen,
 +			 struct pgp_sig_parameters *p)
 +{
-+	enum pgp_signature_version version;
 +	const u8 *data = *_data;
 +	size_t datalen = *_datalen;
 +	int ret;
@@ -2535,9 +2947,9 @@ index 685660f..f6b831f 100644
 +
 +	if (datalen < 1)
 +		return -EBADMSG;
-+	version = *data;
++	p->version = *data;
 +
-+	if (version == PGP_SIG_VERSION_3) {
++	if (p->version == PGP_SIG_VERSION_3) {
 +		const struct pgp_signature_v3_packet *v3 = (const void *)data;
 +
 +		if (datalen < sizeof(*v3)) {
@@ -2553,7 +2965,7 @@ index 685660f..f6b831f 100644
 +		p->pubkey_algo = v3->pubkey_algo;
 +		p->hash_algo = v3->hash_algo;
 +
-+	} else if (version == PGP_SIG_VERSION_4) {
++	} else if (p->version == PGP_SIG_VERSION_4) {
 +		const struct pgp_signature_v4_packet *v4 = (const void *)data;
 +		struct pgp_parse_sig_params_ctx ctx = {
 +			.base.process_packet = pgp_process_sig_params_subpkt,
@@ -2594,7 +3006,7 @@ index 685660f..f6b831f 100644
 +			if (ret < 0)
 +				return ret;
 +			data += subdatalen;
-+			datalen += subdatalen;
++			datalen -= subdatalen;
 +		}
 +
 +		subdatalen  = *data++ << 8;
@@ -2612,7 +3024,7 @@ index 685660f..f6b831f 100644
 +			if (ret < 0)
 +				return ret;
 +			data += subdatalen;
-+			datalen += subdatalen;
++			datalen -= subdatalen;
 +		}
 +
 +		if (!ctx.got_the_issuer) {
@@ -2621,7 +3033,7 @@ index 685660f..f6b831f 100644
 +		}
 +	} else {
 +		pr_debug("Signature packet with unhandled version %d\n",
-+			 version);
++			 p->version);
 +		return -EBADMSG;
 +	}
 +
@@ -2631,13 +3043,13 @@ index 685660f..f6b831f 100644
 +}
 +EXPORT_SYMBOL_GPL(pgp_parse_sig_params);
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 53f01a04d44b822af15cd31bb451ca13695bdf1c Mon Sep 17 00:00:00 2001
+From 91a05bc308c1e177410882a119f388d3b6b53c22 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:36:35 +0100
-Subject: [PATCH 13/36] KEYS: PGP data parser
+Date: Wed, 18 Jul 2012 16:21:26 +0100
+Subject: [PATCH 11/27] KEYS: PGP data parser
 
 Implement a PGP data parser for the crypto key type to use when instantiating a
 key.
@@ -2649,15 +3061,18 @@ key or subkey from it.
 If it finds such a key, it will set up a public_key subtype payload with
 appropriate handler routines (DSA or RSA) and attach it to the key.
 
+Thanks to Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> for pointing out
+some errors.
+
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  security/keys/crypto/Kconfig          |   12 ++
  security/keys/crypto/Makefile         |    4 +
- security/keys/crypto/pgp_key_parser.c |  343 +++++++++++++++++++++++++++++++++
  security/keys/crypto/pgp_parser.h     |   23 +++
- 4 files changed, 382 insertions(+)
- create mode 100644 security/keys/crypto/pgp_key_parser.c
+ security/keys/crypto/pgp_public_key.c |  348 +++++++++++++++++++++++++++++++++
+ 4 files changed, 387 insertions(+)
  create mode 100644 security/keys/crypto/pgp_parser.h
+ create mode 100644 security/keys/crypto/pgp_public_key.c
 
 diff --git a/security/keys/crypto/Kconfig b/security/keys/crypto/Kconfig
 index 88ce0e2..1c2ae55 100644
@@ -2680,7 +3095,7 @@ index 88ce0e2..1c2ae55 100644
 +	  for key data and provides the ability to instantiate a crypto key
 +	  from a public key packet found inside the blob.
 diff --git a/security/keys/crypto/Makefile b/security/keys/crypto/Makefile
-index 5fbe54e..3bb2e61 100644
+index 5fbe54e..35733fc 100644
 --- a/security/keys/crypto/Makefile
 +++ b/security/keys/crypto/Makefile
 @@ -8,3 +8,7 @@ crypto_keys-y := crypto_type.o crypto_verify.o
@@ -2688,16 +3103,45 @@ index 5fbe54e..3bb2e61 100644
  obj-$(CONFIG_CRYPTO_KEY_PKEY_ALGO_RSA) += crypto_rsa.o
  obj-$(CONFIG_PGP_LIBRARY) += pgp_library.o
 +
-+obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_parser.o
-+pgp_parser-y := \
-+	pgp_key_parser.o
-diff --git a/security/keys/crypto/pgp_key_parser.c b/security/keys/crypto/pgp_key_parser.c
++obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_key_parser.o
++pgp_key_parser-y := \
++	pgp_public_key.o
+diff --git a/security/keys/crypto/pgp_parser.h b/security/keys/crypto/pgp_parser.h
 new file mode 100644
-index 0000000..4efc4de
+index 0000000..1cda231
 --- /dev/null
-+++ b/security/keys/crypto/pgp_key_parser.c
-@@ -0,0 +1,343 @@
-+/* Parser for PGP format key data [RFC 4880]
++++ b/security/keys/crypto/pgp_parser.h
+@@ -0,0 +1,23 @@
++/* PGP crypto data parser internal definitions
++ *
++ * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#include <linux/pgp.h>
++
++#define kenter(FMT, ...) \
++	pr_devel("==> %s("FMT")\n", __func__, ##__VA_ARGS__)
++#define kleave(FMT, ...) \
++	pr_devel("<== %s()"FMT"\n", __func__, ##__VA_ARGS__)
++
++/*
++ * pgp_key_parser.c
++ */
++extern const
++struct public_key_algorithm *pgp_public_key_algorithms[PGP_PUBKEY__LAST];
+diff --git a/security/keys/crypto/pgp_public_key.c b/security/keys/crypto/pgp_public_key.c
+new file mode 100644
+index 0000000..8a8b7c0
+--- /dev/null
++++ b/security/keys/crypto/pgp_public_key.c
+@@ -0,0 +1,348 @@
++/* Instantiate a public key crypto key from PGP format data [RFC 4880]
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
 + * Written by David Howells (dhowells@redhat.com)
@@ -2714,7 +3158,7 @@ index 0000000..4efc4de
 +#include <linux/kernel.h>
 +#include <linux/slab.h>
 +#include <linux/mpi.h>
-+#include <linux/pgp.h>
++#include <linux/pgplib.h>
 +#include <crypto/hash.h>
 +#include "public_key.h"
 +#include "pgp_parser.h"
@@ -2770,6 +3214,9 @@ index 0000000..4efc4de
 +
 +	kenter("");
 +
++	for (i = 0; i < ARRAY_SIZE(pp); i++)
++		pp[i] = NULL;
++
 +	n = (pgp->version < PGP_KEY_VERSION_4) ? 8 : 6;
 +	for (i = 0; i < npkey; i++) {
 +		nb[i] = mpi_get_nbits(key->mpi[i]);
@@ -2793,7 +3240,7 @@ index 0000000..4efc4de
 +	if (pgp->version < PGP_KEY_VERSION_4) {
 +		u16 a16;
 +
-+		if( pgp->expires_at)
++		if (pgp->expires_at)
 +			a16 = (pgp->expires_at - pgp->creation_time) / 86400UL;
 +		else
 +			a16 = 0;
@@ -2936,25 +3383,22 @@ index 0000000..4efc4de
 +	key->capabilities = pgp_public_key_capabilities[pgp.pubkey_algo] &
 +		(PKEY_CAN_ENCRYPT | PKEY_CAN_VERIFY);
 +
-+	ret = -ENOMEM;
 +	for (i = 0; i < algo->n_pub_mpi; i++) {
 +		unsigned int remaining = datalen;
-+		ret = -EBADMSG;
 +		if (remaining == 0) {
 +			pr_debug("short %zu mpi %d\n", datalen, i);
-+			goto cleanup;
++			goto cleanup_badmsg;
 +		}
 +		key->mpi[i] = mpi_read_from_buffer(data, &remaining);
 +		if (!key->mpi[i])
-+			goto cleanup;
++			goto cleanup_nomem;
 +		data += remaining;
 +		datalen -= remaining;
 +	}
 +
-+	ret = -EBADMSG;
 +	if (datalen != 0) {
 +		pr_debug("excess %zu\n", datalen);
-+		goto cleanup;
++		goto cleanup_badmsg;
 +	}
 +
 +	ret = pgp_generate_fingerprint(ctx, &pgp, key);
@@ -2968,6 +3412,11 @@ index 0000000..4efc4de
 +	kleave(" = 0 [use]");
 +	return 0;
 +
++cleanup_nomem:
++	ret = -ENOMEM;
++	goto cleanup;
++cleanup_badmsg:
++	ret = -EBADMSG;
 +cleanup:
 +	pr_devel("cleanup");
 +	if (key) {
@@ -3040,43 +3489,14 @@ index 0000000..4efc4de
 +
 +module_init(pgp_key_init);
 +module_exit(pgp_key_exit);
-diff --git a/security/keys/crypto/pgp_parser.h b/security/keys/crypto/pgp_parser.h
-new file mode 100644
-index 0000000..1cda231
---- /dev/null
-+++ b/security/keys/crypto/pgp_parser.h
-@@ -0,0 +1,23 @@
-+/* PGP crypto data parser internal definitions
-+ *
-+ * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public Licence
-+ * as published by the Free Software Foundation; either version
-+ * 2 of the Licence, or (at your option) any later version.
-+ */
-+
-+#include <linux/pgp.h>
-+
-+#define kenter(FMT, ...) \
-+	pr_devel("==> %s("FMT")\n", __func__, ##__VA_ARGS__)
-+#define kleave(FMT, ...) \
-+	pr_devel("<== %s()"FMT"\n", __func__, ##__VA_ARGS__)
-+
-+/*
-+ * pgp_key_parser.c
-+ */
-+extern const
-+struct public_key_algorithm *pgp_public_key_algorithms[PGP_PUBKEY__LAST];
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 3e401cdc0ae1768ecbc301a631a2a34f56834313 Mon Sep 17 00:00:00 2001
+From 14191eaae2f9ccba2563a4bf9c30ffcbf153f521 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:40:17 +0100
-Subject: [PATCH 14/36] KEYS: PGP-based public key signature verification
+Date: Wed, 18 Jul 2012 16:22:19 +0100
+Subject: [PATCH 12/27] KEYS: PGP-based public key signature verification
 
 Provide handlers for PGP-based public-key algorithm signature verification.
 This does most of the work involved in signature verification as most of it is
@@ -3090,21 +3510,21 @@ Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  security/keys/crypto/Makefile         |    3 +-
  security/keys/crypto/pgp_parser.h     |    6 +
- security/keys/crypto/pgp_pubkey_sig.c |  323 +++++++++++++++++++++++++++++++++
- 3 files changed, 331 insertions(+), 1 deletion(-)
- create mode 100644 security/keys/crypto/pgp_pubkey_sig.c
+ security/keys/crypto/pgp_sig_verify.c |  325 +++++++++++++++++++++++++++++++++
+ 3 files changed, 333 insertions(+), 1 deletion(-)
+ create mode 100644 security/keys/crypto/pgp_sig_verify.c
 
 diff --git a/security/keys/crypto/Makefile b/security/keys/crypto/Makefile
-index 3bb2e61..d4ac8ac 100644
+index 35733fc..0c8b8a1 100644
 --- a/security/keys/crypto/Makefile
 +++ b/security/keys/crypto/Makefile
 @@ -11,4 +11,5 @@ obj-$(CONFIG_PGP_LIBRARY) += pgp_library.o
  
- obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_parser.o
- pgp_parser-y := \
--	pgp_key_parser.o
-+	pgp_key_parser.o \
-+	pgp_pubkey_sig.o
+ obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_key_parser.o
+ pgp_key_parser-y := \
+-	pgp_public_key.o
++	pgp_public_key.o \
++	pgp_sig_verify.o
 diff --git a/security/keys/crypto/pgp_parser.h b/security/keys/crypto/pgp_parser.h
 index 1cda231..a6192ce 100644
 --- a/security/keys/crypto/pgp_parser.h
@@ -3119,13 +3539,13 @@ index 1cda231..a6192ce 100644
 + */
 +extern struct crypto_key_verify_context *pgp_pkey_verify_sig_begin(
 +	struct key *crypto_key, const u8 *sigdata, size_t siglen);
-diff --git a/security/keys/crypto/pgp_pubkey_sig.c b/security/keys/crypto/pgp_pubkey_sig.c
+diff --git a/security/keys/crypto/pgp_sig_verify.c b/security/keys/crypto/pgp_sig_verify.c
 new file mode 100644
-index 0000000..b4b7cb0
+index 0000000..82c89da
 --- /dev/null
-+++ b/security/keys/crypto/pgp_pubkey_sig.c
-@@ -0,0 +1,323 @@
-+/* Handling for PGP public key signature data [RFC 4880]
++++ b/security/keys/crypto/pgp_sig_verify.c
+@@ -0,0 +1,325 @@
++/* PGP public key signature verification [RFC 4880]
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
 + * Written by David Howells (dhowells@redhat.com)
@@ -3140,11 +3560,12 @@ index 0000000..b4b7cb0
 +#include <linux/module.h>
 +#include <linux/kernel.h>
 +#include <linux/slab.h>
-+#include <linux/pgp.h>
++#include <linux/pgplib.h>
++#include <linux/err.h>
 +#include "public_key.h"
 +#include "pgp_parser.h"
 +
-+const struct {
++static const struct {
 +	enum pkey_hash_algo algo : 8;
 +} pgp_pubkey_hash[PGP_HASH__LAST] = {
 +	[PGP_HASH_MD5].algo		= PKEY_HASH_MD5,
@@ -3213,12 +3634,12 @@ index 0000000..b4b7cb0
 +	    !pgp_public_key_algorithms[p.params.pubkey_algo]) {
 +		pr_debug("Unsupported public key algorithm %u\n",
 +			 p.params.pubkey_algo);
-+		return ERR_PTR(-ENOKEY);
++		return ERR_PTR(-ENOPKG);
 +	}
 +
 +	if (pgp_public_key_algorithms[p.params.pubkey_algo] != key->algo) {
-+		kleave(" = -ENOKEY [wrong pk algo]");
-+		return ERR_PTR(-ENOKEY);
++		kleave(" = -EKEYREJECTED [wrong pk algo]");
++		return ERR_PTR(-EKEYREJECTED);
 +	}
 +
 +	if (!(key->capabilities & PKEY_CAN_VERIFY)) {
@@ -3228,7 +3649,8 @@ index 0000000..b4b7cb0
 +
 +	if (p.params.hash_algo >= PGP_HASH__LAST ||
 +	    !pgp_hash_algorithms[p.params.hash_algo]) {
-+		kleave(" = -ENOPKG [hash]");
++		pr_debug("Unsupported hash algorithm %u\n",
++			 p.params.hash_algo);
 +		return ERR_PTR(-ENOPKG);
 +	}
 +
@@ -3449,13 +3871,13 @@ index 0000000..b4b7cb0
 +	kleave("");
 +}
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 55e67eca050ff43915912e50dda49ecafdc816aa Mon Sep 17 00:00:00 2001
+From 3ca6d54c9bbd0633b7f8e1b033c7d8b2ebe85489 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:40:39 +0100
-Subject: [PATCH 15/36] KEYS: PGP format signature parser
+Date: Wed, 18 Jul 2012 16:22:40 +0100
+Subject: [PATCH 13/27] KEYS: PGP format signature parser
 
 Implement a signature parser that will attempt to parse a signature blob as a
 PGP packet format message.  If it can, it will find an appropriate crypto key
@@ -3464,34 +3886,22 @@ and set the public-key algorithm according to the data in the signature.
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  security/keys/crypto/Makefile         |    1 +
- security/keys/crypto/pgp_key_parser.c |    1 +
  security/keys/crypto/pgp_parser.h     |    6 ++
- security/keys/crypto/pgp_sig_parser.c |  104 +++++++++++++++++++++++++++++++++
- 4 files changed, 112 insertions(+)
+ security/keys/crypto/pgp_public_key.c |    1 +
+ security/keys/crypto/pgp_sig_parser.c |  114 +++++++++++++++++++++++++++++++++
+ 4 files changed, 122 insertions(+)
  create mode 100644 security/keys/crypto/pgp_sig_parser.c
 
 diff --git a/security/keys/crypto/Makefile b/security/keys/crypto/Makefile
-index d4ac8ac..fa7746d 100644
+index 0c8b8a1..a9a34c6 100644
 --- a/security/keys/crypto/Makefile
 +++ b/security/keys/crypto/Makefile
 @@ -12,4 +12,5 @@ obj-$(CONFIG_PGP_LIBRARY) += pgp_library.o
- obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_parser.o
- pgp_parser-y := \
- 	pgp_key_parser.o \
+ obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_key_parser.o
+ pgp_key_parser-y := \
+ 	pgp_public_key.o \
 +	pgp_sig_parser.o \
- 	pgp_pubkey_sig.o
-diff --git a/security/keys/crypto/pgp_key_parser.c b/security/keys/crypto/pgp_key_parser.c
-index 4efc4de..1407e2e 100644
---- a/security/keys/crypto/pgp_key_parser.c
-+++ b/security/keys/crypto/pgp_key_parser.c
-@@ -324,6 +324,7 @@ static struct crypto_key_parser pgp_key_parser = {
- 	.owner		= THIS_MODULE,
- 	.name		= "pgp",
- 	.instantiate	= pgp_key_instantiate,
-+	.verify_sig_begin = pgp_verify_sig_begin,
- };
- 
- /*
+ 	pgp_sig_verify.o
 diff --git a/security/keys/crypto/pgp_parser.h b/security/keys/crypto/pgp_parser.h
 index a6192ce..73c900e 100644
 --- a/security/keys/crypto/pgp_parser.h
@@ -3509,12 +3919,24 @@ index a6192ce..73c900e 100644
   * pgp_pubkey_sig.c
   */
  extern struct crypto_key_verify_context *pgp_pkey_verify_sig_begin(
+diff --git a/security/keys/crypto/pgp_public_key.c b/security/keys/crypto/pgp_public_key.c
+index 8a8b7c0..5ab926d 100644
+--- a/security/keys/crypto/pgp_public_key.c
++++ b/security/keys/crypto/pgp_public_key.c
+@@ -329,6 +329,7 @@ static struct crypto_key_parser pgp_key_parser = {
+ 	.owner		= THIS_MODULE,
+ 	.name		= "pgp",
+ 	.instantiate	= pgp_key_instantiate,
++	.verify_sig_begin = pgp_verify_sig_begin,
+ };
+ 
+ /*
 diff --git a/security/keys/crypto/pgp_sig_parser.c b/security/keys/crypto/pgp_sig_parser.c
 new file mode 100644
-index 0000000..b72c505
+index 0000000..f5feb2b
 --- /dev/null
 +++ b/security/keys/crypto/pgp_sig_parser.c
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,114 @@
 +/* Handling for PGP public key signature data [RFC 4880]
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -3529,7 +3951,8 @@ index 0000000..b72c505
 +#define pr_fmt(fmt) "PGPSIG: "fmt
 +#include <linux/module.h>
 +#include <linux/kernel.h>
-+#include <linux/pgp.h>
++#include <linux/pgplib.h>
++#include <linux/err.h>
 +#include "public_key.h"
 +#include "pgp_parser.h"
 +
@@ -3583,7 +4006,7 @@ index 0000000..b72c505
 +		return ERR_PTR(ret);
 +
 +	if (!p.found_sig)
-+		return ERR_PTR(-EINVAL);
++		return ERR_PTR(-ENOMSG);
 +
 +	sprintf(criterion, "id:%08x%08x",
 +		be32_to_cpu(p.params.issuer32[0]),
@@ -3593,8 +4016,17 @@ index 0000000..b72c505
 +
 +	key = keyring_search(make_key_ref(keyring, 1),
 +			     &key_type_crypto, criterion);
-+	if (IS_ERR(key))
-+		return ERR_CAST(key);
++	if (IS_ERR(key)) {
++		switch (PTR_ERR(key)) {
++			/* Hide some search errors */
++		case -EACCES:
++		case -ENOTDIR:
++		case -EAGAIN:
++			return ERR_PTR(-ENOKEY);
++		default:
++			return ERR_CAST(key);
++		}
++	}
 +
 +	pr_debug("Found key %x\n", key_serial(key_ref_to_ptr(key)));
 +	return key_ref_to_ptr(key);
@@ -3620,13 +4052,13 @@ index 0000000..b72c505
 +	return ctx;
 +}
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 0760cf6519e184298944df0d9f6fe5a097fb16ff Mon Sep 17 00:00:00 2001
+From 30a028f485bd476ef3ad73fbb042a55b4851c966 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 4 May 2012 16:41:12 +0100
-Subject: [PATCH 16/36] KEYS: Provide a function to load keys from a PGP
+Date: Wed, 18 Jul 2012 16:22:59 +0100
+Subject: [PATCH 14/27] KEYS: Provide a function to load keys from a PGP
  keyring blob
 
 Provide a function to load keys from a PGP keyring blob for use in initialising
@@ -3646,14 +4078,17 @@ Looking as root in /proc/keys after the module signing keyring has been loaded:
 24460d1c I-----     1 perm 3f010000     0     0 crypto    modsign.0: dsa 5acc2142 []
 3ca85723 I-----     1 perm 1f010000     0     0 keyring   .module_sign: 1/4
 
+Thanks to Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp> for some pointing
+out some errors.
+
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  Documentation/security/keys-crypto.txt |   20 +++++++
- include/keys/crypto-type.h             |    3 ++
- security/keys/crypto/Kconfig           |    9 ++++
+ include/keys/crypto-type.h             |    3 +
+ security/keys/crypto/Kconfig           |    9 +++
  security/keys/crypto/Makefile          |    1 +
- security/keys/crypto/pgp_preload.c     |   90 ++++++++++++++++++++++++++++++++
- 5 files changed, 123 insertions(+)
+ security/keys/crypto/pgp_preload.c     |   96 ++++++++++++++++++++++++++++++++
+ 5 files changed, 129 insertions(+)
  create mode 100644 security/keys/crypto/pgp_preload.c
 
 diff --git a/Documentation/security/keys-crypto.txt b/Documentation/security/keys-crypto.txt
@@ -3721,7 +4156,7 @@ index 1c2ae55..8af0155 100644
 +	  bundles of keys during boot.  It is used by module signing to load
 +	  the module signing keys for example.
 diff --git a/security/keys/crypto/Makefile b/security/keys/crypto/Makefile
-index fa7746d..4162ecb 100644
+index a9a34c6..c873674 100644
 --- a/security/keys/crypto/Makefile
 +++ b/security/keys/crypto/Makefile
 @@ -8,6 +8,7 @@ crypto_keys-y := crypto_type.o crypto_verify.o
@@ -3730,14 +4165,14 @@ index fa7746d..4162ecb 100644
  obj-$(CONFIG_PGP_LIBRARY) += pgp_library.o
 +obj-$(CONFIG_PGP_PRELOAD) += pgp_preload.o
  
- obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_parser.o
- pgp_parser-y := \
+ obj-$(CONFIG_CRYPTO_KEY_PGP_PARSER) += pgp_key_parser.o
+ pgp_key_parser-y := \
 diff --git a/security/keys/crypto/pgp_preload.c b/security/keys/crypto/pgp_preload.c
 new file mode 100644
-index 0000000..25154e3
+index 0000000..9028788
 --- /dev/null
 +++ b/security/keys/crypto/pgp_preload.c
-@@ -0,0 +1,90 @@
+@@ -0,0 +1,96 @@
 +/* Cryptographic key request handling
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -3753,7 +4188,9 @@ index 0000000..25154e3
 +
 +#include <linux/module.h>
 +#include <linux/key.h>
-+#include <linux/pgp.h>
++#include <linux/pgplib.h>
++#include <linux/err.h>
++#include <keys/crypto-type.h>
 +#include "crypto_keys.h"
 +
 +struct preload_pgp_keys_context {
@@ -3774,6 +4211,9 @@ index 0000000..25154e3
 +	struct preload_pgp_keys_context *ctx =
 +		container_of(context, struct preload_pgp_keys_context, pgp);
 +	key_ref_t key;
++
++	if (ctx->key_n >= 255)
++		return 0; /* Don't overrun descbuf */
 +
 +	sprintf(ctx->descbuf + ctx->dsize, "%d", ctx->key_n++);
 +
@@ -3824,18 +4264,1195 @@ index 0000000..25154e3
 +	ctx.keyring = make_key_ref(keyring, 1);
 +	ctx.key_n = 0;
 +	ctx.dsize = strlen(descprefix);
++	BUG_ON(ctx.dsize > sizeof(ctx.descbuf) - 4);
 +	strcpy(ctx.descbuf, descprefix);
 +
 +	return pgp_parse_packets(pgpdata, pgpdatalen, &ctx.pgp);
 +}
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 8f7d6b082b6b7357e44f9345c8c040f53aa60a7f Mon Sep 17 00:00:00 2001
+From 13b8bd0afb58d1000c74741f176862efb6d1bcc9 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:46:56 +0100
-Subject: [PATCH 17/36] Provide macros for forming the name of an ELF note and
+Date: Wed, 18 Jul 2012 16:25:41 +0100
+Subject: [PATCH 15/27] Make most arch asm/module.h files use
+ asm-generic/module.h
+
+Use the mapping of Elf_[SPE]hdr, Elf_Addr, Elf_Sym, Elf_Dyn, Elf_Rel/Rela,
+ELF_R_TYPE() and ELF_R_SYM() to either the 32-bit version or the 64-bit version
+into asm-generic/module.h for all arches bar MIPS.
+
+Also, use the generic definition mod_arch_specific where possible.
+
+To this end, I've defined three new config bools:
+
+ (*) HAVE_MOD_ARCH_SPECIFIC
+
+     Arches define this if they don't want to use the empty generic
+     mod_arch_specific struct.
+
+ (*) MODULES_USE_ELF_RELA
+
+     Arches define this if their modules can contain RELA records.  This causes
+     the Elf_Rela mapping to be emitted and allows apply_relocate_add() to be
+     defined by the arch rather than have the core emit an error message.
+
+ (*) MODULES_USE_ELF_REL
+
+     Arches define this if their modules can contain REL records.  This causes
+     the Elf_Rel mapping to be emitted and allows apply_relocate() to be
+     defined by the arch rather than have the core emit an error message.
+
+Note that it is possible to allow both REL and RELA records: m68k and mips are
+two arches that do this.
+
+With this, some arch asm/module.h files can be deleted entirely and replaced
+with a generic-y marker in the arch Kbuild file.
+
+Additionally, I have removed the bits from m32r and score that handle the
+unsupported type of relocation record as that's now handled centrally.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/Kconfig                       |   19 +++++++++++++++++
+ arch/alpha/Kconfig                 |    2 ++
+ arch/alpha/include/asm/module.h    |   10 ++-------
+ arch/arm/Kconfig                   |    2 ++
+ arch/arm/include/asm/module.h      |    8 ++------
+ arch/avr32/Kconfig                 |    2 ++
+ arch/avr32/include/asm/module.h    |    6 ++----
+ arch/blackfin/Kconfig              |    2 ++
+ arch/blackfin/include/asm/module.h |    4 +---
+ arch/c6x/Kconfig                   |    1 +
+ arch/c6x/include/asm/module.h      |   12 +----------
+ arch/cris/Kconfig                  |    1 +
+ arch/cris/include/asm/Kbuild       |    2 ++
+ arch/cris/include/asm/module.h     |    9 --------
+ arch/frv/include/asm/module.h      |    8 +-------
+ arch/h8300/Kconfig                 |    1 +
+ arch/h8300/include/asm/Kbuild      |    2 ++
+ arch/h8300/include/asm/module.h    |   11 ----------
+ arch/hexagon/Kconfig               |    1 +
+ arch/ia64/Kconfig                  |    2 ++
+ arch/ia64/include/asm/module.h     |    6 ++----
+ arch/m32r/Kconfig                  |    1 +
+ arch/m32r/include/asm/Kbuild       |    2 ++
+ arch/m32r/include/asm/module.h     |   10 ---------
+ arch/m32r/kernel/module.c          |   15 --------------
+ arch/m68k/Kconfig                  |    3 +++
+ arch/m68k/include/asm/module.h     |    6 ++----
+ arch/microblaze/Kconfig            |    1 +
+ arch/mips/Kconfig                  |    3 +++
+ arch/mips/include/asm/module.h     |   10 +++++++--
+ arch/mips/kernel/module.c          |    2 ++
+ arch/mn10300/Kconfig               |    1 +
+ arch/mn10300/include/asm/module.h  |    7 +------
+ arch/openrisc/Kconfig              |    1 +
+ arch/parisc/Kconfig                |    2 ++
+ arch/parisc/include/asm/module.h   |   16 +++------------
+ arch/powerpc/Kconfig               |    2 ++
+ arch/powerpc/include/asm/module.h  |    7 +------
+ arch/s390/Kconfig                  |    2 ++
+ arch/s390/include/asm/module.h     |   18 +++-------------
+ arch/score/Kconfig                 |    2 ++
+ arch/score/include/asm/module.h    |    6 +-----
+ arch/score/kernel/module.c         |   10 ---------
+ arch/sh/Kconfig                    |    2 ++
+ arch/sh/include/asm/module.h       |   14 +++----------
+ arch/sparc/Kconfig                 |    1 +
+ arch/sparc/include/asm/Kbuild      |    1 +
+ arch/sparc/include/asm/module.h    |   24 ----------------------
+ arch/tile/Kconfig                  |    1 +
+ arch/unicore32/Kconfig             |    1 +
+ arch/x86/Kconfig                   |    2 ++
+ arch/xtensa/Kconfig                |    1 +
+ arch/xtensa/include/asm/module.h   |    9 +-------
+ include/asm-generic/module.h       |   40 +++++++++++++++++++++++++++++-------
+ include/linux/moduleloader.h       |   36 ++++++++++++++++++++++++++++----
+ kernel/module.c                    |   20 ------------------
+ 56 files changed, 167 insertions(+), 223 deletions(-)
+ delete mode 100644 arch/cris/include/asm/module.h
+ delete mode 100644 arch/h8300/include/asm/module.h
+ delete mode 100644 arch/m32r/include/asm/module.h
+ delete mode 100644 arch/sparc/include/asm/module.h
+
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 8c3d957..51acb02 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -274,4 +274,23 @@ config SECCOMP_FILTER
+ 
+ 	  See Documentation/prctl/seccomp_filter.txt for details.
+ 
++config HAVE_MOD_ARCH_SPECIFIC
++	bool
++	help
++	  The arch uses struct mod_arch_specific to store data.  Many arches
++	  just need a simple module loader without arch specific data - those
++	  should not enable this.
++
++config MODULES_USE_ELF_RELA
++	bool
++	help
++	  Modules only use ELF RELA relocations.  Modules with ELF REL
++	  relocations will give an error.
++
++config MODULES_USE_ELF_REL
++	bool
++	help
++	  Modules only use ELF REL relocations.  Modules with ELF RELA
++	  relocations will give an error.
++
+ source "kernel/gcov/Kconfig"
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 3de74c9..6f580de 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -17,6 +17,8 @@ config ALPHA
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_CMOS_UPDATE
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 	help
+ 	  The Alpha is a 64-bit general-purpose processor designed and
+ 	  marketed by the Digital Equipment Corporation of blessed memory,
+diff --git a/arch/alpha/include/asm/module.h b/arch/alpha/include/asm/module.h
+index 7b63743..9cd13b5 100644
+--- a/arch/alpha/include/asm/module.h
++++ b/arch/alpha/include/asm/module.h
+@@ -1,19 +1,13 @@
+ #ifndef _ALPHA_MODULE_H
+ #define _ALPHA_MODULE_H
+ 
++#include <asm-generic/module.h>
++
+ struct mod_arch_specific
+ {
+ 	unsigned int gotsecindex;
+ };
+ 
+-#define Elf_Sym Elf64_Sym
+-#define Elf_Shdr Elf64_Shdr
+-#define Elf_Ehdr Elf64_Ehdr
+-#define Elf_Phdr Elf64_Phdr
+-#define Elf_Dyn Elf64_Dyn
+-#define Elf_Rel Elf64_Rel
+-#define Elf_Rela Elf64_Rela
+-
+ #define ARCH_SHF_SMALL SHF_ALPHA_GPREL
+ 
+ #ifdef MODULE
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index a91009c..af8bf36 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -45,6 +45,8 @@ config ARM
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select KTIME_SCALAR
+ 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
++	select HAVE_MOD_ARCH_SPECIFIC if ARM_UNWIND
++	select MODULES_USE_ELF_REL
+ 	help
+ 	  The ARM series is a line of low-power-consumption RISC chip designs
+ 	  licensed by ARM Ltd and targeted at embedded applications and
+diff --git a/arch/arm/include/asm/module.h b/arch/arm/include/asm/module.h
+index 6c6809f..0d3a28d 100644
+--- a/arch/arm/include/asm/module.h
++++ b/arch/arm/include/asm/module.h
+@@ -1,9 +1,7 @@
+ #ifndef _ASM_ARM_MODULE_H
+ #define _ASM_ARM_MODULE_H
+ 
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
++#include <asm-generic/module.h>
+ 
+ struct unwind_table;
+ 
+@@ -16,13 +14,11 @@ enum {
+ 	ARM_SEC_DEVEXIT,
+ 	ARM_SEC_MAX,
+ };
+-#endif
+ 
+ struct mod_arch_specific {
+-#ifdef CONFIG_ARM_UNWIND
+ 	struct unwind_table *unwind[ARM_SEC_MAX];
+-#endif
+ };
++#endif
+ 
+ /*
+  * Add the ARM architecture version to the version magic string
+diff --git a/arch/avr32/Kconfig b/arch/avr32/Kconfig
+index 71d38c7..2779913 100644
+--- a/arch/avr32/Kconfig
++++ b/arch/avr32/Kconfig
+@@ -14,6 +14,8 @@ config AVR32
+ 	select ARCH_HAVE_CUSTOM_GPIO_H
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_CLOCKEVENTS
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 	help
+ 	  AVR32 is a high-performance 32-bit RISC microprocessor core,
+ 	  designed for cost-sensitive embedded applications, with particular
+diff --git a/arch/avr32/include/asm/module.h b/arch/avr32/include/asm/module.h
+index 4514445..3f083d3 100644
+--- a/arch/avr32/include/asm/module.h
++++ b/arch/avr32/include/asm/module.h
+@@ -1,6 +1,8 @@
+ #ifndef __ASM_AVR32_MODULE_H
+ #define __ASM_AVR32_MODULE_H
+ 
++#include <asm-generic/module.h>
++
+ struct mod_arch_syminfo {
+ 	unsigned long got_offset;
+ 	int got_initialized;
+@@ -17,10 +19,6 @@ struct mod_arch_specific {
+ 	struct mod_arch_syminfo *syminfo;
+ };
+ 
+-#define Elf_Shdr		Elf32_Shdr
+-#define Elf_Sym			Elf32_Sym
+-#define Elf_Ehdr		Elf32_Ehdr
+-
+ #define MODULE_PROC_FAMILY "AVR32v1"
+ 
+ #define MODULE_ARCH_VERMAGIC MODULE_PROC_FAMILY
+diff --git a/arch/blackfin/Kconfig b/arch/blackfin/Kconfig
+index fef96f4..b8a7bc9 100644
+--- a/arch/blackfin/Kconfig
++++ b/arch/blackfin/Kconfig
+@@ -40,6 +40,8 @@ config BLACKFIN
+ 	select HAVE_NMI_WATCHDOG if NMI_WATCHDOG
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select ARCH_USES_GETTIMEOFFSET if !GENERIC_CLOCKEVENTS
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 
+ config GENERIC_CSUM
+ 	def_bool y
+diff --git a/arch/blackfin/include/asm/module.h b/arch/blackfin/include/asm/module.h
+index ed5689b..231a149 100644
+--- a/arch/blackfin/include/asm/module.h
++++ b/arch/blackfin/include/asm/module.h
+@@ -7,9 +7,7 @@
+ #ifndef _ASM_BFIN_MODULE_H
+ #define _ASM_BFIN_MODULE_H
+ 
+-#define Elf_Shdr        Elf32_Shdr
+-#define Elf_Sym         Elf32_Sym
+-#define Elf_Ehdr        Elf32_Ehdr
++#include <asm-generic/module.h>
+ 
+ struct mod_arch_specific {
+ 	Elf_Shdr	*text_l1;
+diff --git a/arch/c6x/Kconfig b/arch/c6x/Kconfig
+index 052f81a..8f3a304 100644
+--- a/arch/c6x/Kconfig
++++ b/arch/c6x/Kconfig
+@@ -16,6 +16,7 @@ config C6X
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+ 	select GENERIC_CLOCKEVENTS
++	select MODULES_USE_ELF_RELA
+ 
+ config MMU
+ 	def_bool n
+diff --git a/arch/c6x/include/asm/module.h b/arch/c6x/include/asm/module.h
+index a453f97..5c7269c 100644
+--- a/arch/c6x/include/asm/module.h
++++ b/arch/c6x/include/asm/module.h
+@@ -13,17 +13,7 @@
+ #ifndef _ASM_C6X_MODULE_H
+ #define _ASM_C6X_MODULE_H
+ 
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
+-#define Elf_Addr	Elf32_Addr
+-#define Elf_Word	Elf32_Word
+-
+-/*
+- * This file contains the C6x architecture specific module code.
+- */
+-struct mod_arch_specific {
+-};
++#include <asm-generic/module.h>
+ 
+ struct loaded_sections {
+ 	unsigned int new_vaddr;
+diff --git a/arch/cris/Kconfig b/arch/cris/Kconfig
+index bb34465..45782c7 100644
+--- a/arch/cris/Kconfig
++++ b/arch/cris/Kconfig
+@@ -46,6 +46,7 @@ config CRIS
+ 	select GENERIC_IOMAP
+ 	select GENERIC_SMP_IDLE_THREAD if ETRAX_ARCH_V32
+ 	select GENERIC_CMOS_UPDATE
++	select MODULES_USE_ELF_RELA
+ 
+ config HZ
+ 	int
+diff --git a/arch/cris/include/asm/Kbuild b/arch/cris/include/asm/Kbuild
+index 04d02a5..28b690d 100644
+--- a/arch/cris/include/asm/Kbuild
++++ b/arch/cris/include/asm/Kbuild
+@@ -7,3 +7,5 @@ header-y += ethernet.h
+ header-y += etraxgpio.h
+ header-y += rs485.h
+ header-y += sync_serial.h
++
++generic-y += module.h
+diff --git a/arch/cris/include/asm/module.h b/arch/cris/include/asm/module.h
+deleted file mode 100644
+index 7ee7231..0000000
+--- a/arch/cris/include/asm/module.h
++++ /dev/null
+@@ -1,9 +0,0 @@
+-#ifndef _ASM_CRIS_MODULE_H
+-#define _ASM_CRIS_MODULE_H
+-/* cris is simple */
+-struct mod_arch_specific { };
+-
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+-#endif /* _ASM_CRIS_MODULE_H */
+diff --git a/arch/frv/include/asm/module.h b/arch/frv/include/asm/module.h
+index 3d5c636..a8848f0 100644
+--- a/arch/frv/include/asm/module.h
++++ b/arch/frv/include/asm/module.h
+@@ -11,13 +11,7 @@
+ #ifndef _ASM_MODULE_H
+ #define _ASM_MODULE_H
+ 
+-struct mod_arch_specific
+-{
+-};
+-
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
++#include <asm-generic/module.h>
+ 
+ /*
+  * Include the architecture version.
+diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
+index 56e890d..9eaefdd 100644
+--- a/arch/h8300/Kconfig
++++ b/arch/h8300/Kconfig
+@@ -5,6 +5,7 @@ config H8300
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
++	select MODULES_USE_ELF_RELA
+ 
+ config SYMBOL_PREFIX
+ 	string
+diff --git a/arch/h8300/include/asm/Kbuild b/arch/h8300/include/asm/Kbuild
+index c68e168..871382d 100644
+--- a/arch/h8300/include/asm/Kbuild
++++ b/arch/h8300/include/asm/Kbuild
+@@ -1 +1,3 @@
+ include include/asm-generic/Kbuild.asm
++
++generic-y	+= module.h
+diff --git a/arch/h8300/include/asm/module.h b/arch/h8300/include/asm/module.h
+deleted file mode 100644
+index 8e46724..0000000
+--- a/arch/h8300/include/asm/module.h
++++ /dev/null
+@@ -1,11 +0,0 @@
+-#ifndef _ASM_H8300_MODULE_H
+-#define _ASM_H8300_MODULE_H
+-/*
+- * This file contains the H8/300 architecture specific module code.
+- */
+-struct mod_arch_specific { };
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+-
+-#endif /* _ASM_H8/300_MODULE_H */
+diff --git a/arch/hexagon/Kconfig b/arch/hexagon/Kconfig
+index b2fdfb7..0744f7d 100644
+--- a/arch/hexagon/Kconfig
++++ b/arch/hexagon/Kconfig
+@@ -30,6 +30,7 @@ config HEXAGON
+ 	select KTIME_SCALAR
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
++	select MODULES_USE_ELF_RELA
+ 	---help---
+ 	  Qualcomm Hexagon is a processor architecture designed for high
+ 	  performance and low power across a wide variety of applications.
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 8186ec5..6f1b7b1 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -39,6 +39,8 @@ config IA64
+ 	select ARCH_THREAD_INFO_ALLOCATOR
+ 	select ARCH_CLOCKSOURCE_DATA
+ 	select GENERIC_TIME_VSYSCALL
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 	default y
+ 	help
+ 	  The Itanium Processor Family is Intel's 64-bit successor to
+diff --git a/arch/ia64/include/asm/module.h b/arch/ia64/include/asm/module.h
+index 908eaef..dfba22a 100644
+--- a/arch/ia64/include/asm/module.h
++++ b/arch/ia64/include/asm/module.h
+@@ -1,6 +1,8 @@
+ #ifndef _ASM_IA64_MODULE_H
+ #define _ASM_IA64_MODULE_H
+ 
++#include <asm-generic/module.h>
++
+ /*
+  * IA-64-specific support for kernel module loader.
+  *
+@@ -29,10 +31,6 @@ struct mod_arch_specific {
+ 	unsigned int next_got_entry;	/* index of next available got entry */
+ };
+ 
+-#define Elf_Shdr	Elf64_Shdr
+-#define Elf_Sym		Elf64_Sym
+-#define Elf_Ehdr	Elf64_Ehdr
+-
+ #define MODULE_PROC_FAMILY	"ia64"
+ #define MODULE_ARCH_VERMAGIC	MODULE_PROC_FAMILY \
+ 	"gcc-" __stringify(__GNUC__) "." __stringify(__GNUC_MINOR__)
+diff --git a/arch/m32r/Kconfig b/arch/m32r/Kconfig
+index b638d5b..a30478e 100644
+--- a/arch/m32r/Kconfig
++++ b/arch/m32r/Kconfig
+@@ -12,6 +12,7 @@ config M32R
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_ATOMIC64
+ 	select ARCH_USES_GETTIMEOFFSET
++	select MODULES_USE_ELF_RELA
+ 
+ config SBUS
+ 	bool
+diff --git a/arch/m32r/include/asm/Kbuild b/arch/m32r/include/asm/Kbuild
+index c68e168..871382d 100644
+--- a/arch/m32r/include/asm/Kbuild
++++ b/arch/m32r/include/asm/Kbuild
+@@ -1 +1,3 @@
+ include include/asm-generic/Kbuild.asm
++
++generic-y	+= module.h
+diff --git a/arch/m32r/include/asm/module.h b/arch/m32r/include/asm/module.h
+deleted file mode 100644
+index eb73ee0..0000000
+--- a/arch/m32r/include/asm/module.h
++++ /dev/null
+@@ -1,10 +0,0 @@
+-#ifndef _ASM_M32R_MODULE_H
+-#define _ASM_M32R_MODULE_H
+-
+-struct mod_arch_specific { };
+-
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
+-
+-#endif /* _ASM_M32R_MODULE_H */
+diff --git a/arch/m32r/kernel/module.c b/arch/m32r/kernel/module.c
+index 3071fe8..38233b6 100644
+--- a/arch/m32r/kernel/module.c
++++ b/arch/m32r/kernel/module.c
+@@ -201,18 +201,3 @@ int apply_relocate_add(Elf32_Shdr *sechdrs,
+ 	}
+ 	return 0;
+ }
+-
+-int apply_relocate(Elf32_Shdr *sechdrs,
+-		       const char *strtab,
+-		       unsigned int symindex,
+-		       unsigned int relsec,
+-		       struct module *me)
+-{
+-#if 0
+-	printk(KERN_ERR "module %s: REL RELOCATION unsupported\n",
+-	       me->name);
+-	return -ENOEXEC;
+-#endif
+-	return 0;
+-
+-}
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 1471201..3694301 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -11,6 +11,9 @@ config M68K
+ 	select GENERIC_STRNLEN_USER if MMU
+ 	select FPU if MMU
+ 	select ARCH_USES_GETTIMEOFFSET if MMU && !COLDFIRE
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_REL
++	select MODULES_USE_ELF_RELA
+ 
+ config RWSEM_GENERIC_SPINLOCK
+ 	bool
+diff --git a/arch/m68k/include/asm/module.h b/arch/m68k/include/asm/module.h
+index edffe66..8b58fce 100644
+--- a/arch/m68k/include/asm/module.h
++++ b/arch/m68k/include/asm/module.h
+@@ -1,6 +1,8 @@
+ #ifndef _ASM_M68K_MODULE_H
+ #define _ASM_M68K_MODULE_H
+ 
++#include <asm-generic/module.h>
++
+ enum m68k_fixup_type {
+ 	m68k_fixup_memoffset,
+ 	m68k_fixup_vnode_shift,
+@@ -36,8 +38,4 @@ struct module;
+ extern void module_fixup(struct module *mod, struct m68k_fixup_info *start,
+ 			 struct m68k_fixup_info *end);
+ 
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+-
+ #endif /* _ASM_M68K_MODULE_H */
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 0bf4423..ee395d3 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -23,6 +23,7 @@ config MICROBLAZE
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_ATOMIC64
+ 	select GENERIC_CLOCKEVENTS
++	select MODULES_USE_ELF_RELA
+ 
+ config SWAP
+ 	def_bool n
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 09ab87e..2901b41 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -34,6 +34,9 @@ config MIPS
+ 	select BUILDTIME_EXTABLE_SORT
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_CMOS_UPDATE
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_REL
++	select MODULES_USE_ELF_RELA if 64BIT
+ 
+ menu "Machine selection"
+ 
+diff --git a/arch/mips/include/asm/module.h b/arch/mips/include/asm/module.h
+index 5300080..2c6a4f21 100644
+--- a/arch/mips/include/asm/module.h
++++ b/arch/mips/include/asm/module.h
+@@ -34,11 +34,14 @@ typedef struct {
+ } Elf64_Mips_Rela;
+ 
+ #ifdef CONFIG_32BIT
+-
+ #define Elf_Shdr	Elf32_Shdr
+ #define Elf_Sym		Elf32_Sym
+ #define Elf_Ehdr	Elf32_Ehdr
+ #define Elf_Addr	Elf32_Addr
++#define Elf_Rel		Elf32_Rel
++#define Elf_Rela	Elf32_Rela
++#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
++#define ELF_R_SYM(X)	ELF32_R_SYM(X)
+ 
+ #define Elf_Mips_Rel	Elf32_Rel
+ #define Elf_Mips_Rela	Elf32_Rela
+@@ -49,11 +52,14 @@ typedef struct {
+ #endif
+ 
+ #ifdef CONFIG_64BIT
+-
+ #define Elf_Shdr	Elf64_Shdr
+ #define Elf_Sym		Elf64_Sym
+ #define Elf_Ehdr	Elf64_Ehdr
+ #define Elf_Addr	Elf64_Addr
++#define Elf_Rel		Elf64_Rel
++#define Elf_Rela	Elf64_Rela
++#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
++#define ELF_R_SYM(X)	ELF64_R_SYM(X)
+ 
+ #define Elf_Mips_Rel	Elf64_Mips_Rel
+ #define Elf_Mips_Rela	Elf64_Mips_Rela
+diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
+index a5066b1..1500c80 100644
+--- a/arch/mips/kernel/module.c
++++ b/arch/mips/kernel/module.c
+@@ -299,6 +299,7 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
+ 	return 0;
+ }
+ 
++#ifdef CONFIG_MODULES_USE_ELF_RELA
+ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+ 		       unsigned int symindex, unsigned int relsec,
+ 		       struct module *me)
+@@ -338,6 +339,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+ 
+ 	return 0;
+ }
++#endif
+ 
+ /* Given an address, look for it in the module exception tables. */
+ const struct exception_table_entry *search_module_dbetables(unsigned long addr)
+diff --git a/arch/mn10300/Kconfig b/arch/mn10300/Kconfig
+index 687f9b4..f8fec1c 100644
+--- a/arch/mn10300/Kconfig
++++ b/arch/mn10300/Kconfig
+@@ -7,6 +7,7 @@ config MN10300
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_NMI_WATCHDOG if MN10300_WD_TIMER
+ 	select GENERIC_CLOCKEVENTS
++	select MODULES_USE_ELF_RELA
+ 
+ config AM33_2
+ 	def_bool n
+diff --git a/arch/mn10300/include/asm/module.h b/arch/mn10300/include/asm/module.h
+index 5d7057d..6571103 100644
+--- a/arch/mn10300/include/asm/module.h
++++ b/arch/mn10300/include/asm/module.h
+@@ -12,12 +12,7 @@
+ #ifndef _ASM_MODULE_H
+ #define _ASM_MODULE_H
+ 
+-struct mod_arch_specific {
+-};
+-
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
++#include <asm-generic/module.h>
+ 
+ /*
+  * Include the MN10300 architecture version.
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index 49765b5..05f2ba4 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -21,6 +21,7 @@ config OPENRISC
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
++	select MODULES_USE_ELF_RELA
+ 
+ config MMU
+ 	def_bool y
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 3ff21b5..166d991 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -19,6 +19,8 @@ config PARISC
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_STRNCPY_FROM_USER
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 
+ 	help
+ 	  The PA-RISC microprocessor is designed by Hewlett-Packard and used
+diff --git a/arch/parisc/include/asm/module.h b/arch/parisc/include/asm/module.h
+index 1f41234..bab37e9 100644
+--- a/arch/parisc/include/asm/module.h
++++ b/arch/parisc/include/asm/module.h
+@@ -1,21 +1,11 @@
+ #ifndef _ASM_PARISC_MODULE_H
+ #define _ASM_PARISC_MODULE_H
++
++#include <asm-generic/module.h>
++
+ /*
+  * This file contains the parisc architecture specific module code.
+  */
+-#ifdef CONFIG_64BIT
+-#define Elf_Shdr Elf64_Shdr
+-#define Elf_Sym Elf64_Sym
+-#define Elf_Ehdr Elf64_Ehdr
+-#define Elf_Addr Elf64_Addr
+-#define Elf_Rela Elf64_Rela
+-#else
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+-#define Elf_Addr Elf32_Addr
+-#define Elf_Rela Elf32_Rela
+-#endif
+ 
+ struct unwind_table;
+ 
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 050cb37..17d3267 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -137,6 +137,8 @@ config PPC
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 
+ config EARLY_PRINTK
+ 	bool
+diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
+index 0192a4e..c1df590 100644
+--- a/arch/powerpc/include/asm/module.h
++++ b/arch/powerpc/include/asm/module.h
+@@ -11,6 +11,7 @@
+ 
+ #include <linux/list.h>
+ #include <asm/bug.h>
++#include <asm-generic/module.h>
+ 
+ 
+ #ifndef __powerpc64__
+@@ -60,16 +61,10 @@ struct mod_arch_specific {
+  */
+ 
+ #ifdef __powerpc64__
+-#    define Elf_Shdr	Elf64_Shdr
+-#    define Elf_Sym	Elf64_Sym
+-#    define Elf_Ehdr	Elf64_Ehdr
+ #    ifdef MODULE
+ 	asm(".section .stubs,\"ax\",@nobits; .align 3; .previous");
+ #    endif
+ #else
+-#    define Elf_Shdr	Elf32_Shdr
+-#    define Elf_Sym	Elf32_Sym
+-#    define Elf_Ehdr	Elf32_Ehdr
+ #    ifdef MODULE
+ 	asm(".section .plt,\"ax\",@nobits; .align 3; .previous");
+ 	asm(".section .init.plt,\"ax\",@nobits; .align 3; .previous");
+diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
+index a39b469..7c16d31 100644
+--- a/arch/s390/Kconfig
++++ b/arch/s390/Kconfig
+@@ -121,6 +121,8 @@ config S390
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GENERIC_CLOCKEVENTS
+ 	select KTIME_SCALAR if 32BIT
++	select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_RELA
+ 
+ config SCHED_OMIT_FRAME_POINTER
+ 	def_bool y
+diff --git a/arch/s390/include/asm/module.h b/arch/s390/include/asm/module.h
+index f0b6b26..df1f861 100644
+--- a/arch/s390/include/asm/module.h
++++ b/arch/s390/include/asm/module.h
+@@ -1,5 +1,8 @@
+ #ifndef _ASM_S390_MODULE_H
+ #define _ASM_S390_MODULE_H
++
++#include <asm-generic/module.h>
++
+ /*
+  * This file contains the s390 architecture specific module code.
+  */
+@@ -28,19 +31,4 @@ struct mod_arch_specific
+ 	struct mod_arch_syminfo *syminfo;
+ };
+ 
+-#ifdef CONFIG_64BIT
+-#define ElfW(x) Elf64_ ## x
+-#define ELFW(x) ELF64_ ## x
+-#else
+-#define ElfW(x) Elf32_ ## x
+-#define ELFW(x) ELF32_ ## x
+-#endif
+-
+-#define Elf_Addr ElfW(Addr)
+-#define Elf_Rela ElfW(Rela)
+-#define Elf_Shdr ElfW(Shdr)
+-#define Elf_Sym ElfW(Sym)
+-#define Elf_Ehdr ElfW(Ehdr)
+-#define ELF_R_SYM ELFW(R_SYM)
+-#define ELF_R_TYPE ELFW(R_TYPE)
+ #endif /* _ASM_S390_MODULE_H */
+diff --git a/arch/score/Kconfig b/arch/score/Kconfig
+index ba0f412..e2c8db4 100644
+--- a/arch/score/Kconfig
++++ b/arch/score/Kconfig
+@@ -10,6 +10,8 @@ config SCORE
+        select ARCH_DISCARD_MEMBLOCK
+        select GENERIC_CPU_DEVICES
+        select GENERIC_CLOCKEVENTS
++       select HAVE_MOD_ARCH_SPECIFIC
++	select MODULES_USE_ELF_REL
+ 
+ choice
+ 	prompt "System type"
+diff --git a/arch/score/include/asm/module.h b/arch/score/include/asm/module.h
+index f0b5dc0..abf395b 100644
+--- a/arch/score/include/asm/module.h
++++ b/arch/score/include/asm/module.h
+@@ -3,6 +3,7 @@
+ 
+ #include <linux/list.h>
+ #include <asm/uaccess.h>
++#include <asm-generic/module.h>
+ 
+ struct mod_arch_specific {
+ 	/* Data Bus Error exception tables */
+@@ -13,11 +14,6 @@ struct mod_arch_specific {
+ 
+ typedef uint8_t Elf64_Byte;		/* Type for a 8-bit quantity. */
+ 
+-#define Elf_Shdr	Elf32_Shdr
+-#define Elf_Sym		Elf32_Sym
+-#define Elf_Ehdr	Elf32_Ehdr
+-#define Elf_Addr	Elf32_Addr
+-
+ /* Given an address, look for it in the exception tables. */
+ #ifdef CONFIG_MODULES
+ const struct exception_table_entry *search_module_dbetables(unsigned long addr);
+diff --git a/arch/score/kernel/module.c b/arch/score/kernel/module.c
+index 469e3b6..1378d99 100644
+--- a/arch/score/kernel/module.c
++++ b/arch/score/kernel/module.c
+@@ -125,16 +125,6 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
+ 	return 0;
+ }
+ 
+-int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+-		unsigned int symindex, unsigned int relsec,
+-		struct module *me)
+-{
+-	/* Non-standard return value... most other arch's return -ENOEXEC
+-	 * for an unsupported relocation variant
+-	 */
+-	return 0;
+-}
+-
+ /* Given an address, look for it in the module exception tables. */
+ const struct exception_table_entry *search_module_dbetables(unsigned long addr)
+ {
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 31d9db7..22c02bb 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -34,6 +34,8 @@ config SUPERH
+ 	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
++	select HAVE_MOD_ARCH_SPECIFIC if DWARF_UNWINDER
++	select MODULES_USE_ELF_RELA
+ 	help
+ 	  The SuperH is a RISC processor targeted for use in embedded systems
+ 	  and consumer electronics; it was also used in the Sega Dreamcast
+diff --git a/arch/sh/include/asm/module.h b/arch/sh/include/asm/module.h
+index b7927de..81300d8b 100644
+--- a/arch/sh/include/asm/module.h
++++ b/arch/sh/include/asm/module.h
+@@ -1,21 +1,13 @@
+ #ifndef _ASM_SH_MODULE_H
+ #define _ASM_SH_MODULE_H
+ 
+-struct mod_arch_specific {
++#include <asm-generic/module.h>
++
+ #ifdef CONFIG_DWARF_UNWINDER
++struct mod_arch_specific {
+ 	struct list_head fde_list;
+ 	struct list_head cie_list;
+-#endif
+ };
+-
+-#ifdef CONFIG_64BIT
+-#define Elf_Shdr Elf64_Shdr
+-#define Elf_Sym Elf64_Sym
+-#define Elf_Ehdr Elf64_Ehdr
+-#else
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
+ #endif
+ 
+ #ifdef CONFIG_CPU_LITTLE_ENDIAN
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index e74ff13..acf5577 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -36,6 +36,7 @@ config SPARC
+ 	select GENERIC_CLOCKEVENTS
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
++	select MODULES_USE_ELF_RELA
+ 
+ config SPARC32
+ 	def_bool !64BIT
+diff --git a/arch/sparc/include/asm/Kbuild b/arch/sparc/include/asm/Kbuild
+index 67f83e0..fbe1cb5 100644
+--- a/arch/sparc/include/asm/Kbuild
++++ b/arch/sparc/include/asm/Kbuild
+@@ -21,4 +21,5 @@ generic-y += div64.h
+ generic-y += local64.h
+ generic-y += irq_regs.h
+ generic-y += local.h
++generic-y += module.h
+ generic-y += word-at-a-time.h
+diff --git a/arch/sparc/include/asm/module.h b/arch/sparc/include/asm/module.h
+deleted file mode 100644
+index ff8e02d..0000000
+--- a/arch/sparc/include/asm/module.h
++++ /dev/null
+@@ -1,24 +0,0 @@
+-#ifndef __SPARC_MODULE_H
+-#define __SPARC_MODULE_H
+-struct mod_arch_specific { };
+-
+-/*
+- * Use some preprocessor magic to define the correct symbol
+- * for sparc32 and sparc64.
+- * Elf_Addr becomes Elf32_Addr for sparc32 and Elf64_Addr for sparc64
+- */
+-#define ___ELF(a, b, c) a##b##c
+-#define __ELF(a, b, c)  ___ELF(a, b, c)
+-#define  _Elf(t)        __ELF(Elf, CONFIG_BITS, t)
+-#define  _ELF(t)        __ELF(ELF, CONFIG_BITS, t)
+-
+-#define Elf_Shdr     _Elf(_Shdr)
+-#define Elf_Sym      _Elf(_Sym)
+-#define Elf_Ehdr     _Elf(_Ehdr)
+-#define Elf_Rela     _Elf(_Rela)
+-#define Elf_Addr     _Elf(_Addr)
+-
+-#define ELF_R_SYM    _ELF(_R_SYM)
+-#define ELF_R_TYPE   _ELF(_R_TYPE)
+-
+-#endif /* __SPARC_MODULE_H */
+diff --git a/arch/tile/Kconfig b/arch/tile/Kconfig
+index fe12881..2d8bc27 100644
+--- a/arch/tile/Kconfig
++++ b/arch/tile/Kconfig
+@@ -15,6 +15,7 @@ config TILE
+ 	select SYS_HYPERVISOR
+ 	select ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	select GENERIC_CLOCKEVENTS
++	select MODULES_USE_ELF_RELA
+ 
+ # FIXME: investigate whether we need/want these options.
+ #	select HAVE_IOREMAP_PROT
+diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
+index 03c9ff8..942b553 100644
+--- a/arch/unicore32/Kconfig
++++ b/arch/unicore32/Kconfig
+@@ -14,6 +14,7 @@ config UNICORE32
+ 	select GENERIC_IRQ_SHOW
+ 	select ARCH_WANT_FRAME_POINTERS
+ 	select GENERIC_IOMAP
++	select MODULES_USE_ELF_REL
+ 	help
+ 	  UniCore-32 is 32-bit Instruction Set Architecture,
+ 	  including a series of low-power-consumption RISC chip
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index c70684f..c38a60e 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -95,6 +95,8 @@ config X86
+ 	select KTIME_SCALAR if X86_32
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
++	select MODULES_USE_ELF_REL if X86_32
++	select MODULES_USE_ELF_RELA if X86_64
+ 
+ config INSTRUCTION_DECODER
+ 	def_bool (KPROBES || PERF_EVENTS || UPROBES)
+diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
+index 8a3f835..516210a 100644
+--- a/arch/xtensa/Kconfig
++++ b/arch/xtensa/Kconfig
+@@ -10,6 +10,7 @@ config XTENSA
+ 	select HAVE_GENERIC_HARDIRQS
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_CPU_DEVICES
++	select MODULES_USE_ELF_RELA
+ 	help
+ 	  Xtensa processors are 32-bit RISC machines designed by Tensilica
+ 	  primarily for embedded systems.  These processors are both
+diff --git a/arch/xtensa/include/asm/module.h b/arch/xtensa/include/asm/module.h
+index d9b34be..488b40c 100644
+--- a/arch/xtensa/include/asm/module.h
++++ b/arch/xtensa/include/asm/module.h
+@@ -13,15 +13,8 @@
+ #ifndef _XTENSA_MODULE_H
+ #define _XTENSA_MODULE_H
+ 
+-struct mod_arch_specific
+-{
+-	/* No special elements, yet. */
+-};
+-
+ #define MODULE_ARCH_VERMAGIC "xtensa-" __stringify(XCHAL_CORE_ID) " "
+ 
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
++#include <asm-generic/module.h>
+ 
+ #endif	/* _XTENSA_MODULE_H */
+diff --git a/include/asm-generic/module.h b/include/asm-generic/module.h
+index ed5b44d..14dc41d 100644
+--- a/include/asm-generic/module.h
++++ b/include/asm-generic/module.h
+@@ -5,18 +5,44 @@
+  * Many architectures just need a simple module
+  * loader without arch specific data.
+  */
++#ifndef CONFIG_HAVE_MOD_ARCH_SPECIFIC
+ struct mod_arch_specific
+ {
+ };
++#endif
+ 
+ #ifdef CONFIG_64BIT
+-#define Elf_Shdr Elf64_Shdr
+-#define Elf_Sym Elf64_Sym
+-#define Elf_Ehdr Elf64_Ehdr
+-#else
+-#define Elf_Shdr Elf32_Shdr
+-#define Elf_Sym Elf32_Sym
+-#define Elf_Ehdr Elf32_Ehdr
++#define Elf_Shdr	Elf64_Shdr
++#define Elf_Phdr	Elf64_Phdr
++#define Elf_Sym		Elf64_Sym
++#define Elf_Dyn		Elf64_Dyn
++#define Elf_Ehdr	Elf64_Ehdr
++#define Elf_Addr	Elf64_Addr
++#ifdef CONFIG_MODULES_USE_ELF_REL
++#define Elf_Rel		Elf64_Rel
++#endif
++#ifdef CONFIG_MODULES_USE_ELF_RELA
++#define Elf_Rela	Elf64_Rela
++#endif
++#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
++#define ELF_R_SYM(X)	ELF64_R_SYM(X)
++
++#else /* CONFIG_64BIT */
++
++#define Elf_Shdr	Elf32_Shdr
++#define Elf_Phdr	Elf32_Phdr
++#define Elf_Sym		Elf32_Sym
++#define Elf_Dyn		Elf32_Dyn
++#define Elf_Ehdr	Elf32_Ehdr
++#define Elf_Addr	Elf32_Addr
++#ifdef CONFIG_MODULES_USE_ELF_REL
++#define Elf_Rel		Elf32_Rel
++#endif
++#ifdef CONFIG_MODULES_USE_ELF_RELA
++#define Elf_Rela	Elf32_Rela
++#endif
++#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
++#define ELF_R_SYM(X)	ELF32_R_SYM(X)
+ #endif
+ 
+ #endif /* __ASM_GENERIC_MODULE_H */
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index b2be02e..b85dda8 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -28,21 +28,49 @@ void *module_alloc(unsigned long size);
+ /* Free memory returned from module_alloc. */
+ void module_free(struct module *mod, void *module_region);
+ 
+-/* Apply the given relocation to the (simplified) ELF.  Return -error
+-   or 0. */
++/*
++ * Apply the given relocation to the (simplified) ELF.  Return -error
++ * or 0.
++ */
++#ifdef CONFIG_MODULES_USE_ELF_REL
+ int apply_relocate(Elf_Shdr *sechdrs,
+ 		   const char *strtab,
+ 		   unsigned int symindex,
+ 		   unsigned int relsec,
+ 		   struct module *mod);
++#else
++static inline int apply_relocate(Elf_Shdr *sechdrs,
++				 const char *strtab,
++				 unsigned int symindex,
++				 unsigned int relsec,
++				 struct module *me)
++{
++	pr_err("module %s: REL relocation unsupported\n", me->name);
++	return -ENOEXEC;
++}
++#endif
+ 
+-/* Apply the given add relocation to the (simplified) ELF.  Return
+-   -error or 0 */
++/*
++ * Apply the given add relocation to the (simplified) ELF.  Return
++ * -error or 0
++ */
++#ifdef CONFIG_MODULES_USE_ELF_RELA
+ int apply_relocate_add(Elf_Shdr *sechdrs,
+ 		       const char *strtab,
+ 		       unsigned int symindex,
+ 		       unsigned int relsec,
+ 		       struct module *mod);
++#else
++static inline int apply_relocate_add(Elf_Shdr *sechdrs,
++				     const char *strtab,
++				     unsigned int symindex,
++				     unsigned int relsec,
++				     struct module *me)
++{
++	pr_err("module %s: RELA relocation unsupported\n", me->name);
++	return -ENOEXEC;
++}
++#endif
+ 
+ /* Any final processing of module before access.  Return -error or 0. */
+ int module_finalize(const Elf_Ehdr *hdr,
+diff --git a/kernel/module.c b/kernel/module.c
+index 4edbd9c..087aeed 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -1949,26 +1949,6 @@ static int simplify_symbols(struct module *mod, const struct load_info *info)
+ 	return ret;
+ }
+ 
+-int __weak apply_relocate(Elf_Shdr *sechdrs,
+-			  const char *strtab,
+-			  unsigned int symindex,
+-			  unsigned int relsec,
+-			  struct module *me)
+-{
+-	pr_err("module %s: REL relocation unsupported\n", me->name);
+-	return -ENOEXEC;
+-}
+-
+-int __weak apply_relocate_add(Elf_Shdr *sechdrs,
+-			      const char *strtab,
+-			      unsigned int symindex,
+-			      unsigned int relsec,
+-			      struct module *me)
+-{
+-	pr_err("module %s: RELA relocation unsupported\n", me->name);
+-	return -ENOEXEC;
+-}
+-
+ static int apply_relocations(struct module *mod, const struct load_info *info)
+ {
+ 	unsigned int i;
+-- 
+1.7.10.4
+
+
+From 69bdeeb86f28489efa7d5f414867bd07b9516c10 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 18 Jul 2012 16:26:33 +0100
+Subject: [PATCH 16/27] Provide macros for forming the name of an ELF note and
  its section
 
 Provide macros for stringifying the name of an ELF note and its section
@@ -3869,336 +5486,13 @@ index 278e3ef..949d494 100644
  
  #endif /* _LINUX_ELFNOTE_H */
 -- 
-1.7.10.2
+1.7.10.4
 
 
-
-From a7f2ec2a77490ed84bf8020cd5b41d7c7ea3f3cb Mon Sep 17 00:00:00 2001
+From 5191f0bcbe03426b90b0a53c9ea960fafba7c269 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:52 +0100
-Subject: [PATCH 19/36] MODSIGN: Add indications of module ELF types
-
-Add per-arch indications of module ELF types and relocation table entry types.
-
-Signed-Off-By: David Howells <dhowells@redhat.com>
----
- arch/alpha/include/asm/module.h   |    3 +++
- arch/arm/include/asm/module.h     |    5 +++++
- arch/cris/include/asm/module.h    |    5 +++++
- arch/h8300/include/asm/module.h   |    5 +++++
- arch/ia64/include/asm/module.h    |    5 +++++
- arch/m32r/include/asm/module.h    |    5 +++++
- arch/m68k/include/asm/module.h    |    5 +++++
- arch/mips/include/asm/module.h    |   12 ++++++++++--
- arch/parisc/include/asm/module.h  |    8 ++++++++
- arch/powerpc/include/asm/module.h |   10 ++++++++++
- arch/s390/include/asm/module.h    |    3 +++
- arch/x86/include/asm/module.h     |    6 ++++++
- include/asm-generic/module.h      |   10 ++++++++++
- 13 files changed, 80 insertions(+), 2 deletions(-)
-
-diff --git a/arch/alpha/include/asm/module.h b/arch/alpha/include/asm/module.h
-index 7b63743..3d5a3ea 100644
---- a/arch/alpha/include/asm/module.h
-+++ b/arch/alpha/include/asm/module.h
-@@ -6,6 +6,7 @@ struct mod_arch_specific
- 	unsigned int gotsecindex;
- };
- 
-+#define MODULES_ARE_ELF64
- #define Elf_Sym Elf64_Sym
- #define Elf_Shdr Elf64_Shdr
- #define Elf_Ehdr Elf64_Ehdr
-@@ -13,6 +14,8 @@ struct mod_arch_specific
- #define Elf_Dyn Elf64_Dyn
- #define Elf_Rel Elf64_Rel
- #define Elf_Rela Elf64_Rela
-+#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF64_R_SYM(X)
- 
- #define ARCH_SHF_SMALL SHF_ALPHA_GPREL
- 
-diff --git a/arch/arm/include/asm/module.h b/arch/arm/include/asm/module.h
-index 6c6809f..f47d9cd 100644
---- a/arch/arm/include/asm/module.h
-+++ b/arch/arm/include/asm/module.h
-@@ -1,9 +1,14 @@
- #ifndef _ASM_ARM_MODULE_H
- #define _ASM_ARM_MODULE_H
- 
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr	Elf32_Shdr
- #define Elf_Sym		Elf32_Sym
- #define Elf_Ehdr	Elf32_Ehdr
-+#define Elf_Rel		Elf32_Rel
-+#define Elf_Rela	Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- 
- struct unwind_table;
- 
-diff --git a/arch/cris/include/asm/module.h b/arch/cris/include/asm/module.h
-index 7ee7231..03f7b2e 100644
---- a/arch/cris/include/asm/module.h
-+++ b/arch/cris/include/asm/module.h
-@@ -3,7 +3,12 @@
- /* cris is simple */
- struct mod_arch_specific { };
- 
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
-+#define Elf_Rel Elf32_Rel
-+#define Elf_Rela Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- #endif /* _ASM_CRIS_MODULE_H */
-diff --git a/arch/h8300/include/asm/module.h b/arch/h8300/include/asm/module.h
-index 8e46724..5140128 100644
---- a/arch/h8300/include/asm/module.h
-+++ b/arch/h8300/include/asm/module.h
-@@ -4,8 +4,13 @@
-  * This file contains the H8/300 architecture specific module code.
-  */
- struct mod_arch_specific { };
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
-+#define Elf_Rel Elf32_Rel
-+#define Elf_Rela Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- 
- #endif /* _ASM_H8/300_MODULE_H */
-diff --git a/arch/ia64/include/asm/module.h b/arch/ia64/include/asm/module.h
-index 908eaef..3c4cd94 100644
---- a/arch/ia64/include/asm/module.h
-+++ b/arch/ia64/include/asm/module.h
-@@ -29,9 +29,14 @@ struct mod_arch_specific {
- 	unsigned int next_got_entry;	/* index of next available got entry */
- };
- 
-+#define MODULES_ARE_ELF64
- #define Elf_Shdr	Elf64_Shdr
- #define Elf_Sym		Elf64_Sym
- #define Elf_Ehdr	Elf64_Ehdr
-+#define Elf_Rel		Elf64_Rel
-+#define Elf_Rela	Elf64_Rela
-+#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF64_R_SYM(X)
- 
- #define MODULE_PROC_FAMILY	"ia64"
- #define MODULE_ARCH_VERMAGIC	MODULE_PROC_FAMILY \
-diff --git a/arch/m32r/include/asm/module.h b/arch/m32r/include/asm/module.h
-index eb73ee0..7146455 100644
---- a/arch/m32r/include/asm/module.h
-+++ b/arch/m32r/include/asm/module.h
-@@ -3,8 +3,13 @@
- 
- struct mod_arch_specific { };
- 
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr	Elf32_Shdr
- #define Elf_Sym		Elf32_Sym
- #define Elf_Ehdr	Elf32_Ehdr
-+#define Elf_Rel		Elf32_Rel
-+#define Elf_Rela	Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- 
- #endif /* _ASM_M32R_MODULE_H */
-diff --git a/arch/m68k/include/asm/module.h b/arch/m68k/include/asm/module.h
-index edffe66..9e2cd74 100644
---- a/arch/m68k/include/asm/module.h
-+++ b/arch/m68k/include/asm/module.h
-@@ -36,8 +36,13 @@ struct module;
- extern void module_fixup(struct module *mod, struct m68k_fixup_info *start,
- 			 struct m68k_fixup_info *end);
- 
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
-+#define Elf_Rel		Elf32_Rel
-+#define Elf_Rela	Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- 
- #endif /* _ASM_M68K_MODULE_H */
-diff --git a/arch/mips/include/asm/module.h b/arch/mips/include/asm/module.h
-index 7467d1d..4404cca 100644
---- a/arch/mips/include/asm/module.h
-+++ b/arch/mips/include/asm/module.h
-@@ -33,11 +33,15 @@ typedef struct {
- } Elf64_Mips_Rela;
- 
- #ifdef CONFIG_32BIT
--
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr	Elf32_Shdr
- #define Elf_Sym		Elf32_Sym
- #define Elf_Ehdr	Elf32_Ehdr
- #define Elf_Addr	Elf32_Addr
-+#define Elf_Rel		Elf32_Rel
-+#define Elf_Rela	Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- 
- #define Elf_Mips_Rel	Elf32_Rel
- #define Elf_Mips_Rela	Elf32_Rela
-@@ -48,11 +52,15 @@ typedef struct {
- #endif
- 
- #ifdef CONFIG_64BIT
--
-+#define MODULES_ARE_ELF64
- #define Elf_Shdr	Elf64_Shdr
- #define Elf_Sym		Elf64_Sym
- #define Elf_Ehdr	Elf64_Ehdr
- #define Elf_Addr	Elf64_Addr
-+#define Elf_Rel		Elf64_Rel
-+#define Elf_Rela	Elf64_Rela
-+#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF64_R_SYM(X)
- 
- #define Elf_Mips_Rel	Elf64_Mips_Rel
- #define Elf_Mips_Rela	Elf64_Mips_Rela
-diff --git a/arch/parisc/include/asm/module.h b/arch/parisc/include/asm/module.h
-index 1f41234..3e13f69 100644
---- a/arch/parisc/include/asm/module.h
-+++ b/arch/parisc/include/asm/module.h
-@@ -4,17 +4,25 @@
-  * This file contains the parisc architecture specific module code.
-  */
- #ifdef CONFIG_64BIT
-+#define MODULES_ARE_ELF64
- #define Elf_Shdr Elf64_Shdr
- #define Elf_Sym Elf64_Sym
- #define Elf_Ehdr Elf64_Ehdr
- #define Elf_Addr Elf64_Addr
-+#define Elf_Rel	 Elf64_Rel
- #define Elf_Rela Elf64_Rela
-+#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF64_R_SYM(X)
- #else
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
- #define Elf_Addr Elf32_Addr
-+#define Elf_Rel  Elf32_Rel
- #define Elf_Rela Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- #endif
- 
- struct unwind_table;
-diff --git a/arch/powerpc/include/asm/module.h b/arch/powerpc/include/asm/module.h
-index 0192a4e..e949704 100644
---- a/arch/powerpc/include/asm/module.h
-+++ b/arch/powerpc/include/asm/module.h
-@@ -60,16 +60,26 @@ struct mod_arch_specific {
-  */
- 
- #ifdef __powerpc64__
-+#    define MODULES_ARE_ELF64
- #    define Elf_Shdr	Elf64_Shdr
- #    define Elf_Sym	Elf64_Sym
- #    define Elf_Ehdr	Elf64_Ehdr
-+#    define Elf_Rel Elf64_Rel
-+#    define Elf_Rela Elf64_Rela
-+#    define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#    define ELF_R_SYM(X)	ELF64_R_SYM(X)
- #    ifdef MODULE
- 	asm(".section .stubs,\"ax\",@nobits; .align 3; .previous");
- #    endif
- #else
-+#    define MODULES_ARE_ELF32
- #    define Elf_Shdr	Elf32_Shdr
- #    define Elf_Sym	Elf32_Sym
- #    define Elf_Ehdr	Elf32_Ehdr
-+#    define Elf_Rel Elf32_Rel
-+#    define Elf_Rela Elf32_Rela
-+#    define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#    define ELF_R_SYM(X)	ELF32_R_SYM(X)
- #    ifdef MODULE
- 	asm(".section .plt,\"ax\",@nobits; .align 3; .previous");
- 	asm(".section .init.plt,\"ax\",@nobits; .align 3; .previous");
-diff --git a/arch/s390/include/asm/module.h b/arch/s390/include/asm/module.h
-index 1cc1c5a..b64dab0 100644
---- a/arch/s390/include/asm/module.h
-+++ b/arch/s390/include/asm/module.h
-@@ -29,14 +29,17 @@ struct mod_arch_specific
- };
- 
- #ifdef CONFIG_64BIT
-+#define MODULES_ARE_ELF64
- #define ElfW(x) Elf64_ ## x
- #define ELFW(x) ELF64_ ## x
- #else
-+#define MODULES_ARE_ELF32
- #define ElfW(x) Elf32_ ## x
- #define ELFW(x) ELF32_ ## x
- #endif
- 
- #define Elf_Addr ElfW(Addr)
-+#define Elf_Rel ElfW(Rel)
- #define Elf_Rela ElfW(Rela)
- #define Elf_Shdr ElfW(Shdr)
- #define Elf_Sym ElfW(Sym)
-diff --git a/arch/x86/include/asm/module.h b/arch/x86/include/asm/module.h
-index 9eae775..724f173 100644
---- a/arch/x86/include/asm/module.h
-+++ b/arch/x86/include/asm/module.h
-@@ -63,4 +63,10 @@
- # define MODULE_ARCH_VERMAGIC MODULE_PROC_FAMILY
- #endif
- 
-+#ifdef CONFIG_X86_32
-+#define MODULE_HAS_ELF_REL_ONLY
-+#else
-+#define MODULE_HAS_ELF_RELA_ONLY
-+#endif
-+
- #endif /* _ASM_X86_MODULE_H */
-diff --git a/include/asm-generic/module.h b/include/asm-generic/module.h
-index ed5b44d..e053617b 100644
---- a/include/asm-generic/module.h
-+++ b/include/asm-generic/module.h
-@@ -10,13 +10,23 @@ struct mod_arch_specific
- };
- 
- #ifdef CONFIG_64BIT
-+#define MODULES_ARE_ELF64
- #define Elf_Shdr Elf64_Shdr
- #define Elf_Sym Elf64_Sym
- #define Elf_Ehdr Elf64_Ehdr
-+#define Elf_Rel		Elf64_Rel
-+#define Elf_Rela	Elf64_Rela
-+#define ELF_R_TYPE(X)	ELF64_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF64_R_SYM(X)
- #else
-+#define MODULES_ARE_ELF32
- #define Elf_Shdr Elf32_Shdr
- #define Elf_Sym Elf32_Sym
- #define Elf_Ehdr Elf32_Ehdr
-+#define Elf_Rel		Elf32_Rel
-+#define Elf_Rela	Elf32_Rela
-+#define ELF_R_TYPE(X)	ELF32_R_TYPE(X)
-+#define ELF_R_SYM(X)	ELF32_R_SYM(X)
- #endif
- 
- #endif /* __ASM_GENERIC_MODULE_H */
--- 
-1.7.10.2
-
-
-From b31d1ea8afb0b63e872a1bed3a3c88d7696bf2e7 Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:53 +0100
-Subject: [PATCH 20/36] MODSIGN: Provide gitignore and make clean rules for
+Date: Wed, 18 Jul 2012 16:27:05 +0100
+Subject: [PATCH 17/27] MODSIGN: Provide gitignore and make clean rules for
  extra files
 
 Provide gitignore and make clean rules for extra files to hide and clean up the
@@ -4241,10 +5535,10 @@ index 57af07c..7948eeb 100644
 +random_seed
 +trustdb.gpg
 diff --git a/Makefile b/Makefile
-index a06ee9f..1df8b14 100644
+index aa8e315..4a4a11f 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1407,6 +1407,7 @@ clean: $(clean-dirs)
+@@ -1239,6 +1239,7 @@ clean: $(clean-dirs)
  	$(call cmd,rmfiles)
  	@find $(if $(KBUILD_EXTMOD), $(KBUILD_EXTMOD), .) $(RCS_FIND_IGNORE) \
  		\( -name '*.[oas]' -o -name '*.ko' -o -name '.*.cmd' \
@@ -4263,13 +5557,13 @@ index e9b7abe..223dfd6 100644
 +mod-extract
  
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From dce3a6eca8dda09a28cb2f45b87e70e1c2d52139 Mon Sep 17 00:00:00 2001
+From bf067003ae6304d90c278118b5d65d905be16e53 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:53 +0100
-Subject: [PATCH 21/36] MODSIGN: Provide Documentation and Kconfig options
+Date: Wed, 18 Jul 2012 16:27:16 +0100
+Subject: [PATCH 18/27] MODSIGN: Provide Documentation and Kconfig options
 
 Provide documentation and kernel configuration options for module signing.
 
@@ -4304,8 +5598,8 @@ Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  Documentation/module-signing.txt |  194 ++++++++++++++++++++++++++++++++++++++
  include/linux/modsign.h          |   27 ++++++
- init/Kconfig                     |   53 +++++++++++
- 3 files changed, 274 insertions(+)
+ init/Kconfig                     |   54 +++++++++++
+ 3 files changed, 275 insertions(+)
  create mode 100644 Documentation/module-signing.txt
  create mode 100644 include/linux/modsign.h
 
@@ -4543,16 +5837,17 @@ index 0000000..c5ac87a
 +
 +#endif /* _LINUX_MODSIGN_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 6cfd71d..7cda3e6 100644
+index d07dcf9..1d1a056 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1409,6 +1409,59 @@ config MODULE_SRCVERSION_ALL
+@@ -1570,6 +1570,60 @@ config MODULE_SRCVERSION_ALL
  	  the version).  With this option, such a "srcversion" field
  	  will be created for all modules.  If unsure, say N.
  
 +config MODULE_SIG
 +	bool "Module signature verification"
 +	depends on MODULES
++	select KEYS
 +	select CRYPTO_KEY_TYPE
 +	select CRYPTO_KEY_PKEY_ALGO_DSA
 +	select CRYPTO_KEY_PKEY_ALGO_RSA
@@ -4607,13 +5902,13 @@ index 6cfd71d..7cda3e6 100644
  
  config INIT_ALL_POSSIBLE
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From f9980a27c5d2d02af2feb578957145a206088fff Mon Sep 17 00:00:00 2001
+From 19c2fd74747b84e445b0a4eb7f7308a238267aec Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:54 +0100
-Subject: [PATCH 22/36] MODSIGN: Sign modules during the build process
+Date: Wed, 18 Jul 2012 16:27:38 +0100
+Subject: [PATCH 19/27] MODSIGN: Sign modules during the build process
 
 If CONFIG_MODULE_SIG is set, then this patch will cause the module to get a
 signature installed.  The following steps will occur:
@@ -5732,13 +7027,13 @@ index 0000000..bca67c0
 +
 +exit 0
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 38ddca03060502e8134320b732758fd6b6a98247 Mon Sep 17 00:00:00 2001
+From 05f68f1852611dd7f2f7d28c677b1205b66d4337 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:55 +0100
-Subject: [PATCH 23/36] MODSIGN: Module signature verification stub
+Date: Wed, 18 Jul 2012 16:27:49 +0100
+Subject: [PATCH 20/27] MODSIGN: Module signature verification stub
 
 Create a stub for the module signature verifier and link it into module.c so
 that it gets called.  A field is added to struct module to record whether or
@@ -5771,10 +7066,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  include/linux/module.h      |    3 ++
  kernel/Makefile             |    1 +
  kernel/module-verify-defs.h |   77 ++++++++++++++++++++++++++++++
- kernel/module-verify.c      |  109 +++++++++++++++++++++++++++++++++++++++++++
- kernel/module-verify.h      |   19 ++++++++
- kernel/module.c             |   26 +++++++++--
- 6 files changed, 230 insertions(+), 5 deletions(-)
+ kernel/module-verify.c      |  110 +++++++++++++++++++++++++++++++++++++++++++
+ kernel/module-verify.h      |   20 ++++++++
+ kernel/module.c             |   26 ++++++++--
+ 6 files changed, 232 insertions(+), 5 deletions(-)
  create mode 100644 kernel/module-verify-defs.h
  create mode 100644 kernel/module-verify.c
  create mode 100644 kernel/module-verify.h
@@ -5794,10 +7089,10 @@ index fbcafe2..7391833 100644
  	struct module_kobject mkobj;
  	struct module_attribute *modinfo_attrs;
 diff --git a/kernel/Makefile b/kernel/Makefile
-index cb41b95..7608053 100644
+index c0cc67a..cec222a 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -51,6 +51,7 @@ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+@@ -55,6 +55,7 @@ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
  obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
  obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
@@ -5807,7 +7102,7 @@ index cb41b95..7608053 100644
  obj-$(CONFIG_KEXEC) += kexec.o
 diff --git a/kernel/module-verify-defs.h b/kernel/module-verify-defs.h
 new file mode 100644
-index 0000000..292d2ba
+index 0000000..141ddab
 --- /dev/null
 +++ b/kernel/module-verify-defs.h
 @@ -0,0 +1,77 @@
@@ -5869,31 +7164,31 @@ index 0000000..292d2ba
 +	do {					      \
 +		if (unlikely(modsign_debug))	      \
 +			pr_debug(FMT, ##__VA_ARGS__); \
-+	} while(0)
++	} while (0)
 +
 +#ifdef DEBUG
-+#define count_and_csum(C, __p, __n)			\
-+do {							\
-+	int __loop;					\
-+	for (__loop = 0; __loop < __n; __loop++) {	\
-+		(C)->csum += __p[__loop];		\
-+		(C)->xcsum += __p[__loop];		\
-+	}						\
-+	(C)->signed_size += __n;			\
-+} while (0)
++#define count_and_csum(C, __p, __n)				\
++	do {							\
++		int __loop;					\
++		for (__loop = 0; __loop < __n; __loop++) {	\
++			(C)->csum += __p[__loop];		\
++			(C)->xcsum += __p[__loop];		\
++		}						\
++		(C)->signed_size += __n;			\
++	} while (0)
 +#else
 +#define count_and_csum(C, __p, __n)		\
-+do {						\
-+} while (0)
++	do {					\
++	} while (0)
 +#endif
 +
 +#endif /* CONFIG_MODULE_SIG */
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
 new file mode 100644
-index 0000000..0a3eb4b
+index 0000000..4bf857e
 --- /dev/null
 +++ b/kernel/module-verify.c
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,110 @@
 +/* Module signature verification
 + *
 + * The code in this file examines a signed kernel module and attempts to
@@ -5921,6 +7216,7 @@ index 0000000..0a3eb4b
 +#include <linux/kernel.h>
 +#include <linux/module.h>
 +#include <linux/slab.h>
++#include <linux/err.h>
 +#include <linux/elf.h>
 +#include <linux/elfnote.h>
 +#include <linux/sched.h>
@@ -6005,10 +7301,10 @@ index 0000000..0a3eb4b
 +__setup("enforcemodulesig", sign_setup);
 diff --git a/kernel/module-verify.h b/kernel/module-verify.h
 new file mode 100644
-index 0000000..6bb6b56
+index 0000000..c640634
 --- /dev/null
 +++ b/kernel/module-verify.h
-@@ -0,0 +1,19 @@
+@@ -0,0 +1,20 @@
 +/* Module verification definitions
 + *
 + * Copyright (C) 2004, 2012 Red Hat, Inc. All Rights Reserved.
@@ -6023,13 +7319,14 @@ index 0000000..6bb6b56
 +#ifdef CONFIG_MODULE_SIG
 +extern int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok);
 +#else
-+static inline int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
++static inline int module_verify(const Elf_Ehdr *hdr, size_t size,
++				bool *_gpgsig_ok)
 +{
 +	return 0;
 +}
 +#endif
 diff --git a/kernel/module.c b/kernel/module.c
-index 377cb06..c3797f7 100644
+index 087aeed..a59a9da 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -58,6 +58,7 @@
@@ -6040,7 +7337,7 @@ index 377cb06..c3797f7 100644
  
  #define CREATE_TRACE_POINTS
  #include <trace/events/module.h>
-@@ -2402,7 +2403,8 @@ static inline void kmemleak_load_module(const struct module *mod,
+@@ -2382,7 +2383,8 @@ static inline void kmemleak_load_module(const struct module *mod,
  /* Sets info->hdr and info->len. */
  static int copy_and_check(struct load_info *info,
  			  const void __user *umod, unsigned long len,
@@ -6050,7 +7347,7 @@ index 377cb06..c3797f7 100644
  {
  	int err;
  	Elf_Ehdr *hdr;
-@@ -2435,6 +2437,12 @@ static int copy_and_check(struct load_info *info,
+@@ -2415,6 +2417,12 @@ static int copy_and_check(struct load_info *info,
  		goto free_hdr;
  	}
  
@@ -6063,7 +7360,7 @@ index 377cb06..c3797f7 100644
  	info->hdr = hdr;
  	info->len = len;
  	return 0;
-@@ -2777,7 +2785,8 @@ int __weak module_frob_arch_sections(Elf_Ehdr *hdr,
+@@ -2757,7 +2765,8 @@ int __weak module_frob_arch_sections(Elf_Ehdr *hdr,
  	return 0;
  }
  
@@ -6073,7 +7370,7 @@ index 377cb06..c3797f7 100644
  {
  	/* Module within temporary copy. */
  	struct module *mod;
-@@ -2787,6 +2796,7 @@ static struct module *layout_and_allocate(struct load_info *info)
+@@ -2767,6 +2776,7 @@ static struct module *layout_and_allocate(struct load_info *info)
  	mod = setup_load_info(info);
  	if (IS_ERR(mod))
  		return mod;
@@ -6081,7 +7378,7 @@ index 377cb06..c3797f7 100644
  
  	err = check_modinfo(mod, info);
  	if (err)
-@@ -2870,17 +2880,18 @@ static struct module *load_module(void __user *umod,
+@@ -2850,17 +2860,18 @@ static struct module *load_module(void __user *umod,
  	struct load_info info = { NULL, };
  	struct module *mod;
  	long err;
@@ -6102,7 +7399,7 @@ index 377cb06..c3797f7 100644
  	if (IS_ERR(mod)) {
  		err = PTR_ERR(mod);
  		goto free_copy;
-@@ -3517,8 +3528,13 @@ void print_modules(void)
+@@ -3497,8 +3508,13 @@ void print_modules(void)
  	printk(KERN_DEFAULT "Modules linked in:");
  	/* Most callers should already have preempt disabled, but make sure */
  	preempt_disable();
@@ -6118,13 +7415,95 @@ index 377cb06..c3797f7 100644
  	if (last_unloaded_module[0])
  		printk(" [last unloaded: %s]", last_unloaded_module);
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 6f5323e52cdc37969939ef82036783da67afe69f Mon Sep 17 00:00:00 2001
+From a8622506bccd42aecd271d2735f6734e539125ac Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:55 +0100
-Subject: [PATCH 24/36] MODSIGN: Provide module signing public keys to the
+Date: Wed, 18 Jul 2012 16:28:33 +0100
+Subject: [PATCH 21/27] MODSIGN: Automatically generate module signing keys if
+ missing
+
+Automatically generate keys for module signing if they're absent so that
+allyesconfig doesn't break.  The builder should consider generating their own
+keyrings, however, so that the keys are appropriately named and any extra keys
+required get imported.
+
+Also change the names of the keyring files to modsign.pub and modsign.sec so
+that they are then a more obvious what they're about and add a dependency for
+the signing rules on the keyring files so that the signatures get regenerated
+if the keyrings change.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/Makefile |   49 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/kernel/Makefile b/kernel/Makefile
+index cec222a..28cd248 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -132,3 +132,52 @@ quiet_cmd_timeconst  = TIMEC   $@
+ targets += timeconst.h
+ $(obj)/timeconst.h: $(src)/timeconst.pl FORCE
+ 	$(call if_changed,timeconst)
++
++###############################################################################
++#
++# If module signing is requested, say by allyesconfig, but a key has not been
++# supplied, then one will need to be generated to make sure the build does not
++# fail and that the kernel may be used afterwards.
++#
++###############################################################################
++ifeq ($(CONFIG_MODULE_SIG),y)
++modsign.pub modsign.sec: genkey
++	@echo "###"
++	@echo "### Now generating a PGP key pair to be used for signing modules."
++	@echo "###"
++	@echo "### If this takes a long time, you might wish to run rngd in the"
++	@echo "### background to keep the supply of entropy topped up.  It"
++	@echo "### needs to be run as root and should use a hardware random"
++	@echo "### number generator if one is available, eg:"
++	@echo "###"
++	@echo "###     rngd -r /dev/hwrandom"
++	@echo "###"
++	gpg --homedir . --batch --gen-key genkey
++	@echo "###"
++	@echo "### Key pair generated."
++	@echo "###"
++	rm -f pubring.gpg secring.gpg trustdb.gpg
++
++genkey:
++	@echo "###" >&2
++	@echo "### Now generating a sample key generation script." >&2
++	@echo "###" >&2
++	@echo "### IT IS STRONGLY RECOMMENDED THAT YOU SUPPLY YOUR OWN" >&2
++	@echo "### SCRIPT WITH APPROPRIATE NAME FIELDS FILLED IN." >&2
++	@echo "###" >&2
++	@echo "### If you have a hardware random number generator feeding" >&2
++	@echo "### into /dev/random, you should drop the %no-protection" >&2
++	@echo "### and %transient-key lines from the script." >&2
++	@echo "###" >&2
++	echo "%pubring modsign.pub" >genkey
++	echo "%secring modsign.sec" >>genkey
++	echo "%no-protection: yes" >> genkey
++	echo "%transient-key: yes" >>genkey
++	echo "Key-Type: RSA" >>genkey
++	echo "Key-Length: 4096" >>genkey
++	echo "Name-Real: Sample kernel key" >>genkey
++	echo "Name-Comment: Sample kernel module signing key" >>genkey
++	echo "%commit" >>genkey
++
++endif
++CLEAN_FILES += modsign.pub modsign.sec genkey random_seed
+-- 
+1.7.10.4
+
+
+From 2bde4c453e0b5ec52fe95c3fb800af86fdc38546 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 18 Jul 2012 16:28:41 +0100
+Subject: [PATCH 22/27] MODSIGN: Provide module signing public keys to the
  kernel
 
 Include a PGP keyring containing the public keys required to perform module
@@ -6144,18 +7523,18 @@ their removal and preventing further modules from being loaded with that key.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- kernel/Makefile             |    3 +-
- kernel/modsign-pubkey.c     |   74 +++++++++++++++++++++++++++++++++++++++++++
+ kernel/Makefile             |   25 ++++++++-------
+ kernel/modsign-pubkey.c     |   75 +++++++++++++++++++++++++++++++++++++++++++
  kernel/module-verify-defs.h |    4 +++
  kernel/module-verify.c      |    2 --
- 4 files changed, 80 insertions(+), 3 deletions(-)
+ 4 files changed, 93 insertions(+), 13 deletions(-)
  create mode 100644 kernel/modsign-pubkey.c
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 7608053..986ed7f 100644
+index 28cd248..1d20704 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -51,7 +51,8 @@ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+@@ -55,7 +55,8 @@ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
  obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
  obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
@@ -6165,12 +7544,41 @@ index 7608053..986ed7f 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
+@@ -159,16 +160,18 @@ modsign.pub modsign.sec: genkey
+ 	rm -f pubring.gpg secring.gpg trustdb.gpg
+ 
+ genkey:
+-	@echo "###" >&2
+-	@echo "### Now generating a sample key generation script." >&2
+-	@echo "###" >&2
+-	@echo "### IT IS STRONGLY RECOMMENDED THAT YOU SUPPLY YOUR OWN" >&2
+-	@echo "### SCRIPT WITH APPROPRIATE NAME FIELDS FILLED IN." >&2
+-	@echo "###" >&2
+-	@echo "### If you have a hardware random number generator feeding" >&2
+-	@echo "### into /dev/random, you should drop the %no-protection" >&2
+-	@echo "### and %transient-key lines from the script." >&2
+-	@echo "###" >&2
++	@echo "kernel/Makefile:163: ###" >&2
++	@echo "kernel/Makefile:163: ### CONFIG_MODULE_SIG is enabled so a public key is needed." >&2
++	@echo "kernel/Makefile:163: ###" >&2
++	@echo "kernel/Makefile:163: ### Now generating a sample key generation script." >&2
++	@echo "kernel/Makefile:163: ###" >&2
++	@echo "kernel/Makefile:163: ### IT IS STRONGLY RECOMMENDED THAT YOU SUPPLY YOUR OWN" >&2
++	@echo "kernel/Makefile:163: ### SCRIPT WITH APPROPRIATE NAME FIELDS FILLED IN." >&2
++	@echo "kernel/Makefile:163: ###" >&2
++	@echo "kernel/Makefile:163: ### If you have a hardware random number generator feeding" >&2
++	@echo "kernel/Makefile:163: ### into /dev/random, you should drop the %no-protection" >&2
++	@echo "kernel/Makefile:163: ### and %transient-key lines from the script." >&2
++	@echo "kernel/Makefile:163: ###" >&2
+ 	echo "%pubring modsign.pub" >genkey
+ 	echo "%secring modsign.sec" >>genkey
+ 	echo "%no-protection: yes" >> genkey
 diff --git a/kernel/modsign-pubkey.c b/kernel/modsign-pubkey.c
 new file mode 100644
-index 0000000..2ada460
+index 0000000..17e02f5
 --- /dev/null
 +++ b/kernel/modsign-pubkey.c
-@@ -0,0 +1,74 @@
+@@ -0,0 +1,75 @@
 +/* Public keys for module signature verification
 + *
 + * Copyright (C) 2011 Red Hat, Inc. All Rights Reserved.
@@ -6185,6 +7593,7 @@ index 0000000..2ada460
 +#include <linux/kernel.h>
 +#include <linux/sched.h>
 +#include <linux/cred.h>
++#include <linux/err.h>
 +#include <keys/crypto-type.h>
 +#include "module-verify-defs.h"
 +
@@ -6246,7 +7655,7 @@ index 0000000..2ada460
 +}
 +late_initcall(modsign_pubkey_init);
 diff --git a/kernel/module-verify-defs.h b/kernel/module-verify-defs.h
-index 292d2ba..45bea45 100644
+index 141ddab..2fe31e1 100644
 --- a/kernel/module-verify-defs.h
 +++ b/kernel/module-verify-defs.h
 @@ -11,6 +11,10 @@
@@ -6261,11 +7670,11 @@ index 292d2ba..45bea45 100644
   * Internal state
   */
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index 0a3eb4b..b1c1d4c 100644
+index 4bf857e..05473e6 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
-@@ -27,8 +27,6 @@
- #include <linux/slab.h>
+@@ -28,8 +28,6 @@
+ #include <linux/err.h>
  #include <linux/elf.h>
  #include <linux/elfnote.h>
 -#include <linux/sched.h>
@@ -6274,13 +7683,13 @@ index 0a3eb4b..b1c1d4c 100644
  #include <linux/moduleparam.h>
  #include <keys/crypto-type.h>
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 5727333d123ef9d7fa2666069306bf3ec2d7f110 Mon Sep 17 00:00:00 2001
+From 689ea2a8739a5d61b7c55cd9084dd3096585c6de Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:56 +0100
-Subject: [PATCH 25/36] MODSIGN: Check the ELF container
+Date: Wed, 18 Jul 2012 16:29:17 +0100
+Subject: [PATCH 23/27] MODSIGN: Check the ELF container
 
 Check the ELF container of the kernel module to prevent the kernel from
 crashing or getting corrupted whilst trying to use it and locate the module
@@ -6358,14 +7767,14 @@ code, presumably because some local variables can be discarded.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- kernel/module-verify.c |  226 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 226 insertions(+)
+ kernel/module-verify.c |  230 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 230 insertions(+)
 
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index b1c1d4c..5711aeb 100644
+index 05473e6..2161d11 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
-@@ -50,6 +50,224 @@ static const char modsign_note_name[] = ELFNOTE_NAME(MODSIGN_NOTE_NAME);
+@@ -51,6 +51,228 @@ static const char modsign_note_name[] = ELFNOTE_NAME(MODSIGN_NOTE_NAME);
  static const char modsign_note_section[] = ELFNOTE_SECTION(MODSIGN_NOTE_NAME);
  
  /*
@@ -6379,19 +7788,19 @@ index b1c1d4c..5711aeb 100644
 +	const Elf_Shdr *section, *secstop;
 +	const Elf_Sym *symbols, *symbol, *symstop;
 +	const char *strtab;
-+	size_t size, secsize, secstrsize, strsize, notesize, notemetasize;
++	size_t size, secstrsize, strsize, notesize, notemetasize;
 +	unsigned line;
 +
 +	size = mvdata->size;
 +
 +#define elfcheck(X)							\
-+do { if (unlikely(!(X))) { line = __LINE__; goto elfcheck_error; } } while(0)
++do { if (unlikely(!(X))) { line = __LINE__; goto elfcheck_error; } } while (0)
 +
 +#define seccheck(X)							\
-+do { if (unlikely(!(X))) { line = __LINE__; goto seccheck_error; } } while(0)
++do { if (unlikely(!(X))) { line = __LINE__; goto seccheck_error; } } while (0)
 +
 +#define symcheck(X)							\
-+do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while(0)
++do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while (0)
 +
 +	/* Validate the ELF header */
 +	elfcheck(size > sizeof(Elf_Ehdr));
@@ -6411,10 +7820,12 @@ index b1c1d4c..5711aeb 100644
 +	secstop = mvdata->sections + mvdata->nsects;
 +
 +	/* Section 0 is special, usually indicating an undefined symbol */
-+	seccheck(mvdata->sections[SHN_UNDEF].sh_type == SHT_NULL);
++	section = &mvdata->sections[SHN_UNDEF];
++	seccheck(section->sh_type == SHT_NULL);
 +
 +	/* We also want access to the section name table */
-+	seccheck(mvdata->sections[hdr->e_shstrndx].sh_type == SHT_STRTAB);
++	section = &mvdata->sections[hdr->e_shstrndx];
++	seccheck(section->sh_type == SHT_STRTAB);
 +	secstrsize = mvdata->sections[hdr->e_shstrndx].sh_size;
 +
 +	for (section = mvdata->sections + 1; section < secstop; section++) {
@@ -6426,7 +7837,9 @@ index b1c1d4c..5711aeb 100644
 +		 * example).
 +		 */
 +		seccheck(section->sh_offset >= hdr->e_ehsize);
-+		seccheck((section->sh_offset & (section->sh_addralign - 1)) == 0);
++		if (section->sh_addralign > 1)
++			seccheck((section->sh_offset &
++				  (section->sh_addralign - 1)) == 0);
 +		seccheck(section->sh_offset <= size);
 +		if (section->sh_type != SHT_NOBITS)
 +			seccheck(section->sh_size <= size - section->sh_offset);
@@ -6446,7 +7859,7 @@ index b1c1d4c..5711aeb 100644
 +			seccheck(section->sh_addralign % sizeof(long) == 0);
 +			break;
 +		case SHT_REL:
-+#ifndef MODULE_HAS_ELF_RELA_ONLY
++#ifdef Elf_Rel
 +			seccheck(section->sh_entsize == sizeof(Elf_Rel));
 +			seccheck(section->sh_addralign % sizeof(long) == 0);
 +			break;
@@ -6455,7 +7868,7 @@ index b1c1d4c..5711aeb 100644
 +			break;
 +#endif
 +		case SHT_RELA:
-+#ifndef MODULE_HAS_ELF_REL_ONLY
++#ifdef Elf_Rela
 +			seccheck(section->sh_entsize == sizeof(Elf_Rela));
 +			seccheck(section->sh_addralign % sizeof(long) == 0);
 +			break;
@@ -6510,10 +7923,10 @@ index b1c1d4c..5711aeb 100644
 +			}
 +			break;
 +
-+#ifndef MODULE_HAS_ELF_RELA_ONLY
++#ifdef Elf_Rel
 +		case SHT_REL:
 +#endif
-+#ifndef MODULE_HAS_ELF_REL_ONLY
++#ifdef Elf_Rela
 +		case SHT_RELA:
 +#endif
 +			/* Relocation tables nominate a symbol table and a
@@ -6590,7 +8003,7 @@ index b1c1d4c..5711aeb 100644
   * Verify a module's integrity
   */
  int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
-@@ -61,6 +279,14 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
+@@ -62,6 +284,14 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
  	mvdata.buffer = hdr;
  	mvdata.size = size;
  
@@ -6606,13 +8019,13 @@ index b1c1d4c..5711aeb 100644
  		/* Deal with an unsigned module */
  		if (modsign_signedonly) {
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 21a28e681f53685960f2780b7884e8b391122259 Mon Sep 17 00:00:00 2001
+From 4e90f1f1f04b2efb070f15211e644a8a86a2142e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:56 +0100
-Subject: [PATCH 26/36] MODSIGN: Produce a filtered and canonicalised section
+Date: Wed, 18 Jul 2012 16:29:43 +0100
+Subject: [PATCH 24/27] MODSIGN: Produce a filtered and canonicalised section
  list
 
 Build a list of the sections in which we're interested and canonicalise the
@@ -6631,10 +8044,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 80 insertions(+)
 
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index 5711aeb..13c60c2 100644
+index 2161d11..646b104 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
-@@ -268,6 +268,80 @@ symcheck_error:
+@@ -273,6 +273,80 @@ symcheck_error:
  }
  
  /*
@@ -6715,7 +8128,7 @@ index 5711aeb..13c60c2 100644
   * Verify a module's integrity
   */
  int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
-@@ -298,7 +372,13 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
+@@ -303,7 +377,13 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
  		goto out;
  	}
  
@@ -6730,13 +8143,13 @@ index 5711aeb..13c60c2 100644
  out:
  	switch (ret) {
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 92fb97859c50a0dd63886baf057477a7a336b2a1 Mon Sep 17 00:00:00 2001
+From 5f48916c06318abb0821b41bc06f457248ed87eb Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:56 +0100
-Subject: [PATCH 27/36] MODSIGN: Create digest of module content and check
+Date: Wed, 18 Jul 2012 16:30:02 +0100
+Subject: [PATCH 25/27] MODSIGN: Create digest of module content and check
  signature
 
 Apply signature checking to modules on module load, checking the signature
@@ -6779,14 +8192,41 @@ somewhat smaller code.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- kernel/module-verify.c |  321 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 320 insertions(+), 1 deletion(-)
+ kernel/module-verify-defs.h |   11 +-
+ kernel/module-verify.c      |  332 ++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 337 insertions(+), 6 deletions(-)
 
+diff --git a/kernel/module-verify-defs.h b/kernel/module-verify-defs.h
+index 2fe31e1..82952b0 100644
+--- a/kernel/module-verify-defs.h
++++ b/kernel/module-verify-defs.h
+@@ -42,15 +42,16 @@ struct module_verify_data {
+ /*
+  * Whether or not we support various types of ELF relocation record
+  */
+-#if defined(MODULE_HAS_ELF_REL_ONLY)
++#ifdef Elf_Rel
+ #define is_elf_rel(sh_type)	((sh_type) == SHT_REL)
+-#define is_elf_rela(sh_type)	(0)
+-#elif defined(MODULE_HAS_ELF_RELA_ONLY)
++#else
+ #define is_elf_rel(sh_type)	(0)
++#endif
++
++#ifdef Elf_Rela
+ #define is_elf_rela(sh_type)	((sh_type) == SHT_RELA)
+ #else
+-#define is_elf_rel(sh_type)	((sh_type) == SHT_REL)
+-#define is_elf_rela(sh_type)	((sh_type) == SHT_RELA)
++#define is_elf_rela(sh_type)	(0)
+ #endif
+ 
+ /*
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index 13c60c2..a31b39c 100644
+index 646b104..e275759 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
-@@ -49,6 +49,22 @@ static bool modsign_signedonly;
+@@ -50,6 +50,22 @@ static bool modsign_signedonly;
  static const char modsign_note_name[] = ELFNOTE_NAME(MODSIGN_NOTE_NAME);
  static const char modsign_note_section[] = ELFNOTE_SECTION(MODSIGN_NOTE_NAME);
  
@@ -6809,10 +8249,12 @@ index 13c60c2..a31b39c 100644
  /*
   * Verify the minimum amount of ELF structure of a module needed to check the
   * module's signature without bad ELF crashing the kernel.
-@@ -342,6 +358,309 @@ static int module_verify_canonicalise(struct module_verify_data *mvdata)
+@@ -346,6 +362,320 @@ static int module_verify_canonicalise(struct module_verify_data *mvdata)
+ 	return 0;
  }
  
- /*
++#ifdef Elf_Rel
++/*
 + * Extract an ELF REL table
 + *
 + * We need to canonicalise the entries in case section/symbol addition/removal
@@ -6824,15 +8266,7 @@ index 13c60c2..a31b39c 100644
 +			   const char *sh_name)
 +{
 +	struct {
-+#if defined(MODULES_ARE_ELF32)
-+		uint32_t	r_offset;
-+		uint32_t	st_value;
-+		uint32_t	st_size;
-+		uint16_t	st_shndx;
-+		uint8_t		r_type;
-+		uint8_t		st_info;
-+		uint8_t		st_other;
-+#elif defined(MODULES_ARE_ELF64)
++#ifdef CONFIG_64BIT
 +		uint64_t	r_offset;
 +		uint64_t	st_value;
 +		uint64_t	st_size;
@@ -6841,22 +8275,33 @@ index 13c60c2..a31b39c 100644
 +		uint8_t		st_info;
 +		uint8_t		st_other;
 +#else
-+#error unsupported module type
++		uint32_t	r_offset;
++		uint32_t	st_value;
++		uint32_t	st_size;
++		uint16_t	st_shndx;
++		uint8_t		r_type;
++		uint8_t		st_info;
++		uint8_t		st_other;
 +#endif
-+	} __attribute__((packed)) relocation;
++	} __packed relocation;
 +
++	const Elf_Shdr *relsec, *symsec, *strsec;
 +	const Elf_Rel *reloc;
 +	const Elf_Sym *symbols, *symbol;
 +	const char *strings;
 +	unsigned long r_sym;
 +	size_t nsyms, loop;
 +
-+	nsyms = mvdata->sections[secix].sh_size / sizeof(Elf_Sym);
-+	symbols = mvdata->buffer + mvdata->sections[secix].sh_offset;
-+	strings = mvdata->buffer +
-+		mvdata->sections[mvdata->sections[secix].sh_link].sh_offset;
++	relsec = &mvdata->sections[secix];
++	symsec = &mvdata->sections[relsec->sh_link];
++	strsec = &mvdata->sections[symsec->sh_link];
++	nsyms = symsec->sh_size / sizeof(Elf_Sym);
++	symbols = mvdata->buffer + symsec->sh_offset;
++	strings = mvdata->buffer + strsec->sh_offset;
 +
-+	/* Contribute the relevant bits from a join of { REL, SYMBOL, SECTION } */
++	/* Contribute the relevant bits from a join of
++	 * { REL, SYMBOL, SECTION }
++	 */
 +	for (loop = 0; loop < nrels; loop++) {
 +		unsigned st_shndx;
 +
@@ -6900,7 +8345,9 @@ index 13c60c2..a31b39c 100644
 +
 +	return 0;
 +}
++#endif
 +
++#ifdef Elf_Rela
 +/*
 + * Extract an ELF RELA table
 + *
@@ -6913,16 +8360,7 @@ index 13c60c2..a31b39c 100644
 +			    const char *sh_name)
 +{
 +	struct {
-+#if defined(MODULES_ARE_ELF32)
-+		uint32_t	r_offset;
-+		uint32_t	r_addend;
-+		uint32_t	st_value;
-+		uint32_t	st_size;
-+		uint16_t	st_shndx;
-+		uint8_t		r_type;
-+		uint8_t		st_info;
-+		uint8_t		st_other;
-+#elif defined(MODULES_ARE_ELF64)
++#ifdef CONFIG_64BIT
 +		uint64_t	r_offset;
 +		uint64_t	r_addend;
 +		uint64_t	st_value;
@@ -6932,9 +8370,16 @@ index 13c60c2..a31b39c 100644
 +		uint8_t		st_info;
 +		uint8_t		st_other;
 +#else
-+#error unsupported module type
++		uint32_t	r_offset;
++		uint32_t	r_addend;
++		uint32_t	st_value;
++		uint32_t	st_size;
++		uint16_t	st_shndx;
++		uint8_t		r_type;
++		uint8_t		st_info;
++		uint8_t		st_other;
 +#endif
-+	} __attribute__((packed)) relocation;
++	} __packed relocation;
 +
 +	const Elf_Shdr *relsec, *symsec, *strsec;
 +	const Elf_Rela *reloc;
@@ -6950,7 +8395,9 @@ index 13c60c2..a31b39c 100644
 +	symbols = mvdata->buffer + symsec->sh_offset;
 +	strings = mvdata->buffer + strsec->sh_offset;
 +
-+	/* Contribute the relevant bits from a join of { RELA, SYMBOL, SECTION } */
++	/* Contribute the relevant bits from a join of
++	 * { RELA, SYMBOL, SECTION }
++	 */
 +	for (loop = 0; loop < nrels; loop++) {
 +		unsigned st_shndx;
 +
@@ -6995,6 +8442,7 @@ index 13c60c2..a31b39c 100644
 +
 +	return 0;
 +}
++#endif
 +
 +/*
 + * Verify a module's signature
@@ -7074,6 +8522,7 @@ index 13c60c2..a31b39c 100644
 +		 * contents of the symbol to which it refers, and the symbol's
 +		 * section ref is replaced with a canonicalised section number.
 +		 */
++#ifdef Elf_Rel
 +		if (is_elf_rel(sh_type)) {
 +			ret = extract_elf_rel(mvdata, sect,
 +					      data,
@@ -7083,7 +8532,9 @@ index 13c60c2..a31b39c 100644
 +				goto format_error;
 +			continue;
 +		}
++#endif
 +
++#ifdef Elf_Rela
 +		if (is_elf_rela(sh_type)) {
 +			ret = extract_elf_rela(mvdata, sect,
 +					       data,
@@ -7093,6 +8544,7 @@ index 13c60c2..a31b39c 100644
 +				goto format_error;
 +			continue;
 +		}
++#endif
 +
 +		/* Include allocatable loadable sections */
 +		if (sh_type != SHT_NOBITS)
@@ -7115,11 +8567,10 @@ index 13c60c2..a31b39c 100644
 +	return -ELIBBAD;
 +}
 +
-+/*
+ /*
   * Verify a module's integrity
   */
- int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
-@@ -377,7 +696,7 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
+@@ -382,7 +712,7 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
  	if (ret < 0)
  		goto out;
  
@@ -7129,95 +8580,13 @@ index 13c60c2..a31b39c 100644
  
  out:
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From 2e9f557c1235027c0c7223a8a072333758905066 Mon Sep 17 00:00:00 2001
+From 25841b75e473511f1dbe84cfb333ef2b748d2ec6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:49:57 +0100
-Subject: [PATCH 28/36] MODSIGN: Automatically generate module signing keys if
- missing
-
-Automatically generate keys for module signing if they're absent so that
-allyesconfig doesn't break.  The builder should consider generating their own
-keyrings, however, so that the keys are appropriately named and any extra keys
-required get imported.
-
-Also change the names of the keyring files to modsign.pub and modsign.sec so
-that they are then a more obvious what they're about and add a dependency for
-the signing rules on the keyring files so that the signatures get regenerated
-if the keyrings change.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- kernel/Makefile |   42 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 41 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 986ed7f..d8139bb 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -52,7 +52,6 @@ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
- obj-$(CONFIG_UID16) += uid16.o
- obj-$(CONFIG_MODULES) += module.o
- obj-$(CONFIG_MODULE_SIG) += module-verify.o modsign-pubkey.o
--kernel/modsign-pubkey.o: modsign.pub
- obj-$(CONFIG_KALLSYMS) += kallsyms.o
- obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
- obj-$(CONFIG_KEXEC) += kexec.o
-@@ -129,3 +128,44 @@ quiet_cmd_timeconst  = TIMEC   $@
- targets += timeconst.h
- $(obj)/timeconst.h: $(src)/timeconst.pl FORCE
- 	$(call if_changed,timeconst)
-+
-+###############################################################################
-+#
-+# If module signing is requested, say by allyesconfig, but a key has not been
-+# supplied, then one will need to be generated to make sure the build does not
-+# fail and that the kernel may be used afterwards.
-+#
-+###############################################################################
-+ifeq ($(CONFIG_MODULE_SIG),y)
-+kernel/modsign-pubkey.o: modsign.pub
-+
-+modsign.pub modsign.sec: genkey
-+	@echo "###"
-+	@echo "### Now generating a PGP key pair to be used for signing modules."
-+	@echo "###"
-+	@echo "### If this takes a long time, you might wish to run rngd in the"
-+	@echo "### background to keep the supply of entropy topped up.  It"
-+	@echo "### needs to be run as root, and should use a hardware random"
-+	@echo "### number generator if one is available, eg:"
-+	@echo "###"
-+	@echo "###     rngd -r /dev/hwrandom"
-+	@echo "###"
-+	gpg --homedir . --batch --gen-key genkey
-+	@echo "###"
-+	@echo "### Key pair generated."
-+	@echo "###"
-+	rm -f pubring.gpg secring.gpg trustdb.gpg
-+
-+genkey:
-+	echo "%pubring modsign.pub" >genkey
-+	echo "%secring modsign.sec" >>genkey
-+	echo "%no-protection: yes" >> genkey
-+	echo "%transient-key: yes" >>genkey
-+	echo "Key-Type: RSA" >>genkey
-+	echo "Key-Length: 4096" >>genkey
-+	echo "Name-Real: Sample kernel key" >>genkey
-+	echo "Name-Comment: Sample kernel module signing key" >>genkey
-+	echo "%commit" >>genkey
-+
-+endif
-+CLEAN_FILES += modsign.pub modsign.sec genkey random_seed
--- 
-1.7.10.2
-
-
-From 958049a9def253735019a5acf19b4c2aeec9f01c Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 10 May 2012 23:55:35 +0100
-Subject: [PATCH 29/36] MODSIGN: Suppress some redundant ELF checks
+Date: Wed, 18 Jul 2012 16:30:22 +0100
+Subject: [PATCH 26/27] MODSIGN: Suppress some redundant ELF checks
 
 Suppress some redundant ELF checks in module_verify_elf() that are also done
 by copy_and_check() in the core module loader code prior to calling
@@ -7225,23 +8594,14 @@ module_verify().
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- kernel/module-verify.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/module-verify.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index a31b39c..e1bfd28 100644
+index e275759..bfd1286 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
-@@ -76,7 +76,7 @@ static noinline int module_verify_elf(struct module_verify_data *mvdata)
- 	const Elf_Shdr *section, *secstop;
- 	const Elf_Sym *symbols, *symbol, *symstop;
- 	const char *strtab;
--	size_t size, secsize, secstrsize, strsize, notesize, notemetasize;
-+	size_t size, secstrsize, strsize, notesize, notemetasize;
- 	unsigned line;
- 
- 	size = mvdata->size;
-@@ -96,11 +96,11 @@ do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while(0)
+@@ -97,11 +97,11 @@ do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while (0)
  
  	elfcheck(hdr->e_shnum < SHN_LORESERVE);
  	elfcheck(hdr->e_shstrndx < hdr->e_shnum);
@@ -7257,523 +8617,48 @@ index a31b39c..e1bfd28 100644
  	/* Validate the section table contents */
  	mvdata->nsects = hdr->e_shnum;
 -- 
-1.7.10.2
+1.7.10.4
 
 
-From b5df4e7900852395a1ccb70190827cccc0c0de2d Mon Sep 17 00:00:00 2001
+From 3ac2defabc1996584fac06b76070138fe56753e6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Fri, 11 May 2012 16:56:05 +0100
-Subject: [PATCH 30/36] MODSIGN: Fix some checkpatch noise
+Date: Wed, 18 Jul 2012 16:30:40 +0100
+Subject: [PATCH 27/27] MODSIGN: Panic the kernel if FIPS is enabled upon
+ module signing failure
 
-Fix some warnings and errors produced by checkpatch.
-
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- kernel/module-verify-defs.h           |   24 ++++++++++++------------
- kernel/module-verify.c                |   18 +++++++++++-------
- kernel/module-verify.h                |    3 ++-
- security/keys/crypto/pgp_key_parser.c |    2 +-
- 4 files changed, 26 insertions(+), 21 deletions(-)
-
-diff --git a/kernel/module-verify-defs.h b/kernel/module-verify-defs.h
-index 45bea45..2fe31e1 100644
---- a/kernel/module-verify-defs.h
-+++ b/kernel/module-verify-defs.h
-@@ -60,22 +60,22 @@ struct module_verify_data {
- 	do {					      \
- 		if (unlikely(modsign_debug))	      \
- 			pr_debug(FMT, ##__VA_ARGS__); \
--	} while(0)
-+	} while (0)
- 
- #ifdef DEBUG
--#define count_and_csum(C, __p, __n)			\
--do {							\
--	int __loop;					\
--	for (__loop = 0; __loop < __n; __loop++) {	\
--		(C)->csum += __p[__loop];		\
--		(C)->xcsum += __p[__loop];		\
--	}						\
--	(C)->signed_size += __n;			\
--} while (0)
-+#define count_and_csum(C, __p, __n)				\
-+	do {							\
-+		int __loop;					\
-+		for (__loop = 0; __loop < __n; __loop++) {	\
-+			(C)->csum += __p[__loop];		\
-+			(C)->xcsum += __p[__loop];		\
-+		}						\
-+		(C)->signed_size += __n;			\
-+	} while (0)
- #else
- #define count_and_csum(C, __p, __n)		\
--do {						\
--} while (0)
-+	do {					\
-+	} while (0)
- #endif
- 
- #endif /* CONFIG_MODULE_SIG */
-diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index e1bfd28..161cf3e 100644
---- a/kernel/module-verify.c
-+++ b/kernel/module-verify.c
-@@ -82,13 +82,13 @@ static noinline int module_verify_elf(struct module_verify_data *mvdata)
- 	size = mvdata->size;
- 
- #define elfcheck(X)							\
--do { if (unlikely(!(X))) { line = __LINE__; goto elfcheck_error; } } while(0)
-+do { if (unlikely(!(X))) { line = __LINE__; goto elfcheck_error; } } while (0)
- 
- #define seccheck(X)							\
--do { if (unlikely(!(X))) { line = __LINE__; goto seccheck_error; } } while(0)
-+do { if (unlikely(!(X))) { line = __LINE__; goto seccheck_error; } } while (0)
- 
- #define symcheck(X)							\
--do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while(0)
-+do { if (unlikely(!(X))) { line = __LINE__; goto symcheck_error; } } while (0)
- 
- 	/* Validate the ELF header */
- 	elfcheck(size > sizeof(Elf_Ehdr));
-@@ -388,7 +388,7 @@ static int extract_elf_rel(struct module_verify_data *mvdata,
- #else
- #error unsupported module type
- #endif
--	} __attribute__((packed)) relocation;
-+	} __packed relocation;
- 
- 	const Elf_Rel *reloc;
- 	const Elf_Sym *symbols, *symbol;
-@@ -401,7 +401,9 @@ static int extract_elf_rel(struct module_verify_data *mvdata,
- 	strings = mvdata->buffer +
- 		mvdata->sections[mvdata->sections[secix].sh_link].sh_offset;
- 
--	/* Contribute the relevant bits from a join of { REL, SYMBOL, SECTION } */
-+	/* Contribute the relevant bits from a join of
-+	 * { REL, SYMBOL, SECTION }
-+	 */
- 	for (loop = 0; loop < nrels; loop++) {
- 		unsigned st_shndx;
- 
-@@ -479,7 +481,7 @@ static int extract_elf_rela(struct module_verify_data *mvdata,
- #else
- #error unsupported module type
- #endif
--	} __attribute__((packed)) relocation;
-+	} __packed relocation;
- 
- 	const Elf_Shdr *relsec, *symsec, *strsec;
- 	const Elf_Rela *reloc;
-@@ -495,7 +497,9 @@ static int extract_elf_rela(struct module_verify_data *mvdata,
- 	symbols = mvdata->buffer + symsec->sh_offset;
- 	strings = mvdata->buffer + strsec->sh_offset;
- 
--	/* Contribute the relevant bits from a join of { RELA, SYMBOL, SECTION } */
-+	/* Contribute the relevant bits from a join of
-+	 * { RELA, SYMBOL, SECTION }
-+	 */
- 	for (loop = 0; loop < nrels; loop++) {
- 		unsigned st_shndx;
- 
-diff --git a/kernel/module-verify.h b/kernel/module-verify.h
-index 6bb6b56..c640634 100644
---- a/kernel/module-verify.h
-+++ b/kernel/module-verify.h
-@@ -12,7 +12,8 @@
- #ifdef CONFIG_MODULE_SIG
- extern int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok);
- #else
--static inline int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
-+static inline int module_verify(const Elf_Ehdr *hdr, size_t size,
-+				bool *_gpgsig_ok)
- {
- 	return 0;
- }
-diff --git a/security/keys/crypto/pgp_key_parser.c b/security/keys/crypto/pgp_key_parser.c
-index 1407e2e..d913538 100644
---- a/security/keys/crypto/pgp_key_parser.c
-+++ b/security/keys/crypto/pgp_key_parser.c
-@@ -94,7 +94,7 @@ static int pgp_calc_pkey_keyid(struct shash_desc *digest,
- 	if (pgp->version < PGP_KEY_VERSION_4) {
- 		u16 a16;
- 
--		if( pgp->expires_at)
-+		if (pgp->expires_at)
- 			a16 = (pgp->expires_at - pgp->creation_time) / 86400UL;
- 		else
- 			a16 = 0;
--- 
-1.7.10.2
-
-
-From 27ecab7d7ee104299133c9ffd51d00ea378ed56b Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Wed, 16 May 2012 15:13:41 +0100
-Subject: [PATCH 31/36] PGPLIB: Preclear array on stack
-
-Preclear an array on the stack so that the error handling that frees what the
-array might point to won't crash.
-
-Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- security/keys/crypto/pgp_key_parser.c |    3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/security/keys/crypto/pgp_key_parser.c b/security/keys/crypto/pgp_key_parser.c
-index d913538..84ce457 100644
---- a/security/keys/crypto/pgp_key_parser.c
-+++ b/security/keys/crypto/pgp_key_parser.c
-@@ -71,6 +71,9 @@ static int pgp_calc_pkey_keyid(struct shash_desc *digest,
- 
- 	kenter("");
- 
-+	for (i = 0; i < ARRAY_SIZE(pp); i++)
-+		pp[i] = NULL;
-+
- 	n = (pgp->version < PGP_KEY_VERSION_4) ? 8 : 6;
- 	for (i = 0; i < npkey; i++) {
- 		nb[i] = mpi_get_nbits(key->mpi[i]);
--- 
-1.7.10.2
-
-
-From a382a46fe70ee35cfb6fe97faa8abffd82368cbe Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Wed, 16 May 2012 15:19:24 +0100
-Subject: [PATCH 32/36] PGPLIB: Check the length in a packet or subpacket
-
-Check the length in a packet or subpacket to make sure there isn't an overflow
-should the length not fit into the lower 31 bits of an integer.
-
-It is possible that both pgp_parse_packet_header() and
-pgp_parse_sig_subpkt_header() could see packets that purport to be >2G in size.
-Normally this will not be a problem because EBADMSG is indicated if the size
-indicated is greater than the remnant size of the data - but just in case we do
-end up parsing a >2G blob, a couple of simple checks can prevent an overflow
-from occurring.
+If module signing fails when the kernel is running with FIPS enabled then the
+kernel should panic lest the crypto layer be compromised.  Possibly a panic
+shouldn't happen on cases like ENOMEM.
 
 Reported-by: Stephan Mueller <stephan.mueller@atsec.com>
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- security/keys/crypto/pgp_library.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+ kernel/module-verify.c |    5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index f6b831f..a9462f5 100644
---- a/security/keys/crypto/pgp_library.c
-+++ b/security/keys/crypto/pgp_library.c
-@@ -137,6 +137,8 @@ ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
- 	pr_devel("datalen=%zu size=%zu", datalen, size);
- 	if (datalen < size)
- 		goto short_packet;
-+	if ((int)size < 0)
-+		goto too_big;
+diff --git a/kernel/module-verify.c b/kernel/module-verify.c
+index bfd1286..b9c3955 100644
+--- a/kernel/module-verify.c
++++ b/kernel/module-verify.c
+@@ -30,6 +30,7 @@
+ #include <linux/elfnote.h>
+ #include <linux/modsign.h>
+ #include <linux/moduleparam.h>
++#include <linux/fips.h>
+ #include <keys/crypto-type.h>
+ #include "module-verify.h"
+ #include "module-verify-defs.h"
+@@ -716,6 +717,10 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
+ 	kfree(mvdata.canonlist);
  
- 	*_data = data;
- 	*_datalen = datalen;
-@@ -147,6 +149,9 @@ ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
- short_packet:
- 	pr_debug("Attempt to parse short packet\n");
- 	return -EBADMSG;
-+too_big:
-+	pr_debug("Signature subpacket size >2G\n");
-+	return -EMSGSIZE;
- }
- 
- /**
-@@ -312,6 +317,8 @@ ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
- 		pr_debug("Signature subpacket size can't be zero\n");
- 		return -EBADMSG;
- 	}
-+	if ((int)size < 0)
-+		goto too_big;
- 
- 	type = *data++ & ~PGP_SIG_SUBPKT_TYPE_CRITICAL_MASK;
- 	datalen--;
-@@ -330,6 +337,9 @@ ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
- short_subpacket:
- 	pr_debug("Attempt to parse short signature subpacket\n");
- 	return -EBADMSG;
-+too_big:
-+	pr_debug("Signature subpacket size >2G\n");
-+	return -EMSGSIZE;
- }
- 
- /**
+ out:
++        if (ret < 0 && fips_enabled)
++                panic("Module verification failed with error %d in FIPS mode\n",
++                      ret);
++
+ 	switch (ret) {
+ 	case 0:			/* Good signature */
+ 		*_gpgsig_ok = true;
 -- 
-1.7.10.2
-
-
-From a577fc904c197d97b028863989d9a891c3e1ea17 Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 17 May 2012 17:41:36 +0100
-Subject: [PATCH 33/36] PGPLIB: Remnant length should be decreased in
- pgp_parse_sig_params()
-
-The remnant length of the signature packet should be decreased rather than
-being increased as we parse in pgp_parse_sig_params().
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- security/keys/crypto/pgp_library.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index a9462f5..1ff3628 100644
---- a/security/keys/crypto/pgp_library.c
-+++ b/security/keys/crypto/pgp_library.c
-@@ -503,7 +503,7 @@ int pgp_parse_sig_params(const u8 **_data, size_t *_datalen,
- 			if (ret < 0)
- 				return ret;
- 			data += subdatalen;
--			datalen += subdatalen;
-+			datalen -= subdatalen;
- 		}
- 
- 		subdatalen  = *data++ << 8;
-@@ -521,7 +521,7 @@ int pgp_parse_sig_params(const u8 **_data, size_t *_datalen,
- 			if (ret < 0)
- 				return ret;
- 			data += subdatalen;
--			datalen += subdatalen;
-+			datalen -= subdatalen;
- 		}
- 
- 		if (!ctx.got_the_issuer) {
--- 
-1.7.10.2
-
-
-From ab7204f60a1cedecb24bb2888db5d03bdcf20488 Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 17 May 2012 17:41:36 +0100
-Subject: [PATCH 34/36] PGPLIB: Parse 5-octet length new-format packet headers
-
-Parse 5-octet length new-format packet headers to extract the 32-bit length
-encoded therein [RFC4880 4.2.2.3].
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- security/keys/crypto/pgp_library.c |   13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index 1ff3628..310ee2f 100644
---- a/security/keys/crypto/pgp_library.c
-+++ b/security/keys/crypto/pgp_library.c
-@@ -86,8 +86,17 @@ ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
- 			*_headerlen = 3;
- 			break;
- 		case 0xff:
--			pr_debug("Five-byte packet length not supported\n");
--			return -EBADMSG;
-+			/* Five-byte length */
-+			if (datalen < 5)
-+				goto short_packet;
-+			size =  data[1] << 24;
-+			size |= data[2] << 16;
-+			size |= data[3] << 8;
-+			size |= data[4];
-+			data += 5;
-+			datalen -= 5;
-+			*_headerlen = 6;
-+			break;
- 		default:
- 			pr_debug("Error parsing packet length\n");
- 			return -EBADMSG;
--- 
-1.7.10.2
-
-
-From df233b65b833e085f39d80dc6f77c383b32786ce Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Thu, 17 May 2012 17:41:36 +0100
-Subject: [PATCH 35/36] PGPLIB: Change the debug message for Partial Body
- Length specifier
-
-Change the debug message displayed if we encounter a Partial Body Length
-specifier whilst parsing a PGP stream [RFC4880 4.2.2.4].
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- security/keys/crypto/pgp_library.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index 310ee2f..111cbd7 100644
---- a/security/keys/crypto/pgp_library.c
-+++ b/security/keys/crypto/pgp_library.c
-@@ -98,7 +98,7 @@ ssize_t pgp_parse_packet_header(const u8 **_data, size_t *_datalen,
- 			*_headerlen = 6;
- 			break;
- 		default:
--			pr_debug("Error parsing packet length\n");
-+			pr_debug("Partial body length packet not supported\n");
- 			return -EBADMSG;
- 		}
- 	} else {
--- 
-1.7.10.2
-
-
-From 3ac676c62cceabdbf814bbc3495f36abd1848a97 Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 18 May 2012 16:44:14 +0100
-Subject: [PATCH 36/36] PGPLIB: Adjust error handling
-
-Adjust the error handling in the following ways:
-
- (1) When parsing signature subpacket header, do the size checks before
-     accessing the subpacket type (which is in the subpacket payload governed
-     by the size).
-
- (2) Indicate ENOPKG when we are asked to use a public key algorithm we don't
-     support rather than returning ENOKEY.
-
- (3) Indicate EKEYREJECTED if the key that matches the signature demands a
-     different key algorithm to the signature.
-
- (4) Indicate ENOMSG if the signature blob does not contain a signature
-     packet.  Possibly this should be EBADMSG - though that causes the next
-     packet parser to be tried if available.
-
- (5) Give a better debug message in the case of an unsupported hash.
-
- (6) Don't return keyring-related errors when searching for a key containing
-     the public key (EACCES, ENOTDIR, EAGAIN), but rather map them to ENOKEY.
-     Possibly EACCES should be passed through as you also get that if there
-     *is* a matching key, but it cannot be accessed.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- Documentation/module-signing.txt      |    2 ++
- security/keys/crypto/pgp_library.c    |   16 ++++++++--------
- security/keys/crypto/pgp_pubkey_sig.c |    9 +++++----
- security/keys/crypto/pgp_sig_parser.c |   15 ++++++++++++---
- 4 files changed, 27 insertions(+), 15 deletions(-)
-
-diff --git a/Documentation/module-signing.txt b/Documentation/module-signing.txt
-index d75d473..d3beb1e 100644
---- a/Documentation/module-signing.txt
-+++ b/Documentation/module-signing.txt
-@@ -185,10 +185,12 @@ This table indicates the behaviours of the various situations:
- 	MODULE STATE				PERMISSIVE MODE	ENFORCING MODE
- 	=======================================	===============	===============
- 	Unsigned				Ok		EKEYREJECTED
-+	No signature packet in the signature	ENOMSG		ENOMSG
- 	Signed, no public key			ENOKEY		ENOKEY
- 	Validly signed, public key		Ok		Ok
- 	Invalidly signed, public key		EKEYREJECTED	EKEYREJECTED
- 	Validly signed, expired key		EKEYEXPIRED	EKEYEXPIRED
-+	Signed, pubkey algorithm unavailable	ENOPKG		ENOPKG
- 	Signed, hash algorithm unavailable	ENOPKG		ENOPKG
- 	Corrupt signature			EBADMSG		EBADMSG
- 	Corrupt ELF				ELIBBAD		ELIBBAD
-diff --git a/security/keys/crypto/pgp_library.c b/security/keys/crypto/pgp_library.c
-index 111cbd7..ee08b86 100644
---- a/security/keys/crypto/pgp_library.c
-+++ b/security/keys/crypto/pgp_library.c
-@@ -322,10 +322,11 @@ ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
- 	}
- 
- 	/* The type octet is included in the size */
--	if (size == 0) {
--		pr_debug("Signature subpacket size can't be zero\n");
--		return -EBADMSG;
--	}
-+	pr_devel("datalen=%zu size=%zu", datalen, size);
-+	if (datalen < size)
-+		goto short_subpacket;
-+	if (size == 0)
-+		goto very_short_subpacket;
- 	if ((int)size < 0)
- 		goto too_big;
- 
-@@ -333,16 +334,15 @@ ssize_t pgp_parse_sig_subpkt_header(const u8 **_data, size_t *_datalen,
- 	datalen--;
- 	size--;
- 
--	pr_devel("datalen=%zu size=%zu", datalen, size);
--	if (datalen < size)
--		goto short_subpacket;
--
- 	*_data = data;
- 	*_datalen = datalen;
- 	*_type = type;
- 	pr_devel("Found subpkt type=%u size=%zd\n", type, size);
- 	return size;
- 
-+very_short_subpacket:
-+	pr_debug("Signature subpacket size can't be zero\n");
-+	return -EBADMSG;
- short_subpacket:
- 	pr_debug("Attempt to parse short signature subpacket\n");
- 	return -EBADMSG;
-diff --git a/security/keys/crypto/pgp_pubkey_sig.c b/security/keys/crypto/pgp_pubkey_sig.c
-index b4b7cb0..bc02dfa 100644
---- a/security/keys/crypto/pgp_pubkey_sig.c
-+++ b/security/keys/crypto/pgp_pubkey_sig.c
-@@ -86,12 +86,12 @@ struct crypto_key_verify_context *pgp_pkey_verify_sig_begin(
- 	    !pgp_public_key_algorithms[p.params.pubkey_algo]) {
- 		pr_debug("Unsupported public key algorithm %u\n",
- 			 p.params.pubkey_algo);
--		return ERR_PTR(-ENOKEY);
-+		return ERR_PTR(-ENOPKG);
- 	}
- 
- 	if (pgp_public_key_algorithms[p.params.pubkey_algo] != key->algo) {
--		kleave(" = -ENOKEY [wrong pk algo]");
--		return ERR_PTR(-ENOKEY);
-+		kleave(" = -EKEYREJECTED [wrong pk algo]");
-+		return ERR_PTR(-EKEYREJECTED);
- 	}
- 
- 	if (!(key->capabilities & PKEY_CAN_VERIFY)) {
-@@ -101,7 +101,8 @@ struct crypto_key_verify_context *pgp_pkey_verify_sig_begin(
- 
- 	if (p.params.hash_algo >= PGP_HASH__LAST ||
- 	    !pgp_hash_algorithms[p.params.hash_algo]) {
--		kleave(" = -ENOPKG [hash]");
-+		pr_debug("Unsupported hash algorithm %u\n",
-+			 p.params.hash_algo);
- 		return ERR_PTR(-ENOPKG);
- 	}
- 
-diff --git a/security/keys/crypto/pgp_sig_parser.c b/security/keys/crypto/pgp_sig_parser.c
-index b72c505..3dd223f 100644
---- a/security/keys/crypto/pgp_sig_parser.c
-+++ b/security/keys/crypto/pgp_sig_parser.c
-@@ -66,7 +66,7 @@ static struct key *find_key_for_pgp_sig(struct key *keyring,
- 		return ERR_PTR(ret);
- 
- 	if (!p.found_sig)
--		return ERR_PTR(-EINVAL);
-+		return ERR_PTR(-ENOMSG);
- 
- 	sprintf(criterion, "id:%08x%08x",
- 		be32_to_cpu(p.params.issuer32[0]),
-@@ -76,8 +76,17 @@ static struct key *find_key_for_pgp_sig(struct key *keyring,
- 
- 	key = keyring_search(make_key_ref(keyring, 1),
- 			     &key_type_crypto, criterion);
--	if (IS_ERR(key))
--		return ERR_CAST(key);
-+	if (IS_ERR(key)) {
-+		switch (PTR_ERR(key)) {
-+			/* Hide some search errors */
-+		case -EACCES:
-+		case -ENOTDIR:
-+		case -EAGAIN:
-+			return ERR_PTR(-ENOKEY);
-+		default:
-+			return ERR_CAST(key);
-+		}
-+	}
- 
- 	pr_debug("Found key %x\n", key_serial(key_ref_to_ptr(key)));
- 	return key_ref_to_ptr(key);
--- 
-1.7.10.2
+1.7.10.4
 

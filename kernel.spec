@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -672,8 +672,7 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
-Patch900: modsign-20120510.patch
-Patch901: modsign-fix-elf-rel.patch
+Patch900: modsign-20120718.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1377,8 +1376,7 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-20120510.patch
-ApplyPatch modsign-fix-elf-rel.patch
+ApplyPatch modsign-20120718.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -2300,6 +2298,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 18 2012 Josh Boyer <jwboyer@redhat.com>
+- Update modsign patch to latest upstream
+
 * Wed Jul 18 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc7.git2.1
 - Linux v3.5-rc7-81-ga018540
 
