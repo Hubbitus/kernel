@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -741,9 +741,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 828824
-Patch22043: rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 
 #Fix FIPS for aesni hardare
 Patch22050: crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
@@ -1439,9 +1436,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Highbank clock functions
 ApplyPatch highbank-export-clock-functions.patch 
-
-#rhbz 828824
-ApplyPatch rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 
 #Fix FIPS for aesni hardare
 ApplyPatch crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
@@ -2306,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 18 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc7.git2.1
+- Linux v3.5-rc7-81-ga018540
+
 * Wed Jul 18 2012 Josh Boyer <jwboyer@redhat.com>
 - check return value of power_supply_register from Lan Tianyu (rhbz 772730)
 
