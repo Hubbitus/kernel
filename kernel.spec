@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -748,6 +748,9 @@ Patch22043: rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 #Fix FIPS for aesni hardare
 Patch22050: crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
 Patch22051: crypto-aesni-intel-fix-wrong-kfree-pointer.patch
+
+#rhbz 772730
+Patch22058: ACPI-AC-check-the-return-value-of-power_supply_register.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1443,6 +1446,9 @@ ApplyPatch rt2x00usb-fix-indexes-ordering-on-RX-queue-kick.patch
 #Fix FIPS for aesni hardare
 ApplyPatch crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
 ApplyPatch crypto-aesni-intel-fix-wrong-kfree-pointer.patch
+
+#rhbz 772730
+ApplyPatch ACPI-AC-check-the-return-value-of-power_supply_register.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 18 2012 Josh Boyer <jwboyer@redhat.com>
+- check return value of power_supply_register from Lan Tianyu (rhbz 772730)
+
 * Tue Jul 17 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc7.git1.2
 - Reenable debugging options.
 
