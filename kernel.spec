@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1738,6 +1738,7 @@ BuildKernel() {
     # our list into the list as well.
     rm -rf dep.list dep2.list
     rm -rf req.list req2.list
+    touch dep.list req.list
     cp %{SOURCE16} .
     for dep in `cat modnames`
     do
