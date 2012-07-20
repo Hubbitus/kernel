@@ -2299,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 20 2012 John W. Linville <linville@redhat.com>
+- Enable NFC subsystem and drivers
+
 * Fri Jul 20 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-0.rc7.git4.1
 - Linux v3.5-rc7-141-g85efc72
 
