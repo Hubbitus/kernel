@@ -1,0 +1,1161 @@
+From 56ce13afe1b17cd2817c596b3a9e25e51937a328 Mon Sep 17 00:00:00 2001
+From: Matt Fleming <matt.fleming@intel.com>
+Date: Thu, 19 Jul 2012 10:23:48 +0100
+Subject: [PATCH 01/14] x86, efi: Handover Protocol
+
+As things currently stand, traditional EFI boot loaders and the EFI
+boot stub are carrying essentially the same initialisation code
+required to setup an EFI machine for booting a kernel. There's really
+no need to have this code in two places and the hope is that, with
+this new protocol, initialisation and booting of the kernel can be
+left solely to the kernel's EFI boot stub. The responsibilities of the
+boot loader then become,
+
+   o Loading the kernel image from boot media
+
+File system code still needs to be carried by boot loaders for the
+scenario where the kernel and initrd files reside on a file system
+that the EFI firmware doesn't natively understand, such as ext4, etc.
+
+   o Providing a user interface
+
+Boot loaders still need to display any menus/interfaces, for example
+to allow the user to select from a list of kernels.
+
+Bump the boot protocol number because we added the 'handover_offset'
+field to indicate the location of the handover protocol entry point.
+
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Matthew Garrett <mjg@redhat.com>
+Cc: Peter Jones <pjones@redhat.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+---
+ Documentation/x86/boot.txt         |  41 ++++++++
+ arch/x86/boot/compressed/eboot.c   | 198 ++++++++++++++++++++++---------------
+ arch/x86/boot/compressed/head_32.S |  10 ++
+ arch/x86/boot/compressed/head_64.S |  10 ++
+ arch/x86/boot/header.S             |   4 +-
+ arch/x86/include/asm/bootparam.h   |   1 +
+ 6 files changed, 185 insertions(+), 79 deletions(-)
+
+diff --git a/Documentation/x86/boot.txt b/Documentation/x86/boot.txt
+index 7c3a880..c6539a4 100644
+--- a/Documentation/x86/boot.txt
++++ b/Documentation/x86/boot.txt
+@@ -54,6 +54,9 @@ Protocol 2.10:	(Kernel 2.6.31) Added a protocol for relaxed alignment
+ 		beyond the kernel_alignment added, new init_size and
+ 		pref_address fields.  Added extended boot loader IDs.
+ 
++Protocol 2.11:	(Kernel 3.6) Added a field for offset of EFI handover
++		protocol entry point.
++
+ **** MEMORY LAYOUT
+ 
+ The traditional memory map for the kernel loader, used for Image or
+@@ -189,6 +192,7 @@ Offset	Proto	Name		Meaning
+ 				of struct setup_data
+ 0258/8	2.10+	pref_address	Preferred loading address
+ 0260/4	2.10+	init_size	Linear memory required during initialization
++0264/4	2.11+	handover_offset	Offset of handover entry point
+ 
+ (1) For backwards compatibility, if the setup_sects field contains 0, the
+     real value is 4.
+@@ -690,6 +694,16 @@ Offset/size:	0x260/4
+   else
+ 	runtime_start = pref_address
+ 
++Field name:	handover_offset
++Type:		read
++Offset/size:	0x264/4
++
++  This field is the offset from the beginning of the kernel image to
++  the EFI handover protocol entry point. Boot loaders using the EFI
++  handover protocol to boot the kernel should jump to this offset.
++
++  See EFI HANDOVER PROTOCOL below for more details.
++
+ 
+ **** THE IMAGE CHECKSUM
+ 
+@@ -1010,3 +1024,30 @@ segment; __BOOS_CS must have execute/read permission, and __BOOT_DS
+ must have read/write permission; CS must be __BOOT_CS and DS, ES, SS
+ must be __BOOT_DS; interrupt must be disabled; %esi must hold the base
+ address of the struct boot_params; %ebp, %edi and %ebx must be zero.
++
++**** EFI HANDOVER PROTOCOL
++
++This protocol allows boot loaders to defer initialisation to the EFI
++boot stub. The boot loader is required to load the kernel/initrd(s)
++from the boot media and jump to the EFI handover protocol entry point
++which is hdr->handover_offset bytes from the beginning of
++startup_{32,64}.
++
++The function prototype for the handover entry point looks like this,
++
++    efi_main(void *handle, efi_system_table_t *table, struct boot_params *bp)
++
++'handle' is the EFI image handle passed to the boot loader by the EFI
++firmware, 'table' is the EFI system table - these are the first two
++arguments of the "handoff state" as described in section 2.3 of the
++UEFI specification. 'bp' is the boot loader-allocated boot params.
++
++The boot loader *must* fill out the following fields in bp,
++
++    o hdr.code32_start
++    o hdr.cmd_line_ptr
++    o hdr.cmdline_size
++    o hdr.ramdisk_image (if applicable)
++    o hdr.ramdisk_size  (if applicable)
++
++All other fields should be zero.
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index 4e85f5f..b3e0227 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -729,32 +729,68 @@ fail:
+  * need to create one ourselves (usually the bootloader would create
+  * one for us).
+  */
+-static efi_status_t make_boot_params(struct boot_params *boot_params,
+-				     efi_loaded_image_t *image,
+-				     void *handle)
++struct boot_params *make_boot_params(void *handle, efi_system_table_t *_table)
+ {
+-	struct efi_info *efi = &boot_params->efi_info;
+-	struct apm_bios_info *bi = &boot_params->apm_bios_info;
+-	struct sys_desc_table *sdt = &boot_params->sys_desc_table;
+-	struct e820entry *e820_map = &boot_params->e820_map[0];
+-	struct e820entry *prev = NULL;
+-	struct setup_header *hdr = &boot_params->hdr;
+-	unsigned long size, key, desc_size, _size;
+-	efi_memory_desc_t *mem_map;
+-	void *options = image->load_options;
+-	u32 load_options_size = image->load_options_size / 2; /* ASCII */
++	struct boot_params *boot_params;
++	struct sys_desc_table *sdt;
++	struct apm_bios_info *bi;
++	struct setup_header *hdr;
++	struct efi_info *efi;
++	efi_loaded_image_t *image;
++	void *options;
++	u32 load_options_size;
++	efi_guid_t proto = LOADED_IMAGE_PROTOCOL_GUID;
+ 	int options_size = 0;
+ 	efi_status_t status;
+-	__u32 desc_version;
+ 	unsigned long cmdline;
+-	u8 nr_entries;
+ 	u16 *s2;
+ 	u8 *s1;
+ 	int i;
+ 
++	sys_table = _table;
++
++	/* Check if we were booted by the EFI firmware */
++	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
++		return NULL;
++
++	status = efi_call_phys3(sys_table->boottime->handle_protocol,
++				handle, &proto, (void *)&image);
++	if (status != EFI_SUCCESS) {
++		efi_printk("Failed to get handle for LOADED_IMAGE_PROTOCOL\n");
++		return NULL;
++	}
++
++	status = low_alloc(0x4000, 1, (unsigned long *)&boot_params);
++	if (status != EFI_SUCCESS) {
++		efi_printk("Failed to alloc lowmem for boot params\n");
++		return NULL;
++	}
++
++	memset(boot_params, 0x0, 0x4000);
++
++	hdr = &boot_params->hdr;
++	efi = &boot_params->efi_info;
++	bi = &boot_params->apm_bios_info;
++	sdt = &boot_params->sys_desc_table;
++
++	/* Copy the second sector to boot_params */
++	memcpy(&hdr->jump, image->image_base + 512, 512);
++
++	/*
++	 * Fill out some of the header fields ourselves because the
++	 * EFI firmware loader doesn't load the first sector.
++	 */
++	hdr->root_flags = 1;
++	hdr->vid_mode = 0xffff;
++	hdr->boot_flag = 0xAA55;
++
++	hdr->code32_start = (__u64)(unsigned long)image->image_base;
++
+ 	hdr->type_of_loader = 0x21;
+ 
+ 	/* Convert unicode cmdline to ascii */
++	options = image->load_options;
++	load_options_size = image->load_options_size / 2; /* ASCII */
+ 	cmdline = 0;
+ 	s2 = (u16 *)options;
+ 
+@@ -791,18 +827,36 @@ static efi_status_t make_boot_params(struct boot_params *boot_params,
+ 	hdr->ramdisk_image = 0;
+ 	hdr->ramdisk_size = 0;
+ 
+-	status = handle_ramdisks(image, hdr);
+-	if (status != EFI_SUCCESS)
+-		goto free_cmdline;
+-
+-	setup_graphics(boot_params);
+-
+ 	/* Clear APM BIOS info */
+ 	memset(bi, 0, sizeof(*bi));
+ 
+ 	memset(sdt, 0, sizeof(*sdt));
+ 
+-	memcpy(&efi->efi_loader_signature, EFI_LOADER_SIGNATURE, sizeof(__u32));
++	status = handle_ramdisks(image, hdr);
++	if (status != EFI_SUCCESS)
++		goto fail2;
++
++	return boot_params;
++fail2:
++	if (options_size)
++		low_free(options_size, hdr->cmd_line_ptr);
++fail:
++	low_free(0x4000, (unsigned long)boot_params);
++	return NULL;
++}
++
++static efi_status_t exit_boot(struct boot_params *boot_params,
++			      void *handle)
++{
++	struct efi_info *efi = &boot_params->efi_info;
++	struct e820entry *e820_map = &boot_params->e820_map[0];
++	struct e820entry *prev = NULL;
++	unsigned long size, key, desc_size, _size;
++	efi_memory_desc_t *mem_map;
++	efi_status_t status;
++	__u32 desc_version;
++	u8 nr_entries;
++	int i;
+ 
+ 	size = sizeof(*mem_map) * 32;
+ 
+@@ -811,7 +865,7 @@ again:
+ 	_size = size;
+ 	status = low_alloc(size, 1, (unsigned long *)&mem_map);
+ 	if (status != EFI_SUCCESS)
+-		goto free_cmdline;
++		return status;
+ 
+ 	status = efi_call_phys5(sys_table->boottime->get_memory_map, &size,
+ 				mem_map, &key, &desc_size, &desc_version);
+@@ -823,6 +877,7 @@ again:
+ 	if (status != EFI_SUCCESS)
+ 		goto free_mem_map;
+ 
++	memcpy(&efi->efi_loader_signature, EFI_LOADER_SIGNATURE, sizeof(__u32));
+ 	efi->efi_systab = (unsigned long)sys_table;
+ 	efi->efi_memdesc_size = desc_size;
+ 	efi->efi_memdesc_version = desc_version;
+@@ -906,61 +961,13 @@ again:
+ 
+ free_mem_map:
+ 	low_free(_size, (unsigned long)mem_map);
+-free_cmdline:
+-	if (options_size)
+-		low_free(options_size, hdr->cmd_line_ptr);
+-fail:
+ 	return status;
+ }
+ 
+-/*
+- * On success we return a pointer to a boot_params structure, and NULL
+- * on failure.
+- */
+-struct boot_params *efi_main(void *handle, efi_system_table_t *_table)
++static efi_status_t relocate_kernel(struct setup_header *hdr)
+ {
+-	struct boot_params *boot_params;
+ 	unsigned long start, nr_pages;
+-	struct desc_ptr *gdt, *idt;
+-	efi_loaded_image_t *image;
+-	struct setup_header *hdr;
+ 	efi_status_t status;
+-	efi_guid_t proto = LOADED_IMAGE_PROTOCOL_GUID;
+-	struct desc_struct *desc;
+-
+-	sys_table = _table;
+-
+-	/* Check if we were booted by the EFI firmware */
+-	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
+-		goto fail;
+-
+-	status = efi_call_phys3(sys_table->boottime->handle_protocol,
+-				handle, &proto, (void *)&image);
+-	if (status != EFI_SUCCESS) {
+-		efi_printk("Failed to get handle for LOADED_IMAGE_PROTOCOL\n");
+-		goto fail;
+-	}
+-
+-	status = low_alloc(0x4000, 1, (unsigned long *)&boot_params);
+-	if (status != EFI_SUCCESS) {
+-		efi_printk("Failed to alloc lowmem for boot params\n");
+-		goto fail;
+-	}
+-
+-	memset(boot_params, 0x0, 0x4000);
+-
+-	hdr = &boot_params->hdr;
+-
+-	/* Copy the second sector to boot_params */
+-	memcpy(&hdr->jump, image->image_base + 512, 512);
+-
+-	/*
+-	 * Fill out some of the header fields ourselves because the
+-	 * EFI firmware loader doesn't load the first sector.
+-	 */
+-	hdr->root_flags = 1;
+-	hdr->vid_mode = 0xffff;
+-	hdr->boot_flag = 0xAA55;
+ 
+ 	/*
+ 	 * The EFI firmware loader could have placed the kernel image
+@@ -978,16 +985,40 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table)
+ 	if (status != EFI_SUCCESS) {
+ 		status = low_alloc(hdr->init_size, hdr->kernel_alignment,
+ 				   &start);
+-		if (status != EFI_SUCCESS) {
++		if (status != EFI_SUCCESS)
+ 			efi_printk("Failed to alloc mem for kernel\n");
+-			goto fail;
+-		}
+ 	}
+ 
++	if (status == EFI_SUCCESS)
++		memcpy((void *)start, (void *)(unsigned long)hdr->code32_start,
++		       hdr->init_size);
++
++	hdr->pref_address = hdr->code32_start;
+ 	hdr->code32_start = (__u32)start;
+-	hdr->pref_address = (__u64)(unsigned long)image->image_base;
+ 
+-	memcpy((void *)start, image->image_base, image->image_size);
++	return status;
++}
++
++/*
++ * On success we return a pointer to a boot_params structure, and NULL
++ * on failure.
++ */
++struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
++			     struct boot_params *boot_params)
++{
++	struct desc_ptr *gdt, *idt;
++	efi_loaded_image_t *image;
++	struct setup_header *hdr = &boot_params->hdr;
++	efi_status_t status;
++	struct desc_struct *desc;
++
++	sys_table = _table;
++
++	/* Check if we were booted by the EFI firmware */
++	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
++		goto fail;
++
++	setup_graphics(boot_params);
+ 
+ 	status = efi_call_phys3(sys_table->boottime->allocate_pool,
+ 				EFI_LOADER_DATA, sizeof(*gdt),
+@@ -1015,7 +1046,18 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table)
+ 	idt->size = 0;
+ 	idt->address = 0;
+ 
+-	status = make_boot_params(boot_params, image, handle);
++	/*
++	 * If the kernel isn't already loaded at the preferred load
++	 * address, relocate it.
++	 */
++	if (hdr->pref_address != hdr->code32_start) {
++		status = relocate_kernel(hdr);
++
++		if (status != EFI_SUCCESS)
++			goto fail;
++	}
++
++	status = exit_boot(boot_params, handle);
+ 	if (status != EFI_SUCCESS)
+ 		goto fail;
+ 
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index c85e3ac..aa4aaf1 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -42,6 +42,16 @@ ENTRY(startup_32)
+ 	 */
+ 	add	$0x4, %esp
+ 
++	call	make_boot_params
++	cmpl	$0, %eax
++	je	1f
++	movl	0x4(%esp), %esi
++	movl	(%esp), %ecx
++	pushl	%eax
++	pushl	%esi
++	pushl	%ecx
++
++	.org 0x30,0x90
+ 	call	efi_main
+ 	cmpl	$0, %eax
+ 	movl	%eax, %esi
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index 87e03a1..2c4b171 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -209,6 +209,16 @@ ENTRY(startup_64)
+ 	.org 0x210
+ 	mov	%rcx, %rdi
+ 	mov	%rdx, %rsi
++	pushq	%rdi
++	pushq	%rsi
++	call	make_boot_params
++	cmpq	$0,%rax
++	je	1f
++	mov	%rax, %rdx
++	popq	%rsi
++	popq	%rdi
++
++	.org 0x230,0x90
+ 	call	efi_main
+ 	movq	%rax,%rsi
+ 	cmpq	$0,%rax
+diff --git a/arch/x86/boot/header.S b/arch/x86/boot/header.S
+index efe5acf..cd921fe 100644
+--- a/arch/x86/boot/header.S
++++ b/arch/x86/boot/header.S
+@@ -283,7 +283,7 @@ _start:
+ 	# Part 2 of the header, from the old setup.S
+ 
+ 		.ascii	"HdrS"		# header signature
+-		.word	0x020a		# header version number (>= 0x0105)
++		.word	0x020b		# header version number (>= 0x0105)
+ 					# or else old loadlin-1.5 will fail)
+ 		.globl realmode_swtch
+ realmode_swtch:	.word	0, 0		# default_switch, SETUPSEG
+@@ -401,6 +401,8 @@ pref_address:		.quad LOAD_PHYSICAL_ADDR	# preferred load addr
+ #define INIT_SIZE VO_INIT_SIZE
+ #endif
+ init_size:		.long INIT_SIZE		# kernel initialization size
++handover_offset:	.long 0x30		# offset to the handover
++						# protocol entry point
+ 
+ # End of setup header #####################################################
+ 
+diff --git a/arch/x86/include/asm/bootparam.h b/arch/x86/include/asm/bootparam.h
+index eb45aa6..2ad874c 100644
+--- a/arch/x86/include/asm/bootparam.h
++++ b/arch/x86/include/asm/bootparam.h
+@@ -66,6 +66,7 @@ struct setup_header {
+ 	__u64	setup_data;
+ 	__u64	pref_address;
+ 	__u32	init_size;
++	__u32	handover_offset;
+ } __attribute__((packed));
+ 
+ struct sys_desc_table {
+-- 
+1.7.11.2
+
+
+From 948fbe310f85f3a51a101ea23f38c59c70792832 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Thu, 8 Mar 2012 09:56:33 -0500
+Subject: [PATCH 02/14] Secure boot: Add new capability
+
+Secure boot adds certain policy requirements, including that root must not
+be able to do anything that could cause the kernel to execute arbitrary code.
+The simplest way to handle this would seem to be to add a new capability
+and gate various functionality on that. We'll then strip it from the initial
+capability set if required.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ include/linux/capability.h | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/capability.h b/include/linux/capability.h
+index d10b7ed..6a39163 100644
+--- a/include/linux/capability.h
++++ b/include/linux/capability.h
+@@ -364,7 +364,11 @@ struct cpu_vfs_cap_data {
+ 
+ #define CAP_BLOCK_SUSPEND    36
+ 
+-#define CAP_LAST_CAP         CAP_BLOCK_SUSPEND
++/* Allow things that are dangerous under secure boot */
++
++#define CAP_SECURE_FIRMWARE  37
++
++#define CAP_LAST_CAP         CAP_SECURE_FIRMWARE
+ 
+ #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
+ 
+-- 
+1.7.11.2
+
+
+From 56150c6ad369f31e34e438744d34c505751a8b78 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Thu, 8 Mar 2012 10:10:38 -0500
+Subject: [PATCH 03/14] PCI: Lock down BAR access in secure boot environments
+
+Any hardware that can potentially generate DMA has to be locked down from
+userspace in order to avoid it being possible for an attacker to cause
+arbitrary kernel behaviour. Default to paranoid - in future we can
+potentially relax this for sufficiently IOMMU-isolated devices.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ drivers/pci/pci-sysfs.c | 9 +++++++++
+ drivers/pci/proc.c      | 8 +++++++-
+ drivers/pci/syscall.c   | 2 +-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index 86c63fe..d3adb7b 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -513,6 +513,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
+ 	loff_t init_off = off;
+ 	u8 *data = (u8*) buf;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (off > dev->cfg_size)
+ 		return 0;
+ 	if (off + count > dev->cfg_size) {
+@@ -815,6 +818,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+ 	resource_size_t start, end;
+ 	int i;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	for (i = 0; i < PCI_ROM_RESOURCE; i++)
+ 		if (res == &pdev->resource[i])
+ 			break;
+@@ -922,6 +928,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
+ 		      struct bin_attribute *attr, char *buf,
+ 		      loff_t off, size_t count)
+ {
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	return pci_resource_io(filp, kobj, attr, buf, off, count, true);
+ }
+ 
+diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+index 27911b5..01d4753 100644
+--- a/drivers/pci/proc.c
++++ b/drivers/pci/proc.c
+@@ -135,6 +135,9 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
+ 	int size = dp->size;
+ 	int cnt;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (pos >= size)
+ 		return 0;
+ 	if (nbytes >= size)
+@@ -211,6 +214,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
+ #endif /* HAVE_PCI_MMAP */
+ 	int ret = 0;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	switch (cmd) {
+ 	case PCIIOC_CONTROLLER:
+ 		ret = pci_domain_nr(dev->bus);
+@@ -251,7 +257,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
+ 	struct pci_filp_private *fpriv = file->private_data;
+ 	int i, ret;
+ 
+-	if (!capable(CAP_SYS_RAWIO))
++	if (!capable(CAP_SYS_RAWIO) || !capable(CAP_SECURE_FIRMWARE))
+ 		return -EPERM;
+ 
+ 	/* Make sure the caller is mapping a real resource for this device */
+diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
+index e1c1ec5..a778ba9 100644
+--- a/drivers/pci/syscall.c
++++ b/drivers/pci/syscall.c
+@@ -92,7 +92,7 @@ SYSCALL_DEFINE5(pciconfig_write, unsigned long, bus, unsigned long, dfn,
+ 	u32 dword;
+ 	int err = 0;
+ 
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!capable(CAP_SYS_ADMIN) || !capable(CAP_SECURE_FIRMWARE))
+ 		return -EPERM;
+ 
+ 	dev = pci_get_bus_and_slot(bus, dfn);
+-- 
+1.7.11.2
+
+
+From 888347d81b1ddcdcd5989cba1c212aed549928eb Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Thu, 8 Mar 2012 10:35:59 -0500
+Subject: [PATCH 04/14] x86: Lock down IO port access in secure boot
+ environments
+
+IO port access would permit users to gain access to PCI configuration
+registers, which in turn (on a lot of hardware) give access to MMIO register
+space. This would potentially permit root to trigger arbitrary DMA, so lock
+it down by default.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ arch/x86/kernel/ioport.c | 4 ++--
+ drivers/char/mem.c       | 3 +++
+ 2 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/ioport.c b/arch/x86/kernel/ioport.c
+index 8c96897..c3a1bb2 100644
+--- a/arch/x86/kernel/ioport.c
++++ b/arch/x86/kernel/ioport.c
+@@ -28,7 +28,7 @@ asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int turn_on)
+ 
+ 	if ((from + num <= from) || (from + num > IO_BITMAP_BITS))
+ 		return -EINVAL;
+-	if (turn_on && !capable(CAP_SYS_RAWIO))
++	if (turn_on && (!capable(CAP_SYS_RAWIO) || !capable(CAP_SECURE_FIRMWARE)))
+ 		return -EPERM;
+ 
+ 	/*
+@@ -102,7 +102,7 @@ long sys_iopl(unsigned int level, struct pt_regs *regs)
+ 		return -EINVAL;
+ 	/* Trying to gain more privileges? */
+ 	if (level > old) {
+-		if (!capable(CAP_SYS_RAWIO))
++		if (!capable(CAP_SYS_RAWIO) || !capable(CAP_SECURE_FIRMWARE))
+ 			return -EPERM;
+ 	}
+ 	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index e5eedfa..8f5f872 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -597,6 +597,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
+ 	unsigned long i = *ppos;
+ 	const char __user * tmp = buf;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (!access_ok(VERIFY_READ, buf, count))
+ 		return -EFAULT;
+ 	while (count-- > 0 && i < 65536) {
+-- 
+1.7.11.2
+
+
+From a02e91ca8639c6a3a43c684892e2802973c02efc Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Fri, 9 Mar 2012 08:39:37 -0500
+Subject: [PATCH 05/14] ACPI: Limit access to custom_method
+
+It must be impossible for even root to get code executed in kernel context
+under a secure boot environment. custom_method effectively allows arbitrary
+access to system memory, so it needs to have a capability check here.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ drivers/acpi/custom_method.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+index 5d42c24..3e78014 100644
+--- a/drivers/acpi/custom_method.c
++++ b/drivers/acpi/custom_method.c
+@@ -29,6 +29,9 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+ 	struct acpi_table_header table;
+ 	acpi_status status;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (!(*ppos)) {
+ 		/* parse the table header to get the table length */
+ 		if (count <= sizeof(struct acpi_table_header))
+-- 
+1.7.11.2
+
+
+From c523e4918f56e5c17e39c0a5997cc1e741c0f42b Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Fri, 9 Mar 2012 08:46:50 -0500
+Subject: [PATCH 06/14] asus-wmi: Restrict debugfs interface
+
+We have no way of validating what all of the Asus WMI methods do on a
+given machine, and there's a risk that some will allow hardware state to
+be manipulated in such a way that arbitrary code can be executed in the
+kernel. Add a capability check to prevent that.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ drivers/platform/x86/asus-wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 77aadde..ba715c0 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -1504,6 +1504,9 @@ static int show_dsts(struct seq_file *m, void *data)
+ 	int err;
+ 	u32 retval = -1;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
+ 
+ 	if (err < 0)
+@@ -1520,6 +1523,9 @@ static int show_devs(struct seq_file *m, void *data)
+ 	int err;
+ 	u32 retval = -1;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
+ 				    &retval);
+ 
+@@ -1544,6 +1550,9 @@ static int show_call(struct seq_file *m, void *data)
+ 	union acpi_object *obj;
+ 	acpi_status status;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	status = wmi_evaluate_method(ASUS_WMI_MGMT_GUID,
+ 				     1, asus->debug.method_id,
+ 				     &input, &output);
+-- 
+1.7.11.2
+
+
+From 5dc9f0a45d092e5aec177eac1e5e19b62fb28cb2 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Fri, 9 Mar 2012 09:28:15 -0500
+Subject: [PATCH 07/14] Restrict /dev/mem and /dev/kmem in secure boot setups
+
+Allowing users to write to address space makes it possible for the kernel
+to be subverted. Restrict this when we need to protect the kernel.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ drivers/char/mem.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 8f5f872..c1de8e1 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -158,6 +158,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
+ 	unsigned long copied;
+ 	void *ptr;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (!valid_phys_addr_range(p, count))
+ 		return -EFAULT;
+ 
+@@ -530,6 +533,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+ 	char * kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
+ 	int err = 0;
+ 
++	if (!capable(CAP_SECURE_FIRMWARE))
++		return -EPERM;
++
+ 	if (p < (unsigned long) high_memory) {
+ 		unsigned long to_write = min_t(unsigned long, count,
+ 					       (unsigned long)high_memory - p);
+-- 
+1.7.11.2
+
+
+From 16a693dde4c4dca871d920e15fe9dda01000ef86 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Fri, 9 Mar 2012 11:47:56 -0500
+Subject: [PATCH 08/14] kexec: Disable in a secure boot environment
+
+kexec could be used as a vector for a malicious user to use a signed kernel
+to circumvent the secure boot trust model. In the long run we'll want to
+support signed kexec payloads, but for the moment we should just disable
+loading entirely in that situation.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ kernel/kexec.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 4e2e472..35051f9 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -944,7 +944,7 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 	int result;
+ 
+ 	/* We only trust the superuser with rebooting the system. */
+-	if (!capable(CAP_SYS_BOOT))
++	if (!capable(CAP_SYS_BOOT) || !capable(CAP_SECURE_FIRMWARE))
+ 		return -EPERM;
+ 
+ 	/*
+-- 
+1.7.11.2
+
+
+From 82fe599f1192ba0bae968a8e05d8cddbbadd57bc Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Mon, 25 Jun 2012 19:45:15 -0400
+Subject: [PATCH 09/14] Secure boot: Add a dummy kernel parameter that will
+ switch on Secure Boot mode
+
+This forcibly drops CAP_SECURE_FIRMWARE from both cap_permitted and cap_bset
+in the init_cred struct, which everything else inherits from.  This works on
+any machine and can be used to develop even if the box doesn't have UEFI.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ kernel/cred.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/kernel/cred.c b/kernel/cred.c
+index de728ac..0d71d02 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -623,6 +623,20 @@ void __init cred_init(void)
+ 				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+ }
+ 
++/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
++static int __init secureboot_enable(char *str)
++{
++
++	int sb_enable = !!simple_strtol(str, NULL, 0);
++	pr_info("Secure Boot mode %s\n", (sb_enable ? "enabled" : "disabled"));
++	if (sb_enable) {
++		cap_lower((&init_cred)->cap_bset, CAP_SECURE_FIRMWARE);
++		cap_lower((&init_cred)->cap_permitted, CAP_SECURE_FIRMWARE);
++	}
++	return 1;
++}
++__setup("secureboot_enable=", secureboot_enable);
++
+ /**
+  * prepare_kernel_cred - Prepare a set of credentials for a kernel service
+  * @daemon: A userspace daemon to be used as a reference
+-- 
+1.7.11.2
+
+
+From 5aa21bbaad50af58a54cc339f6ab7bf5c163d64f Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg@redhat.com>
+Date: Wed, 18 Jul 2012 11:28:00 -0400
+Subject: [PATCH 10/14] efi: Enable secure boot lockdown automatically when
+ enabled in firmware
+
+The firmware has a set of flags that indicate whether secure boot is enabled
+and enforcing. Use them to indicate whether the kernel should lock itself
+down.
+
+Signed-off-by: Matthew Garrett <mjg@redhat.com>
+---
+ arch/x86/boot/compressed/eboot.c | 32 ++++++++++++++++++++++++++++++++
+ arch/x86/include/asm/bootparam.h |  3 ++-
+ arch/x86/kernel/setup.c          |  3 +++
+ include/linux/cred.h             |  2 ++
+ kernel/cred.c                    | 18 +++++++++++-------
+ 5 files changed, 50 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index b3e0227..3789356 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -724,6 +724,36 @@ fail:
+ 	return status;
+ }
+ 
++static int get_secure_boot(efi_system_table_t *_table)
++{
++	u8 sb, setup;
++	unsigned long datasize = sizeof(sb);
++	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
++	efi_status_t status;
++
++	status = efi_call_phys5(sys_table->runtime->get_variable,
++				L"SecureBoot", &var_guid, NULL, &datasize, &sb);
++
++	if (status != EFI_SUCCESS)
++		return 0;
++
++	if (sb == 0)
++		return 0;
++
++
++	status = efi_call_phys5(sys_table->runtime->get_variable,
++				L"SetupMode", &var_guid, NULL, &datasize,
++				&setup);
++
++	if (status != EFI_SUCCESS)
++		return 0;
++
++	if (setup == 1)
++		return 0;
++
++	return 1;
++}
++
+ /*
+  * Because the x86 boot code expects to be passed a boot_params we
+  * need to create one ourselves (usually the bootloader would create
+@@ -1018,6 +1048,8 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
+ 	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
+ 		goto fail;
+ 
++	boot_params->secure_boot = get_secure_boot(sys_table);
++
+ 	setup_graphics(boot_params);
+ 
+ 	status = efi_call_phys3(sys_table->boottime->allocate_pool,
+diff --git a/arch/x86/include/asm/bootparam.h b/arch/x86/include/asm/bootparam.h
+index 2ad874c..c7338e0 100644
+--- a/arch/x86/include/asm/bootparam.h
++++ b/arch/x86/include/asm/bootparam.h
+@@ -114,7 +114,8 @@ struct boot_params {
+ 	__u8  eddbuf_entries;				/* 0x1e9 */
+ 	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
+ 	__u8  kbd_status;				/* 0x1eb */
+-	__u8  _pad6[5];					/* 0x1ec */
++	__u8  secure_boot;				/* 0x1ec */
++	__u8  _pad6[4];					/* 0x1ed */
+ 	struct setup_header hdr;    /* setup header */	/* 0x1f1 */
+ 	__u8  _pad7[0x290-0x1f1-sizeof(struct setup_header)];
+ 	__u32 edd_mbr_sig_buffer[EDD_MBR_SIG_MAX];	/* 0x290 */
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index f4b9b80..239bf2a 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -947,6 +947,9 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	io_delay_init();
+ 
++	if (boot_params.secure_boot)
++		secureboot_enable();
++
+ 	/*
+ 	 * Parse the ACPI tables for possible boot-time SMP configuration.
+ 	 */
+diff --git a/include/linux/cred.h b/include/linux/cred.h
+index ebbed2c..a24faf1 100644
+--- a/include/linux/cred.h
++++ b/include/linux/cred.h
+@@ -170,6 +170,8 @@ extern int set_security_override_from_ctx(struct cred *, const char *);
+ extern int set_create_files_as(struct cred *, struct inode *);
+ extern void __init cred_init(void);
+ 
++extern void secureboot_enable(void);
++
+ /*
+  * check for validity of credentials
+  */
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 0d71d02..c43e2b0 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -623,19 +623,23 @@ void __init cred_init(void)
+ 				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+ }
+ 
++void __init secureboot_enable()
++{
++	pr_info("Secure boot enabled\n");
++	cap_lower((&init_cred)->cap_bset, CAP_SECURE_FIRMWARE);
++	cap_lower((&init_cred)->cap_permitted, CAP_SECURE_FIRMWARE);
++}
++
+ /* Dummy Secure Boot enable option to fake out UEFI SB=1 */
+-static int __init secureboot_enable(char *str)
++static int __init secureboot_enable_opt(char *str)
+ {
+ 
+ 	int sb_enable = !!simple_strtol(str, NULL, 0);
+-	pr_info("Secure Boot mode %s\n", (sb_enable ? "enabled" : "disabled"));
+-	if (sb_enable) {
+-		cap_lower((&init_cred)->cap_bset, CAP_SECURE_FIRMWARE);
+-		cap_lower((&init_cred)->cap_permitted, CAP_SECURE_FIRMWARE);
+-	}
++	if (sb_enable)
++		secureboot_enable();
+ 	return 1;
+ }
+-__setup("secureboot_enable=", secureboot_enable);
++__setup("secureboot_enable=", secureboot_enable_opt);
+ 
+ /**
+  * prepare_kernel_cred - Prepare a set of credentials for a kernel service
+-- 
+1.7.11.2
+
+
+From 7b875c254033d29fa05b0c026b8097f8e5e1b96c Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Mon, 25 Jun 2012 19:57:30 -0400
+Subject: [PATCH 11/14] acpi: Ignore acpi_rsdp kernel parameter in a secure
+ boot environment
+
+This option allows userspace to pass the RSDP address to the kernel.  This
+could potentially be used to circumvent the secure boot trust model.
+We ignore the setting if we don't have the CAP_SECURE_FIRMWARE capability.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ drivers/acpi/osl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index c3881b2..fb84388 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -246,7 +246,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
+ acpi_physical_address __init acpi_os_get_root_pointer(void)
+ {
+ #ifdef CONFIG_KEXEC
+-	if (acpi_rsdp)
++	if (acpi_rsdp && capable(CAP_SECURE_FIRMWARE))
+ 		return acpi_rsdp;
+ #endif
+ 
+-- 
+1.7.11.2
+
+
+From 5ba183ef3e556bf11bbe73abd2cba50dc097881d Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Mon, 25 Jun 2012 21:29:46 -0400
+Subject: [PATCH 12/14] Documentation: kernel-parameters.txt remove
+ capability.disable
+
+Remove the documentation for capability.disable.  The code supporting this
+parameter was removed with:
+
+	commit 5915eb53861c5776cfec33ca4fcc1fd20d66dd27
+	Author: Miklos Szeredi <mszeredi@suse.cz>
+	Date:   Thu Jul 3 20:56:05 2008 +0200
+
+    	security: remove dummy module
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ Documentation/kernel-parameters.txt | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
+index 12783fa..cec4bf2 100644
+--- a/Documentation/kernel-parameters.txt
++++ b/Documentation/kernel-parameters.txt
+@@ -446,12 +446,6 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+ 			possible to determine what the correct size should be.
+ 			This option provides an override for these situations.
+ 
+-	capability.disable=
+-			[SECURITY] Disable capabilities.  This would normally
+-			be used only if an alternative security model is to be
+-			configured.  Potentially dangerous and should only be
+-			used if you are entirely sure of the consequences.
+-
+ 	ccw_timeout_log [S390]
+ 			See Documentation/s390/CommonIO for details.
+ 
+-- 
+1.7.11.2
+
+
+From 220f3a8cc351d220156e4903bf03c28ab44db6e3 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Tue, 26 Jun 2012 14:15:51 -0400
+Subject: [PATCH 13/14] SELinux: define mapping for new Secure Boot capability
+
+Add the name of the new Secure Boot capability.  This allows SELinux
+policies to properly map CAP_SECURE_FIRMWARE to the appropriate
+capability class.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ security/selinux/include/classmap.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/security/selinux/include/classmap.h b/security/selinux/include/classmap.h
+index df2de54..0a1e348 100644
+--- a/security/selinux/include/classmap.h
++++ b/security/selinux/include/classmap.h
+@@ -146,8 +146,8 @@ struct security_class_mapping secclass_map[] = {
+ 	{ "memprotect", { "mmap_zero", NULL } },
+ 	{ "peer", { "recv", NULL } },
+ 	{ "capability2",
+-	  { "mac_override", "mac_admin", "syslog", "wake_alarm", "block_suspend",
+-	    NULL } },
++	  { "mac_override", "mac_admin", "syslog", "wake_alarm",
++	    "block_suspend", "secure_firmware", NULL } },
+ 	{ "kernel_service", { "use_as_override", "create_files_as", NULL } },
+ 	{ "tun_socket",
+ 	  { COMMON_SOCK_PERMS, NULL } },
+-- 
+1.7.11.2
+
+
+From e5df15082c685dbf5c6917b891af73106342c0bb Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Tue, 26 Jun 2012 16:27:26 -0400
+Subject: [PATCH 14/14] modsign: Reject unsigned modules in a Secure Boot
+ environment
+
+If a machine is booted into a Secure Boot environment, we need to
+protect the trust model.  This requires that all modules be signed
+with a key that is in the kernel's _modsign keyring.  We add a
+capability check and reject modules that are not signed.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ kernel/module-verify.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/module-verify.c b/kernel/module-verify.c
+index b9c3955..f35532a 100644
+--- a/kernel/module-verify.c
++++ b/kernel/module-verify.c
+@@ -31,6 +31,7 @@
+ #include <linux/modsign.h>
+ #include <linux/moduleparam.h>
+ #include <linux/fips.h>
++#include <linux/capability.h>
+ #include <keys/crypto-type.h>
+ #include "module-verify.h"
+ #include "module-verify-defs.h"
+@@ -699,7 +700,7 @@ int module_verify(const Elf_Ehdr *hdr, size_t size, bool *_gpgsig_ok)
+ 	/* The ELF checker found the sig for us if it exists */
+ 	if (mvdata.sig_index <= 0) {
+ 		/* Deal with an unsigned module */
+-		if (modsign_signedonly) {
++		if (modsign_signedonly || !capable(CAP_SECURE_FIRMWARE)) {
+ 			pr_err("An attempt to load unsigned module was rejected\n");
+ 			return -EKEYREJECTED;
+ 		} else {
+-- 
+1.7.11.2
+
