@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -163,7 +163,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -176,7 +176,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -713,8 +713,6 @@ Patch14000: hibernate-freeze-filesystems.patch
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
 Patch14015: team-update-from-net-next.patch
-
-Patch20000: uprobes-3.5-tip.patch
 
 
 # ARM
@@ -1417,8 +1415,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 ApplyPatch team-update-from-net-next.patch
-
-ApplyPatch uprobes-3.5-tip.patch
 
 ApplyPatch power-x86-destdir.patch
 
@@ -2299,6 +2295,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 24 2012 Justin M. Forbes <jforbes@redhat.com> - 3.6.0-0.rc0.git1.1
+- Linux v3.5-1643-gf0a08fc
+
+* Mon Jul 23 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-2
+- Reenable debugging options.
+
 * Mon Jul 23 2012 Justin M. Forbes <jforbes@redhat.com> - 3.5.0-1
 - Linux v3.5
 - Disable debugging options.
