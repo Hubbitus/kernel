@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -715,8 +715,6 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
-Patch14015: team-update-from-net-next.patch
-
 
 # ARM
 # OMAP
@@ -727,8 +725,6 @@ Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
 
 # ARM highbank patches
-# Highbank clock functions need to be EXPORT for module builds
-Patch21010: highbank-export-clock-functions.patch
 
 Patch21094: power-x86-destdir.patch
 
@@ -1420,8 +1416,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
-ApplyPatch team-update-from-net-next.patch
-
 ApplyPatch power-x86-destdir.patch
 
 #rhbz 754518
@@ -1433,9 +1427,6 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
-
-#Highbank clock functions
-ApplyPatch highbank-export-clock-functions.patch 
 
 #Fix FIPS for aesni hardare
 ApplyPatch crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
@@ -2301,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.6.0-0.rc0.git2.1
+- Linux v3.5-4773-gbdc0077
+
 * Tue Jul 24 2012 Josh Boyer <jwboyer@redhat.com>
 - Update modsign patch to latest upstream
 - Add initial UEFI Secure Boot patchset.  Work in progress.
