@@ -745,6 +745,9 @@ Patch22051: crypto-aesni-intel-fix-wrong-kfree-pointer.patch
 #rhbz 772730
 Patch22058: ACPI-AC-check-the-return-value-of-power_supply_register.patch
 
+#rhbz 836742
+Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1434,6 +1437,9 @@ ApplyPatch crypto-aesni-intel-fix-wrong-kfree-pointer.patch
 
 #rhbz 772730
 ApplyPatch ACPI-AC-check-the-return-value-of-power_supply_register.patch
+
+#rhbz 836742
+ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2293,6 +2299,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Jul 26 2012 Josh Boyer <jwboyer@redhat.com>
+- Apply patch to fix uvcvideo crash (rhbz 836742)
 - Enable Intel MEI driver (rhbz 842444)
 
 * Wed Jul 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.6.0-0.rc0.git2.1
