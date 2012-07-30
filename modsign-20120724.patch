@@ -4451,13 +4451,13 @@ index 7b63743..9cd13b5 100644
  
  #ifdef MODULE
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index c7e6d20..5fc742e 100644
+index fbdd853..8d1dfde 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
-@@ -45,6 +45,8 @@ config ARM
- 	select GENERIC_SMP_IDLE_THREAD
- 	select KTIME_SCALAR
- 	select GENERIC_CLOCKEVENTS_BROADCAST if SMP
+@@ -48,6 +48,8 @@ config ARM
+ 	select GENERIC_STRNCPY_FROM_USER
+ 	select GENERIC_STRNLEN_USER
+ 	select DCACHE_WORD_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && !CPU_BIG_ENDIAN
 +	select HAVE_MOD_ARCH_SPECIFIC if ARM_UNWIND
 +	select MODULES_USE_ELF_REL
  	help
