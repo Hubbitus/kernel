@@ -155,8 +155,6 @@ CONFIG_OLPC_XO1_SCI=y
 # staging
 # CONFIG_FB_OLPC_DCON is not set
 
-# CONFIG_IRQ_DOMAIN_DEBUG is not set
-
 # CONFIG_SPARSE_IRQ is not set
 
 CONFIG_RCU_FANOUT=32
