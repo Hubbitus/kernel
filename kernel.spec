@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -737,13 +737,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#Fix FIPS for aesni hardare
-Patch22050: crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
-Patch22051: crypto-aesni-intel-fix-wrong-kfree-pointer.patch
-
-#rhbz 772730
-Patch22058: ACPI-AC-check-the-return-value-of-power_supply_register.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
@@ -1430,13 +1423,6 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
-
-#Fix FIPS for aesni hardare
-ApplyPatch crypto-testmgr-allow-aesni-intel-and-ghash_clmulni-intel.patch
-ApplyPatch crypto-aesni-intel-fix-wrong-kfree-pointer.patch
-
-#rhbz 772730
-ApplyPatch ACPI-AC-check-the-return-value-of-power_supply_register.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
@@ -2298,6 +2284,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 30 2012 Josh Boyer <jwboyer@redhat.com>
+- Fixup patches
+
 * Fri Jul 27 2012 Justin M. Forbes <jforbes@redhat.com> - 3.6.0-0.rc0.git3.1
 - Linux v3.5-6982-gb387e41
 
