@@ -4795,16 +4795,17 @@ index 3071fe8..38233b6 100644
 -
 -}
 diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
-index 1471201..3694301 100644
+index 0b0f8b8..fcc5a65 100644
 --- a/arch/m68k/Kconfig
 +++ b/arch/m68k/Kconfig
-@@ -11,6 +11,9 @@ config M68K
- 	select GENERIC_STRNLEN_USER if MMU
+@@ -12,6 +12,10 @@ config M68K
  	select FPU if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
  	select ARCH_USES_GETTIMEOFFSET if MMU && !COLDFIRE
 +	select HAVE_MOD_ARCH_SPECIFIC
 +	select MODULES_USE_ELF_REL
 +	select MODULES_USE_ELF_RELA
++
  
  config RWSEM_GENERIC_SPINLOCK
  	bool
