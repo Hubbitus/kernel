@@ -651,6 +651,8 @@ Patch09: linux-2.6-upstream-reverts.patch
 
 Patch100: taint-vbox.patch
 
+Patch110: vmbugon-warnon.patch
+
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
@@ -1292,6 +1294,8 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
 
 ApplyPatch taint-vbox.patch
+
+ApplyPatch vmbugon-warnon.patch
 
 # Architecture patches
 # x86(-64)
@@ -2284,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 31 2012 Dave Jones <davej@redhat.com>
+- Change VM_BUG_ON's to be WARN_ONs instead.
+
 * Tue Jul 31 2012 Josh Boyer <jwboyer@redhat.com>
 - Move modules needed by Shorewall back to main kernel package (rhbz 844436)
 
