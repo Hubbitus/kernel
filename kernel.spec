@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 31 2012 John W. Linville <linville@redhat.com>
+- Enable batman-adv and add it to the list of "extra" modules
+
 * Tue Jul 31 2012 Dave Jones <davej@redhat.com>
 - Change VM_BUG_ON's to be WARN_ONs instead.
 

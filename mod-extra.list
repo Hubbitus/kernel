@@ -171,3 +171,4 @@ tpm_nsc.ko
 tpm_tis.ko
 slip.ko
 nilfs2.ko
+batman-adv.ko

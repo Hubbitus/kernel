@@ -4240,7 +4240,7 @@ CONFIG_USB_ATMEL=m
 # CONFIG_VIDEO_CX25821 is not set
 # CONFIG_R8187SE is not set
 # CONFIG_RTL8192U is not set
-# CONFIG_BATMAN_ADV is not set
+CONFIG_BATMAN_ADV=m
 # CONFIG_FB_SM7XX is not set
 # CONFIG_SPECTRA is not set
 # CONFIG_ZRAM is not set
