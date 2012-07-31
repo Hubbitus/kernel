@@ -2284,6 +2284,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 31 2012 Josh Boyer <jwboyer@redhat.com>
+- Move modules needed by Shorewall back to main kernel package (rhbz 844436)
+
 * Mon Jul 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc0.git5.2
 - Update config options
 

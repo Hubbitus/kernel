@@ -45,17 +45,12 @@ sch_choke.ko
 sch_drr.ko
 sch_dsmark.ko
 sch_gred.ko
-sch_hfsc.ko
-sch_ingress.ko
 sch_mqprio.ko
 sch_multiq.ko
 sch_netem.ko
-sch_prio.ko
 sch_qfq.ko
 sch_red.ko
 sch_sfb.ko
-sch_sfq.ko
-sch_tbf.ko
 sch_teql.ko
 ax25.ko
 netrom.ko
