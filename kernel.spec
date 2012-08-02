@@ -2295,6 +2295,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com>
+- Reenable cgroups memory controller (rhbz 845285)
 - Add two patches from Seth Forshee to fix brcmsmac backtrace
 
 * Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc0.git9.1
