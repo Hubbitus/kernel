@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -742,6 +742,9 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+Patch22062: cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
+Patch22063: brcmsmac-use-channel-flags-to-restrict-OFDM.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1430,6 +1433,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+ApplyPatch cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
+ApplyPatch brcmsmac-use-channel-flags-to-restrict-OFDM.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2288,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com>
+- Add two patches from Seth Forshee to fix brcmsmac backtrace
+
 * Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc0.git9.1
 - Linux v3.5-9139-g1a9b499
 
