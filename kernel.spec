@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -674,10 +674,10 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
-Patch900: modsign-20120724.patch
+Patch900: modsign-20120802.patch
 
 # secure boot
-Patch1000: secure-boot-20120724.patch
+Patch1000: secure-boot-20120802.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1376,10 +1376,10 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-20120724.patch
+ApplyPatch modsign-20120802.patch
 
 # secure boot
-ApplyPatch secure-boot-20120724.patch
+ApplyPatch secure-boot-20120802.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -2294,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc0.git9.3
+- Update modsign and secure-boot patch sets
+
 * Thu Aug 02 2012 Josh Boyer <jwboyer@redhat.com>
 - Reenable cgroups memory controller (rhbz 845285)
 - Add two patches from Seth Forshee to fix brcmsmac backtrace

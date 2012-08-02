@@ -1,7 +1,7 @@
-From 948fbe310f85f3a51a101ea23f38c59c70792832 Mon Sep 17 00:00:00 2001
+From 617309bdd75bbce794ae2d41d44e7b76fb8c6d8b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 8 Mar 2012 09:56:33 -0500
-Subject: [PATCH 02/14] Secure boot: Add new capability
+Subject: [PATCH 01/13] Secure boot: Add new capability
 
 Secure boot adds certain policy requirements, including that root must not
 be able to do anything that could cause the kernel to execute arbitrary code.
@@ -35,10 +35,10 @@ index d10b7ed..6a39163 100644
 1.7.11.2
 
 
-From 56150c6ad369f31e34e438744d34c505751a8b78 Mon Sep 17 00:00:00 2001
+From ac892cb2320872717005736c8ef88208c12e61ee Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
-Subject: [PATCH 03/14] PCI: Lock down BAR access in secure boot environments
+Subject: [PATCH 02/13] PCI: Lock down BAR access in secure boot environments
 
 Any hardware that can potentially generate DMA has to be locked down from
 userspace in order to avoid it being possible for an attacker to cause
@@ -53,10 +53,10 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  3 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 86c63fe..d3adb7b 100644
+index 6869009..a1ad0f7 100644
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
-@@ -513,6 +513,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
+@@ -542,6 +542,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
  	loff_t init_off = off;
  	u8 *data = (u8*) buf;
  
@@ -66,7 +66,7 @@ index 86c63fe..d3adb7b 100644
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -815,6 +818,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+@@ -844,6 +847,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
  	resource_size_t start, end;
  	int i;
  
@@ -76,7 +76,7 @@ index 86c63fe..d3adb7b 100644
  	for (i = 0; i < PCI_ROM_RESOURCE; i++)
  		if (res == &pdev->resource[i])
  			break;
-@@ -922,6 +928,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
+@@ -951,6 +957,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
  		      struct bin_attribute *attr, char *buf,
  		      loff_t off, size_t count)
  {
@@ -136,10 +136,10 @@ index e1c1ec5..a778ba9 100644
 1.7.11.2
 
 
-From 888347d81b1ddcdcd5989cba1c212aed549928eb Mon Sep 17 00:00:00 2001
+From 4c02feefb934d587f03c74cc48e8d58904416c68 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
-Subject: [PATCH 04/14] x86: Lock down IO port access in secure boot
+Subject: [PATCH 03/13] x86: Lock down IO port access in secure boot
  environments
 
 IO port access would permit users to gain access to PCI configuration
@@ -193,10 +193,10 @@ index e5eedfa..8f5f872 100644
 1.7.11.2
 
 
-From a02e91ca8639c6a3a43c684892e2802973c02efc Mon Sep 17 00:00:00 2001
+From d379d102316075d51011b81748433530d294a70c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
-Subject: [PATCH 05/14] ACPI: Limit access to custom_method
+Subject: [PATCH 04/13] ACPI: Limit access to custom_method
 
 It must be impossible for even root to get code executed in kernel context
 under a secure boot environment. custom_method effectively allows arbitrary
@@ -225,10 +225,10 @@ index 5d42c24..3e78014 100644
 1.7.11.2
 
 
-From c523e4918f56e5c17e39c0a5997cc1e741c0f42b Mon Sep 17 00:00:00 2001
+From afc7c002eb264fc745a38fb6ec322be4928338dd Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Fri, 9 Mar 2012 08:46:50 -0500
-Subject: [PATCH 06/14] asus-wmi: Restrict debugfs interface
+Subject: [PATCH 05/13] asus-wmi: Restrict debugfs interface
 
 We have no way of validating what all of the Asus WMI methods do on a
 given machine, and there's a risk that some will allow hardware state to
@@ -241,10 +241,10 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 77aadde..ba715c0 100644
+index c7a36f6..0fb58bc 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -1504,6 +1504,9 @@ static int show_dsts(struct seq_file *m, void *data)
+@@ -1509,6 +1509,9 @@ static int show_dsts(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -254,7 +254,7 @@ index 77aadde..ba715c0 100644
  	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
  
  	if (err < 0)
-@@ -1520,6 +1523,9 @@ static int show_devs(struct seq_file *m, void *data)
+@@ -1525,6 +1528,9 @@ static int show_devs(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -264,7 +264,7 @@ index 77aadde..ba715c0 100644
  	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
  				    &retval);
  
-@@ -1544,6 +1550,9 @@ static int show_call(struct seq_file *m, void *data)
+@@ -1549,6 +1555,9 @@ static int show_call(struct seq_file *m, void *data)
  	union acpi_object *obj;
  	acpi_status status;
  
@@ -278,10 +278,10 @@ index 77aadde..ba715c0 100644
 1.7.11.2
 
 
-From 5dc9f0a45d092e5aec177eac1e5e19b62fb28cb2 Mon Sep 17 00:00:00 2001
+From 21bd1f0da09b40a0ba50636267f7eac8f839a336 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
-Subject: [PATCH 07/14] Restrict /dev/mem and /dev/kmem in secure boot setups
+Subject: [PATCH 06/13] Restrict /dev/mem and /dev/kmem in secure boot setups
 
 Allowing users to write to address space makes it possible for the kernel
 to be subverted. Restrict this when we need to protect the kernel.
@@ -319,10 +319,10 @@ index 8f5f872..c1de8e1 100644
 1.7.11.2
 
 
-From 16a693dde4c4dca871d920e15fe9dda01000ef86 Mon Sep 17 00:00:00 2001
+From 1940a18cd651113f5b46f5a41290065963d6fbad Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Fri, 9 Mar 2012 11:47:56 -0500
-Subject: [PATCH 08/14] kexec: Disable in a secure boot environment
+Subject: [PATCH 07/13] kexec: Disable in a secure boot environment
 
 kexec could be used as a vector for a malicious user to use a signed kernel
 to circumvent the secure boot trust model. In the long run we'll want to
@@ -335,7 +335,7 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 4e2e472..35051f9 100644
+index 0668d58..48852ec 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
 @@ -944,7 +944,7 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
@@ -351,10 +351,10 @@ index 4e2e472..35051f9 100644
 1.7.11.2
 
 
-From 82fe599f1192ba0bae968a8e05d8cddbbadd57bc Mon Sep 17 00:00:00 2001
+From c83bad5d60b8f02ebbedf9b4c4b69cdee49a7976 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:45:15 -0400
-Subject: [PATCH 09/14] Secure boot: Add a dummy kernel parameter that will
+Subject: [PATCH 08/13] Secure boot: Add a dummy kernel parameter that will
  switch on Secure Boot mode
 
 This forcibly drops CAP_SECURE_FIRMWARE from both cap_permitted and cap_bset
@@ -395,10 +395,10 @@ index de728ac..0d71d02 100644
 1.7.11.2
 
 
-From 5aa21bbaad50af58a54cc339f6ab7bf5c163d64f Mon Sep 17 00:00:00 2001
+From b70595f1523ecadc4ce9d43e9a0c465436ed1007 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Wed, 18 Jul 2012 11:28:00 -0400
-Subject: [PATCH 10/14] efi: Enable secure boot lockdown automatically when
+Subject: [PATCH 09/13] efi: Enable secure boot lockdown automatically when
  enabled in firmware
 
 The firmware has a set of flags that indicate whether secure boot is enabled
@@ -544,10 +544,10 @@ index 0d71d02..c43e2b0 100644
 1.7.11.2
 
 
-From 7b875c254033d29fa05b0c026b8097f8e5e1b96c Mon Sep 17 00:00:00 2001
+From 411c18c35ccacb1a9e3f3dc67383a6431e110e17 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
-Subject: [PATCH 11/14] acpi: Ignore acpi_rsdp kernel parameter in a secure
+Subject: [PATCH 10/13] acpi: Ignore acpi_rsdp kernel parameter in a secure
  boot environment
 
 This option allows userspace to pass the RSDP address to the kernel.  This
@@ -560,7 +560,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index c3881b2..fb84388 100644
+index 9eaf708..50c94e4 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -246,7 +246,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
@@ -576,10 +576,10 @@ index c3881b2..fb84388 100644
 1.7.11.2
 
 
-From 5ba183ef3e556bf11bbe73abd2cba50dc097881d Mon Sep 17 00:00:00 2001
+From 7bf87e8da8c7b57ba7f9448855c8ec84c684fb65 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 21:29:46 -0400
-Subject: [PATCH 12/14] Documentation: kernel-parameters.txt remove
+Subject: [PATCH 11/13] Documentation: kernel-parameters.txt remove
  capability.disable
 
 Remove the documentation for capability.disable.  The code supporting this
@@ -597,7 +597,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 6 deletions(-)
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index 12783fa..cec4bf2 100644
+index ad7e2e5..33c4029 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
 @@ -446,12 +446,6 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
@@ -617,10 +617,10 @@ index 12783fa..cec4bf2 100644
 1.7.11.2
 
 
-From 220f3a8cc351d220156e4903bf03c28ab44db6e3 Mon Sep 17 00:00:00 2001
+From ec0ca55ba3d1c2a59b0c0b6e38f7ae9966d676aa Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 26 Jun 2012 14:15:51 -0400
-Subject: [PATCH 13/14] SELinux: define mapping for new Secure Boot capability
+Subject: [PATCH 12/13] SELinux: define mapping for new Secure Boot capability
 
 Add the name of the new Secure Boot capability.  This allows SELinux
 policies to properly map CAP_SECURE_FIRMWARE to the appropriate
@@ -650,10 +650,10 @@ index df2de54..0a1e348 100644
 1.7.11.2
 
 
-From e5df15082c685dbf5c6917b891af73106342c0bb Mon Sep 17 00:00:00 2001
+From 0a90e99e45f5c8eddd3b8cfcd63a4c6355c5688d Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 26 Jun 2012 16:27:26 -0400
-Subject: [PATCH 14/14] modsign: Reject unsigned modules in a Secure Boot
+Subject: [PATCH 13/13] modsign: Reject unsigned modules in a Secure Boot
  environment
 
 If a machine is booted into a Secure Boot environment, we need to
@@ -663,11 +663,11 @@ capability check and reject modules that are not signed.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
- kernel/module-verify.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ kernel/module-verify.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/module-verify.c b/kernel/module-verify.c
-index b9c3955..f35532a 100644
+index 22036d4..f6821b3 100644
 --- a/kernel/module-verify.c
 +++ b/kernel/module-verify.c
 @@ -31,6 +31,7 @@
@@ -687,6 +687,15 @@ index b9c3955..f35532a 100644
  			pr_err("An attempt to load unsigned module was rejected\n");
  			return -EKEYREJECTED;
  		} else {
+@@ -736,7 +737,7 @@ out:
+ 		break;
+ 	case -ENOKEY:		/* Signed, but we don't have the public key */
+ 		pr_err("Module signed with unknown public key\n");
+-		if (!modsign_signedonly) {
++		if (!modsign_signedonly && capable(CAP_SECURE_FIRMWARE)) {
+ 			/* Allow a module to be signed with an unknown public
+ 			 * key unless we're enforcing.
+ 			 */
 -- 
 1.7.11.2
 

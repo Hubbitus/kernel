@@ -1,7 +1,7 @@
-From d012ed16fd7eff5498ddd9be8ad9960a644db518 Mon Sep 17 00:00:00 2001
+From 711fd460b3d44d666fbddd80a91ae5f825c7ebb6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 13:59:15 +0100
-Subject: [PATCH 01/27] MPILIB: Provide count_leading/trailing_zeros() based
+Subject: [PATCH 01/28] MPILIB: Provide count_leading/trailing_zeros() based
  on arch functions
 
 Provide count_leading/trailing_zeros() macros based on extant arch bit scanning
@@ -359,10 +359,10 @@ index 67f3e79..5464c87 100644
 1.7.11.2
 
 
-From e2faf6ee3cc2f8cfe1c18e8d31eaf01fa653fd79 Mon Sep 17 00:00:00 2001
+From 1d6e2f2b87e6651bead1c0ccca699681f92dd52c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 13:59:51 +0100
-Subject: [PATCH 02/27] KEYS: Create a key type that can be used for general
+Subject: [PATCH 02/28] KEYS: Create a key type that can be used for general
  cryptographic operations
 
 Create a key type that can be used for general cryptographic operations, such
@@ -988,10 +988,10 @@ index 0000000..33d279b
 1.7.11.2
 
 
-From f7b41b16f3c6d24b46100b259a83c50615be5a23 Mon Sep 17 00:00:00 2001
+From 24d9655ce0fc046012078867baaedd3bf2eaedd2 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 13:59:51 +0100
-Subject: [PATCH 03/27] KEYS: Add signature verification facility
+Subject: [PATCH 03/28] KEYS: Add signature verification facility
 
 Add a facility whereby a key subtype may be asked to verify a signature against
 the data it is purported to have signed.
@@ -1362,10 +1362,10 @@ index 0000000..3f2964b
 1.7.11.2
 
 
-From dfa8292f4527f46cabbbd64bd89766ac1dbe6546 Mon Sep 17 00:00:00 2001
+From a0fe6700fba7b7497cf137dc6a969d299ee59c67 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 13:59:52 +0100
-Subject: [PATCH 04/27] KEYS: Asymmetric public-key algorithm crypto key
+Subject: [PATCH 04/28] KEYS: Asymmetric public-key algorithm crypto key
  subtype
 
 Add a subtype for supporting asymmetric public-key encryption algorithms such
@@ -1588,10 +1588,10 @@ index 0000000..81ed603
 1.7.11.2
 
 
-From 0a8e7f4cc41d3cddf8a2367b1f0ed2bb1f6ccc91 Mon Sep 17 00:00:00 2001
+From 39eaf7c28e0ca07dcb5e1e2a12db62815890f0e7 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:10:37 +0100
-Subject: [PATCH 05/27] MPILIB: Reinstate mpi_cmp[_ui]() and export for RSA
+Subject: [PATCH 05/28] MPILIB: Reinstate mpi_cmp[_ui]() and export for RSA
  signature verification
 
 Reinstate and export mpi_cmp() and mpi_cmp_ui() from the MPI library for use by
@@ -1696,10 +1696,10 @@ index 0000000..1871e7b
 1.7.11.2
 
 
-From de86fda3085f6586bfd28517c07a2cd8cd4f9893 Mon Sep 17 00:00:00 2001
+From c995ac0765cfffe9b293327717e080c2cd253779 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:10:39 +0100
-Subject: [PATCH 06/27] KEYS: RSA: Implement signature verification algorithm
+Subject: [PATCH 06/28] KEYS: RSA: Implement signature verification algorithm
  [PKCS#1 / RFC3447]
 
 Implement RSA public key cryptography [PKCS#1 / RFC3447].  At this time, only
@@ -2026,10 +2026,10 @@ index 81ed603..7913615 100644
 1.7.11.2
 
 
-From 2363851f3eeae9ec32ee6d5f868085eb11afa717 Mon Sep 17 00:00:00 2001
+From d9acf3806acdc9ab5e26a1c604989070a7ae6840 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:19 +0100
-Subject: [PATCH 07/27] KEYS: RSA: Fix signature verification for shorter
+Subject: [PATCH 07/28] KEYS: RSA: Fix signature verification for shorter
  signatures
 
 gpg can produce a signature file where length of signature is less than the
@@ -2082,10 +2082,10 @@ index 845285c..a4a63be 100644
 1.7.11.2
 
 
-From edfd057d757164e207edfb3d3affa87cf0b126e6 Mon Sep 17 00:00:00 2001
+From 9a2a2b1faa27be883b3aa2c47bbc367bd1a1f653 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:19 +0100
-Subject: [PATCH 08/27] PGPLIB: PGP definitions (RFC 4880)
+Subject: [PATCH 08/28] PGPLIB: PGP definitions (RFC 4880)
 
 Provide some useful PGP definitions from RFC 4880.  These describe details of
 public key crypto as used by crypto keys for things like signature
@@ -2313,10 +2313,10 @@ index 0000000..1359f64
 1.7.11.2
 
 
-From 36f2b76a6ee5c6d86f6d7725ead9e5252b1d29a6 Mon Sep 17 00:00:00 2001
+From 0b8ec95fe7220288c143a820b8d8996c356129f1 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:20 +0100
-Subject: [PATCH 09/27] PGPLIB: Basic packet parser
+Subject: [PATCH 09/28] PGPLIB: Basic packet parser
 
 Provide a simple parser that extracts the packets from a PGP packet blob and
 passes the desirous ones to the given processor function:
@@ -2699,10 +2699,10 @@ index 0000000..af396d6
 1.7.11.2
 
 
-From 6f830b85b1e32e44291c2bdff6b936025c48b40d Mon Sep 17 00:00:00 2001
+From a3673ac73f4634bcdd97d642b3bdd87998eb2100 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:20 +0100
-Subject: [PATCH 10/27] PGPLIB: Signature parser
+Subject: [PATCH 10/28] PGPLIB: Signature parser
 
 Provide some PGP signature parsing helpers:
 
@@ -3052,10 +3052,10 @@ index af396d6..c9218df 100644
 1.7.11.2
 
 
-From c0e901a1ce72ddf259de219506327271cf3bb700 Mon Sep 17 00:00:00 2001
+From dd59f49ce7179b145f55bdca3b43f4761ae0769d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:21 +0100
-Subject: [PATCH 11/27] KEYS: PGP data parser
+Subject: [PATCH 11/28] KEYS: PGP data parser
 
 Implement a PGP data parser for the crypto key type to use when instantiating a
 key.
@@ -3499,10 +3499,10 @@ index 0000000..8a8b7c0
 1.7.11.2
 
 
-From b830627f3b864530540ad88df21d2ceefcba7459 Mon Sep 17 00:00:00 2001
+From 80437db0342877f06d689d33babcc99175d34b82 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:21 +0100
-Subject: [PATCH 12/27] KEYS: PGP-based public key signature verification
+Subject: [PATCH 12/28] KEYS: PGP-based public key signature verification
 
 Provide handlers for PGP-based public-key algorithm signature verification.
 This does most of the work involved in signature verification as most of it is
@@ -3880,10 +3880,10 @@ index 0000000..82c89da
 1.7.11.2
 
 
-From fbd1b578b58a197da42428fda49654d38c794f31 Mon Sep 17 00:00:00 2001
+From 1826f7b562237c008c66ad63b7d7d4c7c44b98fb Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:21 +0100
-Subject: [PATCH 13/27] KEYS: PGP format signature parser
+Subject: [PATCH 13/28] KEYS: PGP format signature parser
 
 Implement a signature parser that will attempt to parse a signature blob as a
 PGP packet format message.  If it can, it will find an appropriate crypto key
@@ -4061,10 +4061,10 @@ index 0000000..f5feb2b
 1.7.11.2
 
 
-From a04615b5ce4ae2e6e0f1932cd697b6a3d41cb9f8 Mon Sep 17 00:00:00 2001
+From 68b4585107d4d014b4de3536c972c63f617c48f5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:11:21 +0100
-Subject: [PATCH 14/27] KEYS: Provide a function to load keys from a PGP
+Subject: [PATCH 14/28] KEYS: Provide a function to load keys from a PGP
  keyring blob
 
 Provide a function to load keys from a PGP keyring blob for use in initialising
@@ -4279,10 +4279,10 @@ index 0000000..9028788
 1.7.11.2
 
 
-From d0e5635f09c91ca12fa5a508c2ba5197372d7487 Mon Sep 17 00:00:00 2001
+From c9455441e0482bb5eb0ea8f1e2cfbe2e7d630560 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:13:56 +0100
-Subject: [PATCH 15/27] Make most arch asm/module.h files use
+Subject: [PATCH 15/28] Make most arch asm/module.h files use
  asm-generic/module.h
 
 Use the mapping of Elf_[SPE]hdr, Elf_Addr, Elf_Sym, Elf_Dyn, Elf_Rel/Rela,
@@ -4346,7 +4346,7 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  arch/m32r/include/asm/Kbuild       |  2 ++
  arch/m32r/include/asm/module.h     | 10 ----------
  arch/m32r/kernel/module.c          | 15 --------------
- arch/m68k/Kconfig                  |  3 +++
+ arch/m68k/Kconfig                  |  4 ++++
  arch/m68k/include/asm/module.h     |  6 ++----
  arch/microblaze/Kconfig            |  1 +
  arch/mips/Kconfig                  |  3 +++
@@ -4377,17 +4377,17 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  include/asm-generic/module.h       | 40 +++++++++++++++++++++++++++++++-------
  include/linux/moduleloader.h       | 36 ++++++++++++++++++++++++++++++----
  kernel/module.c                    | 20 -------------------
- 56 files changed, 167 insertions(+), 223 deletions(-)
+ 56 files changed, 168 insertions(+), 223 deletions(-)
  delete mode 100644 arch/cris/include/asm/module.h
  delete mode 100644 arch/h8300/include/asm/module.h
  delete mode 100644 arch/m32r/include/asm/module.h
  delete mode 100644 arch/sparc/include/asm/module.h
 
 diff --git a/arch/Kconfig b/arch/Kconfig
-index 8c3d957..51acb02 100644
+index 72f2fa1..3450115 100644
 --- a/arch/Kconfig
 +++ b/arch/Kconfig
-@@ -274,4 +274,23 @@ config SECCOMP_FILTER
+@@ -281,4 +281,23 @@ config SECCOMP_FILTER
  
  	  See Documentation/prctl/seccomp_filter.txt for details.
  
@@ -4412,10 +4412,10 @@ index 8c3d957..51acb02 100644
 +
  source "kernel/gcov/Kconfig"
 diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
-index 3de74c9..6f580de 100644
+index d5b9b5e..e73a1a7 100644
 --- a/arch/alpha/Kconfig
 +++ b/arch/alpha/Kconfig
-@@ -17,6 +17,8 @@ config ALPHA
+@@ -18,6 +18,8 @@ config ALPHA
  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
  	select GENERIC_SMP_IDLE_THREAD
  	select GENERIC_CMOS_UPDATE
@@ -4451,10 +4451,10 @@ index 7b63743..9cd13b5 100644
  
  #ifdef MODULE
 diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index fbdd853..8d1dfde 100644
+index 7980873..f447a89 100644
 --- a/arch/arm/Kconfig
 +++ b/arch/arm/Kconfig
-@@ -48,6 +48,8 @@ config ARM
+@@ -50,6 +50,8 @@ config ARM
  	select GENERIC_STRNCPY_FROM_USER
  	select GENERIC_STRNLEN_USER
  	select DCACHE_WORD_ACCESS if (CPU_V6 || CPU_V6K || CPU_V7) && !CPU_BIG_ENDIAN
@@ -4494,11 +4494,11 @@ index 6c6809f..0d3a28d 100644
  /*
   * Add the ARM architecture version to the version magic string
 diff --git a/arch/avr32/Kconfig b/arch/avr32/Kconfig
-index 71d38c7..2779913 100644
+index 5ade51c..06e73bf 100644
 --- a/arch/avr32/Kconfig
 +++ b/arch/avr32/Kconfig
-@@ -14,6 +14,8 @@ config AVR32
- 	select ARCH_HAVE_CUSTOM_GPIO_H
+@@ -15,6 +15,8 @@ config AVR32
+ 	select ARCH_WANT_IPC_PARSE_VERSION
  	select ARCH_HAVE_NMI_SAFE_CMPXCHG
  	select GENERIC_CLOCKEVENTS
 +	select HAVE_MOD_ARCH_SPECIFIC
@@ -4531,10 +4531,10 @@ index 4514445..3f083d3 100644
  
  #define MODULE_ARCH_VERMAGIC MODULE_PROC_FAMILY
 diff --git a/arch/blackfin/Kconfig b/arch/blackfin/Kconfig
-index fef96f4..b8a7bc9 100644
+index f348619..a48d8be 100644
 --- a/arch/blackfin/Kconfig
 +++ b/arch/blackfin/Kconfig
-@@ -40,6 +40,8 @@ config BLACKFIN
+@@ -41,6 +41,8 @@ config BLACKFIN
  	select HAVE_NMI_WATCHDOG if NMI_WATCHDOG
  	select GENERIC_SMP_IDLE_THREAD
  	select ARCH_USES_GETTIMEOFFSET if !GENERIC_CLOCKEVENTS
@@ -4594,10 +4594,10 @@ index a453f97..5c7269c 100644
  struct loaded_sections {
  	unsigned int new_vaddr;
 diff --git a/arch/cris/Kconfig b/arch/cris/Kconfig
-index bb34465..45782c7 100644
+index e922154..7bb8cf9 100644
 --- a/arch/cris/Kconfig
 +++ b/arch/cris/Kconfig
-@@ -46,6 +46,7 @@ config CRIS
+@@ -47,6 +47,7 @@ config CRIS
  	select GENERIC_IOMAP
  	select GENERIC_SMP_IDLE_THREAD if ETRAX_ARCH_V32
  	select GENERIC_CMOS_UPDATE
@@ -4650,11 +4650,11 @@ index 3d5c636..a8848f0 100644
  /*
   * Include the architecture version.
 diff --git a/arch/h8300/Kconfig b/arch/h8300/Kconfig
-index 56e890d..9eaefdd 100644
+index 5e8a0d9..c149d3b29 100644
 --- a/arch/h8300/Kconfig
 +++ b/arch/h8300/Kconfig
-@@ -5,6 +5,7 @@ config H8300
- 	select HAVE_GENERIC_HARDIRQS
+@@ -6,6 +6,7 @@ config H8300
+ 	select ARCH_WANT_IPC_PARSE_VERSION
  	select GENERIC_IRQ_SHOW
  	select GENERIC_CPU_DEVICES
 +	select MODULES_USE_ELF_RELA
@@ -4699,7 +4699,7 @@ index b2fdfb7..0744f7d 100644
  	  Qualcomm Hexagon is a processor architecture designed for high
  	  performance and low power across a wide variety of applications.
 diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
-index 8186ec5..6f1b7b1 100644
+index 310cf57..6881464 100644
 --- a/arch/ia64/Kconfig
 +++ b/arch/ia64/Kconfig
 @@ -39,6 +39,8 @@ config IA64
@@ -4736,10 +4736,10 @@ index 908eaef..dfba22a 100644
  #define MODULE_ARCH_VERMAGIC	MODULE_PROC_FAMILY \
  	"gcc-" __stringify(__GNUC__) "." __stringify(__GNUC_MINOR__)
 diff --git a/arch/m32r/Kconfig b/arch/m32r/Kconfig
-index b638d5b..a30478e 100644
+index 49498bb..fc61533 100644
 --- a/arch/m32r/Kconfig
 +++ b/arch/m32r/Kconfig
-@@ -12,6 +12,7 @@ config M32R
+@@ -13,6 +13,7 @@ config M32R
  	select GENERIC_IRQ_SHOW
  	select GENERIC_ATOMIC64
  	select ARCH_USES_GETTIMEOFFSET
@@ -4832,10 +4832,10 @@ index edffe66..8b58fce 100644
 -
  #endif /* _ASM_M68K_MODULE_H */
 diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 0bf4423..ee395d3 100644
+index ab9afca..b4f409f 100644
 --- a/arch/microblaze/Kconfig
 +++ b/arch/microblaze/Kconfig
-@@ -23,6 +23,7 @@ config MICROBLAZE
+@@ -24,6 +24,7 @@ config MICROBLAZE
  	select GENERIC_CPU_DEVICES
  	select GENERIC_ATOMIC64
  	select GENERIC_CLOCKEVENTS
@@ -4844,10 +4844,10 @@ index 0bf4423..ee395d3 100644
  config SWAP
  	def_bool n
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index b3e10fd..5972ebd 100644
+index 331d574..5ff52db 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -34,6 +34,9 @@ config MIPS
+@@ -36,6 +36,9 @@ config MIPS
  	select BUILDTIME_EXTABLE_SORT
  	select GENERIC_CLOCKEVENTS
  	select GENERIC_CMOS_UPDATE
@@ -4858,7 +4858,7 @@ index b3e10fd..5972ebd 100644
  menu "Machine selection"
  
 diff --git a/arch/mips/include/asm/module.h b/arch/mips/include/asm/module.h
-index 5300080..2c6a4f21 100644
+index 7531ecd..c93b62b 100644
 --- a/arch/mips/include/asm/module.h
 +++ b/arch/mips/include/asm/module.h
 @@ -34,11 +34,14 @@ typedef struct {
@@ -4914,10 +4914,10 @@ index a5066b1..1500c80 100644
  /* Given an address, look for it in the module exception tables. */
  const struct exception_table_entry *search_module_dbetables(unsigned long addr)
 diff --git a/arch/mn10300/Kconfig b/arch/mn10300/Kconfig
-index 687f9b4..f8fec1c 100644
+index 5cfb086..aa03f2e 100644
 --- a/arch/mn10300/Kconfig
 +++ b/arch/mn10300/Kconfig
-@@ -7,6 +7,7 @@ config MN10300
+@@ -8,6 +8,7 @@ config MN10300
  	select HAVE_ARCH_KGDB
  	select HAVE_NMI_WATCHDOG if MN10300_WD_TIMER
  	select GENERIC_CLOCKEVENTS
@@ -4998,10 +4998,10 @@ index 1f41234..bab37e9 100644
  struct unwind_table;
  
 diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 9a5d3cd..5a91b5b 100644
+index 352f416..74f8478 100644
 --- a/arch/powerpc/Kconfig
 +++ b/arch/powerpc/Kconfig
-@@ -137,6 +137,8 @@ config PPC
+@@ -139,6 +139,8 @@ config PPC
  	select GENERIC_CLOCKEVENTS
  	select GENERIC_STRNCPY_FROM_USER
  	select GENERIC_STRNLEN_USER
@@ -5040,10 +5040,10 @@ index 0192a4e..c1df590 100644
  	asm(".section .plt,\"ax\",@nobits; .align 3; .previous");
  	asm(".section .init.plt,\"ax\",@nobits; .align 3; .previous");
 diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index a39b469..7c16d31 100644
+index 76de6b6..53a8e01 100644
 --- a/arch/s390/Kconfig
 +++ b/arch/s390/Kconfig
-@@ -121,6 +121,8 @@ config S390
+@@ -124,6 +124,8 @@ config S390
  	select GENERIC_TIME_VSYSCALL
  	select GENERIC_CLOCKEVENTS
  	select KTIME_SCALAR if 32BIT
@@ -5144,10 +5144,10 @@ index 469e3b6..1378d99 100644
  const struct exception_table_entry *search_module_dbetables(unsigned long addr)
  {
 diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index a24595d..365ecf5 100644
+index 36f5141..656329a 100644
 --- a/arch/sh/Kconfig
 +++ b/arch/sh/Kconfig
-@@ -34,6 +34,8 @@ config SUPERH
+@@ -35,6 +35,8 @@ config SUPERH
  	select GENERIC_CMOS_UPDATE if SH_SH03 || SH_DREAMCAST
  	select GENERIC_STRNCPY_FROM_USER
  	select GENERIC_STRNLEN_USER
@@ -5186,10 +5186,10 @@ index b7927de..81300d8b 100644
  
  #ifdef CONFIG_CPU_LITTLE_ENDIAN
 diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index e74ff13..acf5577 100644
+index 67f1f6f..a244e70 100644
 --- a/arch/sparc/Kconfig
 +++ b/arch/sparc/Kconfig
-@@ -36,6 +36,7 @@ config SPARC
+@@ -37,6 +37,7 @@ config SPARC
  	select GENERIC_CLOCKEVENTS
  	select GENERIC_STRNCPY_FROM_USER
  	select GENERIC_STRNLEN_USER
@@ -5250,7 +5250,7 @@ index 932e443..1603f30 100644
  # FIXME: investigate whether we need/want these options.
  #	select HAVE_IOREMAP_PROT
 diff --git a/arch/unicore32/Kconfig b/arch/unicore32/Kconfig
-index 03c9ff8..942b553 100644
+index b0a4743..5ef0814 100644
 --- a/arch/unicore32/Kconfig
 +++ b/arch/unicore32/Kconfig
 @@ -14,6 +14,7 @@ config UNICORE32
@@ -5262,10 +5262,10 @@ index 03c9ff8..942b553 100644
  	  UniCore-32 is 32-bit Instruction Set Architecture,
  	  including a series of low-power-consumption RISC chip
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index c70684f..c38a60e 100644
+index ba2657c..afea8c7 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -95,6 +95,8 @@ config X86
+@@ -97,6 +97,8 @@ config X86
  	select KTIME_SCALAR if X86_32
  	select GENERIC_STRNCPY_FROM_USER
  	select GENERIC_STRNLEN_USER
@@ -5275,10 +5275,10 @@ index c70684f..c38a60e 100644
  config INSTRUCTION_DECODER
  	def_bool (KPROBES || PERF_EVENTS || UPROBES)
 diff --git a/arch/xtensa/Kconfig b/arch/xtensa/Kconfig
-index 8a3f835..516210a 100644
+index 8ed64cf..4816e44 100644
 --- a/arch/xtensa/Kconfig
 +++ b/arch/xtensa/Kconfig
-@@ -10,6 +10,7 @@ config XTENSA
+@@ -11,6 +11,7 @@ config XTENSA
  	select HAVE_GENERIC_HARDIRQS
  	select GENERIC_IRQ_SHOW
  	select GENERIC_CPU_DEVICES
@@ -5456,10 +5456,10 @@ index 4edbd9c..087aeed 100644
 1.7.11.2
 
 
-From 3ad621a6fe31c4b1e73675facc39b2b34eaba3a3 Mon Sep 17 00:00:00 2001
+From 45c9f5b2992c100a9183f753d933d3141ae4e951 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:13:57 +0100
-Subject: [PATCH 16/27] Provide macros for forming the name of an ELF note and
+Subject: [PATCH 16/28] Provide macros for forming the name of an ELF note and
  its section
 
 Provide macros for stringifying the name of an ELF note and its section
@@ -5496,10 +5496,10 @@ index 278e3ef..949d494 100644
 1.7.11.2
 
 
-From ebd84cbe7656bb091c8101af3d302ea7c14e7ecf Mon Sep 17 00:00:00 2001
+From 1d83fa4cf20b3b6f7ffd471459dcad47d6e2ac64 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:00 +0100
-Subject: [PATCH 17/27] MODSIGN: Provide gitignore and make clean rules for
+Subject: [PATCH 17/28] MODSIGN: Provide gitignore and make clean rules for
  extra files
 
 Provide gitignore and make clean rules for extra files to hide and clean up the
@@ -5542,7 +5542,7 @@ index 57af07c..7948eeb 100644
 +random_seed
 +trustdb.gpg
 diff --git a/Makefile b/Makefile
-index 4bb09e1..5afb466 100644
+index 8e4c0a7..4db9629 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1239,6 +1239,7 @@ clean: $(clean-dirs)
@@ -5567,10 +5567,10 @@ index e9b7abe..223dfd6 100644
 1.7.11.2
 
 
-From 5071caadfaf48a29826bb0fb934bf8046878ca00 Mon Sep 17 00:00:00 2001
+From a284aee7526543a96a6e5694425ec7a2001d5c32 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:01 +0100
-Subject: [PATCH 18/27] MODSIGN: Provide Documentation and Kconfig options
+Subject: [PATCH 18/28] MODSIGN: Provide Documentation and Kconfig options
 
 Provide documentation and kernel configuration options for module signing.
 
@@ -5844,10 +5844,10 @@ index 0000000..c5ac87a
 +
 +#endif /* _LINUX_MODSIGN_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index d07dcf9..1d1a056 100644
+index af6c7f8..e23ed83 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1570,6 +1570,60 @@ config MODULE_SRCVERSION_ALL
+@@ -1585,6 +1585,60 @@ config MODULE_SRCVERSION_ALL
  	  the version).  With this option, such a "srcversion" field
  	  will be created for all modules.  If unsure, say N.
  
@@ -5912,10 +5912,10 @@ index d07dcf9..1d1a056 100644
 1.7.11.2
 
 
-From 506ebdd9cc53b7e1fe5c1a1351bf1e42cce4c856 Mon Sep 17 00:00:00 2001
+From 509093b115e362fd50584c5852c922926c2395bd Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:01 +0100
-Subject: [PATCH 19/27] MODSIGN: Sign modules during the build process
+Subject: [PATCH 19/28] MODSIGN: Sign modules during the build process
 
 If CONFIG_MODULE_SIG is set, then this patch will cause the module to get a
 signature installed.  The following steps will occur:
@@ -7037,10 +7037,10 @@ index 0000000..bca67c0
 1.7.11.2
 
 
-From c075a55ef7dd94b37406e09c542f69994e73424c Mon Sep 17 00:00:00 2001
+From 6a2e8f0245dadda42c355eda278110f496e3a6d5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:01 +0100
-Subject: [PATCH 20/27] MODSIGN: Module signature verification stub
+Subject: [PATCH 20/28] MODSIGN: Module signature verification stub
 
 Create a stub for the module signature verifier and link it into module.c so
 that it gets called.  A field is added to struct module to record whether or
@@ -7425,10 +7425,10 @@ index 087aeed..a59a9da 100644
 1.7.11.2
 
 
-From 632507c5c70caad4ac7000d573b60236e405247b Mon Sep 17 00:00:00 2001
+From 62c90369e58486688303c4803e39d7df44a932f9 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:02 +0100
-Subject: [PATCH 21/27] MODSIGN: Automatically generate module signing keys if
+Subject: [PATCH 21/28] MODSIGN: Automatically generate module signing keys if
  missing
 
 Automatically generate keys for module signing if they're absent so that
@@ -7507,10 +7507,10 @@ index cec222a..28cd248 100644
 1.7.11.2
 
 
-From bbbe230903a8c8f1d3aa7d2cc7f850930ff1539f Mon Sep 17 00:00:00 2001
+From 00ce30147994ed4a503bdb051350a4601c565dcc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:02 +0100
-Subject: [PATCH 22/27] MODSIGN: Provide module signing public keys to the
+Subject: [PATCH 22/28] MODSIGN: Provide module signing public keys to the
  kernel
 
 Include a PGP keyring containing the public keys required to perform module
@@ -7693,10 +7693,10 @@ index 4bf857e..05473e6 100644
 1.7.11.2
 
 
-From e4f50fd14864d574dfa77002da3bc51bbb0046bc Mon Sep 17 00:00:00 2001
+From 9b94f77eea94d028df6a041e6772f9f142eb89e7 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:02 +0100
-Subject: [PATCH 23/27] MODSIGN: Check the ELF container
+Subject: [PATCH 23/28] MODSIGN: Check the ELF container
 
 Check the ELF container of the kernel module to prevent the kernel from
 crashing or getting corrupted whilst trying to use it and locate the module
@@ -8029,10 +8029,10 @@ index 05473e6..2161d11 100644
 1.7.11.2
 
 
-From b9e2653685ab246ee774d4ea0d178f9d43b003f8 Mon Sep 17 00:00:00 2001
+From 60ca7dc263084abcf68325ed86d2765148f60225 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:02 +0100
-Subject: [PATCH 24/27] MODSIGN: Produce a filtered and canonicalised section
+Subject: [PATCH 24/28] MODSIGN: Produce a filtered and canonicalised section
  list
 
 Build a list of the sections in which we're interested and canonicalise the
@@ -8153,10 +8153,10 @@ index 2161d11..646b104 100644
 1.7.11.2
 
 
-From 425b80d71cb3d29ad9a5d1573b1ba62e8acc9846 Mon Sep 17 00:00:00 2001
+From b847c539c4fb7d71ab7383e79b3e6c0683a23a7e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:03 +0100
-Subject: [PATCH 25/27] MODSIGN: Create digest of module content and check
+Subject: [PATCH 25/28] MODSIGN: Create digest of module content and check
  signature
 
 Apply signature checking to modules on module load, checking the signature
@@ -8590,10 +8590,10 @@ index 646b104..e275759 100644
 1.7.11.2
 
 
-From 83b8771f504bdb2d75df57697445211ca312a08b Mon Sep 17 00:00:00 2001
+From 86969bc531b37c88b499311abae41e0116666dcc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:03 +0100
-Subject: [PATCH 26/27] MODSIGN: Suppress some redundant ELF checks
+Subject: [PATCH 26/28] MODSIGN: Suppress some redundant ELF checks
 
 Suppress some redundant ELF checks in module_verify_elf() that are also done
 by copy_and_check() in the core module loader code prior to calling
@@ -8627,10 +8627,10 @@ index e275759..bfd1286 100644
 1.7.11.2
 
 
-From a7ec988440e9c8b0deaf769c79b4b3cfe45eb411 Mon Sep 17 00:00:00 2001
+From 4d5a1f0360ce04a24b847eee2da84d9618375ce8 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 24 Jul 2012 14:14:03 +0100
-Subject: [PATCH 27/27] MODSIGN: Panic the kernel if FIPS is enabled upon
+Subject: [PATCH 27/28] MODSIGN: Panic the kernel if FIPS is enabled upon
  module signing failure
 
 If module signing fails when the kernel is running with FIPS enabled then the
@@ -8666,6 +8666,48 @@ index bfd1286..b9c3955 100644
  	switch (ret) {
  	case 0:			/* Good signature */
  		*_gpgsig_ok = true;
+-- 
+1.7.11.2
+
+
+From dd6e65be6a8f225018259b16161decc26c09c300 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Thu, 2 Aug 2012 14:35:44 +0100
+Subject: [PATCH 28/28] MODSIGN: Allow modules to be signed with an unknown
+ key unless enforcing
+
+Currently we fail the loading of modules that are signed with a public key
+that is not in the modsign keyring even if we are not in enforcing mode.
+This is somewhat at odds with the fact that we allow a completely unsigned
+module to load in such a case.
+
+We should allow modules signed with an unknown key to load in cases
+where we are not enforcing and not in FIPS mode.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/module-verify.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/module-verify.c b/kernel/module-verify.c
+index b9c3955..22036d4 100644
+--- a/kernel/module-verify.c
++++ b/kernel/module-verify.c
+@@ -736,6 +736,13 @@ out:
+ 		break;
+ 	case -ENOKEY:		/* Signed, but we don't have the public key */
+ 		pr_err("Module signed with unknown public key\n");
++		if (!modsign_signedonly) {
++			/* Allow a module to be signed with an unknown public
++			 * key unless we're enforcing.
++			 */
++			pr_info("Allowing\n");
++			ret = 0;
++		}
+ 		break;
+ 	default:		/* Other error (probably ENOMEM) */
+ 		break;
 -- 
 1.7.11.2
 
