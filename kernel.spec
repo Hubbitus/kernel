@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -745,6 +745,11 @@ Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
 
 Patch22062: cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
 Patch22063: brcmsmac-use-channel-flags-to-restrict-OFDM.patch
+
+#rhbz 845558 844714
+Patch22070: net-Allow-driver-to-limit-number-of-GSO-segments-per-skb.patch
+Patch22071: sfc-Fix-maximum-number-of-TSO-segments-and-minimum-TX-queue-size.patch
+Patch22072: tcp-Apply-device-TSO-segment-limit-earlier.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1436,6 +1441,11 @@ ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
 
 ApplyPatch cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
 ApplyPatch brcmsmac-use-channel-flags-to-restrict-OFDM.patch
+
+#rhbz 845558 844714
+ApplyPatch net-Allow-driver-to-limit-number-of-GSO-segments-per-skb.patch
+ApplyPatch sfc-Fix-maximum-number-of-TSO-segments-and-minimum-TX-queue-size.patch
+ApplyPatch tcp-Apply-device-TSO-segment-limit-earlier.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2294,6 +2304,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git0.2
+- CVE-2012-3412 sfc: potential rDOS through TCP MSS option (rhbz 844714 845558)
+
 * Fri Aug 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git0.1
 - Linux v3.6-rc1
 - Disable debugging options.
