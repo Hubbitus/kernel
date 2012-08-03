@@ -8711,3 +8711,36 @@ index b9c3955..22036d4 100644
 -- 
 1.7.11.2
 
+From bccd1bfe487e1f4df543f7a160cc9876d7d96fb7 Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Thu, 2 Aug 2012 23:09:19 +0100
+Subject: [PATCH] MODSIGN: Fix documentation of signed-nokey behavior when not
+ enforcing.
+
+jwboyer's previous commit changes the behavior of module signing when
+there's a valid signature but we don't know the public key and are in
+permissive mode.  This updates the documentation to match.
+
+Signed-off-by: Peter Jones <pjones@redhat.com>
+Acked-by: Josh Boyer <jwboyer@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ Documentation/module-signing.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/module-signing.txt b/Documentation/module-signing.txt
+index d75d473..8c4bef9 100644
+--- a/Documentation/module-signing.txt
++++ b/Documentation/module-signing.txt
+@@ -185,7 +185,7 @@ This table indicates the behaviours of the various situations:
+ 	MODULE STATE				PERMISSIVE MODE	ENFORCING MODE
+ 	=======================================	===============	===============
+ 	Unsigned				Ok		EKEYREJECTED
+-	Signed, no public key			ENOKEY		ENOKEY
++	Signed, no public key			Ok		ENOKEY
+ 	Validly signed, public key		Ok		Ok
+ 	Invalidly signed, public key		EKEYREJECTED	EKEYREJECTED
+ 	Validly signed, expired key		EKEYEXPIRED	EKEYEXPIRED
+-- 
+1.7.11.2
+
