@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -653,6 +653,8 @@ Patch09: linux-2.6-upstream-reverts.patch
 Patch100: taint-vbox.patch
 
 Patch110: vmbugon-warnon.patch
+
+Patch150: team-net-next-20120808.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1305,6 +1307,8 @@ ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 ApplyPatch taint-vbox.patch
 
 ApplyPatch vmbugon-warnon.patch
+
+ApplyPatch team-net-next-20120808.patch
 
 # Architecture patches
 # x86(-64)
@@ -2305,6 +2309,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 08 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git2.2
+- Update team driver from net-next from Jiri Pirko
+
 * Tue Aug 07 2012 Josh Boyer <jwboyer@redhat.com>
 - Add support for ppc64p7 subarch
 
