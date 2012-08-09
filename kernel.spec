@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -745,14 +745,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-Patch22062: cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
-Patch22063: brcmsmac-use-channel-flags-to-restrict-OFDM.patch
-
-#rhbz 845558 844714
-Patch22070: net-Allow-driver-to-limit-number-of-GSO-segments-per-skb.patch
-Patch22071: sfc-Fix-maximum-number-of-TSO-segments-and-minimum-TX-queue-size.patch
-Patch22072: tcp-Apply-device-TSO-segment-limit-earlier.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1443,14 +1435,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-ApplyPatch cfg80211-add-channel-flag-to-prohibit-OFDM-operation.patch
-ApplyPatch brcmsmac-use-channel-flags-to-restrict-OFDM.patch
-
-#rhbz 845558 844714
-ApplyPatch net-Allow-driver-to-limit-number-of-GSO-segments-per-skb.patch
-ApplyPatch sfc-Fix-maximum-number-of-TSO-segments-and-minimum-TX-queue-size.patch
-ApplyPatch tcp-Apply-device-TSO-segment-limit-earlier.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2309,6 +2293,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 09 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git3.1
+- Linux v3.6-rc1-207-gf4ba394
+
 * Wed Aug 08 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git2.2
 - Update team driver from net-next from Jiri Pirko
 
