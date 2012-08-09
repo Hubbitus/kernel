@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -680,7 +680,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch900: modsign-20120802.patch
 
 # secure boot
-Patch1000: secure-boot-20120802.patch
+Patch1000: secure-boot-20120809.patch
 
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
@@ -1381,7 +1381,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 ApplyPatch modsign-20120802.patch
 
 # secure boot
-ApplyPatch secure-boot-20120802.patch
+ApplyPatch secure-boot-20120809.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -2293,6 +2293,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 09 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git3.2
+- Update secure-boot patch to pass correct CFLAGS to EFI stub
+
 * Thu Aug 09 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git3.1
 - Linux v3.6-rc1-207-gf4ba394
 
