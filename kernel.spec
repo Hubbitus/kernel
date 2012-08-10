@@ -2293,6 +2293,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 10 2012 Dennis Gilmore <dennis@ausil.us>
+- disable some options on highbank at calxeda's request
+- enable the PL011 serial console on highbank
+- enable ARM architected timer on all arm arches
+
 * Thu Aug 09 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git3.2
 - Update secure-boot patch to pass correct CFLAGS to EFI stub
 

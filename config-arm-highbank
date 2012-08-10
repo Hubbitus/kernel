@@ -30,9 +30,28 @@ CONFIG_GPIO_PL061=y
 
 CONFIG_SERIAL_AMBA_PL010=y
 CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
+CONFIG_SERIAL_AMBA_PL011=y
+CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
 
 CONFIG_RTC_DRV_PL030=y
 CONFIG_RTC_DRV_PL031=y
 
 # CONFIG_DVB_TDA1004X is not set
 # CONFIG_DVB_PLL is not set
+
+# these were all requested to be disabled on highbank kernels by calxeda
+# CONFIG_HAMRADIO is not set
+# CONFIG_IRDA is not set
+# CONFIG_WIMAX is not set
+# CONFIG_RFKILL is not set
+# CONFIG_CAIF is not set
+# CONFIG_NFC is not set
+# CONFIG_MTD is not set
+# CONFIG_PARPORT is not set
+# CONFIG_ATM_DRIVERS is not set
+# CONFIG_WAN is not set
+# CONFIG_ISDN is not set
+# CONFIG_MEDIA_SUPPORT is not set
+# CONFIG_DRM is not set
+# CONFIG_SND is not set
+# end of list of requested disabled options
