@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -745,6 +745,9 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+#rhbz 844485
+Patch22060: vfs-fix-file-creation-bugs.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1435,6 +1438,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+#rhbz 844485
+ApplyPatch vfs-fix-file-creation-bugs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2293,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 13 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git5.2
+- Fix VFS file creation bugs (rhbz 844485)
+
 * Mon Aug 13 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc1.git5.1
 - Linux v3.6-rc1-312-g3bf671a
 

@@ -1,0 +1,393 @@
+Path: news.gmane.org!not-for-mail
+From: Miklos Szeredi <miklos@szeredi.hu>
+Newsgroups: gmane.linux.kernel,gmane.linux.file-systems,gmane.linux.kernel.stable
+Subject: [PATCH 1/4] vfs: canonicalize create mode in build_open_flags()
+Date: Tue,  7 Aug 2012 14:45:46 +0200
+Lines: 37
+Approved: news@gmane.org
+Message-ID: <1344343549-11887-2-git-send-email-miklos@szeredi.hu>
+References: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+NNTP-Posting-Host: plane.gmane.org
+X-Trace: dough.gmane.org 1344343547 29032 80.91.229.3 (7 Aug 2012 12:45:47 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Tue, 7 Aug 2012 12:45:47 +0000 (UTC)
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rjones@redhat.com, steveamigauk@yahoo.co.uk, mszeredi@suse.cz,
+	stable@vger.kernel.org
+To: viro@ZenIV.linux.org.uk
+Original-X-From: linux-kernel-owner@vger.kernel.org Tue Aug 07 14:45:47 2012
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Envelope-to: glk-linux-kernel-3@plane.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by plane.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-kernel-owner@vger.kernel.org>)
+	id 1SyjAQ-0007sm-7c
+	for glk-linux-kernel-3@plane.gmane.org; Tue, 07 Aug 2012 14:45:46 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1754555Ab2HGMpi (ORCPT <rfc822;glk-linux-kernel-3@m.gmane.org>);
+	Tue, 7 Aug 2012 08:45:38 -0400
+Original-Received: from mail-we0-f174.google.com ([74.125.82.174]:58092 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754305Ab2HGMoe (ORCPT
+	<rfc822;linux-kernel@vger.kernel.org>);
+	Tue, 7 Aug 2012 08:44:34 -0400
+Original-Received: by weyx8 with SMTP id x8so2645788wey.19
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Aug 2012 05:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references;
+        bh=1qjbKUe4PMMa48XDr0iiAZbSQDjKIFlASvIcoWSByLY=;
+        b=Btq8S/0RNrAMDqIuqkWxTXUBX1CBdRNl9d47rqc2ZXzMxnyHfqOTM+/GYZBQkM5Fm7
+         W11AcmLVTWQ6e6Av98QIpw4aiC35KI1NQwyEGs3+QmzJE+nO706XT4QK+TW7ynd6Rssq
+         UC+GVbxB6Ix7QdVmtgZO6EfXEJ4sxLMqeatuc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
+         :x-gm-message-state;
+        bh=1qjbKUe4PMMa48XDr0iiAZbSQDjKIFlASvIcoWSByLY=;
+        b=LNbJeP9fTZ3nOJiZO4BWNTuTQ5G5tmcNb1TwWGPxerdYqKYQTyEop2fUJPOQBftC5R
+         t34Oi+kpvLRUhjyAAkTefiqaNupAQVXdg2kV2PgRYWDjFR9acKHnmzhbEsozi98G+Xp/
+         UsERBlNsx3CYLBhuuWK70HIZ8Zp1Pg8YzhhmXO2sW4bGDRa8/ZCeTTmJ5owb7zuZugAT
+         I+blTuEakAco+9SubhMh9XR0T3us/2LcUxv0KIA0GK/CzBlig5iBTFH1IU9EhS6ZkBpL
+         rRsM1o14L6POmPxH9J5GolEUjCBfBet54Y0pPp8hytWrOGCz7cbejS++c4/Lu8mOvQfS
+         FgXw==
+Original-Received: by 10.216.54.146 with SMTP id i18mr7274525wec.187.1344343472653;
+        Tue, 07 Aug 2012 05:44:32 -0700 (PDT)
+Original-Received: from localhost.localdomain (77-234-87-236.pool.digikabel.hu. [77.234.87.236])
+        by mx.google.com with ESMTPS id b7sm31225742wiz.9.2012.08.07.05.44.30
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 07 Aug 2012 05:44:31 -0700 (PDT)
+X-Mailer: git-send-email 1.7.7
+In-Reply-To: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+X-Gm-Message-State: ALoCoQlBs8Zo4YKrYg/AUMfG82CQVVCikUAknZuRKPe9oykBM4fMvZfn22FIif3NtkSoDwAQss82
+Original-Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
+Xref: news.gmane.org gmane.linux.kernel:1339000 gmane.linux.file-systems:66449 gmane.linux.kernel.stable:29234
+Archived-At: <http://permalink.gmane.org/gmane.linux.kernel/1339000>
+
+From: Miklos Szeredi <mszeredi@suse.cz>
+
+Userspace can pass weird create mode in open(2) that we canonicalize to
+"(mode & S_IALLUGO) | S_IFREG" in vfs_create().
+
+The problem is that we use the uncanonicalized mode before calling vfs_create()
+with unforseen consequences.
+
+So do the canonicalization early in build_open_flags().
+
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+CC: stable@vger.kernel.org
+---
+ fs/open.c |    7 ++++---
+ 1 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/fs/open.c b/fs/open.c
+index bc132e1..e1f2cdb 100644
+--- a/fs/open.c
++++ b/fs/open.c
+@@ -852,9 +852,10 @@ static inline int build_open_flags(int flags, umode_t mode, struct open_flags *o
+ 	int lookup_flags = 0;
+ 	int acc_mode;
+ 
+-	if (!(flags & O_CREAT))
+-		mode = 0;
+-	op->mode = mode;
++	if (flags & O_CREAT)
++		op->mode = (mode & S_IALLUGO) | S_IFREG;
++	else
++		op->mode = 0;
+ 
+ 	/* Must never be set by userspace */
+ 	flags &= ~FMODE_NONOTIFY;
+-- 
+1.7.7
+
+Path: news.gmane.org!not-for-mail
+From: Miklos Szeredi <miklos@szeredi.hu>
+Newsgroups: gmane.linux.kernel,gmane.linux.file-systems
+Subject: [PATCH 2/4] vfs: atomic_open(): fix create mode usage
+Date: Tue,  7 Aug 2012 14:45:47 +0200
+Lines: 29
+Approved: news@gmane.org
+Message-ID: <1344343549-11887-3-git-send-email-miklos@szeredi.hu>
+References: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+NNTP-Posting-Host: plane.gmane.org
+X-Trace: dough.gmane.org 1344343484 28394 80.91.229.3 (7 Aug 2012 12:44:44 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Tue, 7 Aug 2012 12:44:44 +0000 (UTC)
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rjones@redhat.com, steveamigauk@yahoo.co.uk, mszeredi@suse.cz
+To: viro@ZenIV.linux.org.uk
+Original-X-From: linux-kernel-owner@vger.kernel.org Tue Aug 07 14:44:43 2012
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Envelope-to: glk-linux-kernel-3@plane.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by plane.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-kernel-owner@vger.kernel.org>)
+	id 1Syj9O-0006lB-Q1
+	for glk-linux-kernel-3@plane.gmane.org; Tue, 07 Aug 2012 14:44:43 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1754569Ab2HGMoi (ORCPT <rfc822;glk-linux-kernel-3@m.gmane.org>);
+	Tue, 7 Aug 2012 08:44:38 -0400
+Original-Received: from mail-we0-f174.google.com ([74.125.82.174]:42649 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754511Ab2HGMof (ORCPT
+	<rfc822;linux-kernel@vger.kernel.org>);
+	Tue, 7 Aug 2012 08:44:35 -0400
+Original-Received: by mail-we0-f174.google.com with SMTP id x8so2645765wey.19
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Aug 2012 05:44:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references;
+        bh=AdrwH4TefuleTVZB4XFHvywWtuGocoaapFFX4/PnPN0=;
+        b=ZSz4WBTINxIVhKr/eL2BAQWxfdNF5XH0PEKbSlALRQbOHT4yZ8w+3/NNDp8DjUhydl
+         vQQijSva0g32a2N3dORJtNjcoplZyqzo4SKSTBFbaUfXvlHIxJaOq0KcDSS5huMe/yk8
+         XU1djDAt7kma9A3oTQh59ASLumUpCeVqOue6g=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
+         :x-gm-message-state;
+        bh=AdrwH4TefuleTVZB4XFHvywWtuGocoaapFFX4/PnPN0=;
+        b=Js4PjFw+6ckXxUvsGO/Sz2QTTxEdZsRF4SvTScOgL6ugRFWnK+U/4t1c+rRfHkfDfD
+         i5G2afUaZB0JRnPIxmpSkly92cu/sI+fdeFDpuls3m5GPQ4CMmXHbl1Ev42BTqTB6y1G
+         UsXYw14QYf+XbnrJgJ1MKMX+hJlBMfyu8A3kh54RtJsBYBYd4u7vWnDKRhCGudhj9XGY
+         s19MCkfJDyhWl7k84NjzlLUEN1LLwFF+ZDd086+95BrtlO7ta35r7WjTrj7eIz/JQ2wf
+         RBmbh2SHh1BplRm20j0YRNvWvrUUn0CDwCOx2PpN+zQsMRmYwAMh/cfJHbrf6sEtWmDU
+         HPuQ==
+Original-Received: by 10.180.83.106 with SMTP id p10mr27242596wiy.21.1344343474226;
+        Tue, 07 Aug 2012 05:44:34 -0700 (PDT)
+Original-Received: from localhost.localdomain (77-234-87-236.pool.digikabel.hu. [77.234.87.236])
+        by mx.google.com with ESMTPS id b7sm31225742wiz.9.2012.08.07.05.44.32
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 07 Aug 2012 05:44:33 -0700 (PDT)
+X-Mailer: git-send-email 1.7.7
+In-Reply-To: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+X-Gm-Message-State: ALoCoQn5VhymZvNT7mcpKezP10+ERZVrDOUy6d1v5xWL8OcMf7YtYh9K43mLEBvJE7elSPegM6gs
+Original-Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
+Xref: news.gmane.org gmane.linux.kernel:1338997 gmane.linux.file-systems:66446
+Archived-At: <http://permalink.gmane.org/gmane.linux.kernel/1338997>
+
+From: Miklos Szeredi <mszeredi@suse.cz>
+
+Don't mask S_ISREG off the create mode before passing to ->atomic_open().  Other
+methods (->create, ->mknod) also get the complete file mode and filesystems
+expect it.
+
+Reported-by: Steve <steveamigauk@yahoo.co.uk>
+Reported-by: Richard W.M. Jones <rjones@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+---
+ fs/namei.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 1b46439..5bac1bb 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2414,7 +2414,7 @@ static int atomic_open(struct nameidata *nd, struct dentry *dentry,
+ 		goto out;
+ 	}
+ 
+-	mode = op->mode & S_IALLUGO;
++	mode = op->mode;
+ 	if ((open_flag & O_CREAT) && !IS_POSIXACL(dir))
+ 		mode &= ~current_umask();
+ 
+-- 
+1.7.7
+
+Path: news.gmane.org!not-for-mail
+From: Miklos Szeredi <miklos@szeredi.hu>
+Newsgroups: gmane.linux.kernel,gmane.linux.file-systems
+Subject: [PATCH 3/4] vfs: pass right create mode to may_o_create()
+Date: Tue,  7 Aug 2012 14:45:48 +0200
+Lines: 25
+Approved: news@gmane.org
+Message-ID: <1344343549-11887-4-git-send-email-miklos@szeredi.hu>
+References: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+NNTP-Posting-Host: plane.gmane.org
+X-Trace: dough.gmane.org 1344343526 28841 80.91.229.3 (7 Aug 2012 12:45:26 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Tue, 7 Aug 2012 12:45:26 +0000 (UTC)
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rjones@redhat.com, steveamigauk@yahoo.co.uk, mszeredi@suse.cz
+To: viro@ZenIV.linux.org.uk
+Original-X-From: linux-kernel-owner@vger.kernel.org Tue Aug 07 14:45:24 2012
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Envelope-to: glk-linux-kernel-3@plane.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by plane.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-kernel-owner@vger.kernel.org>)
+	id 1Syj9z-0007QH-Q3
+	for glk-linux-kernel-3@plane.gmane.org; Tue, 07 Aug 2012 14:45:20 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1754608Ab2HGMpK (ORCPT <rfc822;glk-linux-kernel-3@m.gmane.org>);
+	Tue, 7 Aug 2012 08:45:10 -0400
+Original-Received: from mail-we0-f174.google.com ([74.125.82.174]:58092 "EHLO
+	mail-we0-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754059Ab2HGMog (ORCPT
+	<rfc822;linux-kernel@vger.kernel.org>);
+	Tue, 7 Aug 2012 08:44:36 -0400
+Original-Received: by mail-we0-f174.google.com with SMTP id x8so2645788wey.19
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Aug 2012 05:44:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references;
+        bh=nl2pPzHwW8KM+I7iQTOh9PYtYJohI6BIhk/K8K5LBQo=;
+        b=LseVfH0Fqa0ZLiIt9+N/ozV8rHtd85QSg6ixoDjgzR5Mh28J5FMzUVGjcnJzGDrMqJ
+         iTGbA8CSMcE2WykswC+5rJUKFxPw9u7mjaPutqcV8aAc6Ii2i1D7oIUO7O6qhyiiPWnZ
+         2fFGR2LPOOrPF/tzVZX/9Rcwc6nNJLdlr6PU0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
+         :x-gm-message-state;
+        bh=nl2pPzHwW8KM+I7iQTOh9PYtYJohI6BIhk/K8K5LBQo=;
+        b=MkUpj/XL8pOrHQYqjessDHSpc3Cn3OK8rTtvlzSLRA7ktxqXk1w4mVGrI3SVSrat+V
+         eu5OziG+pXw/+SVENp5VBksJuvbeq791pBjXINPJLh/Wv4c3kRCHyymT5lIDam24tBJQ
+         xgvurY4/P9r5vfxHQiG6/SOltCvldN+QyHeXDfEwlvxr4GDovGJ0VvUp3t70oCPh6TnQ
+         w8XhnTrnaa02wThfpz7RYtCIxyDMAnZTX6vxKlzURVxcdmVjMu4kPA8CMWgizOi/S9l0
+         6ZDGhqqY0jdtbdncf6MkL25vulJvCF5Uf4WfyR8+REGS5f8V8sMWFFurp1S2LYEdLJ5o
+         7WtQ==
+Original-Received: by 10.180.20.11 with SMTP id j11mr27275578wie.12.1344343475796;
+        Tue, 07 Aug 2012 05:44:35 -0700 (PDT)
+Original-Received: from localhost.localdomain (77-234-87-236.pool.digikabel.hu. [77.234.87.236])
+        by mx.google.com with ESMTPS id b7sm31225742wiz.9.2012.08.07.05.44.34
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 07 Aug 2012 05:44:35 -0700 (PDT)
+X-Mailer: git-send-email 1.7.7
+In-Reply-To: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+X-Gm-Message-State: ALoCoQkO1sLF/IsgU7JMCP9gmfCSYZh8gUPun3lkVeiAXebgfb+UIaib3NfgHI+ihXW0gPxiVeOq
+Original-Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
+Xref: news.gmane.org gmane.linux.kernel:1338999 gmane.linux.file-systems:66448
+Archived-At: <http://permalink.gmane.org/gmane.linux.kernel/1338999>
+
+From: Miklos Szeredi <mszeredi@suse.cz>
+
+Pass the umask-ed create mode to may_o_create() instead of the original one.
+
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+---
+ fs/namei.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fs/namei.c b/fs/namei.c
+index 5bac1bb..26c28ec 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -2452,7 +2452,7 @@ static int atomic_open(struct nameidata *nd, struct dentry *dentry,
+ 	}
+ 
+ 	if (open_flag & O_CREAT) {
+-		error = may_o_create(&nd->path, dentry, op->mode);
++		error = may_o_create(&nd->path, dentry, mode);
+ 		if (error) {
+ 			create_error = error;
+ 			if (open_flag & O_EXCL)
+-- 
+1.7.7
+
+Path: news.gmane.org!not-for-mail
+From: Miklos Szeredi <miklos@szeredi.hu>
+Newsgroups: gmane.linux.kernel,gmane.linux.file-systems
+Subject: [PATCH 4/4] fuse: check create mode in atomic open
+Date: Tue,  7 Aug 2012 14:45:49 +0200
+Lines: 29
+Approved: news@gmane.org
+Message-ID: <1344343549-11887-5-git-send-email-miklos@szeredi.hu>
+References: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+NNTP-Posting-Host: plane.gmane.org
+X-Trace: dough.gmane.org 1344343501 28616 80.91.229.3 (7 Aug 2012 12:45:01 GMT)
+X-Complaints-To: usenet@dough.gmane.org
+NNTP-Posting-Date: Tue, 7 Aug 2012 12:45:01 +0000 (UTC)
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	rjones@redhat.com, steveamigauk@yahoo.co.uk, mszeredi@suse.cz
+To: viro@ZenIV.linux.org.uk
+Original-X-From: linux-kernel-owner@vger.kernel.org Tue Aug 07 14:45:01 2012
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Envelope-to: glk-linux-kernel-3@plane.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by plane.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-kernel-owner@vger.kernel.org>)
+	id 1Syj9g-000751-AP
+	for glk-linux-kernel-3@plane.gmane.org; Tue, 07 Aug 2012 14:45:01 +0200
+Original-Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1753956Ab2HGMol (ORCPT <rfc822;glk-linux-kernel-3@m.gmane.org>);
+	Tue, 7 Aug 2012 08:44:41 -0400
+Original-Received: from mail-wg0-f44.google.com ([74.125.82.44]:49113 "EHLO
+	mail-wg0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1754550Ab2HGMoi (ORCPT
+	<rfc822;linux-kernel@vger.kernel.org>);
+	Tue, 7 Aug 2012 08:44:38 -0400
+Original-Received: by wgbdr13 with SMTP id dr13so3821771wgb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 07 Aug 2012 05:44:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references;
+        bh=2z/lG+dElZX1BvzqKB7l/eTdQWJupcJMEPoo3E7WIkA=;
+        b=OSiFNFL8gGKzfQF4uTbT4uuk+FiRJFon3esY5HKXETPIldNkm2zTGUf0pTSAFKp+UG
+         nR1uDMgw8M+lY8aSepjpSqty+93LvJBEn5N2L+7hZeMPZHw/dvkjHpV/GvbqLI++oeHY
+         h5H4AqTI/51xQvAZP0fid7hVJh2leMo1lGtMc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer:in-reply-to:references
+         :x-gm-message-state;
+        bh=2z/lG+dElZX1BvzqKB7l/eTdQWJupcJMEPoo3E7WIkA=;
+        b=f5PRamaleMoVfPo7U0JjEgSltuT3/8qDvNRrgagcbsxz99IsBh5XZBfdcIX4BbAGYR
+         NNS0XMJEHgZSVE6O+imPLvlj3Oc7e4+NPYcfZTIeq3RdCpXeX5/X6woK4PJcOXIRMHML
+         U3L0o3trwK6EZTxyuThoOdptBVHQh+IyxzGJoHCSyoZki5ZMdjJUCnbLuOvY4A1xfaxM
+         a4v33nCxXl8B/698Hjm/U+Q5wIO2yloqCYTjzBeKquRsprxmLGfqErEqQSP7N7n2yGiV
+         cdiHfHOA2S0RbP+FTw9MRrW5he8tpeVbXodbYfrUazI0XruNSm3x09gttO8KhR0ehCSD
+         gshg==
+Original-Received: by 10.216.134.101 with SMTP id r79mr6493496wei.60.1344343477315;
+        Tue, 07 Aug 2012 05:44:37 -0700 (PDT)
+Original-Received: from localhost.localdomain (77-234-87-236.pool.digikabel.hu. [77.234.87.236])
+        by mx.google.com with ESMTPS id b7sm31225742wiz.9.2012.08.07.05.44.35
+        (version=TLSv1/SSLv3 cipher=OTHER);
+        Tue, 07 Aug 2012 05:44:36 -0700 (PDT)
+X-Mailer: git-send-email 1.7.7
+In-Reply-To: <1344343549-11887-1-git-send-email-miklos@szeredi.hu>
+X-Gm-Message-State: ALoCoQmdZRlhlKJWBzIDpgy+1szkaUFmK1NUhSopmYGukU6PHpk7xwsXWx0v+JWsNJdT/Aeqwz5M
+Original-Sender: linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List: linux-kernel@vger.kernel.org
+Xref: news.gmane.org gmane.linux.kernel:1338998 gmane.linux.file-systems:66447
+Archived-At: <http://permalink.gmane.org/gmane.linux.kernel/1338998>
+
+From: Miklos Szeredi <mszeredi@suse.cz>
+
+Verify that the VFS is passing us a complete create mode with the S_IFREG to
+atomic open.
+
+Reported-by: Steve <steveamigauk@yahoo.co.uk>
+Reported-by: Richard W.M. Jones <rjones@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@suse.cz>
+---
+ fs/fuse/dir.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 8964cf3..324bc08 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -383,6 +383,9 @@ static int fuse_create_open(struct inode *dir, struct dentry *entry,
+ 	struct fuse_entry_out outentry;
+ 	struct fuse_file *ff;
+ 
++	/* Userspace expects S_IFREG in create mode */
++	BUG_ON((mode & S_IFMT) != S_IFREG);
++
+ 	forget = fuse_alloc_forget();
+ 	err = -ENOMEM;
+ 	if (!forget)
+-- 
+1.7.7
+
