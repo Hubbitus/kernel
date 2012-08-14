@@ -5040,13 +5040,13 @@ index 0192a4e..c1df590 100644
  	asm(".section .plt,\"ax\",@nobits; .align 3; .previous");
  	asm(".section .init.plt,\"ax\",@nobits; .align 3; .previous");
 diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 76de6b6..53a8e01 100644
+index 107610e..c76a052 100644
 --- a/arch/s390/Kconfig
 +++ b/arch/s390/Kconfig
-@@ -124,6 +124,8 @@ config S390
- 	select GENERIC_TIME_VSYSCALL
+@@ -125,6 +125,8 @@ config S390
  	select GENERIC_CLOCKEVENTS
  	select KTIME_SCALAR if 32BIT
+ 	select HAVE_ARCH_SECCOMP_FILTER
 +	select HAVE_MOD_ARCH_SPECIFIC
 +	select MODULES_USE_ELF_RELA
  
