@@ -552,6 +552,7 @@ BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
 
 %if %{signmodules}
 BuildRequires: gnupg
+BuildRequires: pesign >= 0.10-3
 %endif
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
@@ -1590,6 +1591,11 @@ BuildKernel() {
     if [ -f arch/$Arch/boot/zImage.stub ]; then
       cp arch/$Arch/boot/zImage.stub $RPM_BUILD_ROOT/%{image_install_path}/zImage.stub-$KernelVer || :
     fi
+    %if %{signmodules}
+    # Sign the image if we're using EFI
+    %pesign -s -i $KernelImage -o vmlinuz.signed
+    mv vmlinuz.signed $KernelImage
+    %endif
     $CopyKernel $KernelImage \
     		$RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     chmod 755 $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
