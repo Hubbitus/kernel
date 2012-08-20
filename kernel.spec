@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -678,7 +678,7 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
-Patch900: modsign-20120814.patch
+Patch900: modsign-20120816.patch
 
 # secure boot
 Patch1000: secure-boot-20120809.patch
@@ -746,9 +746,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-#rhbz 844485
-Patch22060: vfs-fix-file-creation-bugs.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1382,7 +1379,7 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-20120814.patch
+ApplyPatch modsign-20120816.patch
 
 # secure boot
 ApplyPatch secure-boot-20120809.patch
@@ -1439,9 +1436,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-#rhbz 844485
-ApplyPatch vfs-fix-file-creation-bugs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2305,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc2.git1.1
+- Linux v3.6-rc2-206-g10c63c9
+
 * Mon Aug 20 2012 Dave Jones <davej@redhat.com>
 - Reenable W1 drivers. (rhbz 849430)
 
