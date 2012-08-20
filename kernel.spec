@@ -2305,6 +2305,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 20 2012 Dave Jones <davej@redhat.com>
+- Reenable W1 drivers. (rhbz 849430)
+
 * Fri Aug 17 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc2.git0.2
 - Reenable debugging options.
 
