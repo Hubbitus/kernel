@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -746,6 +746,8 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+Patch22065: fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1436,6 +1438,8 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 836742
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
+
+ApplyPatch fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2299,6 +2303,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 21 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Dave Airlie to fix fb cursor vs grub2 gfxterm hang
+
 * Mon Aug 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc2.git1.1
 - Linux v3.6-rc2-206-g10c63c9
 
