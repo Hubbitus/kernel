@@ -749,6 +749,9 @@ Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
 
 Patch22065: fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
+#rhbz 847548
+Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1440,6 +1443,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
 
 ApplyPatch fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
+
+#rhbz 847548
+ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2304,6 +2310,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Aug 21 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Richard W.M. Jones to fix virtio scsi oops (rhbz 847548)
 - Add patch from Dave Airlie to fix fb cursor vs grub2 gfxterm hang
 
 * Mon Aug 20 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc2.git1.1
