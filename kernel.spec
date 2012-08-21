@@ -752,6 +752,9 @@ Patch22065: fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 #rhbz 847548
 Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 
+#rhbz 846037
+Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1446,6 +1449,9 @@ ApplyPatch fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
 #rhbz 847548
 ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
+
+#rhbz 846037
+ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2310,6 +2316,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Aug 21 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Dave Jones to fix suspicious RCU usage in SELinux (rhbz 846037)
 - Add patch from Richard W.M. Jones to fix virtio scsi oops (rhbz 847548)
 - Add patch from Dave Airlie to fix fb cursor vs grub2 gfxterm hang
 
