@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -743,11 +743,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 836742
-Patch22059: uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-Patch22065: fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
 #rhbz 847548
 Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
@@ -1441,11 +1436,6 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 836742
-ApplyPatch uvcvideo-Reset-bytesused-field-when-recycling-erroneous-buffer.patch
-
-ApplyPatch fbcon-fix-race-condition-between-console-lock-and-cursor-timer.patch
 
 #rhbz 847548
 ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
@@ -2315,6 +2305,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 22 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc2.git2.1
+- Linux v3.6-rc2-400-g23dcfa6
+- CVE-2012-3520: af_netlink: invalid handling of SCM_CREDENTIALS passing
+
 * Tue Aug 21 2012 Josh Boyer <jwboyer@redhat.com>
 - Add patch from Dave Jones to fix suspicious RCU usage in SELinux (rhbz 846037)
 - Add patch from Richard W.M. Jones to fix virtio scsi oops (rhbz 847548)
