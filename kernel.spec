@@ -723,6 +723,7 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 
 # ARM
+Patch21000: arm-read_current_timer.patch
 # OMAP
 
 # ARM tegra
@@ -1312,6 +1313,7 @@ ApplyPatch team-net-next-20120808.patch
 #
 # ARM
 #
+ApplyPatch arm-read_current_timer.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2305,6 +2307,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix build on ARM
+- Enable USB ULPI driver to fix some USB ports
+
 * Fri Aug 24 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git1.1
 - Linux v3.6-rc3-37-g2d809dc
 
