@@ -6161,10 +6161,10 @@ index 7531ecd..c93b62b 100644
  #define Elf_Mips_Rel	Elf64_Mips_Rel
  #define Elf_Mips_Rela	Elf64_Mips_Rela
 diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
-index a5066b1..1500c80 100644
+index 4f8c3cb..9f102cf 100644
 --- a/arch/mips/kernel/module.c
 +++ b/arch/mips/kernel/module.c
-@@ -299,6 +299,7 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
+@@ -324,6 +324,7 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
  	return 0;
  }
  
@@ -6172,7 +6172,7 @@ index a5066b1..1500c80 100644
  int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
  		       unsigned int symindex, unsigned int relsec,
  		       struct module *me)
-@@ -338,6 +339,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
+@@ -363,6 +364,7 @@ int apply_relocate_add(Elf_Shdr *sechdrs, const char *strtab,
  
  	return 0;
  }
@@ -6766,18 +6766,6 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  create mode 100644 arch/mips/kernel/module-rela.c
  create mode 100644 arch/mips/kernel/module.h
 
-diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-index fdaf65e..cd1e6c2 100644
---- a/arch/mips/kernel/Makefile
-+++ b/arch/mips/kernel/Makefile
-@@ -31,6 +31,7 @@ obj-$(CONFIG_SYNC_R4K)		+= sync-r4k.o
- 
- obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
- obj-$(CONFIG_MODULES)		+= mips_ksyms.o module.o
-+obj-$(CONFIG_MODULES_USE_ELF_RELA) += module-rela.o
- 
- obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
- 
 diff --git a/arch/mips/kernel/module-rela.c b/arch/mips/kernel/module-rela.c
 new file mode 100644
 index 0000000..4e784a8
@@ -6928,8 +6916,38 @@ index 0000000..4e784a8
 +
 +	return 0;
 +}
+diff --git a/arch/mips/kernel/module.h b/arch/mips/kernel/module.h
+new file mode 100644
+index 0000000..675d091
+--- /dev/null
++++ b/arch/mips/kernel/module.h
+@@ -0,0 +1,12 @@
++/* Internal definitions for MIPS module code
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++/*
++ * module.c
++ */
++extern int apply_r_mips_none(struct module *me, u32 *location, Elf_Addr v);
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index fdaf65e..cd1e6c2 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -31,6 +31,7 @@ obj-$(CONFIG_SYNC_R4K)		+= sync-r4k.o
+ 
+ obj-$(CONFIG_STACKTRACE)	+= stacktrace.o
+ obj-$(CONFIG_MODULES)		+= mips_ksyms.o module.o
++obj-$(CONFIG_MODULES_USE_ELF_RELA) += module-rela.o
+ 
+ obj-$(CONFIG_FUNCTION_TRACER)	+= mcount.o ftrace.o
+ 
 diff --git a/arch/mips/kernel/module.c b/arch/mips/kernel/module.c
-index 1500c80..74a7197 100644
+index 9f102cf..e7dc80b 100644
 --- a/arch/mips/kernel/module.c
 +++ b/arch/mips/kernel/module.c
 @@ -30,6 +30,7 @@
@@ -6940,7 +6958,7 @@ index 1500c80..74a7197 100644
  
  #include <asm/pgtable.h>	/* MODULE_START */
  
-@@ -53,7 +54,7 @@ void *module_alloc(unsigned long size)
+@@ -51,7 +52,7 @@ void *module_alloc(unsigned long size)
  }
  #endif
  
@@ -6949,7 +6967,7 @@ index 1500c80..74a7197 100644
  {
  	return 0;
  }
-@@ -65,13 +66,6 @@ static int apply_r_mips_32_rel(struct module *me, u32 *location, Elf_Addr v)
+@@ -63,13 +64,6 @@ static int apply_r_mips_32_rel(struct module *me, u32 *location, Elf_Addr v)
  	return 0;
  }
  
@@ -6963,7 +6981,7 @@ index 1500c80..74a7197 100644
  static int apply_r_mips_26_rel(struct module *me, u32 *location, Elf_Addr v)
  {
  	if (v % 4) {
-@@ -93,26 +87,6 @@ static int apply_r_mips_26_rel(struct module *me, u32 *location, Elf_Addr v)
+@@ -91,26 +85,6 @@ static int apply_r_mips_26_rel(struct module *me, u32 *location, Elf_Addr v)
  	return 0;
  }
  
@@ -6990,7 +7008,7 @@ index 1500c80..74a7197 100644
  static int apply_r_mips_hi16_rel(struct module *me, u32 *location, Elf_Addr v)
  {
  	struct mips_hi16 *n;
-@@ -134,14 +108,6 @@ static int apply_r_mips_hi16_rel(struct module *me, u32 *location, Elf_Addr v)
+@@ -132,14 +106,6 @@ static int apply_r_mips_hi16_rel(struct module *me, u32 *location, Elf_Addr v)
  	return 0;
  }
  
@@ -7002,10 +7020,10 @@ index 1500c80..74a7197 100644
 -	return 0;
 -}
 -
- static int apply_r_mips_lo16_rel(struct module *me, u32 *location, Elf_Addr v)
+ static void free_relocation_chain(struct mips_hi16 *l)
  {
- 	unsigned long insnlo = *location;
-@@ -206,38 +172,6 @@ out_danger:
+ 	struct mips_hi16 *next;
+@@ -217,38 +183,6 @@ out_danger:
  	return -ENOEXEC;
  }
  
@@ -7044,7 +7062,7 @@ index 1500c80..74a7197 100644
  static int (*reloc_handlers_rel[]) (struct module *me, u32 *location,
  				Elf_Addr v) = {
  	[R_MIPS_NONE]		= apply_r_mips_none,
-@@ -247,18 +181,6 @@ static int (*reloc_handlers_rel[]) (struct module *me, u32 *location,
+@@ -258,18 +192,6 @@ static int (*reloc_handlers_rel[]) (struct module *me, u32 *location,
  	[R_MIPS_LO16]		= apply_r_mips_lo16_rel
  };
  
@@ -7063,7 +7081,7 @@ index 1500c80..74a7197 100644
  int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
  		   unsigned int symindex, unsigned int relsec,
  		   struct module *me)
-@@ -299,48 +221,6 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
+@@ -324,48 +246,6 @@ int apply_relocate(Elf_Shdr *sechdrs, const char *strtab,
  	return 0;
  }
  
@@ -7112,24 +7130,6 @@ index 1500c80..74a7197 100644
  /* Given an address, look for it in the module exception tables. */
  const struct exception_table_entry *search_module_dbetables(unsigned long addr)
  {
-diff --git a/arch/mips/kernel/module.h b/arch/mips/kernel/module.h
-new file mode 100644
-index 0000000..675d091
---- /dev/null
-+++ b/arch/mips/kernel/module.h
-@@ -0,0 +1,12 @@
-+/* Internal definitions for MIPS module code
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public Licence
-+ * as published by the Free Software Foundation; either version
-+ * 2 of the Licence, or (at your option) any later version.
-+ */
-+
-+/*
-+ * module.c
-+ */
-+extern int apply_r_mips_none(struct module *me, u32 *location, Elf_Addr v);
 -- 
 1.7.11.4
 

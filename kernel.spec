@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git2.1
+- Linux v3.6-rc3-177-gc182ae4
+
 * Sat Aug 25 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix build on ARM
 - Enable USB ULPI driver to fix some USB ports
