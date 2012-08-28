@@ -724,6 +724,8 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
 Patch21000: arm-read_current_timer.patch
+Patch21001: arm-fix-omapdrm.patch
+Patch21002: arm-fix_radio_shark.patch
 # OMAP
 
 # ARM tegra
@@ -1314,6 +1316,8 @@ ApplyPatch team-net-next-20120808.patch
 # ARM
 #
 ApplyPatch arm-read_current_timer.patch
+ApplyPatch arm-fix-omapdrm.patch
+ApplyPatch arm-fix_radio_shark.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2307,6 +2311,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 28 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patches to fix OMAP drm, radio shark
+- Tweak ARM config
+
 * Mon Aug 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git2.1
 - Linux v3.6-rc3-177-gc182ae4
 
