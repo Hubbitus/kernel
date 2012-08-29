@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -752,6 +752,8 @@ Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+Patch30000: 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1448,6 +1450,8 @@ ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+ApplyPatch 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2311,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git3.2
+- Add patch to fix USB audio regression (rhbz 851619)
+
 * Wed Aug 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git3.1
 - Linux v3.6-rc3-207-g318e151
 
