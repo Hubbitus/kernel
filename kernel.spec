@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2311,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 29 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc3.git3.1
+- Linux v3.6-rc3-207-g318e151
+
 * Tue Aug 28 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patches to fix OMAP drm, radio shark
 - Tweak ARM config
