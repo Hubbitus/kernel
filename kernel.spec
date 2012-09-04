@@ -683,6 +683,9 @@ Patch900: modsign-20120816.patch
 # secure boot
 Patch1000: secure-boot-20120809.patch
 
+# Improve PCI support on UEFI
+Patch1100: handle-efi-roms.patch
+
 # virt + ksm patches
 Patch1555: fix_xen_guest_on_old_EC2.patch
 
@@ -1394,6 +1397,9 @@ ApplyPatch modsign-20120816.patch
 
 # secure boot
 ApplyPatch secure-boot-20120809.patch
+
+# Improved PCI support for UEFI
+ApplyPatch handle-efi-roms.patch
 
 # Assorted Virt Fixes
 ApplyPatch fix_xen_guest_on_old_EC2.patch
@@ -2315,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep  4 2012 Matthew Garrett <mjg@redhat.com>
+- handle-efi-roms.patch: Improve PCI support on UEFI systems
+
 * Tue Sep  4 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Tweak OMAP options
 
