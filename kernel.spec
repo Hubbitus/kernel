@@ -2315,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep  4 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Tweak OMAP options
+
 * Mon Sep 03 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc4.git0.1
 - Linux v3.6-rc4
 - Disable debugging options.
