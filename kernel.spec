@@ -1701,7 +1701,7 @@ BuildKernel() {
     # Make sure the Makefile and version.h have a matching timestamp so that
     # external modules can be built
     touch -r $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/Makefile $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/linux/version.h
-    touch -r $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/.config $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/linux/autoconf.h
+
     # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
     cp $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/.config $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/config/auto.conf
 
@@ -2327,6 +2327,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 05 2012 Dave Jones <davej@redhat.com>
+- Don't create empty include/linux/autoconf.h in kernel-devel (rhbz 854689)
+
 * Wed Sep 05 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc4.git1.1
 - Linux v3.6-rc4-53-g5b716ac
 - Add patch to fix ibmveth issue from Santiago Leon (rhbz 852842)
