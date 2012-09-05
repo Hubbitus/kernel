@@ -2318,8 +2318,8 @@ fi
 # and build.
 
 #  ___________________________________________________________
-# / This branch is for Fedora 18. You probably want to commit \
-# \ to the F-17 branch instead, or in addition to this one.   /
+# / This branch is for Fedora 19. You probably want to commit \
+# \ to the F-18 branch instead, or in addition to this one.   /
 #  -----------------------------------------------------------
 #         \   ^__^
 #          \  (@@)\_______
