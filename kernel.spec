@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -755,6 +755,9 @@ Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#rhbz 852842
+Patch22068: ibmveth-Fix-alignment-of-rx-queue-bug.patch
 
 Patch30000: 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
@@ -1456,6 +1459,9 @@ ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#rhbz 852842
+ApplyPatch ibmveth-Fix-alignment-of-rx-queue-bug.patch
 
 ApplyPatch 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
@@ -2321,6 +2327,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 05 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc4.git1.1
+- Linux v3.6-rc4-53-g5b716ac
+- Add patch to fix ibmveth issue from Santiago Leon (rhbz 852842)
+
 * Wed Sep 05 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc4.git0.2
 - Reenable debugging options.
 
