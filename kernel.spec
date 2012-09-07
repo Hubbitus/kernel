@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -758,8 +758,6 @@ Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 #rhbz 852842
 Patch22068: ibmveth-Fix-alignment-of-rx-queue-bug.patch
-
-Patch30000: 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1462,8 +1460,6 @@ ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 #rhbz 852842
 ApplyPatch ibmveth-Fix-alignment-of-rx-queue-bug.patch
-
-ApplyPatch 0001-ALSA-snd-usb-Fix-URB-cancellation-at-stream-start.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2327,6 +2323,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 07 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc4.git2.1
+- Linux v3.6-rc4-128-geeea3ac
+
 * Wed Sep 05 2012 Dave Jones <davej@redhat.com>
 - Don't create empty include/linux/autoconf.h in kernel-devel (rhbz 854689)
 
