@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -687,7 +687,6 @@ Patch1000: secure-boot-20120809.patch
 Patch1100: handle-efi-roms.patch
 
 # virt + ksm patches
-Patch1555: fix_xen_guest_on_old_EC2.patch
 
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
@@ -1403,7 +1402,6 @@ ApplyPatch secure-boot-20120809.patch
 ApplyPatch handle-efi-roms.patch
 
 # Assorted Virt Fixes
-ApplyPatch fix_xen_guest_on_old_EC2.patch
 
 # DRM core
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
@@ -2323,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc5.git1.2
+- Drop old Xen EC2 patch.  It is no longer needed per Matt Wilson
+
 * Tue Sep 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc5.git1.1
 - Linux v3.6-rc5-32-g1a95620
 - Reenable debugging options.
