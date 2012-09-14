@@ -512,7 +512,7 @@ AutoProv: yes\
 
 Name: kernel%{?variant}
 Group: System Environment/Kernel
-License: GPLv2
+License: GPLv2 and Redistributable, no modification permitted
 URL: http://www.kernel.org/
 Version: %{rpmversion}
 Release: %{pkg_release}
@@ -2321,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 14 2012 Dave Jones <davej@redhat.com>
+- Fix license tag. (rhbz 450492)
+
 * Wed Sep 12 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc5.git2.1
 - Linux v3.6-rc5-44-g0bd1189
 
