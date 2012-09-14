@@ -61,6 +61,20 @@ do
   mv $mod $newpath
 done
 
+popd
+
+# If we're signing modules, we can't leave the .mod files for the .ko files
+# we've moved in .tmp_versions/.  Remove them so the Kbuild 'modules_sign'
+# target doesn't try to sign a non-existent file.  This is kinda ugly, but
+# so is modules-extra.
+
+for mod in `cat ${Dir}/dep2.list`
+do
+  modfile=`basename $mod | sed -e 's/.ko/.mod/'`
+  rm .tmp_versions/$modfile
+done
+
+pushd $Dir
 rm modnames dep.list dep2.list req.list req2.list
 rm mod-extra.list mod-extra2.list mod-extra3.list
 popd
