@@ -189,7 +189,7 @@ CONFIG_EXTRA_FIRMWARE=""
 #
 # Memory Technology Devices (MTD)
 #
-# CONFIG_MTD is not set
+CONFIG_MTD=m
 # CONFIG_MTD_REDBOOT_PARTS is not set
 # CONFIG_FTL is not set
 # CONFIG_NFTL is not set
@@ -212,7 +212,7 @@ CONFIG_EXTRA_FIRMWARE=""
 # CONFIG_MTD_NAND_MUSEUM_IDS is not set
 # CONFIG_MTD_NAND_DISKONCHIP is not set
 # CONFIG_MTD_LPDDR is not set
-# CONFIG_MTD_UBI is not set
+CONFIG_MTD_UBI=m
 
 
 #
