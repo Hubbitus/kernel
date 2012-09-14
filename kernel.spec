@@ -2322,6 +2322,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Sep 14 2012 Dave Jones <davej@redhat.com>
+- Reenable UBIFS (rhbz 823238)
+
+* Fri Sep 14 2012 Dave Jones <davej@redhat.com>
 - Fix license tag. (rhbz 450492)
 
 * Wed Sep 12 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc5.git2.1

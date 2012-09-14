@@ -187,3 +187,4 @@ w1_smem.ko
 w1_ds2431.ko
 w1_ds2423.ko
 w1_bq27000.ko
+ubifs.ko
