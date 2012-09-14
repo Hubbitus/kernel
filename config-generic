@@ -2419,7 +2419,7 @@ CONFIG_VGA_ARB_MAX_GPUS=16
 # CONFIG_STUB_POULSBO is not set
 
 CONFIG_DRM=m
-# CONFIG_DRM_LOAD_EDID_FIRMWARE is not set
+CONFIG_DRM_LOAD_EDID_FIRMWARE=y
 CONFIG_DRM_AST=m  # do not enable on f17 or older
 CONFIG_DRM_CIRRUS_QEMU=m  # do not enable on f17 or older
 # CONFIG_DRM_TDFX is not set

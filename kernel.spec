@@ -2322,6 +2322,9 @@ fi
 #                 ||     ||
 %changelog
 * Fri Sep 14 2012 Dave Jones <davej@redhat.com>
+- Enable CONFIG_DRM_LOAD_EDID_FIRMWARE (rhbz 857511)
+
+* Fri Sep 14 2012 Dave Jones <davej@redhat.com>
 - Reenable UBIFS (rhbz 823238)
 
 * Fri Sep 14 2012 Dave Jones <davej@redhat.com>
