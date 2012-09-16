@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -754,9 +754,6 @@ Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
-
-#rhbz 852842
-Patch22068: ibmveth-Fix-alignment-of-rx-queue-bug.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1455,9 +1452,6 @@ ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
-
-#rhbz 852842
-ApplyPatch ibmveth-Fix-alignment-of-rx-queue-bug.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2321,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Sep 16 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc5.git3.1
+- Linux v3.6-rc5-315-g3f0c3c8
+
 * Fri Sep 14 2012 Dave Jones <davej@redhat.com>
 - Enable CONFIG_DRM_LOAD_EDID_FIRMWARE (rhbz 857511)
 
