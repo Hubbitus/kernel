@@ -656,6 +656,7 @@ Patch100: taint-vbox.patch
 Patch110: vmbugon-warnon.patch
 
 Patch150: team-net-next-20120808.patch
+Patch151: team-net-next-update-20120924.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1310,6 +1311,7 @@ ApplyPatch taint-vbox.patch
 ApplyPatch vmbugon-warnon.patch
 
 ApplyPatch team-net-next-20120808.patch
+ApplyPatch team-net-next-update-20120924.patch
 
 # Architecture patches
 # x86(-64)
@@ -2315,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc7.git1.2
+- Update team driver from net-next from Jiri Pirko
+
 * Tue Sep 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc7.git1.1
 - Linux v3.6-rc7-10-g56d27ad
 
