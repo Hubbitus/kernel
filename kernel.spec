@@ -2307,7 +2307,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Sep 25 2012 Josh Boyer <jwboyer@redhat.com>
+* Tue Sep 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc7.git1.4
 - Move the modules-extra processing to a script
 - Prep mod-extra.sh for signed modules
 - Switch to using modsign-post-KS upstream with x509 certs
