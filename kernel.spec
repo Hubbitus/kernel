@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -658,7 +658,7 @@ Patch100: taint-vbox.patch
 Patch110: vmbugon-warnon.patch
 
 Patch150: team-net-next-20120808.patch
-Patch151: team-net-next-update-20120924.patch
+Patch151: team-net-next-update-20120927.patch
 
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
@@ -1313,7 +1313,7 @@ ApplyPatch taint-vbox.patch
 ApplyPatch vmbugon-warnon.patch
 
 ApplyPatch team-net-next-20120808.patch
-ApplyPatch team-net-next-update-20120924.patch
+ApplyPatch team-net-next-update-20120927.patch
 
 # Architecture patches
 # x86(-64)
@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 28 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc7.git2.1
+- Linux v3.6-rc7-71-g6399413
+
 * Tue Sep 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.6.0-0.rc7.git1.4
 - Move the modules-extra processing to a script
 - Prep mod-extra.sh for signed modules
