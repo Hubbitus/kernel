@@ -739,6 +739,7 @@ Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
 
 # ARM highbank patches
+Patch21010: arm-highbank-sata-fix.patch
 
 Patch21094: power-x86-destdir.patch
 
@@ -2319,6 +2320,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct  2 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM configs for 3.6 final
+- Add highbank SATA driver for stability
+- Build in OMAP MMC and DMA drivers to fix borkage for now
+
 * Mon Oct 01 2012 Justin M. Forbes <jforbes@redhat.com> - 3.6.0-1
 - Linux 3.6.0
 - Disable debugging options.
