@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2320,6 +2320,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 02 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch from David Howells to fix overflow on 32-bit X.509 certs (rhbz 861322)
+
 * Tue Oct  2 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM configs for 3.6 final
 - Add highbank SATA driver for stability
