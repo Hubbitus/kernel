@@ -1418,7 +1418,7 @@ ApplyPatch handle-efi-roms.patch
 
 # DRM core
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
-ApplyPatch drm-vgem.patch
+#ApplyPatch drm-vgem.patch
 
 # Nouveau DRM
 
