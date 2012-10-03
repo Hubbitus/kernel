@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -891,6 +891,7 @@ Requires: kernel-tools = %{version}-%{release}
 Provides:  cpupowerutils-devel = 1:009-0.6.p1
 Obsoletes: cpupowerutils-devel < 1:009-0.6.p1
 Requires: kernel-tools-libs = %{version}-%{release}
+Provides: kernel-tools-devel
 %description -n kernel-tools-libs-devel
 This package contains the development files for the tools/ directory from
 the kernel source.
@@ -2320,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Make sure kernel-tools-libs-devel provides kernel-tools-devel
+
 * Tue Oct 02 2012 Josh Boyer <jwboyer@redhat.com>
 - Patch from David Howells to fix overflow on 32-bit X.509 certs (rhbz 861322)
 
