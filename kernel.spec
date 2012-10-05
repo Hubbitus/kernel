@@ -2321,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct  5 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build MMC in on OMAP and Tegra until we work out why modules don't work
+
 * Wed Oct 03 2012 Adam Jackson <ajax@redhat.com>
 - Drop vgem patches, not doing anything yet.
 
