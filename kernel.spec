@@ -2194,6 +2194,7 @@ fi
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
+%{_sysconfdir}/bash_completion.d/perf
 %doc linux-%{KVERREL}/tools/perf/Documentation/examples.txt
 
 %files -n python-perf
