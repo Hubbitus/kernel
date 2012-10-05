@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -690,7 +690,7 @@ Patch1100: handle-efi-roms.patch
 
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
-Patch1800: drm-vgem.patch
+#Patch1800: drm-vgem.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -887,6 +887,7 @@ Requires: kernel-tools = %{version}-%{release}
 Provides:  cpupowerutils-devel = 1:009-0.6.p1
 Obsoletes: cpupowerutils-devel < 1:009-0.6.p1
 Requires: kernel-tools-libs = %{version}-%{release}
+Provides: kernel-tools-devel
 %description -n kernel-tools-libs-devel
 This package contains the development files for the tools/ directory from
 the kernel source.
@@ -1409,7 +1410,7 @@ ApplyPatch secure-boot-20120924.patch
 
 # DRM core
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
-ApplyPatch drm-vgem.patch
+#ApplyPatch drm-vgem.patch
 
 # Nouveau DRM
 
@@ -2315,6 +2316,18 @@ fi
 * Fri Oct 05 2012 Justin M. Forbes <jforbes@redhat.com> 
 - v3.6-6670-gecefbd9
 - Reenable debugging options.
+
+* Fri Oct  5 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build MMC in on OMAP and Tegra until we work out why modules don't work
+
+* Wed Oct 03 2012 Adam Jackson <ajax@redhat.com>
+- Drop vgem patches, not doing anything yet.
+
+* Wed Oct 03 2012 Josh Boyer <jwboyer@redhat.com>
+- Make sure kernel-tools-libs-devel provides kernel-tools-devel
+
+* Tue Oct 02 2012 Josh Boyer <jwboyer@redhat.com>
+- Patch from David Howells to fix overflow on 32-bit X.509 certs (rhbz 861322)
 
 * Tue Oct  2 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM configs for 3.6 final
