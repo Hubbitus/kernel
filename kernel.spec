@@ -1404,7 +1404,7 @@ ApplyPatch modsign-post-KS-jwb.patch
 ApplyPatch secure-boot-20120924.patch
 
 # Improved PCI support for UEFI
-# ApplyPatch handle-efi-roms.patch
+ApplyPatch handle-efi-roms.patch
 
 # Assorted Virt Fixes
 
@@ -2313,6 +2313,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 05 2012 Justin M. Forbes <jforbes@redhat.com> 
+- Fix handle-efi-roms.patch
+
 * Fri Oct 05 2012 Justin M. Forbes <jforbes@redhat.com> 
 - v3.6-6670-gecefbd9
 - Reenable debugging options.
