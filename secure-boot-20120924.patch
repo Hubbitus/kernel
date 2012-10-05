@@ -650,44 +650,64 @@ index 93978d5..e3e5f8c 100644
 1.7.11.4
 
 
-From d1a225668878a3339adcd7ce0be256e857360ada Mon Sep 17 00:00:00 2001
+From 1cc529e97756554953187fe48b9b8cf0e24b9bc7 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
-Date: Tue, 26 Jun 2012 16:27:26 -0400
-Subject: [PATCH 14/14] modsign: Reject unsigned modules in a Secure Boot
+Date: Fri, 5 Oct 2012 10:12:48 -0400
+Subject: [PATCH] modsign: Always enforce module signing in a Secure Boot
  environment
 
 If a machine is booted into a Secure Boot environment, we need to
 protect the trust model.  This requires that all modules be signed
-with a key that is in the kernel's _modsign keyring.  We add a
-capability check and reject modules that are not signed.
+with a key that is in the kernel's _modsign keyring.  The checks for
+this are already done via the 'sig_enforce' module parameter.  Make
+this visible within the kernel and force it to be true.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
+ kernel/cred.c   | 8 ++++++++
  kernel/module.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ 2 files changed, 10 insertions(+), 2 deletions(-)
 
+diff --git a/kernel/cred.c b/kernel/cred.c
+index 7e6e83f..2b0b980 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -623,11 +623,19 @@ void __init cred_init(void)
+ 				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+ }
+ 
++#ifdef CONFIG_MODULES
++extern bool sig_enforce;
++#endif
++
+ void __init secureboot_enable()
+ {
+ 	pr_info("Secure boot enabled\n");
+ 	cap_lower((&init_cred)->cap_bset, CAP_COMPROMISE_KERNEL);
+ 	cap_lower((&init_cred)->cap_permitted, CAP_COMPROMISE_KERNEL);
++#ifdef CONFIG_MODULES
++	/* Enable module signature enforcing */
++	sig_enforce = true;
++#endif
+ }
+ 
+ /* Dummy Secure Boot enable option to fake out UEFI SB=1 */
 diff --git a/kernel/module.c b/kernel/module.c
-index de16959..5af69cc 100644
+index de16959..7d4c50a 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -2463,7 +2463,7 @@ static int module_sig_check(struct load_info *info,
- 	}
+@@ -106,9 +106,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
  
- 	/* Not having a signature is only an error if we're strict. */
--	if (!err && !info->sig_ok && sig_enforce)
-+	if (!err && !info->sig_ok && (sig_enforce || !capable(CAP_COMPROMISE_KERNEL)))
- 		err = -EKEYREJECTED;
- 	return err;
+ #ifdef CONFIG_MODULE_SIG
+ #ifdef CONFIG_MODULE_SIG_FORCE
+-static bool sig_enforce = true;
++bool sig_enforce = true;
+ #else
+-static bool sig_enforce = false;
++bool sig_enforce = false;
  
-@@ -2475,7 +2475,7 @@ found_marker:
- 	if (err < 0 && fips_enabled)
- 		panic("Module verification failed with error %d in FIPS mode\n",
- 		      err);
--	if (err == -ENOKEY && !sig_enforce)
-+	if (err == -ENOKEY && (!sig_enforce && capable(CAP_COMPROMISE_KERNEL)))
- 		err = 0;
- 	return err;
- }
+ static int param_set_bool_enable_only(const char *val,
+ 				      const struct kernel_param *kp)
 -- 
 1.7.11.4
 
