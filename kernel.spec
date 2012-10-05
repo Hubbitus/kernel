@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -163,7 +163,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -176,7 +176,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -657,9 +657,6 @@ Patch100: taint-vbox.patch
 
 Patch110: vmbugon-warnon.patch
 
-Patch150: team-net-next-20120808.patch
-Patch151: team-net-next-update-20120927.patch
-
 Patch390: linux-2.6-defaults-acpi-video.patch
 Patch391: linux-2.6-acpi-video-dos.patch
 Patch394: linux-2.6-acpi-debug-infinite-loop.patch
@@ -729,7 +726,6 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
 Patch21000: arm-read_current_timer.patch
-Patch21001: arm-fix-omapdrm.patch
 Patch21002: arm-fix_radio_shark.patch
 # OMAP
 
@@ -1323,9 +1319,6 @@ ApplyPatch taint-vbox.patch
 
 ApplyPatch vmbugon-warnon.patch
 
-ApplyPatch team-net-next-20120808.patch
-ApplyPatch team-net-next-update-20120927.patch
-
 # Architecture patches
 # x86(-64)
 
@@ -1333,7 +1326,6 @@ ApplyPatch team-net-next-update-20120927.patch
 # ARM
 #
 ApplyPatch arm-read_current_timer.patch
-ApplyPatch arm-fix-omapdrm.patch
 ApplyPatch arm-fix_radio_shark.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
@@ -1411,7 +1403,7 @@ ApplyPatch modsign-post-KS-jwb.patch
 ApplyPatch secure-boot-20120924.patch
 
 # Improved PCI support for UEFI
-ApplyPatch handle-efi-roms.patch
+# ApplyPatch handle-efi-roms.patch
 
 # Assorted Virt Fixes
 
@@ -2320,6 +2312,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 05 2012 Justin M. Forbes <jforbes@redhat.com> 
+- v3.6-6670-gecefbd9
+- Reenable debugging options.
+
 * Tue Oct  2 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM configs for 3.6 final
 - Add highbank SATA driver for stability

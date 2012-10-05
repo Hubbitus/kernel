@@ -650,39 +650,6 @@ index 93978d5..e3e5f8c 100644
 1.7.11.4
 
 
-From 294d339c63b0f67a362efaa62713f26d9f496da8 Mon Sep 17 00:00:00 2001
-From: Matthew Garrett <mjg@redhat.com>
-Date: Thu, 26 Jul 2012 18:00:00 -0400
-Subject: [PATCH 13/14] efi: Build EFI stub with EFI-appropriate options
-
-We can't assume the presence of the red zone while we're still in a boot
-services environment, so we should build with -fno-red-zone to avoid
-problems. Change the size of wchar at the same time to make string handling
-simpler.
-
-Signed-off-by: Matthew Garrett <mjg@redhat.com>
----
- arch/x86/boot/compressed/Makefile | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/x86/boot/compressed/Makefile b/arch/x86/boot/compressed/Makefile
-index e398bb5..8a84501 100644
---- a/arch/x86/boot/compressed/Makefile
-+++ b/arch/x86/boot/compressed/Makefile
-@@ -28,6 +28,9 @@ VMLINUX_OBJS = $(obj)/vmlinux.lds $(obj)/head_$(BITS).o $(obj)/misc.o \
- 	$(obj)/string.o $(obj)/cmdline.o $(obj)/early_serial_console.o \
- 	$(obj)/piggy.o
- 
-+$(obj)/eboot.o: KBUILD_CFLAGS += -fshort-wchar -mno-red-zone
-+$(obj)/efi_stub_$(BITS).o: KBUILD_CLFAGS += -fshort-wchar -mno-red-zone
-+
- ifeq ($(CONFIG_EFI_STUB), y)
- 	VMLINUX_OBJS += $(obj)/eboot.o $(obj)/efi_stub_$(BITS).o
- endif
--- 
-1.7.11.4
-
-
 From d1a225668878a3339adcd7ce0be256e857360ada Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 26 Jun 2012 16:27:26 -0400

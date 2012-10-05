@@ -1073,7 +1073,8 @@ index 2d5d041..42036c7 100644
  	char *datablob;
  	int ret = 0;
  	int key_cmd;
- 
+ 	size_t key_len;
+
 -	if (datalen <= 0 || datalen > 32767 || !data)
 +	if (datalen <= 0 || datalen > 32767 || !prep->data)
  		return -EINVAL;
