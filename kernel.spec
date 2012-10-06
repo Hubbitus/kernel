@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 5
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2314,6 +2314,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Oct 06 2012 Josh Boyer <jwboyer@redhat.com>
+- secure boot modsign depends on CONFIG_MODULE_SIG not CONFIG_MODULES
+
 * Fri Oct 05 2012 Josh Boyer <jwboyer@redhat.com>
 - Adjust secure boot modsign patch
 

@@ -676,7 +676,7 @@ index 7e6e83f..2b0b980 100644
  				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
  }
  
-+#ifdef CONFIG_MODULES
++#ifdef CONFIG_MODULE_SIG
 +extern bool sig_enforce;
 +#endif
 +
@@ -685,7 +685,7 @@ index 7e6e83f..2b0b980 100644
  	pr_info("Secure boot enabled\n");
  	cap_lower((&init_cred)->cap_bset, CAP_COMPROMISE_KERNEL);
  	cap_lower((&init_cred)->cap_permitted, CAP_COMPROMISE_KERNEL);
-+#ifdef CONFIG_MODULES
++#ifdef CONFIG_MODULE_SIG
 +	/* Enable module signature enforcing */
 +	sig_enforce = true;
 +#endif
