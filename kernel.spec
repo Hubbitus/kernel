@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 5
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -725,8 +725,7 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 
 # ARM
-Patch21000: arm-read_current_timer.patch
-Patch21002: arm-fix_radio_shark.patch
+
 # OMAP
 
 # ARM tegra
@@ -1326,8 +1325,6 @@ ApplyPatch vmbugon-warnon.patch
 #
 # ARM
 #
-ApplyPatch arm-read_current_timer.patch
-ApplyPatch arm-fix_radio_shark.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2314,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 08 2012 Justin M. Forbes <jforbes@redhat.com>
+- v3.6-8559-ge9eca4d
+
 * Sat Oct 06 2012 Josh Boyer <jwboyer@redhat.com>
 - secure boot modsign depends on CONFIG_MODULE_SIG not CONFIG_MODULES
 
