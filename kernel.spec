@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -740,8 +740,6 @@ Patch21094: power-x86-destdir.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-Patch21400: unhandled-irqs-switch-to-polling.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1444,8 +1442,6 @@ ApplyPatch power-x86-destdir.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-ApplyPatch unhandled-irqs-switch-to-polling.patch
 
 ApplyPatch weird-root-dentry-name-debug.patch
 
@@ -2311,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 09 2012 Josh Boyer <jwboyer@redhat.com>
+- Drop unhandled irq polling patch
+
 * Mon Oct 08 2012 Justin M. Forbes <jforbes@redhat.com>
 - v3.6-8559-ge9eca4d
 
