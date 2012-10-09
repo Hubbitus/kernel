@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1312,7 +1312,6 @@ ApplyOptionalPatch linux-2.6-compile-fixes.patch
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
 
-
 ApplyPatch taint-vbox.patch
 
 ApplyPatch vmbugon-warnon.patch
@@ -2307,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 09 2012 Justin M. Forbes <jforbes@redhat.com>
+- v3.6-9228-g547b1e8 
+
 * Tue Oct 09 2012 Josh Boyer <jwboyer@redhat.com>
 - Drop unhandled irq polling patch
 

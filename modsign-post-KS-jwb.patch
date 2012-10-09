@@ -3587,16 +3587,6 @@ index 0000000..5928546
 +extern enum OID look_up_OID(const void *data, size_t datasize);
 +
 +#endif /* _LINUX_OID_REGISTRY_H */
-diff --git a/lib/.gitignore b/lib/.gitignore
-index 3bef1ea..09aae85 100644
---- a/lib/.gitignore
-+++ b/lib/.gitignore
-@@ -3,4 +3,4 @@
- #
- gen_crc32table
- crc32table.h
--
-+oid_registry_data.c
 diff --git a/lib/Kconfig b/lib/Kconfig
 index bb94c1b..4b31a46 100644
 --- a/lib/Kconfig
@@ -5991,8 +5981,8 @@ index b042896..ca856b6 100644
  
 +obj-$(CONFIG_ASN1) += asn1_decoder.o
 +
- hostprogs-y	:= gen_crc32table
- clean-files	:= crc32table.h
+ obj-$(CONFIG_RBTREE_TEST) += rbtree_test.o
+ obj-$(CONFIG_INTERVAL_TREE_TEST) += interval_tree_test.o
  
 diff --git a/lib/asn1_decoder.c b/lib/asn1_decoder.c
 new file mode 100644
