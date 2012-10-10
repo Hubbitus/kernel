@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -536,6 +536,7 @@ BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
+BuildRequires: audit-libs-devel libunwind-devel
 %endif
 %if %{with_tools}
 BuildRequires: pciutils-devel gettext
@@ -751,6 +752,9 @@ Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#Perf build fix, should go away soon
+Patch22070: perf-build-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1452,6 +1456,9 @@ ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#Perf build fix, should go away soon
+ApplyPatch perf-build-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2306,6 +2313,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 10 2012 Justin M. Forbes <jforbes@redhat.com>
+- v3.6-9849-g2474542
+
 * Tue Oct 09 2012 Justin M. Forbes <jforbes@redhat.com>
 - v3.6-9228-g547b1e8 
 
