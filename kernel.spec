@@ -753,6 +753,9 @@ Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
+#Perf build fix, should go away soon
+Patch22070: perf-build-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1453,6 +1456,9 @@ ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#Perf build fix, should go away soon
+ApplyPatch perf-build-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2307,6 +2313,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 12 2012 Justin M. Forbes <jforbes@redhat.com>
+- Add perf build fix back, changed to work with upstream
+
 * Fri Oct 12 2012 Justin M. Forbes <jforbes@redhat.com>
 - v3.6-10630-gccff9b1
 
