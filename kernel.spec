@@ -750,6 +750,9 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
+# Build patch, should go away
+Patch22070: irqnr-build.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1447,6 +1450,9 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
+
+#Build patch, should go away
+ApplyPatch irqnr-build.patch
 
 # END OF PATCH APPLICATIONS
 
