@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 6
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -163,7 +163,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -176,7 +176,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -747,14 +747,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
-#rhbz 847548
-Patch22066: virtio-scsi-Initialize-scatterlist-structure.patch
-
 #rhbz 846037
 Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
-
-#Perf build fix, should go away soon
-Patch22070: perf-build-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1396,10 +1390,10 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-post-KS-jwb.patch
+# ApplyPatch modsign-post-KS-jwb.patch
 
 # secure boot
-ApplyPatch secure-boot-20120924.patch
+# ApplyPatch secure-boot-20120924.patch
 
 # Improved PCI support for UEFI
 ApplyPatch handle-efi-roms.patch
@@ -1451,14 +1445,8 @@ ApplyPatch weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
-#rhbz 847548
-ApplyPatch virtio-scsi-Initialize-scatterlist-structure.patch
-
 #rhbz 846037
 ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
-
-#Perf build fix, should go away soon
-ApplyPatch perf-build-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2313,6 +2301,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 15 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc1.git0.1
+- Linux 3.7-rc1
+- Disable debugging options.
+
 * Fri Oct 12 2012 Justin M. Forbes <jforbes@redhat.com>
 - Add perf build fix back, changed to work with upstream
 
