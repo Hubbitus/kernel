@@ -11,13 +11,13 @@ capability set if required.
 
 Signed-off-by: Matthew Garrett <mjg@redhat.com>
 ---
- include/linux/capability.h | 6 +++++-
+ include/uapi/linux/capability.h | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/capability.h b/include/linux/capability.h
 index d10b7ed..4345bc8 100644
---- a/include/linux/capability.h
-+++ b/include/linux/capability.h
+--- a/include/uapi/linux/capability.h
++++ b/include/uapi/linux/capability.h
 @@ -364,7 +364,11 @@ struct cpu_vfs_cap_data {
  
  #define CAP_BLOCK_SUSPEND    36

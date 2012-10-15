@@ -1390,10 +1390,10 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-# ApplyPatch modsign-post-KS-jwb.patch
+ApplyPatch modsign-post-KS-jwb.patch
 
 # secure boot
-# ApplyPatch secure-boot-20120924.patch
+ApplyPatch secure-boot-20120924.patch
 
 # Improved PCI support for UEFI
 ApplyPatch handle-efi-roms.patch
@@ -2301,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 15 2012 Justin M. Forbes <jforbes@redhat.com>
+- re-enable modsign and secure boot
+
 * Mon Oct 15 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc1.git0.1
 - Linux 3.7-rc1
 - Disable debugging options.
