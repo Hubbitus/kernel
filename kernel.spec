@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -724,6 +724,8 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
+
+Patch19001: i82975x-edac-fix.patch
 
 # ARM
 
@@ -1437,6 +1439,8 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 #ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
+
+ApplyPatch i82975x-edac-fix.patch
 
 ApplyPatch power-x86-destdir.patch
 
@@ -2307,8 +2311,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Oct 15 2012 Justin M. Forbes <jforbes@redhat.com>
-- re-enable modsign and secure boot
+* Tue Oct 16 2012 Mauro Carvalho Chehab <mchehab@redhat.com>
+- Fix i82975x_edac OOPS
 
 * Mon Oct 15 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc1.git0.1
 - Linux 3.7-rc1
