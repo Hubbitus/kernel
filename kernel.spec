@@ -2311,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 18 2012 Josh Boyer <jwboyer@redhat.com>
+- Enable VFIO (rhbz 867152)
+
 * Wed Oct 17 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc1.git1.1
 - Linux v3.7-rc1-78-g8d2b6b3
 
