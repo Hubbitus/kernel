@@ -1,251 +1,4 @@
-From a6a74ede612b526dd0f958c2eee5adfa9b038b95 Mon Sep 17 00:00:00 2001
-From: Josh Boyer <jwboyer@redhat.com>
-Date: Mon, 15 Oct 2012 10:14:09 -0400
-Subject: [PATCH 1/2] Revert "MODSIGN: Sign modules during the build process"
-
-This reverts commit 80d65e58e93ffdabf58202653a0435bd3cf2d82e.
----
- scripts/Makefile.modpost |  77 +------------------------------
- scripts/sign-file        | 115 -----------------------------------------------
- 2 files changed, 1 insertion(+), 191 deletions(-)
- delete mode 100644 scripts/sign-file
-
-diff --git a/scripts/Makefile.modpost b/scripts/Makefile.modpost
-index 0020891..a1cb022 100644
---- a/scripts/Makefile.modpost
-+++ b/scripts/Makefile.modpost
-@@ -14,8 +14,7 @@
- # 3)  create one <module>.mod.c file pr. module
- # 4)  create one Module.symvers file with CRC for all exported symbols
- # 5) compile all <module>.mod.c files
--# 6) final link of the module to a <module.ko> (or <module.unsigned>) file
--# 7) signs the modules to a <module.ko> file
-+# 6) final link of the module to a <module.ko> file
- 
- # Step 3 is used to place certain information in the module's ELF
- # section, including information such as:
-@@ -33,8 +32,6 @@
- # Step 4 is solely used to allow module versioning in external modules,
- # where the CRC of each module is retrieved from the Module.symvers file.
- 
--# Step 7 is dependent on CONFIG_MODULE_SIG being enabled.
--
- # KBUILD_MODPOST_WARN can be set to avoid error out in case of undefined
- # symbols in the final module linking stage
- # KBUILD_MODPOST_NOFINAL can be set to skip the final link of modules.
-@@ -119,7 +116,6 @@ $(modules:.ko=.mod.o): %.mod.o: %.mod.c FORCE
- targets += $(modules:.ko=.mod.o)
- 
- # Step 6), final link of the modules
--ifneq ($(CONFIG_MODULE_SIG),y)
- quiet_cmd_ld_ko_o = LD [M]  $@
-       cmd_ld_ko_o = $(LD) -r $(LDFLAGS)                                 \
-                              $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE) \
-@@ -129,78 +125,7 @@ $(modules): %.ko :%.o %.mod.o FORCE
- 	$(call if_changed,ld_ko_o)
- 
- targets += $(modules)
--else
--quiet_cmd_ld_ko_unsigned_o = LD [M]  $@
--      cmd_ld_ko_unsigned_o =						\
--		$(LD) -r $(LDFLAGS)					\
--			 $(KBUILD_LDFLAGS_MODULE) $(LDFLAGS_MODULE)	\
--			 -o $@ $(filter-out FORCE,$^)			\
--		$(if $(AFTER_LINK),; $(AFTER_LINK))
--
--$(modules:.ko=.ko.unsigned): %.ko.unsigned :%.o %.mod.o FORCE
--	$(call if_changed,ld_ko_unsigned_o)
--
--targets += $(modules:.ko=.ko.unsigned)
--
--# Step 7), sign the modules
--MODSECKEY = ./signing_key.priv
--MODPUBKEY = ./signing_key.x509
--
--ifeq ($(wildcard $(MODSECKEY))+$(wildcard $(MODPUBKEY)),$(MODSECKEY)+$(MODPUBKEY))
--ifeq ($(KBUILD_SRC),)
--	# no O= is being used
--	SCRIPTS_DIR := scripts
--else
--	SCRIPTS_DIR := $(KBUILD_SRC)/scripts
--endif
--SIGN_MODULES := 1
--else
--SIGN_MODULES := 0
--endif
--
--# only sign if it's an in-tree module
--ifneq ($(KBUILD_EXTMOD),)
--SIGN_MODULES := 0
--endif
- 
--# We strip the module as best we can - note that using both strip and eu-strip
--# results in a smaller module than using either alone.
--EU_STRIP = $(shell which eu-strip || echo true)
--
--quiet_cmd_sign_ko_stripped_ko_unsigned = STRIP [M] $@
--      cmd_sign_ko_stripped_ko_unsigned = \
--		cp $< $@ && \
--		strip -x -g $@ && \
--		$(EU_STRIP) $@
--
--ifeq ($(SIGN_MODULES),1)
--
--quiet_cmd_genkeyid = GENKEYID $@
--      cmd_genkeyid = \
--		perl $(SCRIPTS_DIR)/x509keyid $< $<.signer $<.keyid
--
--%.signer %.keyid: %
--	$(call if_changed,genkeyid)
--
--KEYRING_DEP := $(MODSECKEY) $(MODPUBKEY) $(MODPUBKEY).signer $(MODPUBKEY).keyid
--quiet_cmd_sign_ko_ko_stripped = SIGN [M] $@
--      cmd_sign_ko_ko_stripped = \
--		sh $(SCRIPTS_DIR)/sign-file $(MODSECKEY) $(MODPUBKEY) $< $@
--else
--KEYRING_DEP :=
--quiet_cmd_sign_ko_ko_unsigned = NO SIGN [M] $@
--      cmd_sign_ko_ko_unsigned = \
--		cp $< $@
--endif
--
--$(modules): %.ko :%.ko.stripped $(KEYRING_DEP) FORCE
--	$(call if_changed,sign_ko_ko_stripped)
--
--$(patsubst %.ko,%.ko.stripped,$(modules)): %.ko.stripped :%.ko.unsigned FORCE
--	$(call if_changed,sign_ko_stripped_ko_unsigned)
--
--targets += $(modules)
--endif
- 
- # Add FORCE to the prequisites of a target to force it to be always rebuilt.
- # ---------------------------------------------------------------------------
-diff --git a/scripts/sign-file b/scripts/sign-file
-deleted file mode 100644
-index e58e34e..0000000
---- a/scripts/sign-file
-+++ /dev/null
-@@ -1,115 +0,0 @@
--#!/bin/sh
--#
--# Sign a module file using the given key.
--#
--# Format: sign-file <key> <x509> <src-file> <dst-file>
--#
--
--scripts=`dirname $0`
--
--CONFIG_MODULE_SIG_SHA512=y
--if [ -r .config ]
--then
--    . ./.config
--fi
--
--key="$1"
--x509="$2"
--src="$3"
--dst="$4"
--
--if [ ! -r "$key" ]
--then
--    echo "Can't read private key" >&2
--    exit 2
--fi
--
--if [ ! -r "$x509" ]
--then
--    echo "Can't read X.509 certificate" >&2
--    exit 2
--fi
--if [ ! -r "$x509.signer" ]
--then
--    echo "Can't read Signer name" >&2
--    exit 2;
--fi
--if [ ! -r "$x509.keyid" ]
--then
--    echo "Can't read Key identifier" >&2
--    exit 2;
--fi
--
--#
--# Signature parameters
--#
--algo=1		# Public-key crypto algorithm: RSA
--hash=		# Digest algorithm
--id_type=1	# Identifier type: X.509
--
--#
--# Digest the data
--#
--dgst=
--if [ "$CONFIG_MODULE_SIG_SHA1" = "y" ]
--then
--    prologue="0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00, 0x04, 0x14"
--    dgst=-sha1
--    hash=2
--elif [ "$CONFIG_MODULE_SIG_SHA224" = "y" ]
--then
--    prologue="0x30, 0x2d, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x04, 0x05, 0x00, 0x04, 0x1C"
--    dgst=-sha224
--    hash=7
--elif [ "$CONFIG_MODULE_SIG_SHA256" = "y" ]
--then
--    prologue="0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00, 0x04, 0x20"
--    dgst=-sha256
--    hash=4
--elif [ "$CONFIG_MODULE_SIG_SHA384" = "y" ]
--then
--    prologue="0x30, 0x41, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x02, 0x05, 0x00, 0x04, 0x30"
--    dgst=-sha384
--    hash=5
--elif [ "$CONFIG_MODULE_SIG_SHA512" = "y" ]
--then
--    prologue="0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05, 0x00, 0x04, 0x40"
--    dgst=-sha512
--    hash=6
--else
--    echo "$0: Can't determine hash algorithm" >&2
--    exit 2
--fi
--
--(
--perl -e "binmode STDOUT; print pack(\"C*\", $prologue)" || exit $?
--openssl dgst $dgst -binary $src || exit $?
--) >$src.dig || exit $?
--
--#
--# Generate the binary signature, which will be just the integer that comprises
--# the signature with no metadata attached.
--#
--openssl rsautl -sign -inkey $key -keyform PEM -in $src.dig -out $src.sig || exit $?
--signerlen=`stat -c %s $x509.signer`
--keyidlen=`stat -c %s $x509.keyid`
--siglen=`stat -c %s $src.sig`
--
--#
--# Build the signed binary
--#
--(
--    cat $src || exit $?
--    echo '~Module signature appended~' || exit $?
--    cat $x509.signer $x509.keyid || exit $?
--
--    # Preface each signature integer with a 2-byte BE length
--    perl -e "binmode STDOUT; print pack(\"n\", $siglen)" || exit $?
--    cat $src.sig || exit $?
--
--    # Generate the information block
--    perl -e "binmode STDOUT; print pack(\"CCCCCxxxN\", $algo, $hash, $id_type, $signerlen, $keyidlen, $siglen + 2)" || exit $?
--) >$dst~ || exit $?
--
--# Permit in-place signing
--mv $dst~ $dst || exit $?
--- 
-1.7.12.1
-
-
-From b29453cb9b235041f789c81b1982179acb6d3d06 Mon Sep 17 00:00:00 2001
+From f1fa90d02f50078a89da602d73dc9ab7743439ba Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 24 Sep 2012 10:46:36 -0400
 Subject: [PATCH 2/2] MODSIGN: Add modules_sign make target
@@ -293,18 +46,16 @@ packaging tools (such as rpmbuild) and initramfs composition tools.
 Based heavily on work by: David Howells <dhowells@redhat.com>
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
- Makefile                 |   6 +++
- scripts/Makefile.modsign |  72 +++++++++++++++++++++++++++++
- scripts/sign-file        | 115 +++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 193 insertions(+)
+ Makefile                 |  6 ++++++
+ scripts/Makefile.modsign | 32 ++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
  create mode 100644 scripts/Makefile.modsign
- create mode 100644 scripts/sign-file
 
 diff --git a/Makefile b/Makefile
-index 5be2ee8..618cfbbf 100644
+index 89a2e2c..ac04c11 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -968,6 +968,12 @@ _modinst_post: _modinst_
+@@ -981,6 +981,12 @@ _modinst_post: _modinst_
  	$(Q)$(MAKE) -f $(srctree)/scripts/Makefile.fwinst obj=firmware __fw_modinst
  	$(call cmd,depmod)
  
@@ -319,10 +70,10 @@ index 5be2ee8..618cfbbf 100644
  # Modules not configured
 diff --git a/scripts/Makefile.modsign b/scripts/Makefile.modsign
 new file mode 100644
-index 0000000..17326bc
+index 0000000..670d5dc
 --- /dev/null
 +++ b/scripts/Makefile.modsign
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,32 @@
 +# ==========================================================================
 +# Signing modules
 +# ==========================================================================
@@ -339,48 +90,8 @@ index 0000000..17326bc
 +__modsign: $(modules)
 +	@:
 +
-+MODSECKEY = ./signing_key.priv
-+MODPUBKEY = ./signing_key.x509
-+
-+ifeq ($(wildcard $(MODSECKEY))+$(wildcard $(MODPUBKEY)),$(MODSECKEY)+$(MODPUBKEY))
-+ifeq ($(KBUILD_SRC),)
-+       # no O= is being used
-+       SCRIPTS_DIR := scripts
-+else
-+       SCRIPTS_DIR := $(KBUILD_SRC)/scripts
-+endif
-+SIGN_MODULES := 1
-+else
-+SIGN_MODULES := 0
-+endif
-+
-+# only sign if it's an in-tree module
-+ifneq ($(KBUILD_EXTMOD),)
-+SIGN_MODULES := 0
-+endif
-+
-+ifeq ($(SIGN_MODULES),1)
-+
-+quiet_cmd_genkeyid = GENKEYID $@
-+	cmd_genkeyid = \
-+		perl $(SCRIPTS_DIR)/x509keyid $< $<.signer $<.keyid
-+
-+%.signer %.keyid: %
-+	$(call if_changed,genkeyid)
-+
-+KEYRING_DEP := $(MODSECKEY) $(MODPUBKEY) $(MODPUBKEY).signer $(MODPUBKEY).keyid
 +quiet_cmd_sign_ko = SIGN [M] $(2)/$(notdir $@)
-+        cmd_sign_ko = \
-+		sh $(SCRIPTS_DIR)/sign-file $(MODSECKEY) $(MODPUBKEY) \
-+			$(2)/$(notdir $@) $(2)/$(notdir $@).signed && \
-+		mv $(2)/$(notdir $@).signed $(2)/$(notdir $@) && \
-+		rm -rf $(2)/$(notdir $@).{dig,sig}
-+else
-+KEYRING_DEP :=
-+quiet_cmd_sign_ko = NO SIGN [M] $@
-+      cmd_sign_ko = \
-+		true
-+endif
++        cmd_sign_ko = $(mod_sign_cmd) $(2)/$(notdir $@)
 +
 +# Modules built outside the kernel source tree go into extra by default
 +INSTALL_MOD_DIR ?= extra
@@ -388,134 +99,13 @@ index 0000000..17326bc
 +
 +modinst_dir = $(if $(KBUILD_EXTMOD),$(ext-mod-dir),kernel/$(@D))
 +
-+$(modules): $(KEYRING_DEP)
++$(modules):
 +	$(call cmd,sign_ko,$(MODLIB)/$(modinst_dir))
 +
 +# Declare the contents of the .PHONY variable as phony.  We keep that
 +# # information in a variable se we can use it in if_changed and friends.
 +
 +.PHONY: $(PHONY)
-diff --git a/scripts/sign-file b/scripts/sign-file
-new file mode 100644
-index 0000000..e58e34e
---- /dev/null
-+++ b/scripts/sign-file
-@@ -0,0 +1,115 @@
-+#!/bin/sh
-+#
-+# Sign a module file using the given key.
-+#
-+# Format: sign-file <key> <x509> <src-file> <dst-file>
-+#
-+
-+scripts=`dirname $0`
-+
-+CONFIG_MODULE_SIG_SHA512=y
-+if [ -r .config ]
-+then
-+    . ./.config
-+fi
-+
-+key="$1"
-+x509="$2"
-+src="$3"
-+dst="$4"
-+
-+if [ ! -r "$key" ]
-+then
-+    echo "Can't read private key" >&2
-+    exit 2
-+fi
-+
-+if [ ! -r "$x509" ]
-+then
-+    echo "Can't read X.509 certificate" >&2
-+    exit 2
-+fi
-+if [ ! -r "$x509.signer" ]
-+then
-+    echo "Can't read Signer name" >&2
-+    exit 2;
-+fi
-+if [ ! -r "$x509.keyid" ]
-+then
-+    echo "Can't read Key identifier" >&2
-+    exit 2;
-+fi
-+
-+#
-+# Signature parameters
-+#
-+algo=1		# Public-key crypto algorithm: RSA
-+hash=		# Digest algorithm
-+id_type=1	# Identifier type: X.509
-+
-+#
-+# Digest the data
-+#
-+dgst=
-+if [ "$CONFIG_MODULE_SIG_SHA1" = "y" ]
-+then
-+    prologue="0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00, 0x04, 0x14"
-+    dgst=-sha1
-+    hash=2
-+elif [ "$CONFIG_MODULE_SIG_SHA224" = "y" ]
-+then
-+    prologue="0x30, 0x2d, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x04, 0x05, 0x00, 0x04, 0x1C"
-+    dgst=-sha224
-+    hash=7
-+elif [ "$CONFIG_MODULE_SIG_SHA256" = "y" ]
-+then
-+    prologue="0x30, 0x31, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x01, 0x05, 0x00, 0x04, 0x20"
-+    dgst=-sha256
-+    hash=4
-+elif [ "$CONFIG_MODULE_SIG_SHA384" = "y" ]
-+then
-+    prologue="0x30, 0x41, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x02, 0x05, 0x00, 0x04, 0x30"
-+    dgst=-sha384
-+    hash=5
-+elif [ "$CONFIG_MODULE_SIG_SHA512" = "y" ]
-+then
-+    prologue="0x30, 0x51, 0x30, 0x0d, 0x06, 0x09, 0x60, 0x86, 0x48, 0x01, 0x65, 0x03, 0x04, 0x02, 0x03, 0x05, 0x00, 0x04, 0x40"
-+    dgst=-sha512
-+    hash=6
-+else
-+    echo "$0: Can't determine hash algorithm" >&2
-+    exit 2
-+fi
-+
-+(
-+perl -e "binmode STDOUT; print pack(\"C*\", $prologue)" || exit $?
-+openssl dgst $dgst -binary $src || exit $?
-+) >$src.dig || exit $?
-+
-+#
-+# Generate the binary signature, which will be just the integer that comprises
-+# the signature with no metadata attached.
-+#
-+openssl rsautl -sign -inkey $key -keyform PEM -in $src.dig -out $src.sig || exit $?
-+signerlen=`stat -c %s $x509.signer`
-+keyidlen=`stat -c %s $x509.keyid`
-+siglen=`stat -c %s $src.sig`
-+
-+#
-+# Build the signed binary
-+#
-+(
-+    cat $src || exit $?
-+    echo '~Module signature appended~' || exit $?
-+    cat $x509.signer $x509.keyid || exit $?
-+
-+    # Preface each signature integer with a 2-byte BE length
-+    perl -e "binmode STDOUT; print pack(\"n\", $siglen)" || exit $?
-+    cat $src.sig || exit $?
-+
-+    # Generate the information block
-+    perl -e "binmode STDOUT; print pack(\"CCCCCxxxN\", $algo, $hash, $id_type, $signerlen, $keyidlen, $siglen + 2)" || exit $?
-+) >$dst~ || exit $?
-+
-+# Permit in-place signing
-+mv $dst~ $dst || exit $?
 -- 
-1.7.12.1
+1.7.11.7
 

@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1505,10 +1505,6 @@ find . \( -name "*.orig" -o -name "*~" \) -exec rm -f {} \; >/dev/null
 # remove unnecessary SCM files
 find . -name .gitignore -exec rm -f {} \; >/dev/null
 
-%if %{signmodules}
-cp %{SOURCE11} .
-%endif
-
 cd ..
 
 ###
@@ -1577,6 +1573,10 @@ BuildKernel() {
 
     make -s mrproper
     cp configs/$Config .config
+
+    %if %{signmodules}
+    cp %{SOURCE11} .
+    %endif
 
     Arch=`head -1 .config | cut -b 3-`
     echo USING ARCH=$Arch
