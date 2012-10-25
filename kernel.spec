@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -645,6 +645,8 @@ Patch04: linux-2.6-compile-fixes.patch
 # build tweak for build ID magic, even for -vanilla
 Patch05: linux-2.6-makefile-after_link.patch
 
+Patch06: power-x86-destdir.patch
+
 %if !%{nopatches}
 
 
@@ -738,8 +740,6 @@ Patch21006: arm-tegra-sdhci-module-fix.patch
 
 # ARM highbank patches
 Patch21010: arm-highbank-sata-fix.patch
-
-Patch21094: power-x86-destdir.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1310,6 +1310,8 @@ ApplyPatch linux-2.6-makefile-after_link.patch
 #
 ApplyOptionalPatch linux-2.6-compile-fixes.patch
 
+ApplyPatch power-x86-destdir.patch
+
 %if !%{nopatches}
 
 # revert patches from upstream that conflict or that we get via other means
@@ -1441,8 +1443,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 ApplyPatch i82975x-edac-fix.patch
-
-ApplyPatch power-x86-destdir.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1686,7 +1686,7 @@ BuildKernel() {
 
     # Make sure the Makefile and version.h have a matching timestamp so that
     # external modules can be built
-    touch -r $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/Makefile $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/linux/version.h
+    touch -r $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/Makefile $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/generated/uapi/linux/version.h
 
     # Copy .config to include/config/auto.conf so "make prepare" is unnecessary.
     cp $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/.config $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/include/config/auto.conf
@@ -2311,6 +2311,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc2.git3.1
+- Linux v3.7-rc2-145-g4864ccb
+- Move power-x86-destdir.patch to apply on vanilla kernels (thanks knurd)
+- Deal with uapi move of version.h
+
 * Wed Oct 24 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc2.git2.1
 - Linux v3.7-rc2-119-g0e9e3e3
 
