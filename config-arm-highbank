@@ -26,6 +26,9 @@ CONFIG_ATA_SFF=y
 
 CONFIG_NET_CALXEDA_XGMAC=y
 
+CONFIG_EDAC_HIGHBANK_MC=m
+CONFIG_EDAC_HIGHBANK_L2=m
+
 CONFIG_GPIO_PL061=y
 
 CONFIG_SERIAL_AMBA_PL010=y
@@ -38,9 +41,9 @@ CONFIG_RTC_DRV_PL031=y
 
 CONFIG_SATA_HIGHBANK=m
 
-# CONFIG_DVB_TDA1004X is not set
-# CONFIG_DVB_PLL is not set
+CONFIG_OC_ETM=y
 
+# CONFIG_NET_VENDOR_BROADCOM is not set
 # these were all requested to be disabled on highbank kernels by calxeda
 # CONFIG_HAMRADIO is not set
 # CONFIG_IRDA is not set

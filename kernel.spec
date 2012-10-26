@@ -258,10 +258,10 @@ Summary: The Linux kernel
 # kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
 %define with_imx 0
-%define with_highbank 0
 %define with_omap 0
 %define with_tegra 0
 %endif
+%define with_highbank 0
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -589,7 +589,11 @@ Source70: config-s390x
 
 Source90: config-sparc64-generic
 
-Source100: config-arm-generic
+# Unified ARM kernels
+Source100: config-armv7
+
+# Legacy ARM kernels
+Source105: config-arm-generic
 Source110: config-arm-omap
 Source111: config-arm-tegra
 Source112: config-arm-kirkwood
@@ -730,6 +734,7 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch19001: i82975x-edac-fix.patch
 
 # ARM
+Patch21000: arm-export-read_current_timer.patch
 
 # OMAP
 
@@ -1327,6 +1332,7 @@ ApplyPatch vmbugon-warnon.patch
 #
 # ARM
 #
+ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2311,6 +2317,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 26 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- The initial ARM unified kernel support (vexpress, highbank, mvebu to begin). WOO HOO!!!
+
 * Fri Oct 26 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc2.git4.1
 - Linux v3.7-rc2-191-g2ab3f29
 
