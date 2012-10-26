@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2311,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 26 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc2.git4.1
+- Linux v3.7-rc2-191-g2ab3f29
+
 * Thu Oct 25 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc2.git3.1
 - Linux v3.7-rc2-145-g4864ccb
 - Move power-x86-destdir.patch to apply on vanilla kernels (thanks knurd)
