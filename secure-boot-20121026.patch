@@ -711,3 +711,678 @@ index de16959..7d4c50a 100644
 -- 
 1.7.11.4
 
+From 945f3829d0d376c5e0c790b57c4fa9e875d602d3 Mon Sep 17 00:00:00 2001
+From: Dave Howells <dhowells@redhat.com>
+Date: Tue, 23 Oct 2012 09:30:54 -0400
+Subject: [PATCH 1/2] Add EFI signature data types, such as are used for
+ containing hashes, keys and certificates for
+ cryptographic verification.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ include/linux/efi.h | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 8670eb1..836c797 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -312,6 +312,12 @@ typedef efi_status_t efi_query_capsule_caps_t(efi_capsule_header_t **capsules,
+ #define EFI_FILE_SYSTEM_GUID \
+     EFI_GUID(  0x964e5b22, 0x6459, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b )
+ 
++#define EFI_CERT_SHA256_GUID \
++    EFI_GUID(  0xc1c41626, 0x504c, 0x4092, 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 )
++
++#define EFI_CERT_X509_GUID \
++    EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
++
+ typedef struct {
+ 	efi_guid_t guid;
+ 	u64 table;
+@@ -447,6 +453,20 @@ typedef struct {
+ 
+ #define EFI_INVALID_TABLE_ADDR		(~0UL)
+ 
++typedef struct  {
++	efi_guid_t signature_owner;
++	u8 signature_data[];
++} efi_signature_data_t;
++
++typedef struct {
++	efi_guid_t signature_type;
++	u32 signature_list_size;
++	u32 signature_header_size;
++	u32 signature_size;
++	u8 signature_header[];
++	/* efi_signature_data_t signatures[][] */
++} efi_signature_list_t;
++
+ /*
+  * All runtime access to EFI goes through this structure:
+  */
+-- 
+1.7.12.1
+
+
+From 5934634101936bc4ee4636df7269e00c4979911c Mon Sep 17 00:00:00 2001
+From: Dave Howells <dhowells@redhat.com>
+Date: Tue, 23 Oct 2012 09:36:28 -0400
+Subject: [PATCH 2/2] Add an EFI signature blob parser and key loader.  X.509
+ certificates are loaded into the specified keyring as
+ asymmetric type keys.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ crypto/asymmetric_keys/Kconfig      |   7 +++
+ crypto/asymmetric_keys/Makefile     |   1 +
+ crypto/asymmetric_keys/efi_parser.c | 107 ++++++++++++++++++++++++++++++++++++
+ include/linux/efi.h                 |   4 ++
+ 4 files changed, 119 insertions(+)
+ create mode 100644 crypto/asymmetric_keys/efi_parser.c
+
+diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
+index 6d2c2ea..eb53fc3 100644
+--- a/crypto/asymmetric_keys/Kconfig
++++ b/crypto/asymmetric_keys/Kconfig
+@@ -35,4 +35,11 @@ config X509_CERTIFICATE_PARSER
+ 	  data and provides the ability to instantiate a crypto key from a
+ 	  public key packet found inside the certificate.
+ 
++config EFI_SIGNATURE_LIST_PARSER
++	bool "EFI signature list parser"
++	select X509_CERTIFICATE_PARSER
++	help
++	  This option provides support for parsing EFI signature lists for
++	  X.509 certificates and turning them into keys.
++
+ endif # ASYMMETRIC_KEY_TYPE
+diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
+index 0727204..cd8388e 100644
+--- a/crypto/asymmetric_keys/Makefile
++++ b/crypto/asymmetric_keys/Makefile
+@@ -8,6 +8,7 @@ asymmetric_keys-y := asymmetric_type.o signature.o
+ 
+ obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) += public_key.o
+ obj-$(CONFIG_PUBLIC_KEY_ALGO_RSA) += rsa.o
++obj-$(CONFIG_EFI_SIGNATURE_LIST_PARSER) += efi_parser.o
+ 
+ #
+ # X.509 Certificate handling
+diff --git a/crypto/asymmetric_keys/efi_parser.c b/crypto/asymmetric_keys/efi_parser.c
+new file mode 100644
+index 0000000..59b859a
+--- /dev/null
++++ b/crypto/asymmetric_keys/efi_parser.c
+@@ -0,0 +1,107 @@
++/* EFI signature/key/certificate list parser
++ *
++ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#define pr_fmt(fmt) "EFI: "fmt
++#include <linux/module.h>
++#include <linux/printk.h>
++#include <linux/err.h>
++#include <linux/efi.h>
++#include <keys/asymmetric-type.h>
++
++static __initdata efi_guid_t efi_cert_x509_guid = EFI_CERT_X509_GUID;
++
++/**
++ * parse_efi_signature_list - Parse an EFI signature list for certificates
++ * @data: The data blob to parse
++ * @size: The size of the data blob
++ * @keyring: The keyring to add extracted keys to
++ */
++int __init parse_efi_signature_list(const void *data, size_t size, struct key *keyring)
++{
++	unsigned offs = 0;
++	size_t lsize, esize, hsize, elsize;
++
++	pr_devel("-->%s(,%zu)\n", __func__, size);
++
++	while (size > 0) {
++		efi_signature_list_t list;
++		const efi_signature_data_t *elem;
++		key_ref_t key;
++
++		if (size < sizeof(list))
++			return -EBADMSG;
++
++		memcpy(&list, data, sizeof(list));
++		pr_devel("LIST[%04x] guid=%pUl ls=%x hs=%x ss=%x\n",
++			 offs,
++			 list.signature_type.b, list.signature_list_size,
++			 list.signature_header_size, list.signature_size);
++
++		lsize = list.signature_list_size;
++		hsize = list.signature_header_size;
++		esize = list.signature_size;
++		elsize = lsize - sizeof(list) - hsize;
++
++		if (lsize > size) {
++			pr_devel("<--%s() = -EBADMSG [overrun @%x]\n",
++				 __func__, offs);
++			return -EBADMSG;
++		}
++		if (lsize < sizeof(list) ||
++		    lsize - sizeof(list) < hsize ||
++		    esize < sizeof(*elem) ||
++		    elsize < esize ||
++		    elsize % esize != 0) {
++			pr_devel("- bad size combo @%x\n", offs);
++			continue;
++		}
++
++		if (efi_guidcmp(list.signature_type, efi_cert_x509_guid) != 0) {
++			data += lsize;
++			size -= lsize;
++			offs += lsize;
++			continue;
++		}
++
++		data += sizeof(list) + hsize;
++		size -= sizeof(list) + hsize;
++		offs += sizeof(list) + hsize;
++
++		for (; elsize > 0; elsize -= esize) {
++			elem = data;
++
++			pr_devel("ELEM[%04x]\n", offs);
++
++			key = key_create_or_update(
++				make_key_ref(keyring, 1),
++				"asymmetric",
++				NULL,
++				&elem->signature_data,
++				esize - sizeof(*elem),
++				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
++				KEY_USR_VIEW,
++				KEY_ALLOC_NOT_IN_QUOTA);
++
++			if (IS_ERR(key))
++				pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
++				       PTR_ERR(key));
++			else
++				pr_notice("Loaded cert '%s'\n",
++					  key_ref_to_ptr(key)->description);
++
++			data += esize;
++			size -= esize;
++			offs += esize;
++		}
++	}
++
++	return 0;
++}
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 836c797..9cc3250 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -536,6 +536,10 @@ extern int efi_set_rtc_mmss(unsigned long nowtime);
+ extern void efi_reserve_boot_services(void);
+ extern struct efi_memory_map memmap;
+ 
++struct key;
++extern int __init parse_efi_signature_list(const void *data, size_t size,
++					   struct key *keyring);
++
+ /**
+  * efi_range_is_wc - check the WC bit on an address range
+  * @start: starting kvirt address
+-- 
+1.7.12.1
+
+From 84d11d541cc039e8561d06deab5f9b700f12f246 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Fri, 26 Oct 2012 12:29:49 -0400
+Subject: [PATCH 1/3] EFI: Add in-kernel variable to determine if Secure Boot
+ is enabled
+
+There are a few cases where in-kernel functions may need to know if
+Secure Boot is enabled.  The added capability check cannot be used as the
+kernel can't drop it's own capabilites, so we add a global variable
+similar to efi_enabled so they can determine if Secure Boot is enabled.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ arch/x86/kernel/setup.c     | 4 +++-
+ arch/x86/platform/efi/efi.c | 2 ++
+ include/linux/efi.h         | 3 +++
+ 3 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 51f6970..d5b9548 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -961,8 +961,10 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	io_delay_init();
+ 
+-	if (boot_params.secure_boot)
++	if (boot_params.secure_boot) {
+ 		secureboot_enable();
++		secure_boot_enabled = 1;
++	}
+ 
+ 	/*
+ 	 * Parse the ACPI tables for possible boot-time SMP configuration.
+diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+index aded2a9..e57320b 100644
+--- a/arch/x86/platform/efi/efi.c
++++ b/arch/x86/platform/efi/efi.c
+@@ -54,6 +54,8 @@
+ int efi_enabled;
+ EXPORT_SYMBOL(efi_enabled);
+ 
++int secure_boot_enabled;
++
+ struct efi __read_mostly efi = {
+ 	.mps        = EFI_INVALID_TABLE_ADDR,
+ 	.acpi       = EFI_INVALID_TABLE_ADDR,
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 9cc3250..ff72468 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -573,11 +573,14 @@ extern int __init efi_setup_pcdp_console(char *);
+ # ifdef CONFIG_X86
+    extern int efi_enabled;
+    extern bool efi_64bit;
++   extern int secure_boot_enabled;
+ # else
+ #  define efi_enabled 1
++#  define secure_boot_enabled 0
+ # endif
+ #else
+ # define efi_enabled 0
++# define secure_boot_enabled 0
+ #endif
+ 
+ /*
+-- 
+1.7.12.1
+
+
+From 2a5f33b264daffd717b509bc5ac3cdc060b5573e Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Fri, 26 Oct 2012 12:36:24 -0400
+Subject: [PATCH 2/3] MODSIGN: Add module certificate blacklist keyring
+
+This adds an additional keyring that is used to store certificates that
+are blacklisted.  This keyring is searched first when loading signed modules
+and if the module's certificate is found, it will refuse to load.  This is
+useful in cases where third party certificates are used for module signing.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ init/Kconfig             |  8 ++++++++
+ kernel/modsign_pubkey.c  | 17 +++++++++++++++++
+ kernel/module-internal.h |  3 +++
+ kernel/module_signing.c  | 14 +++++++++++++-
+ 4 files changed, 41 insertions(+), 1 deletion(-)
+
+diff --git a/init/Kconfig b/init/Kconfig
+index 6fdd6e3..7a9bf00 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1602,6 +1602,14 @@ config MODULE_SIG_FORCE
+ 	  Reject unsigned modules or signed modules for which we don't have a
+ 	  key.  Without this, such modules will simply taint the kernel.
+ 
++config MODULE_SIG_BLACKLIST
++	bool "Support for blacklisting module signature certificates"
++	depends on MODULE_SIG
++	help
++	  This adds support for keeping a blacklist of certificates that
++	  should not pass module signature verification.  If a module is
++	  signed with something in this keyring, the load will be rejected.
++
+ choice
+ 	prompt "Which hash algorithm should modules be signed with?"
+ 	depends on MODULE_SIG
+diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
+index 4646eb2..6d70783 100644
+--- a/kernel/modsign_pubkey.c
++++ b/kernel/modsign_pubkey.c
+@@ -17,6 +17,9 @@
+ #include "module-internal.h"
+ 
+ struct key *modsign_keyring;
++#ifdef CONFIG_MODULE_SIG_BLACKLIST
++struct key *modsign_blacklist;
++#endif
+ 
+ extern __initdata const u8 modsign_certificate_list[];
+ extern __initdata const u8 modsign_certificate_list_end[];
+@@ -52,6 +55,20 @@ static __init int module_verify_init(void)
+ 	if (key_instantiate_and_link(modsign_keyring, NULL, 0, NULL, NULL) < 0)
+ 		panic("Can't instantiate module signing keyring\n");
+ 
++#ifdef CONFIG_MODULE_SIG_BLACKLIST
++	modsign_blacklist = key_alloc(&key_type_keyring, ".modsign_blacklist",
++				    KUIDT_INIT(0), KGIDT_INIT(0),
++				    current_cred(),
++				    (KEY_POS_ALL & ~KEY_POS_SETATTR) |
++				    KEY_USR_VIEW | KEY_USR_READ,
++				    KEY_ALLOC_NOT_IN_QUOTA);
++	if (IS_ERR(modsign_blacklist))
++		panic("Can't allocate module signing blacklist keyring\n");
++
++	if (key_instantiate_and_link(modsign_blacklist, NULL, 0, NULL, NULL) < 0)
++		panic("Can't instantiate module signing blacklist keyring\n");
++#endif
++
+ 	return 0;
+ }
+ 
+diff --git a/kernel/module-internal.h b/kernel/module-internal.h
+index 24f9247..51a8380 100644
+--- a/kernel/module-internal.h
++++ b/kernel/module-internal.h
+@@ -10,5 +10,8 @@
+  */
+ 
+ extern struct key *modsign_keyring;
++#ifdef CONFIG_MODULE_SIG_BLACKLIST
++extern struct key *modsign_blacklist;
++#endif
+ 
+ extern int mod_verify_sig(const void *mod, unsigned long *_modlen);
+diff --git a/kernel/module_signing.c b/kernel/module_signing.c
+index ea1b1df..602aa24 100644
+--- a/kernel/module_signing.c
++++ b/kernel/module_signing.c
+@@ -132,7 +132,7 @@ static int mod_extract_mpi_array(struct public_key_signature *pks,
+ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
+ 					  const u8 *key_id, size_t key_id_len)
+ {
+-	key_ref_t key;
++	key_ref_t key, blacklist;
+ 	size_t i;
+ 	char *id, *q;
+ 
+@@ -157,6 +157,18 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
+ 
+ 	pr_debug("Look up: \"%s\"\n", id);
+ 
++#ifdef CONFIG_MODULE_SIG_BLACKLIST
++	blacklist = keyring_search(make_key_ref(modsign_blacklist, 1),
++				   &key_type_asymmetric, id);
++	if (!IS_ERR(blacklist)) {
++		/* module is signed with a cert in the blacklist.  reject */
++		pr_err("Module key '%s' is in blacklist\n", id);
++		/*key_put(blacklist);*/
++		kfree(id);
++		return ERR_PTR(-EKEYREJECTED);
++	}
++#endif
++	
+ 	key = keyring_search(make_key_ref(modsign_keyring, 1),
+ 			     &key_type_asymmetric, id);
+ 	if (IS_ERR(key))
+-- 
+1.7.12.1
+
+
+
+From ddd5e2e1b775fb19aeec7fb842e707fc35347bc0 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Fri, 26 Oct 2012 12:42:16 -0400
+Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
+
+Secure Boot stores a list of allowed certificates in the 'db' variable.
+This imports those certificates into the module signing keyring.  This
+allows for a third party signing certificate to be used in conjunction
+with signed modules.  By importing the public certificate into the 'db'
+variable, a user can allow a module signed with that certificate to
+load.
+
+In the opposite case, Secure Boot maintains a list of disallowed
+certificates in the 'dbx' variable.  We load those certificates into
+the newly introduced module blacklist keyring and forbid any module
+signed with those from loading.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ include/linux/efi.h   |  3 ++
+ init/Kconfig          |  9 ++++++
+ kernel/Makefile       |  3 ++
+ kernel/modsign_uefi.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 99 insertions(+)
+ create mode 100644 kernel/modsign_uefi.c
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index ff72468..509755e 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -318,6 +318,9 @@ typedef efi_status_t efi_query_capsule_caps_t(efi_capsule_header_t **capsules,
+ #define EFI_CERT_X509_GUID \
+     EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
+ 
++#define EFI_IMAGE_SECURITY_DATABASE_GUID \
++    EFI_GUID(  0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0x0e, 0x67, 0x65, 0x6f )
++
+ typedef struct {
+ 	efi_guid_t guid;
+ 	u64 table;
+diff --git a/init/Kconfig b/init/Kconfig
+index 7a9bf00..9c4c529 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1610,6 +1610,15 @@ config MODULE_SIG_BLACKLIST
+ 	  should not pass module signature verification.  If a module is
+ 	  signed with something in this keyring, the load will be rejected.
+ 
++config MODULE_SIG_UEFI
++	bool "Allow modules signed with certs stored in UEFI"
++	depends on MODULE_SIG && MODULE_SIG_BLACKLIST && EFI
++	select EFI_SIGNATURE_LIST_PARSER
++	help
++	  This will import certificates stored in UEFI and allow modules
++	  signed with those to be loaded.  It will also disallow loading
++	  of modules stored in the UEFI dbx variable.
++
+ choice
+ 	prompt "Which hash algorithm should modules be signed with?"
+ 	depends on MODULE_SIG
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 0dfeca4..ff1468f 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -55,6 +55,7 @@ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+ obj-$(CONFIG_UID16) += uid16.o
+ obj-$(CONFIG_MODULES) += module.o
+ obj-$(CONFIG_MODULE_SIG) += module_signing.o modsign_pubkey.o
++obj-$(CONFIG_MODULE_SIG_UEFI) += modsign_uefi.o
+ obj-$(CONFIG_KALLSYMS) += kallsyms.o
+ obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
+ obj-$(CONFIG_KEXEC) += kexec.o
+@@ -113,6 +114,8 @@ obj-$(CONFIG_JUMP_LABEL) += jump_label.o
+ 
+ $(obj)/configs.o: $(obj)/config_data.h
+ 
++$(obj)/modsign_uefi.o: KBUILD_CFLAGS += -fshort-wchar
++
+ # config_data.h contains the same information as ikconfig.h but gzipped.
+ # Info from config_data can be extracted from /proc/config*
+ targets += config_data.gz
+diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
+new file mode 100644
+index 0000000..049669d
+--- /dev/null
++++ b/kernel/modsign_uefi.c
+@@ -0,0 +1,84 @@
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/cred.h>
++#include <linux/err.h>
++#include <linux/efi.h>
++#include <keys/asymmetric-type.h>
++#include "module-internal.h"
++
++static void *get_cert_list(efi_char16_t *name, efi_guid_t *guid, unsigned long *size)
++{
++	efi_status_t status;
++	unsigned long lsize = 4;
++	unsigned long tmpdb[4];
++	void *db = NULL;
++
++	status = efi.get_variable(name, guid, NULL, &lsize, &tmpdb);
++	if (status != EFI_BUFFER_TOO_SMALL) {
++		pr_err("Couldn't get size: 0x%lx\n", status);
++		return NULL;
++	}
++
++	db = kmalloc(lsize, GFP_KERNEL);
++	if (!db) {
++		pr_err("Couldn't allocate memory for uefi cert list\n");
++		goto out;
++	}
++
++	status = efi.get_variable(name, guid, NULL, &lsize, db);
++	if (status != EFI_SUCCESS) {
++		kfree(db);
++		db = NULL;
++		pr_err("Error reading db var: 0x%lx\n", status);
++	}
++out:
++	*size = lsize;
++	return db;
++}
++
++/*
++ *  * Load the certs contained in the UEFI databases
++ *   */
++static int __init load_uefi_certs(void)
++{
++	efi_guid_t secure_var = EFI_IMAGE_SECURITY_DATABASE_GUID;
++	void *db = NULL, *dbx = NULL;
++	unsigned long dbsize = 0, dbxsize = 0;
++	int rc = 0;
++
++	/* Check if SB is enabled and just return if not */
++	if (!secure_boot_enabled)
++		return 0;
++
++	db = get_cert_list(L"db", &secure_var, &dbsize);
++	if (!db) {
++		pr_err("Couldn't get db list\n");
++		rc = -1;
++		goto err;
++	}
++
++	/* Get dbx.  It might not exist, so it isn't an error if we can't
++	 * get it.
++	 */
++	dbx = get_cert_list(L"dbx", &secure_var, &dbxsize);
++	if (!dbx) {
++		pr_err("Couldn't get dbx list\n");
++	}
++
++	rc = parse_efi_signature_list(db, dbsize, modsign_keyring);
++	if (rc)
++		pr_err("Couldn't parse db signatures: %d\n", rc);
++
++	if (dbx) {
++		rc = parse_efi_signature_list(dbx, dbxsize,
++			modsign_blacklist);
++		if (rc)
++			pr_err("Couldn't parse dbx signatures: %d\n", rc);
++	}
++
++err:
++	kfree(db);
++	kfree(dbx);
++	return rc;
++}
++late_initcall(load_uefi_certs);
+-- 
+1.7.12.1
+
+From d037dc552a62b1dd39b457e10c133a4509b0efc3 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Fri, 26 Oct 2012 14:02:09 -0400
+Subject: [PATCH] hibernate: Disable in a Secure Boot environment
+
+There is currently no way to verify the resume image when returning
+from hibernate.  This might compromise the secure boot trust model,
+so until we can work with signed hibernate images we disable it in
+a Secure Boot environment.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+---
+ kernel/power/hibernate.c | 14 +++++++++++++-
+ kernel/power/main.c      |  4 +++-
+ 2 files changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index b26f5f1..f04343b 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -632,6 +632,10 @@ int hibernate(void)
+ {
+ 	int error;
+ 
++	if (!capable(CAP_COMPROMISE_KERNEL)) {
++		return -EPERM;
++	}
++
+ 	lock_system_sleep();
+ 	/* The snapshot device should not be opened while we're running */
+ 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
+@@ -723,7 +727,7 @@ static int software_resume(void)
+ 	/*
+ 	 * If the user said "noresume".. bail out early.
+ 	 */
+-	if (noresume)
++	if (noresume || !capable(CAP_COMPROMISE_KERNEL))
+ 		return 0;
+ 
+ 	/*
+@@ -889,6 +893,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 	int i;
+ 	char *start = buf;
+ 
++	if (!capable(CAP_COMPROMISE_KERNEL)) {
++		buf += sprintf(buf, "[%s]\n", "disabled");
++		return buf-start;
++	}
++
+ 	for (i = HIBERNATION_FIRST; i <= HIBERNATION_MAX; i++) {
+ 		if (!hibernation_modes[i])
+ 			continue;
+@@ -923,6 +932,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
+ 	char *p;
+ 	int mode = HIBERNATION_INVALID;
+ 
++	if (!capable(CAP_COMPROMISE_KERNEL))
++		return -EPERM;
++
+ 	p = memchr(buf, '\n', n);
+ 	len = p ? p - buf : n;
+ 
+diff --git a/kernel/power/main.c b/kernel/power/main.c
+index f458238..72580c1 100644
+--- a/kernel/power/main.c
++++ b/kernel/power/main.c
+@@ -301,7 +301,9 @@ static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
+ 	}
+ #endif
+ #ifdef CONFIG_HIBERNATION
+-	s += sprintf(s, "%s\n", "disk");
++	if (capable(CAP_COMPROMISE_KERNEL)) {
++		s += sprintf(s, "%s\n", "disk");
++	}
+ #else
+ 	if (s != buf)
+ 		/* convert the last space to a newline */
+-- 
+1.7.12.1
+
