@@ -1118,7 +1118,7 @@ index ea1b1df..602aa24 100644
 +	if (!IS_ERR(blacklist)) {
 +		/* module is signed with a cert in the blacklist.  reject */
 +		pr_err("Module key '%s' is in blacklist\n", id);
-+		/*key_put(blacklist);*/
++		key_ref_put(blacklist);
 +		kfree(id);
 +		return ERR_PTR(-EKEYREJECTED);
 +	}
@@ -1227,7 +1227,7 @@ index 0000000..049669d
 +#include <keys/asymmetric-type.h>
 +#include "module-internal.h"
 +
-+static void *get_cert_list(efi_char16_t *name, efi_guid_t *guid, unsigned long *size)
++static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid, unsigned long *size)
 +{
 +	efi_status_t status;
 +	unsigned long lsize = 4;

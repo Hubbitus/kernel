@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2317,7 +2317,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Oct 30 2012 Josh Boyer <jwboyer@gmail.com> - 3.7.0-0.rc3.git0.1
+* Tue Oct 30 2012 Josh Boyer <jwboyer@redhat.com>
+- Fix module blacklist patch to not leak a reference to the blacklist keyring
+
+* Tue Oct 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc3.git0.1
 - Disable debugging options.
 - Linux v3.7-rc3
 - enable CONFIG_MEDIA_{USB,PCI}_SUPPORT (rhbz 870457)
