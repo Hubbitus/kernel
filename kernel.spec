@@ -2318,6 +2318,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Oct 30 2012 Josh Boyer <jwboyer@redhat.com>
+- Update config options for 3.7
 - Fix module blacklist patch to not leak a reference to the blacklist keyring
 
 * Tue Oct 30 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc3.git0.1
