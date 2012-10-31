@@ -1306,7 +1306,8 @@ index 0000000..049669d
 -- 
 1.7.12.1
 
-From d037dc552a62b1dd39b457e10c133a4509b0efc3 Mon Sep 17 00:00:00 2001
+
+From 924e09f1b267c407ca037171bc6f8f90b09265d6 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH] hibernate: Disable in a Secure Boot environment
@@ -1318,9 +1319,12 @@ a Secure Boot environment.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
+ v2: Updated to include swsup after feedback from Jiri Kosina <jkosina@suse.cz>
+
  kernel/power/hibernate.c | 14 +++++++++++++-
  kernel/power/main.c      |  4 +++-
- 2 files changed, 16 insertions(+), 2 deletions(-)
+ kernel/power/user.c      |  3 +++
+ 3 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
 index b26f5f1..f04343b 100644
@@ -1383,6 +1387,20 @@ index f458238..72580c1 100644
  #else
  	if (s != buf)
  		/* convert the last space to a newline */
+diff --git a/kernel/power/user.c b/kernel/power/user.c
+index 4ed81e7..b11a0f4 100644
+--- a/kernel/power/user.c
++++ b/kernel/power/user.c
+@@ -48,6 +48,9 @@ static int snapshot_open(struct inode *inode, struct file *filp)
+ 	struct snapshot_data *data;
+ 	int error;
+ 
++	if (!capable(CAP_COMPROMISE_KERNEL))
++		return -EPERM;
++
+ 	lock_system_sleep();
+ 
+ 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 -- 
 1.7.12.1
 
