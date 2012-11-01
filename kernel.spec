@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2322,6 +2322,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 01 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc3.git4.1
+- Linux v3.7-rc3-77-g8c23f40
+
 * Thu Nov  1 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update non unified kernels to build for 3.7 (always OMAP)
 - Remove old ARM patches, add new to fix 3.7 build
