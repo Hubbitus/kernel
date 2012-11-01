@@ -421,6 +421,8 @@ Summary: The Linux kernel
 %define with_perf 0
 %define with_tools 0
 %endif
+# TEMPORARY until perf build fixed on ARM to get a new 3.7rc kernel
+%define with_perf 0
 %endif
 
 # To temporarily exclude an architecture from being built, add it to
@@ -737,6 +739,8 @@ Patch19001: i82975x-edac-fix.patch
 Patch21000: arm-export-read_current_timer.patch
 
 # OMAP
+Patch21002: arm-omap-zoom2.patch
+Patch21003: arm-omapdrm-fixinc.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -744,7 +748,6 @@ Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
 
 # ARM highbank patches
-Patch21010: arm-highbank-sata-fix.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1333,6 +1336,8 @@ ApplyPatch vmbugon-warnon.patch
 # ARM
 #
 ApplyPatch arm-export-read_current_timer.patch
+ApplyPatch arm-omapdrm-fixinc.patch
+# ApplyPatch arm-omap-zoom2.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2319,6 +2324,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov  1 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update non unified kernels to build for 3.7 (always OMAP)
+- Remove old ARM patches, add new to fix 3.7 build
+- Disable perf on ARM temporarily as the uapi / asm-generic changes break it
+
 * Thu Nov 01 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc3.git3.1
 - Linux v3.7-rc3-75-g1e207eb
 
