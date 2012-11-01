@@ -739,7 +739,6 @@ Patch19001: i82975x-edac-fix.patch
 Patch21000: arm-export-read_current_timer.patch
 
 # OMAP
-Patch21002: arm-omap-zoom2.patch
 Patch21003: arm-omapdrm-fixinc.patch
 
 # ARM tegra
@@ -1337,7 +1336,6 @@ ApplyPatch vmbugon-warnon.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-omapdrm-fixinc.patch
-# ApplyPatch arm-omap-zoom2.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
