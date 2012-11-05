@@ -690,7 +690,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch900: modsign-post-KS-jwb.patch
 
 # secure boot
-Patch1000: secure-boot-20121031.patch
+Patch1000: secure-boot-20121105.patch
 Patch1001: efivarfs-3.7.patch
 
 # Improve PCI support on UEFI
@@ -1411,7 +1411,7 @@ ApplyPatch modsign-post-KS-jwb.patch
 
 # secure boot
 ApplyPatch efivarfs-3.7.patch
-ApplyPatch secure-boot-20121031.patch
+ApplyPatch secure-boot-20121105.patch
 
 # Improved PCI support for UEFI
 ApplyPatch handle-efi-roms.patch
