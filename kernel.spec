@@ -2324,6 +2324,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Nov  7 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM unified config
+
 * Wed Nov 07 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc4.git1.1
 - Linux v3.7-rc4-20-g0e4a43e
 - Reenable debugging options.
