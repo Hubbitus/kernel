@@ -1,37 +1,3 @@
-From f6a79af8f3701b5a0df431a76adee212616154dc Mon Sep 17 00:00:00 2001
-From: Rusty Russell <rusty@rustcorp.com.au>
-Date: Tue, 6 Nov 2012 11:46:59 +1030
-Subject: [PATCH] modules: don't break modules_install on external modules
- with no key.
-
-The script still spits out an error ("Can't read private key") but we
-don't break modules_install.
-
-Reported-by: Bruno Wolff III <bruno@wolff.to>
-Original-patch-by: Josh Boyer <jwboyer@redhat.com>
-Signed-off-by: Rusty Russell <rusty@rustcorp.com.au>
----
- scripts/Makefile.modinst |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
-
-diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
-index dda4b2b..ecbb447 100644
---- a/scripts/Makefile.modinst
-+++ b/scripts/Makefile.modinst
-@@ -16,8 +16,9 @@ PHONY += $(modules)
- __modinst: $(modules)
- 	@:
- 
-+# Don't stop modules_install if we can't sign external modules.
- quiet_cmd_modules_install = INSTALL $@
--      cmd_modules_install = mkdir -p $(2); cp $@ $(2) ; $(mod_strip_cmd) $(2)/$(notdir $@) ; $(mod_sign_cmd) $(2)/$(notdir $@)
-+      cmd_modules_install = mkdir -p $(2); cp $@ $(2) ; $(mod_strip_cmd) $(2)/$(notdir $@) ; $(mod_sign_cmd) $(2)/$(notdir $@) $(patsubst %,|| true,$(KBUILD_EXTMOD))
- 
- # Modules built outside the kernel source tree go into extra by default
- INSTALL_MOD_DIR ?= extra
--- 
-1.7.6.5
-
 From 56713a28675b966e027a824a0130b80dffab209f Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 5 Nov 2012 09:09:24 +1030
