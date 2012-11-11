@@ -2324,6 +2324,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Nov 11 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM unified config updates
+
 * Sun Nov 11 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc5.git0.1
 - Linux v3.7-rc5
 - Disable debugging options.
