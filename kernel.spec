@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -762,6 +762,7 @@ Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 # Build patch, should go away
 Patch22070: irqnr-build.patch
+Patch22071: uapi-prefix-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1468,6 +1469,7 @@ ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 #Build patch, should go away
 ApplyPatch irqnr-build.patch
+ApplyPatch uapi-prefix-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2324,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 13 2012 Josh Boyer <jwboyer@redhat.com>
+- Add patch from David Howells to fix header guards on installed kernel headers
+
 * Tue Nov 13 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc5.git1.1
 - Linux v3.7-rc5-14-g9924a19
 - Reenable debugging options.
