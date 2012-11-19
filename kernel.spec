@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -538,7 +538,10 @@ BuildRequires: sparse >= 0.4.1
 %endif
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
-BuildRequires: audit-libs-devel libunwind-devel
+BuildRequires: audit-libs-devel
+%ifnarch s390 s390x
+BuildRequires: libunwind-devel
+%endif
 %endif
 %if %{with_tools}
 BuildRequires: pciutils-devel gettext
@@ -763,6 +766,8 @@ Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 # Build patch, should go away
 Patch22070: irqnr-build.patch
 Patch22071: uapi-prefix-fix.patch
+
+Patch22073: perf-uapi-fixes2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1470,6 +1475,8 @@ ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 #Build patch, should go away
 ApplyPatch irqnr-build.patch
 ApplyPatch uapi-prefix-fix.patch
+
+ApplyPatch perf-uapi-fixes2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2338,6 +2345,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 19 2012 Josh Boyer <jwboyer@redhat.com>
+- Add various patches to fix perf build on non-x86 arches
+
 * Mon Nov 19 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc6.git1.1
 - Linux v3.7-rc6-21-g3587b1b
 - Reenable debugging options.
