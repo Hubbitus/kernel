@@ -741,6 +741,7 @@ Patch19001: i82975x-edac-fix.patch
 
 # ARM
 Patch21000: arm-export-read_current_timer.patch
+Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 
 # OMAP
 Patch21003: arm-omapdrm-fixinc.patch
@@ -1342,6 +1343,7 @@ ApplyPatch vmbugon-warnon.patch
 # ARM
 #
 ApplyPatch arm-export-read_current_timer.patch
+ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 ApplyPatch arm-omapdrm-fixinc.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
@@ -2345,6 +2347,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 20 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Change the minimum mmap address back to 32768 on ARM systems (thanks to Jon Masters)
+- Add patch to fix unified kernel build failure
+
 * Mon Nov 19 2012 Josh Boyer <jwboyer@redhat.com>
 - Add various patches to fix perf build on non-x86 arches
 
