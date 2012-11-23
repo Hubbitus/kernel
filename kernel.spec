@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -760,9 +760,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 846037
-Patch22067: selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 # Build patch, should go away
 Patch22070: irqnr-build.patch
@@ -1476,9 +1473,6 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 846037
-ApplyPatch selinux-Fix-sel_netnode_insert-suspicious-rcu-dereference.patch
 
 #Build patch, should go away
 ApplyPatch irqnr-build.patch
@@ -2359,6 +2353,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 23 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc6.git3.1
+- Linux v3.7-rc6-109-g26d29d0
+
 * Wed Nov 21 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc6.git2.1
 - Linux v3.7-rc6-41-g99b6e1e
 
