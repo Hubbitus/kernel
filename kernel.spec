@@ -539,9 +539,6 @@ BuildRequires: sparse >= 0.4.1
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
 BuildRequires: audit-libs-devel
-%ifnarch s390 s390x
-BuildRequires: libunwind-devel
-%endif
 %endif
 %if %{with_tools}
 BuildRequires: pciutils-devel gettext
@@ -1868,7 +1865,7 @@ BuildKernel %make_target %kernel_image smp
 %endif
 
 %global perf_make \
-  make %{?_smp_mflags} -C tools/perf -s V=1 WERROR=0 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
+  make %{?_smp_mflags} -C tools/perf -s V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} all
@@ -2362,6 +2359,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 26 2012 Josh Boyer <jwboyer@redhat.com>
+- Disable perf libunwind support.  Revisit in 3.8 when elf-utils has unwind
 - CVE-2012-4530: stack disclosure binfmt_script load_script (rhbz 868285 880147)
 
 * Sun Nov 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc6.git4.1
