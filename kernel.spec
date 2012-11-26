@@ -2359,6 +2359,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 26 2012 Josh Boyer <jwboyer@redhat.com>
+- Enable CONFIG_UIO_PDRV on ppc64 (rhbz 878180)
 - Disable perf libunwind support.  Revisit in 3.8 when elf-utils has unwind
 - CVE-2012-4530: stack disclosure binfmt_script load_script (rhbz 868285 880147)
 
