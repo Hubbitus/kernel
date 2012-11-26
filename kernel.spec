@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -772,6 +772,10 @@ Patch22125: Bluetooth-Add-support-for-BCM20702A0.patch
 
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
+
+#rhbz CVE-2012-4530 868285 880147
+Patch21228: exec-do-not-leave-bprm-interp-on-stack.patch
+Patch21229: exec-use-eloop-for-max-recursion-depth.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1485,6 +1489,10 @@ ApplyPatch Bluetooth-Add-support-for-BCM20702A0.patch
 
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
+
+#rhbz CVE-2012-4530 868285 880147
+ApplyPatch exec-do-not-leave-bprm-interp-on-stack.patch
+ApplyPatch exec-use-eloop-for-max-recursion-depth.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2353,6 +2361,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 26 2012 Josh Boyer <jwboyer@redhat.com>
+- CVE-2012-4530: stack disclosure binfmt_script load_script (rhbz 868285 880147)
+
 * Sun Nov 25 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc6.git4.1
 - Linux v3.7-rc6-209-g194d983
 
