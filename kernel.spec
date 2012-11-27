@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -772,6 +772,11 @@ Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 #rhbz CVE-2012-4530 868285 880147
 Patch21228: exec-do-not-leave-bprm-interp-on-stack.patch
 Patch21229: exec-use-eloop-for-max-recursion-depth.patch
+
+#rhbz 851278
+Patch21234: Revert-8139cp-revert-set-ring-address-before-enabling.patch
+Patch21232: 8139cp-set-ring-address-after-enabling-C-mode.patch
+Patch21233: 8139cp-re-enable-interrupts-after-tx-timeout.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1488,6 +1493,11 @@ ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
 #rhbz CVE-2012-4530 868285 880147
 ApplyPatch exec-do-not-leave-bprm-interp-on-stack.patch
 ApplyPatch exec-use-eloop-for-max-recursion-depth.patch
+
+#rhbz 851278
+ApplyPatch Revert-8139cp-revert-set-ring-address-before-enabling.patch
+ApplyPatch 8139cp-set-ring-address-after-enabling-C-mode.patch
+ApplyPatch 8139cp-re-enable-interrupts-after-tx-timeout.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2356,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 27 2012 Josh Boyer <jwboyer@redhat.com>
+- Update patches for 8139cp issues from David Woodhouse (rhbz 851278)
+
 * Tue Nov 27 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc7.git1.1
 - Linux v3.7-rc7-25-g2844a48
 - Reenable debugging options.
