@@ -23,7 +23,7 @@ CONFIG_ARM_CPU_TOPOLOGY=y
 CONFIG_TEGRA_IOMMU_GART=y
 CONFIG_TEGRA_IOMMU_SMMU=y
 
-CONFIG_I2C_TEGRA=y
+CONFIG_I2C_TEGRA=m
 
 # This block is temporary until we work out why the MMC modules don't work as modules
 CONFIG_MMC=y
