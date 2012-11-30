@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2366,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 30 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc7.git2.1
+- Linux v3.7-rc7-71-ge9296e8
+
 * Thu Nov 29 2012 Peter Robinson <pbrobinson@fedoraproject.org>
 - Hopefully fix the ARM unified kernel build
 - Update some ARM GPIO and I2C configs
