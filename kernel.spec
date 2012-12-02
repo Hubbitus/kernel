@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -760,8 +760,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 # Build patch, should go away
 Patch22070: irqnr-build.patch
-
-Patch22073: perf-uapi-fixes2.patch
 
 #rhbz 874791
 Patch22125: Bluetooth-Add-support-for-BCM20702A0.patch
@@ -1481,8 +1479,6 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 #Build patch, should go away
 ApplyPatch irqnr-build.patch
-
-ApplyPatch perf-uapi-fixes2.patch
 
 #rhbz 874791
 ApplyPatch Bluetooth-Add-support-for-BCM20702A0.patch
@@ -2366,6 +2362,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Dec 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc7.git3.1
+- Linux v3.7-rc7-163-g3c46f3d
+
 * Fri Nov 30 2012 Justin M. Forbes <jforbes@redhat.com> - 3.7.0-0.rc7.git2.1
 - Linux v3.7-rc7-71-ge9296e8
 
