@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 8
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -163,7 +163,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -176,7 +176,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -733,8 +733,6 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
-
-Patch19001: i82975x-edac-fix.patch
 
 # ARM
 Patch21000: arm-export-read_current_timer.patch
@@ -1466,8 +1464,6 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 #ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
-
-ApplyPatch i82975x-edac-fix.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -2362,6 +2358,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 04 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc8.git0.1
+- Linux v3.7-rc8
+- Disable debugging options.
+
 * Sun Dec 02 2012 Josh Boyer <jwboyer@redhat.com> - 3.7.0-0.rc7.git3.1
 - Linux v3.7-rc7-163-g3c46f3d
 
