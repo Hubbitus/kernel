@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -685,7 +685,7 @@ Patch800: linux-2.6-crash-driver.patch
 Patch900: modsign-post-KS-jwb.patch
 
 # secure boot
-Patch1000: secure-boot-20121105.patch
+Patch1000: secure-boot-20121210.patch
 Patch1001: efivarfs-3.7.patch
 
 # Improve PCI support on UEFI
@@ -1413,7 +1413,7 @@ ApplyPatch modsign-post-KS-jwb.patch
 
 # secure boot
 ApplyPatch efivarfs-3.7.patch
-ApplyPatch secure-boot-20121105.patch
+ApplyPatch secure-boot-20121210.patch
 
 # Improved PCI support for UEFI
 ApplyPatch handle-efi-roms.patch
@@ -2349,6 +2349,7 @@ fi
 - Drop highbank kernel build variant as its in unified kernel
 
 * Tue Dec 11 2012 Josh Boyer <jwboyer@redhat.com>
+- Update secure boot patches to include MoK support
 - Fix IBSS scanning in mac80211 (rhbz 883414)
 
 * Tue Dec 11 2012 Dave Jones <davej@redhat.com> - 3.7.0-2
