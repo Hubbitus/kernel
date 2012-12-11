@@ -140,8 +140,6 @@ Summary: The Linux kernel
 %define with_kirkwood       %{?_without_kirkwood:       0} %{?!_without_kirkwood:       1}
 # kernel-imx (only valid for arm)
 %define with_imx       %{?_without_imx:       0} %{?!_without_imx:       1}
-# kernel-highbank (only valid for arm)
-%define with_highbank       %{?_without_highbank:       0} %{?!_without_highbank:       1}
 #
 # Additional options for user-friendly one-off kernel building:
 #
@@ -255,13 +253,12 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel up (versatile express), tegra, omap, imx and highbank are only built on armv7 hfp/sfp
+# kernel up (unified kernel target), tegra, omap and imx are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
 %define with_imx 0
 %define with_omap 0
 %define with_tegra 0
 %endif
-%define with_highbank 0
 
 # kernel-kirkwood is only built for armv5
 %ifnarch armv5tel
@@ -600,8 +597,6 @@ Source110: config-arm-omap
 Source111: config-arm-tegra
 Source112: config-arm-kirkwood
 Source113: config-arm-imx
-Source114: config-arm-highbank
-Source115: config-arm-versatile
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -745,8 +740,6 @@ Patch21003: arm-omapdrm-fixinc.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
-
-# ARM highbank patches
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1067,12 +1060,6 @@ marvell kirkwood based systems, i.e., guruplug, sheevaplug
 %description imx
 This package includes a version of the Linux kernel with support for
 freescale based systems, i.e., efika smartbook.
-
-%define variant_summary The Linux kernel compiled for Calxeda boards
-%kernel_variant_package highbank
-%description highbank
-This package includes a version of the Linux kernel with support for
-Calxeda based systems, i.e., HP arm servers.
 
 %define variant_summary The Linux kernel compiled for TI-OMAP boards
 %kernel_variant_package omap
@@ -1851,10 +1838,6 @@ BuildKernel %make_target %kernel_image kirkwood
 BuildKernel %make_target %kernel_image imx
 %endif
 
-%if %{with_highbank}
-BuildKernel %make_target %kernel_image highbank
-%endif
-
 %if %{with_omap}
 BuildKernel %make_target %kernel_image omap
 %endif
@@ -2197,9 +2180,6 @@ fi}\
 %kernel_variant_preun imx
 %kernel_variant_post -v imx
 
-%kernel_variant_preun highbank
-%kernel_variant_post -v highbank
-
 %kernel_variant_preun omap
 %kernel_variant_post -v omap
 
@@ -2348,7 +2328,6 @@ fi
 %kernel_variant_files %{with_pae_debug} PAEdebug
 %kernel_variant_files %{with_kirkwood} kirkwood
 %kernel_variant_files %{with_imx} imx
-%kernel_variant_files %{with_highbank} highbank
 %kernel_variant_files %{with_omap} omap
 %kernel_variant_files %{with_tegra} tegra
 
@@ -2365,6 +2344,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 11 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM configs for latest 3.7
+- Drop highbank kernel build variant as its in unified kernel
+
 * Tue Dec 11 2012 Josh Boyer <jwboyer@redhat.com>
 - Fix IBSS scanning in mac80211 (rhbz 883414)
 
