@@ -741,6 +741,9 @@ Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
 
+# ARM imx
+Patch21008: arm-imx-fixdrm.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1339,6 +1342,7 @@ ApplyPatch vmbugon-warnon.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 ApplyPatch arm-omapdrm-fixinc.patch
+ApplyPatch arm-imx-fixdrm.patch
 ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -2344,6 +2348,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 14 2012 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix arm imx drm driver build
+
 * Wed Dec 12 2012 Josh Boyer <jwboyer@redhat.com>
 - Fix infinite loop in efi signature parser
 - Don't error out if db doesn't exist
