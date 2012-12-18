@@ -422,6 +422,14 @@ Summary: The Linux kernel
 %define with_perf 0
 %endif
 
+# Should make listnewconfig fail if there's config options
+# printed out?
+%if %{nopatches}%{using_upstream_branch}
+%define listnewconfig_fail 0
+%else
+%define listnewconfig_fail 1
+%endif
+
 # To temporarily exclude an architecture from being built, add it to
 # %%nobuildarches. Do _NOT_ use the ExclusiveArch: line, because if we
 # don't build kernel-headers then the new build system will no longer let
@@ -1522,17 +1530,23 @@ done
 rm -f kernel-%{version}-*debug.config
 %endif
 
-# run oldconfig over the config files (except when noarch)
-if [ "%{_target_cpu}" != "noarch" ]; then
-  for i in kernel-*-%{_target_cpu}*.config
-  do
-    mv $i .config
-    Arch=`head -1 .config | cut -b 3-`
-    make ARCH=$Arch oldnoconfig
-    echo "# $Arch" > configs/$i
-    cat .config >> configs/$i
-  done
-fi
+# now run oldconfig over all the config files
+for i in *.config
+do
+  mv $i .config
+  Arch=`head -1 .config | cut -b 3-`
+  make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
+%if %{listnewconfig_fail}
+  if [ -s .newoptions ]; then
+    cat .newoptions
+    exit 1
+  fi
+%endif
+  rm -f .newoptions
+  make ARCH=$Arch oldnoconfig
+  echo "# $Arch" > configs/$i
+  cat .config >> configs/$i
+done
 # end of kernel config
 %endif
 
@@ -2354,6 +2368,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 18 2012 Dave Jones <davej@redhat.com>
+- On rebases, list new config options.
+  (Revert to pre-18 behaviour)
+
 * Mon Dec 17 2012 Josh Boyer <jwboyer@redhat.com>
 - Fix oops in sony-laptop setup (rhbz 873107)
 
