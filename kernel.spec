@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 7
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -654,8 +654,6 @@ Patch04: linux-2.6-compile-fixes.patch
 # build tweak for build ID magic, even for -vanilla
 Patch05: linux-2.6-makefile-after_link.patch
 
-Patch06: power-x86-destdir.patch
-
 %if !%{nopatches}
 
 
@@ -690,14 +688,9 @@ Patch700: linux-2.6-e1000-ich9-montevina.patch
 Patch800: linux-2.6-crash-driver.patch
 
 # crypto/
-Patch900: modsign-post-KS-jwb.patch
 
 # secure boot
-Patch1000: secure-boot-20121212.patch
-Patch1001: efivarfs-3.7.patch
-
-# Improve PCI support on UEFI
-Patch1100: handle-efi-roms.patch
+Patch1000: secure-boot-20130104.patch
 
 # virt + ksm patches
 
@@ -763,20 +756,8 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 # Build patch, should go away
 Patch22070: irqnr-build.patch
 
-#rhbz 874791
-Patch22125: Bluetooth-Add-support-for-BCM20702A0.patch
-
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
-
-#rhbz CVE-2012-4530 868285 880147
-Patch21228: exec-do-not-leave-bprm-interp-on-stack.patch
-Patch21229: exec-use-eloop-for-max-recursion-depth.patch
-
-#rhbz 851278
-Patch21234: Revert-8139cp-revert-set-ring-address-before-enabling.patch
-Patch21232: 8139cp-set-ring-address-after-enabling-C-mode.patch
-Patch21233: 8139cp-re-enable-interrupts-after-tx-timeout.patch
 
 #rhbz 883414
 Patch21236: mac80211-fix-ibss-scanning.patch
@@ -1333,8 +1314,6 @@ ApplyPatch linux-2.6-makefile-after_link.patch
 #
 ApplyOptionalPatch linux-2.6-compile-fixes.patch
 
-ApplyPatch power-x86-destdir.patch
-
 %if !%{nopatches}
 
 # revert patches from upstream that conflict or that we get via other means
@@ -1352,11 +1331,11 @@ ApplyPatch vmbugon-warnon.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
-ApplyPatch arm-omapdrm-fixinc.patch
+# ApplyPatch arm-omapdrm-fixinc.patch
 ApplyPatch arm-imx-fixdrm.patch
-ApplyPatch arm-tegra-nvec-kconfig.patch
+# ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-sdhci-module-fix.patch
+# ApplyPatch arm-tegra-sdhci-module-fix.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1424,14 +1403,9 @@ ApplyPatch linux-2.6-crash-driver.patch
 ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # crypto/
-ApplyPatch modsign-post-KS-jwb.patch
 
 # secure boot
-ApplyPatch efivarfs-3.7.patch
-ApplyPatch secure-boot-20121212.patch
-
-# Improved PCI support for UEFI
-ApplyPatch handle-efi-roms.patch
+ApplyPatch secure-boot-20130104.patch
 
 # Assorted Virt Fixes
 
@@ -1481,20 +1455,8 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 #Build patch, should go away
 ApplyPatch irqnr-build.patch
 
-#rhbz 874791
-ApplyPatch Bluetooth-Add-support-for-BCM20702A0.patch
-
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
-
-#rhbz CVE-2012-4530 868285 880147
-ApplyPatch exec-do-not-leave-bprm-interp-on-stack.patch
-ApplyPatch exec-use-eloop-for-max-recursion-depth.patch
-
-#rhbz 851278
-ApplyPatch Revert-8139cp-revert-set-ring-address-before-enabling.patch
-ApplyPatch 8139cp-set-ring-address-after-enabling-C-mode.patch
-ApplyPatch 8139cp-re-enable-interrupts-after-tx-timeout.patch
 
 #rhbz 883414
 ApplyPatch mac80211-fix-ibss-scanning.patch
@@ -2368,6 +2330,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 04 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git1.1
+- Linux v3.8-rc2-116-g5f243b9
+
+* Thu Jan 03 2013 Justin M. Forbes <jforbes@redhat.com>
+- Initial 3.8-rc2 rebase
+
 * Wed Jan 02 2013 Josh Boyer <jwboyer@redhat.com>
 - BR the hostname package (rhbz 886113)
 
