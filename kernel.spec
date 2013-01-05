@@ -138,8 +138,6 @@ Summary: The Linux kernel
 %define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
 # kernel-kirkwood (only valid for arm)
 %define with_kirkwood       %{?_without_kirkwood:       0} %{?!_without_kirkwood:       1}
-# kernel-imx (only valid for arm)
-%define with_imx       %{?_without_imx:       0} %{?!_without_imx:       1}
 #
 # Additional options for user-friendly one-off kernel building:
 #
@@ -253,9 +251,8 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel up (unified kernel target), tegra, omap and imx are only built on armv7 hfp/sfp
+# kernel up (unified kernel target), tegra and omap are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
-%define with_imx 0
 %define with_omap 0
 %define with_tegra 0
 %endif
@@ -604,7 +601,6 @@ Source105: config-arm-generic
 Source110: config-arm-omap
 Source111: config-arm-tegra
 Source112: config-arm-kirkwood
-Source113: config-arm-imx
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -741,9 +737,6 @@ Patch21003: arm-omapdrm-fixinc.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-sdhci-module-fix.patch
-
-# ARM imx
-Patch21008: arm-imx-fixdrm.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1050,12 +1043,6 @@ on kernel bugs, as some of these options impact performance noticably.
 This package includes a version of the Linux kernel with support for
 marvell kirkwood based systems, i.e., guruplug, sheevaplug
 
-%define variant_summary The Linux kernel compiled for freescale boards
-%kernel_variant_package imx
-%description imx
-This package includes a version of the Linux kernel with support for
-freescale based systems, i.e., efika smartbook.
-
 %define variant_summary The Linux kernel compiled for TI-OMAP boards
 %kernel_variant_package omap
 %description omap
@@ -1332,7 +1319,6 @@ ApplyPatch vmbugon-warnon.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # ApplyPatch arm-omapdrm-fixinc.patch
-ApplyPatch arm-imx-fixdrm.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 # ApplyPatch arm-tegra-sdhci-module-fix.patch
@@ -1820,10 +1806,6 @@ BuildKernel %make_target %kernel_image PAE
 BuildKernel %make_target %kernel_image kirkwood
 %endif
 
-%if %{with_imx}
-BuildKernel %make_target %kernel_image imx
-%endif
-
 %if %{with_omap}
 BuildKernel %make_target %kernel_image omap
 %endif
@@ -2163,9 +2145,6 @@ fi}\
 %kernel_variant_preun kirkwood
 %kernel_variant_post -v kirkwood
 
-%kernel_variant_preun imx
-%kernel_variant_post -v imx
-
 %kernel_variant_preun omap
 %kernel_variant_post -v omap
 
@@ -2313,7 +2292,6 @@ fi
 %kernel_variant_files %{with_pae} PAE
 %kernel_variant_files %{with_pae_debug} PAEdebug
 %kernel_variant_files %{with_kirkwood} kirkwood
-%kernel_variant_files %{with_imx} imx
 %kernel_variant_files %{with_omap} omap
 %kernel_variant_files %{with_tegra} tegra
 
@@ -2330,6 +2308,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jan  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Initial update of ARM configs for 3.8
+- Enable DRM driver for tegra
+- Drop separate imx kernel. Will be reintroduced soon in unified
+
 * Fri Jan 04 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git1.1
 - Linux v3.8-rc2-116-g5f243b9
 
