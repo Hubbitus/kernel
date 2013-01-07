@@ -1,0 +1,11 @@
+diff --git a/include/linux/namei.h b/include/linux/namei.h
+index e998c03..5a5ff57 100644
+--- a/include/linux/namei.h
++++ b/include/linux/namei.h
+@@ -2,6 +2,7 @@ 
+ #define _LINUX_NAMEI_H
+ 
+ #include <linux/dcache.h>
++#include <linux/errno.h>
+ #include <linux/linkage.h>
+ #include <linux/path.h>
