@@ -687,6 +687,7 @@ Patch800: linux-2.6-crash-driver.patch
 
 # secure boot
 Patch1000: secure-boot-20130104.patch
+Patch1001: efivarfs-nlink-fix.patch
 
 # virt + ksm patches
 
@@ -1392,6 +1393,7 @@ ApplyPatch linux-2.6-e1000-ich9-montevina.patch
 
 # secure boot
 ApplyPatch secure-boot-20130104.patch
+ApplyPatch efivarfs-nlink-fix.patch
 
 # Assorted Virt Fixes
 
@@ -2308,6 +2310,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 07 2013 Josh Boyer <jwboyer@redhat.com>
+- Patch to fix efivarfs underflow from Lingzhu Xiang (rhbz 888163)
+
 * Sat Jan  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Initial update of ARM configs for 3.8
 - Enable DRM driver for tegra
