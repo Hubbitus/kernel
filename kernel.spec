@@ -717,12 +717,16 @@ Patch21000: arm-export-read_current_timer.patch
 Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 
 # OMAP
+# https://patchwork.kernel.org/patch/1721241/
+# https://patchwork.kernel.org/patch/1839401/
 Patch21003: arm-omapdrm-fixinc.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
-Patch21006: arm-tegra-sdhci-module-fix.patch
+
+# https://patchwork.kernel.org/patch/1909111/
+Patch21010: namei-include.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1304,10 +1308,10 @@ ApplyPatch vmbugon-warnon.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
-# ApplyPatch arm-omapdrm-fixinc.patch
+ApplyPatch arm-omapdrm-fixinc.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-# ApplyPatch arm-tegra-sdhci-module-fix.patch
+ApplyPatch namei-include.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2295,6 +2299,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan  7 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Further ARM config updates
+- Add patch to fix building omapdrm
+
 * Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com>
 - Bye sparc
 
