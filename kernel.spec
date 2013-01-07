@@ -2310,6 +2310,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com>
+- Fix up configs for build
+
 * Mon Jan 07 2013 Josh Boyer <jwboyer@redhat.com>
 - Patch to fix efivarfs underflow from Lingzhu Xiang (rhbz 888163)
 
