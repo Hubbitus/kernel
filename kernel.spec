@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2299,6 +2299,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git2.1
+- Linux v3.8-rc2-191-gd287b87
+
+* Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git1.2
+- Reenable debugging options.
+
 * Mon Jan  7 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Further ARM config updates
 - Add patch to fix building omapdrm
