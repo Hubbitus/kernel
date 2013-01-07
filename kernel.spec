@@ -725,9 +725,6 @@ Patch21003: arm-omapdrm-fixinc.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
-# https://patchwork.kernel.org/patch/1909111/
-Patch21010: namei-include.patch
-
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1311,7 +1308,6 @@ ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 ApplyPatch arm-omapdrm-fixinc.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch namei-include.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2301,6 +2297,7 @@ fi
 %changelog
 * Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git2.1
 - Linux v3.8-rc2-191-gd287b87
+- remove the namei-include.patch, it's upstream now
 
 * Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git1.2
 - Reenable debugging options.
