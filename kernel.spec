@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2295,6 +2295,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 08 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git3.1
+- Linux v3.8-rc2-222-g2a893f9
+
 * Mon Jan 07 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git2.1
 - Linux v3.8-rc2-191-gd287b87
 - remove the namei-include.patch, it's upstream now
