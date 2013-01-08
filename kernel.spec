@@ -1853,13 +1853,6 @@ chmod -R a=rX Documentation
 find Documentation -type d | xargs chmod u+w
 %endif
 
-###
-### Special hacks for debuginfo subpackages.
-###
-
-# This macro is used by %%install, so we must redefine it before that.
-%define debug_package %{nil}
-
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
 # code the value in the following invocations.  This is somewhat sub-optimal
 # but we're doing this inside of an RPM macro and it isn't as easy as it
@@ -1872,13 +1865,9 @@ find Documentation -type d | xargs chmod u+w
 # We have to do all of those things _after_ find-debuginfo runs, otherwise
 # that will strip the signature off of the modules.
 
-%if %{with_debuginfo}
-%define __debug_install_post \
-  /usr/lib/rpm/find-debuginfo.sh %{debuginfo_args} %{_builddir}/%{?buildsubdir}\
-  if [ "%{signmodules}" == "1" ]; \
-  then \
-    if [ "%{with_pae}" != "0" ]; \
-    then \
+%define __modsign_install_post \
+  if [ "%{signmodules}" == "1" ]; then \
+    if [ "%{with_pae}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-PAE.config | cut -b 3-` \
       rm -rf .tmp_versions \
       mv .tmp_versions.sign.PAE .tmp_versions \
@@ -1887,8 +1876,7 @@ find Documentation -type d | xargs chmod u+w
       make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.PAE \
       %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/extra/ \
     fi \
-    if [ "%{with_debug}" != "0" ]; \
-    then \
+    if [ "%{with_debug}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-debug.config | cut -b 3-` \
       rm -rf .tmp_versions \
       mv .tmp_versions.sign.debug .tmp_versions \
@@ -1897,8 +1885,7 @@ find Documentation -type d | xargs chmod u+w
       make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.debug \
       %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/extra/ \
     fi \
-    if [ "%{with_pae_debug}" != "0" ]; \
-    then \
+    if [ "%{with_pae_debug}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-PAEdebug.config | cut -b 3-` \
       rm -rf .tmp_versions \
       mv .tmp_versions.sign.PAEdebug .tmp_versions \
@@ -1907,8 +1894,7 @@ find Documentation -type d | xargs chmod u+w
       make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.PAEdebug \
       %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/extra/ \
     fi \
-    if [ "%{with_up}" != "0" ]; \
-    then \
+    if [ "%{with_up}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}.config | cut -b 3-` \
       rm -rf .tmp_versions \
       mv .tmp_versions.sign .tmp_versions \
@@ -1920,12 +1906,37 @@ find Documentation -type d | xargs chmod u+w
   fi \
 %{nil}
 
+###
+### Special hacks for debuginfo subpackages.
+###
+
+# This macro is used by %%install, so we must redefine it before that.
+%define debug_package %{nil}
+
+%if %{with_debuginfo}
+
+%define __debug_install_post \
+  /usr/lib/rpm/find-debuginfo.sh %{debuginfo_args} %{_builddir}/%{?buildsubdir}\
+%{nil}
+
 %ifnarch noarch
 %global __debug_package 1
 %files -f debugfiles.list debuginfo-common-%{_target_cpu}
 %defattr(-,root,root)
 %endif
+
 %endif
+
+#
+# Disgusting hack alert! We need to ensure we sign modules *after* all
+# invocations of strip occur, which is in __debug_install_post if
+# find-debuginfo.sh runs, and __os_install_post if not.
+#
+%define __spec_install_post \
+  %{?__debug_package:%{__debug_install_post}}\
+  %{__arch_install_post}\
+  %{__os_install_post}\
+  %{__modsign_install_post}
 
 ###
 ### install
@@ -2295,6 +2306,13 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 08 2013 Kyle McMartin <kmcmarti@redhat.com>
+- Ensure modules are signed even if *-debuginfo rpms are not produced by
+  re-defining __spec_install_post and adding a hook after all strip
+  invocations. Ideally, in the future, we could patch the rpm macro and
+  remove the re-define from kernel.spec, but that's another windmill to tilt
+  at.
+
 * Tue Jan 08 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git3.1
 - Linux v3.8-rc2-222-g2a893f9
 
