@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2306,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 09 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc2.git4.1
+- Linux v3.8-rc2-370-g57a0c1e
+
 * Wed Jan  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM mvebu config
 
