@@ -2306,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM mvebu config
+
 * Wed Jan 09 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable CONFIG_CIFS_DEBUG as it was on before it was split out
 
