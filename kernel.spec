@@ -664,8 +664,6 @@ Patch510: silence-noise.patch
 Patch520: quite-apm.patch
 Patch530: silence-fbcon-logo.patch
 
-Patch700: e1000-ich9-montevina.patch
-
 Patch800: crash-driver.patch
 
 # crypto/
@@ -1370,9 +1368,6 @@ ApplyPatch silence-fbcon-logo.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
-
-# Hack e1000e to work on Montevina SDV
-ApplyPatch e1000-ich9-montevina.patch
 
 # crypto/
 
@@ -2306,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 10 2013 Dave Jones <davej@redhat.com>
+- Drop old Montevina era E1000 workaround.
+
 * Thu Jan 10 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc3.git0.1
 - Linux v3.8-rc3
 - Disable debugging options.
