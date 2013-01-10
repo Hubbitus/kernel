@@ -630,16 +630,16 @@ Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
 %endif
 
 # we also need compile fixes for -vanilla
-Patch04: linux-2.6-compile-fixes.patch
+Patch04: compile-fixes.patch
 
 # build tweak for build ID magic, even for -vanilla
-Patch05: linux-2.6-makefile-after_link.patch
+Patch05: makefile-after_link.patch
 
 %if !%{nopatches}
 
 
 # revert upstream patches we get via other methods
-Patch09: linux-2.6-upstream-reverts.patch
+Patch09: upstream-reverts.patch
 # Git trees.
 
 # Standalone patches
@@ -648,25 +648,25 @@ Patch100: taint-vbox.patch
 
 Patch110: vmbugon-warnon.patch
 
-Patch390: linux-2.6-defaults-acpi-video.patch
-Patch391: linux-2.6-acpi-video-dos.patch
-Patch394: linux-2.6-acpi-debug-infinite-loop.patch
+Patch390: defaults-acpi-video.patch
+Patch391: acpi-video-dos.patch
+Patch394: acpi-debug-infinite-loop.patch
 Patch396: acpi-sony-nonvs-blacklist.patch
 
-Patch450: linux-2.6-input-kill-stupid-messages.patch
-Patch452: linux-2.6.30-no-pcspkr-modalias.patch
+Patch450: input-kill-stupid-messages.patch
+Patch452: no-pcspkr-modalias.patch
 
-Patch460: linux-2.6-serial-460800.patch
+Patch460: serial-460800.patch
 
 Patch470: die-floppy-die.patch
 
-Patch510: linux-2.6-silence-noise.patch
+Patch510: silence-noise.patch
 Patch520: quite-apm.patch
-Patch530: linux-2.6-silence-fbcon-logo.patch
+Patch530: silence-fbcon-logo.patch
 
-Patch700: linux-2.6-e1000-ich9-montevina.patch
+Patch700: e1000-ich9-montevina.patch
 
-Patch800: linux-2.6-crash-driver.patch
+Patch800: crash-driver.patch
 
 # crypto/
 
@@ -687,12 +687,12 @@ Patch1825: drm-i915-dp-stfu.patch
 
 # Quiet boot fixes
 # silence the ACPI blacklist code
-Patch2802: linux-2.6-silence-acpi-blacklist.patch
+Patch2802: silence-acpi-blacklist.patch
 
 # media patches
-Patch2899: linux-2.6-v4l-dvb-fixes.patch
-Patch2900: linux-2.6-v4l-dvb-update.patch
-Patch2901: linux-2.6-v4l-dvb-experimental.patch
+Patch2899: v4l-dvb-fixes.patch
+Patch2900: v4l-dvb-update.patch
+Patch2901: v4l-dvb-experimental.patch
 
 # fs fixes
 
@@ -1281,17 +1281,17 @@ do
 done
 %endif
 
-ApplyPatch linux-2.6-makefile-after_link.patch
+ApplyPatch makefile-after_link.patch
 
 #
 # misc small stuff to make things compile
 #
-ApplyOptionalPatch linux-2.6-compile-fixes.patch
+ApplyOptionalPatch compile-fixes.patch
 
 %if !%{nopatches}
 
 # revert patches from upstream that conflict or that we get via other means
-ApplyOptionalPatch linux-2.6-upstream-reverts.patch -R
+ApplyOptionalPatch upstream-reverts.patch -R
 
 ApplyPatch taint-vbox.patch
 
@@ -1328,9 +1328,9 @@ ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 # WMI
 
 # ACPI
-ApplyPatch linux-2.6-defaults-acpi-video.patch
-ApplyPatch linux-2.6-acpi-video-dos.patch
-ApplyPatch linux-2.6-acpi-debug-infinite-loop.patch
+ApplyPatch defaults-acpi-video.patch
+ApplyPatch acpi-video-dos.patch
+ApplyPatch acpi-debug-infinite-loop.patch
 ApplyPatch acpi-sony-nonvs-blacklist.patch
 
 #
@@ -1349,30 +1349,30 @@ ApplyPatch acpi-sony-nonvs-blacklist.patch
 
 # Misc fixes
 # The input layer spews crap no-one cares about.
-ApplyPatch linux-2.6-input-kill-stupid-messages.patch
+ApplyPatch input-kill-stupid-messages.patch
 
 # stop floppy.ko from autoloading during udev...
 ApplyPatch die-floppy-die.patch
 
-ApplyPatch linux-2.6.30-no-pcspkr-modalias.patch
+ApplyPatch no-pcspkr-modalias.patch
 
 # Allow to use 480600 baud on 16C950 UARTs
-ApplyPatch linux-2.6-serial-460800.patch
+ApplyPatch serial-460800.patch
 
 # Silence some useless messages that still get printed with 'quiet'
-ApplyPatch linux-2.6-silence-noise.patch
+ApplyPatch silence-noise.patch
 
 # Make fbcon not show the penguins with 'quiet'
-ApplyPatch linux-2.6-silence-fbcon-logo.patch
+ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
 
 
 # /dev/crash driver.
-ApplyPatch linux-2.6-crash-driver.patch
+ApplyPatch crash-driver.patch
 
 # Hack e1000e to work on Montevina SDV
-ApplyPatch linux-2.6-e1000-ich9-montevina.patch
+ApplyPatch e1000-ich9-montevina.patch
 
 # crypto/
 
@@ -1393,14 +1393,14 @@ ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
 
 # silence the ACPI blacklist code
-ApplyPatch linux-2.6-silence-acpi-blacklist.patch
+ApplyPatch silence-acpi-blacklist.patch
 ApplyPatch quite-apm.patch
 
 # V4L/DVB updates/fixes/experimental drivers
 #  apply if non-empty
-ApplyOptionalPatch linux-2.6-v4l-dvb-fixes.patch
-ApplyOptionalPatch linux-2.6-v4l-dvb-update.patch
-ApplyOptionalPatch linux-2.6-v4l-dvb-experimental.patch
+ApplyOptionalPatch v4l-dvb-fixes.patch
+ApplyOptionalPatch v4l-dvb-update.patch
+ApplyOptionalPatch v4l-dvb-experimental.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
