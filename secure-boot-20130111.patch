@@ -1,4 +1,4 @@
-From 627d53fc0ed9c59fe79788e9101db814d096fdfd Mon Sep 17 00:00:00 2001
+From 6f37ec98c44d2985746d3eeaea874ce6a684c0ac Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:56 -0400
 Subject: [PATCH 01/18] Secure boot: Add new capability
@@ -35,7 +35,7 @@ index ba478fa..7109e65 100644
 1.8.0.1
 
 
-From 959fc919f8b9a94c1db9b9ba73901a23b1a81db5 Mon Sep 17 00:00:00 2001
+From 5a5dd529716bd36ea8f43e2a20dd8f80659f762a Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:05 -0400
 Subject: [PATCH 02/18] SELinux: define mapping for new Secure Boot capability
@@ -68,7 +68,7 @@ index df2de54..70e2834 100644
 1.8.0.1
 
 
-From fc74142ccd8b8fd53fc92032c3cbfaa78e398133 Mon Sep 17 00:00:00 2001
+From 891f2a956ba70b3d0b1acad3e235a3327f344d13 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:02 -0400
 Subject: [PATCH 03/18] Secure boot: Add a dummy kernel parameter that will
@@ -134,7 +134,7 @@ index e0573a4..c3f4e3e 100644
 1.8.0.1
 
 
-From 5118ce1d16d6b3b00ad9f54ec1a5847fefe0e059 Mon Sep 17 00:00:00 2001
+From a98fc32f21318a7141552b6ef241407265fbecdd Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:03 -0400
 Subject: [PATCH 04/18] efi: Enable secure boot lockdown automatically when
@@ -245,10 +245,10 @@ index 23ddd55..94203e5 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/cred.h b/include/linux/cred.h
-index abb2cd5..4f9dea1 100644
+index 04421e8..9e69542 100644
 --- a/include/linux/cred.h
 +++ b/include/linux/cred.h
-@@ -157,6 +157,8 @@ extern int set_security_override_from_ctx(struct cred *, const char *);
+@@ -156,6 +156,8 @@ extern int set_security_override_from_ctx(struct cred *, const char *);
  extern int set_create_files_as(struct cred *, struct inode *);
  extern void __init cred_init(void);
  
@@ -261,7 +261,7 @@ index abb2cd5..4f9dea1 100644
 1.8.0.1
 
 
-From adfec2043a2fb091f9f7da6dffdf1cf5aa1bdc3f Mon Sep 17 00:00:00 2001
+From 4a5cc45467da5652b19ac27e409761c79efd56f1 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:29:49 -0400
 Subject: [PATCH 05/18] EFI: Add in-kernel variable to determine if Secure Boot
@@ -333,7 +333,7 @@ index 8b84916..7a1a53c 100644
 1.8.0.1
 
 
-From 32c1c8077fe00d38db0e01b2200d17ab6c9b7263 Mon Sep 17 00:00:00 2001
+From 34c2022a3b9cc4e064fe85d0ebc83b38bd6315d3 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH 06/18] Add EFI signature data types
@@ -388,7 +388,7 @@ index 7a1a53c..887b9f3 100644
 1.8.0.1
 
 
-From a270b377f37b16022625fe499f47b51ec29edce4 Mon Sep 17 00:00:00 2001
+From 13ed8f224caf51355124ceb154dd2cd1559b85d9 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 07/18] Add an EFI signature blob parser and key loader.
@@ -398,23 +398,28 @@ keys.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- crypto/asymmetric_keys/Kconfig      |   7 +++
+
+v2: Fixes from Lee, Chun-Yi <jlee@suse.com> to add dependency on CONFIG_EFI
+v3: Also print keyring name when adding a key, from Lee, Chun-Yi <jlee@suse.com>
+
+ crypto/asymmetric_keys/Kconfig      |   8 +++
  crypto/asymmetric_keys/Makefile     |   1 +
- crypto/asymmetric_keys/efi_parser.c | 107 ++++++++++++++++++++++++++++++++++++
+ crypto/asymmetric_keys/efi_parser.c | 108 ++++++++++++++++++++++++++++++++++++
  include/linux/efi.h                 |   4 ++
- 4 files changed, 119 insertions(+)
+ 4 files changed, 121 insertions(+)
  create mode 100644 crypto/asymmetric_keys/efi_parser.c
 
 diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index 6d2c2ea..eb53fc3 100644
+index 6d2c2ea..ace9c30 100644
 --- a/crypto/asymmetric_keys/Kconfig
 +++ b/crypto/asymmetric_keys/Kconfig
-@@ -35,4 +35,11 @@ config X509_CERTIFICATE_PARSER
+@@ -35,4 +35,12 @@ config X509_CERTIFICATE_PARSER
  	  data and provides the ability to instantiate a crypto key from a
  	  public key packet found inside the certificate.
  
 +config EFI_SIGNATURE_LIST_PARSER
 +	bool "EFI signature list parser"
++	depends on EFI
 +	select X509_CERTIFICATE_PARSER
 +	help
 +	  This option provides support for parsing EFI signature lists for
@@ -435,10 +440,10 @@ index 0727204..cd8388e 100644
  # X.509 Certificate handling
 diff --git a/crypto/asymmetric_keys/efi_parser.c b/crypto/asymmetric_keys/efi_parser.c
 new file mode 100644
-index 0000000..a0b8a3a
+index 0000000..636feb1
 --- /dev/null
 +++ b/crypto/asymmetric_keys/efi_parser.c
-@@ -0,0 +1,107 @@
+@@ -0,0 +1,108 @@
 +/* EFI signature/key/certificate list parser
 + *
 + * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
@@ -535,8 +540,9 @@ index 0000000..a0b8a3a
 +				pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
 +				       PTR_ERR(key));
 +			else
-+				pr_notice("Loaded cert '%s'\n",
-+					  key_ref_to_ptr(key)->description);
++				pr_notice("Loaded cert '%s' linked to '%s'\n",
++					  key_ref_to_ptr(key)->description,
++					  keyring->description);
 +
 +			data += esize;
 +			size -= esize;
@@ -565,7 +571,7 @@ index 887b9f3..6b78779 100644
 1.8.0.1
 
 
-From cd19cf4fd5f2f8f1d423a48af845cad163170bc2 Mon Sep 17 00:00:00 2001
+From 8d89c8b4cc5869044f4ed78358b7d8a93f11cfac Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
 Subject: [PATCH 08/18] MODSIGN: Add module certificate blacklist keyring
@@ -577,11 +583,16 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
+
+v2: Fix compile warning when CONFIG_MODULE_SIG_BLACKLIST is not set.
+Reported by Jan Beulich <jbeulich@suse.com> and fixed
+by Lee, Chun-Yi <jlee@suse.com>
+
  init/Kconfig             |  8 ++++++++
  kernel/modsign_pubkey.c  | 14 ++++++++++++++
  kernel/module-internal.h |  3 +++
- kernel/module_signing.c  | 14 +++++++++++++-
- 4 files changed, 38 insertions(+), 1 deletion(-)
+ kernel/module_signing.c  | 12 ++++++++++++
+ 4 files changed, 37 insertions(+)
 
 diff --git a/init/Kconfig b/init/Kconfig
 index 7d30240..4a0705e 100644
@@ -648,29 +659,20 @@ index 24f9247..51a8380 100644
  
  extern int mod_verify_sig(const void *mod, unsigned long *_modlen);
 diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index f2970bd..4654e94 100644
+index f2970bd..5423195 100644
 --- a/kernel/module_signing.c
 +++ b/kernel/module_signing.c
-@@ -132,7 +132,7 @@ static int mod_extract_mpi_array(struct public_key_signature *pks,
- static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
- 					  const u8 *key_id, size_t key_id_len)
- {
--	key_ref_t key;
-+	key_ref_t key, blacklist;
- 	size_t i;
- 	char *id, *q;
- 
 @@ -157,6 +157,18 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
  
  	pr_debug("Look up: \"%s\"\n", id);
  
 +#ifdef CONFIG_MODULE_SIG_BLACKLIST
-+	blacklist = keyring_search(make_key_ref(modsign_blacklist, 1),
++	key = keyring_search(make_key_ref(modsign_blacklist, 1),
 +				   &key_type_asymmetric, id);
-+	if (!IS_ERR(blacklist)) {
++	if (!IS_ERR(key)) {
 +		/* module is signed with a cert in the blacklist.  reject */
 +		pr_err("Module key '%s' is in blacklist\n", id);
-+		key_ref_put(blacklist);
++		key_ref_put(key);
 +		kfree(id);
 +		return ERR_PTR(-EKEYREJECTED);
 +	}
@@ -683,7 +685,7 @@ index f2970bd..4654e94 100644
 1.8.0.1
 
 
-From a407acb4318d02658ba2447e653561ab9b1c3a99 Mon Sep 17 00:00:00 2001
+From e4663a7c5ef224c9fb0fa74ba42f3f9c52f8ca30 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH 09/18] MODSIGN: Import certificates from UEFI Secure Boot
@@ -703,6 +705,9 @@ signed with those from loading.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
+
+v2: Incorporate suggestions from Lee, Chun-Yi <jlee@suse.com>
+
  include/linux/efi.h   |  6 ++++
  init/Kconfig          |  9 ++++++
  kernel/Makefile       |  3 ++
@@ -868,7 +873,7 @@ index 0000000..76a5a34
 1.8.0.1
 
 
-From 289a4c7fae985fbb476f4b0d3b008fab5a6f71a9 Mon Sep 17 00:00:00 2001
+From 798940ec4bc3826ef74e985cd021fc7e3db6eae7 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:57 -0400
 Subject: [PATCH 10/18] PCI: Lock down BAR access in secure boot environments
@@ -969,7 +974,7 @@ index e1c1ec5..97e785f 100644
 1.8.0.1
 
 
-From 2ba88cf9227f38b0681a59a93ba809a624d5ca57 Mon Sep 17 00:00:00 2001
+From b4deb668b754ffa53bc9bebf72bd4679e5f2eb62 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:58 -0400
 Subject: [PATCH 11/18] x86: Lock down IO port access in secure boot
@@ -1026,7 +1031,7 @@ index c6fa3bc..fc28099 100644
 1.8.0.1
 
 
-From 49b64dbdd09cdea74b42e488766f4bb6dad098d1 Mon Sep 17 00:00:00 2001
+From c38e94fdbc44b0e3e8dc2a42db18c04ee25d3627 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:59 -0400
 Subject: [PATCH 12/18] ACPI: Limit access to custom_method
@@ -1058,7 +1063,7 @@ index 5d42c24..247d58b 100644
 1.8.0.1
 
 
-From 7317c00a377490a270267b7311dead7c2fb4fc4c Mon Sep 17 00:00:00 2001
+From b935abbd7888103d6261fa49a797c3f621222593 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:00 -0400
 Subject: [PATCH 13/18] asus-wmi: Restrict debugfs interface
@@ -1111,7 +1116,7 @@ index f80ae4d..059195f 100644
 1.8.0.1
 
 
-From dc5b32fcb170a0ef921bc83979a6fc5b23ccddb9 Mon Sep 17 00:00:00 2001
+From 0e2d67fe7c9f067ebb527ce6a665e89d7a5a398b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:01 -0400
 Subject: [PATCH 14/18] Restrict /dev/mem and /dev/kmem in secure boot setups
@@ -1152,7 +1157,7 @@ index fc28099..b5df7a8 100644
 1.8.0.1
 
 
-From 780002e8d091621db933d4daf29ee471a44a5a4a Mon Sep 17 00:00:00 2001
+From 45f09b7aedcc79d9d315a1c3e926ad36b15edf1a Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:04 -0400
 Subject: [PATCH 15/18] acpi: Ignore acpi_rsdp kernel parameter in a secure
@@ -1184,7 +1189,7 @@ index 3ff2678..794d78b 100644
 1.8.0.1
 
 
-From 56c6202ad8bc40114bf2bf9b8067e5d6b3be33e9 Mon Sep 17 00:00:00 2001
+From 2def5cc3c511d824af306468ff0fd15fa641c412 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Tue, 4 Sep 2012 11:55:13 -0400
 Subject: [PATCH 16/18] kexec: Disable in a secure boot environment
@@ -1216,10 +1221,10 @@ index 5e4bd78..dd464e0 100644
 1.8.0.1
 
 
-From d0cf848b67ae89fed7e5ddb417cf57c83b2e187c Mon Sep 17 00:00:00 2001
+From 6af5862bf800c29d9b2c46bee91c463e1c0d77ab Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 5 Oct 2012 10:12:48 -0400
-Subject: [PATCH 17/18] modsign: Always enforce module signing in a Secure Boot
+Subject: [PATCH 17/18] MODSIGN: Always enforce module signing in a Secure Boot
  environment
 
 If a machine is booted into a Secure Boot environment, we need to
@@ -1259,7 +1264,7 @@ index c3f4e3e..c5554e0 100644
  
  /* Dummy Secure Boot enable option to fake out UEFI SB=1 */
 diff --git a/kernel/module.c b/kernel/module.c
-index a50172e..11a08cf 100644
+index 250092c..265172a 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -109,9 +109,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
@@ -1278,7 +1283,7 @@ index a50172e..11a08cf 100644
 1.8.0.1
 
 
-From eaa24912bea0dc76a5522da7a2bc2ae9c6b2359f Mon Sep 17 00:00:00 2001
+From b86387293f2175262792d3bbae333bc8253e2621 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH 18/18] hibernate: Disable in a Secure Boot environment

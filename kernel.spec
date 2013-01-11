@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -669,7 +669,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: secure-boot-20130104.patch
+Patch1000: secure-boot-20130111.patch
 Patch1001: efivarfs-nlink-fix.patch
 
 # virt + ksm patches
@@ -1372,7 +1372,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch secure-boot-20130104.patch
+ApplyPatch secure-boot-20130111.patch
 ApplyPatch efivarfs-nlink-fix.patch
 
 # Assorted Virt Fixes
@@ -2301,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Update secure-boot patchset
+
 * Thu Jan 10 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc3.git0.2
 - Reenable debugging options.
 
