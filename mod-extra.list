@@ -188,3 +188,9 @@ w1_ds2431.ko
 w1_ds2423.ko
 w1_bq27000.ko
 ubifs.ko
+orinoco.ko
+orinoco_cs.ko
+orinoco_plx.ko
+orinoco_pci.ko
+orinoco_nortel.ko
+orinoco_usb.ko
