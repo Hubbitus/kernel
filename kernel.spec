@@ -2296,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 15 2013 Josh Boyer <jwboyer@redhat.com>
+- Enable CONFIG_DVB_USB_V2 (rhbz 895460)
+
 * Mon Jan 14 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable Orinoco drivers in kernel-modules-extra (rhbz 894069)
 
