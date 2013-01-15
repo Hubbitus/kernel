@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -717,7 +717,6 @@ Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # OMAP
 # https://patchwork.kernel.org/patch/1721241/
 # https://patchwork.kernel.org/patch/1839401/
-Patch21003: arm-omapdrm-fixinc.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -736,10 +735,6 @@ Patch22070: irqnr-build.patch
 
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
-
-#rhbz 883414
-Patch21236: mac80211-fix-ibss-scanning.patch
-
 
 # END OF PATCH DEFINITIONS
 
@@ -1301,7 +1296,6 @@ ApplyPatch vmbugon-warnon.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
-ApplyPatch arm-omapdrm-fixinc.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
@@ -1423,10 +1417,6 @@ ApplyPatch irqnr-build.patch
 
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
-
-#rhbz 883414
-ApplyPatch mac80211-fix-ibss-scanning.patch
-
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 15 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc3.git2.1
+- Linux v3.8-rc3-293-g406089d
+
 * Tue Jan 15 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable CONFIG_DVB_USB_V2 (rhbz 895460)
 
