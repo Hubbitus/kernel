@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -735,6 +735,9 @@ Patch22070: irqnr-build.patch
 
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
+
+#rhbz 886946
+Patch21227: iwlegacy-fix-IBSS-cleanup.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1417,6 +1420,9 @@ ApplyPatch irqnr-build.patch
 
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
+
+#rhbz 886946
+ApplyPatch iwlegacy-fix-IBSS-cleanup.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2286,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 16 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Stanislaw Gruszka to fix iwlegacy IBSS cleanup (rhbz 886946)
+
 * Tue Jan 15 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc3.git2.1
 - Linux v3.8-rc3-293-g406089d
 
