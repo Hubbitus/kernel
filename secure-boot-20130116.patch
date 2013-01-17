@@ -32,7 +32,7 @@ index ba478fa..7109e65 100644
  #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
  
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 5a5dd529716bd36ea8f43e2a20dd8f80659f762a Mon Sep 17 00:00:00 2001
@@ -65,7 +65,7 @@ index df2de54..70e2834 100644
  	{ "tun_socket",
  	  { COMMON_SOCK_PERMS, NULL } },
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 891f2a956ba70b3d0b1acad3e235a3327f344d13 Mon Sep 17 00:00:00 2001
@@ -131,7 +131,7 @@ index e0573a4..c3f4e3e 100644
   * prepare_kernel_cred - Prepare a set of credentials for a kernel service
   * @daemon: A userspace daemon to be used as a reference
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From a98fc32f21318a7141552b6ef241407265fbecdd Mon Sep 17 00:00:00 2001
@@ -258,7 +258,7 @@ index 04421e8..9e69542 100644
   * check for validity of credentials
   */
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 4a5cc45467da5652b19ac27e409761c79efd56f1 Mon Sep 17 00:00:00 2001
@@ -330,7 +330,7 @@ index 8b84916..7a1a53c 100644
  
  /*
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 34c2022a3b9cc4e064fe85d0ebc83b38bd6315d3 Mon Sep 17 00:00:00 2001
@@ -385,7 +385,7 @@ index 7a1a53c..887b9f3 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 13ed8f224caf51355124ceb154dd2cd1559b85d9 Mon Sep 17 00:00:00 2001
@@ -398,10 +398,6 @@ keys.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
-
-v2: Fixes from Lee, Chun-Yi <jlee@suse.com> to add dependency on CONFIG_EFI
-v3: Also print keyring name when adding a key, from Lee, Chun-Yi <jlee@suse.com>
-
  crypto/asymmetric_keys/Kconfig      |   8 +++
  crypto/asymmetric_keys/Makefile     |   1 +
  crypto/asymmetric_keys/efi_parser.c | 108 ++++++++++++++++++++++++++++++++++++
@@ -568,7 +564,7 @@ index 887b9f3..6b78779 100644
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 8d89c8b4cc5869044f4ed78358b7d8a93f11cfac Mon Sep 17 00:00:00 2001
@@ -583,11 +579,6 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
-
-v2: Fix compile warning when CONFIG_MODULE_SIG_BLACKLIST is not set.
-Reported by Jan Beulich <jbeulich@suse.com> and fixed
-by Lee, Chun-Yi <jlee@suse.com>
-
  init/Kconfig             |  8 ++++++++
  kernel/modsign_pubkey.c  | 14 ++++++++++++++
  kernel/module-internal.h |  3 +++
@@ -682,7 +673,7 @@ index f2970bd..5423195 100644
  			     &key_type_asymmetric, id);
  	if (IS_ERR(key))
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From e4663a7c5ef224c9fb0fa74ba42f3f9c52f8ca30 Mon Sep 17 00:00:00 2001
@@ -705,9 +696,6 @@ signed with those from loading.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
-
-v2: Incorporate suggestions from Lee, Chun-Yi <jlee@suse.com>
-
  include/linux/efi.h   |  6 ++++
  init/Kconfig          |  9 ++++++
  kernel/Makefile       |  3 ++
@@ -870,7 +858,7 @@ index 0000000..76a5a34
 +}
 +late_initcall(load_uefi_certs);
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 798940ec4bc3826ef74e985cd021fc7e3db6eae7 Mon Sep 17 00:00:00 2001
@@ -971,7 +959,7 @@ index e1c1ec5..97e785f 100644
  
  	dev = pci_get_bus_and_slot(bus, dfn);
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From b4deb668b754ffa53bc9bebf72bd4679e5f2eb62 Mon Sep 17 00:00:00 2001
@@ -1028,7 +1016,7 @@ index c6fa3bc..fc28099 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From c38e94fdbc44b0e3e8dc2a42db18c04ee25d3627 Mon Sep 17 00:00:00 2001
@@ -1060,7 +1048,7 @@ index 5d42c24..247d58b 100644
  		/* parse the table header to get the table length */
  		if (count <= sizeof(struct acpi_table_header))
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From b935abbd7888103d6261fa49a797c3f621222593 Mon Sep 17 00:00:00 2001
@@ -1113,7 +1101,7 @@ index f80ae4d..059195f 100644
  				     1, asus->debug.method_id,
  				     &input, &output);
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 0e2d67fe7c9f067ebb527ce6a665e89d7a5a398b Mon Sep 17 00:00:00 2001
@@ -1154,7 +1142,7 @@ index fc28099..b5df7a8 100644
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 45f09b7aedcc79d9d315a1c3e926ad36b15edf1a Mon Sep 17 00:00:00 2001
@@ -1186,7 +1174,7 @@ index 3ff2678..794d78b 100644
  #endif
  
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 2def5cc3c511d824af306468ff0fd15fa641c412 Mon Sep 17 00:00:00 2001
@@ -1218,7 +1206,7 @@ index 5e4bd78..dd464e0 100644
  
  	/*
 -- 
-1.8.0.1
+1.8.0.2
 
 
 From 6af5862bf800c29d9b2c46bee91c463e1c0d77ab Mon Sep 17 00:00:00 2001
@@ -1280,10 +1268,10 @@ index 250092c..265172a 100644
  static int param_set_bool_enable_only(const char *val,
  				      const struct kernel_param *kp)
 -- 
-1.8.0.1
+1.8.0.2
 
 
-From b86387293f2175262792d3bbae333bc8253e2621 Mon Sep 17 00:00:00 2001
+From e45330362517d08579cdaddc718febe68e2cae06 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH 18/18] hibernate: Disable in a Secure Boot environment
@@ -1295,16 +1283,24 @@ a Secure Boot environment.
 
 Signed-off-by: Josh Boyer <jwboyer@redhat.com>
 ---
- kernel/power/hibernate.c | 14 +++++++++++++-
- kernel/power/main.c      |  4 +++-
+ kernel/power/hibernate.c | 15 ++++++++++++++-
+ kernel/power/main.c      |  7 ++++++-
  kernel/power/user.c      |  3 +++
- 3 files changed, 19 insertions(+), 2 deletions(-)
+ 3 files changed, 23 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index b26f5f1..f04343b 100644
+index b26f5f1..26bdfa8 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
-@@ -632,6 +632,10 @@ int hibernate(void)
+@@ -28,6 +28,7 @@
+ #include <linux/syscore_ops.h>
+ #include <linux/ctype.h>
+ #include <linux/genhd.h>
++#include <linux/efi.h>
+ 
+ #include "power.h"
+ 
+@@ -632,6 +633,10 @@ int hibernate(void)
  {
  	int error;
  
@@ -1315,7 +1311,7 @@ index b26f5f1..f04343b 100644
  	lock_system_sleep();
  	/* The snapshot device should not be opened while we're running */
  	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
-@@ -723,7 +727,7 @@ static int software_resume(void)
+@@ -723,7 +728,7 @@ static int software_resume(void)
  	/*
  	 * If the user said "noresume".. bail out early.
  	 */
@@ -1324,11 +1320,11 @@ index b26f5f1..f04343b 100644
  		return 0;
  
  	/*
-@@ -889,6 +893,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -889,6 +894,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
  	int i;
  	char *start = buf;
  
-+	if (!capable(CAP_COMPROMISE_KERNEL)) {
++	if (secure_boot_enabled) {
 +		buf += sprintf(buf, "[%s]\n", "disabled");
 +		return buf-start;
 +	}
@@ -1336,7 +1332,7 @@ index b26f5f1..f04343b 100644
  	for (i = HIBERNATION_FIRST; i <= HIBERNATION_MAX; i++) {
  		if (!hibernation_modes[i])
  			continue;
-@@ -923,6 +932,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -923,6 +933,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
  	char *p;
  	int mode = HIBERNATION_INVALID;
  
@@ -1347,16 +1343,26 @@ index b26f5f1..f04343b 100644
  	len = p ? p - buf : n;
  
 diff --git a/kernel/power/main.c b/kernel/power/main.c
-index 1c16f91..82eed15 100644
+index 1c16f91..8e3456d 100644
 --- a/kernel/power/main.c
 +++ b/kernel/power/main.c
-@@ -301,7 +301,9 @@ static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -15,6 +15,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/debugfs.h>
+ #include <linux/seq_file.h>
++#include <linux/efi.h>
+ 
+ #include "power.h"
+ 
+@@ -301,7 +302,11 @@ static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
  	}
  #endif
  #ifdef CONFIG_HIBERNATION
 -	s += sprintf(s, "%s\n", "disk");
-+	if (capable(CAP_COMPROMISE_KERNEL)) {
++	if (!secure_boot_enabled) {
 +		s += sprintf(s, "%s\n", "disk");
++	} else {
++		s += sprintf(s, "\n");
 +	}
  #else
  	if (s != buf)
@@ -1376,5 +1382,5 @@ index 4ed81e7..b11a0f4 100644
  
  	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 -- 
-1.8.0.1
+1.8.0.2
 
