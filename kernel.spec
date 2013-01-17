@@ -661,7 +661,7 @@ Patch460: serial-460800.patch
 Patch470: die-floppy-die.patch
 
 Patch510: silence-noise.patch
-Patch520: quite-apm.patch
+Patch520: quiet-apm.patch
 Patch530: silence-fbcon-logo.patch
 
 Patch800: crash-driver.patch
@@ -1386,7 +1386,7 @@ ApplyPatch drm-i915-dp-stfu.patch
 
 # silence the ACPI blacklist code
 ApplyPatch silence-acpi-blacklist.patch
-ApplyPatch quite-apm.patch
+ApplyPatch quiet-apm.patch
 
 # V4L/DVB updates/fixes/experimental drivers
 #  apply if non-empty
