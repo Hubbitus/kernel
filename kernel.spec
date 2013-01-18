@@ -719,6 +719,10 @@ Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # OMAP
 # https://patchwork.kernel.org/patch/1721241/
 # https://patchwork.kernel.org/patch/1839401/
+Patch21002: arm-omap-fixdrm.patch
+
+# IMX
+Patch21003: arm-imx-fixdrm.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -1303,6 +1307,8 @@ ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-omap-fixdrm.patch
+ApplyPatch arm-imx-fixdrm.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2300,6 +2306,7 @@ fi
 * Fri Jan 18 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable problematic PL310 ARM errata
 - Minor ARM config tweaks
+- OMAP DRM driver to fix OMAP kernel build
 
 * Wed Jan 16 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix power management sysfs on non-secure boot machines (rhbz 896243)
