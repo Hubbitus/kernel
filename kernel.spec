@@ -2297,6 +2297,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 18 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable problematic PL310 ARM errata
+- Minor ARM config tweaks
+
 * Wed Jan 16 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix power management sysfs on non-secure boot machines (rhbz 896243)
 
