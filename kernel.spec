@@ -2303,6 +2303,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Remove obsolete ARM configs
+- Update OMAP config for TI AM35XX SoCs
+
 * Sat Jan 19 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git1.1
 - Linux v3.8-rc4-42-g5da1f88
 

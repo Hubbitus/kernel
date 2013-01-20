@@ -251,8 +251,12 @@ CONFIG_CRYPTO_DEV_PICOXCELL=m
 # ST Ericsson
 # CONFIG_I2C_NOMADIK is not set
 
+# OMAP
+# CONFIG_SENSORS_LIS3_I2C is not set
+
 # General ARM drivers
 # Device tree
+CONFIG_DTC=y
 CONFIG_OF=y
 CONFIG_USE_OF=y
 CONFIG_OF_DEVICE=y
