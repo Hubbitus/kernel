@@ -728,6 +728,10 @@ Patch21003: arm-imx-fixdrm.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
+# versatile
+# https://patchwork-mail.kernel.org/patch/1937321/
+Patch21006: arm-vexpress-exports.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1309,6 +1313,7 @@ ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-omap-fixdrm.patch
 ApplyPatch arm-imx-fixdrm.patch
+ApplyPatch arm-vexpress-exports.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2306,6 +2311,7 @@ fi
 * Sun Jan 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Remove obsolete ARM configs
 - Update OMAP config for TI AM35XX SoCs
+- Add patch to fix versatile build failure
 
 * Sat Jan 19 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git1.1
 - Linux v3.8-rc4-42-g5da1f88
