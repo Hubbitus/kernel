@@ -663,6 +663,7 @@ Patch470: die-floppy-die.patch
 Patch510: silence-noise.patch
 Patch520: quiet-apm.patch
 Patch530: silence-fbcon-logo.patch
+Patch540: silence-empty-ipi-mask-warning.patch
 
 Patch800: crash-driver.patch
 
@@ -1370,6 +1371,9 @@ ApplyPatch silence-noise.patch
 
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch silence-fbcon-logo.patch
+
+# no-one cares about these warnings.
+ApplyPatch silence-empty-ipi-mask-warning.patch
 
 # Changes to upstream defaults.
 
@@ -2308,6 +2312,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 23 2013 Dave Jones <davej@redhat.com>
+- Remove warnings about empty IPI masks.
+
 * Sun Jan 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Remove obsolete ARM configs
 - Update OMAP config for TI AM35XX SoCs
