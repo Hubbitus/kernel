@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2312,6 +2312,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 24 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git4.1
+- Linux v3.8-rc4-183-gff7532c
+- Enable lockdep
+
 * Wed Jan 23 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git3.1
 - Linux v3.8-rc4-139-g1d85490
 - Enable debug spinlocks
