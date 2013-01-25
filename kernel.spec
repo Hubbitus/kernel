@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2313,6 +2313,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 25 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git5.1
+- Linux v3.8-rc4-277-g66e2d3e
+- Enable slub debug
+
 * Thu Jan 24 2013 Josh Boyer <jwboyer@redhat.com>
 - Update secure-boot patchset
 
