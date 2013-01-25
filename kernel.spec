@@ -535,9 +535,9 @@ BuildRequires: pciutils-devel gettext
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
 # Fancy new debuginfo generation introduced in Fedora 8/RHEL 6.
-# The -r flag to find-debuginfo.sh to invoke eu-strip --reloc-debug-sections
-# reduces the number of relocations in kernel module .ko.debug files and was
-# introduced with rpm 4.9 and elfutils 0.153.
+# The -r flag to find-debuginfo.sh invokes eu-strip --reloc-debug-sections
+# which reduces the number of relocations in kernel module .ko.debug files and
+# was introduced with rpm 4.9 and elfutils 0.153.
 BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
 %define debuginfo_args --strict-build-id -r
 %endif
