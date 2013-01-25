@@ -1831,22 +1831,22 @@ BuildKernel %make_target %kernel_image smp
 chmod +x tools/power/cpupower/utils/version-gen.sh
 make %{?_smp_mflags} -C tools/power/cpupower CPUFREQ_BENCH=false
 %ifarch %{ix86}
-    cd tools/power/cpupower/debug/i386
+    pushd tools/power/cpupower/debug/i386
     make %{?_smp_mflags} centrino-decode powernow-k8-decode
-    cd -
+    popd
 %endif
 %ifarch x86_64
-    cd tools/power/cpupower/debug/x86_64
+    pushd tools/power/cpupower/debug/x86_64
     make %{?_smp_mflags} centrino-decode powernow-k8-decode
-    cd -
+    popd
 %endif
 %ifarch %{ix86} x86_64
-   cd tools/power/x86/x86_energy_perf_policy/
+   pushd tools/power/x86/x86_energy_perf_policy/
    make
-   cd -
-   cd tools/power/x86/turbostat
+   popd
+   pushd tools/power/x86/turbostat
    make
-   cd -
+   popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
 %endif
@@ -2014,16 +2014,16 @@ rm -f %{buildroot}%{_libdir}/*.{a,la}
 %find_lang cpupower
 mv cpupower.lang ../
 %ifarch %{ix86}
-    cd tools/power/cpupower/debug/i386
+    pushd tools/power/cpupower/debug/i386
     install -m755 centrino-decode %{buildroot}%{_bindir}/centrino-decode
     install -m755 powernow-k8-decode %{buildroot}%{_bindir}/powernow-k8-decode
-    cd -
+    popd
 %endif
 %ifarch x86_64
-    cd tools/power/cpupower/debug/x86_64
+    pushd tools/power/cpupower/debug/x86_64
     install -m755 centrino-decode %{buildroot}%{_bindir}/centrino-decode
     install -m755 powernow-k8-decode %{buildroot}%{_bindir}/powernow-k8-decode
-    cd -
+    popd
 %endif
 chmod 0755 %{buildroot}%{_libdir}/libcpupower.so*
 mkdir -p %{buildroot}%{_unitdir} %{buildroot}%{_sysconfdir}/sysconfig
@@ -2032,12 +2032,12 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
 %endif
 %ifarch %{ix86} x86_64
    mkdir -p %{buildroot}%{_mandir}/man8
-   cd tools/power/x86/x86_energy_perf_policy
+   pushd tools/power/x86/x86_energy_perf_policy
    make DESTDIR=%{buildroot} install
-   cd -
-   cd tools/power/x86/turbostat
+   popd
+   pushd tools/power/x86/turbostat
    make DESTDIR=%{buildroot} install
-   cd -
+   popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
 
