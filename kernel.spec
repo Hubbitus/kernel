@@ -556,7 +556,8 @@ Source11: x509.genkey
 Source15: merge.pl
 Source16: mod-extra.list
 Source17: mod-extra.sh
-Source18: mod-extra-sign.sh
+Source18: mod-sign.sh
+%define modsign_cmd %{SOURCE18}
 
 Source19: Makefile.release
 Source20: Makefile.config
@@ -1866,8 +1867,7 @@ find Documentation -type d | xargs chmod u+w
 # could be because of that.  2) We restore the .tmp_versions/ directory from
 # the one we saved off in BuildKernel above.  This is to make sure we're
 # signing the modules we actually built/installed in that flavour.  3) We
-# grab the arch and invoke 'make modules_sign' and the mod-extra-sign.sh
-# commands to actually sign the modules.
+# grab the arch and invoke mod-sign.sh command to actually sign the modules.
 #
 # We have to do all of those things _after_ find-debuginfo runs, otherwise
 # that will strip the signature off of the modules.
@@ -1880,8 +1880,7 @@ find Documentation -type d | xargs chmod u+w
       mv .tmp_versions.sign.PAE .tmp_versions \
       mv signing_key.priv.sign.PAE signing_key.priv \
       mv signing_key.x509.sign.PAE signing_key.x509 \
-      make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.PAE \
-      %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/extra/ \
+      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/ \
     fi \
     if [ "%{with_debug}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-debug.config | cut -b 3-` \
@@ -1889,8 +1888,7 @@ find Documentation -type d | xargs chmod u+w
       mv .tmp_versions.sign.debug .tmp_versions \
       mv signing_key.priv.sign.debug signing_key.priv \
       mv signing_key.x509.sign.debug signing_key.x509 \
-      make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.debug \
-      %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/extra/ \
+      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/ \
     fi \
     if [ "%{with_pae_debug}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-PAEdebug.config | cut -b 3-` \
@@ -1898,8 +1896,7 @@ find Documentation -type d | xargs chmod u+w
       mv .tmp_versions.sign.PAEdebug .tmp_versions \
       mv signing_key.priv.sign.PAEdebug signing_key.priv \
       mv signing_key.x509.sign.PAEdebug signing_key.x509 \
-      make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL}.PAEdebug \
-      %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/extra/ \
+      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/ \
     fi \
     if [ "%{with_up}" != "0" ]; then \
       Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}.config | cut -b 3-` \
@@ -1907,8 +1904,7 @@ find Documentation -type d | xargs chmod u+w
       mv .tmp_versions.sign .tmp_versions \
       mv signing_key.priv.sign signing_key.priv \
       mv signing_key.x509.sign signing_key.x509 \
-      make -s ARCH=$Arch V=1 INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_sign KERNELRELEASE=%{KVERREL} \
-      %{SOURCE18} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/extra/ \
+      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
 %{nil}
@@ -2313,6 +2309,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 25 2013 Kyle McMartin <kmcmarti@redhat.com>
+- Sign all modules with the mod-extra-sign.sh script, ensures nothing gets
+  missed because of .config differences between invocations of BuildKernel.
+
 * Fri Jan 25 2013 Justin M. Forbes <jforbes@redhat.com>
 - Turn off THP for 32bit
 

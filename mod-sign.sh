@@ -1,10 +1,10 @@
 #! /bin/bash
 
-# We need to sign modules we've moved from <path>/kernel/ to <path>/extra/
-# during mod-extra processing by hand.  The 'modules_sign' Kbuild target can
-# "handle" out-of-tree modules, but it does that by not signing them.  Plus,
-# the modules we've moved aren't actually out-of-tree.  We've just shifted
-# them to a different location behind Kbuild's back because we are mean.
+# The modules_sign target checks for corresponding .o files for every .ko that
+# is signed. This doesn't work for package builds which re-use the same build
+# directory for every flavour, and the .config may change between flavours.
+# So instead of using this script to just sign lib/modules/$KernelVer/extra,
+# sign all .ko in the buildroot.
 
 # This essentially duplicates the 'modules_sign' Kbuild target and runs the
 # same commands for those modules.
