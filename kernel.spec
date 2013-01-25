@@ -2313,6 +2313,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 25 2013 Justin M. Forbes <jforbes@redhat.com>
+- Turn off THP for 32bit
+
 * Fri Jan 25 2013 Justin M. Forbes <jforbes@redhat.com> - 3.8.0-0.rc4.git5.1
 - Linux v3.8-rc4-277-g66e2d3e
 - Enable slub debug

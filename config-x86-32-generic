@@ -96,6 +96,8 @@ CONFIG_X86_TRAMPOLINE=y
 
 CONFIG_PCI_DIRECT=y
 
+# CONFIG_TRANSPARENT_HUGEPAGE is not set
+
 # SHPC has half-arsed PCI probing, which makes it load on too many systems
 # CONFIG_HOTPLUG_PCI_SHPC is not set
 
