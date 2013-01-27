@@ -402,8 +402,6 @@ Summary: The Linux kernel
 %define with_perf 0
 %define with_tools 0
 %endif
-# TEMPORARY until perf build fixed on ARM to get a new 3.7rc kernel
-%define with_perf 0
 %endif
 
 # Should make listnewconfig fail if there's config options
@@ -1581,6 +1579,10 @@ BuildKernel() {
 %ifarch %{arm}
     # http://lists.infradead.org/pipermail/linux-arm-kernel/2012-March/091404.html
     make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} KALLSYMS_EXTRA_PASS=1
+
+    make -s ARCH=$Arch V=1 dtbs
+    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
+    install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
 %else
     make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
 %endif
@@ -2258,6 +2260,9 @@ fi
 %defattr(-,root,root)\
 /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
 /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:.%{2}}.hmac \
+%ifarch %{arm}\
+/%{image_install_path}/dtb-%{KVERREL}%{?2:.%{2}} \
+%endif\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:.%{2}}\
 /boot/config-%{KVERREL}%{?2:.%{2}}\
 %dir /lib/modules/%{KVERREL}%{?2:.%{2}}\
@@ -2309,6 +2314,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Reenable perf on ARM (was suppose to be temporary)
+- Build and package dtbs on ARM
+
 * Fri Jan 25 2013 Kyle McMartin <kmcmarti@redhat.com>
 - Sign all modules with the mod-extra-sign.sh script, ensures nothing gets
   missed because of .config differences between invocations of BuildKernel.
