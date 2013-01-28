@@ -2317,6 +2317,7 @@ fi
 * Sun Jan 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Reenable perf on ARM (was suppose to be temporary)
 - Build and package dtbs on ARM
+- Enable FB options for qemu vexpress on unified
 
 * Fri Jan 25 2013 Kyle McMartin <kmcmarti@redhat.com>
 - Sign all modules with the mod-extra-sign.sh script, ensures nothing gets
