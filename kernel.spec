@@ -2306,7 +2306,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Jan 28 2013 Josh Boyer <jwboyer@redhat.com>
+* Mon Jan 28 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git0.1
 - Linux v3.8-rc5
 - Add patches to fix issues with iwlwifi (rhbz 863424)
 - Enable CONFIG_PROVE_RCU
