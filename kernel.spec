@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -748,6 +748,10 @@ Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 
 #rhbz 886946
 Patch21227: iwlegacy-fix-IBSS-cleanup.patch
+
+#rhbz 863424
+Patch21228: iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
+Patch21229: Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1442,6 +1446,10 @@ ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
 
 #rhbz 886946
 ApplyPatch iwlegacy-fix-IBSS-cleanup.patch
+
+#rhbz 863424
+ApplyPatch iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
+ApplyPatch Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2298,6 +2306,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 28 2013 Josh Boyer <jwboyer@redhat.com>
+- Linux v3.8-rc5
+- Add patches to fix issues with iwlwifi (rhbz 863424)
+- Enable CONFIG_PROVE_RCU
+
 * Sun Jan 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Reenable perf on ARM (was suppose to be temporary)
 - Build and package dtbs on ARM
