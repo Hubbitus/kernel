@@ -1747,11 +1747,7 @@ BuildKernel() {
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
 
 %if %{signmodules}
-    # Save off the .tmp_versions/ directory.  We'll use it in the 
-    # __debug_install_post macro below to sign the right things
-    # Also save the signing keys so we actually sign the modules with the
-    # right key.
-    cp -r .tmp_versions .tmp_versions.sign${Flav}
+    # Save the signing keys so we can sign the modules in __modsign_install_post
     cp signing_key.priv signing_key.priv.sign${Flav}
     cp signing_key.x509 signing_key.x509.sign${Flav}
 %endif
@@ -1877,33 +1873,21 @@ find Documentation -type d | xargs chmod u+w
 %define __modsign_install_post \
   if [ "%{signmodules}" == "1" ]; then \
     if [ "%{with_pae}" != "0" ]; then \
-      Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-PAE.config | cut -b 3-` \
-      rm -rf .tmp_versions \
-      mv .tmp_versions.sign.PAE .tmp_versions \
       mv signing_key.priv.sign.PAE signing_key.priv \
       mv signing_key.x509.sign.PAE signing_key.x509 \
       %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/ \
     fi \
     if [ "%{with_debug}" != "0" ]; then \
-      Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-debug.config | cut -b 3-` \
-      rm -rf .tmp_versions \
-      mv .tmp_versions.sign.debug .tmp_versions \
       mv signing_key.priv.sign.debug signing_key.priv \
       mv signing_key.x509.sign.debug signing_key.x509 \
       %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/ \
     fi \
     if [ "%{with_pae_debug}" != "0" ]; then \
-      Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}-PAEdebug.config | cut -b 3-` \
-      rm -rf .tmp_versions \
-      mv .tmp_versions.sign.PAEdebug .tmp_versions \
       mv signing_key.priv.sign.PAEdebug signing_key.priv \
       mv signing_key.x509.sign.PAEdebug signing_key.x509 \
       %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/ \
     fi \
     if [ "%{with_up}" != "0" ]; then \
-      Arch=`head -1 configs/kernel-%{version}-%{_target_cpu}.config | cut -b 3-` \
-      rm -rf .tmp_versions \
-      mv .tmp_versions.sign .tmp_versions \
       mv signing_key.priv.sign signing_key.priv \
       mv signing_key.x509.sign signing_key.x509 \
       %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
