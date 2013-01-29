@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -729,8 +729,6 @@ Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
 # versatile
-# https://patchwork-mail.kernel.org/patch/1937321/
-Patch21006: arm-vexpress-exports.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -746,11 +744,7 @@ Patch22070: irqnr-build.patch
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 886946
-Patch21227: iwlegacy-fix-IBSS-cleanup.patch
-
 #rhbz 863424
-Patch21228: iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
 Patch21229: Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 
 #rhbz 799564
@@ -1321,7 +1315,6 @@ ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-omap-fixdrm.patch
 ApplyPatch arm-imx-fixdrm.patch
-ApplyPatch arm-vexpress-exports.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1448,11 +1441,7 @@ ApplyPatch irqnr-build.patch
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 886946
-ApplyPatch iwlegacy-fix-IBSS-cleanup.patch
-
 #rhbz 863424
-ApplyPatch iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
 ApplyPatch Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 
 #rhbz 799564
@@ -2314,6 +2303,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git1.1
+- Linux v3.8-rc5-150-g6abb7c2
+
 * Tue Jan 29 2013 Josh Boyer <jwboyer@redhat.com>
 - Backport driver for Cypress PS/2 trackpad (rhbz 799564)
 
