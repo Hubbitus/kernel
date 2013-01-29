@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -752,6 +752,10 @@ Patch21227: iwlegacy-fix-IBSS-cleanup.patch
 #rhbz 863424
 Patch21228: iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
 Patch21229: Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
+
+#rhbz 799564
+Patch21240: Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
+Patch21241: Input-add-support-for-Cypress-PS2-Trackpads.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1450,6 +1454,10 @@ ApplyPatch iwlegacy-fix-IBSS-cleanup.patch
 #rhbz 863424
 ApplyPatch iwlwifi-audit-single-frames-from-AGG-queue-in-RS.patch
 ApplyPatch Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
+
+#rhbz 799564
+ApplyPatch Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
+ApplyPatch Input-add-support-for-Cypress-PS2-Trackpads.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2306,6 +2314,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 29 2013 Josh Boyer <jwboyer@redhat.com>
+- Backport driver for Cypress PS/2 trackpad (rhbz 799564)
+
 * Mon Jan 28 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git0.1
 - Linux v3.8-rc5
 - Add patches to fix issues with iwlwifi (rhbz 863424)
