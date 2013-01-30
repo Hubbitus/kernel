@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -750,6 +750,9 @@ Patch21229: Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 #rhbz 799564
 Patch21240: Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
 Patch21241: Input-add-support-for-Cypress-PS2-Trackpads.patch
+
+# https://fedoraproject.org/wiki/Features/Checkpoint_Restore
+Patch21242: criu-no-expert.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1447,6 +1450,9 @@ ApplyPatch Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
 #rhbz 799564
 ApplyPatch Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
 ApplyPatch Input-add-support-for-Cypress-PS2-Trackpads.patch
+
+# https://fedoraproject.org/wiki/Features/Checkpoint_Restore
+ApplyPatch criu-no-expert.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2303,6 +2309,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git2.1
+- Linux v3.8-rc5-218-ga56e160
+- Enable NAMESPACES and CHECKPOINT_RESTORE on x86_64 for F19 CRIU feature
+- Enable CONFIG_DEBUG_ATOMIC_SLEEP
+
 * Tue Jan 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git1.1
 - Linux v3.8-rc5-150-g6abb7c2
 

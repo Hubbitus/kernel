@@ -127,6 +127,10 @@ CONFIG_I7300_IDLE=m
 
 CONFIG_BPF_JIT=y
 
+# https://fedoraproject.org/wiki/Features/Checkpoint_Restore
+CONFIG_CHECKPOINT_RESTORE=y
+CONFIG_NAMESPACES=y
+
 # Should be 32bit only, but lacks KConfig depends
 # CONFIG_XO15_EBOOK is not set
 
