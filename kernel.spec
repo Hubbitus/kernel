@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -669,8 +669,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: secure-boot-20130124.patch
-Patch1001: efivarfs-nlink-fix.patch
+Patch1000: secure-boot-20130131.patch
 
 # virt + ksm patches
 
@@ -1387,8 +1386,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch secure-boot-20130124.patch
-ApplyPatch efivarfs-nlink-fix.patch
+ApplyPatch secure-boot-20130131.patch
 
 # Assorted Virt Fixes
 
@@ -2309,6 +2307,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jan 31 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git3.1
+- Linux v3.8-rc5-245-g04c2eee
+- Enable CONFIG_DEBUG_STACK_USAGE
+
 * Wed Jan 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git2.1
 - Linux v3.8-rc5-218-ga56e160
 - Enable NAMESPACES and CHECKPOINT_RESTORE on x86_64 for F19 CRIU feature
