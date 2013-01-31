@@ -716,11 +716,6 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch21000: arm-export-read_current_timer.patch
 Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 
-# OMAP
-# https://patchwork.kernel.org/patch/1721241/
-# https://patchwork.kernel.org/patch/1839401/
-Patch21002: arm-omap-fixdrm.patch
-
 # IMX
 Patch21003: arm-imx-fixdrm.patch
 
@@ -1316,7 +1311,6 @@ ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-omap-fixdrm.patch
 ApplyPatch arm-imx-fixdrm.patch
 
 #
