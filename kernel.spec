@@ -748,6 +748,10 @@ Patch21241: Input-add-support-for-Cypress-PS2-Trackpads.patch
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 Patch21242: criu-no-expert.patch
 
+#rhbz 830151
+Patch21243: mac80211-improve-latency-and-throughput-while-software.patch
+Patch21244: iwlegacy-add-flush-callback.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1445,6 +1449,10 @@ ApplyPatch Input-add-support-for-Cypress-PS2-Trackpads.patch
 
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 ApplyPatch criu-no-expert.patch
+
+#rhbz 830151
+ApplyPatch mac80211-improve-latency-and-throughput-while-software.patch
+ApplyPatch iwlegacy-add-flush-callback.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2304,6 +2312,7 @@ fi
 * Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com>
 - Linux v3.8-rc6
 - Enable CONFIG_DMA_API_DEBUG
+- Add patches to improve mac80211 latency and throughput (rhbz 830151)
 
 * Thu Jan 31 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git3.1
 - Linux v3.8-rc5-245-g04c2eee
