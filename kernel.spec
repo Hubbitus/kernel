@@ -2309,7 +2309,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com>
+* Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git0.1
 - Linux v3.8-rc6
 - Enable CONFIG_DMA_API_DEBUG
 - Add patches to improve mac80211 latency and throughput (rhbz 830151)
