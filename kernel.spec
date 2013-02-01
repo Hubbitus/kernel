@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2301,6 +2301,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com>
+- Linux v3.8-rc6
+- Enable CONFIG_DMA_API_DEBUG
+
 * Thu Jan 31 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc5.git3.1
 - Linux v3.8-rc5-245-g04c2eee
 - Enable CONFIG_DEBUG_STACK_USAGE
