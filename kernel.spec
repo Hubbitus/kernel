@@ -752,6 +752,9 @@ Patch21242: criu-no-expert.patch
 Patch21243: mac80211-improve-latency-and-throughput-while-software.patch
 Patch21244: iwlegacy-add-flush-callback.patch
 
+#rhbz 903881
+Patch21246: rtlwifi-Fix-scheduling-while-atomic-bug.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1453,6 +1456,9 @@ ApplyPatch criu-no-expert.patch
 #rhbz 830151
 ApplyPatch mac80211-improve-latency-and-throughput-while-software.patch
 ApplyPatch iwlegacy-add-flush-callback.patch
+
+#rhbz 903881
+ApplyPatch rtlwifi-Fix-scheduling-while-atomic-bug.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2312,6 +2318,7 @@ fi
 * Mon Feb 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git1.1
 - Linux v3.8-rc6-22-g6edacf0
 - Enable CONFIG_EXT4_DEBUG
+- Fix rtlwifi scheduling while atomic from Larry Finger (rhbz 903881)
 
 * Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git0.1
 - Linux v3.8-rc6
