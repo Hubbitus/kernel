@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2309,6 +2309,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git1.1
+- Linux v3.8-rc6-22-g6edacf0
+- Enable CONFIG_EXT4_DEBUG
+
 * Fri Feb 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git0.1
 - Linux v3.8-rc6
 - Enable CONFIG_DMA_API_DEBUG

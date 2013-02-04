@@ -66,7 +66,7 @@ CONFIG_DMA_API_DEBUG=y
 #  on in rawhide nodebug builds
 # CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set
 
-# CONFIG_EXT4_DEBUG is not set
+CONFIG_EXT4_DEBUG=y
 
 # CONFIG_DEBUG_PERF_USE_VMALLOC is not set
 
