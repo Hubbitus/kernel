@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2321,7 +2321,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Feb 06 2013 Josh Boyer <jwboyer@redhat.com>
+* Wed Feb 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git3.3
+- Enable CONFIG_NAMESPACES everywhere (rhbz 907576)
 - Add patch to fix ath9k dma stop checks (rhbz 892811)
 
 * Wed Feb 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git3.1
