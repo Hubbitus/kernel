@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -669,7 +669,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: secure-boot-20130131.patch
+Patch1000: secure-boot-20130206.patch
 
 # virt + ksm patches
 
@@ -1387,7 +1387,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch secure-boot-20130131.patch
+ApplyPatch secure-boot-20130206.patch
 
 # Assorted Virt Fixes
 
@@ -2315,6 +2315,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git3.1
+- Linux v3.8-rc6-98-g1589a3e
+- Add patch to honor MokSBState (rhbz 907406)
+
 * Tue Feb 05 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git2.1
 - Linux v3.8-rc6-62-gfe547d7
 - Enable CONFIG_DRM_VMWGFX_FBCON (rhbz 907620)
