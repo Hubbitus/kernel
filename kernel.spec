@@ -2321,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb  7 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM build fixes
+
 * Wed Feb 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc6.git3.3
 - Enable CONFIG_NAMESPACES everywhere (rhbz 907576)
 - Add patch to fix ath9k dma stop checks (rhbz 892811)
