@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -159,7 +159,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -172,7 +172,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -738,9 +738,6 @@ Patch22070: irqnr-build.patch
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 863424
-Patch21229: Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
-
 #rhbz 799564
 Patch21240: Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
 Patch21241: Input-add-support-for-Cypress-PS2-Trackpads.patch
@@ -752,11 +749,10 @@ Patch21242: criu-no-expert.patch
 Patch21243: mac80211-improve-latency-and-throughput-while-software.patch
 Patch21244: iwlegacy-add-flush-callback.patch
 
-#rhbz 903881
-Patch21246: rtlwifi-Fix-scheduling-while-atomic-bug.patch
-
 #rhbz 892811
 Patch21247: ath9k_rx_dma_stop_check.patch
+
+Patch21248: pid-unlock_irq-when-alloc_pid-fails-because-init.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1415,7 +1411,7 @@ ApplyOptionalPatch v4l-dvb-update.patch
 ApplyOptionalPatch v4l-dvb-experimental.patch
 
 # Experiment: Double the length of the brcmsmac transmit timeout.
-ApplyPatch brcmsmac-double-timeout.patch
+#pplyPatch brcmsmac-double-timeout.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
@@ -1446,9 +1442,6 @@ ApplyPatch irqnr-build.patch
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 863424
-ApplyPatch Revert-iwlwifi-fix-the-reclaimed-packet-tracking-upon.patch
-
 #rhbz 799564
 ApplyPatch Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
 ApplyPatch Input-add-support-for-Cypress-PS2-Trackpads.patch
@@ -1460,11 +1453,10 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch mac80211-improve-latency-and-throughput-while-software.patch
 ApplyPatch iwlegacy-add-flush-callback.patch
 
-#rhbz 903881
-ApplyPatch rtlwifi-Fix-scheduling-while-atomic-bug.patch
-
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
+
+ApplyPatch pid-unlock_irq-when-alloc_pid-fails-because-init.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2321,6 +2313,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git0.1
+- Linux v3.8-rc7
+- Add patch to fix atomic sleep issue on alloc_pid failure (rhbz 894623)
+- Disable debugging options.
+
 * Thu Feb  7 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM build fixes
 
