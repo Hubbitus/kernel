@@ -2313,6 +2313,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Build PATA_MACIO in on powerpc (rhbz 831361)
+
 * Fri Feb 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git0.1
 - Linux v3.8-rc7
 - Add patch to fix atomic sleep issue on alloc_pid failure (rhbz 894623)
