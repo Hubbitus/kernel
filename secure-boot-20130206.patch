@@ -1387,3 +1387,94 @@ index 96bd86b..6e1331c 100644
 -- 
 1.8.1
 
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.99.210 with SMTP id es18csp140114oab;
+        Fri, 8 Feb 2013 11:12:52 -0800 (PST)
+X-Received: by 10.66.86.71 with SMTP id n7mr19917975paz.77.1360350771724;
+        Fri, 08 Feb 2013 11:12:51 -0800 (PST)
+Return-Path: <linux-efi-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id e5si41603022pax.261.2013.02.08.11.12.50;
+        Fri, 08 Feb 2013 11:12:51 -0800 (PST)
+Received-SPF: pass (google.com: best guess record for domain of linux-efi-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of linux-efi-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mail=linux-efi-owner@vger.kernel.org
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1760288Ab3BHTM0 (ORCPT <rfc822;sangshuduo@gmail.com>
+	+ 14 others); Fri, 8 Feb 2013 14:12:26 -0500
+Received: from smtp.outflux.net ([198.145.64.163]:49396 "EHLO smtp.outflux.net"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1760349Ab3BHTMY (ORCPT <rfc822;linux-efi@vger.kernel.org>);
+	Fri, 8 Feb 2013 14:12:24 -0500
+Received: from www.outflux.net (serenity-end.outflux.net [10.2.0.2])
+	by vinyl.outflux.net (8.14.4/8.14.4/Debian-2ubuntu2) with ESMTP id r18JCEtT006197;
+	Fri, 8 Feb 2013 11:12:14 -0800
+Date:	Fri, 8 Feb 2013 11:12:13 -0800
+From:	Kees Cook <keescook@chromium.org>
+To:	linux-kernel@vger.kernel.org
+Cc:	Matthew Garrett <matthew.garrett@nebula.com>,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+	linux-efi@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: [PATCH] x86: Lock down MSR writing in secure boot
+Message-ID: <20130208191213.GA25081@www.outflux.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MIMEDefang-Filter: outflux$Revision: 1.316 $
+X-HELO:	www.outflux.net
+X-Scanned-By: MIMEDefang 2.71 on 10.2.0.1
+Sender:	linux-efi-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-efi.vger.kernel.org>
+X-Mailing-List:	linux-efi@vger.kernel.org
+
+Writing to MSRs should not be allowed unless CAP_COMPROMISE_KERNEL is
+set since it could lead to execution of arbitrary code in kernel mode.
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+This would be used on top of Matthew Garrett's existing "Secure boot
+policy support" patch series.
+---
+ arch/x86/kernel/msr.c |    7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+index 4929502..adaab3d 100644
+--- a/arch/x86/kernel/msr.c
++++ b/arch/x86/kernel/msr.c
+@@ -103,6 +103,9 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
+ 	int err = 0;
+ 	ssize_t bytes = 0;
+ 
++	if (!capable(CAP_COMPROMISE_KERNEL))
++		return -EPERM;
++
+ 	if (count % 8)
+ 		return -EINVAL;	/* Invalid chunk size */
+ 
+@@ -150,6 +153,10 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
+ 			err = -EBADF;
+ 			break;
+ 		}
++		if (!capable(CAP_COMPROMISE_KERNEL)) {
++			err = -EPERM;
++			break;
++		}
+ 		if (copy_from_user(&regs, uregs, sizeof regs)) {
+ 			err = -EFAULT;
+ 			break;
+-- 
+1.7.9.5
+
+
+-- 
+Kees Cook
+Chrome OS Security
+--
+To unsubscribe from this list: send the line "unsubscribe linux-efi" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

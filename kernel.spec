@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2314,6 +2314,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Feb 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Kees Cook to restrict MSR writting in secure boot mode
 - Build PATA_MACIO in on powerpc (rhbz 831361)
 
 * Fri Feb 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git0.1
