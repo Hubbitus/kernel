@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -751,6 +751,9 @@ Patch21244: iwlegacy-add-flush-callback.patch
 Patch21247: ath9k_rx_dma_stop_check.patch
 
 Patch21248: pid-unlock_irq-when-alloc_pid-fails-because-init.patch
+
+#rhbz 910126
+Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1452,6 +1455,9 @@ ApplyPatch iwlegacy-add-flush-callback.patch
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch pid-unlock_irq-when-alloc_pid-fails-because-init.patch
+
+#rhbz 910126
+ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2308,6 +2314,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 12 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to create a convenient mount point for pstore (rhbz 910126)
+
 * Tue Feb 12 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git1.1
 - Linux v3.8-rc7-6-g211b0cd
 - Reenable debugging options.
