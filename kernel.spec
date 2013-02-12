@@ -691,8 +691,6 @@ Patch2899: v4l-dvb-fixes.patch
 Patch2900: v4l-dvb-update.patch
 Patch2901: v4l-dvb-experimental.patch
 
-Patch3000: brcmsmac-double-timeout.patch
-
 # fs fixes
 
 # NFSv4
@@ -1409,9 +1407,6 @@ ApplyPatch quiet-apm.patch
 ApplyOptionalPatch v4l-dvb-fixes.patch
 ApplyOptionalPatch v4l-dvb-update.patch
 ApplyOptionalPatch v4l-dvb-experimental.patch
-
-# Experiment: Double the length of the brcmsmac transmit timeout.
-#pplyPatch brcmsmac-double-timeout.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
