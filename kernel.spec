@@ -725,14 +725,6 @@ Patch21005: arm-tegra-usb-no-reset-linux33.patch
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
-Patch22000: weird-root-dentry-name-debug.patch
-
-#selinux ptrace child permissions
-Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-# Build patch, should go away
-Patch22070: irqnr-build.patch
-
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 
@@ -754,6 +746,14 @@ Patch21248: pid-unlock_irq-when-alloc_pid-fails-because-init.patch
 
 #rhbz 910126
 Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
+
+Patch22000: weird-root-dentry-name-debug.patch
+
+#selinux ptrace child permissions
+Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+# Build patch, should go away
+Patch22070: irqnr-build.patch
 
 # END OF PATCH DEFINITIONS
 
