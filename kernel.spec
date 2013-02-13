@@ -742,8 +742,6 @@ Patch21244: iwlegacy-add-flush-callback.patch
 #rhbz 892811
 Patch21247: ath9k_rx_dma_stop_check.patch
 
-Patch21248: pid-unlock_irq-when-alloc_pid-fails-because-init.patch
-
 #rhbz 910126
 Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
@@ -1453,8 +1451,6 @@ ApplyPatch iwlegacy-add-flush-callback.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-ApplyPatch pid-unlock_irq-when-alloc_pid-fails-because-init.patch
 
 #rhbz 910126
 ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
