@@ -2310,6 +2310,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 13 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable tegra30
+
 * Wed Feb 13 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git2.1
 - Linux v3.8-rc7-32-gecf223f
 
