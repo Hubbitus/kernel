@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -744,6 +744,9 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 #rhbz 910126
 Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
+
+#rhbz 906309 910848 CVE-2013-0228
+Patch21260: xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1454,6 +1457,9 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 #rhbz 910126
 ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
+
+#rhbz 906309 910848 CVE-2013-0228
+ApplyPatch xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2310,6 +2316,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 14 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-0228 xen: xen_iret() invalid %ds local DoS (rhbz 910848 906309)
+
 * Wed Feb 13 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable tegra30
 
