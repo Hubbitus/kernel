@@ -745,6 +745,9 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 #rhbz 910126
 Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
+#rhbz 909591
+Patch21255: usb-cypress-supertop.patch
+
 #rhbz 906309 910848 CVE-2013-0228
 Patch21260: xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
 
@@ -1460,6 +1463,9 @@ ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 906309 910848 CVE-2013-0228
 ApplyPatch xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
+
+#rhbz 909591
+ApplyPatch usb-cypress-supertop.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2317,6 +2323,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Feb 14 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix corruption on newer M6116 SATA bridges (rhbz 909591)
 - CVE-2013-0228 xen: xen_iret() invalid %ds local DoS (rhbz 910848 906309)
 
 * Wed Feb 13 2013 Peter Robinson <pbrobinson@fedoraproject.org>
