@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -747,9 +747,6 @@ Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 909591
 Patch21255: usb-cypress-supertop.patch
-
-#rhbz 906309 910848 CVE-2013-0228
-Patch21260: xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1460,9 +1457,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 #rhbz 910126
 ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
-
-#rhbz 906309 910848 CVE-2013-0228
-ApplyPatch xen-dont-assume-ds-is-usable-in-xen_iret-for-32-bit-PVOPS.patch
 
 #rhbz 909591
 ApplyPatch usb-cypress-supertop.patch
@@ -2322,6 +2316,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 18 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git4.1
+- Linux v3.8-rc7-93-gf741656
+
 * Thu Feb 14 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-0.rc7.git3.1
 - Linux v3.8-rc7-73-g323a72d
 
