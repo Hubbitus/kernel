@@ -745,16 +745,19 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 #rhbz 910126
 Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
+#rhbz 844750
+Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
+
 #rhbz 909591
 Patch21255: usb-cypress-supertop.patch
+
+#rhbz 812111
+Patch21260: alps-v2.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 812111
-Patch21260: alps-v2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1457,6 +1460,9 @@ ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 909591
 ApplyPatch usb-cypress-supertop.patch
+
+#rhbz 844750
+ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
 #rhbz 812111
 ApplyPatch alps-v2.patch
@@ -2317,6 +2323,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com>
+- Add support for Atheros 04ca:3004 bluetooth devices (rhbz 844750)
 - Backport support for newer ALPS touchpads (rhbz 812111)
 - Enable CONFIG_AUDIT_LOGINUID_IMMUTABLE
 
