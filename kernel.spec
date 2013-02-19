@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -752,6 +752,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
+#rhbz 812111
+Patch21260: alps-v2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1454,6 +1457,9 @@ ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 909591
 ApplyPatch usb-cypress-supertop.patch
+
+#rhbz 812111
+ApplyPatch alps-v2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2311,6 +2317,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com>
+- Backport support for newer ALPS touchpads (rhbz 812111)
 - Enable CONFIG_AUDIT_LOGINUID_IMMUTABLE
 
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-1
