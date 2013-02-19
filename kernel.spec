@@ -2310,6 +2310,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com>
+- Enable CONFIG_AUDIT_LOGINUID_IMMUTABLE
+
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-1
 - Linux v3.8
 - Fix build with CONFIG_EFI disabled, reported by Peter Bowey (rhbz 911833)

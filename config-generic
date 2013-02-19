@@ -3952,7 +3952,8 @@ CONFIG_SECURITY_SELINUX_AVC_STATS=y
 # CONFIG_SECURITY_YAMA is not set
 CONFIG_AUDIT=y
 CONFIG_AUDITSYSCALL=y
-# CONFIG_AUDIT_LOGINUID_IMMUTABLE is not set
+# http://lists.fedoraproject.org/pipermail/kernel/2013-February/004125.html
+CONFIG_AUDIT_LOGINUID_IMMUTABLE=y
 
 #
 # Cryptographic options
