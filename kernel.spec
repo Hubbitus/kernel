@@ -2334,6 +2334,10 @@ fi
 - Linux v3.8-523-gece8e0b
 - Reenable debugging options.
 
+* Wed Feb 20 2013 Kyle McMartin <kmcmarti@redhat.com>
+- ipr.ko driven SAS VRAID cards found on x86_64 machines these days, and not
+  just on ppc64
+
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-2
 - Add pekey support from David Howells and rework secure-boot patchset on top
 - Add support for Atheros 04ca:3004 bluetooth devices (rhbz 844750)
