@@ -669,7 +669,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: secure-boot-20130218.patch
+Patch1000: devel-pekey-secure-boot-20130219.patch
 
 # virt + ksm patches
 
@@ -1391,7 +1391,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch secure-boot-20130218.patch
+ApplyPatch devel-pekey-secure-boot-20130219.patch
 
 # Assorted Virt Fixes
 
@@ -2322,7 +2322,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com>
+* Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-2
+- Add pekey support from David Howells and rework secure-boot patchset on top
 - Add support for Atheros 04ca:3004 bluetooth devices (rhbz 844750)
 - Backport support for newer ALPS touchpads (rhbz 812111)
 - Enable CONFIG_AUDIT_LOGINUID_IMMUTABLE
