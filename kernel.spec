@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -159,7 +159,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -172,7 +172,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -662,7 +662,6 @@ Patch470: die-floppy-die.patch
 Patch510: silence-noise.patch
 Patch520: quiet-apm.patch
 Patch530: silence-fbcon-logo.patch
-Patch540: silence-empty-ipi-mask-warning.patch
 
 Patch800: crash-driver.patch
 
@@ -1378,9 +1377,6 @@ ApplyPatch silence-noise.patch
 
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch silence-fbcon-logo.patch
-
-# no-one cares about these warnings.
-ApplyPatch silence-empty-ipi-mask-warning.patch
 
 # Changes to upstream defaults.
 
@@ -2322,6 +2318,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git1.1
+- Linux v3.8-523-gece8e0b
+- Reenable debugging options.
+
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-2
 - Add pekey support from David Howells and rework secure-boot patchset on top
 - Add support for Atheros 04ca:3004 bluetooth devices (rhbz 844750)
