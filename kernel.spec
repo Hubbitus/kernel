@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -660,7 +660,6 @@ Patch460: serial-460800.patch
 Patch470: die-floppy-die.patch
 
 Patch510: silence-noise.patch
-Patch520: quiet-apm.patch
 Patch530: silence-fbcon-logo.patch
 
 Patch800: crash-driver.patch
@@ -713,7 +712,6 @@ Patch21000: arm-export-read_current_timer.patch
 Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 
 # IMX
-Patch21003: arm-imx-fixdrm.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -727,16 +725,8 @@ Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 #rhbz 859485
 Patch21226: vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 799564
-Patch21240: Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
-Patch21241: Input-add-support-for-Cypress-PS2-Trackpads.patch
-
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 Patch21242: criu-no-expert.patch
-
-#rhbz 830151
-Patch21243: mac80211-improve-latency-and-throughput-while-software.patch
-Patch21244: iwlegacy-add-flush-callback.patch
 
 #rhbz 892811
 Patch21247: ath9k_rx_dma_stop_check.patch
@@ -1320,7 +1310,6 @@ ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-imx-fixdrm.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1403,7 +1392,6 @@ ApplyPatch drm-i915-dp-stfu.patch
 
 # silence the ACPI blacklist code
 ApplyPatch silence-acpi-blacklist.patch
-ApplyPatch quiet-apm.patch
 
 # V4L/DVB updates/fixes/experimental drivers
 #  apply if non-empty
@@ -1437,16 +1425,8 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
 
-#rhbz 799564
-ApplyPatch Input-increase-struct-ps2dev-cmdbuf-to-8-bytes.patch
-ApplyPatch Input-add-support-for-Cypress-PS2-Trackpads.patch
-
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 ApplyPatch criu-no-expert.patch
-
-#rhbz 830151
-ApplyPatch mac80211-improve-latency-and-throughput-while-software.patch
-ApplyPatch iwlegacy-add-flush-callback.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
@@ -2318,6 +2298,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git2.1
+- Linux v3.8-3040-ga0b1c42
+
 * Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git1.1
 - Linux v3.8-523-gece8e0b
 - Reenable debugging options.
