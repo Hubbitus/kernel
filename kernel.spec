@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -667,7 +667,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130219.patch
+Patch1000: devel-pekey-secure-boot-20130221.patch
 
 # virt + ksm patches
 
@@ -730,9 +730,6 @@ Patch21242: criu-no-expert.patch
 
 #rhbz 892811
 Patch21247: ath9k_rx_dma_stop_check.patch
-
-#rhbz 910126
-Patch21249: pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 844750
 Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
@@ -1376,7 +1373,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130219.patch
+ApplyPatch devel-pekey-secure-boot-20130221.patch
 
 # Assorted Virt Fixes
 
@@ -1430,9 +1427,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-#rhbz 910126
-ApplyPatch pstore-Create-a-convenient-mount-point-for-pstore.patch
 
 #rhbz 909591
 ApplyPatch usb-cypress-supertop.patch
@@ -2298,7 +2292,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com>
+* Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git3.1
+- Linux v3.8-3195-g024e4ec
 - Shut up perf about missing build things we don't care about
 - Drop the old aic7xxx driver, from Paul Bolle
 
