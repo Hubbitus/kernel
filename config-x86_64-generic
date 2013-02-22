@@ -133,3 +133,5 @@ CONFIG_CHECKPOINT_RESTORE=y
 # Should be 32bit only, but lacks KConfig depends
 # CONFIG_XO15_EBOOK is not set
 
+CONFIG_NTB=m
+CONFIG_NTB_NETDEV=m

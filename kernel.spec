@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -667,7 +667,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130221.patch
+Patch1000: devel-pekey-secure-boot-20130222.patch
 
 # virt + ksm patches
 
@@ -709,7 +709,6 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
 Patch21000: arm-export-read_current_timer.patch
-Patch21001: arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 
 # IMX
 
@@ -733,9 +732,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 #rhbz 844750
 Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
-
-#rhbz 909591
-Patch21255: usb-cypress-supertop.patch
 
 #rhbz 812111
 Patch21260: alps-v2.patch
@@ -1304,7 +1300,6 @@ ApplyPatch vmbugon-warnon.patch
 # ARM
 #
 ApplyPatch arm-export-read_current_timer.patch
-ApplyPatch arm-allnoconfig-error-__LINUX_ARM_ARCH__-undeclared.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
@@ -1373,7 +1368,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130221.patch
+ApplyPatch devel-pekey-secure-boot-20130222.patch
 
 # Assorted Virt Fixes
 
@@ -1427,9 +1422,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-#rhbz 909591
-ApplyPatch usb-cypress-supertop.patch
 
 #rhbz 844750
 ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
@@ -2292,6 +2284,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 22 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git4.1
+- Linux v3.8-6071-g8b5628a
+- Enable the rtl8192e driver (rhbz 913753)
+
 * Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git3.1
 - Linux v3.8-3195-g024e4ec
 - Shut up perf about missing build things we don't care about
