@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -732,6 +732,9 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 #rhbz 844750
 Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
+
+#CVE-2013-1763 rhbz 915052,915057
+Patch21251: sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 
 #rhbz 812111
 Patch21260: alps-v2.patch
@@ -1428,6 +1431,9 @@ ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
 #rhbz 812111
 ApplyPatch alps-v2.patch
+
+#CVE-2013-1763 rhbz 915052,915057
+ApplyPatch sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2284,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Feb 24 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-1763 sock_diag: out-of-bounds access to sock_diag_handlers (rhbz 915052,915057)
+
 * Fri Feb 22 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git5.1
 - Linux v3.8-6071-g8b5628a
 
