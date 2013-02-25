@@ -739,6 +739,9 @@ Patch21251: sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 #rhbz 812111
 Patch21260: alps-v2.patch
 
+#rhbz 903192
+Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1434,6 +1437,9 @@ ApplyPatch alps-v2.patch
 
 #CVE-2013-1763 rhbz 915052,915057
 ApplyPatch sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
+
+#rhbz 903192
+ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2291,6 +2297,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Feb 25 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git7.1
+- Honor dmesg_restrict for /dev/kmsg (rhbz 903192)
 - Linux v3.8-7888-gab78265
 
 * Sun Feb 24 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git6.1
