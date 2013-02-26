@@ -1725,9 +1725,9 @@ BuildKernel() {
     }
 
     collect_modules_list networking \
-    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe'
+    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
     collect_modules_list block \
-    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler'
+    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size'
     collect_modules_list drm \
     			 'drm_open|drm_init'
     collect_modules_list modesetting \
@@ -2302,6 +2302,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 26 2013 Kyle McMartin <kmcmarti@redhat.com>
+- Add blk_queue_physical_block_size and register_netdevice to the symbols
+  used for initrd generation (synched from .el6)
+
 * Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix vmalloc_fault oops during lazy MMU (rhbz 914737)
 
