@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -667,7 +667,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130222.patch
+Patch1000: devel-pekey-secure-boot-20130226.patch
 
 # virt + ksm patches
 
@@ -1377,7 +1377,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130222.patch
+ApplyPatch devel-pekey-secure-boot-20130226.patch
 
 # Assorted Virt Fixes
 
@@ -2302,9 +2302,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git8.1
+- Linux v3.8-8664-gc41b381
+
 * Tue Feb 26 2013 Kyle McMartin <kmcmarti@redhat.com>
 - Add blk_queue_physical_block_size and register_netdevice to the symbols
   used for initrd generation (synched from .el6)
+- ipr.ko driven SAS VRAID cards found on x86_64 machines these days, and not
+  just on ppc64
 
 * Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix vmalloc_fault oops during lazy MMU (rhbz 914737)
@@ -2337,10 +2342,6 @@ fi
 * Thu Feb 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git1.1
 - Linux v3.8-523-gece8e0b
 - Reenable debugging options.
-
-* Wed Feb 20 2013 Kyle McMartin <kmcmarti@redhat.com>
-- ipr.ko driven SAS VRAID cards found on x86_64 machines these days, and not
-  just on ppc64
 
 * Tue Feb 19 2013 Josh Boyer <jwboyer@redhat.com> - 3.8.0-2
 - Add pekey support from David Howells and rework secure-boot patchset on top

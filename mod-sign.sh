@@ -21,7 +21,7 @@ do
     dir=`dirname $mod`
     file=`basename $mod`
 
-    ./scripts/sign-file ${MODSECKEY} ${MODPUBKEY} ${dir}/${file} \
+    ./scripts/sign-file sha256 ${MODSECKEY} ${MODPUBKEY} ${dir}/${file} \
        ${dir}/${file}.signed
     mv ${dir}/${file}.signed ${dir}/${file}
     rm -f ${dir}/${file}.{sig,dig}
