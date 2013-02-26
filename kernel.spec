@@ -2302,6 +2302,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 26 2013 Kyle McMartin <kmcmarti@redhat.com>
+- Move VMXNET3 to config-x86-generic from config-generic, it's VMware
+  virtual ethernet.
+
 * Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git8.1
 - Linux v3.8-8664-gc41b381
 
