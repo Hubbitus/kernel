@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,9 @@ Patch21260: alps-v2.patch
 
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
+
+#rhbz 914737
+Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1440,6 +1443,9 @@ ApplyPatch sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
+
+#rhbz 914737
+ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix vmalloc_fault oops during lazy MMU (rhbz 914737)
+
 * Mon Feb 25 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git7.1
 - Honor dmesg_restrict for /dev/kmsg (rhbz 903192)
 - Linux v3.8-7888-gab78265
