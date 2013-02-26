@@ -348,6 +348,7 @@ CONFIG_EXTCON_GPIO=m
 # CONFIG_GPIO_EM is not set
 # CONFIG_HVC_DCC is not set
 # CONFIG_LEDS_RENESAS_TPU is not set
+# CONFIG_LEDS_PWM is not set
 # CONFIG_VIRTIO_CONSOLE is not set
 
 #  Possibly part of Snowball

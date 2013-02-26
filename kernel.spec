@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -732,9 +732,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 #rhbz 844750
 Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
-
-#CVE-2013-1763 rhbz 915052,915057
-Patch21251: sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 
 #rhbz 812111
 Patch21260: alps-v2.patch
@@ -1437,9 +1434,6 @@ ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
 #rhbz 812111
 ApplyPatch alps-v2.patch
-
-#CVE-2013-1763 rhbz 915052,915057
-ApplyPatch sock_diag-Fix-out-of-bounds-access-to-sock_diag_handlers.patch
 
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
@@ -2302,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 26 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git9.1
+- Linux v3.8-9165-g1cef935
+
 * Tue Feb 26 2013 Kyle McMartin <kmcmarti@redhat.com>
 - Move VMXNET3 to config-x86-generic from config-generic, it's VMware
   virtual ethernet.
