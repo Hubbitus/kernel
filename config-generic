@@ -4678,6 +4678,7 @@ CONFIG_PSTORE_RAM=m
 
 
 # CONFIG_AVERAGE is not set
+# CONFIG_VMXNET3 is not set
 
 # CONFIG_SIGMA is not set
 
