@@ -518,7 +518,7 @@ ExclusiveOS: Linux
 BuildRequires: module-init-tools, patch >= 2.5.4, bash >= 2.03, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, make >= 3.78, diffutils, gawk
 BuildRequires: gcc >= 3.4.2, binutils >= 2.12, redhat-rpm-config, hmaccalc
-BuildRequires: net-tools, hostname
+BuildRequires: net-tools, hostname, bc
 BuildRequires: xmlto, asciidoc
 %if %{with_sparse}
 BuildRequires: sparse >= 0.4.1
