@@ -1,4 +1,4 @@
-From f31ce451f73d8e68ab5c3dca068ef602bb9f1dfa Mon Sep 17 00:00:00 2001
+From 0897592c76229c0a8a55c04ba14f3ce3b225e43c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 18 Jan 2013 13:53:35 +0000
 Subject: [PATCH 01/47] KEYS: Load *.x509 files into kernel keyring
@@ -81,7 +81,7 @@ index 246b4c6..0a60203 100644
 1.8.1.2
 
 
-From 01fb4a2a794782fc54d7ea8dc61c7b205a7748c1 Mon Sep 17 00:00:00 2001
+From 477893f77ccb7948cb4d7f6b542b37e9a875083e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 18:39:54 +0000
 Subject: [PATCH 02/47] KEYS: Separate the kernel signature checking keyring
@@ -95,12 +95,14 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  include/keys/system_keyring.h |  23 ++++++++++
  init/Kconfig                  |  13 ++++++
  kernel/Makefile               |  17 ++++---
+ kernel/modsign_pubkey.c       | 104 ------------------------------------------
  kernel/module-internal.h      |   2 -
  kernel/module_signing.c       |   3 +-
  kernel/system_certificates.S  |  18 ++++++++
- kernel/system_keyring.c       | 101 ++++++++++++++++++++++++++++++++++++++++++
- 7 files changed, 168 insertions(+), 9 deletions(-)
+ kernel/system_keyring.c       | 101 ++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 168 insertions(+), 113 deletions(-)
  create mode 100644 include/keys/system_keyring.h
+ delete mode 100644 kernel/modsign_pubkey.c
  create mode 100644 kernel/system_certificates.S
  create mode 100644 kernel/system_keyring.c
 
@@ -221,6 +223,116 @@ index f6dbf33..f273c0e 100644
  ###############################################################################
  #
  # If module signing is requested, say by allyesconfig, but a key has not been
+diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
+deleted file mode 100644
+index 2b6e699..0000000
+--- a/kernel/modsign_pubkey.c
++++ /dev/null
+@@ -1,104 +0,0 @@
+-/* Public keys for module signature verification
+- *
+- * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
+- * Written by David Howells (dhowells@redhat.com)
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public Licence
+- * as published by the Free Software Foundation; either version
+- * 2 of the Licence, or (at your option) any later version.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/cred.h>
+-#include <linux/err.h>
+-#include <keys/asymmetric-type.h>
+-#include "module-internal.h"
+-
+-struct key *modsign_keyring;
+-
+-extern __initdata const u8 modsign_certificate_list[];
+-extern __initdata const u8 modsign_certificate_list_end[];
+-
+-/*
+- * We need to make sure ccache doesn't cache the .o file as it doesn't notice
+- * if modsign.pub changes.
+- */
+-static __initdata const char annoy_ccache[] = __TIME__ "foo";
+-
+-/*
+- * Load the compiled-in keys
+- */
+-static __init int module_verify_init(void)
+-{
+-	pr_notice("Initialise module verification\n");
+-
+-	modsign_keyring = keyring_alloc(".module_sign",
+-					KUIDT_INIT(0), KGIDT_INIT(0),
+-					current_cred(),
+-					((KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-					 KEY_USR_VIEW | KEY_USR_READ),
+-					KEY_ALLOC_NOT_IN_QUOTA, NULL);
+-	if (IS_ERR(modsign_keyring))
+-		panic("Can't allocate module signing keyring\n");
+-
+-	return 0;
+-}
+-
+-/*
+- * Must be initialised before we try and load the keys into the keyring.
+- */
+-device_initcall(module_verify_init);
+-
+-/*
+- * Load the compiled-in keys
+- */
+-static __init int load_module_signing_keys(void)
+-{
+-	key_ref_t key;
+-	const u8 *p, *end;
+-	size_t plen;
+-
+-	pr_notice("Loading module verification certificates\n");
+-
+-	end = modsign_certificate_list_end;
+-	p = modsign_certificate_list;
+-	while (p < end) {
+-		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
+-		 * than 256 bytes in size.
+-		 */
+-		if (end - p < 4)
+-			goto dodgy_cert;
+-		if (p[0] != 0x30 &&
+-		    p[1] != 0x82)
+-			goto dodgy_cert;
+-		plen = (p[2] << 8) | p[3];
+-		plen += 4;
+-		if (plen > end - p)
+-			goto dodgy_cert;
+-
+-		key = key_create_or_update(make_key_ref(modsign_keyring, 1),
+-					   "asymmetric",
+-					   NULL,
+-					   p,
+-					   plen,
+-					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-					   KEY_USR_VIEW,
+-					   KEY_ALLOC_NOT_IN_QUOTA);
+-		if (IS_ERR(key))
+-			pr_err("MODSIGN: Problem loading in-kernel X.509 certificate (%ld)\n",
+-			       PTR_ERR(key));
+-		else
+-			pr_notice("MODSIGN: Loaded cert '%s'\n",
+-				  key_ref_to_ptr(key)->description);
+-		p += plen;
+-	}
+-
+-	return 0;
+-
+-dodgy_cert:
+-	pr_err("MODSIGN: Problem parsing in-kernel X.509 certificate list\n");
+-	return 0;
+-}
+-late_initcall(load_module_signing_keys);
 diff --git a/kernel/module-internal.h b/kernel/module-internal.h
 index 24f9247..915e123 100644
 --- a/kernel/module-internal.h
@@ -388,7 +500,7 @@ index 0000000..a3ca76f
 1.8.1.2
 
 
-From a374634f4c6582740c91ccfb7cdc49aa26445090 Mon Sep 17 00:00:00 2001
+From 16ad42825c0a04b1fd7d86840972c10c86245316 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Thu, 17 Jan 2013 16:25:00 +0000
 Subject: [PATCH 03/47] KEYS: Add a 'trusted' flag and a 'trusted only' flag
@@ -517,7 +629,7 @@ index 6ece7f2..f18d7ff 100644
 1.8.1.2
 
 
-From 654c4260b94ab07936e4e1a697eddb082b0915a1 Mon Sep 17 00:00:00 2001
+From 45fd976a0e1269dd37149e8743db23064b06cda1 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:32 +0000
 Subject: [PATCH 04/47] KEYS: Rename public key parameter name arrays
@@ -672,7 +784,7 @@ index 0034e36..0b6b870 100644
 1.8.1.2
 
 
-From a34e52cba48a0b78902a677bb15b927581021cc0 Mon Sep 17 00:00:00 2001
+From 054dcbb0b9c84d8da783e760c9a437b158584d99 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:33 +0000
 Subject: [PATCH 05/47] KEYS: Move the algorithm pointer array from x509 to
@@ -754,7 +866,7 @@ index 619d570..46bde25 100644
 1.8.1.2
 
 
-From 63aec95cc6af50218892f9b870a952a28de04665 Mon Sep 17 00:00:00 2001
+From aabadc509b8818141efac3852652b4940e4f9fd8 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:33 +0000
 Subject: [PATCH 06/47] KEYS: Store public key algo ID in public_key struct
@@ -839,7 +951,7 @@ index 46bde25..05778df 100644
 1.8.1.2
 
 
-From bf77135946a15f3833928cdf9a97f481a4b7f29b Mon Sep 17 00:00:00 2001
+From 4d4b5bd40b00300951d2c6ee698558ba51549dd0 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:34 +0000
 Subject: [PATCH 07/47] KEYS: Split public_key_verify_signature() and make
@@ -955,7 +1067,7 @@ index fac574c..8cb2f70 100644
 1.8.1.2
 
 
-From d05eeaba52cdd6ddff9620186aa3a221e5909430 Mon Sep 17 00:00:00 2001
+From 1d18fe805f3b93beddf3a4753edce841f2acec65 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 08/47] KEYS: Store public key algo ID in public_key_signature
@@ -988,7 +1100,7 @@ index 05778df..b34fda4 100644
 1.8.1.2
 
 
-From 3e2fb1075b17dc005721b2d63ae6a3c146fa529a Mon Sep 17 00:00:00 2001
+From 09b9d1445c41129b1b9db48913a479c7ccb5ca3b Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 09/47] X.509: struct x509_certificate needs struct tm
@@ -1020,7 +1132,7 @@ index e583ad0..2d01182 100644
 1.8.1.2
 
 
-From 5c9dbeecb8faff88eb009d329c37831b8ec112ba Mon Sep 17 00:00:00 2001
+From f68e7a66d9ee29c3925af09f19d787c1d1c153c5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 10/47] X.509: Add bits needed for PKCS#7
@@ -1118,7 +1230,7 @@ index 2d01182..a6ce46f 100644
 1.8.1.2
 
 
-From 11a3d86669eb5fd71c756777cff053221de851a2 Mon Sep 17 00:00:00 2001
+From 59554086ba4a0ec1564e8ba901c81311d1741ad6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:36 +0000
 Subject: [PATCH 11/47] X.509: Embed public_key_signature struct and create
@@ -1386,7 +1498,7 @@ index 8cb2f70..b7c81d8 100644
 1.8.1.2
 
 
-From 09ba17965bed337bfb88ef9dc2d0b8c918eb5c01 Mon Sep 17 00:00:00 2001
+From 5b19f6b18f2975eb4c8d90271e66131cfcdf1c76 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:36 +0000
 Subject: [PATCH 12/47] X.509: Check the algorithm IDs obtained from parsing an
@@ -1427,7 +1539,7 @@ index b7c81d8..eb368d4 100644
 1.8.1.2
 
 
-From 293744b6e8bfb316b3d3545984eed2f4cb0b09bc Mon Sep 17 00:00:00 2001
+From ffc860d142d5e10e45845a307a68d43269e5df00 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:37 +0000
 Subject: [PATCH 13/47] X.509: Handle certificates that lack an
@@ -1474,7 +1586,7 @@ index eb368d4..0f55e3b 100644
 1.8.1.2
 
 
-From 176a9c3ef9b6b4faf0a82600e70e03b8446a2590 Mon Sep 17 00:00:00 2001
+From 273ca35d304fefeae19430aa2efbc545568275a1 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:37 +0000
 Subject: [PATCH 14/47] X.509: Export certificate parse and free functions
@@ -1520,7 +1632,7 @@ index 931f069..9cf0e16 100644
 1.8.1.2
 
 
-From 962c8a1468e2ae96c417be0c85871218e542284d Mon Sep 17 00:00:00 2001
+From c4544748eb25fd99f25e287e8b15b978876e4c7e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:38 +0000
 Subject: [PATCH 15/47] PKCS#7: Implement a parser [RFC 2315]
@@ -2133,7 +2245,7 @@ index 6926db7..edeff85 100644
 1.8.1.2
 
 
-From a6bd28571756d205a02bf45b1f92b481a5219418 Mon Sep 17 00:00:00 2001
+From 292cba3a971951d75cdf5cc4849751c1c608bfa5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:38 +0000
 Subject: [PATCH 16/47] PKCS#7: Digest the data in a signed-data message
@@ -2307,7 +2419,7 @@ index 0000000..2f9f26c
 1.8.1.2
 
 
-From 2bf1ddcd0d3d9d4e578b1024252383d6bfa2e426 Mon Sep 17 00:00:00 2001
+From db076a5dced83ddd9084a25b857aadbb7ae086b6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 17/47] PKCS#7: Find the right key in the PKCS#7 key list and
@@ -2406,7 +2518,7 @@ index 2f9f26c..3f6f0e2 100644
 1.8.1.2
 
 
-From 88c5376101756187b5240a2ff2d87a3b9ab9b7ff Mon Sep 17 00:00:00 2001
+From 32c39de803631a9fee1251eadd4d600a48e1f92a Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 18/47] PKCS#7: Verify internal certificate chain
@@ -2522,7 +2634,7 @@ index 6b1d877..5e35fba 100644
 1.8.1.2
 
 
-From 4b7bd5ef637b260f03d6ccf05d4f8cbe50a32302 Mon Sep 17 00:00:00 2001
+From 9c32be129ee7f48045f38f567567ef35e1bb1c9f Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:42 +0000
 Subject: [PATCH 19/47] PKCS#7: Find intersection between PKCS#7 message and
@@ -2729,7 +2841,7 @@ index 0000000..cc226f5
 1.8.1.2
 
 
-From 65da0a66d93e032f86253083074cf127a8a07ec8 Mon Sep 17 00:00:00 2001
+From 4f28132ecf1d4cadfbcd2c8c65f52454ac4e06cb Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 20/47] Provide PE binary definitions
@@ -3202,7 +3314,7 @@ index 0000000..9234aef
 1.8.1.2
 
 
-From bef62c421fe0342e0d4132441a1ba7012d552c46 Mon Sep 17 00:00:00 2001
+From fd044b9fb3791be539c1943a9b05ba53c8a80da4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 21/47] pefile: Parse a PE binary to find a key and a signature
@@ -3496,7 +3608,7 @@ index 0000000..82bcaf6
 1.8.1.2
 
 
-From e5328cdb361123e2126ec76844b1eccb1eccb2e2 Mon Sep 17 00:00:00 2001
+From 95b65d22fb9c55e5c53ae0988da5e0f777adb5ee Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 22/47] pefile: Strip the wrapper off of the cert data block
@@ -3600,7 +3712,7 @@ index fb80cf0..f2d4df0 100644
 1.8.1.2
 
 
-From 743500a93b4b74a7444d8cb8a3ff09f73e6440ee Mon Sep 17 00:00:00 2001
+From 630ab9b4c30bab596e46f847ca394ac01d5923dc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 23/47] pefile: Parse the presumed PKCS#7 content of the
@@ -3654,7 +3766,7 @@ index f2d4df0..056500f 100644
 1.8.1.2
 
 
-From 9432dceca505e7d9b8c420059ebcce7047c62375 Mon Sep 17 00:00:00 2001
+From 285a27a12af0cf67ada6ff024df18dd30a663ac8 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:41 +0000
 Subject: [PATCH 24/47] pefile: Parse the "Microsoft individual code signing"
@@ -3897,7 +4009,7 @@ index edeff85..332dcf5 100644
 1.8.1.2
 
 
-From f1be79950932727d4f1517a4ca2a6c8d8babdf6d Mon Sep 17 00:00:00 2001
+From 5c1db9f4043085e1f726118bd1a90a916b436d47 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:41 +0000
 Subject: [PATCH 25/47] pefile: Digest the PE binary and compare to the PKCS#7
@@ -4133,7 +4245,7 @@ index f1c8cc1..dfdb85e 100644
 1.8.1.2
 
 
-From d11766cd96997c0c8dd8511939fa05485c0ba564 Mon Sep 17 00:00:00 2001
+From c9456c23ffad53e455631162fba41ca8eccd7d6b Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 18 Jan 2013 13:58:35 +0000
 Subject: [PATCH 26/47] PEFILE: Validate PKCS#7 trust chain
@@ -4185,7 +4297,7 @@ index dfdb85e..edad948 100644
 1.8.1.2
 
 
-From 8247b08630ee7d8da1b82a1c52656e53b0698a5f Mon Sep 17 00:00:00 2001
+From 79d38682501fd7a053a0cd8bbb0fb1d3bd3c32a1 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:42 +0000
 Subject: [PATCH 27/47] PEFILE: Load the contained key if we consider the
@@ -4276,7 +4388,7 @@ index 0f55e3b..c3e5a6d 100644
 1.8.1.2
 
 
-From e0de67120b1a027658c1195cbf9648a0ff97d082 Mon Sep 17 00:00:00 2001
+From 6a1b2cd6221387137108022c91dc144ffc67b1cb Mon Sep 17 00:00:00 2001
 From: Chun-Yi Lee <joeyli.kernel@gmail.com>
 Date: Thu, 21 Feb 2013 19:23:49 +0800
 Subject: [PATCH 28/47] MODSIGN: Fix including certificate twice when the
@@ -4331,7 +4443,7 @@ index f273c0e..9777222 100644
 1.8.1.2
 
 
-From 09f8eba451f2ddd3eb5b8ba2dfc5153087ebaa78 Mon Sep 17 00:00:00 2001
+From 9ef6ff532bc3bd3640c2fc896004a78887169b84 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:56 -0400
 Subject: [PATCH 29/47] Secure boot: Add new capability
@@ -4368,7 +4480,7 @@ index ba478fa..7109e65 100644
 1.8.1.2
 
 
-From 75cab5d8cd111497c16a92a6d7060bff22b87c2b Mon Sep 17 00:00:00 2001
+From 5431b7395ae2d7c48dd980bb281b794bc3fa0264 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:05 -0400
 Subject: [PATCH 30/47] SELinux: define mapping for new Secure Boot capability
@@ -4401,7 +4513,7 @@ index 14d04e6..ed99a2d 100644
 1.8.1.2
 
 
-From 69dc786f5679c66ad0afaa235ee52c59308281d2 Mon Sep 17 00:00:00 2001
+From ab74cf6f8728c6a80047c9261bfd941087c375ba Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:02 -0400
 Subject: [PATCH 31/47] Secure boot: Add a dummy kernel parameter that will
@@ -4467,7 +4579,7 @@ index e0573a4..c3f4e3e 100644
 1.8.1.2
 
 
-From 1a22bfc73b9fddc1a4addb3d485f5473950d984a Mon Sep 17 00:00:00 2001
+From 7b88f30760450768beb905e892ebff9732087714 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:03 -0400
 Subject: [PATCH 32/47] efi: Enable secure boot lockdown automatically when
@@ -4613,7 +4725,7 @@ index 9bf2f1f..1bf382b 100644
 1.8.1.2
 
 
-From 5d18a80e7f10e03229d46ffa409ff82af034448b Mon Sep 17 00:00:00 2001
+From 55fa8ab814e8b74703ef10548e36be7e630f3713 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH 33/47] Add EFI signature data types
@@ -4668,7 +4780,7 @@ index 1bf382b..8902faf 100644
 1.8.1.2
 
 
-From 891ffe35209bd889a2c01d733f0b255cdf4e6ebe Mon Sep 17 00:00:00 2001
+From d56cb926f8274599ab9c87f0592685b8c403df79 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 34/47] Add an EFI signature blob parser and key loader.
@@ -4848,7 +4960,7 @@ index 8902faf..ff3c599 100644
 1.8.1.2
 
 
-From 0f5c163a734890d86611bed2717457551c5a0b30 Mon Sep 17 00:00:00 2001
+From 5152b132d9d7d4fb0d7734a43e4f30f8dc69f2d4 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
 Subject: [PATCH 35/47] KEYS: Add a system blacklist keyring
@@ -4963,7 +5075,7 @@ index dae8778..2913c70 100644
 1.8.1.2
 
 
-From 1fda98f6edb36b6713df3a7e4578c27c1aa03d89 Mon Sep 17 00:00:00 2001
+From 06fbabc18a689fb0c9527c9e99ca778ce213a2a5 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH 36/47] MODSIGN: Import certificates from UEFI Secure Boot
@@ -5149,7 +5261,7 @@ index 0000000..df831ff
 1.8.1.2
 
 
-From 737ae51d4157b099037609127117102b56f196d1 Mon Sep 17 00:00:00 2001
+From 322b69191972da18fe5d716d1f40d712d3f1843c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:57 -0400
 Subject: [PATCH 37/47] PCI: Lock down BAR access in secure boot environments
@@ -5250,7 +5362,7 @@ index e1c1ec5..97e785f 100644
 1.8.1.2
 
 
-From 6cf45d0803d6d3f544e4033cf95c1357b34896f2 Mon Sep 17 00:00:00 2001
+From a0b83ea8961d13c3ccc0af59b38c18577ba64b83 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:58 -0400
 Subject: [PATCH 38/47] x86: Lock down IO port access in secure boot
@@ -5307,7 +5419,7 @@ index 2c644af..7eee4d8 100644
 1.8.1.2
 
 
-From ebb40a7c6dc438afd6050c20c0b5f81e9701d985 Mon Sep 17 00:00:00 2001
+From dcf1e1656b893e6ca93aca4e7eb7df65a6d7b095 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:59 -0400
 Subject: [PATCH 39/47] ACPI: Limit access to custom_method
@@ -5339,7 +5451,7 @@ index 12b62f2..edf0710 100644
 1.8.1.2
 
 
-From cb35d821b7591fe9fed20db28d50addfe00fb128 Mon Sep 17 00:00:00 2001
+From 4163917e88b4fcaac221aaae619db4dfd671e4a7 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:00 -0400
 Subject: [PATCH 40/47] asus-wmi: Restrict debugfs interface
@@ -5392,7 +5504,7 @@ index f80ae4d..059195f 100644
 1.8.1.2
 
 
-From 6bfdb84e12b802d4a31f1a7c238bb3e91421e3af Mon Sep 17 00:00:00 2001
+From e84d8213826247ce3fcaeaf2f6da5950e2c40093 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:01 -0400
 Subject: [PATCH 41/47] Restrict /dev/mem and /dev/kmem in secure boot setups
@@ -5433,7 +5545,7 @@ index 7eee4d8..772ee2b 100644
 1.8.1.2
 
 
-From 1f0241ccbc1a54954e66b8426b33cfdd49861208 Mon Sep 17 00:00:00 2001
+From 6c6201a924983a9d185fe740e524abdb9f5da16c Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:04 -0400
 Subject: [PATCH 42/47] acpi: Ignore acpi_rsdp kernel parameter in a secure
@@ -5468,7 +5580,7 @@ index 586e7e9..8950454 100644
 1.8.1.2
 
 
-From 3d141f6e5ead9ec80412001f646c09dbef90827b Mon Sep 17 00:00:00 2001
+From 31819beaa2183e693a3df588e2dd9f5c7967fe50 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Tue, 4 Sep 2012 11:55:13 -0400
 Subject: [PATCH 43/47] kexec: Disable in a secure boot environment
@@ -5500,7 +5612,7 @@ index 2436ffc..a78e71a 100644
 1.8.1.2
 
 
-From 8c6131a869a749322a94b578c99204353d3a3820 Mon Sep 17 00:00:00 2001
+From 583c6776b22369cc87db609ce382caf9184ac987 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 5 Oct 2012 10:12:48 -0400
 Subject: [PATCH 44/47] MODSIGN: Always enforce module signing in a Secure Boot
@@ -5562,7 +5674,7 @@ index 0925c9a..af4a476 100644
 1.8.1.2
 
 
-From d1f48eaf24be97f7bd86f4680ed7d64c6238787f Mon Sep 17 00:00:00 2001
+From 5208ac4884f97563c8bf89b9e21dbb3a7f70b3b8 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH 45/47] hibernate: Disable in a Secure Boot environment
@@ -5676,7 +5788,7 @@ index 4ed81e7..b11a0f4 100644
 1.8.1.2
 
 
-From 8816b7dc8421fb97a2423cb245c28eec978009fe Mon Sep 17 00:00:00 2001
+From 97ba724a77810b9f503099c7d81dc819cc0dd332 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH 46/47] efi: Disable secure boot if shim is in insecure mode
@@ -5735,7 +5847,7 @@ index 96bd86b..6e1331c 100644
 1.8.1.2
 
 
-From af08e556b6c214021bda6d601fcc4a23f8cbd1a5 Mon Sep 17 00:00:00 2001
+From 30c7a5b51f86b76821646877e052c6596e89c273 Mon Sep 17 00:00:00 2001
 From: Kees Cook <keescook@chromium.org>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
 Subject: [PATCH 47/47] x86: Lock down MSR writing in secure boot
