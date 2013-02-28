@@ -1443,13 +1443,6 @@ touch .scmversion
 
 mkdir configs
 
-# Remove configs not for the buildarch
-for cfg in kernel-%{version}-*.config; do
-  if [ `echo %{all_arch_configs} | grep -c $cfg` -eq 0 ]; then
-    rm -f $cfg
-  fi
-done
-
 %if !%{debugbuildsenabled}
 rm -f kernel-%{version}-*debug.config
 %endif
