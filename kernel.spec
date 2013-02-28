@@ -136,8 +136,6 @@ Summary: The Linux kernel
 %define with_omap      %{?_without_omap:      0} %{?!_without_omap:      1}
 # kernel-tegra (only valid for arm)
 %define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
-# kernel-kirkwood (only valid for arm)
-%define with_kirkwood       %{?_without_kirkwood:       0} %{?!_without_kirkwood:       1}
 #
 # Additional options for user-friendly one-off kernel building:
 #
@@ -255,11 +253,6 @@ Summary: The Linux kernel
 %ifnarch armv7hl armv7l
 %define with_omap 0
 %define with_tegra 0
-%endif
-
-# kernel-kirkwood is only built for armv5
-%ifnarch armv5tel
-%define with_kirkwood 0
 %endif
 
 # if requested, only build base kernel
@@ -584,7 +577,6 @@ Source100: config-armv7
 Source105: config-arm-generic
 Source110: config-arm-omap
 Source111: config-arm-tegra
-Source112: config-arm-kirkwood
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -1025,12 +1017,6 @@ input and output, etc.
 This variant of the kernel has numerous debugging options enabled.
 It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
-
-%define variant_summary The Linux kernel compiled for marvell kirkwood boards
-%kernel_variant_package kirkwood
-%description kirkwood
-This package includes a version of the Linux kernel with support for
-marvell kirkwood based systems, i.e., guruplug, sheevaplug
 
 %define variant_summary The Linux kernel compiled for TI-OMAP boards
 %kernel_variant_package omap
@@ -1793,10 +1779,6 @@ BuildKernel %make_target %kernel_image PAEdebug
 BuildKernel %make_target %kernel_image PAE
 %endif
 
-%if %{with_kirkwood}
-BuildKernel %make_target %kernel_image kirkwood
-%endif
-
 %if %{with_omap}
 BuildKernel %make_target %kernel_image omap
 %endif
@@ -2127,9 +2109,6 @@ fi}\
 %kernel_variant_post -v PAEdebug -r (kernel|kernel-smp)
 %kernel_variant_preun PAEdebug
 
-%kernel_variant_preun kirkwood
-%kernel_variant_post -v kirkwood
-
 %kernel_variant_preun omap
 %kernel_variant_post -v omap
 
@@ -2279,7 +2258,6 @@ fi
 %kernel_variant_files %{with_debug} debug
 %kernel_variant_files %{with_pae} PAE
 %kernel_variant_files %{with_pae_debug} PAEdebug
-%kernel_variant_files %{with_kirkwood} kirkwood
 %kernel_variant_files %{with_omap} omap
 %kernel_variant_files %{with_tegra} tegra
 
@@ -2296,6 +2274,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop ARM kirkwood kernel
+- Enable SPI on ARM
+- General 3.9 updates
+
 * Wed Feb 27 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git11.1
 - Linux v3.8-9456-g309667e
 
