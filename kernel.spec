@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 11
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2274,6 +2274,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 28 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git12.1
+- Linux v3.8-9633-g2a7d2b9
+
 * Wed Feb 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop ARM kirkwood kernel
 - Enable SPI on ARM
