@@ -2274,6 +2274,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 28 2013 Kyle McMartin <kmcmarti@redhat.com>
+- Make iso9660 a module.
+
 * Thu Feb 28 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git12.1
 - Linux v3.8-9633-g2a7d2b9
 
