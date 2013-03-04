@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 15
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -157,7 +157,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -170,7 +170,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -708,7 +708,6 @@ Patch21000: arm-export-read_current_timer.patch
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 # https://patchwork.kernel.org/patch/2106061/
-Patch21006: arm-tegra-ahb.patch
 
 # versatile
 
@@ -735,6 +734,9 @@ Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
+
+#rhbz 916833
+Patch21263: intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1296,7 +1298,6 @@ ApplyPatch vmbugon-warnon.patch
 ApplyPatch arm-export-read_current_timer.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-ahb.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1429,6 +1430,9 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
+
+#rhbz 916833
+ApplyPatch intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2271,6 +2275,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git0.1
+- Linux v3.9-rc1
+- Add patch from Dirk Brandewie to fix intel pstate divide error (rhbz 916833)
+- Disable debugging options.
+
 * Mon Mar  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update vexpress and omap options (fix MMC on qemu, hopefully fix OMAP3)
 
