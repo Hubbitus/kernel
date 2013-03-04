@@ -707,6 +707,8 @@ Patch21000: arm-export-read_current_timer.patch
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
+# https://patchwork.kernel.org/patch/2106061/
+Patch21006: arm-tegra-ahb.patch
 
 # versatile
 
@@ -1294,6 +1296,7 @@ ApplyPatch vmbugon-warnon.patch
 ApplyPatch arm-export-read_current_timer.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-ahb.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2267,6 +2270,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Fri Mar 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git14.1
 - Linux v3.8-10206-gb0af9cd
 
