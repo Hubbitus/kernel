@@ -1563,6 +1563,7 @@ BuildKernel() {
     make -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
+    rm -f arch/arm/boot/dts/*.dtb
 %else
     make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
 %endif
@@ -2271,7 +2272,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Mar  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
-- Minor ARM updates
+- Update vexpress and omap options (fix MMC on qemu, hopefully fix OMAP3)
 
 * Sun Mar 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc0.git15.1
 - Linux v3.8-10734-ga7c1120
