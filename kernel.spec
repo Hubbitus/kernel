@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -737,6 +737,9 @@ Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 #rhbz 916833
 Patch21263: intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
+
+#rhbz 917984
+Patch21264: efi-fixes.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1433,6 +1436,9 @@ ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 #rhbz 916833
 ApplyPatch intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
+
+#rhbz 917984
+ApplyPatch efi-fixes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2275,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 05 2013 Josh Boyer <jwboyer@redhat.com>
+- Add 3 fixes for efi issues (rhbz 917984)
+
 * Mon Mar 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git0.1
 - Linux v3.9-rc1
 - Add patch from Dirk Brandewie to fix intel pstate divide error (rhbz 916833)
