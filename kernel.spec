@@ -252,8 +252,8 @@ Summary: The Linux kernel
 # kernel up (unified kernel target), tegra and omap are only built on armv7 hfp/sfp
 %ifnarch armv7hl armv7l
 %define with_omap 0
-%define with_tegra 0
 %endif
+%define with_tegra 0
 
 # if requested, only build base kernel
 %if %{with_baseonly}
@@ -2281,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Temporarily disable tegra until we get a fix from upstream
+
 * Tue Mar 05 2013 Josh Boyer <jwboyer@redhat.com>
 - Add 3 fixes for efi issues (rhbz 917984)
 - Enable CONFIG_IP6_NF_TARGET_MASQUERADE
