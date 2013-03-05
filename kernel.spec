@@ -2283,6 +2283,7 @@ fi
 %changelog
 * Tue Mar 05 2013 Josh Boyer <jwboyer@redhat.com>
 - Add 3 fixes for efi issues (rhbz 917984)
+- Enable CONFIG_IP6_NF_TARGET_MASQUERADE
 
 * Mon Mar 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git0.1
 - Linux v3.9-rc1
