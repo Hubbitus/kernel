@@ -2276,6 +2276,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM mvebu config
+
 * Wed Mar 06 2013 Dave Jones <davej@redhat.com>
 - drop acpi debugging patch.
 
