@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -737,9 +737,10 @@ Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 #rhbz 916833
 Patch21263: intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
+Patch21264: intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
-Patch21264: efi-fixes.patch
+Patch21265: efi-fixes.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1436,6 +1437,7 @@ ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 #rhbz 916833
 ApplyPatch intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
+ApplyPatch intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
 ApplyPatch efi-fixes.patch
@@ -2281,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 05 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git0.3
+- Fix intel_pstate init error path (rhbz 916833)
+
 * Tue Mar  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Temporarily disable tegra until we get a fix from upstream
 
