@@ -641,7 +641,6 @@ Patch110: vmbugon-warnon.patch
 
 Patch390: defaults-acpi-video.patch
 Patch391: acpi-video-dos.patch
-Patch394: acpi-debug-infinite-loop.patch
 Patch396: acpi-sony-nonvs-blacklist.patch
 
 Patch450: input-kill-stupid-messages.patch
@@ -1322,7 +1321,6 @@ ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 # ACPI
 ApplyPatch defaults-acpi-video.patch
 ApplyPatch acpi-video-dos.patch
-ApplyPatch acpi-debug-infinite-loop.patch
 ApplyPatch acpi-sony-nonvs-blacklist.patch
 
 #
@@ -2278,6 +2276,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 06 2013 Dave Jones <davej@redhat.com>
+- drop acpi debugging patch.
+
 * Wed Mar 06 2013 Justin M. Forbes <jforbes@redhat.com>
 - Remove Ricoh multifunction DMAR patch as it's no longer needed (rhbz 880051)
 
