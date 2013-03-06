@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -738,6 +738,9 @@ Patch21264: intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
 Patch21265: efi-fixes.patch
+
+#rhbz 918408
+Patch21266: x86-bootparams-dont-clear-efi_info.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1434,6 +1437,9 @@ ApplyPatch intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
 ApplyPatch efi-fixes.patch
+
+#rhbz 918408
+ApplyPatch x86-bootparams-dont-clear-efi_info.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2276,7 +2282,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Mar  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+* Wed Mar 06 2013 Josh Boyer <jwboyer@redhat.com>
+- Don't clear efi_info in boot_params (rhbz 918408)
+
+* Wed Mar 06 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM mvebu config
 
 * Wed Mar 06 2013 Dave Jones <davej@redhat.com>
