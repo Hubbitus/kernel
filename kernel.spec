@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 5
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,9 @@ Patch21265: efi-fixes.patch
 
 #rhbz 918408
 Patch21266: x86-bootparams-dont-clear-efi_info.patch
+
+# CVE-2013-1792 rhbz 916646,919021
+Patch21267: keys-fix-race-with-concurrent-install_user_keyrings.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1440,6 +1443,9 @@ ApplyPatch intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
 ApplyPatch efi-fixes.patch
+
+# CVE-2013-1792 rhbz 916646,919021
+ApplyPatch keys-fix-race-with-concurrent-install_user_keyrings.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2282,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 07 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-1792 keys: race condition in install_user_keyrings (rhbz 916646 919021)
+
 * Wed Mar 06 2013 Josh Boyer <jwboyer@redhat.com>
 - Adjust secure-boot patchset to work with boot_params sanitizing
 - Don't clear efi_info in boot_params (rhbz 918408)
