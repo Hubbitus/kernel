@@ -658,7 +658,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130227.patch
+Patch1000: devel-pekey-secure-boot-20130306.patch
 
 # virt + ksm patches
 
@@ -1366,8 +1366,11 @@ ApplyPatch crash-driver.patch
 
 # crypto/
 
+#rhbz 918408
+ApplyPatch x86-bootparams-dont-clear-efi_info.patch
+
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130227.patch
+ApplyPatch devel-pekey-secure-boot-20130306.patch
 
 # Assorted Virt Fixes
 
@@ -1437,9 +1440,6 @@ ApplyPatch intel_pstate-Fix-intel_pstate_init-error-path.patch
 
 #rhbz 917984
 ApplyPatch efi-fixes.patch
-
-#rhbz 918408
-ApplyPatch x86-bootparams-dont-clear-efi_info.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2283,6 +2283,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Mar 06 2013 Josh Boyer <jwboyer@redhat.com>
+- Adjust secure-boot patchset to work with boot_params sanitizing
 - Don't clear efi_info in boot_params (rhbz 918408)
 
 * Wed Mar 06 2013 Peter Robinson <pbrobinson@fedoraproject.org>
