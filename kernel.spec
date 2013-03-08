@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 5
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -157,7 +157,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -170,7 +170,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -731,16 +731,6 @@ Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#rhbz 916833
-Patch21263: intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
-Patch21264: intel_pstate-Fix-intel_pstate_init-error-path.patch
-
-#rhbz 917984
-Patch21265: efi-fixes.patch
-
-#rhbz 918408
-Patch21266: x86-bootparams-dont-clear-efi_info.patch
 
 # CVE-2013-1792 rhbz 916646,919021
 Patch21267: keys-fix-race-with-concurrent-install_user_keyrings.patch
@@ -1369,9 +1359,6 @@ ApplyPatch crash-driver.patch
 
 # crypto/
 
-#rhbz 918408
-ApplyPatch x86-bootparams-dont-clear-efi_info.patch
-
 # secure boot
 ApplyPatch devel-pekey-secure-boot-20130306.patch
 
@@ -1436,13 +1423,6 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#rhbz 916833
-ApplyPatch intel-pstate-do-not-load-on-VM-that-do-not-report-max-P-state.patch
-ApplyPatch intel_pstate-Fix-intel_pstate_init-error-path.patch
-
-#rhbz 917984
-ApplyPatch efi-fixes.patch
 
 # CVE-2013-1792 rhbz 916646,919021
 ApplyPatch keys-fix-race-with-concurrent-install_user_keyrings.patch
@@ -2288,6 +2268,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git1.1
+- Linux v3.9-rc1-211-g47b3bc9
+- Reenable debugging options.
+- CVE-2013-1828 sctp: SCTP_GET_ASSOC_STATS stack buffer overflow (rhbz 919315 919316)
+
 * Thu Mar 07 2013 Josh Boyer <jwboyer@redhat.com>
 - CVE-2013-1792 keys: race condition in install_user_keyrings (rhbz 916646 919021)
 
