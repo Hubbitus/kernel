@@ -2268,6 +2268,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 10 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Xilinx Zynq
+- Enable highbank cpufreq driver
+
 * Fri Mar 08 2013 Josh Boyer <jwboyer@redhat.com>
 - Add turbostat and x86_engery_perf_policy debuginfo to kernel-tools-debuginfo
 
