@@ -735,10 +735,14 @@ Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 # CVE-2013-1792 rhbz 916646,919021
 Patch21267: keys-fix-race-with-concurrent-install_user_keyrings.patch
 
+#rhbz 857954
+Patch21268: w1-fix-oops-when-w1_search-is-called-from.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1426,6 +1430,9 @@ ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
 # CVE-2013-1792 rhbz 916646,919021
 ApplyPatch keys-fix-race-with-concurrent-install_user_keyrings.patch
+
+#rhbz 857954
+ApplyPatch w1-fix-oops-when-w1_search-is-called-from.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2268,6 +2275,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix w1_search oops (rhbz 857954)
+
 * Sun Mar 10 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git2.1
 - Linux v3.9-rc1-278-g8343bce
 
