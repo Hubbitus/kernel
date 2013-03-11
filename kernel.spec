@@ -738,11 +738,13 @@ Patch21267: keys-fix-race-with-concurrent-install_user_keyrings.patch
 #rhbz 857954
 Patch21268: w1-fix-oops-when-w1_search-is-called-from.patch
 
+#rhbz 911771
+Patch21269: serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
 
 # END OF PATCH DEFINITIONS
 
@@ -1433,6 +1435,9 @@ ApplyPatch keys-fix-race-with-concurrent-install_user_keyrings.patch
 
 #rhbz 857954
 ApplyPatch w1-fix-oops-when-w1_search-is-called-from.patch
+
+#rhbz 911771
+ApplyPatch serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2276,6 +2281,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Mar 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to allow "8250." prefix to keep working (rhbz 911771)
 - Add patch to fix w1_search oops (rhbz 857954)
 
 * Sun Mar 10 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc1.git2.1
