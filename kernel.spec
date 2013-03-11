@@ -665,7 +665,8 @@ Patch1000: devel-pekey-secure-boot-20130306.patch
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 #Patch1800: drm-vgem.patch
-
+Patch1700: drm-ttm-exports-for-qxl.patch
+Patch1701: drm-qxl-driver.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
@@ -1371,6 +1372,8 @@ ApplyPatch devel-pekey-secure-boot-20130306.patch
 # Assorted Virt Fixes
 
 # DRM core
+ApplyPatch drm-ttm-exports-for-qxl.patch
+ApplyPatch drm-qxl-driver.patch
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 #ApplyPatch drm-vgem.patch
 
@@ -2280,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 12 2013 Dave Airlie <airlied@redhat.com>
+- add QXL driver (f19 only)
+
 * Mon Mar 11 2013 Dave Jones <davej@redhat.com> - 3.9.0-0.rc2.git0.2
 - Disable debugging options.
 
