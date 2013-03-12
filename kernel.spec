@@ -742,6 +742,9 @@ Patch21268: w1-fix-oops-when-w1_search-is-called-from.patch
 #rhbz 911771
 Patch21269: serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
 
+#CVE-2013-0914 rhbz 920499 920510
+Patch21270: signal-always-clear-sa_restorer-on-execve.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1441,6 +1444,9 @@ ApplyPatch w1-fix-oops-when-w1_search-is-called-from.patch
 
 #rhbz 911771
 ApplyPatch serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
+
+#CVE-2013-0914 rhbz 920499 920510
+ApplyPatch signal-always-clear-sa_restorer-on-execve.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2283,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 12 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-0914 sa_restorer information leak (rhbz 920499 920510)
+
 * Tue Mar 12 2013 Dave Airlie <airlied@redhat.com>
 - add QXL driver (f19 only)
 
