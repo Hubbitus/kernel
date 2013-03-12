@@ -745,6 +745,9 @@ Patch21269: serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
 #CVE-2013-0914 rhbz 920499 920510
 Patch21270: signal-always-clear-sa_restorer-on-execve.patch
 
+#CVE-2013-0913 rhbz 920471 920529
+Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1447,6 +1450,9 @@ ApplyPatch serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
 
 #CVE-2013-0914 rhbz 920499 920510
 ApplyPatch signal-always-clear-sa_restorer-on-execve.patch
+
+#CVE-2013-0913 rhbz 920471 920529
+ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2296,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Mar 12 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-0913 drm/i915: head writing overflow (rhbz 920471 920529)
 - CVE-2013-0914 sa_restorer information leak (rhbz 920499 920510)
 
 * Tue Mar 12 2013 Dave Airlie <airlied@redhat.com>
