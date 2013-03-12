@@ -748,8 +748,9 @@ Patch21270: signal-always-clear-sa_restorer-on-execve.patch
 #CVE-2013-0913 rhbz 920471 920529
 Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
 
-#rhbz 856863
+#rhbz 856863 892599
 Patch21273: cfg80211-mac80211-disconnect-on-suspend.patch
+Patch21274: mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1457,8 +1458,9 @@ ApplyPatch signal-always-clear-sa_restorer-on-execve.patch
 #CVE-2013-0913 rhbz 920471 920529
 ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
 
-#rhbz 856863
+#rhbz 856863 892599
 ApplyPatch cfg80211-mac80211-disconnect-on-suspend.patch
+ApplyPatch mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2302,6 +2304,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Mar 12 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix ieee80211_do_stop (rhbz 892599)
 - Add patches to fix cfg80211 issues with suspend (rhbz 856863)
 - CVE-2013-0913 drm/i915: head writing overflow (rhbz 920471 920529)
 - CVE-2013-0914 sa_restorer information leak (rhbz 920499 920510)
