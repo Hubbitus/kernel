@@ -1,7 +1,7 @@
-From 4fbd50d6ef5f0e112ef08d4f1496b47fa1205947 Mon Sep 17 00:00:00 2001
+From 4a4f7a19b0145c28b4d62339433c733c00de3558 Mon Sep 17 00:00:00 2001
 From: Dave Airlie <airlied@gmail.com>
 Date: Mon, 25 Feb 2013 14:47:55 +1000
-Subject: [PATCH 2/2] drm: add new QXL driver. (v1.1)
+Subject: [PATCH 2/2] drm: add new QXL driver. (v1.2)
 
 QXL is a paravirtual graphics device used by the Spice virtual desktop
 interface.
@@ -25,6 +25,7 @@ enabled until that has been placed into your distro of choice.
 Authors: Dave Airlie, Alon Levy
 
 v1.1: fixup some issues in the ioctl interface with padding
+v1.2: add module device table
 
 Signed-off-by: Alon Levy <alevy@redhat.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
@@ -38,7 +39,7 @@ Signed-off-by: Dave Airlie <airlied@redhat.com>
  drivers/gpu/drm/qxl/qxl_dev.h     | 879 ++++++++++++++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_display.c | 981 ++++++++++++++++++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_draw.c    | 378 +++++++++++++++
- drivers/gpu/drm/qxl/qxl_drv.c     | 131 +++++
+ drivers/gpu/drm/qxl/qxl_drv.c     | 132 +++++
  drivers/gpu/drm/qxl/qxl_drv.h     | 566 ++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_dumb.c    |  76 +++
  drivers/gpu/drm/qxl/qxl_fb.c      | 567 ++++++++++++++++++++++
@@ -54,7 +55,7 @@ Signed-off-by: Dave Airlie <airlied@redhat.com>
  drivers/gpu/drm/qxl/qxl_ttm.c     | 580 ++++++++++++++++++++++
  include/uapi/drm/Kbuild           |   1 +
  include/uapi/drm/qxl_drm.h        | 152 ++++++
- 25 files changed, 7166 insertions(+)
+ 25 files changed, 7167 insertions(+)
  create mode 100644 drivers/gpu/drm/qxl/Kconfig
  create mode 100644 drivers/gpu/drm/qxl/Makefile
  create mode 100644 drivers/gpu/drm/qxl/qxl_cmd.c
@@ -3245,10 +3246,10 @@ index 0000000..c35c715
 +}
 diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
 new file mode 100644
-index 0000000..1c685a1
+index 0000000..2aad724
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_drv.c
-@@ -0,0 +1,131 @@
+@@ -0,0 +1,132 @@
 +/* vim: set ts=8 sw=8 tw=78 ai noexpandtab */
 +/* qxl_drv.c -- QXL driver -*- linux-c -*-
 + *
@@ -3294,6 +3295,7 @@ index 0000000..1c685a1
 +	  0xffff00, 0 },
 +	{ 0, 0, 0 },
 +};
++MODULE_DEVICE_TABLE(pci, pciidlist);
 +
 +static struct drm_driver qxl_driver;
 +static struct pci_driver qxl_pci_driver;
