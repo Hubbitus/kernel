@@ -2303,6 +2303,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 14 2013 Dave Jones <davej@redhat.com>
+- Move cpufreq drivers to be modular (rhbz 746372)
+
 * Wed Mar 13 2013 Dave Jones <davej@redhat.com> - 3.9.0-0.rc2.git0.3
 - Reenable debugging options.
 
