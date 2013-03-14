@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -739,6 +739,9 @@ Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
 #rhbz 856863 892599
 Patch21273: cfg80211-mac80211-disconnect-on-suspend.patch
 Patch21274: mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
+
+#rhbz 859282
+Patch21275: VMX-x86-handle-host-TSC-calibration-failure.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1437,6 +1440,9 @@ ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
 #rhbz 856863 892599
 ApplyPatch cfg80211-mac80211-disconnect-on-suspend.patch
 ApplyPatch mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
+
+#rhbz 859282
+ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2279,6 +2285,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 15 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix divide by zero on host TSC calibration failure (rhbz 859282)
+
 * Fri Mar 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc2.git1.1
 - Linux v3.9-rc2-292-ga2362d2
 - Fixes CVE-2013-1860 kernel: usb: cdc-wdm buffer overflow triggered by device
