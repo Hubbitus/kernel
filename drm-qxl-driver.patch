@@ -1,7 +1,7 @@
-From 4a4f7a19b0145c28b4d62339433c733c00de3558 Mon Sep 17 00:00:00 2001
+From 1a401a749cb1f06e637ef0e91fb8c120963aa356 Mon Sep 17 00:00:00 2001
 From: Dave Airlie <airlied@gmail.com>
 Date: Mon, 25 Feb 2013 14:47:55 +1000
-Subject: [PATCH 2/2] drm: add new QXL driver. (v1.2)
+Subject: [PATCH 2/2] drm: add new QXL driver. (v1.3)
 
 QXL is a paravirtual graphics device used by the Spice virtual desktop
 interface.
@@ -26,6 +26,8 @@ Authors: Dave Airlie, Alon Levy
 
 v1.1: fixup some issues in the ioctl interface with padding
 v1.2: add module device table
+v1.3: fix nomodeset, fbcon leak, dumb bo create, release ring irq,
+      don't try flush release ring (broken hw), fix -modesetting.
 
 Signed-off-by: Alon Levy <alevy@redhat.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
@@ -34,28 +36,28 @@ Signed-off-by: Dave Airlie <airlied@redhat.com>
  drivers/gpu/drm/Makefile          |   1 +
  drivers/gpu/drm/qxl/Kconfig       |  10 +
  drivers/gpu/drm/qxl/Makefile      |   9 +
- drivers/gpu/drm/qxl/qxl_cmd.c     | 711 +++++++++++++++++++++++++++
+ drivers/gpu/drm/qxl/qxl_cmd.c     | 707 +++++++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_debugfs.c | 135 ++++++
  drivers/gpu/drm/qxl/qxl_dev.h     | 879 ++++++++++++++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_display.c | 981 ++++++++++++++++++++++++++++++++++++++
- drivers/gpu/drm/qxl/qxl_draw.c    | 378 +++++++++++++++
- drivers/gpu/drm/qxl/qxl_drv.c     | 132 +++++
+ drivers/gpu/drm/qxl/qxl_draw.c    | 384 +++++++++++++++
+ drivers/gpu/drm/qxl/qxl_drv.c     | 145 ++++++
  drivers/gpu/drm/qxl/qxl_drv.h     | 566 ++++++++++++++++++++++
- drivers/gpu/drm/qxl/qxl_dumb.c    |  76 +++
+ drivers/gpu/drm/qxl/qxl_dumb.c    |  93 ++++
  drivers/gpu/drm/qxl/qxl_fb.c      | 567 ++++++++++++++++++++++
  drivers/gpu/drm/qxl/qxl_fence.c   |  97 ++++
  drivers/gpu/drm/qxl/qxl_gem.c     | 178 +++++++
  drivers/gpu/drm/qxl/qxl_image.c   | 120 +++++
  drivers/gpu/drm/qxl/qxl_ioctl.c   | 411 ++++++++++++++++
  drivers/gpu/drm/qxl/qxl_irq.c     |  97 ++++
- drivers/gpu/drm/qxl/qxl_kms.c     | 300 ++++++++++++
+ drivers/gpu/drm/qxl/qxl_kms.c     | 302 ++++++++++++
  drivers/gpu/drm/qxl/qxl_object.c  | 365 ++++++++++++++
  drivers/gpu/drm/qxl/qxl_object.h  | 112 +++++
  drivers/gpu/drm/qxl/qxl_release.c | 307 ++++++++++++
- drivers/gpu/drm/qxl/qxl_ttm.c     | 580 ++++++++++++++++++++++
+ drivers/gpu/drm/qxl/qxl_ttm.c     | 577 ++++++++++++++++++++++
  include/uapi/drm/Kbuild           |   1 +
  include/uapi/drm/qxl_drm.h        | 152 ++++++
- 25 files changed, 7167 insertions(+)
+ 25 files changed, 7198 insertions(+)
  create mode 100644 drivers/gpu/drm/qxl/Kconfig
  create mode 100644 drivers/gpu/drm/qxl/Makefile
  create mode 100644 drivers/gpu/drm/qxl/qxl_cmd.c
@@ -132,10 +134,10 @@ index 0000000..ea046ba
 +obj-$(CONFIG_DRM_QXL)+= qxl.o
 diff --git a/drivers/gpu/drm/qxl/qxl_cmd.c b/drivers/gpu/drm/qxl/qxl_cmd.c
 new file mode 100644
-index 0000000..a860d71
+index 0000000..804b411
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_cmd.c
-@@ -0,0 +1,711 @@
+@@ -0,0 +1,707 @@
 +/*
 + * Copyright 2013 Red Hat Inc.
 + *
@@ -192,6 +194,7 @@ index 0000000..a860d71
 +		int element_size,
 +		int n_elements,
 +		int prod_notify,
++		bool set_prod_notify,
 +		wait_queue_head_t *push_event)
 +{
 +	struct qxl_ring *ring;
@@ -205,7 +208,8 @@ index 0000000..a860d71
 +	ring->n_elements = n_elements;
 +	ring->prod_notify = prod_notify;
 +	ring->push_event = push_event;
-+
++	if (set_prod_notify)
++		header->notify_on_prod = ring->n_elements;
 +	spin_lock_init(&ring->lock);
 +	return ring;
 +}
@@ -289,6 +293,7 @@ index 0000000..a860d71
 +	unsigned long flags;
 +	spin_lock_irqsave(&ring->lock, flags);
 +	if (header->cons == header->prod) {
++		header->notify_on_prod = header->cons + 1;
 +		spin_unlock_irqrestore(&ring->lock, flags);
 +		return false;
 +	}
@@ -319,13 +324,6 @@ index 0000000..a860d71
 +		spin_lock_irqsave(&ring->lock, flags);
 +	}
 +	spin_unlock_irqrestore(&ring->lock, flags);
-+}
-+
-+void qxl_release_ring_flush(struct qxl_device *qdev)
-+{
-+	if (!qxl_check_header(qdev->release_ring))
-+		return;
-+	qxl_io_flush_release(qdev);
 +}
 +
 +int
@@ -2862,10 +2860,10 @@ index 0000000..c80ddfe
 +}
 diff --git a/drivers/gpu/drm/qxl/qxl_draw.c b/drivers/gpu/drm/qxl/qxl_draw.c
 new file mode 100644
-index 0000000..c35c715
+index 0000000..7d5396d2
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_draw.c
-@@ -0,0 +1,378 @@
+@@ -0,0 +1,384 @@
 +/*
 + * Copyright 2011 Red Hat, Inc.
 + *
@@ -3042,6 +3040,7 @@ index 0000000..c35c715
 +		image->u.bitmap.palette =
 +			qxl_bo_physical_address(qdev, palette_bo, 0);
 +		qxl_bo_kunmap(image_bo);
++		qxl_bo_unreserve(palette_bo);
 +		qxl_bo_unref(&palette_bo);
 +	}
 +
@@ -3102,7 +3101,7 @@ index 0000000..c35c715
 +	int stride = qxl_fb->base.pitches[0];
 +	/* depth is not actually interesting, we don't mask with it */
 +	int depth = qxl_fb->base.bits_per_pixel;
-+	uint8_t *surface_base = bo->kptr;
++	uint8_t *surface_base;
 +	struct qxl_release *release;
 +	struct qxl_bo *image_bo;
 +	struct qxl_bo *clips_bo;
@@ -3133,8 +3132,13 @@ index 0000000..c35c715
 +	if (ret)
 +		return;
 +
++	ret = qxl_bo_kmap(bo, (void **)&surface_base);
++	if (ret)
++		return;
++
 +	ret = qxl_image_create(qdev, release, &image_bo, surface_base,
 +			       left, top, width, height, depth, stride);
++	qxl_bo_kunmap(bo);
 +	if (ret)
 +		goto out_unref;
 +
@@ -3246,10 +3250,10 @@ index 0000000..c35c715
 +}
 diff --git a/drivers/gpu/drm/qxl/qxl_drv.c b/drivers/gpu/drm/qxl/qxl_drv.c
 new file mode 100644
-index 0000000..2aad724
+index 0000000..d337da0
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_drv.c
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,145 @@
 +/* vim: set ts=8 sw=8 tw=78 ai noexpandtab */
 +/* qxl_drv.c -- QXL driver -*- linux-c -*-
 + *
@@ -3281,6 +3285,7 @@ index 0000000..2aad724
 + */
 +
 +#include <linux/module.h>
++#include <linux/console.h>
 +
 +#include "drmP.h"
 +#include "drm/drm.h"
@@ -3296,6 +3301,11 @@ index 0000000..2aad724
 +	{ 0, 0, 0 },
 +};
 +MODULE_DEVICE_TABLE(pci, pciidlist);
++
++int qxl_modeset = -1;
++
++MODULE_PARM_DESC(modeset, "Disable/Enable modesetting");
++module_param_named(modeset, qxl_modeset, int, 0400);
 +
 +static struct drm_driver qxl_driver;
 +static struct pci_driver qxl_pci_driver;
@@ -3367,6 +3377,13 @@ index 0000000..2aad724
 +
 +static int __init qxl_init(void)
 +{
++#ifdef CONFIG_VGA_CONSOLE
++	if (vgacon_text_force() && qxl_modeset == -1)
++		return -EINVAL;
++#endif
++
++	if (qxl_modeset == 0)
++		return -EINVAL;
 +	qxl_driver.num_ioctls = qxl_max_ioctls;
 +	return drm_pci_init(&qxl_driver, &qxl_pci_driver);
 +}
@@ -3384,7 +3401,7 @@ index 0000000..2aad724
 +MODULE_LICENSE("GPL and additional rights");
 diff --git a/drivers/gpu/drm/qxl/qxl_drv.h b/drivers/gpu/drm/qxl/qxl_drv.h
 new file mode 100644
-index 0000000..4eb4638
+index 0000000..52b582c
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_drv.h
 @@ -0,0 +1,566 @@
@@ -3732,6 +3749,7 @@ index 0000000..4eb4638
 +				 int element_size,
 +				 int n_elements,
 +				 int prod_notify,
++				 bool set_prod_notify,
 +				 wait_queue_head_t *push_event);
 +void qxl_ring_free(struct qxl_ring *ring);
 +
@@ -3845,7 +3863,6 @@ index 0000000..4eb4638
 +int qxl_ring_push(struct qxl_ring *ring, const void *new_elt, bool interruptible);
 +void qxl_io_flush_release(struct qxl_device *qdev);
 +void qxl_io_flush_surfaces(struct qxl_device *qdev);
-+void qxl_release_ring_flush(struct qxl_device *qdev);
 +
 +int qxl_release_reserve(struct qxl_device *qdev,
 +			struct qxl_release *release, bool no_wait);
@@ -3956,10 +3973,10 @@ index 0000000..4eb4638
 +#endif
 diff --git a/drivers/gpu/drm/qxl/qxl_dumb.c b/drivers/gpu/drm/qxl/qxl_dumb.c
 new file mode 100644
-index 0000000..6b653d3
+index 0000000..847c4ee
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_dumb.c
-@@ -0,0 +1,76 @@
+@@ -0,0 +1,93 @@
 +/*
 + * Copyright 2013 Red Hat Inc.
 + *
@@ -3998,17 +4015,34 @@ index 0000000..6b653d3
 +	struct qxl_bo *qobj;
 +	uint32_t handle;
 +	int r;
-+
-+	args->pitch = args->width * ((args->bpp + 1) / 8);
-+	args->size = args->pitch * args->height;
++	struct qxl_surface surf;
++	uint32_t pitch, format;
++	pitch = args->width * ((args->bpp + 1) / 8);
++	args->size = pitch * args->height;
 +	args->size = ALIGN(args->size, PAGE_SIZE);
 +
++	switch (args->bpp) {
++	case 16:
++		format = SPICE_SURFACE_FMT_16_565;
++		break;
++	case 32:
++		format = SPICE_SURFACE_FMT_32_xRGB;
++		break;
++	default:
++		return -EINVAL;
++	}
++	  
++	surf.width = args->width;
++	surf.height = args->height;
++	surf.stride = pitch;
++	surf.format = format;
 +	r = qxl_gem_object_create_with_handle(qdev, file_priv,
 +					      QXL_GEM_DOMAIN_VRAM,
-+					      args->size, NULL, &qobj,
++					      args->size, &surf, &qobj,
 +					      &handle);
 +	if (r)
 +		return r;
++	args->pitch = pitch;
 +	args->handle = handle;
 +	return 0;
 +}
@@ -5544,10 +5578,10 @@ index 0000000..21393dc
 +}
 diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
 new file mode 100644
-index 0000000..a7bd677
+index 0000000..036e0de
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_kms.c
-@@ -0,0 +1,300 @@
+@@ -0,0 +1,302 @@
 +/*
 + * Copyright 2013 Red Hat Inc.
 + *
@@ -5709,6 +5743,7 @@ index 0000000..a7bd677
 +					     sizeof(struct qxl_command),
 +					     QXL_COMMAND_RING_SIZE,
 +					     qdev->io_base + QXL_IO_NOTIFY_CMD,
++					     false,
 +					     &qdev->display_event);
 +
 +	qdev->cursor_ring = qxl_ring_create(
@@ -5716,12 +5751,13 @@ index 0000000..a7bd677
 +				sizeof(struct qxl_command),
 +				QXL_CURSOR_RING_SIZE,
 +				qdev->io_base + QXL_IO_NOTIFY_CMD,
++				false,
 +				&qdev->cursor_event);
 +
 +	qdev->release_ring = qxl_ring_create(
 +				&(qdev->ram_header->release_ring_hdr),
 +				sizeof(uint64_t),
-+				QXL_RELEASE_RING_SIZE, 0,
++				QXL_RELEASE_RING_SIZE, 0, true,
 +				NULL);
 +
 +	/* TODO - slot initialization should happen on reset. where is our
@@ -6652,10 +6688,10 @@ index 0000000..1600781
 +}
 diff --git a/drivers/gpu/drm/qxl/qxl_ttm.c b/drivers/gpu/drm/qxl/qxl_ttm.c
 new file mode 100644
-index 0000000..5a6e772
+index 0000000..aa9fb9a
 --- /dev/null
 +++ b/drivers/gpu/drm/qxl/qxl_ttm.c
-@@ -0,0 +1,580 @@
+@@ -0,0 +1,577 @@
 +/*
 + * Copyright 2013 Red Hat Inc.
 + *
@@ -7036,7 +7072,6 @@ index 0000000..5a6e772
 +		qxl_io_notify_oom(qfence->qdev);
 +	}
 +
-+	qxl_release_ring_flush(qfence->qdev);
 +	sc++;
 +
 +	for (count = 0; count < 10; count++) {
@@ -7047,8 +7082,6 @@ index 0000000..5a6e772
 +
 +		if (qfence->num_active_releases == 0)
 +			return 0;
-+
-+		qxl_release_ring_flush(qfence->qdev);
 +	}
 +
 +	if (qfence->num_active_releases) {
