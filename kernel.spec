@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -724,26 +724,14 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 #rhbz 844750
 Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
-#rhbz 812111
-Patch21260: alps-v2.patch
-
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
-# CVE-2013-1792 rhbz 916646,919021
-Patch21267: keys-fix-race-with-concurrent-install_user_keyrings.patch
-
 #rhbz 857954
 Patch21268: w1-fix-oops-when-w1_search-is-called-from.patch
-
-#rhbz 911771
-Patch21269: serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
-
-#CVE-2013-0914 rhbz 920499 920510
-Patch21270: signal-always-clear-sa_restorer-on-execve.patch
 
 #CVE-2013-0913 rhbz 920471 920529
 Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
@@ -1434,26 +1422,14 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #rhbz 844750
 ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
-#rhbz 812111
-ApplyPatch alps-v2.patch
-
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
 
-# CVE-2013-1792 rhbz 916646,919021
-ApplyPatch keys-fix-race-with-concurrent-install_user_keyrings.patch
-
 #rhbz 857954
 ApplyPatch w1-fix-oops-when-w1_search-is-called-from.patch
-
-#rhbz 911771
-ApplyPatch serial-8250-Keep-8250.-xxxx-module-options-functiona.patch
-
-#CVE-2013-0914 rhbz 920499 920510
-ApplyPatch signal-always-clear-sa_restorer-on-execve.patch
 
 #CVE-2013-0913 rhbz 920471 920529
 ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
@@ -2303,6 +2279,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc2.git1.1
+- Linux v3.9-rc2-292-ga2362d2
+- Fixes CVE-2013-1860 kernel: usb: cdc-wdm buffer overflow triggered by device
+
 * Thu Mar 14 2013 Dave Jones <davej@redhat.com>
 - Move cpufreq drivers to be modular (rhbz 746372)
 
