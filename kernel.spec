@@ -132,8 +132,8 @@ Summary: The Linux kernel
 %define with_bootwrapper %{?_without_bootwrapper: 0} %{?!_without_bootwrapper: 1}
 # Want to build a the vsdo directories installed
 %define with_vdso_install %{?_without_vdso_install: 0} %{?!_without_vdso_install: 1}
-# ARM OMAP (Beagle/Panda Board)
-%define with_omap      %{?_without_omap:      0} %{?!_without_omap:      1}
+# ARM Cortex-A15 support with LPAE and HW Virtualisation
+%define with_lpae      %{?_without_lpae:      0} %{?!_without_lpae:      1}
 # kernel-tegra (only valid for arm)
 %define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
 #
@@ -249,10 +249,10 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel up (unified kernel target), tegra and omap are only built on armv7 hfp/sfp
-%ifnarch armv7hl armv7l
-%define with_omap 0
+# kernel up (unified kernel target), unified LPAE, tegra are only built on armv7 hfp
+%ifnarch armv7hl
 %endif
+%define with_lpae 0
 %define with_tegra 0
 
 # if requested, only build base kernel
@@ -475,6 +475,10 @@ Provides: kernel-drm = 4.3.0\
 Provides: kernel-drm-nouveau = 16\
 Provides: kernel-modeset = 1\
 Provides: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-highbank\
+Provides: kernel-highbank-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-omap\
+Provides: kernel-omap-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
@@ -571,7 +575,9 @@ Source54: config-powerpc64p7
 Source70: config-s390x
 
 # Unified ARM kernels
-Source100: config-armv7
+Source100: config-armv7-generic
+Source101: config-armv7
+Source102: config-armv7-lpae
 
 # Legacy ARM kernels
 Source105: config-arm-generic
@@ -1027,11 +1033,11 @@ This variant of the kernel has numerous debugging options enabled.
 It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
 
-%define variant_summary The Linux kernel compiled for TI-OMAP boards
-%kernel_variant_package omap
-%description omap
+%define variant_summary The Linux kernel compiled for Cortex-A15
+%kernel_variant_package lpae
+%description lpae
 This package includes a version of the Linux kernel with support for
-TI-OMAP based systems, i.e., BeagleBoard-xM.
+Cortex-A15 devices with LPAE and HW virtualisation support
 
 %define variant_summary The Linux kernel compiled for tegra boards
 %kernel_variant_package tegra
@@ -1790,8 +1796,8 @@ BuildKernel %make_target %kernel_image PAEdebug
 BuildKernel %make_target %kernel_image PAE
 %endif
 
-%if %{with_omap}
-BuildKernel %make_target %kernel_image omap
+%if %{with_lpae}
+BuildKernel %make_target %kernel_image lpae
 %endif
 
 %if %{with_tegra}
@@ -2120,8 +2126,8 @@ fi}\
 %kernel_variant_post -v PAEdebug -r (kernel|kernel-smp)
 %kernel_variant_preun PAEdebug
 
-%kernel_variant_preun omap
-%kernel_variant_post -v omap
+%kernel_variant_preun lpae
+%kernel_variant_post -v lpae
 
 %kernel_variant_preun tegra
 %kernel_variant_post -v tegra
@@ -2269,7 +2275,7 @@ fi
 %kernel_variant_files %{with_debug} debug
 %kernel_variant_files %{with_pae} PAE
 %kernel_variant_files %{with_pae_debug} PAEdebug
-%kernel_variant_files %{with_omap} omap
+%kernel_variant_files %{with_lpae} lpae
 %kernel_variant_files %{with_tegra} tegra
 
 # plz don't put in a version string unless you're going to tag
@@ -2285,6 +2291,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Merge OMAP support into ARM unified kernel
+- Add ARM LPAE kernel for Cortex A-15 devices that support LPAE and HW virtualisation
+- Unified ARM kernel provides highbank and OMAP support
+- Drop remantents of ARM softfp kernels
+
 * Fri Mar 15 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix divide by zero on host TSC calibration failure (rhbz 859282)
 
