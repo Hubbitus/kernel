@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -157,7 +157,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -170,7 +170,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -735,9 +735,6 @@ Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#rhbz 857954
-Patch21268: w1-fix-oops-when-w1_search-is-called-from.patch
 
 #CVE-2013-0913 rhbz 920471 920529
 Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
@@ -1436,9 +1433,6 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#rhbz 857954
-ApplyPatch w1-fix-oops-when-w1_search-is-called-from.patch
 
 #CVE-2013-0913 rhbz 920471 920529
 ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
@@ -2291,6 +2285,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 18 2013 Dave Jones <davej@redhat.com> - 3.9.0-0.rc3.git0.3
+- Linux v3.9-rc3
+  merged: w1-fix-oops-when-w1_search-is-called-from.patch
+- Disable debugging options.
+
 * Sun Mar 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Merge OMAP support into ARM unified kernel
 - Add ARM LPAE kernel for Cortex A-15 devices that support LPAE and HW virtualisation
