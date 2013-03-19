@@ -751,6 +751,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
+Patch23000: cpufreq-intel-pstate-validate-msrs.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1415,6 +1417,9 @@ ApplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
+
+# rhbz 922923
+ApplyPatch cpufreq-intel-pstate-validate-msrs.patch
 
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
@@ -2285,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 19 2013 Dave Jones <davej@redhat.com>
+- cpufreq/intel_pstate: Add function to check that all MSR's are valid (rhbz 922923)
+
 * Mon Mar 18 2013 Dave Jones <davej@redhat.com> - 3.9.0-0.rc3.git0.4
 - s390x config option changes from Dan Horák <dan@danny.cz>
    - enable PCI
