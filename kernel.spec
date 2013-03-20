@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 20 2013 Dave Jones <davej@redhat.com>
+- Enable CONFIG_DM_DELAY (rhbz 923721)
+
 * Tue Mar 19 2013 Dave Jones <davej@redhat.com> - 3.9.0-0.rc3.git0.5
 - Reenable debugging options.
 
