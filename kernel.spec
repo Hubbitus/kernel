@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 5
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -726,9 +726,6 @@ Patch21242: criu-no-expert.patch
 
 #rhbz 892811
 Patch21247: ath9k_rx_dma_stop_check.patch
-
-#rhbz 844750
-Patch21250: 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
@@ -1429,9 +1426,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-#rhbz 844750
-ApplyPatch 0001-bluetooth-Add-support-for-atheros-04ca-3004-device-t.patch
 
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
@@ -2290,6 +2284,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 21 2013 Josh Boyer <jwboyer@redhat.com> - 3.9.0-0.rc3.git1.1
+- Linux v3.9-rc3-148-g2ffdd7e
+- Fixes CVE-2013-1796, CVE-2013-1797, CVE-2013-1798 in kvm.
+
 * Wed Mar 20 2013 Dave Jones <davej@redhat.com>
 - Enable CONFIG_DM_DELAY (rhbz 923721)
 
