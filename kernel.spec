@@ -752,6 +752,7 @@ Patch22000: weird-root-dentry-name-debug.patch
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 Patch23000: cpufreq-intel-pstate-validate-msrs.patch
+Patch23001: cpufreq-intel-pstate-max-is-in-the-max-variable-who-knew.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1420,6 +1421,7 @@ ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 # rhbz 922923
 ApplyPatch cpufreq-intel-pstate-validate-msrs.patch
+ApplyPatch cpufreq-intel-pstate-max-is-in-the-max-variable-who-knew.patch
 
 #rhbz 859485
 ApplyPatch vt-Drop-K_OFF-for-VC_MUTE.patch
@@ -2290,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 22 2013 Dave Jones <davej@redhat.com>
+- Fix calculation of current frequency in intel_pstate driver. (rhbz 923942)
+
 * Thu Mar 21 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix workqueue crash in mac80211 (rhbz 920218)
 
