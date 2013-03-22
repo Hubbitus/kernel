@@ -513,7 +513,7 @@ ExclusiveOS: Linux
 # List the packages used during the kernel build
 #
 BuildRequires: module-init-tools, patch >= 2.5.4, bash >= 2.03, sh-utils, tar
-BuildRequires: bzip2, xz, findutils, gzip, m4, perl, make >= 3.78, diffutils, gawk
+BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make >= 3.78, diffutils, gawk
 BuildRequires: gcc >= 3.4.2, binutils >= 2.12, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
 BuildRequires: xmlto, asciidoc
@@ -2294,6 +2294,7 @@ fi
 %changelog
 * Fri Mar 22 2013 Dave Jones <davej@redhat.com>
 - Fix calculation of current frequency in intel_pstate driver. (rhbz 923942)
+- Add missing build-req for perl-Carp
 
 * Thu Mar 21 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix workqueue crash in mac80211 (rhbz 920218)
