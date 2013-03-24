@@ -26,3 +26,13 @@ do
     mv ${dir}/${file}.signed ${dir}/${file}
     rm -f ${dir}/${file}.{sig,dig}
 done
+
+RANDOMMOD=$(find $moddir -type f -name '*.ko' | sort -R | head -n 1)
+if [ "~Module signature appended~" != "$(tail -c 28 $RANDOMMOD)" ]; then
+    echo "*****************************"
+    echo "*** Modules are unsigned! ***"
+    echo "*****************************"
+    exit 1
+fi
+
+exit 0
