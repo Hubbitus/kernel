@@ -156,7 +156,7 @@ CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
 CONFIG_RTC_DRV_PL030=y
 CONFIG_RTC_DRV_PL031=y
 
-CONFIG_PL330_DMA=y
+CONFIG_PL330_DMA=m
 CONFIG_AMBA_PL08X=y
 CONFIG_ARM_SP805_WATCHDOG=m
 CONFIG_I2C_VERSATILE=m
@@ -275,6 +275,22 @@ CONFIG_PERF_EVENTS=y
 # CONFIG_ASYMMETRIC_KEY_TYPE is not set
 # CONFIG_PID_IN_CONTEXTIDR is not set
 # CONFIG_DEPRECATED_PARAM_STRUCT is not set
+
+# these modules all fail with missing __bad_udelay
+# http://www.spinics.net/lists/arm/msg15615.html provides some background
+# CONFIG_SUNGEM is not set
+# CONFIG_FB_SAVAGE is not set
+# CONFIG_FB_RADEON is not set
+# CONFIG_DRM_RADEON is not set
+# CONFIG_ATM_HE is not set
+# CONFIG_SCSI_ACARD is not set
+# CONFIG_SFC is not set
+
+# these all currently fail due to missing symbols __bad_udelay or
+# error: implicit declaration of function ‘iowrite32be’
+# CONFIG_SND_ALI5451 is not set
+# CONFIG_DRM_NOUVEAU is not set
+# CONFIG_MLX4_EN is not set
 
 # Debug options. We need to deal with them at some point like x86
 # CONFIG_COMMON_CLK_DEBUG is not set

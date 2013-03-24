@@ -252,8 +252,8 @@ Summary: The Linux kernel
 # kernel up (unified kernel target), unified LPAE, tegra are only built on armv7 hfp
 %ifnarch armv7hl
 %define with_lpae 0
-%define with_tegra 0
 %endif
+%define with_tegra 0
 
 # if requested, only build base kernel
 %if %{with_baseonly}
@@ -706,14 +706,15 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 # ARM
 Patch21000: arm-export-read_current_timer.patch
 
-# IMX
+# lpae
+Patch21001: arm-lpae-ax88796.patch
+
+# ARM omap
+Patch21002: arm-omap-fix-usb-mvebu-conflict.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
-# https://patchwork.kernel.org/patch/2106061/
-
-# versatile
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1307,6 +1308,8 @@ ApplyPatch vmbugon-warnon.patch
 # ARM
 #
 ApplyPatch arm-export-read_current_timer.patch
+ApplyPatch arm-lpae-ax88796.patch
+# ApplyPatch arm-omap-fix-usb-mvebu-conflict.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
@@ -2292,6 +2295,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 24 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM config for OMAP/mvebu/lpae
+
 * Fri Mar 22 2013 Dave Jones <davej@redhat.com>
 - Fix calculation of current frequency in intel_pstate driver. (rhbz 923942)
 - Add missing build-req for perl-Carp
