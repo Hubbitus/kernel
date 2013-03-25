@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -733,9 +733,6 @@ Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#CVE-2013-0913 rhbz 920471 920529
-Patch21271: drm-i915-bounds-check-execbuffer-relocation-count.patch
 
 #rhbz 856863 892599
 Patch21273: cfg80211-mac80211-disconnect-on-suspend.patch
@@ -1440,9 +1437,6 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 914737
 ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
-#CVE-2013-0913 rhbz 920471 920529
-ApplyPatch drm-i915-bounds-check-execbuffer-relocation-count.patch
 
 #rhbz 856863 892599
 ApplyPatch cfg80211-mac80211-disconnect-on-suspend.patch
@@ -2295,6 +2289,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 24 2013 Dave Jones <davej@redhat.com> -3.9.0-0.rc4.git0.1
+- Linux 3.9-rc4
+  merged: drm-i915-bounds-check-execbuffer-relocation-count.patch
+
 * Sun Mar 24 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM config for OMAP/mvebu/lpae
 
