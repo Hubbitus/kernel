@@ -2289,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 25 2013 Justin M. Forbes <jforbes@redhat.com>
+- disable whci-hcd since it doesnt seem to have users (rhbz 919289)
+
 * Sun Mar 24 2013 Dave Jones <davej@redhat.com> -3.9.0-0.rc4.git0.1
 - Linux 3.9-rc4
   merged: drm-i915-bounds-check-execbuffer-relocation-count.patch
