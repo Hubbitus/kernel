@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -743,6 +743,9 @@ Patch21276: mac80211-Dont-restart-sta-timer-if-not-running.patch
 
 #rhbz 859282
 Patch21275: VMX-x86-handle-host-TSC-calibration-failure.patch
+
+#rhbz 907221
+Patch21277: HID-usbhid-quirk-for-MSI-GX680R-led-panel.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1447,6 +1450,9 @@ ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 
 #rhbz 920218
 ApplyPatch mac80211-Dont-restart-sta-timer-if-not-running.patch
+
+#rhbz 907221
+ApplyPatch HID-usbhid-quirk-for-MSI-GX680R-led-panel.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2289,6 +2295,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Add quirk for MSI keyboard backlight to avoid 10 sec boot delay (rhbz 907221)
+
 * Mon Mar 25 2013 Justin M. Forbes <jforbes@redhat.com>
 - disable whci-hcd since it doesnt seem to have users (rhbz 919289)
 
