@@ -747,6 +747,9 @@ Patch21275: VMX-x86-handle-host-TSC-calibration-failure.patch
 #rhbz 907221
 Patch21277: HID-usbhid-quirk-for-MSI-GX680R-led-panel.patch
 
+#rhbz 806587
+Patch21278: HID-usbhid-quirk-for-Realtek-Multi-card-reader.patch
+
 Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
@@ -1453,6 +1456,9 @@ ApplyPatch mac80211-Dont-restart-sta-timer-if-not-running.patch
 
 #rhbz 907221
 ApplyPatch HID-usbhid-quirk-for-MSI-GX680R-led-panel.patch
+
+#rhbz 806587
+ApplyPatch HID-usbhid-quirk-for-Realtek-Multi-card-reader.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Mar 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Add quirk for Realtek card reader to avoid 10 sec boot delay (rhbz 806587)
 - Add quirk for MSI keyboard backlight to avoid 10 sec boot delay (rhbz 907221)
 
 * Mon Mar 25 2013 Justin M. Forbes <jforbes@redhat.com>
