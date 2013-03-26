@@ -2301,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 26 2013 Dave Jones <davej@redhat.com>
+- Enable CONFIG_DM_CACHE (rhbz 924325)
+
 * Tue Mar 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Add quirk for Realtek card reader to avoid 10 sec boot delay (rhbz 806587)
 - Add quirk for MSI keyboard backlight to avoid 10 sec boot delay (rhbz 907221)
