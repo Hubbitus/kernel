@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 28 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
+- Update ARM unified config for OMAP
+
 * Tue Mar 26 2013 Justin M. Forbes <jforbes@redhat.com>
 - Fix child thread introspection of of /proc/self/exe (rhbz 927469)
 
