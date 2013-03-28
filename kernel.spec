@@ -1885,25 +1885,17 @@ find Documentation -type d | xargs chmod u+w
 
 %define __modsign_install_post \
   if [ "%{signmodules}" == "1" ]; then \
-    if [ "%{with_pae}" != "0" ]; then \
-      mv signing_key.priv.sign.PAE signing_key.priv \
-      mv signing_key.x509.sign.PAE signing_key.x509 \
-      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/ \
+    if [ "%{with_pae}" -ne "0" ]; then \
+      %{modsign_cmd} signing_key.priv.sign.PAE signing_key.x509.sign.PAE $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/ \
     fi \
-    if [ "%{with_debug}" != "0" ]; then \
-      mv signing_key.priv.sign.debug signing_key.priv \
-      mv signing_key.x509.sign.debug signing_key.x509 \
-      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/ \
+    if [ "%{with_debug}" -ne "0" ]; then \
+      %{modsign_cmd} signing_key.priv.sign.debug signing_key.x509.sign.debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/ \
     fi \
-    if [ "%{with_pae_debug}" != "0" ]; then \
-      mv signing_key.priv.sign.PAEdebug signing_key.priv \
-      mv signing_key.x509.sign.PAEdebug signing_key.x509 \
-      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/ \
+    if [ "%{with_pae_debug}" -ne "0" ]; then \
+      %{modsign_cmd} signing_key.priv.sign.PAEdebug signing_key.x509.sign.PAEdebug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/ \
     fi \
-    if [ "%{with_up}" != "0" ]; then \
-      mv signing_key.priv.sign signing_key.priv \
-      mv signing_key.x509.sign signing_key.x509 \
-      %{modsign_cmd} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
+    if [ "%{with_up}" != -ne "0" ]; then \
+      %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
 %{nil}
