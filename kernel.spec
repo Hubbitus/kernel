@@ -251,9 +251,9 @@ Summary: The Linux kernel
 
 # kernel up (unified kernel target), unified LPAE, tegra are only built on armv7 hfp
 %ifnarch armv7hl
-%define with_lpae 0
-%endif
 %define with_tegra 0
+%endif
+%define with_lpae 0
 
 # if requested, only build base kernel
 %if %{with_baseonly}
@@ -387,10 +387,7 @@ Summary: The Linux kernel
 %define kernel_image arch/arm/boot/zImage
 # we only build headers/perf/tools on the base arm arches
 # just like we used to only build them on i386 for x86
-%ifarch armv5tel
-%define with_up 0
-%endif
-%ifnarch armv5tel armv7hl
+%ifnarch armv7hl
 %define with_headers 0
 %define with_perf 0
 %define with_tools 0
@@ -578,11 +575,7 @@ Source70: config-s390x
 Source100: config-armv7-generic
 Source101: config-armv7
 Source102: config-armv7-lpae
-
-# Legacy ARM kernels
-Source105: config-arm-generic
-Source110: config-arm-omap
-Source111: config-arm-tegra
+Source103: config-armv7-tegra
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -2299,6 +2292,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 31 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
+- Make tegra inherit armv7-generic, fix and re-enable tegra
+- Enable SPI on ARM
+- Drop config-arm-generic
+- ARM config updates
+
 * Thu Mar 28 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
 - Update ARM unified config for OMAP
 
