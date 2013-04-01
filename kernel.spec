@@ -251,9 +251,9 @@ Summary: The Linux kernel
 
 # kernel up (unified kernel target), unified LPAE, tegra are only built on armv7 hfp
 %ifnarch armv7hl
+%define with_lpae 0
 %define with_tegra 0
 %endif
-%define with_lpae 0
 
 # if requested, only build base kernel
 %if %{with_baseonly}
