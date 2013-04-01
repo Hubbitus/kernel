@@ -745,6 +745,8 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
 
+Patch23007: htmldoc-build-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1439,6 +1441,8 @@ ApplyPatch mac80211-Dont-restart-sta-timer-if-not-running.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
+
+ApplyPatch htmldoc-build-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2279,6 +2283,7 @@ fi
 * Mon Apr 01 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc5.git0.1
 - Disable debugging options.
 - Linux v3.9-rc5
+- fix htmldoc build for 8250 rename. Patch from Kyle McMartin
 
 * Mon Apr  1 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
 - Minor ARM LPAE updates
