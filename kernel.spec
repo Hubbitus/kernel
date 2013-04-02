@@ -2271,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 02 2013 Josh Boyer <jwboyer@redhat.com>
+- Enable CONFIG_FB_MATROX_G on powerpc
+
 * Tue Apr 02 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc5.git1.1
 - Linux v3.9-rc5-108-g118c9a4
 - Reenable debugging options.
