@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2271,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 03 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc5.git2.1
+- Linux v3.9-rc5-146-gda241ef
+
 * Wed Apr  3 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
 - Add upstream usb-next OMAP patch to fix usb on omap/mvebu
 
