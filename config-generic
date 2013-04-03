@@ -1447,16 +1447,9 @@ CONFIG_JME=m
 #
 # Ethernet (10000 Mbit)
 #
-CONFIG_IP1000=m
-CONFIG_MLX4_EN=m
-CONFIG_MLX4_EN_DCB=y
-# CONFIG_MLX4_DEBUG is not set
-CONFIG_SFC=m
-CONFIG_SFC_MCDI_MON=y
-CONFIG_SFC_SRIOV=y
-CONFIG_SFC_PTP=y
-
-# CONFIG_SFC_MTD is not set
+# CONFIG_IP1000 is not set
+# CONFIG_MLX4_EN is not set
+# CONFIG_SFC is not set
 
 # CONFIG_FDDI is not set
 # CONFIG_DEFXX is not set
