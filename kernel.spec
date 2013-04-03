@@ -703,7 +703,7 @@ Patch21000: arm-export-read_current_timer.patch
 Patch21001: arm-lpae-ax88796.patch
 
 # ARM omap
-Patch21002: arm-omap-fix-usb-mvebu-conflict.patch
+Patch21002: arm-omap-ehci-fix.patch
 
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
@@ -1298,7 +1298,7 @@ ApplyPatch vmbugon-warnon.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
-# ApplyPatch arm-omap-fix-usb-mvebu-conflict.patch
+ApplyPatch arm-omap-ehci-fix.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
@@ -2271,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr  3 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
+- Add upstream usb-next OMAP patch to fix usb on omap/mvebu
+
 * Tue Apr 02 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable CONFIG_FB_MATROX_G on powerpc
 
