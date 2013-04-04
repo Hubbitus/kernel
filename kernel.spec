@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2271,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 04 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc5.git3.1
+- Linux v3.9-rc5-183-g22d1e6f
+
 * Wed Apr 03 2013 Dave Jones <davej@redhat.com>
 - Enable MTD_CHAR/MTD_BLOCK (Needed for SFC)
   Enable 10gigE on 64-bit only.
