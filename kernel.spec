@@ -1856,7 +1856,7 @@ find Documentation -type d | xargs chmod u+w
 # that will strip the signature off of the modules.
 
 %define __modsign_install_post \
-  if [ "%{signmodules}" == "1" ]; then \
+  if [ "%{signmodules}" -eq "1" ]; then \
     if [ "%{with_pae}" -ne "0" ]; then \
       %{modsign_cmd} signing_key.priv.sign.PAE signing_key.x509.sign.PAE $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAE/ \
     fi \
@@ -1866,7 +1866,7 @@ find Documentation -type d | xargs chmod u+w
     if [ "%{with_pae_debug}" -ne "0" ]; then \
       %{modsign_cmd} signing_key.priv.sign.PAEdebug signing_key.x509.sign.PAEdebug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.PAEdebug/ \
     fi \
-    if [ "%{with_up}" != -ne "0" ]; then \
+    if [ "%{with_up}" -ne "0" ]; then \
       %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
