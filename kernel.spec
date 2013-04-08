@@ -744,6 +744,9 @@ Patch23006: fix-child-thread-introspection.patch
 
 Patch23007: htmldoc-build-fix.patch
 
+#rhbz 907694
+Patch23008: e100-dma-unmap-error.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1437,6 +1440,9 @@ ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 ApplyPatch fix-child-thread-introspection.patch
 
 ApplyPatch htmldoc-build-fix.patch
+
+#rhbz 907694
+ApplyPatch e100-dma-unmap-error.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2271,6 +2277,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 08 2013 Neil Horman <nhorman@redhat.com>
+- Fix dma unmap error in e100 (rhbz 907694)
+
 * Mon Apr 08 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc6.git0.1
 - Disable debugging options.
 - Linux-3.9-rc6
