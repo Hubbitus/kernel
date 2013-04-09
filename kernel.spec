@@ -708,6 +708,7 @@ Patch21002: arm-omap-ehci-fix.patch
 # ARM tegra
 Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
+Patch21006: arm-tegra-fixclk.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1304,6 +1305,7 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-omap-ehci-fix.patch
 # ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-fixclk.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2277,6 +2279,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix building some ARM tegra modules
+- Some minor ARM OMAP updates
+
 * Mon Apr 08 2013 Neil Horman <nhorman@redhat.com>
 - Fix dma unmap error in e100 (rhbz 907694)
 
