@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -743,10 +743,8 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
 
-Patch23007: htmldoc-build-fix.patch
-
-#rhbz 907694
-Patch23008: e100-dma-unmap-error.patch
+#rhbz 949875
+Patch23007: libsas-use-right-function-to-alloc-smp-response.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1441,10 +1439,8 @@ ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
 
-ApplyPatch htmldoc-build-fix.patch
-
-#rhbz 907694
-ApplyPatch e100-dma-unmap-error.patch
+#rhbz 949875
+ApplyPatch libsas-use-right-function-to-alloc-smp-response.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2279,6 +2275,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 11 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc6.git2.1
+- Linux v3.9-rc6-115-g7ee32a6
+- libsas: use right function to alloc smp response (rhbz 949875)
+
 * Tue Apr 09 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc6.git1.1
 - Linux v3.9-rc6-36-ge8f2b54
 - Reenable debugging options.
