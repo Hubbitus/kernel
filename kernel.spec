@@ -749,6 +749,9 @@ Patch23006: fix-child-thread-introspection.patch
 #rhbz 949875
 Patch23007: libsas-use-right-function-to-alloc-smp-response.patch
 
+#rhbz 928024
+Patch23008: forcedeth-dma-error-check.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1447,6 +1450,9 @@ ApplyPatch fix-child-thread-introspection.patch
 
 #rhbz 949875
 ApplyPatch libsas-use-right-function-to-alloc-smp-response.patch
+
+#rhbz 928024
+ApplyPatch forcedeth-dma-error-check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2281,6 +2287,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 12 2013 Justin M. Forbes <jforbes@redhat.com>
+- Fix forcedeth DMA check error (rhbz 928024)
+
 * Thu Apr 11 2013 Dave Jones <davej@redhat.com>
 - Print out some extra debug information when we hit bad page tables.
 
