@@ -709,7 +709,6 @@ Patch21001: arm-lpae-ax88796.patch
 Patch21002: arm-omap-ehci-fix.patch
 
 # ARM tegra
-Patch21004: arm-tegra-nvec-kconfig.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-fixclk.patch
 
@@ -1310,7 +1309,6 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-omap-ehci-fix.patch
-# ApplyPatch arm-tegra-nvec-kconfig.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-fixclk.patch
 
