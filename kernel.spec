@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -157,7 +157,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -170,7 +170,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -727,9 +727,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
-#rhbz 914737
-Patch21262: x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
 #rhbz 856863 892599
 Patch21273: cfg80211-mac80211-disconnect-on-suspend.patch
 Patch21274: mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
@@ -744,9 +741,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
-
-#rhbz 949875
-Patch23007: libsas-use-right-function-to-alloc-smp-response.patch
 
 #rhbz 928024
 Patch23008: forcedeth-dma-error-check.patch
@@ -1433,9 +1427,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
-#rhbz 914737
-ApplyPatch x86-mm-Fix-vmalloc_fault-oops-during-lazy-MMU-updates.patch
-
 #rhbz 856863 892599
 ApplyPatch cfg80211-mac80211-disconnect-on-suspend.patch
 ApplyPatch mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
@@ -1445,9 +1436,6 @@ ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
-
-#rhbz 949875
-ApplyPatch libsas-use-right-function-to-alloc-smp-response.patch
 
 #rhbz 928024
 ApplyPatch forcedeth-dma-error-check.patch
@@ -2285,6 +2273,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 15 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc7.git0.1
+- Linux v3.9-rc7
+- Disable debugging options.
+
 * Fri Apr 12 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable CONFIG_LDM_PARTITION (rhbz 948636)
 
