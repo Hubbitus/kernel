@@ -1,3 +1,8 @@
+When we encounter a bad PTE, print out what modules were loaded,
+so we can see if there is a common driver potentially at fault.
+
+Signed-off-by: Dave Jones <davej@redhat.com>
+
 diff -durpN '--exclude-from=/home/davej/.exclude' /home/davej/src/kernel/git-trees/linux/mm/memory.c linux-dj/mm/memory.c
 --- /home/davej/src/kernel/git-trees/linux/mm/memory.c	2013-02-26 14:41:18.591116577 -0500
 +++ linux-dj/mm/memory.c	2013-02-28 20:04:37.678304092 -0500
