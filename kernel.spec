@@ -745,6 +745,9 @@ Patch23006: fix-child-thread-introspection.patch
 #rhbz 928024
 Patch23008: forcedeth-dma-error-check.patch
 
+#rhbz 919176
+Patch25010: wireless-regulatory-fix-channel-disabling-race-condition.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1439,6 +1442,9 @@ ApplyPatch fix-child-thread-introspection.patch
 
 #rhbz 928024
 ApplyPatch forcedeth-dma-error-check.patch
+
+#rhbz 919176
+ApplyPatch wireless-regulatory-fix-channel-disabling-race-condition.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2273,6 +2279,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 16 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix race in regulatory code (rhbz 919176)
+
 * Mon Apr 15 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix debug patches to build on s390x/ppc
 
