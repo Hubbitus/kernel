@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 17 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc7.git2.1
+- Linux v3.9-rc7-24-g542a672
+
 * Wed Apr 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 - Add patch for DT DMA issues that affect at least highbank/tegra ARM devices
