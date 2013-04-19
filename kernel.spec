@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 19 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
+- Temporaily disable cpu idle on ARM as it appears to be causing stability issues
+
 * Fri Apr 19 2013 Josh Boyer <jwboyer@redhat.com>
 - Disable Intel HDA and enable RSXX block dev on ppc64/ppc64p7
 
