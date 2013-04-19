@@ -753,6 +753,8 @@ Patch25010: wireless-regulatory-fix-channel-disabling-race-condition.patch
 #rhbz 951241
 Patch25011: iwlwifi-fix-freeing-uninitialized-pointer.patch
 
+Patch25012: events-protect-access-via-task-subsys-state-check.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1454,6 +1456,8 @@ ApplyPatch wireless-regulatory-fix-channel-disabling-race-condition.patch
 
 #rhbz 951241
 ApplyPatch iwlwifi-fix-freeing-uninitialized-pointer.patch
+
+ApplyPatch events-protect-access-via-task-subsys-state-check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2288,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 19 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix RCU splat from perf events
+
 * Fri Apr 19 2013 Peter Robinson <pbrobinson@fedoraproject.org> 
 - Temporaily disable cpu idle on ARM as it appears to be causing stability issues
 

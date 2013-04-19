@@ -1,0 +1,61 @@
+The following RCU splat indicates lack of RCU protection:
+
+[  953.267649] ===============================
+[  953.267652] [ INFO: suspicious RCU usage. ]
+[  953.267657] 3.9.0-0.rc6.git2.4.fc19.ppc64p7 #1 Not tainted
+[  953.267661] -------------------------------
+[  953.267664] include/linux/cgroup.h:534 suspicious rcu_dereference_check() usage!
+[  953.267669]
+[  953.267669] other info that might help us debug this:
+[  953.267669]
+[  953.267675]
+[  953.267675] rcu_scheduler_active = 1, debug_locks = 0
+[  953.267680] 1 lock held by glxgears/1289:
+[  953.267683]  #0:  (&sig->cred_guard_mutex){+.+.+.}, at: [<c00000000027f884>] .prepare_bprm_creds+0x34/0xa0
+[  953.267700]
+[  953.267700] stack backtrace:
+[  953.267704] Call Trace:
+[  953.267709] [c0000001f0d1b6e0] [c000000000016e30] .show_stack+0x130/0x200 (unreliable)
+[  953.267717] [c0000001f0d1b7b0] [c0000000001267f8] .lockdep_rcu_suspicious+0x138/0x180
+[  953.267724] [c0000001f0d1b840] [c0000000001d43a4] .perf_event_comm+0x4c4/0x690
+[  953.267731] [c0000001f0d1b950] [c00000000027f6e4] .set_task_comm+0x84/0x1f0
+[  953.267737] [c0000001f0d1b9f0] [c000000000280414] .setup_new_exec+0x94/0x220
+[  953.267744] [c0000001f0d1ba70] [c0000000002f665c] .load_elf_binary+0x58c/0x19b0
+[  953.267751] [c0000001f0d1bbc0] [c00000000027e724] .search_binary_handler+0x254/0x680
+[  953.267758] [c0000001f0d1bca0] [c0000000002800dc] .do_execve_common.isra.17+0x76c/0x860
+[  953.267764] [c0000001f0d1bd90] [c000000000280698] .SyS_execve+0x58/0x90
+[  953.267771] [c0000001f0d1be30] [c000000000009e60] syscall_exit+0x0/0x98
+
+This commit therefore adds the required RCU read-side critical section to
+perf_event_comm().
+
+Reported-by: Adam Jackson <ajax@redhat.com>
+Signed-off-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+Tested-by: Gustavo Luiz Duarte <gusld@br.ibm.com>
+
+diff --git a/kernel/events/core.c b/kernel/events/core.c
+index b0cd865..8db9551 100644
+--- a/kernel/events/core.c
++++ b/kernel/events/core.c
+@@ -4593,6 +4593,7 @@ void perf_event_comm(struct task_struct *task)
+ 	struct perf_event_context *ctx;
+ 	int ctxn;
+ 
++	rcu_read_lock();
+ 	for_each_task_context_nr(ctxn) {
+ 		ctx = task->perf_event_ctxp[ctxn];
+ 		if (!ctx)
+@@ -4600,6 +4601,7 @@ void perf_event_comm(struct task_struct *task)
+ 
+ 		perf_event_enable_on_exec(ctx);
+ 	}
++	rcu_read_unlock();
+ 
+ 	if (!atomic_read(&nr_comm_events))
+ 		return;
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
