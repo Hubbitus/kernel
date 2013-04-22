@@ -2292,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 22 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Fri Apr 19 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix RCU splat from perf events
 
