@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -754,6 +754,9 @@ Patch25010: wireless-regulatory-fix-channel-disabling-race-condition.patch
 Patch25011: iwlwifi-fix-freeing-uninitialized-pointer.patch
 
 Patch25012: events-protect-access-via-task-subsys-state-check.patch
+
+#rhbz 953447
+Patch25013: efi-Check-EFI-revision-in-setup_efi_vars.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1458,6 +1461,9 @@ ApplyPatch wireless-regulatory-fix-channel-disabling-race-condition.patch
 ApplyPatch iwlwifi-fix-freeing-uninitialized-pointer.patch
 
 ApplyPatch events-protect-access-via-task-subsys-state-check.patch
+
+#rhbz 953447
+ApplyPatch efi-Check-EFI-revision-in-setup_efi_vars.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2292,6 +2298,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 24 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix EFI boot on Macs (rhbz 953447)
+
 * Mon Apr 22 2013 Justin M. Forbes <jforbes@redhat.com> - 3.9.0-0.rc8.git0.1
 - Linux v3.9-rc8
 - Disable debugging options.
