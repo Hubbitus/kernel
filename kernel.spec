@@ -758,6 +758,8 @@ Patch25012: events-protect-access-via-task-subsys-state-check.patch
 #rhbz 953447
 Patch25013: efi-Check-EFI-revision-in-setup_efi_vars.patch
 
+Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1464,6 +1466,8 @@ ApplyPatch events-protect-access-via-task-subsys-state-check.patch
 
 #rhbz 953447
 ApplyPatch efi-Check-EFI-revision-in-setup_efi_vars.patch
+
+ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2298,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to prevent scheduling while atomic error in blkcg
+
 * Wed Apr 24 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix EFI boot on Macs (rhbz 953447)
 
