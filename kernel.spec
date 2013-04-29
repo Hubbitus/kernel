@@ -2292,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 29 2013 Neil Horman <nhorman@redhat.com>
+- Enable CONFIG_PACKET_DIAG (rhbz 956870)
+
 * Mon Apr 29 2013 Josh Boyer <jwboyer@redhat.com>
 - Linux v3.9
 
