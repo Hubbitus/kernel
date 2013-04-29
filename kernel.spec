@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -708,7 +708,6 @@ Patch21001: arm-of-dma.patch
 Patch21002: arm-lpae-ax88796.patch
 
 # ARM omap
-Patch21003: arm-omap-ehci-fix.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
@@ -1313,7 +1312,6 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-of-dma.patch
 ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch arm-omap-ehci-fix.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-fixclk.patch
 
@@ -2292,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git3.1
+- Linux v3.9-2154-gec25e24
+
 * Mon Apr 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git2.1
 - Linux v3.9-332-g92ddcf4
 
