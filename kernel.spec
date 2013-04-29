@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,13 +62,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 8
+%define base_sublevel 9
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -752,11 +752,6 @@ Patch25010: wireless-regulatory-fix-channel-disabling-race-condition.patch
 
 #rhbz 951241
 Patch25011: iwlwifi-fix-freeing-uninitialized-pointer.patch
-
-Patch25012: events-protect-access-via-task-subsys-state-check.patch
-
-#rhbz 953447
-Patch25013: efi-Check-EFI-revision-in-setup_efi_vars.patch
 
 Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
@@ -1461,11 +1456,6 @@ ApplyPatch wireless-regulatory-fix-channel-disabling-race-condition.patch
 
 #rhbz 951241
 ApplyPatch iwlwifi-fix-freeing-uninitialized-pointer.patch
-
-ApplyPatch events-protect-access-via-task-subsys-state-check.patch
-
-#rhbz 953447
-ApplyPatch efi-Check-EFI-revision-in-setup_efi_vars.patch
 
 ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
@@ -2302,6 +2292,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 29 2013 Josh Boyer <jwboyer@redhat.com>
+- Linux v3.9
+
 * Fri Apr 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch to prevent scheduling while atomic error in blkcg
 
