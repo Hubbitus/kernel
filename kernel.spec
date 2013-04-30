@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 30 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable CONFIG_SERIAL_8250_DW on ARM
+
 * Tue Apr 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git6.1
 - Linux v3.9-4516-gc9ef713
 
