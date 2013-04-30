@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git7.1
+- Linux v3.9-4597-g8c55f14
+
 * Tue Apr 30 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable CONFIG_SERIAL_8250_DW on ARM
 
