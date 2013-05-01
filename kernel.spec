@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Wed May 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git8.1
 - Linux v3.9-5165-g5f56886
 

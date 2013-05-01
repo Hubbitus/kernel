@@ -90,6 +90,9 @@ CONFIG_RCU_FANOUT_LEAF=16
 # CONFIG_CPU_IDLE_GOV_MENU is not set
 # CONFIG_CPU_IDLE_MULTIPLE_DRIVERS is not set
 
+# CONFIG_ARM_BIG_LITTLE_CPUFREQ is not set
+# CONFIG_ARM_DT_BL_CPUFREQ is not set
+
 CONFIG_DEFAULT_MMAP_MIN_ADDR=32768
 CONFIG_LSM_MMAP_MIN_ADDR=32768
 
@@ -445,6 +448,8 @@ CONFIG_PERF_EVENTS=y
 # CONFIG_SERIAL_MAX3100 is not set
 # CONFIG_SERIAL_MAX310X is not set
 # CONFIG_SERIAL_IFX6X60 is not set
+# CONFIG_COMMON_CLK_SI5351 is not set
+# CONFIG_COMMON_CLK_AXI_CLKGEN is not set
 
 # these modules all fail with missing __bad_udelay
 # http://www.spinics.net/lists/arm/msg15615.html provides some background
