@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git9.1
+- Linux v3.9-5293-g823e75f
+
 * Wed May  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM updates
 
