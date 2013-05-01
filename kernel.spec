@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -638,7 +638,7 @@ Patch100: taint-vbox.patch
 
 Patch110: vmbugon-warnon.patch
 
-Patch200: debug-bad-pte-dmi.patch
+#atch200: debug-bad-pte-dmi.patch
 Patch201: debug-bad-pte-modules.patch
 
 Patch390: defaults-acpi-video.patch
@@ -1300,7 +1300,7 @@ ApplyPatch taint-vbox.patch
 
 ApplyPatch vmbugon-warnon.patch
 
-ApplyPatch debug-bad-pte-dmi.patch
+#plyPatch debug-bad-pte-dmi.patch
 ApplyPatch debug-bad-pte-modules.patch
 
 # Architecture patches
@@ -2290,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git8.1
+- Linux v3.9-5165-g5f56886
+
 * Tue Apr 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git7.1
 - Linux v3.9-4597-g8c55f14
 
