@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -728,10 +728,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
-#rhbz 856863 892599
-Patch21273: cfg80211-mac80211-disconnect-on-suspend.patch
-Patch21274: mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
-
 #rhbz 859282
 Patch21275: VMX-x86-handle-host-TSC-calibration-failure.patch
 
@@ -742,15 +738,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
-
-#rhbz 928024
-Patch23008: forcedeth-dma-error-check.patch
-
-#rhbz 919176
-Patch25010: wireless-regulatory-fix-channel-disabling-race-condition.patch
-
-#rhbz 951241
-Patch25011: iwlwifi-fix-freeing-uninitialized-pointer.patch
 
 Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
@@ -1436,24 +1423,11 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
-#rhbz 856863 892599
-ApplyPatch cfg80211-mac80211-disconnect-on-suspend.patch
-ApplyPatch mac80211_fixes_for_ieee80211_do_stop_while_suspend_v3.9.patch
-
 #rhbz 859282
 ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
-
-#rhbz 928024
-ApplyPatch forcedeth-dma-error-check.patch
-
-#rhbz 919176
-ApplyPatch wireless-regulatory-fix-channel-disabling-race-condition.patch
-
-#rhbz 951241
-ApplyPatch iwlwifi-fix-freeing-uninitialized-pointer.patch
 
 ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
@@ -2290,6 +2264,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 02 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git11.1
+- Linux v3.9-7391-g20b4fb4
+
 * Wed May 01 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git10.1
 - Linux v3.9-5308-g8a72f38
 
