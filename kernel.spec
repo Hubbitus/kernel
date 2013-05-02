@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -660,7 +660,7 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130306.patch
+Patch1000: devel-pekey-secure-boot-20130502.patch
 
 # virt + ksm patches
 
@@ -1366,7 +1366,7 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130306.patch
+ApplyPatch devel-pekey-secure-boot-20130502.patch
 
 # Assorted Virt Fixes
 
