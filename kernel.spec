@@ -575,7 +575,6 @@ Source70: config-s390x
 Source100: config-armv7-generic
 Source101: config-armv7
 Source102: config-armv7-lpae
-Source103: config-armv7-tegra
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
