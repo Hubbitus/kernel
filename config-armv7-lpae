@@ -1,5 +1,4 @@
 # ARM unified arch kernel
-CONFIG_CPU_V7=y
 CONFIG_ARCH_EXYNOS=y
 CONFIG_ARCH_VIRT=y
 

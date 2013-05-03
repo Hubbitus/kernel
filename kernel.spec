@@ -1451,8 +1451,6 @@ mkdir configs
 rm -f kernel-%{version}-*debug.config
 %endif
 
-rm -f kernel-%{version}-arm*.config
-
 # now run oldconfig over all the config files
 for i in *.config
 do
@@ -2266,6 +2264,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM 3.10 merge and general cleanup
+- Drop dedicated tegra kernel as now Multiplatform enabled
+- Enable Tegra and UX500 (Snowball) in Multiplatform
+
 * Thu May 02 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git13.1
 - Linux v3.9-8153-g5a148af
 
