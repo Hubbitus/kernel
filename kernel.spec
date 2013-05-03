@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 14
+%define gitrev 15
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -735,6 +735,9 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 Patch23006: fix-child-thread-introspection.patch
 
 Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
+
+# Fix i915 on Macbook Pro 10,2 machines
+Patch25015: 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1417,6 +1420,9 @@ ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 ApplyPatch fix-child-thread-introspection.patch
 
 ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
+
+# Fix i915 on Macbook Pro 10,2 machines
+ApplyPatch 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2243,6 +2249,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git15.1
+- Linux v3.9-9409-g8665218
+
 * Fri May 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git14.1
 - Linux v3.9-8933-gce85722
 
