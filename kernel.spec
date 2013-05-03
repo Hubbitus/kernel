@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 13
+%define gitrev 14
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -663,8 +663,7 @@ Patch1000: devel-pekey-secure-boot-20130502.patch
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 #Patch1800: drm-vgem.patch
-Patch1700: drm-ttm-exports-for-qxl.patch
-Patch1701: drm-qxl-driver.patch
+
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
@@ -1361,8 +1360,6 @@ ApplyPatch devel-pekey-secure-boot-20130502.patch
 # Assorted Virt Fixes
 
 # DRM core
-ApplyPatch drm-ttm-exports-for-qxl.patch
-ApplyPatch drm-qxl-driver.patch
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 #ApplyPatch drm-vgem.patch
 
@@ -2246,6 +2243,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git14.1
+- Linux v3.9-8933-gce85722
+
 * Fri May  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM 3.10 merge and general cleanup
 - Drop dedicated tegra kernel as now Multiplatform enabled
