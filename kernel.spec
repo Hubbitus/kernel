@@ -134,8 +134,6 @@ Summary: The Linux kernel
 %define with_vdso_install %{?_without_vdso_install: 0} %{?!_without_vdso_install: 1}
 # ARM Cortex-A15 support with LPAE and HW Virtualisation
 %define with_lpae      %{?_without_lpae:      0} %{?!_without_lpae:      1}
-# kernel-tegra (only valid for arm)
-%define with_tegra       %{?_without_tegra:       0} %{?!_without_tegra:       1}
 #
 # Additional options for user-friendly one-off kernel building:
 #
@@ -249,10 +247,9 @@ Summary: The Linux kernel
 %define with_pae 0
 %endif
 
-# kernel up (unified kernel target), unified LPAE, tegra are only built on armv7 hfp
+# kernel up (unified kernel target), unified LPAE are only built on armv7 hfp
 %ifnarch armv7hl
 %define with_lpae 0
-%define with_tegra 0
 %endif
 
 # if requested, only build base kernel
@@ -1025,12 +1022,6 @@ on kernel bugs, as some of these options impact performance noticably.
 This package includes a version of the Linux kernel with support for
 Cortex-A15 devices with LPAE and HW virtualisation support
 
-%define variant_summary The Linux kernel compiled for tegra boards
-%kernel_variant_package tegra
-%description tegra
-This package includes a version of the Linux kernel with support for
-nvidia tegra based systems, i.e., trimslice, ac-100.
-
 
 %prep
 # do a few sanity-checks for --with *only builds
@@ -1780,10 +1771,6 @@ BuildKernel %make_target %kernel_image PAE
 BuildKernel %make_target %kernel_image lpae
 %endif
 
-%if %{with_tegra}
-BuildKernel %make_target %kernel_image tegra
-%endif
-
 %if %{with_up}
 BuildKernel %make_target %kernel_image
 %endif
@@ -2101,9 +2088,6 @@ fi}\
 %kernel_variant_preun lpae
 %kernel_variant_post -v lpae
 
-%kernel_variant_preun tegra
-%kernel_variant_post -v tegra
-
 if [ -x /sbin/ldconfig ]
 then
     /sbin/ldconfig -X || exit $?
@@ -2248,7 +2232,6 @@ fi
 %kernel_variant_files %{with_pae} PAE
 %kernel_variant_files %{with_pae_debug} PAEdebug
 %kernel_variant_files %{with_lpae} lpae
-%kernel_variant_files %{with_tegra} tegra
 
 # plz don't put in a version string unless you're going to tag
 # and build.
