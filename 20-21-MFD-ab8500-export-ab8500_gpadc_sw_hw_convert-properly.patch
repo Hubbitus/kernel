@@ -1,0 +1,52 @@
+From patchwork Tue Apr 23 16:30:52 2013
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [20/21] MFD: ab8500: export ab8500_gpadc_sw_hw_convert properly
+Date: Tue, 23 Apr 2013 16:30:52 -0000
+From: Arnd Bergmann <arnd@arndb.de>
+X-Patchwork-Id: 2479831
+Message-Id: <1366734653-488286-21-git-send-email-arnd@arndb.de>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Samuel Ortiz <sameo@linux.intel.com>, Arnd Bergmann <arnd@arndb.de>,
+ Michel JAOUEN <michel.jaouen@stericsson.com>,
+ linux-kernel@vger.kernel.org, 
+ M'boumba Cedric Madianga <cedric.madianga@stericsson.com>,
+ Mattias WALLIN <mattias.wallin@stericsson.com>,
+ Lee Jones <lee.jones@linaro.org>
+
+Apparently the ab8500_gpadc_sw_hw_convert function got renamed
+from ab8500_gpadc_convert to ab8500_gpadc_sw_hw_convert in
+commit 734823462 "mfd: ab8500-gpadc: Add gpadc hw conversion",
+but the export for this function did not get changed at the
+same time, causing this allyesconfig error:
+
+ERROR: "ab8500_gpadc_sw_hw_convert" [drivers/hwmon/ab8500.ko] undefined!
+
+This patch fixes the export.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Cc: M'boumba Cedric Madianga <cedric.madianga@stericsson.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Mattias WALLIN <mattias.wallin@stericsson.com>
+Cc: Michel JAOUEN <michel.jaouen@stericsson.com>
+Cc: Samuel Ortiz <sameo@linux.intel.com>
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
+
+---
+drivers/mfd/ab8500-gpadc.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/ab8500-gpadc.c b/drivers/mfd/ab8500-gpadc.c
+index 5f341a5..184df96 100644
+--- a/drivers/mfd/ab8500-gpadc.c
++++ b/drivers/mfd/ab8500-gpadc.c
+@@ -269,7 +269,7 @@ int ab8500_gpadc_convert(struct ab8500_gpadc *gpadc, u8 channel)
+ 
+ 	return voltage;
+ }
+-EXPORT_SYMBOL(ab8500_gpadc_convert);
++EXPORT_SYMBOL(ab8500_gpadc_sw_hw_convert);
+ 
+ /**
+  * ab8500_gpadc_read_raw() - gpadc read

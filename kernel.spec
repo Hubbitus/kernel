@@ -703,10 +703,12 @@ Patch21001: arm-of-dma.patch
 Patch21002: arm-lpae-ax88796.patch
 
 # ARM omap
+Patch21003: 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 Patch21006: arm-tegra-fixclk.patch
+Patch21007: arm-tegra-sdhci-module-fix.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1293,6 +1295,8 @@ ApplyPatch arm-of-dma.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-fixclk.patch
+ApplyPatch arm-tegra-sdhci-module-fix.patch
+ApplyPatch 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2249,6 +2253,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun May  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM config
+
 * Sat May 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git16.1
 - Linux v3.9-9472-g1db7722
 
