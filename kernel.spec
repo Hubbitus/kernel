@@ -2240,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May  6 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable TPS65217 (am33xx) and EC on ChromeOS devices
+
 * Mon May 06 2013 Josh Boyer <jwboyer@redhat.com>
 - Don't remove headers explicitly exported via UAPI (rhbz 959467)
 
