@@ -3642,6 +3642,10 @@ CONFIG_MFD_VIPERBOARD=m
 # CONFIG_MFD_MC13XXX_I2C is not set
 # CONFIG_MFD_ARIZONA is not set
 # CONFIG_MFD_ARIZONA_I2C is not set
+# CONFIG_MFD_CROS_EC is not set
+# CONFIG_MFD_SI476X_CORE is not set
+# CONFIG_MFD_TPS65912 is not set
+# CONFIG_MFD_SYSCON is not set
 
 #
 # File systems

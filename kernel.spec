@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 17
+%define gitrev 18
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -703,12 +703,11 @@ Patch21001: arm-of-dma.patch
 Patch21002: arm-lpae-ax88796.patch
 
 # ARM omap
-Patch21003: 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 #atch21006: arm-tegra-fixclk.patch
-Patch21007: arm-tegra-sdhci-module-fix.patch
+#atch21007: arm-tegra-sdhci-module-fix.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -724,9 +723,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 #rhbz 903192
 Patch21261: 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
-
-#rhbz 859282
-Patch21275: VMX-x86-handle-host-TSC-calibration-failure.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -1295,8 +1291,7 @@ ApplyPatch arm-of-dma.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 #pplyPatch arm-tegra-fixclk.patch
-ApplyPatch arm-tegra-sdhci-module-fix.patch
-ApplyPatch 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
+#pplyPatch arm-tegra-sdhci-module-fix.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1416,9 +1411,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 #rhbz 903192
 ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
-
-#rhbz 859282
-ApplyPatch VMX-x86-handle-host-TSC-calibration-failure.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
@@ -2253,6 +2245,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git18.1
+- Linux v3.9-10518-gd7ab730
+
 * Mon May 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git17.1
 - Linux v3.9-10104-g1aaf6d3
 
