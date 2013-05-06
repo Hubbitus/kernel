@@ -4747,6 +4747,8 @@ CONFIG_IOMMU_SUPPORT=y
 
 # CONFIG_MAILBOX is not set
 
+# CONFIG_RESET_CONTROLLER is not set
+
 # CONFIG_HSI is not set
 
 # CONFIG_PM_DEVFREQ is not set

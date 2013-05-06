@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 16
+%define gitrev 17
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -707,7 +707,7 @@ Patch21003: 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
-Patch21006: arm-tegra-fixclk.patch
+#atch21006: arm-tegra-fixclk.patch
 Patch21007: arm-tegra-sdhci-module-fix.patch
 
 #rhbz 754518
@@ -1294,7 +1294,7 @@ ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-of-dma.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-fixclk.patch
+#pplyPatch arm-tegra-fixclk.patch
 ApplyPatch arm-tegra-sdhci-module-fix.patch
 ApplyPatch 20-21-MFD-ab8500-export-ab8500_gpadc_sw_hw_convert-properly.patch
 
@@ -2253,6 +2253,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git17.1
+- Linux v3.9-10104-g1aaf6d3
+
 * Sun May  5 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM config
 
