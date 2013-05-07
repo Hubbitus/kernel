@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 18
+%define gitrev 19
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2240,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git19.1
+- Linux v3.9-10936-g51a26ae
+
 * Mon May  6 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable TPS65217 (am33xx) and EC on ChromeOS devices
 
