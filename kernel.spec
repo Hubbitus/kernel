@@ -2240,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 07 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix dmesg_restrict patch to avoid regression (rhbz 952655)
+
 * Mon May 06 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git19.1
 - Linux v3.9-10936-g51a26ae
 
