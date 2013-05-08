@@ -1,0 +1,129 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.92.6 with SMTP id ci6csp75137oab;
+        Fri, 3 May 2013 11:33:29 -0700 (PDT)
+X-Received: by 10.66.146.74 with SMTP id ta10mr15901145pab.60.1367606009492;
+        Fri, 03 May 2013 11:33:29 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id h1si8624725pad.114.2013.05.03.11.33.22
+        for <multiple recipients>;
+        Fri, 03 May 2013 11:33:29 -0700 (PDT)
+Received-SPF: pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mail=linux-kernel-owner@vger.kernel.org
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1763285Ab3ECSdI (ORCPT <rfc822;kernelandme@gmail.com>
+	+ 99 others); Fri, 3 May 2013 14:33:08 -0400
+Received: from www.linutronix.de ([62.245.132.108]:46407 "EHLO
+	Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1759070Ab3ECSdH (ORCPT
+	<rfc822;linux-kernel@vger.kernel.org>);
+	Fri, 3 May 2013 14:33:07 -0400
+Received: from localhost ([127.0.0.1])
+	by Galois.linutronix.de with esmtps (TLS1.0:DHE_RSA_AES_256_CBC_SHA1:32)
+	(Exim 4.72)
+	(envelope-from <tglx@linutronix.de>)
+	id 1UYKmx-0005xg-JP; Fri, 03 May 2013 20:32:59 +0200
+Date:	Fri, 3 May 2013 20:32:58 +0200 (CEST)
+From:	Thomas Gleixner <tglx@linutronix.de>
+To:	Dave Jones <davej@redhat.com>
+cc:	Yinghai Lu <yinghai@kernel.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: clockevents_program_event WARN_ON preventing boot.
+In-Reply-To: <20130503144912.GB1283@redhat.com>
+Message-ID: <alpine.LFD.2.02.1305032015060.2990@ionos>
+References: <20130430212007.GB18598@redhat.com> <20130430213719.GA14988@redhat.com> <alpine.LFD.2.02.1305021234510.3972@ionos> <20130502154621.GA23990@redhat.com> <alpine.LFD.2.02.1305022152280.2891@ionos> <CAE9FiQXpV451xTzAJyNdC-+-oqF9v8Cy5evcNOHKFffERw2SwA@mail.gmail.com>
+ <alpine.LFD.2.02.1305022304370.2891@ionos> <CAE9FiQWFK_ropzW_qQLcNxLYyek8-PHGW-8SxfZJSijvdrss1A@mail.gmail.com> <alpine.LFD.2.02.1305022337470.2891@ionos> <20130503144912.GB1283@redhat.com>
+User-Agent: Alpine 2.02 (LFD 1266 2009-07-14)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Linutronix-Spam-Score: -1.0
+X-Linutronix-Spam-Level: -
+X-Linutronix-Spam-Status: No , -1.0 points, 5.0 required,  ALL_TRUSTED=-1,SHORTCIRCUIT=-0.0001
+Sender:	linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List:	linux-kernel@vger.kernel.org
+
+On Fri, 3 May 2013, Dave Jones wrote:
+> On Fri, May 03, 2013 at 12:49:20AM +0200, Thomas Gleixner wrote:
+> 
+>  > I'm fundamentally confused and Daves observation about slub debug does
+>  > not make it less confusing.
+>  > 
+>  > It'd be nice if you could add some more instrumentation or bisect the
+>  > issue.
+> 
+> Here's what I ended up with..
+> b352bc1cbc29134a356b5c16ee2281807a7b984e is the first bad commit
+> commit b352bc1cbc29134a356b5c16ee2281807a7b984e
+> Author: Thomas Gleixner <tglx@linutronix.de>
+> Date:   Tue Mar 5 14:25:32 2013 +0100
+> 
+>     tick: Convert broadcast cpu bitmaps to cpumask_var_t
+>     
+>     Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+>     Link: http://lkml.kernel.org/r/20130306111537.366394000@linutronix.de
+>     Cc: Rusty Russell <rusty@rustcorp.com.au>
+> 
+
+I bet you have CONFIG_CPUMASK_OFFSTACK enabled.
+
+/me is a moron and rumages for a brown paperbag.
+
+Patch below.
+
+Thanks,
+
+	tglx
+
+------------>
+
+Subject: tick: Use zalloc_cpumask_var for allocating offstack cpumasks
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Fri, 03 May 2013 20:22:36 +0200
+
+commit b352bc1cbc (tick: Convert broadcast cpu bitmaps to
+cpumask_var_t) broke CONFIG_CPUMASK_OFFSTACK in a very subtle way.
+
+Instead of allocating the cpumasks with zalloc_cpumask_var it uses
+alloc_cpumask_var, so we can get random data there, which of course
+confuses the logic completely and causes random failures.
+
+Reported-by: Dave Jones <davej@redhat.com>
+Reported-by: Yinghai Lu <yinghai@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ kernel/time/tick-broadcast.c |   10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+Index: linux-2.6/kernel/time/tick-broadcast.c
+===================================================================
+--- linux-2.6.orig/kernel/time/tick-broadcast.c
++++ linux-2.6/kernel/time/tick-broadcast.c
+@@ -785,11 +785,11 @@ bool tick_broadcast_oneshot_available(vo
+ 
+ void __init tick_broadcast_init(void)
+ {
+-	alloc_cpumask_var(&tick_broadcast_mask, GFP_NOWAIT);
+-	alloc_cpumask_var(&tmpmask, GFP_NOWAIT);
++	zalloc_cpumask_var(&tick_broadcast_mask, GFP_NOWAIT);
++	zalloc_cpumask_var(&tmpmask, GFP_NOWAIT);
+ #ifdef CONFIG_TICK_ONESHOT
+-	alloc_cpumask_var(&tick_broadcast_oneshot_mask, GFP_NOWAIT);
+-	alloc_cpumask_var(&tick_broadcast_pending_mask, GFP_NOWAIT);
+-	alloc_cpumask_var(&tick_broadcast_force_mask, GFP_NOWAIT);
++	zalloc_cpumask_var(&tick_broadcast_oneshot_mask, GFP_NOWAIT);
++	zalloc_cpumask_var(&tick_broadcast_pending_mask, GFP_NOWAIT);
++	zalloc_cpumask_var(&tick_broadcast_force_mask, GFP_NOWAIT);
+ #endif
+ }
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/
