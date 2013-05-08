@@ -2244,6 +2244,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable RemoteProc drivers on ARM
+
 * Wed May 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git22.1
 - Linux v3.9-11572-g5af43c2
 
