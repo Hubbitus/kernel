@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 21
+%define gitrev 22
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -736,6 +736,8 @@ Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
 # Fix i915 on Macbook Pro 10,2 machines
 Patch25015: 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
+
+Patch25016: tglx.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1419,6 +1421,8 @@ ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
 # Fix i915 on Macbook Pro 10,2 machines
 ApplyPatch 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
+
+ApplyPatch tglx.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2240,6 +2244,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 08 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git22.1
+- Linux v3.9-11572-g5af43c2
+
 * Tue May 07 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git21.1
 - Linux v3.9-11485-gbb9055b
 
