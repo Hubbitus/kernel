@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 22
+%define gitrev 23
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -731,8 +731,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
-
-Patch25014: blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
 # Fix i915 on Macbook Pro 10,2 machines
 Patch25015: 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
@@ -1416,8 +1414,6 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
-
-ApplyPatch blkcg-fix-scheduling-while-atomic-in-blk_queue_bypass_start.patch
 
 # Fix i915 on Macbook Pro 10,2 machines
 ApplyPatch 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
@@ -2244,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 09 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git23.1
+- Linux v3.9-11789-ge0fd9af
+
 * Wed May  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable RemoteProc drivers on ARM
 
