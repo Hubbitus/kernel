@@ -2240,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable DMA for ARM sound drivers
+
 * Thu May 09 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git23.1
 - Linux v3.9-11789-ge0fd9af
 
