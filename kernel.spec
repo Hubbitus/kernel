@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 23
+%define gitrev 24
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -696,8 +696,6 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 # ARM
 Patch21000: arm-export-read_current_timer.patch
-# https://lists.ozlabs.org/pipermail/devicetree-discuss/2013-March/029029.html
-Patch21001: arm-of-dma.patch
 
 # lpae
 Patch21002: arm-lpae-ax88796.patch
@@ -1287,7 +1285,6 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-export-read_current_timer.patch
-ApplyPatch arm-of-dma.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 #pplyPatch arm-tegra-fixclk.patch
@@ -2240,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 09 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git24.1
+- Linux v3.9-12070-g8cbc95e
+
 * Thu May  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable DMA for ARM sound drivers
 
