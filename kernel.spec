@@ -2238,6 +2238,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri May 10 2013 Josh Boyer <jwboyer@redhat.com>
+- Enable RTLWIFI_DEBUG in debug kernels (rhbz 889425)
 - Switch the loop driver to a module and change to doing on-demand creation
   (rhbz 896160)
 - Disable CRYPTOLOOP as F18 util-linux is the last to support it (rhbz 896160)
