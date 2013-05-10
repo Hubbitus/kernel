@@ -1,6 +1,6 @@
 # CONFIG_64BIT is not set
 
-CONFIG_X86_32_NON_STANDARD=y
+# CONFIG_X86_32_NON_STANDARD is not set
 
 # CONFIG_X86_ELAN is not set
 # CONFIG_X86_GOLDFISH is not set
