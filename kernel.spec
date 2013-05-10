@@ -2237,6 +2237,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 10 2013 Josh Boyer <jwboyer@redhat.com>
+- Switch the loop driver to a module and change to doing on-demand creation
+  (rhbz 896160)
+- Disable CRYPTOLOOP as F18 util-linux is the last to support it (rhbz 896160)
+
 * Fri May 10 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git25.1
 - Linux v3.9-12316-g70eba42
 
