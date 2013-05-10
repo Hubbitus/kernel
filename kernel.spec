@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 25
+%define gitrev 26
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2237,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 10 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git26.1
+- Linux v3.9-12555-g2dbd3ca
+
 * Fri May 10 2013 Josh Boyer <jwboyer@redhat.com>
 - Enable RTLWIFI_DEBUG in debug kernels (rhbz 889425)
 - Switch the loop driver to a module and change to doing on-demand creation
