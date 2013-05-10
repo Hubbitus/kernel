@@ -699,13 +699,10 @@ Patch21000: arm-export-read_current_timer.patch
 
 # lpae
 Patch21002: arm-lpae-ax88796.patch
-
-# ARM omap
+Patch21003: drm-exynos-fix-multiple-definition-build-error.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
-#atch21006: arm-tegra-fixclk.patch
-#atch21007: arm-tegra-sdhci-module-fix.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1286,9 +1283,8 @@ ApplyPatch debug-bad-pte-modules.patch
 #
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
+ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-#pplyPatch arm-tegra-fixclk.patch
-#pplyPatch arm-tegra-sdhci-module-fix.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2237,6 +2233,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 10 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix exynosdrm build, drop old tegra patches, minor config updates
+
 * Fri May 10 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc0.git26.1
 - Linux v3.9-12555-g2dbd3ca
 
