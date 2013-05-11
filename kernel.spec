@@ -701,6 +701,8 @@ Patch21000: arm-export-read_current_timer.patch
 Patch21002: arm-lpae-ax88796.patch
 Patch21003: drm-exynos-fix-multiple-definition-build-error.patch
 
+Patch21004: v2-thermal-cpu_cooling-fix-stub-function.patch
+
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
@@ -1284,6 +1286,7 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
+ApplyPatch v2-thermal-cpu_cooling-fix-stub-function.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 #
@@ -2233,6 +2236,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat May 11 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Another patch to fix ARM kernel build
+
 * Fri May 10 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix exynosdrm build, drop old tegra patches, minor config updates
 
