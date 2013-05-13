@@ -734,6 +734,9 @@ Patch25015: 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
 
 Patch25016: tglx.patch
 
+#rhbz 961527
+Patch25021: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1415,6 +1418,9 @@ ApplyPatch fix-child-thread-introspection.patch
 ApplyPatch 0001-Revert-drm-i915-revert-eDP-bpp-clamping-code-changes.patch
 
 ApplyPatch tglx.patch
+
+#rhbz 961527
+ApplyPatch radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2236,6 +2242,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 13 2013 Josh Boyer <jwboyer@redhat.com>
+- Add radeon fixes for PCI-e gen2 speed issues (rhbz 961527)
+
 * Mon May 13 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git0.2
 - Reenable debugging options.
 
