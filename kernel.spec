@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -453,8 +453,8 @@ Summary: The Linux kernel
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, module-init-tools >= 3.16-4, initscripts >= 8.11.1-1, grubby >= 8.3-1
-%define initrd_prereq  dracut >= 001-7
+%define kernel_prereq  fileutils, module-init-tools >= 3.16-4, initscripts >= 8.11.1-1, systemd >= 203-2
+%define initrd_prereq  dracut >= 027
 
 #
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
@@ -476,8 +476,7 @@ Provides: kernel-omap-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
-Requires(post): /sbin/new-kernel-pkg\
-Requires(preun): /sbin/new-kernel-pkg\
+Requires(preun): systemd >= 200\
 Conflicts: %{kernel_dot_org_conflicts}\
 Conflicts: %{package_conflicts}\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
@@ -2027,8 +2026,7 @@ fi\
 #
 %define kernel_variant_posttrans() \
 %{expand:%%posttrans %{?1}}\
-/sbin/new-kernel-pkg --package kernel%{?-v:-%{-v*}} --mkinitrd --dracut --depmod --update %{KVERREL}%{?-v:.%{-v*}} || exit $?\
-/sbin/new-kernel-pkg --package kernel%{?1:-%{1}} --rpmposttrans %{KVERREL}%{?1:.%{1}} || exit $?\
+/bin/kernel-install add %{KVERREL}%{?1:.%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:.%{1}} || exit $?\
 %{nil}
 
 #
@@ -2046,9 +2044,6 @@ if [ `uname -i` == "x86_64" -o `uname -i` == "i386" ] &&\
    [ -f /etc/sysconfig/kernel ]; then\
   /bin/sed -r -i -e 's/^DEFAULTKERNEL=%{-r*}$/DEFAULTKERNEL=kernel%{?-v:-%{-v*}}/' /etc/sysconfig/kernel || exit $?\
 fi}\
-%{expand:\
-/sbin/new-kernel-pkg --package kernel%{?-v:-%{-v*}} --install %{KVERREL}%{?-v:.%{-v*}} || exit $?\
-}\
 %{nil}
 
 #
@@ -2057,7 +2052,7 @@ fi}\
 #
 %define kernel_variant_preun() \
 %{expand:%%preun %{?1}}\
-/sbin/new-kernel-pkg --rminitrd --rmmoddep --remove %{KVERREL}%{?1:.%{1}} || exit $?\
+/bin/kernel-install remove %{KVERREL}%{?1:.%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:.%{1}} || exit $?\
 %{nil}
 
 %kernel_variant_preun
@@ -2236,6 +2231,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 15 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch from Harald Hoyer to migrate to using kernel-install
+
 * Wed May 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git4.1
 - Linux v3.10-rc1-120-gb973425
 
