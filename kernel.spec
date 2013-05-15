@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -727,8 +727,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
-
-Patch25016: tglx.patch
 
 #rhbz 961527
 Patch25021: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
@@ -1409,8 +1407,6 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
-
-ApplyPatch tglx.patch
 
 #rhbz 961527
 ApplyPatch radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
@@ -2231,6 +2227,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git5.1
+- Linux v3.10-rc1-185-gc240a53
+
 * Wed May 15 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch from Harald Hoyer to migrate to using kernel-install
 
