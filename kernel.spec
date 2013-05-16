@@ -2226,6 +2226,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu May 16 2013 Josh Boyer <jwboyer@redhat.com>
+- Enable memory cgroup swap accounting (rhbz 918951)
 - Fix config-local usage (rhbz 950841)
 
 * Wed May 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git5.1
