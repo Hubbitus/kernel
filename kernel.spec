@@ -1246,14 +1246,12 @@ make -f %{SOURCE19} config-release
 make -f %{SOURCE20} VERSION=%{version} configs
 
 # Merge in any user-provided local config option changes
-%if %{?all_arch_configs:1}%{!?all_arch_configs:0}
-for i in %{all_arch_configs}
+for i in kernel-%{version}-*.config
 do
   mv $i $i.tmp
   ./merge.pl %{SOURCE1000} $i.tmp > $i
   rm $i.tmp
 done
-%endif
 
 ApplyPatch makefile-after_link.patch
 
@@ -2227,6 +2225,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 16 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix config-local usage (rhbz 950841)
+
 * Wed May 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git5.1
 - Linux v3.10-rc1-185-gc240a53
 
