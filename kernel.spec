@@ -2225,6 +2225,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM update
+
 * Mon May 20 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc1.git7.1
 - Linux v3.10-rc1-369-g343cd4f
 
