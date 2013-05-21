@@ -1690,18 +1690,8 @@ BuildKernel() {
     			 'drm_crtc_init'
 
     # detect missing or incorrect license tags
-    rm -f modinfo
-    while read i
-    do
-      echo -n "${i#$RPM_BUILD_ROOT/lib/modules/$KernelVer/} " >> modinfo
-      /sbin/modinfo -l $i >> modinfo
-    done < modnames
-
-    grep -E -v \
-    	  'GPL( v2)?$|Dual BSD/GPL$|Dual MPL/GPL$|GPL and additional rights$' \
-	  modinfo && exit 1
-
-    rm -f modinfo modnames
+    ( find $RPM_BUILD_ROOT/lib/modules/$KernelVer -name '*.ko' | xargs /sbin/modinfo -l | \
+        grep -E -v 'GPL( v2)?$|Dual BSD/GPL$|Dual MPL/GPL$|GPL and additional rights$' ) && exit 1
 
     # Call the modules-extra script to move things around
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
@@ -2225,10 +2215,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 21 2013 Kyle McMartin <kyle@redhat.com>
+- Rewrite the modinfo license check to generate significantly less noise in
+  build logs.
+
 * Tue May 21 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable OMAP5 on ARM multiplatform
 
-* Tue May 21 2013 Kyle McMartin <kmcmartin@redhat.com> - 3.10.0-0.rc2.git0.2
+* Tue May 21 2013 Kyle McMartin <kyle@redhat.com> - 3.10.0-0.rc2.git0.2
 - Disable debugging options.
 
 * Mon May 20 2013 Kyle McMartin <kyle@redhat.com> - 3.10.0-0.rc2.git0.1
