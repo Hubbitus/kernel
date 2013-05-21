@@ -2225,6 +2225,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 21 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable OMAP5 on ARM multiplatform
+
 * Tue May 21 2013 Kyle McMartin <kmcmartin@redhat.com> - 3.10.0-0.rc2.git0.2
 - Disable debugging options.
 
