@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -730,6 +730,9 @@ Patch23006: fix-child-thread-introspection.patch
 
 #rhbz 961527
 Patch25021: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
+
+#rhbz 964367
+Patch25023: hp-wmi-fix-incorrect-rfkill-set-hw-state.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1408,6 +1411,9 @@ ApplyPatch fix-child-thread-introspection.patch
 
 #rhbz 961527
 ApplyPatch radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
+
+#rhbz 964367
+ApplyPatch hp-wmi-fix-incorrect-rfkill-set-hw-state.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2212,6 +2218,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 23 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix oops from incorrect rfkill set in hp-wmi (rhbz 964367)
+
 * Wed May 22 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc2.git1.1
 - Linux v3.10-rc2-68-gbb3ec6b
 - Reenable debugging options.
