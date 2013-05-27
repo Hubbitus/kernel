@@ -473,6 +473,8 @@ Provides: kernel-highbank\
 Provides: kernel-highbank-uname-r = %{KVERREL}%{?1:.%{1}}\
 Provides: kernel-omap\
 Provides: kernel-omap-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-tegra\
+Provides: kernel-tegra-uname-r = %{KVERREL}%{?1:.%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
@@ -2226,6 +2228,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 27 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Fri May 24 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch to quiet irq remapping failures (rhbz 948262)
 
