@@ -2228,6 +2228,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 30 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config update for tegra (AC100)
+
 * Mon May 27 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc3.git0.1
 - Linux v3.10-rc3
 - Disable debugging options.
