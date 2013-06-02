@@ -699,10 +699,13 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch21000: arm-export-read_current_timer.patch
 
 # lpae
-Patch21002: arm-lpae-ax88796.patch
-Patch21003: drm-exynos-fix-multiple-definition-build-error.patch
+Patch21001: arm-lpae-ax88796.patch
+Patch21002: drm-exynos-fix-multiple-definition-build-error.patch
 
-Patch21004: v2-thermal-cpu_cooling-fix-stub-function.patch
+Patch21003: v2-thermal-cpu_cooling-fix-stub-function.patch
+
+# ARM omap
+Patch21004: arm-omap-load-tfp410.patch
 
 # ARM tegra
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
@@ -1292,6 +1295,7 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
+ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch v2-thermal-cpu_cooling-fix-stub-function.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
@@ -2234,6 +2238,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jun  2 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix DRM/X on omap (panda)
+- Enable Cortex-A8 errata on multiplatform kernels (omap3)
+- Minor ARM config updates
+
 * Fri May 31 2013 Josh Boyer <jwboyer@redhat.com>
 - CVE-2013-2850 iscsi-target: heap buffer overflow on large key error (rhbz 968036 969272)
 
