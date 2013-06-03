@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -744,6 +744,9 @@ Patch25024: intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.pa
 
 #CVE-2013-2850 rhbz 968036 969272
 Patch25025: iscsi-target-fix-heap-buffer-overflow-on-error.patch
+
+#rhbz 964335
+Patch25026: Modify-UEFI-anti-bricking-code.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1432,6 +1435,9 @@ ApplyPatch intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.pat
 
 #CVE-2013-2850 rhbz 968036 969272
 ApplyPatch iscsi-target-fix-heap-buffer-overflow-on-error.patch
+
+#rhbz 964335
+ApplyPatch Modify-UEFI-anti-bricking-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2238,6 +2244,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 03 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix UEFI anti-bricking code (rhbz 964335)
+
 * Mon Jun  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config changes
 
