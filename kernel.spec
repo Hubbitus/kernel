@@ -2238,6 +2238,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config changes
+
 * Sun Jun  2 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix DRM/X on omap (panda)
 - Enable Cortex-A8 errata on multiplatform kernels (omap3)
