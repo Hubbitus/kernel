@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -733,17 +733,11 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
 
-#rhbz 961527
-Patch25021: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
-
 #rhbz 964367
 Patch25023: hp-wmi-fix-incorrect-rfkill-set-hw-state.patch
 
 #rhbz 948262
 Patch25024: intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.patch
-
-#CVE-2013-2850 rhbz 968036 969272
-Patch25025: iscsi-target-fix-heap-buffer-overflow-on-error.patch
 
 #rhbz 964335
 Patch25026: Modify-UEFI-anti-bricking-code.patch
@@ -1424,17 +1418,11 @@ ApplyPatch 0001-kmsg-Honor-dmesg_restrict-sysctl-on-dev-kmsg.patch
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
 
-#rhbz 961527
-ApplyPatch radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
-
 #rhbz 964367
 ApplyPatch hp-wmi-fix-incorrect-rfkill-set-hw-state.patch
 
 #rhbz 948262
 ApplyPatch intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.patch
-
-#CVE-2013-2850 rhbz 968036 969272
-ApplyPatch iscsi-target-fix-heap-buffer-overflow-on-error.patch
 
 #rhbz 964335
 ApplyPatch Modify-UEFI-anti-bricking-code.patch
@@ -2244,6 +2232,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 04 2013 Dave Jones <davej@redhat.com> - 3.10.0-0.rc4.git0.1
+- 3.10-rc4
+  merged: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
+  merged: iscsi-target-fix-heap-buffer-overflow-on-error.patch
+
 * Mon Jun 03 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix UEFI anti-bricking code (rhbz 964335)
 
