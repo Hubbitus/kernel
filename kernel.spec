@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -741,6 +741,9 @@ Patch25024: intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.pa
 
 #rhbz 964335
 Patch25026: Modify-UEFI-anti-bricking-code.patch
+
+#CVE-2013-2140 rhbz 971146 971148
+Patch25031: xen-blkback-Check-device-permissions-before-allowing.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1426,6 +1429,9 @@ ApplyPatch intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.pat
 
 #rhbz 964335
 ApplyPatch Modify-UEFI-anti-bricking-code.patch
+
+#CVE-2013-2140 rhbz 971146 971148
+ApplyPatch xen-blkback-Check-device-permissions-before-allowing.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2232,6 +2238,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 05 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-2140 xen: blkback: insufficient permission checks for BLKIF_OP_DISCARD (rhbz 971146 971148)
+
 * Tue Jun 04 2013 Dave Jones <davej@redhat.com> - 3.10.0-0.rc4.git0.1
 - 3.10-rc4
   merged: radeon-use-max_bus-speed-to-activate-gen2-speeds.patch
