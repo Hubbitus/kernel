@@ -754,6 +754,9 @@ Patch25033: fanotify-info-leak-in-copy_event_to_user.patch
 #CVE-2013-2852 rhbz 969518 971665
 Patch25034: b43-stop-format-string-leaking-into-error-msgs.patch
 
+#CVE-2013-2851 rhbz 969515 971662
+Patch25035: block-do-not-pass-disk-names-as-format-strings.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1450,6 +1453,9 @@ ApplyPatch fanotify-info-leak-in-copy_event_to_user.patch
 
 #CVE-2013-2852 rhbz 969518 971665
 ApplyPatch b43-stop-format-string-leaking-into-error-msgs.patch
+
+#CVE-2013-2851 rhbz 969515 971662
+ApplyPatch block-do-not-pass-disk-names-as-format-strings.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2257,6 +2263,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jun 07 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-2851 block: passing disk names as format strings (rhbz 969515 971662)
 - CVE-2013-2852 b43: format string leaking into error msgs (rhbz 969518 971665)
 
 * Thu Jun 06 2013 Josh Boyer <jwboyer@redhat.com>
