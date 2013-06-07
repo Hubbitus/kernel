@@ -751,6 +751,9 @@ Patch25032: cve-2013-2147-ciss-info-leak.patch
 #CVE-2013-2148 rhbz 971258 971261
 Patch25033: fanotify-info-leak-in-copy_event_to_user.patch
 
+#CVE-2013-2852 rhbz 969518 971665
+Patch25034: b43-stop-format-string-leaking-into-error-msgs.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1444,6 +1447,9 @@ ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 #CVE-2013-2148 rhbz 971258 971261
 ApplyPatch fanotify-info-leak-in-copy_event_to_user.patch
+
+#CVE-2013-2852 rhbz 969518 971665
+ApplyPatch b43-stop-format-string-leaking-into-error-msgs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2250,6 +2256,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 07 2013 Josh Boyer <jwboyer@redhat.com>
+- CVE-2013-2852 b43: format string leaking into error msgs (rhbz 969518 971665)
+
 * Thu Jun 06 2013 Josh Boyer <jwboyer@redhat.com>
 - CVE-2013-2148 fanotify: info leak in copy_event_to_user (rhbz 971258 971261)
 - CVE-2013-2147 cpqarray/cciss: information leak via ioctl (rhbz 971242 971249)
