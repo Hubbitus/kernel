@@ -2262,6 +2262,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 10 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Freescale i.MX platforms and initial config
+
 * Fri Jun 07 2013 Josh Boyer <jwboyer@redhat.com>
 - CVE-2013-2851 block: passing disk names as format strings (rhbz 969515 971662)
 - CVE-2013-2852 b43: format string leaking into error msgs (rhbz 969518 971665)
