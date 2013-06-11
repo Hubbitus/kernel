@@ -1,7 +1,7 @@
-From 3add6ae9e1b854a9ddbe0dc17ff4ec48a2dac9fe Mon Sep 17 00:00:00 2001
+From 4364d5f96eed7994a2c625bd9216656e55fba0cb Mon Sep 17 00:00:00 2001
 From: Jason Wang <jasowang@redhat.com>
-Date: Wed, 5 Jun 2013 07:40:46 +0000
-Subject: [PATCH] vhost_net: clear msg.control for non-zerocopy case during tx
+Date: Wed, 05 Jun 2013 07:40:46 +0000
+Subject: vhost_net: clear msg.control for non-zerocopy case during tx
 
 When we decide not use zero-copy, msg.control should be set to NULL otherwise
 macvtap/tap may set zerocopy callbacks which may decrease the kref of ubufs
@@ -37,24 +37,19 @@ Signed-off-by: Jason Wang <jasowang@redhat.com>
 Acked-by: Michael S. Tsirkin <mst@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 ---
- drivers/vhost/net.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
 diff --git a/drivers/vhost/net.c b/drivers/vhost/net.c
-index ec6fb3f..3980e66 100644
+index 2b51e23..b07d96b 100644
 --- a/drivers/vhost/net.c
 +++ b/drivers/vhost/net.c
-@@ -353,7 +353,9 @@ static void handle_tx(struct vhost_net *net)
+@@ -436,7 +436,8 @@ static void handle_tx(struct vhost_net *net)
  				kref_get(&ubufs->kref);
  			}
- 			vq->upend_idx = (vq->upend_idx + 1) % UIO_MAXIOV;
+ 			nvq->upend_idx = (nvq->upend_idx + 1) % UIO_MAXIOV;
 -		}
 +		} else
 +			msg.msg_control = NULL;
-+
  		/* TODO: Check specific error and bomb out unless ENOBUFS? */
  		err = sock->ops->sendmsg(NULL, sock, &msg, len);
  		if (unlikely(err < 0)) {
--- 
-1.8.1.4
-
+--
+cgit v0.9.2
