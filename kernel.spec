@@ -694,6 +694,8 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
+Patch15000: nowatchdog-on-virt.patch
+
 
 # ARM
 Patch21000: arm-export-read_current_timer.patch
@@ -1417,6 +1419,9 @@ ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 #ApplyPatch hibernate-freeze-filesystems.patch
 
 ApplyPatch lis3-improve-handling-of-null-rate.patch
+
+# Disable watchdog on virtual machines.
+ApplyPatch nowatchdog-on-virt.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -2278,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 11 2013 Dave Jones <davej@redhat.com>
+- Disable soft lockup detector on virtual machines. (rhbz 971139)
+
 * Tue Jun 11 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patches to fix MTRR issues in 3.9.5 (rhbz 973185)
 - Add two patches to fix issues with vhost_net and macvlan (rhbz 954181)
