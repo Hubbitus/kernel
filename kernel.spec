@@ -757,6 +757,11 @@ Patch25035: block-do-not-pass-disk-names-as-format-strings.patch
 #CVE-2013-2164 rhbz 973100 973109
 Patch25038: cdrom-use-kzalloc-for-failing-hardware.patch
 
+#rhbz 954181
+Patch25039: vhost_net-clear-msg.control-for-non-zerocopy-case-during-tx.patch
+Patch25040: tuntap-set-SOCK_ZEROCOPY-flag-during-open.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1456,6 +1461,10 @@ ApplyPatch block-do-not-pass-disk-names-as-format-strings.patch
 
 #CVE-2013-2164 rhbz 973100 973109
 ApplyPatch cdrom-use-kzalloc-for-failing-hardware.patch
+
+#rhbz 954181
+ApplyPatch vhost_net-clear-msg.control-for-non-zerocopy-case-during-tx.patch
+ApplyPatch tuntap-set-SOCK_ZEROCOPY-flag-during-open.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2262,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 11 2013 Josh Boyer <jwboyer@redhat.com>
+- Add two patches to fix issues with vhost_net and macvlan (rhbz 954181)
+
 * Tue Jun 11 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc5.git0.1
 - Linux v3.10-rc5
 - CVE-2013-2164 information leak in cdrom driver (rhbz 973100 973109)
