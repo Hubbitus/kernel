@@ -1012,7 +1012,7 @@ hyperthreading technology.
 Install the kernel-smp package if your machine uses two or more CPUs.
 
 
-%ifarch %{ix86}
+%ifnarch armv7hl
 %define variant_summary The Linux kernel compiled for PAE capable machines
 %kernel_variant_package %{pae}
 %description %{pae}
@@ -1020,14 +1020,12 @@ This package includes a version of the Linux kernel with support for up to
 64GB of high memory. It requires a CPU with Physical Address Extensions (PAE).
 The non-PAE kernel can only address up to 4GB of memory.
 Install the kernel-PAE package if your machine has more than 4GB of memory.
-%endif
-%ifarch armv7hl
+%else
 %define variant_summary The Linux kernel compiled for Cortex-A15
 %kernel_variant_package %{pae}
 %description %{pae}
 This package includes a version of the Linux kernel with support for
 Cortex-A15 devices with LPAE and HW virtualisation support
-%endif
 %endif
 
 
