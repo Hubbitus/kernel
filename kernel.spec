@@ -767,6 +767,9 @@ Patch25040: tuntap-set-SOCK_ZEROCOPY-flag-during-open.patch
 Patch25041: x86-mtrr-Fix-original-mtrr-range-get-for-mtrr_cleanup.patch
 Patch25042: x86-range-make-add_range-use-blank-slot.patch
 
+#rhbz 950735
+Patch25045: rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1477,6 +1480,9 @@ ApplyPatch tuntap-set-SOCK_ZEROCOPY-flag-during-open.patch
 #rhbz 973185
 ApplyPatch x86-mtrr-Fix-original-mtrr-range-get-for-mtrr_cleanup.patch
 ApplyPatch x86-range-make-add_range-use-blank-slot.patch
+
+#rhbz 950735
+ApplyPatch rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2283,6 +2289,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 12 2013 Josh Boyer <jwboyer@redhat.com>
+- Add fix for rt5390/rt3290 regression (rhbz 950735)
+
 * Tue Jun 11 2013 Dave Jones <davej@redhat.com>
 - Disable soft lockup detector on virtual machines. (rhbz 971139)
 
