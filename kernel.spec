@@ -377,6 +377,8 @@ Summary: The Linux kernel
 %define pae lpae
 %define make_target bzImage
 %define kernel_image arch/arm/boot/zImage
+# http://lists.infradead.org/pipermail/linux-arm-kernel/2012-March/091404.html
+%define kernel_mflags KALLSYMS_EXTRA_PASS=1
 # we only build headers/perf/tools on the base arm arches
 # just like we used to only build them on i386 for x86
 %ifnarch armv7hl
@@ -1613,18 +1615,15 @@ BuildKernel() {
     echo USING ARCH=$Arch
 
     make -s ARCH=$Arch oldnoconfig >/dev/null
-%ifarch %{arm}
-    # http://lists.infradead.org/pipermail/linux-arm-kernel/2012-March/091404.html
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} KALLSYMS_EXTRA_PASS=1
+    make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
+    make -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
+%ifarch %{arm}
     make -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
     rm -f arch/arm/boot/dts/*.dtb
-%else
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags}
 %endif
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
     # Start installing the results
 %if %{with_debuginfo}
