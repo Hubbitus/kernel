@@ -2283,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 12 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Wed Jun 12 2013 Kyle McMartin <kmcmarti@redhat.com>
 - Merge %{with_pae} and %{with_lpae} so both ARM and i686 use the same
   flavours. Set %{pae} to the flavour name {lpae, PAE}. Merging
