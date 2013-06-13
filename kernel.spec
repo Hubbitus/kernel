@@ -695,7 +695,6 @@ Patch15000: nowatchdog-on-virt.patch
 
 
 # ARM
-Patch21000: arm-export-read_current_timer.patch
 
 # lpae
 Patch21001: arm-lpae-ax88796.patch
@@ -1319,7 +1318,6 @@ ApplyPatch debug-bad-pte-modules.patch
 #
 # ARM
 #
-ApplyPatch arm-export-read_current_timer.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
@@ -2283,6 +2281,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 13 2013 Kyle McMartin <kyle@redhat.com>
+- arm-export-read_current_timer.patch: drop upstream patch
+  (results in duplicate exports)
+
 * Wed Jun 12 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 
