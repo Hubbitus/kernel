@@ -147,6 +147,9 @@ Summary: The Linux kernel
 # should we do C=1 builds with sparse
 %define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
 #
+# Cross compile requested?
+%define with_cross    %{?_with_cross:         1} %{?!_with_cross:        0}
+#
 # build a release kernel on rawhide
 %define with_release   %{?_with_release:      1} %{?!_with_release:      0}
 
@@ -532,6 +535,11 @@ BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
 %if %{signmodules}
 BuildRequires: openssl
 BuildRequires: pesign >= 0.10-4
+%endif
+
+%if %{with_cross}
+BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
+%define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
@@ -1507,6 +1515,8 @@ mkdir configs
 rm -f kernel-%{version}-*debug.config
 %endif
 
+%define make make %{?cross_opts}
+
 # now run oldconfig over all the config files
 for i in *.config
 do
@@ -1600,7 +1610,7 @@ BuildKernel() {
 
     # and now to start the build process
 
-    make -s mrproper
+    %{make} -s mrproper
     cp configs/$Config .config
 
     %if %{signmodules}
@@ -1613,11 +1623,11 @@ BuildKernel() {
     echo USING ARCH=$Arch
 
     make -s ARCH=$Arch oldnoconfig >/dev/null
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
-    make -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
+    %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
+    %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
 %ifarch %{arm}
-    make -s ARCH=$Arch V=1 dtbs
+    %{make} -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
     install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
     rm -f arch/arm/boot/dts/*.dtb
@@ -1656,10 +1666,10 @@ BuildKernel() {
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer
     # Override $(mod-fw) because we don't want it to install any firmware
     # we'll get it from the linux-firmware package and we don't want conflicts
-    make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_install KERNELRELEASE=$KernelVer mod-fw=
+    %{make} -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_install KERNELRELEASE=$KernelVer mod-fw=
 
 %ifarch %{vdso_arches}
-    make -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT vdso_install KERNELRELEASE=$KernelVer
+    %{make} -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT vdso_install KERNELRELEASE=$KernelVer
     if [ ! -s ldconfig-kernel.conf ]; then
       echo > ldconfig-kernel.conf "\
 # Placeholder file, no vDSO hwcap entries used in this kernel."
@@ -1828,7 +1838,7 @@ BuildKernel %make_target %kernel_image smp
 %endif
 
 %global perf_make \
-  make %{?_smp_mflags} -C tools/perf -s V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_LIBNUMA=1 NO_STRLCPY=1 prefix=%{_prefix}
+  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_LIBNUMA=1 NO_STRLCPY=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} all
@@ -1840,23 +1850,23 @@ BuildKernel %make_target %kernel_image smp
 # cpupower
 # make sure version-gen.sh is executable.
 chmod +x tools/power/cpupower/utils/version-gen.sh
-make %{?_smp_mflags} -C tools/power/cpupower CPUFREQ_BENCH=false
+%{make} %{?_smp_mflags} -C tools/power/cpupower CPUFREQ_BENCH=false
 %ifarch %{ix86}
     pushd tools/power/cpupower/debug/i386
-    make %{?_smp_mflags} centrino-decode powernow-k8-decode
+    %{make} %{?_smp_mflags} centrino-decode powernow-k8-decode
     popd
 %endif
 %ifarch x86_64
     pushd tools/power/cpupower/debug/x86_64
-    make %{?_smp_mflags} centrino-decode powernow-k8-decode
+    %{make} %{?_smp_mflags} centrino-decode powernow-k8-decode
     popd
 %endif
 %ifarch %{ix86} x86_64
    pushd tools/power/x86/x86_energy_perf_policy/
-   make
+   %{make}
    popd
    pushd tools/power/x86/turbostat
-   make
+   %{make}
    popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
@@ -1990,7 +2000,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_tools}
 %ifarch %{cpupowerarchs}
-make -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFREQ_BENCH=false install
+%{make} -C tools/power/cpupower DESTDIR=$RPM_BUILD_ROOT libdir=%{_libdir} mandir=%{_mandir} CPUFREQ_BENCH=false install
 rm -f %{buildroot}%{_libdir}/*.{a,la}
 %find_lang cpupower
 mv cpupower.lang ../
@@ -2281,6 +2291,16 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 13 2013 Kyle McMartin <kyle@redhat.com>
+- Introduce infrastructure for cross-compiling Fedora kernels. Intended to
+  assist building for secondary architectures like ppc64, s390x, and arm.
+  To use, create an .src.rpm using "fedpkg srpm" and then run
+  "rpmbuild --rebuild --with cross --without perf --without tools \
+    kernel*.src.rpm" to cross compile. This requires binutils and gcc
+  packages named like %_target_cpu, which all but powerpc64 currently provides
+  in rawhide/F-19. Can't (currently) cross compile perf or kernel-tools, since
+  libc is missing from the cross environment.
+
 * Thu Jun 13 2013 Kyle McMartin <kyle@redhat.com>
 - arm-export-read_current_timer.patch: drop upstream patch
   (results in duplicate exports)
