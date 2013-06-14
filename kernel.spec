@@ -1610,7 +1610,7 @@ BuildKernel() {
 
     # and now to start the build process
 
-    %{make} -s mrproper
+    make -s mrproper
     cp configs/$Config .config
 
     %if %{signmodules}
