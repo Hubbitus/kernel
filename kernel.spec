@@ -285,7 +285,7 @@ Summary: The Linux kernel
 
 %if %{with_vdso_install}
 # These arches install vdso/ directories.
-%define vdso_arches %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x
+%define vdso_arches %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x aarch64
 %endif
 
 # Overrides for generic default options
@@ -391,6 +391,15 @@ Summary: The Linux kernel
 %endif
 %endif
 
+%ifarch aarch64
+%define all_arch_configs kernel-%{version}-arm64.config
+%define asmarch arm64
+%define hdrarch arm64
+%define make_target Image.gz
+%define kernel_image arch/arm64/boot/Image.gz
+%define image_install_path boot
+%endif
+
 # Should make listnewconfig fail if there's config options
 # printed out?
 %if %{nopatches}%{using_upstream_branch}
@@ -424,7 +433,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm}
+%define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm} aarch64
 
 #
 # Three sets of minimum package version requirements in the form of Conflicts:
@@ -499,7 +508,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm}
+ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
@@ -574,10 +583,14 @@ Source54: config-powerpc64p7
 
 Source70: config-s390x
 
+Source100: config-arm-generic
+
 # Unified ARM kernels
-Source100: config-armv7-generic
-Source101: config-armv7
-Source102: config-armv7-lpae
+Source101: config-armv7-generic
+Source102: config-armv7
+Source103: config-armv7-lpae
+
+Source110: config-arm64
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -701,6 +714,9 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 Patch15000: nowatchdog-on-virt.patch
 
+# ARM64
+
+Patch16000: arm64-makefile-vdso_install.patch
 
 # ARM
 
@@ -1322,6 +1338,9 @@ ApplyPatch debug-bad-pte-modules.patch
 
 # Architecture patches
 # x86(-64)
+
+# ARM64
+ApplyPatch arm64-makefile-vdso_install.patch
 
 #
 # ARM
@@ -2291,11 +2310,24 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 14 2013 Kyle McMartin <kyle@redhat.com>
+- ARM64 support (config-arm64)
+  Split out some config-armv7-generic options common between 32-bit and 64-bit
+  ARM into a new config-arm-generic, and use that as a base for
+  both.
+  Buildable in rawhide, and F-19 by installing {gcc,binutils}-aarch64-linux-gnu
+  and running:
+  rpmbuild --rebuild --target $ARCH --with cross --without perf \
+    --without tools --without debuginfo --define "_arch aarch64" \
+    --define "_build_arch aarch64" \
+    --define "__strip /usr/bin/aarch64-linux-gnu-strip" kernel*.src.rpm
+  As rpm in F-19 doesn't have aarch64-linux macros yet.
+
 * Thu Jun 13 2013 Kyle McMartin <kyle@redhat.com>
 - Introduce infrastructure for cross-compiling Fedora kernels. Intended to
   assist building for secondary architectures like ppc64, s390x, and arm.
   To use, create an .src.rpm using "fedpkg srpm" and then run
-  "rpmbuild --rebuild --with cross --without perf --without tools \
+  "rpmbuild --rebuild --target t --with cross --without perf --without tools \
     kernel*.src.rpm" to cross compile. This requires binutils and gcc
   packages named like %_target_cpu, which all but powerpc64 currently provides
   in rawhide/F-19. Can't (currently) cross compile perf or kernel-tools, since
