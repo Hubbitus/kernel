@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 18 2013 Dave Jones <davej@redhat.com>
+- Disable MTRR sanitizer by default.
+
 * Tue Jun 18 2013 Justin M. Forbes <jforbes@redhat.com> - 3.10.0-0.rc6.git0.4
 - Testing the test harness
 
