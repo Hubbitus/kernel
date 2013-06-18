@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2288,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 18 2013 Justin M. Forbes <jforbes@redhat.com> - 3.10.0-0.rc6.git0.4
+- Testing the test harness
+
 * Tue Jun 18 2013 Justin M. Forbes <jforbes@redhat.com> - 3.10.0-0.rc6.git0.3
 - Reenable debugging options.
 
