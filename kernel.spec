@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -778,6 +778,9 @@ Patch25046: KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
+#rhbz 903741
+Patch25052: HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1483,6 +1486,9 @@ ApplyPatch rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
 ApplyPatch KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
+
+#rhbz 903741
+ApplyPatch HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2280,6 +2286,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 24 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix battery issue with bluetooth keyboards (rhbz 903741)
+
 * Mon Jun 24 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc7.git0.1
 - Linux v3.10-rc7
 - Disable debugging options.
