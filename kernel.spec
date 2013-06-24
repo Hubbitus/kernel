@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -156,7 +156,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -169,7 +169,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -769,10 +769,6 @@ Patch25035: block-do-not-pass-disk-names-as-format-strings.patch
 
 #CVE-2013-2164 rhbz 973100 973109
 Patch25038: cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 973185
-Patch25041: x86-mtrr-Fix-original-mtrr-range-get-for-mtrr_cleanup.patch
-Patch25042: x86-range-make-add_range-use-blank-slot.patch
 
 #rhbz 950735
 Patch25045: rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
@@ -1479,10 +1475,6 @@ ApplyPatch block-do-not-pass-disk-names-as-format-strings.patch
 
 #CVE-2013-2164 rhbz 973100 973109
 ApplyPatch cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 973185
-ApplyPatch x86-mtrr-Fix-original-mtrr-range-get-for-mtrr_cleanup.patch
-ApplyPatch x86-range-make-add_range-use-blank-slot.patch
 
 #rhbz 950735
 ApplyPatch rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
@@ -2288,6 +2280,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 24 2013 Josh Boyer <jwboyer@redhat.com> - 3.10.0-0.rc7.git0.1
+- Linux v3.10-rc7
+- Disable debugging options.
+
 * Tue Jun 18 2013 Dave Jones <davej@redhat.com>
 - Disable MTRR sanitizer by default.
 
