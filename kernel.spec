@@ -781,6 +781,10 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 903741
 Patch25052: HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 
+#rhbz 880035
+Patch25053: bridge-only-expire-the-mdb-entry-when-query-is-received.patch
+Patch25054: bridge-send-query-as-soon-as-leave-is-received.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1489,6 +1493,10 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 903741
 ApplyPatch HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
+
+#rhbz 880035
+ApplyPatch bridge-only-expire-the-mdb-entry-when-query-is-received.patch
+ApplyPatch bridge-send-query-as-soon-as-leave-is-received.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2286,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Add two patches to fix bridge networking issues (rhbz 880035)
+
 * Mon Jun 24 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix battery issue with bluetooth keyboards (rhbz 903741)
 
