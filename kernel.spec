@@ -785,6 +785,9 @@ Patch25052: HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 Patch25053: bridge-only-expire-the-mdb-entry-when-query-is-received.patch
 Patch25054: bridge-send-query-as-soon-as-leave-is-received.patch
 
+#rhbz 977558
+Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1497,6 +1500,9 @@ ApplyPatch HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 #rhbz 880035
 ApplyPatch bridge-only-expire-the-mdb-entry-when-query-is-received.patch
 ApplyPatch bridge-send-query-as-soon-as-leave-is-received.patch
+
+#rhbz 977558
+ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2294,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 27 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix stack memory usage for DMA in ath3k (rhbz 977558)
+
 * Wed Jun 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Add two patches to fix bridge networking issues (rhbz 880035)
 
