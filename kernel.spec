@@ -2300,6 +2300,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 28 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Only enable ARM A15 errata on the LPAE kernel as it breaks A8
+
 * Thu Jun 27 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix stack memory usage for DMA in ath3k (rhbz 977558)
 
