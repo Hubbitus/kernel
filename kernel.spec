@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,13 +62,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 9
+%define base_sublevel 10
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 0
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -769,9 +769,6 @@ Patch25035: block-do-not-pass-disk-names-as-format-strings.patch
 
 #CVE-2013-2164 rhbz 973100 973109
 Patch25038: cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 950735
-Patch25045: rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
 
 #rhbz 969644
 Patch25046: KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
@@ -1485,9 +1482,6 @@ ApplyPatch block-do-not-pass-disk-names-as-format-strings.patch
 
 #CVE-2013-2164 rhbz 973100 973109
 ApplyPatch cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 950735
-ApplyPatch rt2800-fix-RT5390-RT3290-TX-power-settings-regression.patch
 
 #rhbz 969644
 ApplyPatch KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
@@ -2300,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 01 2013 Justin M. Forbes <jforbes@redhat.com> - 3.10-1
+- Linux v3.10
+
 * Fri Jun 28 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Only enable ARM A15 errata on the LPAE kernel as it breaks A8
 
