@@ -788,6 +788,10 @@ Patch25054: bridge-send-query-as-soon-as-leave-is-received.patch
 #rhbz 977558
 Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 
+#rhbz 977040
+Patch25056: iwl3945-better-skb-management-in-rx-path.patch
+Patch25057: iwl4965-better-skb-management-in-rx-path.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1500,6 +1504,10 @@ ApplyPatch bridge-send-query-as-soon-as-leave-is-received.patch
 
 #rhbz 977558
 ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
+
+#rhbz 977040
+ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
+ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2297,6 +2305,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 03 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patches to fix iwl skb managment (rhbz 977040)
+
 * Tue Jul 02 2013 Dennis Gilmore <dennis@ausil.us> - 3.10-2
 - create a dtb for wandboard quad
 
