@@ -794,6 +794,9 @@ Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
 Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
+#rhbz 976789 980643
+Patch25062: vhost-net-fix-use-after-free-in-vhost_net_flush.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1511,6 +1514,9 @@ ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 #rhbz 977040
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
 ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
+
+#rhbz 976789 980643
+ApplyPatch vhost-net-fix-use-after-free-in-vhost_net_flush.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2309,6 +2315,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jul 05 2013 Josh Boyer <jwboyer@redhat.com>
+- Add vhost-net use-after-free fix (rhbz 976789 980643)
 - Add fix for timer issue in bridge code (rhbz 980254)
 
 * Wed Jul 03 2013 Josh Boyer <jwboyer@redhat.com>
