@@ -2287,6 +2287,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Initial ARM config for 3.11
+
 * Mon Jul 08 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git2.1
 - Linux v3.10-6005-gd2b4a64
 - Reenable debugging options.
