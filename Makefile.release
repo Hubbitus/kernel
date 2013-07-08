@@ -11,6 +11,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_DEBUG_STACK_USAGE=y/# CONFIG_DEBUG_STACK_USAGE is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_SLAB=y/# CONFIG_DEBUG_SLAB is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_MUTEXES=y/# CONFIG_DEBUG_MUTEXES is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y/# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_RT_MUTEXES=y/# CONFIG_DEBUG_RT_MUTEXES is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_LOCK_ALLOC=y/# CONFIG_DEBUG_LOCK_ALLOC is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_PROVE_LOCKING=y/# CONFIG_PROVE_LOCKING is not set/' config-nodebug
@@ -73,6 +74,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_XFS_WARN=y/# CONFIG_XFS_WARN is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_EDAC_DEBUG=y/# CONFIG_EDAC_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_RTLWIFI_DEBUG=y/# CONFIG_RTLWIFI_DEBUG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_X86_DEBUG_STATIC_CPU_HAS=y/# CONFIG_X86_DEBUG_STATIC_CPU_HAS is not set/' config-nodebug
 
 	@# Undo anything that make extremedebug might have set
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-debug

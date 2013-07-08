@@ -31,6 +31,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_STACK_USAGE is not set/CONFIG_DEBUG_STACK_USAGE=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SLAB is not set/CONFIG_DEBUG_SLAB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_MUTEXES is not set/CONFIG_DEBUG_MUTEXES=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set/CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_RT_MUTEXES is not set/CONFIG_DEBUG_RT_MUTEXES=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_LOCK_ALLOC is not set/CONFIG_DEBUG_LOCK_ALLOC=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_PROVE_LOCKING is not set/CONFIG_PROVE_LOCKING=y/' config-nodebug
@@ -90,6 +91,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_DETECT_HUNG_TASK is not set/CONFIG_DETECT_HUNG_TASK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_KMEMLEAK is not set/CONFIG_DEBUG_KMEMLEAK=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_X86_DEBUG_STATIC_CPU_HAS is not set/CONFIG_X86_DEBUG_STATIC_CPU_HAS=y/' config-nodebug
 
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug

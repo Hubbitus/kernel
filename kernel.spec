@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -156,7 +156,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -169,7 +169,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -716,8 +716,6 @@ Patch15000: nowatchdog-on-virt.patch
 
 # ARM64
 
-Patch16000: arm64-makefile-vdso_install.patch
-
 # ARM
 
 # lpae
@@ -733,7 +731,7 @@ Patch21004: arm-omap-load-tfp410.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
 # ARM wandboard
-Patch21006: arm-wandboard-quad.patch
+# Patch21006: arm-wandboard-quad.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -767,19 +765,7 @@ Patch25032: cve-2013-2147-ciss-info-leak.patch
 #CVE-2013-2148 rhbz 971258 971261
 Patch25033: fanotify-info-leak-in-copy_event_to_user.patch
 
-#CVE-2013-2851 rhbz 969515 971662
-Patch25035: block-do-not-pass-disk-names-as-format-strings.patch
-
-#CVE-2013-2164 rhbz 973100 973109
-Patch25038: cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 969644
-Patch25046: KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
-
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 903741
-Patch25052: HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 
 #rhbz 880035
 Patch25053: bridge-only-expire-the-mdb-entry-when-query-is-received.patch
@@ -1344,7 +1330,6 @@ ApplyPatch debug-bad-pte-modules.patch
 # x86(-64)
 
 # ARM64
-ApplyPatch arm64-makefile-vdso_install.patch
 
 #
 # ARM
@@ -1354,7 +1339,7 @@ ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch v2-thermal-cpu_cooling-fix-stub-function.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-wandboard-quad.patch
+#ApplyPatch arm-wandboard-quad.patch
 #
 # bugfixes to drivers and filesystems
 #
@@ -1489,19 +1474,7 @@ ApplyPatch cve-2013-2147-ciss-info-leak.patch
 #CVE-2013-2148 rhbz 971258 971261
 ApplyPatch fanotify-info-leak-in-copy_event_to_user.patch
 
-#CVE-2013-2851 rhbz 969515 971662
-ApplyPatch block-do-not-pass-disk-names-as-format-strings.patch
-
-#CVE-2013-2164 rhbz 973100 973109
-ApplyPatch cdrom-use-kzalloc-for-failing-hardware.patch
-
-#rhbz 969644
-ApplyPatch KVM-x86-handle-idiv-overflow-at-kvm_write_tsc.patch
-
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 903741
-ApplyPatch HID-input-return-ENODATA-if-reading-battery-attrs-fails.patch
 
 #rhbz 880035
 ApplyPatch bridge-only-expire-the-mdb-entry-when-query-is-received.patch
@@ -2314,6 +2287,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 08 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git2.1
+- Linux v3.10-6005-gd2b4a64
+- Reenable debugging options.
+
 * Fri Jul 05 2013 Josh Boyer <jwboyer@redhat.com>
 - Add vhost-net use-after-free fix (rhbz 976789 980643)
 - Add fix for timer issue in bridge code (rhbz 980254)
