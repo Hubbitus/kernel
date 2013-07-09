@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -761,9 +761,6 @@ Patch25031: xen-blkback-Check-device-permissions-before-allowing.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 Patch25032: cve-2013-2147-ciss-info-leak.patch
-
-#CVE-2013-2148 rhbz 971258 971261
-Patch25033: fanotify-info-leak-in-copy_event_to_user.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
@@ -1470,9 +1467,6 @@ ApplyPatch xen-blkback-Check-device-permissions-before-allowing.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
-
-#CVE-2013-2148 rhbz 971258 971261
-ApplyPatch fanotify-info-leak-in-copy_event_to_user.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
@@ -2287,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 09 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git3.1
+- Linux v3.10-6378-ga82a729
+
 * Mon Jul  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Initial ARM config for 3.11
 
