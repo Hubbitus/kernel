@@ -2281,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 10 2013 Kyle McMartin <kyle@redhat.com>
+- Fix crash-driver.patch to properly use page_is_ram. 
+
 * Tue Jul 09 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git3.1
 - Linux v3.10-6378-ga82a729
 
