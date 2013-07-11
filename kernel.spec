@@ -2281,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 11 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config cleanups and changes for 3.11
+
 * Wed Jul 10 2013 Kyle McMartin <kyle@redhat.com>
 - Fix crash-driver.patch to properly use page_is_ram. 
 
