@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -753,9 +753,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
 
-#rhbz 948262
-Patch25024: intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.patch
-
 #CVE-2013-2140 rhbz 971146 971148
 Patch25031: xen-blkback-Check-device-permissions-before-allowing.patch
 
@@ -764,21 +761,12 @@ Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 880035
-Patch25053: bridge-only-expire-the-mdb-entry-when-query-is-received.patch
-Patch25054: bridge-send-query-as-soon-as-leave-is-received.patch
-#rhbz 980254
-Patch25061: bridge-timer-fix.patch
-
 #rhbz 977558
 Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
 Patch25057: iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 976789 980643
-Patch25062: vhost-net-fix-use-after-free-in-vhost_net_flush.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1459,9 +1447,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
 
-#rhbz 948262
-ApplyPatch intel_iommu-Downgrade-the-warning-if-enabling-irq-remapping-fails.patch
-
 #CVE-2013-2140 rhbz 971146 971148
 ApplyPatch xen-blkback-Check-device-permissions-before-allowing.patch
 
@@ -1470,20 +1455,12 @@ ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 880035
-ApplyPatch bridge-only-expire-the-mdb-entry-when-query-is-received.patch
-ApplyPatch bridge-send-query-as-soon-as-leave-is-received.patch
-ApplyPatch bridge-timer-fix.patch
-
 #rhbz 977558
 ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
 ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 976789 980643
-ApplyPatch vhost-net-fix-use-after-free-in-vhost_net_flush.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2281,6 +2258,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 11 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git6.1
+- Linux v3.10-9080-g19d2f8e
+
 * Thu Jul 11 2013 Kyle McMartin <kyle@redhat.com>
 - Enable USB on Wandboard Duallite and other i.MX based boards, patch
   from Niels de Vos.
