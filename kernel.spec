@@ -2281,6 +2281,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 11 2013 Kyle McMartin <kyle@redhat.com>
+- Enable USB on Wandboard Duallite and other i.MX based boards, patch
+  from Niels de Vos.
+
 * Thu Jul 11 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM config cleanups and changes for 3.11
 
