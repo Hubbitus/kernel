@@ -1,0 +1,32 @@
+From 7b29fdb8cd8f92e31f550611a8c031986dba2e8f Mon Sep 17 00:00:00 2001
+From: Johannes Berg <johannes.berg@intel.com>
+Date: Fri, 03 May 2013 16:58:16 +0000
+Subject: iwlwifi: dvm: don't send BT_CONFIG on devices w/o Bluetooth
+
+The BT_CONFIG command that is sent to the device during
+startup will enable BT coex unless the module parameter
+turns it off, but on devices without Bluetooth this may
+cause problems, as reported in Redhat BZ 885407.
+
+Fix this by sending the BT_CONFIG command only when the
+device has Bluetooth.
+
+Cc: stable@vger.kernel.org
+Reviewed-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+Signed-off-by: Johannes Berg <johannes@sipsolutions.net>
+---
+diff --git a/drivers/net/wireless/iwlwifi/dvm/main.c b/drivers/net/wireless/iwlwifi/dvm/main.c
+index 3952ddf..1531a4f 100644
+--- a/drivers/net/wireless/iwlwifi/dvm/main.c
++++ b/drivers/net/wireless/iwlwifi/dvm/main.c
+@@ -758,7 +758,7 @@ int iwl_alive_start(struct iwl_priv *priv)
+ 					 BT_COEX_PRIO_TBL_EVT_INIT_CALIB2);
+ 		if (ret)
+ 			return ret;
+-	} else {
++	} else if (priv->lib->bt_params) {
+ 		/*
+ 		 * default is 2-wire BT coexexistence support
+ 		 */
+--
+cgit v0.9.2

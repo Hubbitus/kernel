@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -768,6 +768,9 @@ Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
 Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
+#rhbz 885407
+Patch25064: iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1461,6 +1464,9 @@ ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 #rhbz 977040
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
 ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
+
+#rhbz 885407
+ApplyPatch iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2258,6 +2264,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 12 2013 Josh Boyer <jwboyer@redhat.com>
+- Add iwlwifi fix for connection issue (rhbz 885407)
+
 * Thu Jul 11 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git6.1
 - Linux v3.10-9080-g19d2f8e
 
