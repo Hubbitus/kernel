@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -722,8 +722,6 @@ Patch15000: nowatchdog-on-virt.patch
 Patch21001: arm-lpae-ax88796.patch
 Patch21002: drm-exynos-fix-multiple-definition-build-error.patch
 
-Patch21003: v2-thermal-cpu_cooling-fix-stub-function.patch
-
 # ARM omap
 Patch21004: arm-omap-load-tfp410.patch
 
@@ -1325,7 +1323,6 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
-ApplyPatch v2-thermal-cpu_cooling-fix-stub-function.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 #ApplyPatch arm-wandboard-quad.patch
 #
@@ -2264,6 +2261,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 12 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git7.1
+- Linux v3.10-9289-g9903883
+
 * Fri Jul 12 2013 Dave Jones <davej@redhat.com> - 3.11.0-0.rc0.git6.4
 - Disable LATENCYTOP/SCHEDSTATS in non-debug builds.
 
