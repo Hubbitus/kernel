@@ -85,3 +85,7 @@ config-release:
 
 	@# Disable UAS for release until it's ready. (#717633, #744099)
 	@perl -pi -e 's/CONFIG_USB_UAS=m/# CONFIG_USB_UAS is not set/' config-generic
+
+	@perl -pi -e 's/CONFIG_SCHEDSTATS=y/# CONFIG_SCHEDSTATS is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_LATENCYTOP=y/# CONFIG_LATENCYTOP is not set/' config-nodebug
+

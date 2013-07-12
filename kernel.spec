@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2264,6 +2264,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 12 2013 Dave Jones <davej@redhat.com> - 3.11.0-0.rc0.git6.4
+- Disable LATENCYTOP/SCHEDSTATS in non-debug builds.
+
 * Fri Jul 12 2013 Josh Boyer <jwboyer@redhat.com>
 - Add iwlwifi fix for connection issue (rhbz 885407)
 
