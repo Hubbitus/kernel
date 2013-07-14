@@ -46,16 +46,13 @@ diff -uNr linux-3.10.0-0.rc7.git0.2.fc20.x86_64/arch/arm/boot/dts/imx6q-wandboar
 +	pinctrl-0 = <&pinctrl_usdhc3_2>;
 +	status = "okay";
 +};
-diff -uNr linux-3.10.0-0.rc7.git0.2.fc20.x86_64/arch/arm/boot/dts/Makefile linux-3.10.0-0.rc7.git0.2.fc20.armv7hl/arch/arm/boot/dts/Makefile
---- linux-3.10.0-0.rc7.git0.2.fc20.x86_64/arch/arm/boot/dts/Makefile	2013-06-30 15:04:21.224500036 -0500
-+++ linux-3.10.0-0.rc7.git0.2.fc20.armv7hl/arch/arm/boot/dts/Makefile	2013-06-30 15:08:11.259884856 -0500
-@@ -120,7 +120,8 @@
- 	imx6q-sabreauto.dtb \
+--- linux-3.11.0-0.rc0.git6.2.fc20.x86_64/arch/arm/boot/dts/Makefile.orig	2013-07-12 10:45:40.231087368 -0500
++++ linux-3.11.0-0.rc0.git6.2.fc20.x86_64/arch/arm/boot/dts/Makefile	2013-07-12 10:48:39.973819470 -0500
+@@ -131,6 +131,7 @@
  	imx6q-sabrelite.dtb \
  	imx6q-sabresd.dtb \
--	imx6q-sbc6x.dtb
-+	imx6q-sbc6x.dtb \
-+	imx6q-wandboard.dtb
+ 	imx6q-sbc6x.dtb \
++	imx6q-wandboard.dtb \
+ 	imx6sl-evk.dtb \
+ 	vf610-twr.dtb
  dtb-$(CONFIG_ARCH_MXS) += imx23-evk.dtb \
- 	imx23-olinuxino.dtb \
- 	imx23-stmp378x_devb.dtb \

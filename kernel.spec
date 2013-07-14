@@ -729,7 +729,7 @@ Patch21004: arm-omap-load-tfp410.patch
 Patch21005: arm-tegra-usb-no-reset-linux33.patch
 
 # ARM wandboard
-# Patch21006: arm-wandboard-quad.patch
+Patch21006: arm-wandboard-quad.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1324,7 +1324,7 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-#ApplyPatch arm-wandboard-quad.patch
+ApplyPatch arm-wandboard-quad.patch
 #
 # bugfixes to drivers and filesystems
 #
@@ -2261,6 +2261,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jul 14 2013 Dennis Gilmore <dennis@ausil.us>
+- update and reenable wandboard quad dtb patch
+
 * Fri Jul 12 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc0.git7.1
 - Linux v3.10-9289-g9903883
 
