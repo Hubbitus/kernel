@@ -2261,6 +2261,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jul 14 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM config
+
 * Sun Jul 14 2013 Dennis Gilmore <dennis@ausil.us>
 - update and reenable wandboard quad dtb patch
 
