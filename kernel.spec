@@ -2263,6 +2263,7 @@ fi
 %changelog
 * Sun Jul 14 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM config
+- Enable USB gadget module on ARM to fix build i.MX usb modules
 
 * Sun Jul 14 2013 Dennis Gilmore <dennis@ausil.us>
 - update and reenable wandboard quad dtb patch
