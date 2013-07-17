@@ -2265,6 +2265,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 17 2013 Kyle McMartin <kyle@redhat.com>
+- update s390x config [Dan Horák]
+
 * Wed Jul 17 2013 Petr Pisar <ppisar@redhat.com> - 3.11.0-0.rc1.git0.2
 - Perl 5.18 rebuild
 
