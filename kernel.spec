@@ -731,6 +731,9 @@ Patch21005: arm-tegra-usb-no-reset-linux33.patch
 # ARM wandboard
 Patch21006: arm-wandboard-quad.patch
 
+# AM33xx
+Patch21007: arm-omap-bbb-dts.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1325,6 +1328,7 @@ ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
+ApplyPatch arm-omap-bbb-dts.patch
 #
 # bugfixes to drivers and filesystems
 #
@@ -2261,6 +2265,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch for BeagleBone Black DTB
+
 * Tue Jul 16 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc1.git0.1
 - Linux v3.11-rc1
 - Disable debugging options.
