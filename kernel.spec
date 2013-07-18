@@ -676,6 +676,7 @@ Patch800: crash-driver.patch
 
 # secure boot
 Patch1000: devel-pekey-secure-boot-20130502.patch
+Patch1001: devel-sysrq-secure-boot-20130717.patch
 
 # virt + ksm patches
 
@@ -1394,6 +1395,7 @@ ApplyPatch crash-driver.patch
 
 # secure boot
 ApplyPatch devel-pekey-secure-boot-20130502.patch
+ApplyPatch devel-sysrq-secure-boot-20130717.patch
 
 # Assorted Virt Fixes
 
@@ -2265,6 +2267,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 18 2013 Kyle McMartin <kyle@redhat.com>
+- devel-sysrq-secure-boot-20130717.patch: add a patch that allows the user to
+  disable secure boot restrictions from the local console or local serial
+  (but not /proc/sysrq-trigger or via uinput) by using SysRQ-x.
+
 * Wed Jul 17 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc1.git1.1
 - Linux v3.11-rc1-19-gc0d15cc
 - Reenable debugging options.

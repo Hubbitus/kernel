@@ -1,0 +1,284 @@
+diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
+index 6ad8292..e7b9374 100644
+--- a/Documentation/kernel-parameters.txt
++++ b/Documentation/kernel-parameters.txt
+@@ -2784,7 +2784,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+ 			Note: increases power consumption, thus should only be
+ 			enabled if running jitter sensitive (HPC/RT) workloads.
+ 
+-	secureboot_enable=
++	secureboot_enable
+ 			[KNL] Enables an emulated UEFI Secure Boot mode.  This
+ 			locks down various aspects of the kernel guarded by the
+ 			CAP_COMPROMISE_KERNEL capability.  This includes things
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 167ca34..ba3c8f2 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -70,6 +70,11 @@
+ #include <linux/tboot.h>
+ #include <linux/jiffies.h>
+ 
++#include <linux/fips.h>
++#include <linux/cred.h>
++#include <linux/sysrq.h>
++#include <linux/init_task.h>
++
+ #include <video/edid.h>
+ 
+ #include <asm/mtrr.h>
+@@ -1252,3 +1257,59 @@ void __init i386_reserve_resources(void)
+ }
+ 
+ #endif /* CONFIG_X86_32 */
++
++#ifdef CONFIG_MODULE_SIG
++extern bool sig_enforce;
++#endif
++
++int sb_enabled;
++
++void __init secureboot_enable()
++{
++	pr_info("Secure boot enabled\n");
++	cap_lower(init_cred.cap_bset, CAP_COMPROMISE_KERNEL);
++	cap_lower(init_cred.cap_permitted, CAP_COMPROMISE_KERNEL);
++#ifdef CONFIG_MODULE_SIG
++	/* Enable module signature enforcing */
++	sig_enforce = true;
++#endif
++	sb_enabled = 1;
++}
++
++/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
++static int __init secureboot_enable_opt(char *__unused)
++{
++	secureboot_enable();
++	return 1;
++}
++__setup("secureboot_enable", secureboot_enable_opt);
++
++#ifdef CONFIG_MAGIC_SYSRQ
++extern int sb_enabled;
++static void sysrq_handle_secure_boot(int key)
++{
++	if (!sb_enabled)
++		return;
++
++	pr_info("Secure boot disabled\n");
++	cap_raise(init_cred.cap_bset, CAP_COMPROMISE_KERNEL);
++	cap_raise(init_cred.cap_permitted, CAP_COMPROMISE_KERNEL);
++#ifdef CONFIG_MODULE_SIG
++	sig_enforce = fips_enabled;
++#endif
++	sb_enabled = 0;
++}
++static struct sysrq_key_op secure_boot_sysrq_op = {
++	.handler	=	sysrq_handle_secure_boot,
++	.help_msg	=	"unSB(x)",
++	.action_msg	=	"Disabling Secure Boot restrictions",
++	.enable_mask	=	SYSRQ_DISABLE_USERSPACE,
++};
++static int __init secure_boot_sysrq(void)
++{
++	if (sb_enabled)
++		register_sysrq_key('x', &secure_boot_sysrq_op);
++	return 0;
++}
++late_initcall(secure_boot_sysrq);
++#endif /*CONFIG_MAGIC_SYSRQ*/
+diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
+index a0a4bba..3327cc3 100644
+--- a/drivers/input/misc/uinput.c
++++ b/drivers/input/misc/uinput.c
+@@ -351,6 +351,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
+ 	if (!udev->dev)
+ 		return -ENOMEM;
+ 
++	udev->dev->flags |= INPUTDEV_FLAGS_SYNTHETIC;
+ 	udev->dev->event = uinput_dev_event;
+ 	input_set_drvdata(udev->dev, udev);
+ 
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index d5cc3ac..05b33f5 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -461,6 +461,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+ 	&sysrq_showstate_blocked_op,	/* w */
+ 	/* x: May be registered on ppc/powerpc for xmon */
+ 	/* x: May be registered on sparc64 for global PMU dump */
++	/* x: May be registered on x86_64 for disabling secure boot */
+ 	NULL,				/* x */
+ 	/* y: May be registered on sparc64 for global register dump */
+ 	NULL,				/* y */
+@@ -504,7 +505,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
+                 sysrq_key_table[i] = op_p;
+ }
+ 
+-void __handle_sysrq(int key, bool check_mask)
++void __handle_sysrq(int key, int from)
+ {
+ 	struct sysrq_key_op *op_p;
+ 	int orig_log_level;
+@@ -524,11 +525,15 @@ void __handle_sysrq(int key, bool check_mask)
+ 
+         op_p = __sysrq_get_key_op(key);
+         if (op_p) {
++		/* Ban synthetic events from some sysrq functionality */
++		if ((from == SYSRQ_FROM_PROC || from == SYSRQ_FROM_SYNTHETIC) &&
++		    op_p->enable_mask & SYSRQ_DISABLE_USERSPACE)
++			printk("This sysrq operation is disabled from userspace.\n");
+ 		/*
+ 		 * Should we check for enabled operations (/proc/sysrq-trigger
+ 		 * should not) and is the invoked operation enabled?
+ 		 */
+-		if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
++		if (from == SYSRQ_FROM_KERNEL || sysrq_on_mask(op_p->enable_mask)) {
+ 			printk("%s\n", op_p->action_msg);
+ 			console_loglevel = orig_log_level;
+ 			op_p->handler(key);
+@@ -559,7 +564,7 @@ void __handle_sysrq(int key, bool check_mask)
+ void handle_sysrq(int key)
+ {
+ 	if (sysrq_on())
+-		__handle_sysrq(key, true);
++		__handle_sysrq(key, SYSRQ_FROM_KERNEL);
+ }
+ EXPORT_SYMBOL(handle_sysrq);
+ 
+@@ -639,7 +644,7 @@ static void sysrq_do_reset(unsigned long _state)
+ static void sysrq_handle_reset_request(struct sysrq_state *state)
+ {
+ 	if (state->reset_requested)
+-		__handle_sysrq(sysrq_xlate[KEY_B], false);
++		__handle_sysrq(sysrq_xlate[KEY_B], SYSRQ_FROM_KERNEL);
+ 
+ 	if (sysrq_reset_downtime_ms)
+ 		mod_timer(&state->keyreset_timer,
+@@ -756,8 +761,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
+ 
+ 	default:
+ 		if (sysrq->active && value && value != 2) {
++			int from = sysrq->handle.dev->flags & INPUTDEV_FLAGS_SYNTHETIC ?
++					SYSRQ_FROM_SYNTHETIC : 0;
+ 			sysrq->need_reinject = false;
+-			__handle_sysrq(sysrq_xlate[code], true);
++			__handle_sysrq(sysrq_xlate[code], from);
+ 		}
+ 		break;
+ 	}
+@@ -1038,7 +1045,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+ 
+ 		if (get_user(c, buf))
+ 			return -EFAULT;
+-		__handle_sysrq(c, false);
++		__handle_sysrq(c, SYSRQ_FROM_PROC);
+ 	}
+ 
+ 	return count;
+diff --git a/include/linux/input.h b/include/linux/input.h
+index 82ce323..9e534f2 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -42,6 +42,7 @@ struct input_value {
+  * @phys: physical path to the device in the system hierarchy
+  * @uniq: unique identification code for the device (if device has it)
+  * @id: id of the device (struct input_id)
++ * @flags: input device flags (SYNTHETIC, etc.)
+  * @propbit: bitmap of device properties and quirks
+  * @evbit: bitmap of types of events supported by the device (EV_KEY,
+  *	EV_REL, etc.)
+@@ -124,6 +125,8 @@ struct input_dev {
+ 	const char *uniq;
+ 	struct input_id id;
+ 
++	unsigned int flags;
++
+ 	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
+ 
+ 	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];
+@@ -190,6 +193,8 @@ struct input_dev {
+ };
+ #define to_input_dev(d) container_of(d, struct input_dev, dev)
+ 
++#define	INPUTDEV_FLAGS_SYNTHETIC	0x000000001
++
+ /*
+  * Verify that we are in sync with input_device_id mod_devicetable.h #defines
+  */
+diff --git a/include/linux/sysrq.h b/include/linux/sysrq.h
+index 7faf933..87ae634 100644
+--- a/include/linux/sysrq.h
++++ b/include/linux/sysrq.h
+@@ -31,6 +31,8 @@
+ #define SYSRQ_ENABLE_BOOT	0x0080
+ #define SYSRQ_ENABLE_RTNICE	0x0100
+ 
++#define SYSRQ_DISABLE_USERSPACE	0x00010000
++
+ struct sysrq_key_op {
+ 	void (*handler)(int);
+ 	char *help_msg;
+@@ -45,8 +47,12 @@ struct sysrq_key_op {
+  * are available -- else NULL's).
+  */
+ 
++#define SYSRQ_FROM_KERNEL	0x0001
++#define SYSRQ_FROM_PROC		0x0002
++#define SYSRQ_FROM_SYNTHETIC	0x0004
++
+ void handle_sysrq(int key);
+-void __handle_sysrq(int key, bool check_mask);
++void __handle_sysrq(int key, int from);
+ int register_sysrq_key(int key, struct sysrq_key_op *op);
+ int unregister_sysrq_key(int key, struct sysrq_key_op *op);
+ struct sysrq_key_op *__sysrq_get_key_op(int key);
+diff --git a/kernel/cred.c b/kernel/cred.c
+index c5554e0..e0573a4 100644
+--- a/kernel/cred.c
++++ b/kernel/cred.c
+@@ -565,31 +565,6 @@ void __init cred_init(void)
+ 				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
+ }
+ 
+-#ifdef CONFIG_MODULE_SIG
+-extern bool sig_enforce;
+-#endif
+-
+-void __init secureboot_enable()
+-{
+-	pr_info("Secure boot enabled\n");
+-	cap_lower((&init_cred)->cap_bset, CAP_COMPROMISE_KERNEL);
+-	cap_lower((&init_cred)->cap_permitted, CAP_COMPROMISE_KERNEL);
+-#ifdef CONFIG_MODULE_SIG
+-	/* Enable module signature enforcing */
+-	sig_enforce = true;
+-#endif
+-}
+-
+-/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
+-static int __init secureboot_enable_opt(char *str)
+-{
+-	int sb_enable = !!simple_strtol(str, NULL, 0);
+-	if (sb_enable)
+-		secureboot_enable();
+-	return 1;
+-}
+-__setup("secureboot_enable=", secureboot_enable_opt);
+-
+ /**
+  * prepare_kernel_cred - Prepare a set of credentials for a kernel service
+  * @daemon: A userspace daemon to be used as a reference
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 00eb8f7..54fbbcc 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -1921,7 +1921,7 @@ static int kdb_sr(int argc, const char **argv)
+ 	if (argc != 1)
+ 		return KDB_ARGCOUNT;
+ 	kdb_trap_printk++;
+-	__handle_sysrq(*argv[1], false);
++	__handle_sysrq(*argv[1], SYSRQ_FROM_KERNEL);
+ 	kdb_trap_printk--;
+ 
+ 	return 0;
