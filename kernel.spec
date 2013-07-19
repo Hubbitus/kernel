@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2242,6 +2242,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 19 2013 Kyle McMartin <kmcmartin@redhat.com> - 3.11.0-0.rc1.git2.1
+- Linux v3.11-rc1-135-g0a693ab
+
 * Thu Jul 18 2013 Kyle McMartin <kyle@redhat.com>
 - Applied patch from Kay Sievers to kill initscripts Conflicts & Requires and
   udev Conflicts...
