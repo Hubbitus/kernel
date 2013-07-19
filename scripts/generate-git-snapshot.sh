@@ -2,6 +2,8 @@
 #
 # Set LINUX_GIT to point to an upstream Linux git tree in your .bashrc or wherever.
 
+[ ! -d "$LINUX_GIT" ] && echo "error: set \$LINUX_GIT to point at upstream git tree" && exit 1
+
 VER=$(grep patch sources | head -n1 | awk '{ print $2 }' | sed s/patch-// | sed s/-git.*// | sed s/.xz//)
 
 OLDGIT=$(grep gitrev kernel.spec | head -n1 | sed s/%define\ gitrev\ //)
