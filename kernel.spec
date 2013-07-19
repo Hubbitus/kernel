@@ -436,33 +436,10 @@ Summary: The Linux kernel
 %define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm} aarch64
 
 #
-# Three sets of minimum package version requirements in the form of Conflicts:
-# to versions below the minimum
-#
-
-#
-# First the general kernel 2.6 required versions as per
-# Documentation/Changes
-#
-%define kernel_dot_org_conflicts  ppp < 2.4.3-3, isdn4k-utils < 3.2-32, nfs-utils < 1.2.5-7.fc17, e2fsprogs < 1.37-4, util-linux < 2.12, jfsutils < 1.1.7-2, reiserfs-utils < 3.6.19-2, xfsprogs < 2.6.13-4, procps < 3.2.5-6.3, oprofile < 0.9.1-2, device-mapper-libs < 1.02.63-2, mdadm < 3.2.1-5
-
-#
-# Then a series of requirements that are distribution specific, either
-# because we add patches for something, or the older versions have
-# problems with the newer kernel or lack certain things that make
-# integration in the distro harder than needed.
-#
-%define package_conflicts initscripts < 7.23, udev < 063-6, iptables < 1.3.2-1, ipw2200-firmware < 2.4, iwl4965-firmware < 228.57.2, selinux-policy-targeted < 1.25.3-14, squashfs-tools < 4.0, wireless-tools < 29-3
-
-# We moved the drm include files into kernel-headers, make sure there's
-# a recent enough libdrm-devel on the system that doesn't have those.
-%define kernel_headers_conflicts libdrm-devel < 2.4.0-0.15
-
-#
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, module-init-tools >= 3.16-4, initscripts >= 8.11.1-1, systemd >= 203-2
+%define kernel_prereq  fileutils, systemd >= 203-2
 %define initrd_prereq  dracut >= 027
 
 #
@@ -488,8 +465,6 @@ Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
 Requires(preun): systemd >= 200\
-Conflicts: %{kernel_dot_org_conflicts}\
-Conflicts: %{package_conflicts}\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_provides:Provides: %%{kernel%{?1:_%{1}}_provides}}}\
@@ -2267,6 +2242,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 18 2013 Kyle McMartin <kyle@redhat.com>
+- Applied patch from Kay Sievers to kill initscripts Conflicts & Requires and
+  udev Conflicts...
+- And then clean up some of the ancient crap from our Conflicts and Requires
+  which reference versions not shipped since 2006.
+
 * Thu Jul 18 2013 Kyle McMartin <kyle@redhat.com>
 - devel-sysrq-secure-boot-20130717.patch: add a patch that allows the user to
   disable secure boot restrictions from the local console or local serial
