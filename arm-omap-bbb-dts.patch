@@ -20,7 +20,7 @@ diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
  	am335x-evm.dtb \
  	am335x-evmsk.dtb \
  	am335x-bone.dtb \
-+	am335x-boneblack.dtb
++	am335x-boneblack.dtb \
  	am3517-evm.dtb \
  	am3517_mt_ventoux.dtb \
  	am43x-epos-evm.dtb

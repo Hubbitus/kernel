@@ -2242,6 +2242,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 19 2013 Kyle McMartin <kyle@redhat.com>
+- arm-omap-bbb-dts.patch: fix arch/arm/boot/dtb/Makefile rule
+
 * Fri Jul 19 2013 Kyle McMartin <kmcmartin@redhat.com> - 3.11.0-0.rc1.git3.1
 - Linux v3.11-rc1-181-gb8a33fc
 
