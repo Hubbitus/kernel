@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2242,6 +2242,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jul 21 2013 Kyle McMartin <kmcmartin@redhat.com> - 3.11.0-0.rc1.git4.1
+- Linux v3.11-rc1-247-g90db76e
+
 * Sun Jul 21 2013 Kyle McMartin <kyle@redhat.com>
 - arm-omap-bbb-dts.patch: disable for now, it needs too much work for
   a sunday morning.
