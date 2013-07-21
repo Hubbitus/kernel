@@ -1304,7 +1304,7 @@ ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
-ApplyPatch arm-omap-bbb-dts.patch
+#ApplyPatch arm-omap-bbb-dts.patch
 #
 # bugfixes to drivers and filesystems
 #
@@ -2242,6 +2242,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jul 21 2013 Kyle McMartin <kyle@redhat.com>
+- arm-omap-bbb-dts.patch: disable for now, it needs too much work for
+  a sunday morning.
+
 * Fri Jul 19 2013 Kyle McMartin <kyle@redhat.com>
 - arm-omap-bbb-dts.patch: fix arch/arm/boot/dtb/Makefile rule
 
