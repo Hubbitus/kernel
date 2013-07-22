@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -156,7 +156,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -169,7 +169,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -450,17 +450,17 @@ Summary: The Linux kernel
 #
 %define kernel_reqprovconf \
 Provides: kernel = %{rpmversion}-%{pkg_release}\
-Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:.%{1}}\
+Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:+%{1}}\
 Provides: kernel-drm = 4.3.0\
 Provides: kernel-drm-nouveau = 16\
 Provides: kernel-modeset = 1\
-Provides: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 Provides: kernel-highbank\
-Provides: kernel-highbank-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-highbank-uname-r = %{KVERREL}%{?1:+%{1}}\
 Provides: kernel-omap\
-Provides: kernel-omap-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-omap-uname-r = %{KVERREL}%{?1:+%{1}}\
 Provides: kernel-tegra\
-Provides: kernel-tegra-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-tegra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
@@ -918,7 +918,7 @@ AutoReqProv: no\
 %description -n %{name}%{?1:-%{1}}-debuginfo\
 This package provides debug information for package %{name}%{?1:-%{1}}.\
 This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '/.*/%%{KVERREL}%{?1:\.%{1}}/.*|/.*%%{KVERREL}%{?1:\.%{1}}(\.debug)?' -o debuginfo%{?1}.list}\
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '/.*/%%{KVERREL}%{?1:\+%{1}}/.*|/.*%%{KVERREL}%{?1:\+%{1}}(\.debug)?' -o debuginfo%{?1}.list}\
 %{nil}
 
 #
@@ -930,9 +930,9 @@ This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
 Summary: Development package for building kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
 Provides: kernel%{?1:-%{1}}-devel-%{_target_cpu} = %{version}-%{release}\
-Provides: kernel-devel-%{_target_cpu} = %{version}-%{release}%{?1:.%{1}}\
-Provides: kernel-devel = %{version}-%{release}%{?1:.%{1}}\
-Provides: kernel-devel-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-devel-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-devel = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-devel-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 Requires(pre): /usr/bin/find\
 Requires: perl\
@@ -950,11 +950,11 @@ against the %{?2:%{2} }kernel package.\
 Summary: Extra kernel modules to match the %{?2:%{2} }kernel\
 Group: System Environment/Kernel\
 Provides: kernel%{?1:-%{1}}-modules-extra-%{_target_cpu} = %{version}-%{release}\
-Provides: kernel-modules-extra-%{_target_cpu} = %{version}-%{release}%{?1:.%{1}}\
-Provides: kernel-modules-extra = %{version}-%{release}%{?1:.%{1}}\
+Provides: kernel-modules-extra-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-modules-extra = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel-modules-extra-uname-r = %{KVERREL}%{?1:.%{1}}\
-Requires: kernel-uname-r = %{KVERREL}%{?1:.%{1}}\
+Provides: kernel-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
@@ -1530,7 +1530,7 @@ BuildKernel() {
     MakeTarget=$1
     KernelImage=$2
     Flavour=$3
-    Flav=${Flavour:+.${Flavour}}
+    Flav=${Flavour:++${Flavour}}
     InstallName=${4:-vmlinuz}
 
     # Pick the right config file for the kernel we're building
@@ -1850,13 +1850,13 @@ find Documentation -type d | xargs chmod u+w
 %define __modsign_install_post \
   if [ "%{signmodules}" -eq "1" ]; then \
     if [ "%{with_pae}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign.%{pae} signing_key.x509.sign.%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.%{pae}/ \
+      %{modsign_cmd} signing_key.priv.sign+%{pae} signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
     fi \
     if [ "%{with_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign.debug signing_key.x509.sign.debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.debug/ \
+      %{modsign_cmd} signing_key.priv.sign+debug signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
     fi \
     if [ "%{with_pae_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign.%{pae}debug signing_key.x509.sign.%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}.%{pae}debug/ \
+      %{modsign_cmd} signing_key.priv.sign+%{pae}debug signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
     fi \
     if [ "%{with_up}" -ne "0" ]; then \
       %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
@@ -2023,7 +2023,7 @@ then\
 fi\
 if [ "$HARDLINK" != "no" -a -x /usr/sbin/hardlink ]\
 then\
-    (cd /usr/src/kernels/%{KVERREL}%{?1:.%{1}} &&\
+    (cd /usr/src/kernels/%{KVERREL}%{?1:+%{1}} &&\
      /usr/bin/find . -type f | while read f; do\
        hardlink -c /usr/src/kernels/*.fc*.*/$f $f\
      done)\
@@ -2036,7 +2036,7 @@ fi\
 #
 %define kernel_modules_extra_post() \
 %{expand:%%post %{?1:%{1}-}modules-extra}\
-/sbin/depmod -a %{KVERREL}%{?1:.%{1}}\
+/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}
 
 # This macro defines a %%posttrans script for a kernel package.
@@ -2045,7 +2045,7 @@ fi\
 #
 %define kernel_variant_posttrans() \
 %{expand:%%posttrans %{?1}}\
-/bin/kernel-install add %{KVERREL}%{?1:.%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:.%{1}} || exit $?\
+/bin/kernel-install add %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
 %{nil}
 
 #
@@ -2071,7 +2071,7 @@ fi}\
 #
 %define kernel_variant_preun() \
 %{expand:%%preun %{?1}}\
-/bin/kernel-install remove %{KVERREL}%{?1:.%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:.%{1}} || exit $?\
+/bin/kernel-install remove %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
 %{nil}
 
 %kernel_variant_preun
@@ -2193,30 +2193,30 @@ fi
 %if %{1}\
 %{expand:%%files %{?2}}\
 %defattr(-,root,root)\
-/%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:.%{2}}\
-/%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:.%{2}}.hmac \
+/%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
+/%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
 %ifarch %{arm}\
-/%{image_install_path}/dtb-%{KVERREL}%{?2:.%{2}} \
+/%{image_install_path}/dtb-%{KVERREL}%{?2:+%{2}} \
 %endif\
-%attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:.%{2}}\
-/boot/config-%{KVERREL}%{?2:.%{2}}\
-%dir /lib/modules/%{KVERREL}%{?2:.%{2}}\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/kernel\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/build\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/source\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/updates\
+%attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
+/boot/config-%{KVERREL}%{?2:+%{2}}\
+%dir /lib/modules/%{KVERREL}%{?2:+%{2}}\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/kernel\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/build\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/source\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/updates\
 %ifarch %{vdso_arches}\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/vdso\
-/etc/ld.so.conf.d/kernel-%{KVERREL}%{?2:.%{2}}.conf\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/vdso\
+/etc/ld.so.conf.d/kernel-%{KVERREL}%{?2:+%{2}}.conf\
 %endif\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/modules.*\
-%ghost /boot/initramfs-%{KVERREL}%{?2:.%{2}}.img\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/modules.*\
+%ghost /boot/initramfs-%{KVERREL}%{?2:+%{2}}.img\
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
-/usr/src/kernels/%{KVERREL}%{?2:.%{2}}\
+/usr/src/kernels/%{KVERREL}%{?2:+%{2}}\
 %{expand:%%files %{?2:%{2}-}modules-extra}\
 %defattr(-,root,root)\
-/lib/modules/%{KVERREL}%{?2:.%{2}}/extra\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/extra\
 %if %{with_debuginfo}\
 %ifnarch noarch\
 %{expand:%%files -f debuginfo%{?2}.list %{?2:%{2}-}debuginfo}\
@@ -2246,6 +2246,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 22 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git0.2
+- let flavors/variants end with "+$flavor" in the uname patch from harald@redhat.com
+- Reenable debugging options.
+
 * Mon Jul 22 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix timer issue in bridge code (rhbz 980254)
 
