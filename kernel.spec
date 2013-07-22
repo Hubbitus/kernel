@@ -737,6 +737,9 @@ Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
+#rhbz 980254
+Patch25066: bridge-do-not-call-setup_timer-multiple-times.patch
+
 #rhbz 977558
 Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 
@@ -1433,6 +1436,9 @@ ApplyPatch xen-blkback-Check-device-permissions-before-allowing.patch
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
+
+#rhbz 980254
+ApplyPatch bridge-do-not-call-setup_timer-multiple-times.patch
 
 #rhbz 977558
 ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
@@ -2240,6 +2246,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 22 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix timer issue in bridge code (rhbz 980254)
+
 * Mon Jul 22 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git0.1
 - Linux v3.11-rc2
 - Disable debugging options.
