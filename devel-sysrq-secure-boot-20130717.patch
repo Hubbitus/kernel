@@ -1,18 +1,5 @@
-diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index 6ad8292..e7b9374 100644
---- a/Documentation/kernel-parameters.txt
-+++ b/Documentation/kernel-parameters.txt
-@@ -2784,7 +2784,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
- 			Note: increases power consumption, thus should only be
- 			enabled if running jitter sensitive (HPC/RT) workloads.
- 
--	secureboot_enable=
-+	secureboot_enable
- 			[KNL] Enables an emulated UEFI Secure Boot mode.  This
- 			locks down various aspects of the kernel guarded by the
- 			CAP_COMPROMISE_KERNEL capability.  This includes things
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 167ca34..ba3c8f2 100644
+index 167ca34..2a06699 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -27,7 +14,7 @@ index 167ca34..ba3c8f2 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1252,3 +1257,59 @@ void __init i386_reserve_resources(void)
+@@ -1252,3 +1257,61 @@ void __init i386_reserve_resources(void)
  }
  
  #endif /* CONFIG_X86_32 */
@@ -51,12 +38,14 @@ index 167ca34..ba3c8f2 100644
 +}
 +
 +/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
-+static int __init secureboot_enable_opt(char *__unused)
++static int __init secureboot_enable_opt(char *str)
 +{
-+	secureboot_enable();
++	int sb_enable = !!simple_strtol(str, NULL, 0);
++	if (sb_enable)
++		secureboot_enable();
 +	return 1;
 +}
-+__setup("secureboot_enable", secureboot_enable_opt);
++__setup("secureboot_enable=", secureboot_enable_opt);
 +
 +#ifdef CONFIG_MAGIC_SYSRQ
 +extern int sb_enabled;
