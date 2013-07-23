@@ -698,16 +698,17 @@ Patch21001: arm-lpae-ax88796.patch
 Patch21002: drm-exynos-fix-multiple-definition-build-error.patch
 
 # ARM omap
-Patch21004: arm-omap-load-tfp410.patch
+Patch21010: arm-omap-load-tfp410.patch
 
 # ARM tegra
-Patch21005: arm-tegra-usb-no-reset-linux33.patch
+Patch21020: arm-tegra-usb-no-reset-linux33.patch
+Patch21021: arm-tegra-remove-direct-vbus-regulator-control.patch
 
 # ARM wandboard
-Patch21006: arm-wandboard-quad.patch
+Patch21030: arm-wandboard-quad.patch
 
 # AM33xx
-Patch21007: arm-omap-bbb-dts.patch
+Patch21040: arm-omap-bbb-dts.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1302,6 +1303,7 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-remove-direct-vbus-regulator-control.patch
 ApplyPatch arm-wandboard-quad.patch
 #ApplyPatch arm-omap-bbb-dts.patch
 #
@@ -2240,6 +2242,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 23 2013 Kyle McMartin <kyle@redhat.com>
+- arm-tegra-remove-direct-vbus-regulator-control.patch: backport patches
+  to fix ehci-tegra.
+
 * Tue Jul 23 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git1.1
 - Linux v3.11-rc2-93-gb3a3a9c
 
