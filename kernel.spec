@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -728,9 +728,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 
 #rhbz 927469
 Patch23006: fix-child-thread-introspection.patch
-
-#CVE-2013-2140 rhbz 971146 971148
-Patch25031: xen-blkback-Check-device-permissions-before-allowing.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 Patch25032: cve-2013-2147-ciss-info-leak.patch
@@ -1428,9 +1425,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 #rhbz 927469
 ApplyPatch fix-child-thread-introspection.patch
-
-#CVE-2013-2140 rhbz 971146 971148
-ApplyPatch xen-blkback-Check-device-permissions-before-allowing.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
@@ -2246,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 23 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git1.1
+- Linux v3.11-rc2-93-gb3a3a9c
+
 * Mon Jul 22 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git0.2
 - let flavors/variants end with "+$flavor" in the uname patch from harald@redhat.com
 - Reenable debugging options.
