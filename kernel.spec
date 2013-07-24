@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2242,6 +2242,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 24 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git2.1
+- Linux v3.11-rc2-158-g04012e3
+
 * Tue Jul 23 2013 Kyle McMartin <kyle@redhat.com>
 - arm-tegra-remove-direct-vbus-regulator-control.patch: backport patches
   to fix ehci-tegra.
