@@ -1,0 +1,58 @@
+If channel switch is pending and we remove interface we can
+crash like showed below due to passing NULL vif to mac80211:
+
+BUG: unable to handle kernel paging request at fffffffffffff8cc
+IP: [<ffffffff8130924d>] strnlen+0xd/0x40
+Call Trace:
+ [<ffffffff8130ad2e>] string.isra.3+0x3e/0xd0
+ [<ffffffff8130bf99>] vsnprintf+0x219/0x640
+ [<ffffffff8130c481>] vscnprintf+0x11/0x30
+ [<ffffffff81061585>] vprintk_emit+0x115/0x4f0
+ [<ffffffff81657bd5>] printk+0x61/0x63
+ [<ffffffffa048987f>] ieee80211_chswitch_done+0xaf/0xd0 [mac80211]
+ [<ffffffffa04e7b34>] iwl_chswitch_done+0x34/0x40 [iwldvm]
+ [<ffffffffa04f83c3>] iwlagn_commit_rxon+0x2a3/0xdc0 [iwldvm]
+ [<ffffffffa04ebc50>] ? iwlagn_set_rxon_chain+0x180/0x2c0 [iwldvm]
+ [<ffffffffa04e5e76>] iwl_set_mode+0x36/0x40 [iwldvm]
+ [<ffffffffa04e5f0d>] iwlagn_mac_remove_interface+0x8d/0x1b0 [iwldvm]
+ [<ffffffffa0459b3d>] ieee80211_do_stop+0x29d/0x7f0 [mac80211]
+
+This is because we nulify ctx->vif in iwlagn_mac_remove_interface()
+before calling some other functions that teardown interface. To fix
+just check ctx->vif on iwl_chswitch_done(). We should not call
+ieee80211_chswitch_done() as channel switch works were already canceled
+by mac80211 in ieee80211_do_stop() -> ieee80211_mgd_stop().
+
+Resolve:
+https://bugzilla.redhat.com/show_bug.cgi?id=979581
+
+Cc: stable@vger.kernel.org
+Reported-by: Lukasz Jagiello <jagiello.lukasz@gmail.com>
+Signed-off-by: Stanislaw Gruszka <sgruszka@redhat.com>
+---
+ drivers/net/wireless/iwlwifi/dvm/mac80211.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/iwlwifi/dvm/mac80211.c b/drivers/net/wireless/iwlwifi/dvm/mac80211.c
+index 323e4a3..9a817df 100644
+--- a/drivers/net/wireless/iwlwifi/dvm/mac80211.c
++++ b/drivers/net/wireless/iwlwifi/dvm/mac80211.c
+@@ -1046,7 +1046,10 @@ void iwl_chswitch_done(struct iwl_priv *priv, bool is_success)
+ 	if (test_bit(STATUS_EXIT_PENDING, &priv->status))
+ 		return;
+ 
+-	if (test_and_clear_bit(STATUS_CHANNEL_SWITCH_PENDING, &priv->status))
++	if (!test_and_clear_bit(STATUS_CHANNEL_SWITCH_PENDING, &priv->status))
++		return;
++
++	if (ctx->vif)
+ 		ieee80211_chswitch_done(ctx->vif, is_success);
+ }
+ 
+-- 
+1.7.11.7
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

@@ -748,6 +748,9 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 #rhbz 885407
 Patch25064: iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 
+#rhbz 979581
+Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1445,6 +1448,9 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 885407
 ApplyPatch iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
+
+#rhbz 979581
+ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2242,6 +2248,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 26 2013 Josh Boyer <jwboyer@redhat.com>
+- Add patch to fix NULL deref in iwlwifi (rhbz 979581)
+
 * Thu Jul 25 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git3.1
 - Linux v3.11-rc2-185-g07bc9dc
 
