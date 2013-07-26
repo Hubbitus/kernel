@@ -482,3 +482,11 @@ CONFIG_XPS=y
 # CONFIG_XZ_DEC_BCJ is not set
 CONFIG_ZONE_DMA32=y
 CONFIG_ZONE_DMA_FLAG=0
+
+# busted build for various reasons
+#  uses pci_* for some reason to allocate DMA buffers
+# CONFIG_DVB_B2C2_FLEXCOP_USB is not set
+#  weird include chain resulting in missing u64 type
+# CONFIG_USB_SPEEDTOUCH is not set
+#  dma issues in headers
+# CONFIG_USB_XHCI_HCD is not set
