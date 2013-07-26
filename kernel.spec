@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2248,6 +2248,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 26 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git4.1
+- Linux v3.11-rc2-333-ga9b5f02
+
 * Fri Jul 26 2013 Josh Boyer <jwboyer@redhat.com>
 - Add patch to fix NULL deref in iwlwifi (rhbz 979581)
 
