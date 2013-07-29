@@ -2248,10 +2248,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Jul 29 2013 Kyle McMartin <kyle@redhat.com>
+* Mon Jul 29 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc3.git0.1
 - arm-dma-amba_pl08x-avoid-64bit-division.patch: STAHP libgcc callouts
 
-* Mon Jul 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git0.1
+* Mon Jul 29 2013 Josh Boyer <jwboyer@redhat.com>
 - Linux v3.11-rc3
 - Disable debugging options.
 - Always include x509.genkey in Sources list
