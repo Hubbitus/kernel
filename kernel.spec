@@ -528,9 +528,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
 
-%if %{signmodules}
 Source11: x509.genkey
-%endif
 
 Source15: merge.pl
 Source16: mod-extra.list
@@ -2251,6 +2249,7 @@ fi
 * Mon Jul 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git0.1
 - Linux v3.11-rc3
 - Disable debugging options.
+- Always include x509.genkey in Sources list
 
 * Fri Jul 26 2013 Justin M. Forbes <jforbes@redhat.com> - 3.11.0-0.rc2.git4.1
 - Linux v3.11-rc2-333-ga9b5f02
