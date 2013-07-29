@@ -694,6 +694,7 @@ Patch15000: nowatchdog-on-virt.patch
 # lpae
 Patch21001: arm-lpae-ax88796.patch
 Patch21002: drm-exynos-fix-multiple-definition-build-error.patch
+Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
@@ -1302,6 +1303,7 @@ ApplyPatch debug-bad-pte-modules.patch
 #
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
+ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-remove-direct-vbus-regulator-control.patch
@@ -2246,6 +2248,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 29 2013 Kyle McMartin <kyle@redhat.com>
+- arm-dma-amba_pl08x-avoid-64bit-division.patch: STAHP libgcc callouts
+
 * Mon Jul 29 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git0.1
 - Linux v3.11-rc3
 - Disable debugging options.
