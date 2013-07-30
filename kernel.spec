@@ -751,6 +751,10 @@ Patch25064: iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 #rhbz 979581
 Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
+#rhbz 989138
+Patch25072: HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
+Patch25073: HID-hid-logitech-dj-querying_devices-was-never-set.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1453,6 +1457,10 @@ ApplyPatch iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 
 #rhbz 979581
 ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
+
+#rhbz 989138
+ApplyPatch HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
+ApplyPatch HID-hid-logitech-dj-querying_devices-was-never-set.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2250,6 +2258,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 30 2013 Josh Boyer <jwboyer@redhat.com>
+- Revert some changes to make Logitech devices function properly (rhbz 989138)
+
 * Mon Jul 29 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc3.git0.1
 - arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch: ditto
 
