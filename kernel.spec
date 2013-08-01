@@ -753,7 +753,6 @@ Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
 #rhbz 989138
 Patch25072: HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
-Patch25073: HID-hid-logitech-dj-querying_devices-was-never-set.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1460,7 +1459,6 @@ ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
 #rhbz 989138
 ApplyPatch HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
-ApplyPatch HID-hid-logitech-dj-querying_devices-was-never-set.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2258,6 +2256,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 01 2013 Josh Boyer <jwboyer@redhat.com>
+- Drop hid-logitech-dj patch that was breaking enumeration (rhbz 989138)
+
 * Tue Jul 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git1.1
 - Linux v3.11-rc3-4-g36f571e
 - Reenable debugging options.
