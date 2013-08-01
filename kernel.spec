@@ -754,6 +754,9 @@ Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 #rhbz 989138
 Patch25072: HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
 
+#rhbz 977053
+Patch25073: iwl4965-reset-firmware-after-rfkill-off.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1459,6 +1462,9 @@ ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
 #rhbz 989138
 ApplyPatch HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
+
+#rhbz 977053
+ApplyPatch iwl4965-reset-firmware-after-rfkill-off.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2257,6 +2263,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Aug 01 2013 Josh Boyer <jwboyer@redhat.com>
+- Fix firmware issues with iwl4965 and rfkill (rhbz 977053)
 - Drop hid-logitech-dj patch that was breaking enumeration (rhbz 989138)
 
 * Tue Jul 30 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git1.1
