@@ -2272,6 +2272,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config update
+
 * Thu Aug 01 2013 Josh Boyer <jwboyer@redhat.com>
 - Fix mac80211 connection issues (rhbz 981445)
 - Fix firmware issues with iwl4965 and rfkill (rhbz 977053)
