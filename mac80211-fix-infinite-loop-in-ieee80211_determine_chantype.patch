@@ -1,0 +1,32 @@
+From b56e4b857c5210e848bfb80e074e5756a36cd523 Mon Sep 17 00:00:00 2001
+From: Chris Wright <chrisw@sous-sol.org>
+Date: Wed, 31 Jul 2013 19:12:24 +0000
+Subject: mac80211: fix infinite loop in ieee80211_determine_chantype
+
+Commit "3d9646d mac80211: fix channel selection bug" introduced a possible
+infinite loop by moving the out target above the chandef_downgrade
+while loop.  When we downgrade to NL80211_CHAN_WIDTH_20_NOHT, we jump
+back up to re-run the while loop...indefinitely.  Replace goto with
+break and carry on.  This may not be sufficient to connect to the AP,
+but will at least keep the cpu from livelocking.  Thanks to Derek Atkins
+as an extra pair of debugging eyes.
+
+Cc: stable@kernel.org
+Signed-off-by: Chris Wright <chrisw@sous-sol.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index ae31968..e3e7d2b 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -338,7 +338,7 @@ out:
+ 		if (WARN_ON(chandef->width == NL80211_CHAN_WIDTH_20_NOHT)) {
+ 			ret = IEEE80211_STA_DISABLE_HT |
+ 			      IEEE80211_STA_DISABLE_VHT;
+-			goto out;
++			break;
+ 		}
+ 
+ 		ret |= chandef_downgrade(chandef);
+--
+cgit v0.9.2
