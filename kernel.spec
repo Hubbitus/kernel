@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -693,7 +693,6 @@ Patch15000: nowatchdog-on-virt.patch
 
 # lpae
 Patch21001: arm-lpae-ax88796.patch
-Patch21002: drm-exynos-fix-multiple-definition-build-error.patch
 Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 
@@ -735,18 +734,12 @@ Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 980254
-Patch25066: bridge-do-not-call-setup_timer-multiple-times.patch
-
 #rhbz 977558
 Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
 Patch25057: iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 885407
-Patch25064: iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 
 #rhbz 979581
 Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
@@ -1314,7 +1307,6 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch drm-exynos-fix-multiple-definition-build-error.patch
 ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
@@ -1449,18 +1441,12 @@ ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 980254
-ApplyPatch bridge-do-not-call-setup_timer-multiple-times.patch
-
 #rhbz 977558
 ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
 ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 885407
-ApplyPatch iwlwifi-dvm-dont-send-BT_CONFIG-on-devices-wo-Bluetooth.patch
 
 #rhbz 979581
 ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
@@ -2272,6 +2258,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 02 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git2.1
+- Linux v3.11-rc3-207-g64ccccf
+
 * Thu Aug  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config update
 
