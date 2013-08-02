@@ -653,6 +653,7 @@ Patch1001: devel-sysrq-secure-boot-20130717.patch
 # virt + ksm patches
 
 # DRM
+Patch1701: radeon-si_calculate_leakage-use-div64.patch
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 #Patch1800: drm-vgem.patch
 
@@ -1391,6 +1392,9 @@ ApplyPatch devel-sysrq-secure-boot-20130717.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
+
+# Radeon DRM
+ApplyPatch radeon-si_calculate_leakage-use-div64.patch
 
 # silence the ACPI blacklist code
 ApplyPatch silence-acpi-blacklist.patch
@@ -2258,6 +2262,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 02 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc3.git2.1
+- radeon-si_calculate_leakage-use-div64.patch: fix a compile error on i686.
+- arm: disable CONFIG_LOCK_STAT, bloats .data massively, revisit shortly.
+- arm: build-in more rtc drivers.
+
 * Fri Aug 02 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git2.1
 - Linux v3.11-rc3-207-g64ccccf
 

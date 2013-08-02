@@ -82,3 +82,5 @@ CONFIG_MDIO_GPIO=m
 # CONFIG_DRM_SHMOBILE is not set
 # CONFIG_MMC_DW_SOCFPGA is not set
 # CONFIG_ARM_SMMU is not set
+
+# CONFIG_LOCK_STAT is not set
