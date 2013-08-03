@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -744,9 +744,6 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 979581
 Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
-
-#rhbz 989138
-Patch25072: HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
 
 #rhbz 977053
 Patch25073: iwl4965-reset-firmware-after-rfkill-off.patch
@@ -1454,9 +1451,6 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 979581
 ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
-
-#rhbz 989138
-ApplyPatch HID-Revert-Revert-HID-Fix-logitech-dj-missing-Unifying-device-issue.patch
 
 #rhbz 977053
 ApplyPatch iwl4965-reset-firmware-after-rfkill-off.patch
@@ -2262,6 +2256,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git3.1
+- Linux v3.11-rc3-288-gabe0308
+
 * Fri Aug 02 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-0.rc3.git2.1
 - radeon-si_calculate_leakage-use-div64.patch: fix a compile error on i686.
 - arm: disable CONFIG_LOCK_STAT, bloats .data massively, revisit shortly.
