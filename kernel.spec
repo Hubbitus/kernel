@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -734,9 +734,6 @@ Patch23006: fix-child-thread-introspection.patch
 Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 977558
-Patch25055: ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
@@ -1441,9 +1438,6 @@ ApplyPatch fix-child-thread-introspection.patch
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 977558
-ApplyPatch ath3k-dont-use-stack-memory-for-DMA.patch
 
 #rhbz 977040
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
@@ -2256,6 +2250,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Aug 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git4.1
+- Linux v3.11-rc3-376-g72a67a9
+
 * Sat Aug 03 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git3.1
 - Linux v3.11-rc3-288-gabe0308
 
