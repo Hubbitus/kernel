@@ -93,9 +93,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -156,7 +156,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -169,7 +169,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 1
+%define rawhide_skip_docs 0
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -653,7 +653,6 @@ Patch1001: devel-sysrq-secure-boot-20130717.patch
 # virt + ksm patches
 
 # DRM
-Patch1701: radeon-si_calculate_leakage-use-div64.patch
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 #Patch1800: drm-vgem.patch
 
@@ -1388,7 +1387,6 @@ ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
 
 # Radeon DRM
-ApplyPatch radeon-si_calculate_leakage-use-div64.patch
 
 # silence the ACPI blacklist code
 ApplyPatch silence-acpi-blacklist.patch
@@ -2250,6 +2248,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 05 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc4.git0.1
+- Linux v3.11-rc4
+- Disable debugging options.
+
 * Sun Aug 04 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc3.git4.1
 - Linux v3.11-rc3-376-g72a67a9
 
