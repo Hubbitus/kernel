@@ -1830,8 +1830,8 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
 %endif
 
 %if %{with_doc}
-# Make the HTML and man pages.
-make htmldocs mandocs || %{doc_build_fail}
+# Make the HTML pages.
+make htmldocs || %{doc_build_fail}
 
 # sometimes non-world-readable files sneak into the kernel source tree
 chmod -R a=rX Documentation
@@ -1908,17 +1908,11 @@ cd linux-%{KVERREL}
 
 %if %{with_doc}
 docdir=$RPM_BUILD_ROOT%{_datadir}/doc/kernel-doc-%{rpmversion}
-man9dir=$RPM_BUILD_ROOT%{_datadir}/man/man9
 
 # copy the source over
 mkdir -p $docdir
 tar -h -f - --exclude=man --exclude='.*' -c Documentation | tar xf - -C $docdir
 
-# Install man pages for the kernel API.
-mkdir -p $man9dir
-find Documentation/DocBook/man -name '*.9.gz' -print0 |
-xargs -0 --no-run-if-empty %{__install} -m 444 -t $man9dir $m
-ls $man9dir | grep -q '' || > $man9dir/BROKEN
 %endif # with_doc
 
 # We have to do the headers install before the tools install because the
@@ -2120,7 +2114,6 @@ fi
 %{_datadir}/doc/kernel-doc-%{rpmversion}/Documentation/*
 %dir %{_datadir}/doc/kernel-doc-%{rpmversion}/Documentation
 %dir %{_datadir}/doc/kernel-doc-%{rpmversion}
-%{_datadir}/man/man9/*
 %endif
 
 %if %{with_perf}
@@ -2248,6 +2241,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 06 2013 Josh Boyer <jwboyer@redhat.com>
+- Don't package API man pages in -doc (rhbz 993905)
+
 * Mon Aug 05 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc4.git0.1
 - Linux v3.11-rc4
 - Disable debugging options.
