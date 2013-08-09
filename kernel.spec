@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2245,6 +2245,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 09 2013 Josh Boyer <jwboyer@gmail.com> - 3.11.0-0.rc4.git3.1
+- Linux v3.11-rc4-103-g6c2580c
+
 * Wed Aug 07 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc4.git2.1
 - Linux v3.11-rc4-27-ge4ef108
 - Add zero file length check to make sure pesign didn't fail (rhbz 991808)
