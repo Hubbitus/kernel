@@ -2245,6 +2245,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Aug 11 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop a bunch of generic dupe config from aarch64
+
 * Sat Aug 10 2013 Josh Boyer <jwboyer@gmail.com> - 3.11.0-0.rc4.git4.1
 - Linux v3.11-rc4-162-g14e9419
 
