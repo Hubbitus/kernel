@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2245,6 +2245,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 14 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc5.git2.1
+- Linux v3.11-rc5-21-g28fbc8b
+- Disable WIMAX.  It's fairly broken and abandoned upstream.
+
 * Tue Aug 13 2013 Josh Boyer <jwboyer@gmail.com> - 3.11.0-0.rc5.git1.1
 - Linux v3.11-rc5-13-g584d88b
 - Reenable debugging options.

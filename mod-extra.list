@@ -76,7 +76,6 @@ softing_cs.ko
 softing.ko
 ems_usb.ko
 esd_usb2.ko
-wimax.ko
 nfc.ko
 nci.ko
 mptbase.ko
