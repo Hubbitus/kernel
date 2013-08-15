@@ -1,0 +1,30 @@
+From b43ea8068d2090cb1e44632c8a938ab40d2c7419 Mon Sep 17 00:00:00 2001
+From: Johannes Koch <johannes@ortsraum.de>
+Date: Wed, 17 Jul 2013 17:28:16 +0000
+Subject: [media] cx23885: Fix TeVii S471 regression since introduction of ts2020
+
+Patch to make TeVii S471 cards use the ts2020 tuner, since ds3000 driver no
+longer contains tuning code.
+
+Signed-off-by: Johannes Koch <johannes@ortsraum.de>
+Signed-off-by: Mauro Carvalho Chehab <m.chehab@samsung.com>
+---
+(limited to 'drivers/media/pci/cx23885/cx23885-dvb.c')
+
+diff --git a/drivers/media/pci/cx23885/cx23885-dvb.c b/drivers/media/pci/cx23885/cx23885-dvb.c
+index 9c5ed10..bb291c6 100644
+--- a/drivers/media/pci/cx23885/cx23885-dvb.c
++++ b/drivers/media/pci/cx23885/cx23885-dvb.c
+@@ -1249,6 +1249,10 @@ static int dvb_register(struct cx23885_tsport *port)
+ 		fe0->dvb.frontend = dvb_attach(ds3000_attach,
+ 					&tevii_ds3000_config,
+ 					&i2c_bus->i2c_adap);
++		if (fe0->dvb.frontend != NULL) {
++			dvb_attach(ts2020_attach, fe0->dvb.frontend,
++				&tevii_ts2020_config, &i2c_bus->i2c_adap);
++		}
+ 		break;
+ 	case CX23885_BOARD_PROF_8000:
+ 		i2c_bus = &dev->i2c_bus[0];
+--
+cgit v0.9.2

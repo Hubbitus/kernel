@@ -749,6 +749,9 @@ Patch25074: mac80211-fix-infinite-loop-in-ieee80211_determine_chantype.patch
 Patch25075: mac80211-ignore-HT-primary-channel-while-connected.patch
 Patch25076: mac80211-continue-using-disabled-channels-while-connected.patch
 
+#rhbz 963715
+Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1451,6 +1454,9 @@ ApplyPatch iwl4965-reset-firmware-after-rfkill-off.patch
 ApplyPatch mac80211-fix-infinite-loop-in-ieee80211_determine_chantype.patch
 ApplyPatch mac80211-ignore-HT-primary-channel-while-connected.patch
 ApplyPatch mac80211-continue-using-disabled-channels-while-connected.patch
+
+#rhbz 963715
+ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2246,6 +2252,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Aug 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc5.git3.1
+- Add patch to fix regression on TeVII S471 devices (rhbz 963715)
 - Linux v3.11-rc5-35-gf1d6e17
 
 * Wed Aug 14 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc5.git2.1
