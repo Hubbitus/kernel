@@ -695,6 +695,7 @@ Patch15000: nowatchdog-on-virt.patch
 Patch21001: arm-lpae-ax88796.patch
 Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
+Patch21005: arm-exynos-mp.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
@@ -1306,6 +1307,7 @@ ApplyPatch debug-bad-pte-modules.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
+ApplyPatch arm-exynos-mp.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-remove-direct-vbus-regulator-control.patch
@@ -2251,6 +2253,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 15 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Major cleanup of arm64 config
+- Add patch to enable build exynos5 as multi platform for lpae
+- Minor cleanup of ARMv7 configs
+
 * Thu Aug 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc5.git3.1
 - Enable CONFIG_HID_SENSOR_HUB (rhbz 995510)
 - Add patch to fix regression on TeVII S471 devices (rhbz 963715)
