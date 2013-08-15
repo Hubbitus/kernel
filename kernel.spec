@@ -2252,6 +2252,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Aug 15 2013 Josh Boyer <jwboyer@redhat.com> - 3.11.0-0.rc5.git3.1
+- Enable CONFIG_HID_SENSOR_HUB (rhbz 995510)
 - Add patch to fix regression on TeVII S471 devices (rhbz 963715)
 - Linux v3.11-rc5-35-gf1d6e17
 
