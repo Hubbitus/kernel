@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -742,19 +742,8 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 #rhbz 979581
 Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
-#rhbz 977053
-Patch25073: iwl4965-reset-firmware-after-rfkill-off.patch
-
-#rhbz 981445
-Patch25074: mac80211-fix-infinite-loop-in-ieee80211_determine_chantype.patch
-Patch25075: mac80211-ignore-HT-primary-channel-while-connected.patch
-Patch25076: mac80211-continue-using-disabled-channels-while-connected.patch
-
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#rhbz 845699
-Patch25078: ALSA-hda-Add-a-fixup-for-Gateway-LT27.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1452,19 +1441,8 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 #rhbz 979581
 ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
-#rhbz 977053
-ApplyPatch iwl4965-reset-firmware-after-rfkill-off.patch
-
-#rhbz 981445
-ApplyPatch mac80211-fix-infinite-loop-in-ieee80211_determine_chantype.patch
-ApplyPatch mac80211-ignore-HT-primary-channel-while-connected.patch
-ApplyPatch mac80211-continue-using-disabled-channels-while-connected.patch
-
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#rhbz 845699
-ApplyPatch ALSA-hda-Add-a-fixup-for-Gateway-LT27.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2259,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc5.git4.1
+- Linux v3.11-rc5-150-g0f7dd1a
+
 * Fri Aug 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Nathanael Noblet to fix mic on Gateway LT27 (rhbz 845699)
 
