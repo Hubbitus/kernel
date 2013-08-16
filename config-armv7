@@ -647,8 +647,6 @@ CONFIG_USB_GADGET_STORAGE_NUM_BUFFERS=2
 # CONFIG_PMIC_ADP5520 is not set
 # CONFIG_REGULATOR_LP3972 is not set
 # CONFIG_REGULATOR_LP872X is not set
-# CONFIG_SGI_IOC4 is not set
-# CONFIG_BLK_DEV_PCIESSD_MTIP32XX is not set
 
 # CONFIG_DVB_USB_PCTV452E is not set
 # We need to fix these as they should be either generic includes or kconfig fixes

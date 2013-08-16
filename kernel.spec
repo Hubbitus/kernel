@@ -2237,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Aug 19 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor kernel configs cleanup merging duplicated config opts into generic
+
 * Sun Aug 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc5.git6.1
 - Linux v3.11-rc5-168-ga08797e
 
