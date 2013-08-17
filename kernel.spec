@@ -2237,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 16 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM drivers config for Zynq 7000 devices
+
 * Fri Aug 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc5.git4.1
 - Linux v3.11-rc5-150-g0f7dd1a
 
