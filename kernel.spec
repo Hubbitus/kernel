@@ -2237,6 +2237,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable Dell RBU so userspace firmware path isn't selected (rhbz 997149)
+
 * Mon Aug 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git0.1
 - Linux v3.11-rc6
 - Disable debugging options.
