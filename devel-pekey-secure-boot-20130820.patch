@@ -1,4 +1,4 @@
-From 888c361d20210d39863ba6f2b71adb84e0a926a7 Mon Sep 17 00:00:00 2001
+From c91d8808147a3c545b3410e80d1458d0f16ad17d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 18 Jan 2013 13:53:35 +0000
 Subject: [PATCH 01/47] KEYS: Load *.x509 files into kernel keyring
@@ -15,10 +15,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  2 files changed, 30 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index d1574d4..64c97da 100644
+index 35ef118..ab231ac 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -141,17 +141,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+@@ -142,17 +142,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
  ifeq ($(CONFIG_MODULE_SIG),y)
@@ -66,10 +66,10 @@ index d1574d4..64c97da 100644
  ###############################################################################
  #
 diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
-index 246b4c6..0a60203 100644
+index 4a9a86d..6fe03c7 100644
 --- a/kernel/modsign_certificate.S
 +++ b/kernel/modsign_certificate.S
-@@ -14,6 +14,5 @@
+@@ -7,6 +7,5 @@
  	.section ".init.data","aw"
  
  GLOBAL(modsign_certificate_list)
@@ -78,10 +78,10 @@ index 246b4c6..0a60203 100644
 +	.incbin "kernel/x509_certificate_list"
  GLOBAL(modsign_certificate_list_end)
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 26a6bf8ffbe82d706c6de06746d760d9bc425ee5 Mon Sep 17 00:00:00 2001
+From 319c5139d81aac944644f5da737807a1dcb9c6db Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 18:39:54 +0000
 Subject: [PATCH 02/47] KEYS: Separate the kernel signature checking keyring
@@ -136,10 +136,10 @@ index 0000000..8dabc39
 +
 +#endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index a76d131..b9d8870 100644
+index 247084b..6abf0e0 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1615,6 +1615,18 @@ config BASE_SMALL
+@@ -1664,6 +1664,18 @@ config BASE_SMALL
  	default 0 if BASE_FULL
  	default 1 if !BASE_FULL
  
@@ -158,7 +158,7 @@ index a76d131..b9d8870 100644
  menuconfig MODULES
  	bool "Enable loadable module support"
  	help
-@@ -1687,6 +1699,7 @@ config MODULE_SRCVERSION_ALL
+@@ -1736,6 +1748,7 @@ config MODULE_SRCVERSION_ALL
  config MODULE_SIG
  	bool "Module signature verification"
  	depends on MODULES
@@ -167,10 +167,10 @@ index a76d131..b9d8870 100644
  	select CRYPTO
  	select ASYMMETRIC_KEY_TYPE
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 64c97da..ecff938 100644
+index ab231ac..1262c6d 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -52,8 +52,9 @@ obj-$(CONFIG_SMP) += spinlock.o
+@@ -53,8 +53,9 @@ obj-$(CONFIG_SMP) += spinlock.o
  obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
  obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
  obj-$(CONFIG_UID16) += uid16.o
@@ -181,7 +181,7 @@ index 64c97da..ecff938 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -140,13 +141,14 @@ targets += timeconst.h
+@@ -141,13 +142,14 @@ targets += timeconst.h
  $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
@@ -199,7 +199,7 @@ index 64c97da..ecff938 100644
  X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
  X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
  X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
-@@ -162,10 +164,11 @@ $(shell rm $(obj)/.x509.list)
+@@ -163,10 +165,11 @@ $(shell rm $(obj)/.x509.list)
  endif
  endif
  
@@ -213,7 +213,7 @@ index 64c97da..ecff938 100644
  targets += $(obj)/x509_certificate_list
  $(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
  	$(call if_changed,x509certs)
-@@ -175,7 +178,9 @@ $(obj)/.x509.list:
+@@ -176,7 +179,9 @@ $(obj)/.x509.list:
  	@echo $(X509_CERTIFICATES) >$@
  
  clean-files := x509_certificate_list .x509.list
@@ -497,10 +497,10 @@ index 0000000..a3ca76f
 +}
 +late_initcall(load_system_certificate_list);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 4e2b0f425d73360fc40b8719b36e6e3ca94d458e Mon Sep 17 00:00:00 2001
+From 2205e40ad85be2cdd430257f52c117783bff691b Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Thu, 17 Jan 2013 16:25:00 +0000
 Subject: [PATCH 03/47] KEYS: Add a 'trusted' flag and a 'trusted only' flag
@@ -626,10 +626,10 @@ index 6ece7f2..f18d7ff 100644
  	if (ret == 0) {
  		ret = __key_link_check_live_key(keyring, key);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 3deae827abdd3de9b7976b423279812d7559e580 Mon Sep 17 00:00:00 2001
+From fd52770a8561eae8034f651aea8f9bf802c0aae4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:32 +0000
 Subject: [PATCH 04/47] KEYS: Rename public key parameter name arrays
@@ -781,10 +781,10 @@ index 0034e36..0b6b870 100644
  
  	key = request_asymmetric_key(sig, ms.signer_len,
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 2acf1a703de1213ad85515a71873f57535dc057d Mon Sep 17 00:00:00 2001
+From 8084c7f191c09306a5e4ad43a886b62d2de87317 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:33 +0000
 Subject: [PATCH 05/47] KEYS: Move the algorithm pointer array from x509 to
@@ -863,10 +863,10 @@ index 619d570..46bde25 100644
  enum pkey_hash_algo {
  	PKEY_HASH_MD4,
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 3cc2c6f01277dfa00106c3e4f3f3ab8184025b90 Mon Sep 17 00:00:00 2001
+From d7cb178a3adb3ed1c195f4d6aa5b252e33bbf036 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:33 +0000
 Subject: [PATCH 06/47] KEYS: Store public key algo ID in public_key struct
@@ -886,7 +886,7 @@ Reviewed-by: Josh Boyer <jwboyer@redhat.com>
  4 files changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 7fabc4c..a583930 100644
+index facbf26..8cc253d 100644
 --- a/crypto/asymmetric_keys/x509_cert_parser.c
 +++ b/crypto/asymmetric_keys/x509_cert_parser.c
 @@ -343,8 +343,9 @@ int x509_extract_key_data(void *context, size_t hdrlen,
@@ -948,10 +948,10 @@ index 46bde25..05778df 100644
  	union {
  		MPI	mpi[5];
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 7dcc63793a873198d3b3c4299f896e2896292d84 Mon Sep 17 00:00:00 2001
+From 0742e45deb50957c5769bfa79ec1d129feb5a231 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:34 +0000
 Subject: [PATCH 07/47] KEYS: Split public_key_verify_signature() and make
@@ -1064,10 +1064,10 @@ index fac574c..8cb2f70 100644
  	pr_debug("Cert Verification: %d\n", ret);
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From da18477d1a1987dce0f3c5f78b62e5b223e2bf90 Mon Sep 17 00:00:00 2001
+From 68dec471e9f1fdfb3805c56f9b1b1dfa9e251289 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 08/47] KEYS: Store public key algo ID in public_key_signature
@@ -1097,10 +1097,10 @@ index 05778df..b34fda4 100644
  	union {
  		MPI mpi[2];
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 29d80acc90a95ef5614cf36d4e30835bcc014cc4 Mon Sep 17 00:00:00 2001
+From 7dcaefd46da44b027305be55403c4dfe58b466e6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 09/47] X.509: struct x509_certificate needs struct tm
@@ -1129,10 +1129,10 @@ index e583ad0..2d01182 100644
  
  struct x509_certificate {
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From ba3ba9e41abb17a7632075668e4f0a30edb59896 Mon Sep 17 00:00:00 2001
+From 7dbab142ca832e577cd857c75cdb25dc1eb5f84f Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:35 +0000
 Subject: [PATCH 10/47] X.509: Add bits needed for PKCS#7
@@ -1163,7 +1163,7 @@ index bf32b3d..aae0cde 100644
  	issuer			Name ({ x509_note_issuer }),
  	validity		Validity,
 diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index a583930..08bebf1 100644
+index 8cc253d..c8d0ae4 100644
 --- a/crypto/asymmetric_keys/x509_cert_parser.c
 +++ b/crypto/asymmetric_keys/x509_cert_parser.c
 @@ -209,6 +209,19 @@ int x509_note_signature(void *context, size_t hdrlen,
@@ -1227,10 +1227,10 @@ index 2d01182..a6ce46f 100644
  
  /*
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 4d2f837ab3629d5b4b3bac2bbdbdf2d0060e74a8 Mon Sep 17 00:00:00 2001
+From e3b00fde4d364927273a5559d638fd3120ad78f9 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:36 +0000
 Subject: [PATCH 11/47] X.509: Embed public_key_signature struct and create
@@ -1255,7 +1255,7 @@ Reviewed-by: Josh Boyer <jwboyer@redhat.com>
  3 files changed, 73 insertions(+), 54 deletions(-)
 
 diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 08bebf1..931f069 100644
+index c8d0ae4..578a284 100644
 --- a/crypto/asymmetric_keys/x509_cert_parser.c
 +++ b/crypto/asymmetric_keys/x509_cert_parser.c
 @@ -47,6 +47,8 @@ void x509_free_certificate(struct x509_certificate *cert)
@@ -1495,10 +1495,10 @@ index 8cb2f70..b7c81d8 100644
  	if (!cert->fingerprint || !cert->authority) {
  		pr_warn("Cert for '%s' must have SubjKeyId and AuthKeyId extensions\n",
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 822175026ad1d4640240d1fdd77b1f45ddd9e7a9 Mon Sep 17 00:00:00 2001
+From 0b511bb56ac405bb3e771e54199aee4e60d4ff74 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:36 +0000
 Subject: [PATCH 12/47] X.509: Check the algorithm IDs obtained from parsing an
@@ -1536,10 +1536,10 @@ index b7c81d8..eb368d4 100644
  	pr_devel("Cert Valid From: %04ld-%02d-%02d %02d:%02d:%02d\n",
  		 cert->valid_from.tm_year + 1900, cert->valid_from.tm_mon + 1,
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 4a1a540f79d36d8b0b8970ea638648cef080057b Mon Sep 17 00:00:00 2001
+From b58a30639cd4893dce95ef4b1ff07344d5afc5aa Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:37 +0000
 Subject: [PATCH 13/47] X.509: Handle certificates that lack an
@@ -1583,10 +1583,10 @@ index eb368d4..0f55e3b 100644
  		if (ret < 0)
  			goto error_free_cert;
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From f5e443e719cfb7cae2aea764ad3c9ec9ffba4f60 Mon Sep 17 00:00:00 2001
+From ecefa89c570b202f42372a94481396265f721ffc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:37 +0000
 Subject: [PATCH 14/47] X.509: Export certificate parse and free functions
@@ -1601,7 +1601,7 @@ Reviewed-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/crypto/asymmetric_keys/x509_cert_parser.c b/crypto/asymmetric_keys/x509_cert_parser.c
-index 931f069..9cf0e16 100644
+index 578a284..34b87bb 100644
 --- a/crypto/asymmetric_keys/x509_cert_parser.c
 +++ b/crypto/asymmetric_keys/x509_cert_parser.c
 @@ -11,6 +11,7 @@
@@ -1629,10 +1629,10 @@ index 931f069..9cf0e16 100644
  /*
   * Note an OID when we find one for later processing when we know how
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 792a56d205765cf4ece16868929ad5fbe6b89df4 Mon Sep 17 00:00:00 2001
+From 193e16483d08c066e34ae3bd217acda5a10a383d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:38 +0000
 Subject: [PATCH 15/47] PKCS#7: Implement a parser [RFC 2315]
@@ -2242,10 +2242,10 @@ index 6926db7..edeff85 100644
  	/* Distinguished Name attribute IDs [RFC 2256] */
  	OID_commonName,			/* 2.5.4.3 */
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 3b4b82eecde52c1bd75ab11ef7f8a5c13ec73c40 Mon Sep 17 00:00:00 2001
+From c7a5111d9395c4ad4189507432403a947b31ffc4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:38 +0000
 Subject: [PATCH 16/47] PKCS#7: Digest the data in a signed-data message
@@ -2416,10 +2416,10 @@ index 0000000..2f9f26c
 +}
 +EXPORT_SYMBOL_GPL(pkcs7_verify);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From e67fed4626a30dd11967abad9187013ff4185991 Mon Sep 17 00:00:00 2001
+From 4a71f8a3b7a0533976cab4a409265256cedcc061 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 17/47] PKCS#7: Find the right key in the PKCS#7 key list and
@@ -2515,10 +2515,10 @@ index 2f9f26c..3f6f0e2 100644
  }
  EXPORT_SYMBOL_GPL(pkcs7_verify);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 87ec8d783c887617ee6e85f66a9ce1a03c627e87 Mon Sep 17 00:00:00 2001
+From 3b40d7abe743d0ba7bbd878255fea7669061b2c0 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 18/47] PKCS#7: Verify internal certificate chain
@@ -2631,10 +2631,10 @@ index 6b1d877..5e35fba 100644
  	char		*issuer;		/* Name of certificate issuer */
  	char		*subject;		/* Name of certificate subject */
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From cc6c40318a05330e4bb201b35378d7c0a0278aaa Mon Sep 17 00:00:00 2001
+From cc101ac5d85079801046da54ed9a13554e9fc09e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:42 +0000
 Subject: [PATCH 19/47] PKCS#7: Find intersection between PKCS#7 message and
@@ -2838,10 +2838,10 @@ index 0000000..cc226f5
 +}
 +EXPORT_SYMBOL_GPL(pkcs7_validate_trust);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From f20b0d77771133bd0d7e89932fef494f00687607 Mon Sep 17 00:00:00 2001
+From 3971ac2923f4cfe1551fb9175c24d6b2b35f5712 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:39 +0000
 Subject: [PATCH 20/47] Provide PE binary definitions
@@ -3311,10 +3311,10 @@ index 0000000..9234aef
 +
 +#endif /* __LINUX_PE_H */
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From d329754b0c2881b6331aacafab74a26b2d9262b3 Mon Sep 17 00:00:00 2001
+From 7ef3230ba3f37f5e43ff63864239a35fbcff6231 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 21/47] pefile: Parse a PE binary to find a key and a signature
@@ -3605,10 +3605,10 @@ index 0000000..82bcaf6
 +	enum pkey_hash_algo digest_algo;	/* Digest algorithm */
 +};
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 3794d7963e17fc0b0c2f62164306b9a45cb2254e Mon Sep 17 00:00:00 2001
+From deace3b69fdfa258b64833e1ccec8503f8ed73f6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 22/47] pefile: Strip the wrapper off of the cert data block
@@ -3709,10 +3709,10 @@ index fb80cf0..f2d4df0 100644
  }
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From f23895761a15e08959140091dc17004e7e6e2035 Mon Sep 17 00:00:00 2001
+From 3667801af341c697f97cb2f7eef6437579359877 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:40 +0000
 Subject: [PATCH 23/47] pefile: Parse the presumed PKCS#7 content of the
@@ -3763,10 +3763,10 @@ index f2d4df0..056500f 100644
  
  static struct asymmetric_key_parser pefile_key_parser = {
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From fcdb91196beb6235eed676c368a662cbdf92b804 Mon Sep 17 00:00:00 2001
+From d2feb9c558723ea5e73ba9eea1fdcfd2138cb1d6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:41 +0000
 Subject: [PATCH 24/47] pefile: Parse the "Microsoft individual code signing"
@@ -4006,10 +4006,10 @@ index edeff85..332dcf5 100644
  	OID_sha256,			/* 2.16.840.1.101.3.4.2.1 */
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 63204898d9491f8ba1b90dea8660e8ff778db993 Mon Sep 17 00:00:00 2001
+From c7454993366ab78ebe7171d36cdc5e5ba32dcb29 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:41 +0000
 Subject: [PATCH 25/47] pefile: Digest the PE binary and compare to the PKCS#7
@@ -4242,10 +4242,10 @@ index f1c8cc1..dfdb85e 100644
  
  error:
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 17ed825e5f3f595665abd3fc11a6c180e6762b87 Mon Sep 17 00:00:00 2001
+From 5ce5e2a5d0168c0843dd73e60922ef7d41917993 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 18 Jan 2013 13:58:35 +0000
 Subject: [PATCH 26/47] PEFILE: Validate PKCS#7 trust chain
@@ -4294,10 +4294,10 @@ index dfdb85e..edad948 100644
  
  error:
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From ce9ca4236f691264a94bcbe10beda9ec5a035baf Mon Sep 17 00:00:00 2001
+From 2d138d1c46fba2df758e7ba896e365899987be3d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 15 Jan 2013 15:33:42 +0000
 Subject: [PATCH 27/47] PEFILE: Load the contained key if we consider the
@@ -4385,10 +4385,10 @@ index 0f55e3b..c3e5a6d 100644
  static struct asymmetric_key_parser x509_key_parser = {
  	.owner	= THIS_MODULE,
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 395cc1b55a0645ced39f92b31ba3bcc141e59383 Mon Sep 17 00:00:00 2001
+From a6b4f91e3f9fff3e5c831999535594dd87e42d93 Mon Sep 17 00:00:00 2001
 From: Chun-Yi Lee <joeyli.kernel@gmail.com>
 Date: Thu, 21 Feb 2013 19:23:49 +0800
 Subject: [PATCH 28/47] MODSIGN: Fix including certificate twice when the
@@ -4424,10 +4424,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index ecff938..52f3426 100644
+index 1262c6d..e9f0041 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -149,7 +149,10 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+@@ -150,7 +150,10 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  #
  ###############################################################################
  ifeq ($(CONFIG_SYSTEM_TRUSTED_KEYRING),y)
@@ -4440,10 +4440,10 @@ index ecff938..52f3426 100644
  X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 0ef575739cff3fda47dd2a9415f066ab44dcc922 Mon Sep 17 00:00:00 2001
+From b83ee79f4c5499c3d645bd74770d59a4d077b674 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:56 -0400
 Subject: [PATCH 29/47] Secure boot: Add new capability
@@ -4477,10 +4477,10 @@ index ba478fa..7109e65 100644
  #define cap_valid(x) ((x) >= 0 && (x) <= CAP_LAST_CAP)
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 7312bed4fb9125d4880f11a64521b110079a3c0a Mon Sep 17 00:00:00 2001
+From 6333c8f7e5cf580b9a68f4ade0cc5dc3e2963405 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:05 -0400
 Subject: [PATCH 30/47] SELinux: define mapping for new Secure Boot capability
@@ -4510,10 +4510,10 @@ index 14d04e6..ed99a2d 100644
  	{ "tun_socket",
  	  { COMMON_SOCK_PERMS, "attach_queue", NULL } },
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From e99e1273b0a50d874d2a53461e95f74460e1b812 Mon Sep 17 00:00:00 2001
+From ab855ec3db94f46c9ffd6a0d26027fcfd72ff904 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:02 -0400
 Subject: [PATCH 31/47] Secure boot: Add a dummy kernel parameter that will
@@ -4530,10 +4530,10 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  2 files changed, 24 insertions(+)
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index 8c01a02..ee6c1ca 100644
+index 15356ac..6ad8292 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
-@@ -2744,6 +2744,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+@@ -2784,6 +2784,13 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
  			Note: increases power consumption, thus should only be
  			enabled if running jitter sensitive (HPC/RT) workloads.
  
@@ -4576,10 +4576,10 @@ index e0573a4..c3f4e3e 100644
   * prepare_kernel_cred - Prepare a set of credentials for a kernel service
   * @daemon: A userspace daemon to be used as a reference
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From eeac2b5391d834eefebfae49a100244fdccc82e5 Mon Sep 17 00:00:00 2001
+From 127d5c56e4af6031f4953437a6e45e1b699d74eb Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:03 -0400
 Subject: [PATCH 32/47] efi: Enable secure boot lockdown automatically when
@@ -4616,10 +4616,10 @@ index 199f453..ff651d3 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 35ee62f..0998ec7 100644
+index b7388a4..ea62b02 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -906,6 +906,36 @@ fail:
+@@ -861,6 +861,36 @@ fail:
  	return status;
  }
  
@@ -4656,7 +4656,7 @@ index 35ee62f..0998ec7 100644
  /*
   * Because the x86 boot code expects to be passed a boot_params we
   * need to create one ourselves (usually the bootloader would create
-@@ -1200,6 +1230,8 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
+@@ -1169,6 +1199,8 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
  	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
  		goto fail;
  
@@ -4664,15 +4664,15 @@ index 35ee62f..0998ec7 100644
 +
  	setup_graphics(boot_params);
  
- 	setup_efi_vars(boot_params);
+ 	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
-index 653668d..69a6c08 100644
+index 4a8cb8d..25f9cf1 100644
 --- a/arch/x86/include/asm/bootparam_utils.h
 +++ b/arch/x86/include/asm/bootparam_utils.h
 @@ -38,9 +38,13 @@ static void sanitize_boot_params(struct boot_params *boot_params)
- 		memset(&boot_params->olpc_ofw_header, 0,
+ 		memset(&boot_params->ext_ramdisk_image, 0,
  		       (char *)&boot_params->efi_info -
- 			(char *)&boot_params->olpc_ofw_header);
+ 			(char *)&boot_params->ext_ramdisk_image);
 -		memset(&boot_params->kbd_status, 0,
 +		memset(&boot_params->kbd_status, 0, sizeof(boot_params->kbd_status));
 +		/* don't clear boot_params->secure_boot.  we set that ourselves
@@ -4686,10 +4686,10 @@ index 653668d..69a6c08 100644
  		       (char *)&boot_params->edd_mbr_sig_buffer[0] -
  			(char *)&boot_params->_pad7[0]);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 0874424..56b7d39 100644
+index c15ddaf..85d7685 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -132,7 +132,8 @@ struct boot_params {
+@@ -131,7 +131,8 @@ struct boot_params {
  	__u8  eddbuf_entries;				/* 0x1e9 */
  	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
  	__u8  kbd_status;				/* 0x1eb */
@@ -4700,10 +4700,10 @@ index 0874424..56b7d39 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 56f7fcf..3af6cf8 100644
+index f8ec578..2a8168a 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1131,6 +1131,13 @@ void __init setup_arch(char **cmdline_p)
+@@ -1129,6 +1129,13 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -4731,7 +4731,7 @@ index 04421e8..9e69542 100644
   * check for validity of credentials
   */
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 2bc0ad7..10b167a 100644
+index 5f8f176..febce85 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -634,6 +634,7 @@ extern int __init efi_setup_pcdp_console(char *);
@@ -4743,10 +4743,10 @@ index 2bc0ad7..10b167a 100644
  #ifdef CONFIG_EFI
  # ifdef CONFIG_X86
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From a1ac3b80b7a85d4fce665047b9701713fcfc1ea0 Mon Sep 17 00:00:00 2001
+From 8f5e3415dabc0e8a4db3a16c3567b0a0509c1246 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH 33/47] Add EFI signature data types
@@ -4760,7 +4760,7 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 10b167a..d3ef7c6 100644
+index febce85..9065ea1 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -389,6 +389,12 @@ typedef efi_status_t efi_query_variable_store_t(u32 attributes, unsigned long si
@@ -4798,10 +4798,10 @@ index 10b167a..d3ef7c6 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From fac308c18ba449322666325f37f6a08ad818cf9f Mon Sep 17 00:00:00 2001
+From ad45b316d079f110e64a360fca8d1f6b6b6701e3 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 34/47] Add an EFI signature blob parser and key loader.
@@ -4963,10 +4963,10 @@ index 0000000..424896a
 +	return 0;
 +}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index d3ef7c6..4f0fbb7 100644
+index 9065ea1..77e7dd7 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -619,6 +619,10 @@ extern int efi_set_rtc_mmss(unsigned long nowtime);
+@@ -619,6 +619,10 @@ extern int efi_set_rtc_mmss(const struct timespec *now);
  extern void efi_reserve_boot_services(void);
  extern struct efi_memory_map memmap;
  
@@ -4978,10 +4978,10 @@ index d3ef7c6..4f0fbb7 100644
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 75560e565cb8a4e853a3b6f6c65ed70c1ba29039 Mon Sep 17 00:00:00 2001
+From d226ed4f64a3d86b483d6bd2c4b3727f0adaabd6 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
 Subject: [PATCH 35/47] KEYS: Add a system blacklist keyring
@@ -5015,10 +5015,10 @@ index 8dabc39..e466de1 100644
  
  #endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index b9d8870..4f9771f 100644
+index 6abf0e0..7302c03 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1627,6 +1627,15 @@ config SYSTEM_TRUSTED_KEYRING
+@@ -1676,6 +1676,15 @@ config SYSTEM_TRUSTED_KEYRING
  
  	  Keys in this keyring are used by module signature checking.
  
@@ -5093,10 +5093,10 @@ index dae8778..2913c70 100644
  }
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From e46bf80471882ce1ab0b75dc954b2b59deec6fbb Mon Sep 17 00:00:00 2001
+From 300b04725a13a479bf401a6e455d9af98d3f3293 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH 36/47] MODSIGN: Import certificates from UEFI Secure Boot
@@ -5124,7 +5124,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 4f0fbb7..7ac7a17 100644
+index 77e7dd7..e885f4b 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -395,6 +395,12 @@ typedef efi_status_t efi_query_variable_store_t(u32 attributes, unsigned long si
@@ -5141,10 +5141,10 @@ index 4f0fbb7..7ac7a17 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 4f9771f..da92f1c 100644
+index 7302c03..7618f9a 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1745,6 +1745,15 @@ config MODULE_SIG_ALL
+@@ -1794,6 +1794,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -5161,10 +5161,10 @@ index 4f9771f..da92f1c 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 52f3426..e2a616f 100644
+index e9f0041..8c13825 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -55,6 +55,7 @@ obj-$(CONFIG_UID16) += uid16.o
+@@ -56,6 +56,7 @@ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -5172,7 +5172,7 @@ index 52f3426..e2a616f 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -114,6 +115,8 @@ obj-$(CONFIG_CONTEXT_TRACKING) += context_tracking.o
+@@ -115,6 +116,8 @@ obj-$(CONFIG_CONTEXT_TRACKING) += context_tracking.o
  
  $(obj)/configs.o: $(obj)/config_data.h
  
@@ -5280,10 +5280,10 @@ index 0000000..94b0eb3
 +}
 +late_initcall(load_uefi_certs);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 8724600edad99706cce510645eff15f28787561a Mon Sep 17 00:00:00 2001
+From 96709e30d5a9e87025982d34c198be6043689748 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:57 -0400
 Subject: [PATCH 37/47] PCI: Lock down BAR access in secure boot environments
@@ -5301,10 +5301,10 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  3 files changed, 17 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 5b4a9d9..db2ff9e 100644
+index c0dbe1f..7b56b1e 100644
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
-@@ -622,6 +622,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
+@@ -624,6 +624,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
  	loff_t init_off = off;
  	u8 *data = (u8*) buf;
  
@@ -5314,7 +5314,7 @@ index 5b4a9d9..db2ff9e 100644
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -928,6 +931,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+@@ -930,6 +933,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
  	resource_size_t start, end;
  	int i;
  
@@ -5324,7 +5324,7 @@ index 5b4a9d9..db2ff9e 100644
  	for (i = 0; i < PCI_ROM_RESOURCE; i++)
  		if (res == &pdev->resource[i])
  			break;
-@@ -1035,6 +1041,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
+@@ -1037,6 +1043,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
  		      struct bin_attribute *attr, char *buf,
  		      loff_t off, size_t count)
  {
@@ -5335,10 +5335,10 @@ index 5b4a9d9..db2ff9e 100644
  }
  
 diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 0812608..544132d 100644
+index cdc7836..74d4b07 100644
 --- a/drivers/pci/proc.c
 +++ b/drivers/pci/proc.c
-@@ -136,6 +136,9 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
+@@ -117,6 +117,9 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
  	int size = dev->cfg_size;
  	int cnt;
  
@@ -5348,7 +5348,7 @@ index 0812608..544132d 100644
  	if (pos >= size)
  		return 0;
  	if (nbytes >= size)
-@@ -215,6 +218,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
+@@ -196,6 +199,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
  #endif /* HAVE_PCI_MMAP */
  	int ret = 0;
  
@@ -5358,7 +5358,7 @@ index 0812608..544132d 100644
  	switch (cmd) {
  	case PCIIOC_CONTROLLER:
  		ret = pci_domain_nr(dev->bus);
-@@ -253,7 +259,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
+@@ -234,7 +240,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
  	struct pci_filp_private *fpriv = file->private_data;
  	int i, ret;
  
@@ -5381,10 +5381,10 @@ index e1c1ec5..97e785f 100644
  
  	dev = pci_get_bus_and_slot(bus, dfn);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 2361c561632c00e3974a092454ecc7daafb7cdf6 Mon Sep 17 00:00:00 2001
+From f72af5629030ca385c17fb8e0a09b3b64f387ee9 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:58 -0400
 Subject: [PATCH 38/47] x86: Lock down IO port access in secure boot
@@ -5424,10 +5424,10 @@ index 4ddaf66..f505995 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 2c644af..7eee4d8 100644
+index f895a8c..46a33ba 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
-@@ -597,6 +597,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
+@@ -563,6 +563,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
  	unsigned long i = *ppos;
  	const char __user *tmp = buf;
  
@@ -5438,10 +5438,10 @@ index 2c644af..7eee4d8 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From e97f4dd5b1baaae0854e8a5c87aa4be4d03d1854 Mon Sep 17 00:00:00 2001
+From 7d6bad1fcce46c196182c9781a4d1e5165d018ec Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:40:59 -0400
 Subject: [PATCH 39/47] ACPI: Limit access to custom_method
@@ -5470,10 +5470,10 @@ index 12b62f2..edf0710 100644
  		/* parse the table header to get the table length */
  		if (count <= sizeof(struct acpi_table_header))
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From f0389c3a6d823e2386ab4e21d9e012c4ebd310ac Mon Sep 17 00:00:00 2001
+From 21a08923aab3a273e5ded8cedeacd7d0860e2414 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:00 -0400
 Subject: [PATCH 40/47] asus-wmi: Restrict debugfs interface
@@ -5489,10 +5489,10 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index c11b242..6d5f88f 100644
+index 19c313b..f97f778 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -1617,6 +1617,9 @@ static int show_dsts(struct seq_file *m, void *data)
+@@ -1618,6 +1618,9 @@ static int show_dsts(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -5502,7 +5502,7 @@ index c11b242..6d5f88f 100644
  	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
  
  	if (err < 0)
-@@ -1633,6 +1636,9 @@ static int show_devs(struct seq_file *m, void *data)
+@@ -1634,6 +1637,9 @@ static int show_devs(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -5512,7 +5512,7 @@ index c11b242..6d5f88f 100644
  	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
  				    &retval);
  
-@@ -1657,6 +1663,9 @@ static int show_call(struct seq_file *m, void *data)
+@@ -1658,6 +1664,9 @@ static int show_call(struct seq_file *m, void *data)
  	union acpi_object *obj;
  	acpi_status status;
  
@@ -5523,10 +5523,10 @@ index c11b242..6d5f88f 100644
  				     1, asus->debug.method_id,
  				     &input, &output);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 2e507337fc23547c7a15e5a102647becf20dba77 Mon Sep 17 00:00:00 2001
+From d98b6df78641ae383f5d02d574d166d43879176b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:01 -0400
 Subject: [PATCH 41/47] Restrict /dev/mem and /dev/kmem in secure boot setups
@@ -5540,7 +5540,7 @@ Signed-off-by: Matthew Garrett <mjg@redhat.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 7eee4d8..772ee2b 100644
+index 46a33ba..7fbdb56 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -158,6 +158,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
@@ -5553,7 +5553,7 @@ index 7eee4d8..772ee2b 100644
  	if (!valid_phys_addr_range(p, count))
  		return -EFAULT;
  
-@@ -530,6 +533,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+@@ -496,6 +499,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
  	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
  	int err = 0;
  
@@ -5564,10 +5564,10 @@ index 7eee4d8..772ee2b 100644
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From ff22d9716846844f8c249dbc965684a8014efed0 Mon Sep 17 00:00:00 2001
+From c926cb6d5a5ac578690e8053cadeab8244c65948 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Thu, 20 Sep 2012 10:41:04 -0400
 Subject: [PATCH 42/47] acpi: Ignore acpi_rsdp kernel parameter in a secure
@@ -5586,7 +5586,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index e721863..ed82da7 100644
+index 6ab2c35..ff91b33 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -245,7 +245,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
@@ -5599,10 +5599,10 @@ index e721863..ed82da7 100644
  #endif
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From b08ac626fbcf917bc219133d49c347d7d58eaae1 Mon Sep 17 00:00:00 2001
+From 9fc32a961faa57044b6d1d97cbb51aa102ca2004 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <mjg@redhat.com>
 Date: Tue, 4 Sep 2012 11:55:13 -0400
 Subject: [PATCH 43/47] kexec: Disable in a secure boot environment
@@ -5631,10 +5631,10 @@ index 59f7b55..8bf1336 100644
  
  	/*
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From f0d9c2906c1145585882fb7eb167e47e998c2e24 Mon Sep 17 00:00:00 2001
+From 4a4fb152cea99e58b5778944b62c9f69900c10f5 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 5 Oct 2012 10:12:48 -0400
 Subject: [PATCH 44/47] MODSIGN: Always enforce module signing in a Secure Boot
@@ -5677,7 +5677,7 @@ index c3f4e3e..c5554e0 100644
  
  /* Dummy Secure Boot enable option to fake out UEFI SB=1 */
 diff --git a/kernel/module.c b/kernel/module.c
-index 0925c9a..af4a476 100644
+index 2069158..58f6e21 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -109,9 +109,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
@@ -5693,10 +5693,10 @@ index 0925c9a..af4a476 100644
  static int param_set_bool_enable_only(const char *val,
  				      const struct kernel_param *kp)
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 1c6bfec7db39e46eeb456fb84e3153281690bbe0 Mon Sep 17 00:00:00 2001
+From 000482f9748e1ca57bc220be48415ab40c730a74 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH 45/47] hibernate: Disable in a Secure Boot environment
@@ -5768,7 +5768,7 @@ index b26f5f1..7f63cb4 100644
  	len = p ? p - buf : n;
  
 diff --git a/kernel/power/main.c b/kernel/power/main.c
-index d77663b..78f8ed5 100644
+index 1d1bf63..300f300 100644
 --- a/kernel/power/main.c
 +++ b/kernel/power/main.c
 @@ -15,6 +15,7 @@
@@ -5807,10 +5807,10 @@ index 4ed81e7..b11a0f4 100644
  
  	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From 07cda990d2f18774522889ece30bddf67c703157 Mon Sep 17 00:00:00 2001
+From 5908df4587d0ca75315c0c3d31cdef9d3e92f458 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH 46/47] efi: Disable secure boot if shim is in insecure mode
@@ -5827,10 +5827,10 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 0998ec7..4945ee5 100644
+index ea62b02..242cd7a 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -908,8 +908,9 @@ fail:
+@@ -863,8 +863,9 @@ fail:
  
  static int get_secure_boot(efi_system_table_t *_table)
  {
@@ -5841,7 +5841,7 @@ index 0998ec7..4945ee5 100644
  	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
  	efi_status_t status;
  
-@@ -933,6 +934,23 @@ static int get_secure_boot(efi_system_table_t *_table)
+@@ -888,6 +889,23 @@ static int get_secure_boot(efi_system_table_t *_table)
  	if (setup == 1)
  		return 0;
  
@@ -5866,10 +5866,10 @@ index 0998ec7..4945ee5 100644
  }
  
 -- 
-1.8.1.4
+1.8.3.1
 
 
-From e61066577405c37c2758f9b7fb2694967bdbe921 Mon Sep 17 00:00:00 2001
+From fd2419a4685b7846b313de7093e9758e041c6ef2 Mon Sep 17 00:00:00 2001
 From: Kees Cook <keescook@chromium.org>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
 Subject: [PATCH 47/47] x86: Lock down MSR writing in secure boot
@@ -5883,7 +5883,7 @@ Signed-off-by: Kees Cook <keescook@chromium.org>
  1 file changed, 7 insertions(+)
 
 diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index ce13049..fa4dc6c 100644
+index 88458fa..972dbe8 100644
 --- a/arch/x86/kernel/msr.c
 +++ b/arch/x86/kernel/msr.c
 @@ -103,6 +103,9 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
@@ -5908,5 +5908,5 @@ index ce13049..fa4dc6c 100644
  			err = -EFAULT;
  			break;
 -- 
-1.8.1.4
+1.8.3.1
 
