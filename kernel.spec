@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2249,7 +2249,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Aug 21 2013 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Aug 21 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git1.2
 - Add patch to fix brcmsmac oops (rhbz 989269)
 - CVE-2013-0343 handling of IPv6 temporary addresses (rhbz 914664 999380)
 
