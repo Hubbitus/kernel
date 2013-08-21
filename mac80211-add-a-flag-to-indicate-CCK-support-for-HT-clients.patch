@@ -1,0 +1,135 @@
+Path: news.gmane.org!not-for-mail
+From: Felix Fietkau <nbd-p3rKhJxN3npAfugRpC6u6w@public.gmane.org>
+Newsgroups: gmane.linux.kernel.wireless.general
+Subject: [PATCH 3.11] mac80211: add a flag to indicate CCK support for HT clients
+Date: Tue, 20 Aug 2013 19:43:54 +0200
+Lines: 95
+Approved: news@gmane.org
+Message-ID: <1377020634-27064-1-git-send-email-nbd@openwrt.org>
+NNTP-Posting-Host: plane.gmane.org
+X-Trace: ger.gmane.org 1377020641 9980 80.91.229.3 (20 Aug 2013 17:44:01 GMT)
+X-Complaints-To: usenet@ger.gmane.org
+NNTP-Posting-Date: Tue, 20 Aug 2013 17:44:01 +0000 (UTC)
+Cc: johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org, teg-B22kvLQNl6c@public.gmane.org
+To: linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Original-X-From: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org Tue Aug 20 19:44:03 2013
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Envelope-to: glkwg-linux-wireless-wOFGN7rlS/M9smdsby/KFg@public.gmane.org
+Original-Received: from vger.kernel.org ([209.132.180.67])
+	by plane.gmane.org with esmtp (Exim 4.69)
+	(envelope-from <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>)
+	id 1VBpyL-00057G-5h
+	for glkwg-linux-wireless-wOFGN7rlS/M9smdsby/KFg@public.gmane.org; Tue, 20 Aug 2013 19:44:01 +0200
+Original-Received: (majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org) by vger.kernel.org via listexpand
+	id S1751487Ab3HTRn7 (ORCPT
+	<rfc822;glkwg-linux-wireless@m.gmane.org>);
+	Tue, 20 Aug 2013 13:43:59 -0400
+Original-Received: from nbd.name ([46.4.11.11]:60925 "EHLO nbd.name"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751339Ab3HTRn7 (ORCPT <rfc822;linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>);
+	Tue, 20 Aug 2013 13:43:59 -0400
+Original-Received: by nf.lan (Postfix, from userid 501)
+	id 5604D5001ADE; Tue, 20 Aug 2013 19:43:54 +0200 (CEST)
+X-Mailer: git-send-email 1.8.0.2
+Original-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Precedence: bulk
+List-ID: <linux-wireless.vger.kernel.org>
+X-Mailing-List: linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Xref: news.gmane.org gmane.linux.kernel.wireless.general:112209
+Archived-At: <http://permalink.gmane.org/gmane.linux.kernel.wireless.general/112209>
+
+brcm80211 cannot handle sending frames with CCK rates as part of an
+A-MPDU session. Other drivers may have issues too. Set the flag in all
+drivers that have been tested with CCK rates.
+
+This fixes a reported brcmsmac regression introduced in
+commit ef47a5e4f1aaf1d0e2e6875e34b2c9595897bef6
+"mac80211/minstrel_ht: fix cck rate sampling"
+
+Cc: stable-u79uwXL29TY76Z2rM5mHXA@public.gmane.org # 3.10
+Reported-by: Tom Gundersen <teg-B22kvLQNl6c@public.gmane.org>
+Signed-off-by: Felix Fietkau <nbd-p3rKhJxN3npAfugRpC6u6w@public.gmane.org>
+---
+ drivers/net/wireless/ath/ath9k/init.c    | 3 ++-
+ drivers/net/wireless/ath/carl9170/main.c | 3 ++-
+ drivers/net/wireless/rt2x00/rt2800lib.c  | 3 ++-
+ include/net/mac80211.h                   | 1 +
+ net/mac80211/rc80211_minstrel_ht.c       | 3 +++
+ 5 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/init.c b/drivers/net/wireless/ath/ath9k/init.c
+index 16f8b20..026a2a0 100644
+--- a/drivers/net/wireless/ath/ath9k/init.c
++++ b/drivers/net/wireless/ath/ath9k/init.c
+@@ -802,7 +802,8 @@ void ath9k_set_hw_capab(struct ath_softc *sc, struct ieee80211_hw *hw)
+ 		IEEE80211_HW_PS_NULLFUNC_STACK |
+ 		IEEE80211_HW_SPECTRUM_MGMT |
+ 		IEEE80211_HW_REPORTS_TX_ACK_STATUS |
+-		IEEE80211_HW_SUPPORTS_RC_TABLE;
++		IEEE80211_HW_SUPPORTS_RC_TABLE |
++		IEEE80211_HW_SUPPORTS_HT_CCK_RATES;
+ 
+ 	if (sc->sc_ah->caps.hw_caps & ATH9K_HW_CAP_HT) {
+ 		hw->flags |= IEEE80211_HW_AMPDU_AGGREGATION;
+diff --git a/drivers/net/wireless/ath/carl9170/main.c b/drivers/net/wireless/ath/carl9170/main.c
+index 4a33c6e..349fa22 100644
+--- a/drivers/net/wireless/ath/carl9170/main.c
++++ b/drivers/net/wireless/ath/carl9170/main.c
+@@ -1860,7 +1860,8 @@ void *carl9170_alloc(size_t priv_size)
+ 		     IEEE80211_HW_PS_NULLFUNC_STACK |
+ 		     IEEE80211_HW_NEED_DTIM_BEFORE_ASSOC |
+ 		     IEEE80211_HW_SUPPORTS_RC_TABLE |
+-		     IEEE80211_HW_SIGNAL_DBM;
++		     IEEE80211_HW_SIGNAL_DBM |
++		     IEEE80211_HW_SUPPORTS_HT_CCK_RATES;
+ 
+ 	if (!modparam_noht) {
+ 		/*
+diff --git a/drivers/net/wireless/rt2x00/rt2800lib.c b/drivers/net/wireless/rt2x00/rt2800lib.c
+index 1f80ea5..1b41c8e 100644
+--- a/drivers/net/wireless/rt2x00/rt2800lib.c
++++ b/drivers/net/wireless/rt2x00/rt2800lib.c
+@@ -6133,7 +6133,8 @@ static int rt2800_probe_hw_mode(struct rt2x00_dev *rt2x00dev)
+ 	    IEEE80211_HW_SUPPORTS_PS |
+ 	    IEEE80211_HW_PS_NULLFUNC_STACK |
+ 	    IEEE80211_HW_AMPDU_AGGREGATION |
+-	    IEEE80211_HW_REPORTS_TX_ACK_STATUS;
++	    IEEE80211_HW_REPORTS_TX_ACK_STATUS |
++	    IEEE80211_HW_SUPPORTS_HT_CCK_RATES;
+ 
+ 	/*
+ 	 * Don't set IEEE80211_HW_HOST_BROADCAST_PS_BUFFERING for USB devices
+diff --git a/include/net/mac80211.h b/include/net/mac80211.h
+index 5b7a3da..551ba6a 100644
+--- a/include/net/mac80211.h
++++ b/include/net/mac80211.h
+@@ -1499,6 +1499,7 @@ enum ieee80211_hw_flags {
+ 	IEEE80211_HW_SUPPORTS_RC_TABLE			= 1<<24,
+ 	IEEE80211_HW_P2P_DEV_ADDR_FOR_INTF		= 1<<25,
+ 	IEEE80211_HW_TIMING_BEACON_ONLY			= 1<<26,
++	IEEE80211_HW_SUPPORTS_HT_CCK_RATES		= 1<<27,
+ };
+ 
+ /**
+diff --git a/net/mac80211/rc80211_minstrel_ht.c b/net/mac80211/rc80211_minstrel_ht.c
+index f5aed96..f3bbea1 100644
+--- a/net/mac80211/rc80211_minstrel_ht.c
++++ b/net/mac80211/rc80211_minstrel_ht.c
+@@ -828,6 +828,9 @@ minstrel_ht_update_cck(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
+ 	if (sband->band != IEEE80211_BAND_2GHZ)
+ 		return;
+ 
++	if (!(mp->hw->flags & IEEE80211_HW_SUPPORTS_HT_CCK_RATES))
++		return;
++
+ 	mi->cck_supported = 0;
+ 	mi->cck_supported_short = 0;
+ 	for (i = 0; i < 4; i++) {
+-- 
+1.8.0.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+

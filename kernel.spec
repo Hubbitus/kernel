@@ -748,6 +748,8 @@ Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020
 #CVE-2013-0343 rhbz 914664 999380
 Patch25078: ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
 
+#rhbz 989269
+Patch25079: mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1450,6 +1452,9 @@ ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.
 
 #CVE-2013-0343 rhbz 914664 999380
 ApplyPatch ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
+
+#rhbz 989269
+ApplyPatch mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2245,6 +2250,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Aug 21 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix brcmsmac oops (rhbz 989269)
 - CVE-2013-0343 handling of IPv6 temporary addresses (rhbz 914664 999380)
 
 * Tue Aug 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git1.1
