@@ -745,6 +745,10 @@ Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
 
+#CVE-2013-0343 rhbz 914664 999380
+Patch25078: ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1443,6 +1447,9 @@ ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
 
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
+
+#CVE-2013-0343 rhbz 914664 999380
+ApplyPatch ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2237,6 +2244,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 21 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-0343 handling of IPv6 temporary addresses (rhbz 914664 999380)
+
 * Tue Aug 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git1.1
 - Linux v3.11-rc6-28-gfd3930f
 - Reenable debugging options.
