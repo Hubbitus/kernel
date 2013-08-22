@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2247,6 +2247,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 22 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git2.1
+- Linux v3.11-rc6-72-g1f8b766
+
 * Thu Aug 22 2013 Kyle McMartin <kyle@redhat.com>
 - Drop arm-tegra-remove-direct-vbus-regulator-control.patch, proper fix
   will be in the next rebase.
