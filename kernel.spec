@@ -702,7 +702,6 @@ Patch21010: arm-omap-load-tfp410.patch
 
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
-Patch21021: arm-tegra-remove-direct-vbus-regulator-control.patch
 
 # ARM wandboard
 Patch21030: arm-wandboard-quad.patch
@@ -1308,7 +1307,6 @@ ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-exynos-mp.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-remove-direct-vbus-regulator-control.patch
 ApplyPatch arm-wandboard-quad.patch
 #ApplyPatch arm-omap-bbb-dts.patch
 #
@@ -2249,6 +2247,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 22 2013 Kyle McMartin <kyle@redhat.com>
+- Drop arm-tegra-remove-direct-vbus-regulator-control.patch, proper fix
+  will be in the next rebase.
+
 * Wed Aug 21 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git1.2
 - Add patch to fix brcmsmac oops (rhbz 989269)
 - CVE-2013-0343 handling of IPv6 temporary addresses (rhbz 914664 999380)
