@@ -1,0 +1,65 @@
+From 3f1a91aa25579ba5e7268a47a73d2a83e4802c62 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@freescale.com>
+Date: Mon, 29 Jul 2013 21:37:32 +0000
+Subject: ASoC: fsl: Fix module build
+
+Building imx_v6_v7_defconfig with all audio drivers as modules results in
+the folowing build error:
+
+ERROR: "imx_pcm_fiq_init" [sound/soc/fsl/snd-soc-imx-ssi.ko] undefined!
+ERROR: "imx_pcm_dma_init" [sound/soc/fsl/snd-soc-imx-ssi.ko] undefined!
+ERROR: "imx_pcm_fiq_exit" [sound/soc/fsl/snd-soc-imx-ssi.ko] undefined!
+ERROR: "imx_pcm_dma_exit" [sound/soc/fsl/snd-soc-imx-ssi.ko] undefined!
+ERROR: "imx_pcm_dma_init" [sound/soc/fsl/snd-soc-fsl-ssi.ko] undefined!
+ERROR: "imx_pcm_dma_exit" [sound/soc/fsl/snd-soc-fsl-ssi.ko] undefined!
+
+Fix this by allowing SND_SOC_IMX_PCM_FIQ and SND_SOC_IMX_PCM_DMA to be also
+built as modules and by using 'IS_ENABLED' to cover the module case.
+
+Reported-by: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
+Signed-off-by: Fabio Estevam <fabio.estevam@freescale.com>
+Acked-by: Shawn Guo <shawn.guo@linaro.org>
+Signed-off-by: Mark Brown <broonie@linaro.org>
+---
+diff --git a/sound/soc/fsl/Kconfig b/sound/soc/fsl/Kconfig
+index 3a79d01..c26449b 100644
+--- a/sound/soc/fsl/Kconfig
++++ b/sound/soc/fsl/Kconfig
+@@ -109,11 +109,11 @@ config SND_SOC_IMX_SSI
+ 	tristate
+ 
+ config SND_SOC_IMX_PCM_FIQ
+-	bool
++	tristate
+ 	select FIQ
+ 
+ config SND_SOC_IMX_PCM_DMA
+-	bool
++	tristate
+ 	select SND_SOC_GENERIC_DMAENGINE_PCM
+ 
+ config SND_SOC_IMX_AUDMUX
+diff --git a/sound/soc/fsl/imx-pcm.h b/sound/soc/fsl/imx-pcm.h
+index 9136625..5d5b733 100644
+--- a/sound/soc/fsl/imx-pcm.h
++++ b/sound/soc/fsl/imx-pcm.h
+@@ -32,7 +32,7 @@
+ 		dma_data->peripheral_type = IMX_DMATYPE_SSI;
+ }
+ 
+-#ifdef CONFIG_SND_SOC_IMX_PCM_DMA
++#if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_DMA)
+ int imx_pcm_dma_init(struct platform_device *pdev);
+ void imx_pcm_dma_exit(struct platform_device *pdev);
+ #else
+@@ -46,7 +46,7 @@
+ }
+ #endif
+ 
+-#ifdef CONFIG_SND_SOC_IMX_PCM_FIQ
++#if IS_ENABLED(CONFIG_SND_SOC_IMX_PCM_FIQ)
+ int imx_pcm_fiq_init(struct platform_device *pdev);
+ void imx_pcm_fiq_exit(struct platform_device *pdev);
+ #else
+--
+cgit v0.9.2

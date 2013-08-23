@@ -705,6 +705,8 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
 # ARM wandboard
 Patch21030: arm-wandboard-quad.patch
+# https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/patch/?id=3f1a91aa25579ba5e7268a47a73d2a83e4802c62
+Patch21031: arm-imx-fixsound.patch
 
 # AM33xx
 Patch21040: arm-omap-bbb-dts.patch
@@ -1308,6 +1310,7 @@ ApplyPatch arm-exynos-mp.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
+ApplyPatch arm-imx-fixsound.patch
 #ApplyPatch arm-omap-bbb-dts.patch
 #
 # bugfixes to drivers and filesystems
@@ -2247,6 +2250,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 23 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config cleanups
+- Enable some IOMMU drivers on ARM
+- Enable some i.MX sound drivers
+
 * Thu Aug 22 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git2.1
 - Linux v3.11-rc6-72-g1f8b766
 
