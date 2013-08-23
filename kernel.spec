@@ -2239,16 +2239,17 @@ fi
 
 # plz don't put in a version string unless you're going to tag
 # and build.
-
-#  ___________________________________________________________
-# / This branch is for Fedora 20. You probably want to commit \
-# \ to the F-19 branch instead, or in addition to this one.   /
-#  -----------------------------------------------------------
-#         \   ^__^
-#          \  (@@)\_______
-#             (__)\       )\/\
-#                 ||----w |
-#                 ||     ||
+#
+# 
+#                        ___________________________________________________________
+#                       / This branch is for Fedora 21. You probably want to commit \
+#  _____ ____  _        \ to the F-20 branch instead, or in addition to this one.   /
+# |  ___|___ \/ |        -----------------------------------------------------------
+# | |_    __) | |             \   ^__^
+# |  _|  / __/| |              \  (@@)\_______
+# |_|   |_____|_|                 (__)\       )\/\
+#                                    ||----w |
+#                                    ||     ||
 %changelog
 * Fri Aug 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git3.1
 - Linux v3.11-rc6-76-g6a7492a
