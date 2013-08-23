@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2250,6 +2250,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git3.1
+- Linux v3.11-rc6-76-g6a7492a
+
 * Fri Aug 23 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config cleanups
 - Enable some IOMMU drivers on ARM
