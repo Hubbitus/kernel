@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -740,14 +740,8 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 Patch25056: iwl3945-better-skb-management-in-rx-path.patch
 Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
-#rhbz 979581
-Patch25069: iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
-
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#CVE-2013-0343 rhbz 914664 999380
-Patch25078: ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
 
 #rhbz 989269
 Patch25079: mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
@@ -1445,14 +1439,8 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
 ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
-#rhbz 979581
-ApplyPatch iwlwifi-dvm-fix-calling-ieee80211_chswitch_done-with-NULL.patch
-
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#CVE-2013-0343 rhbz 914664 999380
-ApplyPatch ipv6-remove-max_addresses-check-from-ipv6_create_tempaddr.patch
 
 #rhbz 989269
 ApplyPatch mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
@@ -2250,6 +2238,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git4.1
+- Linux v3.11-rc6-139-g89b53e5
+
 * Fri Aug 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc6.git3.1
 - Linux v3.11-rc6-76-g6a7492a
 
