@@ -2239,6 +2239,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 27 2013 Kyle McMartin <kyle@redhat.com>
+- [arm] build pinctrl-single in, needed to prevent deferral of
+  omap_serial registration.
+
 * Mon Aug 26 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git0.1
 - Linux v3.11-rc7
 - Disable debugging options.
