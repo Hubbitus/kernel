@@ -746,6 +746,8 @@ Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020
 #rhbz 989269
 Patch25079: mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
+Patch25090: mei-me-fix-hardware-reset-flow.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1444,6 +1446,8 @@ ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.
 
 #rhbz 989269
 ApplyPatch mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
+
+ApplyPatch mei-me-fix-hardware-reset-flow.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2241,6 +2245,7 @@ fi
 %changelog
 * Thu Aug 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git2.1
 - Linux v3.11-rc7-24-gc95389b
+- Add mei patches that fix various s/r issues (rhbz 994824 989373)
 
 * Wed Aug 28 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git1.1
 - Linux v3.11-rc7-14-gfa8218d
