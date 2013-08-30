@@ -750,6 +750,13 @@ Patch25079: mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 Patch25090: mei-me-fix-hardware-reset-flow.patch
 
+#CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
+#CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
+#CVE-2013-2893 rhbz 1000414 1002575 CVE-2013-2894 rhbz 1000137 1002579
+#CVE-2013-2895 rhbz 1000360 1002581 CVE-2013-2896 rhbz 1000494 1002594
+#CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
+Patch25099: HID-CVE-fixes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1452,6 +1459,13 @@ ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.
 ApplyPatch mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 ApplyPatch mei-me-fix-hardware-reset-flow.patch
+
+#CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
+#CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
+#CVE-2013-2893 rhbz 1000414 1002575 CVE-2013-2894 rhbz 1000137 1002579
+#CVE-2013-2895 rhbz 1000360 1002581 CVE-2013-2896 rhbz 1000494 1002594
+#CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
+ApplyPatch HID-CVE-fixes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2246,6 +2260,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Aug 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix HID CVEs.  Absurd.
+- CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
+- CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
+- CVE-2013-2893 rhbz 1000414 1002575 CVE-2013-2894 rhbz 1000137 1002579
+- CVE-2013-2895 rhbz 1000360 1002581 CVE-2013-2896 rhbz 1000494 1002594
+- CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
+
 * Fri Aug 30 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git3.1
 - Linux v3.11-rc7-30-g41615e8
 
