@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -647,8 +647,10 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: devel-pekey-secure-boot-20130820.patch
-Patch1001: devel-sysrq-secure-boot-20130717.patch
+Patch1000: secure-modules.patch
+Patch1001: modsign-uefi.patch
+Patch1002: sb-hibernate.patch
+Patch1003: sysrq-secure-boot.patch
 
 # virt + ksm patches
 
@@ -1371,8 +1373,10 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch devel-pekey-secure-boot-20130820.patch
-ApplyPatch devel-sysrq-secure-boot-20130717.patch
+ApplyPatch secure-modules.patch
+ApplyPatch modsign-uefi.patch
+ApplyPatch sb-hibernate.patch
+ApplyPatch sysrq-secure-boot.patch
 
 # Assorted Virt Fixes
 
@@ -2243,6 +2247,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Rework Secure Boot support to use the secure_modules approach
+- Drop pekey
+
 * Thu Aug 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git2.1
 - Linux v3.11-rc7-24-gc95389b
 - Add mei patches that fix various s/r issues (rhbz 994824 989373)
