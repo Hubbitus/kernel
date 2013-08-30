@@ -1,5 +1,20 @@
+From 71aac34ed679daa0bf772051eb40412b5bd95da3 Mon Sep 17 00:00:00 2001
+From: Kyle McMartin <kyle@redhat.com>
+Date: Fri, 30 Aug 2013 09:28:51 -0400
+Subject: [PATCH] Add sysrq option to disable secure boot mode
+
+---
+ arch/x86/kernel/setup.c     | 35 +++++++++++++++++++++++++++++++++++
+ drivers/input/misc/uinput.c |  1 +
+ drivers/tty/sysrq.c         | 19 +++++++++++++------
+ include/linux/input.h       |  5 +++++
+ include/linux/sysrq.h       |  8 +++++++-
+ kernel/debug/kdb/kdb_main.c |  2 +-
+ kernel/module.c             |  4 ++--
+ 7 files changed, 64 insertions(+), 10 deletions(-)
+
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 167ca34..2a06699 100644
+index 08dc16e..6971f8e 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -14,53 +29,25 @@ index 167ca34..2a06699 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1252,3 +1257,61 @@ void __init i386_reserve_resources(void)
+@@ -1253,3 +1258,33 @@ void __init i386_reserve_resources(void)
  }
  
  #endif /* CONFIG_X86_32 */
 +
++#ifdef CONFIG_MAGIC_SYSRQ
 +#ifdef CONFIG_MODULE_SIG
 +extern bool sig_enforce;
 +#endif
 +
-+int sb_enabled;
-+
-+void __init secureboot_enable()
-+{
-+	pr_info("Secure boot enabled\n");
-+	cap_lower(init_cred.cap_bset, CAP_COMPROMISE_KERNEL);
-+	cap_lower(init_cred.cap_permitted, CAP_COMPROMISE_KERNEL);
-+#ifdef CONFIG_MODULE_SIG
-+	/* Enable module signature enforcing */
-+	sig_enforce = true;
-+#endif
-+	sb_enabled = 1;
-+}
-+
-+/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
-+static int __init secureboot_enable_opt(char *str)
-+{
-+	int sb_enable = !!simple_strtol(str, NULL, 0);
-+	if (sb_enable)
-+		secureboot_enable();
-+	return 1;
-+}
-+__setup("secureboot_enable=", secureboot_enable_opt);
-+
-+#ifdef CONFIG_MAGIC_SYSRQ
-+extern int sb_enabled;
 +static void sysrq_handle_secure_boot(int key)
 +{
-+	if (!sb_enabled)
++	if (!efi_enabled(EFI_SECURE_BOOT))
 +		return;
 +
 +	pr_info("Secure boot disabled\n");
-+	cap_raise(init_cred.cap_bset, CAP_COMPROMISE_KERNEL);
-+	cap_raise(init_cred.cap_permitted, CAP_COMPROMISE_KERNEL);
 +#ifdef CONFIG_MODULE_SIG
 +	sig_enforce = fips_enabled;
 +#endif
-+	sb_enabled = 0;
 +}
 +static struct sysrq_key_op secure_boot_sysrq_op = {
 +	.handler	=	sysrq_handle_secure_boot,
@@ -70,7 +57,7 @@ index 167ca34..2a06699 100644
 +};
 +static int __init secure_boot_sysrq(void)
 +{
-+	if (sb_enabled)
++	if (efi_enabled(EFI_SECURE_BOOT))
 +		register_sysrq_key('x', &secure_boot_sysrq_op);
 +	return 0;
 +}
@@ -222,42 +209,6 @@ index 7faf933..87ae634 100644
  int register_sysrq_key(int key, struct sysrq_key_op *op);
  int unregister_sysrq_key(int key, struct sysrq_key_op *op);
  struct sysrq_key_op *__sysrq_get_key_op(int key);
-diff --git a/kernel/cred.c b/kernel/cred.c
-index c5554e0..e0573a4 100644
---- a/kernel/cred.c
-+++ b/kernel/cred.c
-@@ -565,31 +565,6 @@ void __init cred_init(void)
- 				     0, SLAB_HWCACHE_ALIGN|SLAB_PANIC, NULL);
- }
- 
--#ifdef CONFIG_MODULE_SIG
--extern bool sig_enforce;
--#endif
--
--void __init secureboot_enable()
--{
--	pr_info("Secure boot enabled\n");
--	cap_lower((&init_cred)->cap_bset, CAP_COMPROMISE_KERNEL);
--	cap_lower((&init_cred)->cap_permitted, CAP_COMPROMISE_KERNEL);
--#ifdef CONFIG_MODULE_SIG
--	/* Enable module signature enforcing */
--	sig_enforce = true;
--#endif
--}
--
--/* Dummy Secure Boot enable option to fake out UEFI SB=1 */
--static int __init secureboot_enable_opt(char *str)
--{
--	int sb_enable = !!simple_strtol(str, NULL, 0);
--	if (sb_enable)
--		secureboot_enable();
--	return 1;
--}
--__setup("secureboot_enable=", secureboot_enable_opt);
--
- /**
-  * prepare_kernel_cred - Prepare a set of credentials for a kernel service
-  * @daemon: A userspace daemon to be used as a reference
 diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
 index 00eb8f7..54fbbcc 100644
 --- a/kernel/debug/kdb/kdb_main.c
@@ -271,3 +222,22 @@ index 00eb8f7..54fbbcc 100644
  	kdb_trap_printk--;
  
  	return 0;
+diff --git a/kernel/module.c b/kernel/module.c
+index bc7c987..5e4e2c2 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -109,9 +109,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
+ 
+ #ifdef CONFIG_MODULE_SIG
+ #ifdef CONFIG_MODULE_SIG_FORCE
+-static bool sig_enforce = true;
++bool sig_enforce = true;
+ #else
+-static bool sig_enforce = false;
++bool sig_enforce = false;
+ 
+ static int param_set_bool_enable_only(const char *val,
+ 				      const struct kernel_param *kp)
+-- 
+1.8.3.1
+
