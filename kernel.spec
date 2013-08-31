@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2261,6 +2261,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Aug 31 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git4.1
+- Linux v3.11-rc7-42-gd9eda0f
+
 * Fri Aug 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix HID CVEs.  Absurd.
 - CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
