@@ -711,7 +711,7 @@ Patch21030: arm-wandboard-quad.patch
 Patch21031: arm-imx-fixsound.patch
 
 # AM33xx
-Patch21040: arm-omap-bbb-dts.patch
+Patch21040: arm-am33xx-bbb-dts.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1316,7 +1316,10 @@ ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
 ApplyPatch arm-imx-fixsound.patch
-#ApplyPatch arm-omap-bbb-dts.patch
+
+# Fix OMAP and AM33xx (BeagleBone)
+#pplyPatch arm-am33xx-bbb-dts.patch
+
 #
 # bugfixes to drivers and filesystems
 #
@@ -2260,6 +2263,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Sep  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in OMAP MMC again (fix at least omap3)
+
 * Sat Aug 31 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git4.1
 - Linux v3.11-rc7-42-gd9eda0f
 
