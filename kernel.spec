@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -744,9 +744,6 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#rhbz 989269
-Patch25079: mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 Patch25090: mei-me-fix-hardware-reset-flow.patch
 
@@ -1457,9 +1454,6 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-#rhbz 989269
-ApplyPatch mac80211-add-a-flag-to-indicate-CCK-support-for-HT-clients.patch
 
 ApplyPatch mei-me-fix-hardware-reset-flow.patch
 
@@ -2264,6 +2258,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-0.rc7.git5.1
+- Linux v3.11-rc7-96-ga878764
+
 * Sun Sep  1 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build in OMAP MMC again (fix at least omap3)
 
