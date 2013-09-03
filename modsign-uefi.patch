@@ -1,4 +1,4 @@
-From cff9d37c9529fca5ff853f0050c7f0de0e819ea7 Mon Sep 17 00:00:00 2001
+From 725d7e7fb9ca1065102e640cf8af606169e63075 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH 1/4] Add EFI signature data types
@@ -53,7 +53,7 @@ index eed2202..1da1b3c 100644
 1.8.3.1
 
 
-From 2ce1c1d0d7110c4b06d65e4c8506f6c54aa72628 Mon Sep 17 00:00:00 2001
+From f204253a34b477c5d68df711326a694b58e51c76 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 2/4] Add an EFI signature blob parser and key loader.
@@ -65,9 +65,9 @@ Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  crypto/asymmetric_keys/Kconfig      |   8 +++
  crypto/asymmetric_keys/Makefile     |   1 +
- crypto/asymmetric_keys/efi_parser.c | 108 ++++++++++++++++++++++++++++++++++++
+ crypto/asymmetric_keys/efi_parser.c | 109 ++++++++++++++++++++++++++++++++++++
  include/linux/efi.h                 |   4 ++
- 4 files changed, 121 insertions(+)
+ 4 files changed, 122 insertions(+)
  create mode 100644 crypto/asymmetric_keys/efi_parser.c
 
 diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
@@ -101,10 +101,10 @@ index 0727204..cd8388e 100644
  # X.509 Certificate handling
 diff --git a/crypto/asymmetric_keys/efi_parser.c b/crypto/asymmetric_keys/efi_parser.c
 new file mode 100644
-index 0000000..636feb1
+index 0000000..424896a
 --- /dev/null
 +++ b/crypto/asymmetric_keys/efi_parser.c
-@@ -0,0 +1,108 @@
+@@ -0,0 +1,109 @@
 +/* EFI signature/key/certificate list parser
 + *
 + * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
@@ -195,7 +195,8 @@ index 0000000..636feb1
 +				esize - sizeof(*elem),
 +				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
 +				KEY_USR_VIEW,
-+				KEY_ALLOC_NOT_IN_QUOTA);
++				KEY_ALLOC_NOT_IN_QUOTA |
++				KEY_ALLOC_TRUSTED);
 +
 +			if (IS_ERR(key))
 +				pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
@@ -232,10 +233,10 @@ index 1da1b3c..42a1d25 100644
 1.8.3.1
 
 
-From 0e4e8acfd0932bbf6b02112218092c810d9469a5 Mon Sep 17 00:00:00 2001
+From cebc8870a8f0b97b2585a07d9957ead0f21cdc8a Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
-Subject: [PATCH 3/4] MODSIGN: Add module certificate blacklist keyring
+Subject: [PATCH 3/4] KEYS: Add a system blacklist keyring
 
 This adds an additional keyring that is used to store certificates that
 are blacklisted.  This keyring is searched first when loading signed modules
@@ -244,86 +245,57 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- init/Kconfig             |  8 ++++++++
- kernel/modsign_pubkey.c  | 14 ++++++++++++++
- kernel/module-internal.h |  3 +++
- kernel/module_signing.c  | 12 ++++++++++++
- 4 files changed, 37 insertions(+)
+ include/keys/system_keyring.h |  4 ++++
+ init/Kconfig                  |  9 +++++++++
+ kernel/module_signing.c       | 12 ++++++++++++
+ kernel/system_keyring.c       | 17 +++++++++++++++++
+ 4 files changed, 42 insertions(+)
 
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index 8dabc39..e466de1 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -18,6 +18,10 @@
+ 
+ extern struct key *system_trusted_keyring;
+ 
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++extern struct key *system_blacklist_keyring;
++#endif
++
+ #endif
+ 
+ #endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index fed81b5..b4fa2d1 100644
+index 9f3cfdc..547f617 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1772,6 +1772,14 @@ config MODULE_SIG_ALL
- comment "Do not forget to sign required modules with scripts/sign-file"
- 	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
+@@ -1676,6 +1676,15 @@ config SYSTEM_TRUSTED_KEYRING
  
-+config MODULE_SIG_BLACKLIST
-+	bool "Support for blacklisting module signature certificates"
-+	depends on MODULE_SIG
+ 	  Keys in this keyring are used by module signature checking.
+ 
++config SYSTEM_BLACKLIST_KEYRING
++	bool "Provide system-wide ring of blacklisted keys"
++	depends on KEYS
 +	help
-+	  This adds support for keeping a blacklist of certificates that
-+	  should not pass module signature verification.  If a module is
-+	  signed with something in this keyring, the load will be rejected.
++	  Provide a system keyring to which blacklisted keys can be added.  Keys
++	  in the keyring are considered entirely untrusted.  Keys in this keyring
++	  are used by the module signature checking to reject loading of modules
++	  signed with a blacklisted key.
 +
- choice
- 	prompt "Which hash algorithm should modules be signed with?"
- 	depends on MODULE_SIG
-diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
-index 2b6e699..4cd408d 100644
---- a/kernel/modsign_pubkey.c
-+++ b/kernel/modsign_pubkey.c
-@@ -17,6 +17,9 @@
- #include "module-internal.h"
- 
- struct key *modsign_keyring;
-+#ifdef CONFIG_MODULE_SIG_BLACKLIST
-+struct key *modsign_blacklist;
-+#endif
- 
- extern __initdata const u8 modsign_certificate_list[];
- extern __initdata const u8 modsign_certificate_list_end[];
-@@ -43,6 +46,17 @@ static __init int module_verify_init(void)
- 	if (IS_ERR(modsign_keyring))
- 		panic("Can't allocate module signing keyring\n");
- 
-+#ifdef CONFIG_MODULE_SIG_BLACKLIST
-+	modsign_blacklist = keyring_alloc(".modsign_blacklist",
-+				    KUIDT_INIT(0), KGIDT_INIT(0),
-+				    current_cred(),
-+				    (KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+				    KEY_USR_VIEW | KEY_USR_READ,
-+				    KEY_ALLOC_NOT_IN_QUOTA, NULL);
-+	if (IS_ERR(modsign_blacklist))
-+		panic("Can't allocate module signing blacklist keyring\n");
-+#endif
-+
- 	return 0;
- }
- 
-diff --git a/kernel/module-internal.h b/kernel/module-internal.h
-index 24f9247..51a8380 100644
---- a/kernel/module-internal.h
-+++ b/kernel/module-internal.h
-@@ -10,5 +10,8 @@
-  */
- 
- extern struct key *modsign_keyring;
-+#ifdef CONFIG_MODULE_SIG_BLACKLIST
-+extern struct key *modsign_blacklist;
-+#endif
- 
- extern int mod_verify_sig(const void *mod, unsigned long *_modlen);
+ menuconfig MODULES
+ 	bool "Enable loadable module support"
+ 	help
 diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index f2970bd..5423195 100644
+index 0b6b870..0a29b40 100644
 --- a/kernel/module_signing.c
 +++ b/kernel/module_signing.c
-@@ -157,6 +157,18 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
+@@ -158,6 +158,18 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
  
  	pr_debug("Look up: \"%s\"\n", id);
  
-+#ifdef CONFIG_MODULE_SIG_BLACKLIST
-+	key = keyring_search(make_key_ref(modsign_blacklist, 1),
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	key = keyring_search(make_key_ref(system_blacklist_keyring, 1),
 +				   &key_type_asymmetric, id);
 +	if (!IS_ERR(key)) {
 +		/* module is signed with a cert in the blacklist.  reject */
@@ -334,20 +306,55 @@ index f2970bd..5423195 100644
 +	}
 +#endif
 +
- 	key = keyring_search(make_key_ref(modsign_keyring, 1),
+ 	key = keyring_search(make_key_ref(system_trusted_keyring, 1),
  			     &key_type_asymmetric, id);
  	if (IS_ERR(key))
+diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
+index 4ca7072..b19cc6e 100644
+--- a/kernel/system_keyring.c
++++ b/kernel/system_keyring.c
+@@ -20,6 +20,9 @@
+ 
+ struct key *system_trusted_keyring;
+ EXPORT_SYMBOL_GPL(system_trusted_keyring);
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++struct key *system_blacklist_keyring;
++#endif
+ 
+ extern __initdata const u8 system_certificate_list[];
+ extern __initdata const u8 system_certificate_list_end[];
+@@ -41,6 +44,20 @@ static __init int system_trusted_keyring_init(void)
+ 		panic("Can't allocate system trusted keyring\n");
+ 
+ 	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
++
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	system_blacklist_keyring = keyring_alloc(".system_blacklist_keyring",
++				    KUIDT_INIT(0), KGIDT_INIT(0),
++				    current_cred(),
++				    (KEY_POS_ALL & ~KEY_POS_SETATTR) |
++				    KEY_USR_VIEW | KEY_USR_READ,
++				    KEY_ALLOC_NOT_IN_QUOTA, NULL);
++	if (IS_ERR(system_blacklist_keyring))
++		panic("Can't allocate system blacklist keyring\n");
++
++	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_blacklist_keyring->flags);
++#endif
++
+ 	return 0;
+ }
+ 
 -- 
 1.8.3.1
 
 
-From c558b46370e850851a94795df67b7c57aecc48ea Mon Sep 17 00:00:00 2001
+From aa4f39ac51f8b9f589c13766e5e32a5b7794ed68 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH 4/4] MODSIGN: Import certificates from UEFI Secure Boot
 
 Secure Boot stores a list of allowed certificates in the 'db' variable.
-This imports those certificates into the module signing keyring.  This
+This imports those certificates into the system trusted keyring.  This
 allows for a third party signing certificate to be used in conjunction
 with signed modules.  By importing the public certificate into the 'db'
 variable, a user can allow a module signed with that certificate to
@@ -356,7 +363,7 @@ in the 'MokListRT' variable.  We import those as well.
 
 In the opposite case, Secure Boot maintains a list of disallowed
 certificates in the 'dbx' variable.  We load those certificates into
-the newly introduced module blacklist keyring and forbid any module
+the newly introduced system blacklist keyring and forbid any module
 signed with those from loading.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
@@ -364,8 +371,8 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  include/linux/efi.h   |  6 ++++
  init/Kconfig          |  9 +++++
  kernel/Makefile       |  3 ++
- kernel/modsign_uefi.c | 91 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 109 insertions(+)
+ kernel/modsign_uefi.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 110 insertions(+)
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
@@ -386,16 +393,16 @@ index 42a1d25..d3e6036 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index b4fa2d1..94ce526 100644
+index 547f617..8e943bf 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1780,6 +1780,15 @@ config MODULE_SIG_BLACKLIST
- 	  should not pass module signature verification.  If a module is
- 	  signed with something in this keyring, the load will be rejected.
+@@ -1794,6 +1794,15 @@ config MODULE_SIG_ALL
+ comment "Do not forget to sign required modules with scripts/sign-file"
+ 	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
 +config MODULE_SIG_UEFI
 +	bool "Allow modules signed with certs stored in UEFI"
-+	depends on MODULE_SIG && MODULE_SIG_BLACKLIST && EFI
++	depends on MODULE_SIG && SYSTEM_BLACKLIST_KEYRING && EFI
 +	select EFI_SIGNATURE_LIST_PARSER
 +	help
 +	  This will import certificates stored in UEFI and allow modules
@@ -406,18 +413,18 @@ index b4fa2d1..94ce526 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 35ef118..6ca1fea 100644
+index 1ff5e3b..f9b9998 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -55,6 +55,7 @@ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
- obj-$(CONFIG_UID16) += uid16.o
+@@ -56,6 +56,7 @@ obj-$(CONFIG_UID16) += uid16.o
+ obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
- obj-$(CONFIG_MODULE_SIG) += module_signing.o modsign_pubkey.o modsign_certificate.o
+ obj-$(CONFIG_MODULE_SIG) += module_signing.o
 +obj-$(CONFIG_MODULE_SIG_UEFI) += modsign_uefi.o
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -114,6 +115,8 @@ obj-$(CONFIG_CONTEXT_TRACKING) += context_tracking.o
+@@ -115,6 +116,8 @@ obj-$(CONFIG_CONTEXT_TRACKING) += context_tracking.o
  
  $(obj)/configs.o: $(obj)/config_data.h
  
@@ -428,10 +435,10 @@ index 35ef118..6ca1fea 100644
  targets += config_data.gz
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
 new file mode 100644
-index 0000000..7eae5b4
+index 0000000..94b0eb3
 --- /dev/null
 +++ b/kernel/modsign_uefi.c
-@@ -0,0 +1,91 @@
+@@ -0,0 +1,92 @@
 +#include <linux/kernel.h>
 +#include <linux/sched.h>
 +#include <linux/cred.h>
@@ -439,6 +446,7 @@ index 0000000..7eae5b4
 +#include <linux/efi.h>
 +#include <linux/slab.h>
 +#include <keys/asymmetric-type.h>
++#include <keys/system_keyring.h>
 +#include "module-internal.h"
 +
 +static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid, unsigned long *size)
@@ -493,7 +501,7 @@ index 0000000..7eae5b4
 +	if (!db) {
 +		pr_err("MODSIGN: Couldn't get UEFI db list\n");
 +	} else {
-+		rc = parse_efi_signature_list(db, dbsize, modsign_keyring);
++		rc = parse_efi_signature_list(db, dbsize, system_trusted_keyring);
 +		if (rc)
 +			pr_err("Couldn't parse db signatures: %d\n", rc);
 +		kfree(db);
@@ -503,7 +511,7 @@ index 0000000..7eae5b4
 +	if (!mok) {
 +		pr_info("MODSIGN: Couldn't get UEFI MokListRT\n");
 +	} else {
-+		rc = parse_efi_signature_list(mok, moksize, modsign_keyring);
++		rc = parse_efi_signature_list(mok, moksize, system_trusted_keyring);
 +		if (rc)
 +			pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
 +		kfree(mok);
@@ -514,7 +522,7 @@ index 0000000..7eae5b4
 +		pr_info("MODSIGN: Couldn't get UEFI dbx list\n");
 +	} else {
 +		rc = parse_efi_signature_list(dbx, dbxsize,
-+			modsign_blacklist);
++			system_blacklist_keyring);
 +		if (rc)
 +			pr_err("Couldn't parse dbx signatures: %d\n", rc);
 +		kfree(dbx);

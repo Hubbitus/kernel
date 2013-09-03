@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -651,6 +651,7 @@ Patch800: crash-driver.patch
 # keys
 Patch900: keys-expand-keyring.patch
 Patch901: keys-krb-support.patch
+Patch902: keys-x509-improv.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1394,6 +1395,7 @@ ApplyPatch crash-driver.patch
 # keys
 ApplyPatch keys-expand-keyring.patch
 ApplyPatch keys-krb-support.patch
+ApplyPatch keys-x509-improv.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2280,6 +2282,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-3
+- Add system_keyring patches back in
+
 * Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
 - Pull in some Calxeda highbank fixes that are destined for 3.12
 - Add a %with_extra twiddle to disable building kernel-modules-extra
