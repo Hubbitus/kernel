@@ -122,6 +122,8 @@ Summary: The Linux kernel
 %define with_doc       %{?_without_doc:       0} %{?!_without_doc:       1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
+# kernel-modules-extra
+%define with_extra     %{?_without_extra:     0} %{?!_without_extra:     1}
 # perf
 %define with_perf      %{?_without_perf:      0} %{?!_without_perf:      1}
 # tools
@@ -702,6 +704,7 @@ Patch21001: arm-lpae-ax88796.patch
 Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 Patch21005: arm-exynos-mp.patch
+Patch21006: arm-highbank-for-3.12.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
@@ -979,14 +982,18 @@ Summary: %{variant_summary}\
 Group: System Environment/Kernel\
 %kernel_reqprovconf\
 %{expand:%%kernel_devel_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+%if %{with_extra}\
 %{expand:%%kernel_modules_extra_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+%endif\
 %{expand:%%kernel_debuginfo_package %1}\
 %{nil}
 
 
 # First the auxiliary packages of the main kernel package.
 %kernel_devel_package
+%if %{with_extra}
 %kernel_modules_extra_package
+%endif
 %kernel_debuginfo_package
 
 
@@ -1310,9 +1317,10 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
+#ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-exynos-mp.patch
+ApplyPatch arm-highbank-for-3.12.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
@@ -1606,7 +1614,7 @@ BuildKernel() {
 %ifarch %{arm} aarch64
     %{make} -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
+    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer/
     rm -f arch/$Arch/boot/dts/*.dtb
 %endif
 
@@ -1764,8 +1772,10 @@ BuildKernel() {
         rm -f modules.{alias*,builtin.bin,dep*,*map,symbols*,devname,softdep}
     popd
 
+%if %{with_extra}
     # Call the modules-extra script to move things around
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
+%endif
 
 %if %{signmodules}
     # Save the signing keys so we can sign the modules in __modsign_install_post
@@ -2075,7 +2085,9 @@ fi\
 #
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
+%if %{with_extra}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
+%endif\
 %{expand:%%kernel_variant_posttrans %{?-v*}}\
 %{expand:%%post %{?-v*}}\
 %{-r:\
@@ -2233,7 +2245,9 @@ fi
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
 /usr/src/kernels/%{KVERREL}%{?2:+%{2}}\
+%if %{with_extra}\
 %{expand:%%files %{?2:%{2}-}modules-extra}\
+%endif\
 %defattr(-,root,root)\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/extra\
 %if %{with_debuginfo}\
@@ -2265,6 +2279,13 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
+- Pull in some Calxeda highbank fixes that are destined for 3.12
+- Add a %with_extra twiddle to disable building kernel-modules-extra
+  subpackages.
+- Fix dtbs install path to use %install_image_path (not that it's different
+  at the moment.)
+
 * Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add keyring patches to support krb5 (rhbz 1003043)
 
