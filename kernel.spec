@@ -646,6 +646,10 @@ Patch800: crash-driver.patch
 
 # crypto/
 
+# keys
+Patch900: keys-expand-keyring.patch
+Patch901: keys-krb-support.patch
+
 # secure boot
 Patch1000: secure-modules.patch
 Patch1001: modsign-uefi.patch
@@ -1378,6 +1382,10 @@ ApplyPatch silence-fbcon-logo.patch
 ApplyPatch crash-driver.patch
 
 # crypto/
+
+# keys
+ApplyPatch keys-expand-keyring.patch
+ApplyPatch keys-krb-support.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2258,6 +2266,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add keyring patches to support krb5 (rhbz 1003043)
+
 * Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
 - [arm64] disable VGA_CONSOLE and PARPORT_PC
 - [arm64] install dtb as on %{arm}
