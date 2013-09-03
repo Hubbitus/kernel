@@ -82,3 +82,5 @@ CONFIG_VM_EVENT_COUNTERS=y
 #  weird include chain resulting in missing u64 type
 # CONFIG_USB_SPEEDTOUCH is not set
 #  dma issues in headers
+# CONFIG_PARPORT_PC is not set
+# CONFIG_VGA_CONSOLE is not set
