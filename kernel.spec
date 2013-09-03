@@ -1595,11 +1595,11 @@ BuildKernel() {
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
-%ifarch %{arm}
+%ifarch %{arm} aarch64
     %{make} -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
-    rm -f arch/arm/boot/dts/*.dtb
+    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
+    rm -f arch/$Arch/boot/dts/*.dtb
 %endif
 
     # Start installing the results
@@ -2206,7 +2206,7 @@ fi
 %defattr(-,root,root)\
 /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
 /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
-%ifarch %{arm}\
+%ifarch %{arm} aarch64\
 /%{image_install_path}/dtb-%{KVERREL}%{?2:+%{2}} \
 %endif\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
@@ -2258,6 +2258,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
+- [arm64] disable VGA_CONSOLE and PARPORT_PC
+- [arm64] install dtb as on %{arm}
+
 * Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-1
 - Linux v3.11
 - Disable debugging options.
