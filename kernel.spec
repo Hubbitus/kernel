@@ -2315,6 +2315,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 4 2013 Kyle McMartin <kyle@redhat.com>
+- [arm] Disable CONFIG_PCIEPORTBUS in arm-generic, causes untold problems
+  with registering bus windows on tegra.
+
 * Wed Sep 4 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Update linux-firmware requirements for newer radeon firmware (rhbz 988268 972518)
 
