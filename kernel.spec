@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -465,7 +465,7 @@ Provides: kernel-tegra\
 Provides: kernel-tegra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
-Requires(pre): linux-firmware >= 20120206-0.1.git06c8f81\
+Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
 Requires(preun): systemd >= 200\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
@@ -2313,6 +2313,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 4 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Update linux-firmware requirements for newer radeon firmware (rhbz 988268 972518)
+
 * Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git8.1
 - Linux v3.11-2654-g458c3f6
 
