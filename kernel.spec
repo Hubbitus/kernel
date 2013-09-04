@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2317,6 +2317,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git2.1
+- Linux v3.11-716-gb3b4911
+
 * Wed Sep  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch set to fix MMC on AM33xx
 - Add support for BeagleBone Black (very basic!)
