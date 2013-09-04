@@ -2313,6 +2313,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 4 2013 Kyle McMartin <kyle@redhat.com>
+- [arm] Disable CONFIG_PCIEPORTBUS in arm-generic, causes untold problems
+  with registering bus windows on tegra.
+
 * Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git9.1
 - Linux v3.11-3070-gcb3e433
 
