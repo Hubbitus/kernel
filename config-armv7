@@ -22,6 +22,8 @@ CONFIG_ARCH_ZYNQ=y
 
 # Generic
 CONFIG_REMOTEPROC=m
+# Need at some point for am33xx and others
+# CONFIG_IIO is not set
 
 # FIXME should be generic (I think it's enabled by default)
 CONFIG_FB=y

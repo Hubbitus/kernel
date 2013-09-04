@@ -2320,6 +2320,7 @@ fi
 * Wed Sep  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch set to fix MMC on AM33xx
 - Add support for BeagleBone Black (very basic!)
+- Renable cpuidle on ARM, was disabled sometime back due to instability
 
 * Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git1.1
 - Linux v3.11-351-g1ccfd5e
