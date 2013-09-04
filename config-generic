@@ -4034,6 +4034,9 @@ CONFIG_HEADERS_CHECK=y
 # This generates a huge amount of dmesg spew
 # CONFIG_DEBUG_KOBJECT is not set
 #
+# This breaks booting until the module patches are in-tree
+# CONFIG_DEBUG_KOBJECT_RELEASE is not set
+#
 #
 # These debug options are deliberatly left on (even in 'make release' kernels).
 # They aren't that much of a performance impact, and the value
@@ -4638,6 +4641,7 @@ CONFIG_RTL8192E=m
 # CONFIG_INPUT_GPIO is not set
 # CONFIG_VIDEO_CX25821 is not set
 # CONFIG_R8187SE is not set
+# CONFIG_R8188EU is not set
 # CONFIG_RTL8192U is not set
 # CONFIG_FB_SM7XX is not set
 # CONFIG_SPECTRA is not set
@@ -4645,6 +4649,7 @@ CONFIG_RTL8192E=m
 # CONFIG_EASYCAP is not set
 # CONFIG_SOLO6X10 is not set
 # CONFIG_ACPI_QUICKSTART is not set
+# CONFIG_LTE_GDM724X is not set
 CONFIG_R8712U=m # Larry Finger maintains this (rhbz 699618)
 # CONFIG_R8712_AP is not set
 # CONFIG_ATH6K_LEGACY is not set
@@ -4678,6 +4683,10 @@ CONFIG_ALTERA_STAPL=m
 # CONFIG_CED1401 is not set
 # CONFIG_DGRP is not set
 # CONFIG_SB105X is not set
+# CONFIG_LUSTRE_FS is not set
+# CONFIG_XILLYBUS is not set
+# CONFIG_DGAP is not set
+# CONFIG_DGNC is not set
 # END OF STAGING
 
 #
