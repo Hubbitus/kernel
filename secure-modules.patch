@@ -1,7 +1,7 @@
-From 17832506ee9b52bc8e00c2ec89b49257998171ed Mon Sep 17 00:00:00 2001
+From 8dea807503a1ba88d9e27595daae7f86ec968711 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:02 -0400
-Subject: [PATCH 01/13] Add secure_modules() call
+Date: Fri, 9 Aug 2013 17:58:15 -0400
+Subject: [PATCH 01/14] Add secure_modules() call
 
 Provide a single call to allow kernel code to determine whether the system
 has been configured to either disable module loading entirely or to load
@@ -39,7 +39,7 @@ index 46f1ea0..0c266b2 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 2069158..499ee57 100644
+index 2069158..0e94acf 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -3852,3 +3852,13 @@ void module_layout(struct module *mod,
@@ -55,15 +55,15 @@ index 2069158..499ee57 100644
 +	return modules_disabled;
 +#endif
 +}
-+EXPORT_SYMBOL_GPL(secure_modules);
++EXPORT_SYMBOL(secure_modules);
 -- 
 1.8.3.1
 
 
-From e347503648ace6a4b71dfb566365f1aa19657746 Mon Sep 17 00:00:00 2001
+From 9b7b3f6283bf784e4ea1c34e52646b12971b2823 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:03 -0400
-Subject: [PATCH 02/13] PCI: Lock down BAR access when module security is
+Date: Thu, 8 Mar 2012 10:10:38 -0500
+Subject: [PATCH 02/14] PCI: Lock down BAR access when module security is
  enabled
 
 Any hardware that can potentially generate DMA has to be locked down from
@@ -179,10 +179,10 @@ index e1c1ec5..bffbf71 100644
 1.8.3.1
 
 
-From b846e3958d3f4ff875ec958efba8b681ccbae04e Mon Sep 17 00:00:00 2001
+From aac2425a2664c09c2a369e1eec6e7a5bc2713cb1 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:04 -0400
-Subject: [PATCH 03/13] x86: Lock down IO port access when module security is
+Date: Thu, 8 Mar 2012 10:35:59 -0500
+Subject: [PATCH 03/14] x86: Lock down IO port access when module security is
  enabled
 
 IO port access would permit users to gain access to PCI configuration
@@ -252,10 +252,10 @@ index f895a8c..1af8664 100644
 1.8.3.1
 
 
-From 8c11e2cc989eece2d4978cfbc83f9b898f3cd1aa Mon Sep 17 00:00:00 2001
+From e7f9789c7eedf291972666befee726ff8e7126f6 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:05 -0400
-Subject: [PATCH 04/13] ACPI: Limit access to custom_method
+Date: Fri, 9 Mar 2012 08:39:37 -0500
+Subject: [PATCH 04/14] ACPI: Limit access to custom_method
 
 custom_method effectively allows arbitrary access to system memory, making
 it possible for an attacker to circumvent restrictions on module loading.
@@ -263,22 +263,14 @@ Disable it if any such restrictions have been enabled.
 
 Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
 ---
- drivers/acpi/custom_method.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/acpi/custom_method.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
-index 12b62f2..55a013f 100644
+index 12b62f2..50647b3 100644
 --- a/drivers/acpi/custom_method.c
 +++ b/drivers/acpi/custom_method.c
-@@ -7,6 +7,7 @@
- #include <linux/kernel.h>
- #include <linux/uaccess.h>
- #include <linux/debugfs.h>
-+#include <linux/module.h>
- #include <acpi/acpi_drivers.h>
- 
- #include "internal.h"
-@@ -29,6 +30,9 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+@@ -29,6 +29,9 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
  	struct acpi_table_header table;
  	acpi_status status;
  
@@ -292,10 +284,10 @@ index 12b62f2..55a013f 100644
 1.8.3.1
 
 
-From 968ccfb32df5d5c9673c57641ebf90b25c0df880 Mon Sep 17 00:00:00 2001
+From d81cd6628c821d47bd086354cbc57b1474f3c1a8 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:06 -0400
-Subject: [PATCH 05/13] asus-wmi: Restrict debugfs interface when module
+Date: Fri, 9 Mar 2012 08:46:50 -0500
+Subject: [PATCH 05/14] asus-wmi: Restrict debugfs interface when module
  loading is restricted
 
 We have no way of validating what all of the Asus WMI methods do on a
@@ -347,10 +339,10 @@ index 19c313b..db18ef66 100644
 1.8.3.1
 
 
-From e492d0a80bb591c34391757f97fc5aa8eb198e4f Mon Sep 17 00:00:00 2001
+From df75e984729ef50bb691b4d15472529fcd81580b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:07 -0400
-Subject: [PATCH 06/13] Restrict /dev/mem and /dev/kmem when module loading is
+Date: Fri, 9 Mar 2012 09:28:15 -0500
+Subject: [PATCH 06/14] Restrict /dev/mem and /dev/kmem when module loading is
  restricted
 
 Allowing users to write to address space makes it possible for the kernel
@@ -390,10 +382,10 @@ index 1af8664..61406c8 100644
 1.8.3.1
 
 
-From 145913d656bfe8216032b38a576ac150699521e5 Mon Sep 17 00:00:00 2001
+From 78955913cc46cc5e5c7f2c71c1b07a5c18e06456 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
-Date: Mon, 19 Aug 2013 13:26:08 -0400
-Subject: [PATCH 07/13] acpi: Ignore acpi_rsdp kernel parameter when module
+Date: Mon, 25 Jun 2012 19:57:30 -0400
+Subject: [PATCH 07/14] acpi: Ignore acpi_rsdp kernel parameter when module
  loading is restricted
 
 This option allows userspace to pass the RSDP address to the kernel, which
@@ -430,10 +422,95 @@ index 6ab2c35..e4c4410 100644
 1.8.3.1
 
 
-From 012ac79f54ab746114d8276d8858a3df18b10e22 Mon Sep 17 00:00:00 2001
+From 23aae9143fbece326b3a26bf5ba48956c99cabe4 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:10 -0400
-Subject: [PATCH 08/13] x86: Restrict MSR access when module loading is
+Date: Fri, 9 Aug 2013 03:33:56 -0400
+Subject: [PATCH 08/14] kexec: Disable at runtime if the kernel enforces module
+ loading restrictions
+
+kexec permits the loading and execution of arbitrary code in ring 0, which
+is something that module signing enforcement is meant to prevent. It makes
+sense to disable kexec in this situation.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ kernel/kexec.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 59f7b55..3e2b63a 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -32,6 +32,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/swap.h>
+ #include <linux/syscore_ops.h>
++#include <linux/module.h>
+ 
+ #include <asm/page.h>
+ #include <asm/uaccess.h>
+@@ -943,6 +944,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		return -EPERM;
+ 
+ 	/*
++	 * kexec can be used to circumvent module loading restrictions, so
++	 * prevent loading in that case
++	 */
++	if (secure_modules())
++		return -EPERM;
++
++	/*
+ 	 * Verify we have a legal set of flags
+ 	 * This leaves us room for future extensions.
+ 	 */
+-- 
+1.8.3.1
+
+
+From 218cd49aa2d6a085c5c4edc0396200864f0b54ad Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 3 Sep 2013 11:23:29 -0400
+Subject: [PATCH 09/14] uswsusp: Disable when module loading is restricted
+
+uswsusp allows a user process to dump and then restore kernel state, which
+makes it possible to avoid module loading restrictions. Prevent this when
+any restrictions have been imposed on loading modules.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ kernel/power/user.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/power/user.c b/kernel/power/user.c
+index 4ed81e7..15cb72f 100644
+--- a/kernel/power/user.c
++++ b/kernel/power/user.c
+@@ -24,6 +24,7 @@
+ #include <linux/console.h>
+ #include <linux/cpu.h>
+ #include <linux/freezer.h>
++#include <linux/module.h>
+ 
+ #include <asm/uaccess.h>
+ 
+@@ -48,6 +49,9 @@ static int snapshot_open(struct inode *inode, struct file *filp)
+ 	struct snapshot_data *data;
+ 	int error;
+ 
++	if (secure_modules())
++		return -EPERM;
++
+ 	lock_system_sleep();
+ 
+ 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
+-- 
+1.8.3.1
+
+
+From beeaac053d4ae57dc65be1da8b46e5d4bc6542b8 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Fri, 8 Feb 2013 11:12:13 -0800
+Subject: [PATCH 10/14] x86: Restrict MSR access when module loading is
  restricted
 
 Writing to MSRs should not be allowed if module loading is restricted,
@@ -475,51 +552,10 @@ index 88458fa..d08f7e3 100644
 1.8.3.1
 
 
-From a44d2968968fd667c8cbeba7c043f674d17e7ce7 Mon Sep 17 00:00:00 2001
+From b4331711c52aff0a6a9cef0f4b52fe261874d6f2 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:09 -0400
-Subject: [PATCH 09/13] kexec: Disable at runtime if the kernel enforces module
- loading restrictions
-
-kexec permits the loading and execution of arbitrary code in ring 0, which
-is something that module signing enforcement is meant to prevent. It makes
-sense to disable kexec in this situation.
-
-Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
----
- kernel/kexec.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 59f7b55..1a7690f 100644
---- a/kernel/kexec.c
-+++ b/kernel/kexec.c
-@@ -32,6 +32,7 @@
- #include <linux/vmalloc.h>
- #include <linux/swap.h>
- #include <linux/syscore_ops.h>
-+#include <linux/module.h>
- 
- #include <asm/page.h>
- #include <asm/uaccess.h>
-@@ -1645,6 +1646,9 @@ int kernel_kexec(void)
- 		goto Unlock;
- 	}
- 
-+	if (secure_modules())
-+		return -EPERM;
-+
- #ifdef CONFIG_KEXEC_JUMP
- 	if (kexec_image->preserve_context) {
- 		lock_system_sleep();
--- 
-1.8.3.1
-
-
-From f8f879da5dcc060a990a3b660aa5f340429cc4ed Mon Sep 17 00:00:00 2001
-From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Mon, 19 Aug 2013 13:26:11 -0400
-Subject: [PATCH 10/13] Add option to automatically enforce module signatures
+Date: Fri, 9 Aug 2013 18:36:30 -0400
+Subject: [PATCH 11/14] Add option to automatically enforce module signatures
  when in Secure Boot mode
 
 UEFI Secure Boot provides a mechanism for ensuring that the firmware will
@@ -528,17 +564,15 @@ require that all kernel modules also be signed. Add a configuration option
 that enforces this automatically when enabled.
 
 Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
-Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- Documentation/x86/zero-page.txt        |  2 ++
- arch/x86/Kconfig                       | 10 ++++++++++
- arch/x86/boot/compressed/eboot.c       | 33 +++++++++++++++++++++++++++++++++
- arch/x86/include/asm/bootparam_utils.h |  8 ++++++--
- arch/x86/include/uapi/asm/bootparam.h  |  3 ++-
- arch/x86/kernel/setup.c                |  6 ++++++
- include/linux/module.h                 |  6 ++++++
- kernel/module.c                        |  7 +++++++
- 8 files changed, 72 insertions(+), 3 deletions(-)
+ Documentation/x86/zero-page.txt       |  2 ++
+ arch/x86/Kconfig                      | 10 ++++++++++
+ arch/x86/boot/compressed/eboot.c      | 36 +++++++++++++++++++++++++++++++++++
+ arch/x86/include/uapi/asm/bootparam.h |  3 ++-
+ arch/x86/kernel/setup.c               |  6 ++++++
+ include/linux/module.h                |  6 ++++++
+ kernel/module.c                       |  7 +++++++
+ 7 files changed, 69 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
 index 199f453..ec38acf 100644
@@ -575,14 +609,22 @@ index b32ebf9..6a6c19b 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index b7388a4..145294d 100644
+index b7388a4..53bfe4f 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -861,6 +861,37 @@ fail:
+@@ -12,6 +12,7 @@
+ #include <asm/efi.h>
+ #include <asm/setup.h>
+ #include <asm/desc.h>
++#include <asm/bootparam_utils.h>
+ 
+ #undef memcpy			/* Use memcpy from misc.c */
+ 
+@@ -861,6 +862,37 @@ fail:
  	return status;
  }
  
-+static int get_secure_boot(efi_system_table_t *_table)
++static int get_secure_boot(void)
 +{
 +	u8 sb, setup;
 +	unsigned long datasize = sizeof(sb);
@@ -616,37 +658,19 @@ index b7388a4..145294d 100644
  /*
   * Because the x86 boot code expects to be passed a boot_params we
   * need to create one ourselves (usually the bootloader would create
-@@ -1169,6 +1200,8 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
+@@ -1169,6 +1201,10 @@ struct boot_params *efi_main(void *handle, efi_system_table_t *_table,
  	if (sys_table->hdr.signature != EFI_SYSTEM_TABLE_SIGNATURE)
  		goto fail;
  
-+	boot_params->secure_boot = get_secure_boot(sys_table);
++	sanitize_boot_params(boot_params);
++
++	boot_params->secure_boot = get_secure_boot();
 +
  	setup_graphics(boot_params);
  
  	setup_efi_pci(boot_params);
-diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
-index 4a8cb8d..25f9cf1 100644
---- a/arch/x86/include/asm/bootparam_utils.h
-+++ b/arch/x86/include/asm/bootparam_utils.h
-@@ -38,9 +38,13 @@ static void sanitize_boot_params(struct boot_params *boot_params)
- 		memset(&boot_params->ext_ramdisk_image, 0,
- 		       (char *)&boot_params->efi_info -
- 			(char *)&boot_params->ext_ramdisk_image);
--		memset(&boot_params->kbd_status, 0,
-+		memset(&boot_params->kbd_status, 0, sizeof(boot_params->kbd_status));
-+		/* don't clear boot_params->secure_boot.  we set that ourselves
-+		 * earlier.
-+		 */
-+		memset(&boot_params->_pad5[0], 0,
- 		       (char *)&boot_params->hdr -
--		       (char *)&boot_params->kbd_status);
-+		       (char *)&boot_params->_pad5[0]);
- 		memset(&boot_params->_pad7[0], 0,
- 		       (char *)&boot_params->edd_mbr_sig_buffer[0] -
- 			(char *)&boot_params->_pad7[0]);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index c15ddaf..d35da96 100644
+index c15ddaf..85d7685 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
 @@ -131,7 +131,8 @@ struct boot_params {
@@ -655,7 +679,7 @@ index c15ddaf..d35da96 100644
  	__u8  kbd_status;				/* 0x1eb */
 -	__u8  _pad5[3];					/* 0x1ec */
 +	__u8  secure_boot;				/* 0x1ec */
-+	__u8  _pad5[2];					/* 0x1ec */
++	__u8  _pad5[2];					/* 0x1ed */
  	/*
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
@@ -694,7 +718,7 @@ index 0c266b2..5a6374a 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 499ee57..bc7c987 100644
+index 0e94acf..974139b 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -3853,6 +3853,13 @@ void module_layout(struct module *mod,
@@ -715,10 +739,10 @@ index 499ee57..bc7c987 100644
 1.8.3.1
 
 
-From b1604407fff69b17b598af03888a9efda0d58f2b Mon Sep 17 00:00:00 2001
+From bb28516d346e6511f1e012321c48eb142763e539 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
-Subject: [PATCH 11/13] efi: Disable secure boot if shim is in insecure mode
+Subject: [PATCH 12/14] efi: Disable secure boot if shim is in insecure mode
 
 A user can manually tell the shim boot loader to disable validation of
 images it loads.  When a user does this, it creates a UEFI variable called
@@ -732,12 +756,12 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 145294d..545d4a6 100644
+index 53bfe4f..946028b 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -863,8 +863,9 @@ fail:
+@@ -864,8 +864,9 @@ fail:
  
- static int get_secure_boot(efi_system_table_t *_table)
+ static int get_secure_boot(void)
  {
 -	u8 sb, setup;
 +	u8 sb, setup, moksbstate;
@@ -746,7 +770,7 @@ index 145294d..545d4a6 100644
  	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
  	efi_status_t status;
  
-@@ -888,6 +889,23 @@ static int get_secure_boot(efi_system_table_t *_table)
+@@ -889,6 +890,23 @@ static int get_secure_boot(void)
  	if (setup == 1)
  		return 0;
  
@@ -774,10 +798,10 @@ index 145294d..545d4a6 100644
 1.8.3.1
 
 
-From 4d8b5cab923a2df15e1f33b3f0511366f9f98756 Mon Sep 17 00:00:00 2001
+From 4c8824bac8d4284e66c39c365ba84151f2d78e87 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
-Subject: [PATCH 12/13] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
+Subject: [PATCH 13/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
 
 The functionality of the config option is dependent upon the platform being
 UEFI based.  Reflect this in the config deps.
@@ -805,10 +829,10 @@ index 6a6c19b..10498ec 100644
 1.8.3.1
 
 
-From a87ca6498b8a9f8e3c1d7e6ef7ef4e233ec8639d Mon Sep 17 00:00:00 2001
+From 871b0ed1847c3c5413a4ca72ecf18735858f7708 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:33:03 -0400
-Subject: [PATCH 13/13] efi: Add EFI_SECURE_BOOT bit
+Subject: [PATCH 14/14] efi: Add EFI_SECURE_BOOT bit
 
 UEFI machines can be booted in Secure Boot mode.  Add a EFI_SECURE_BOOT bit
 for use with efi_enabled.

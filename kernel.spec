@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,6 +122,8 @@ Summary: The Linux kernel
 %define with_doc       %{?_without_doc:       0} %{?!_without_doc:       1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
+# kernel-modules-extra
+%define with_extra     %{?_without_extra:     0} %{?!_without_extra:     1}
 # perf
 %define with_perf      %{?_without_perf:      0} %{?!_without_perf:      1}
 # tools
@@ -156,7 +158,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -169,7 +171,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -646,6 +648,11 @@ Patch800: crash-driver.patch
 
 # crypto/
 
+# keys
+Patch900: keys-expand-keyring.patch
+Patch901: keys-krb-support.patch
+Patch902: keys-x509-improv.patch
+
 # secure boot
 Patch1000: secure-modules.patch
 Patch1001: modsign-uefi.patch
@@ -698,6 +705,7 @@ Patch21001: arm-lpae-ax88796.patch
 Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 Patch21005: arm-exynos-mp.patch
+Patch21006: arm-highbank-for-3.12.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
@@ -993,14 +1001,18 @@ Summary: %{variant_summary}\
 Group: System Environment/Kernel\
 %kernel_reqprovconf\
 %{expand:%%kernel_devel_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+%if %{with_extra}\
 %{expand:%%kernel_modules_extra_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+%endif\
 %{expand:%%kernel_debuginfo_package %1}\
 %{nil}
 
 
 # First the auxiliary packages of the main kernel package.
 %kernel_devel_package
+%if %{with_extra}
 %kernel_modules_extra_package
+%endif
 %kernel_debuginfo_package
 
 
@@ -1324,9 +1336,10 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
+#ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-exynos-mp.patch
+ApplyPatch arm-highbank-for-3.12.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
@@ -1413,6 +1426,11 @@ ApplyPatch silence-fbcon-logo.patch
 ApplyPatch crash-driver.patch
 
 # crypto/
+
+# keys
+ApplyPatch keys-expand-keyring.patch
+ApplyPatch keys-krb-support.patch
+ApplyPatch keys-x509-improv.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -1630,11 +1648,11 @@ BuildKernel() {
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
-%ifarch %{arm}
+%ifarch %{arm} aarch64
     %{make} -s ARCH=$Arch V=1 dtbs
     mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    install -m 644 arch/arm/boot/dts/*.dtb $RPM_BUILD_ROOT/boot/dtb-$KernelVer/
-    rm -f arch/arm/boot/dts/*.dtb
+    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer/
+    rm -f arch/$Arch/boot/dts/*.dtb
 %endif
 
     # Start installing the results
@@ -1791,8 +1809,10 @@ BuildKernel() {
         rm -f modules.{alias*,builtin.bin,dep*,*map,symbols*,devname,softdep}
     popd
 
+%if %{with_extra}
     # Call the modules-extra script to move things around
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
+%endif
 
 %if %{signmodules}
     # Save the signing keys so we can sign the modules in __modsign_install_post
@@ -2102,7 +2122,9 @@ fi\
 #
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
+%if %{with_extra}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
+%endif\
 %{expand:%%kernel_variant_posttrans %{?-v*}}\
 %{expand:%%post %{?-v*}}\
 %{-r:\
@@ -2241,7 +2263,7 @@ fi
 %defattr(-,root,root)\
 /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
 /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
-%ifarch %{arm}\
+%ifarch %{arm} aarch64\
 /%{image_install_path}/dtb-%{KVERREL}%{?2:+%{2}} \
 %endif\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
@@ -2260,7 +2282,9 @@ fi
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
 /usr/src/kernels/%{KVERREL}%{?2:+%{2}}\
+%if %{with_extra}\
 %{expand:%%files %{?2:%{2}-}modules-extra}\
+%endif\
 %defattr(-,root,root)\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/extra\
 %if %{with_debuginfo}\
@@ -2293,9 +2317,30 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Tue Sep  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+* Wed Sep  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch set to fix MMC on AM33xx
 - Add support for BeagleBone Black (very basic!)
+
+* Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git1.1
+- Linux v3.11-351-g1ccfd5e
+- Reenable debugging options.
+
+* Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-3
+- Add system_keyring patches back in
+
+* Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
+- Pull in some Calxeda highbank fixes that are destined for 3.12
+- Add a %with_extra twiddle to disable building kernel-modules-extra
+  subpackages.
+- Fix dtbs install path to use %install_image_path (not that it's different
+  at the moment.)
+
+* Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add keyring patches to support krb5 (rhbz 1003043)
+
+* Tue Sep 03 2013 Kyle McMartin <kyle@redhat.com>
+- [arm64] disable VGA_CONSOLE and PARPORT_PC
+- [arm64] install dtb as on %{arm}
 
 * Tue Sep 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.0-1
 - Linux v3.11
