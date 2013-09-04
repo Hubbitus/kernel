@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -770,8 +770,6 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-Patch25090: mei-me-fix-hardware-reset-flow.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -1507,8 +1505,6 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-ApplyPatch mei-me-fix-hardware-reset-flow.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -2317,7 +2313,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git2.1
+* Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git3.1
+- Linux v3.11-782-g1d1fdd9
+
+* Wed Sep 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git2.1
 - Linux v3.11-716-gb3b4911
 
 * Wed Sep  4 2013 Peter Robinson <pbrobinson@fedoraproject.org>
