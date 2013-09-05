@@ -776,6 +776,8 @@ Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 Patch25099: HID-CVE-fixes.patch
 
+Patch25100: perf-arm-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1509,6 +1511,8 @@ ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.
 #CVE-2013-2895 rhbz 1000360 1002581 CVE-2013-2896 rhbz 1000494 1002594
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 ApplyPatch HID-CVE-fixes.patch
+
+ApplyPatch perf-arm-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2312,6 +2316,9 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git11.1
+- Fix perf build on ARM (from Kyle McMartin)
+
+* Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.11-3891-gae7a835
 
 * Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git10.1
