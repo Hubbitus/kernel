@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -715,8 +715,6 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
 # ARM wandboard
 Patch21030: arm-wandboard-quad.patch
-# https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/patch/?id=3f1a91aa25579ba5e7268a47a73d2a83e4802c62
-Patch21031: arm-imx-fixsound.patch
 
 # AM33xx
 Patch21040: 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
@@ -1341,7 +1339,6 @@ ApplyPatch arm-highbank-for-3.12.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
-ApplyPatch arm-imx-fixsound.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
 ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
@@ -2314,6 +2311,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git11.1
+- Linux v3.11-3891-gae7a835
+
 * Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git10.1
 - Linux v3.11-3120-g816434e
 

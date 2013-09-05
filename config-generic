@@ -200,6 +200,7 @@ CONFIG_EXTRA_FIRMWARE=""
 # CONFIG_FW_LOADER_USER_HELPER is not set
 
 # CONFIG_CMA is not set
+# CONFIG_DMA_CMA is not set
 
 # CONFIG_SPI is not set
 
@@ -2195,6 +2196,7 @@ CONFIG_TCG_NSC=m
 CONFIG_TCG_ATMEL=m
 # CONFIG_TCG_INFINEON is not set
 # CONFIG_TCG_ST33_I2C is not set
+# CONFIG_TCG_XEN is not set
 CONFIG_TELCLOCK=m
 
 #

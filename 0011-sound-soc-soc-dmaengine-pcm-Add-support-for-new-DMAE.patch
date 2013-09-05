@@ -12,13 +12,13 @@ helpers so that we can fetch and open channels using this method.
 
 Signed-off-by: Joel Fernandes <joelf@ti.com>
 ---
- sound/soc/soc-dmaengine-pcm.c | 22 ++++++++++++++++++++++
+ sound/core/pcm_dmaengine.c | 22 ++++++++++++++++++++++
  1 file changed, 22 insertions(+)
 
-diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
 index aa924d9..461fe4f 100644
---- a/sound/soc/soc-dmaengine-pcm.c
-+++ b/sound/soc/soc-dmaengine-pcm.c
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
 @@ -276,6 +276,16 @@ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
  }
  EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_channel);
