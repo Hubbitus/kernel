@@ -1862,7 +1862,7 @@ BuildKernel %make_target %kernel_image smp
 %endif
 
 %global perf_make \
-  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_LIBNUMA=1 NO_STRLCPY=1 prefix=%{_prefix}
+  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_LIBNUMA=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} all
@@ -2006,6 +2006,7 @@ find $RPM_BUILD_ROOT/usr/include \
 %endif
 
 %if %{with_perf}
+mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/perf-core
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
 
@@ -2313,6 +2314,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 5 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fixup perf build
+
 * Wed Sep 4 2013 Kyle McMartin <kyle@redhat.com>
 - [arm] Disable CONFIG_PCIEPORTBUS in arm-generic, causes untold problems
   with registering bus windows on tegra.
