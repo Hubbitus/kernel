@@ -2315,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 05 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-300
+- Build.
+
 * Thu Sep 5 2013 Justin M. Forbes <jforbes@fedoraproject.org>
 - Bump baserelease to 300 to preserve upgrade path
 
