@@ -2301,6 +2301,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 06 2013 Kyle McMartin <kyle@redhat.com>
+- [arm] enable KERNEL_MODE_NEON, safe to do, as the raid6 code tests hwcaps
+  so it won't impact tegra.
+
 * Fri Sep 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git13.1
 - Linux v3.11-6422-g2e03285
 
