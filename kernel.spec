@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 13
+%define gitrev 14
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2301,6 +2301,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git14.1
+- Linux v3.11-6855-g4de9ad9
+
 * Fri Sep 06 2013 Kyle McMartin <kyle@redhat.com>
 - [arm] enable KERNEL_MODE_NEON, safe to do, as the raid6 code tests hwcaps
   so it won't impact tegra.
