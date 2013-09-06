@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -761,13 +761,6 @@ Patch23006: fix-child-thread-introspection.patch
 Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 977040
-Patch25056: iwl3945-better-skb-management-in-rx-path.patch
-Patch25057: iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 963715
-Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -1497,13 +1490,6 @@ ApplyPatch fix-child-thread-introspection.patch
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 977040
-ApplyPatch iwl3945-better-skb-management-in-rx-path.patch
-ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
-
-#rhbz 963715
-ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -2315,6 +2301,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git13.1
+- Linux v3.11-6422-g2e03285
+
 * Thu Sep 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git12.1
 - Linux v3.11-4809-ga09e9a7
 
