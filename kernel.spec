@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -770,6 +770,7 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 Patch25099: HID-CVE-fixes.patch
 
 Patch25100: perf-arm-fix.patch
+Patch25101: fix-arm-neon-xor.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1499,6 +1500,7 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch HID-CVE-fixes.patch
 
 ApplyPatch perf-arm-fix.patch
+ApplyPatch fix-arm-neon-xor.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2303,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Sep 07 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix ARM kernel neon build
+
 * Fri Sep 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git14.1
 - Linux v3.11-6855-g4de9ad9
 
