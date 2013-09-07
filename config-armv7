@@ -626,10 +626,6 @@ CONFIG_USB_GADGET_STORAGE_NUM_BUFFERS=2
 
 # Defined config options we don't use yet
 # CONFIG_PINCTRL_IMX35 is not set
-# CONFIG_DRM_IMX_FB_HELPER is not set
-# CONFIG_DRM_IMX_PARALLEL_DISPLAY is not set
-# CONFIG_DRM_IMX_IPUV3_CORE is not set
-# CONFIG_DRM_IMX_IPUV3 is not set
 # CONFIG_REGULATOR_ANATOP is not set
 
 # CONFIG_BATTERY_RX51 is not set
