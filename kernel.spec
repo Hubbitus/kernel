@@ -2315,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Sep  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor OMAP config changes
+
 * Thu Sep 05 2013 Kyle McMartin <kyle@redhat.com> - 3.11.0-300
 - Build.
 
