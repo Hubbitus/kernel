@@ -2303,6 +2303,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Sep  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor updates to OMAP and AM33xx
+
 * Sat Sep 07 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix ARM kernel neon build
 
