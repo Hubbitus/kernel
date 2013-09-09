@@ -2297,6 +2297,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 09 2013 Kyle McMartin <kyle@redhat.com>
+- [arm] re-enable CONFIG_PCIEPORTBUS, now that tegra is fixed upstream.
+
 * Mon Sep 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git16.1
 - Linux v3.11-7890-ge5c832d
 
