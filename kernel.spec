@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 16
+%define gitrev 17
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2297,6 +2297,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git17.1
+- Linux fscache-fixes-for-ceph-8429-g300893b
+
 * Mon Sep 09 2013 Kyle McMartin <kyle@redhat.com>
 - [arm] re-enable CONFIG_PCIEPORTBUS, now that tegra is fixed upstream.
 
