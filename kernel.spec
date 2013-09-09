@@ -2297,6 +2297,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep  9 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable OF option to allocate CMA memory using device tree on ARM
+
 * Mon Sep 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git17.1
 - Linux fscache-fixes-for-ceph-8429-g300893b
 
