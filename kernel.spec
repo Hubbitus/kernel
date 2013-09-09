@@ -770,6 +770,9 @@ Patch25057: iwl4965-better-skb-management-in-rx-path.patch
 #rhbz 963715
 Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
 
+#rhbz 1000679
+Patch25078: rt2800-rearrange-bbp-rfcsr-initialization.patch
+
 Patch25090: mei-me-fix-hardware-reset-flow.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
@@ -1515,6 +1518,9 @@ ApplyPatch mei-me-fix-hardware-reset-flow.patch
 #CVE-2013-2895 rhbz 1000360 1002581 CVE-2013-2896 rhbz 1000494 1002594
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 ApplyPatch HID-CVE-fixes.patch
+
+#rhbz 1000679
+ApplyPatch rt2800-rearrange-bbp-rfcsr-initialization.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2315,6 +2321,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix system freeze due to incorrect rt2800 initialization (rhbz 1000679)
+
 * Sun Sep  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor OMAP config changes
 
