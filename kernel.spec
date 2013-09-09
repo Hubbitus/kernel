@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 14
+%define gitrev 15
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -713,12 +713,8 @@ Patch21010: arm-omap-load-tfp410.patch
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
-# ARM wandboard
-Patch21030: arm-wandboard-quad.patch
-
 # AM33xx
 Patch21040: 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
-Patch21041: 0001-ARM-davinci-uart-move-to-devid-based-clk_get.patch
 Patch21042: 0002-dma-edma-add-device_slave_sg_limits-support.patch
 Patch21043: 0003-dmaengine-add-dma_get_slave_sg_limits.patch
 Patch21044: 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
@@ -1334,11 +1330,9 @@ ApplyPatch arm-exynos-mp.patch
 ApplyPatch arm-highbank-for-3.12.patch
 #pplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-wandboard-quad.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
 ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
-ApplyPatch 0001-ARM-davinci-uart-move-to-devid-based-clk_get.patch
 ApplyPatch 0002-dma-edma-add-device_slave_sg_limits-support.patch
 ApplyPatch 0003-dmaengine-add-dma_get_slave_sg_limits.patch
 ApplyPatch 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
@@ -2303,6 +2297,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git15.1
+- Linux v3.11-7547-g44598f9
+
 * Sun Sep  8 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor updates to OMAP and AM33xx
 
