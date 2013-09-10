@@ -1330,23 +1330,23 @@ ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
-ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
+#pplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
 #pplyPatch 0002-dma-edma-add-device_slave_sg_limits-support.patch
 #pplyPatch 0003-dmaengine-add-dma_get_slave_sg_limits.patch
-ApplyPatch 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
-ApplyPatch 0005-da8xx-config-Enable-MMC-and-FS-options.patch
-ApplyPatch 0006-ARM-dts-add-AM33XX-EDMA-support.patch
-ApplyPatch 0007-ARM-dts-add-AM33XX-SPI-DMA-support.patch
-ApplyPatch 0008-ARM-dts-add-AM33XX-MMC-support.patch
+#pplyPatch 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
+#pplyPatch 0005-da8xx-config-Enable-MMC-and-FS-options.patch
+#pplyPatch 0006-ARM-dts-add-AM33XX-EDMA-support.patch
+#pplyPatch 0007-ARM-dts-add-AM33XX-SPI-DMA-support.patch
+#pplyPatch 0008-ARM-dts-add-AM33XX-MMC-support.patch
 #pplyPatch 0009-DMA-EDMA-Split-out-PaRAM-set-calculations-into-its-o.patch
 #pplyPatch 0010-DMA-EDMA-Add-support-for-Cyclic-DMA.patch
-ApplyPatch 0011-sound-soc-soc-dmaengine-pcm-Add-support-for-new-DMAE.patch
+#pplyPatch 0011-sound-soc-soc-dmaengine-pcm-Add-support-for-new-DMAE.patch
 #pplyPatch 0012-mmc-omap_hsmmc-Fix-the-crashes-due-to-the-interrupts.patch
-ApplyPatch 0013-ARM-EDMA-Fix-clearing-of-unused-list-for-DT-DMA-reso.patch
-ApplyPatch 0001-omap-hsmmc-Correct-usage-of-of_find_node_by_name.patch
+#pplyPatch 0013-ARM-EDMA-Fix-clearing-of-unused-list-for-DT-DMA-reso.patch
+#pplyPatch 0001-omap-hsmmc-Correct-usage-of-of_find_node_by_name.patch
 #pplyPatch 0002-omap_hsmmc-Add-reset-gpio.patch
-ApplyPatch 0001-am335x-dts-Add-beaglebone-black-DTS.patch
-ApplyPatch 0002-dts-beaglebone-Add-I2C-definitions-for-EEPROMs-capes.patch
+#pplyPatch 0001-am335x-dts-Add-beaglebone-black-DTS.patch
+#pplyPatch 0002-dts-beaglebone-Add-I2C-definitions-for-EEPROMs-capes.patch
 
 #
 # bugfixes to drivers and filesystems
