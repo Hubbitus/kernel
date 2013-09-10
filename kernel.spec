@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 18
+%define gitrev 19
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1331,20 +1331,20 @@ ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
 ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
-ApplyPatch 0002-dma-edma-add-device_slave_sg_limits-support.patch
-ApplyPatch 0003-dmaengine-add-dma_get_slave_sg_limits.patch
+#pplyPatch 0002-dma-edma-add-device_slave_sg_limits-support.patch
+#pplyPatch 0003-dmaengine-add-dma_get_slave_sg_limits.patch
 ApplyPatch 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
 ApplyPatch 0005-da8xx-config-Enable-MMC-and-FS-options.patch
 ApplyPatch 0006-ARM-dts-add-AM33XX-EDMA-support.patch
 ApplyPatch 0007-ARM-dts-add-AM33XX-SPI-DMA-support.patch
 ApplyPatch 0008-ARM-dts-add-AM33XX-MMC-support.patch
-ApplyPatch 0009-DMA-EDMA-Split-out-PaRAM-set-calculations-into-its-o.patch
-ApplyPatch 0010-DMA-EDMA-Add-support-for-Cyclic-DMA.patch
+#pplyPatch 0009-DMA-EDMA-Split-out-PaRAM-set-calculations-into-its-o.patch
+#pplyPatch 0010-DMA-EDMA-Add-support-for-Cyclic-DMA.patch
 ApplyPatch 0011-sound-soc-soc-dmaengine-pcm-Add-support-for-new-DMAE.patch
-ApplyPatch 0012-mmc-omap_hsmmc-Fix-the-crashes-due-to-the-interrupts.patch
+#pplyPatch 0012-mmc-omap_hsmmc-Fix-the-crashes-due-to-the-interrupts.patch
 ApplyPatch 0013-ARM-EDMA-Fix-clearing-of-unused-list-for-DT-DMA-reso.patch
 ApplyPatch 0001-omap-hsmmc-Correct-usage-of-of_find_node_by_name.patch
-ApplyPatch 0002-omap_hsmmc-Add-reset-gpio.patch
+#pplyPatch 0002-omap_hsmmc-Add-reset-gpio.patch
 ApplyPatch 0001-am335x-dts-Add-beaglebone-black-DTS.patch
 ApplyPatch 0002-dts-beaglebone-Add-I2C-definitions-for-EEPROMs-capes.patch
 
@@ -1462,7 +1462,7 @@ ApplyPatch nowatchdog-on-virt.patch
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
-ApplyPatch weird-root-dentry-name-debug.patch
+#pplyPatch weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
@@ -2295,6 +2295,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 10 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git19.1
+- Linux v3.11-8935-g31f7c3a
+
 * Tue Sep 10 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git18.1
 - Linux v3.11-8716-g26b0332
 
