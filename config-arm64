@@ -84,3 +84,4 @@ CONFIG_VM_EVENT_COUNTERS=y
 #  dma issues in headers
 # CONFIG_PARPORT_PC is not set
 # CONFIG_VGA_CONSOLE is not set
+CONFIG_POWER_RESET_XGENE=y
