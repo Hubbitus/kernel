@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 22
+%define gitrev 23
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -761,7 +761,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 Patch25099: HID-CVE-fixes.patch
 
-Patch25100: perf-arm-fix.patch
 Patch25101: fix-arm-neon-xor.patch
 
 # END OF PATCH DEFINITIONS
@@ -1485,7 +1484,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 ApplyPatch HID-CVE-fixes.patch
 
-ApplyPatch perf-arm-fix.patch
 ApplyPatch fix-arm-neon-xor.patch
 
 # END OF PATCH APPLICATIONS
@@ -2289,6 +2287,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git23.1
+- Linux v3.11-9747-gff812d7
+
 * Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git22.1
 - Linux v3.11-9420-gd5d04bb
 
