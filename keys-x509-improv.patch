@@ -1,7 +1,7 @@
-From abaac4978b6719e7ae12babb6be5e35184b61cde Mon Sep 17 00:00:00 2001
+From 7712dc43315febf4bce07a4c549787cf5c60a428 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:13 +0100
-Subject: [PATCH 01/14] KEYS: Load *.x509 files into kernel keyring
+Subject: [PATCH 01/13] KEYS: Load *.x509 files into kernel keyring
 
 Load all the files matching the pattern "*.x509" that are to be found in kernel
 base source dir and base build dir into the module signing keyring.
@@ -15,10 +15,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  2 files changed, 30 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 470839d..4a2ee4e 100644
+index 35ef118..ab231ac 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -141,17 +141,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+@@ -142,17 +142,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
  ifeq ($(CONFIG_MODULE_SIG),y)
@@ -81,11 +81,10 @@ index 4a9a86d..6fe03c7 100644
 1.8.3.1
 
 
-
-From 2d6ac2896c3b4b48be96b7dbdfda1668609e35aa Mon Sep 17 00:00:00 2001
+From d1bf7ed78a52477636cdcb5a1bff5b19352472f5 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:30 +0100
-Subject: [PATCH 03/14] KEYS: Separate the kernel signature checking keyring
+Subject: [PATCH 02/13] KEYS: Separate the kernel signature checking keyring
  from module signing
 
 Separate the kernel signature checking keyring from module signing so that it
@@ -139,10 +138,10 @@ index 0000000..8dabc39
 +
 +#endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 247084b..6abf0e0 100644
+index 18bd9e3..cf14d07 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1664,6 +1664,18 @@ config BASE_SMALL
+@@ -1668,6 +1668,18 @@ config BASE_SMALL
  	default 0 if BASE_FULL
  	default 1 if !BASE_FULL
  
@@ -160,8 +159,8 @@ index 247084b..6abf0e0 100644
 +
  menuconfig MODULES
  	bool "Enable loadable module support"
- 	help
-@@ -1736,6 +1748,7 @@ config MODULE_SRCVERSION_ALL
+ 	option modules
+@@ -1741,6 +1753,7 @@ config MODULE_SRCVERSION_ALL
  config MODULE_SIG
  	bool "Module signature verification"
  	depends on MODULES
@@ -170,10 +169,10 @@ index 247084b..6abf0e0 100644
  	select CRYPTO
  	select ASYMMETRIC_KEY_TYPE
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 7bd1565..68f7182 100644
+index ab231ac..1262c6d 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -52,8 +52,9 @@ obj-$(CONFIG_SMP) += spinlock.o
+@@ -53,8 +53,9 @@ obj-$(CONFIG_SMP) += spinlock.o
  obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
  obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
  obj-$(CONFIG_UID16) += uid16.o
@@ -184,7 +183,7 @@ index 7bd1565..68f7182 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -140,13 +141,14 @@ targets += timeconst.h
+@@ -141,13 +142,14 @@ targets += timeconst.h
  $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
@@ -201,8 +200,8 @@ index 7bd1565..68f7182 100644
 +ifeq ($(CONFIG_SYSTEM_TRUSTED_KEYRING),y)
  X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
  X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
- X509_CERTIFICATES := $(sort $(realpath $(X509_CERTIFICATES-y)))
-@@ -162,10 +164,11 @@ $(shell rm $(obj)/.x509.list)
+ X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
+@@ -163,10 +165,11 @@ $(shell rm $(obj)/.x509.list)
  endif
  endif
  
@@ -216,7 +215,7 @@ index 7bd1565..68f7182 100644
  targets += $(obj)/x509_certificate_list
  $(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
  	$(call if_changed,x509certs)
-@@ -175,7 +178,9 @@ $(obj)/.x509.list:
+@@ -176,7 +179,9 @@ $(obj)/.x509.list:
  	@echo $(X509_CERTIFICATES) >$@
  
  clean-files := x509_certificate_list .x509.list
@@ -245,7 +244,7 @@ index 6fe03c7..0000000
 -GLOBAL(modsign_certificate_list_end)
 diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
 deleted file mode 100644
-index 2b6e699..0000000
+index 7cbd450..0000000
 --- a/kernel/modsign_pubkey.c
 +++ /dev/null
 @@ -1,104 +0,0 @@
@@ -269,14 +268,14 @@ index 2b6e699..0000000
 -
 -struct key *modsign_keyring;
 -
--extern __initdata const u8 modsign_certificate_list[];
--extern __initdata const u8 modsign_certificate_list_end[];
+-extern __initconst const u8 modsign_certificate_list[];
+-extern __initconst const u8 modsign_certificate_list_end[];
 -
 -/*
 - * We need to make sure ccache doesn't cache the .o file as it doesn't notice
 - * if modsign.pub changes.
 - */
--static __initdata const char annoy_ccache[] = __TIME__ "foo";
+-static __initconst const char annoy_ccache[] = __TIME__ "foo";
 -
 -/*
 - * Load the compiled-in keys
@@ -404,7 +403,7 @@ index 0000000..5cffe86
 +GLOBAL(system_certificate_list_end)
 diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
 new file mode 100644
-index 0000000..cd5cd3f
+index 0000000..51c3514
 --- /dev/null
 +++ b/kernel/system_keyring.c
 @@ -0,0 +1,103 @@
@@ -431,8 +430,8 @@ index 0000000..cd5cd3f
 +struct key *system_trusted_keyring;
 +EXPORT_SYMBOL_GPL(system_trusted_keyring);
 +
-+extern __initdata const u8 system_certificate_list[];
-+extern __initdata const u8 system_certificate_list_end[];
++extern __initconst const u8 system_certificate_list[];
++extern __initconst const u8 system_certificate_list_end[];
 +
 +/*
 + * Load the compiled-in keys
@@ -515,10 +514,10 @@ index 0000000..cd5cd3f
 1.8.3.1
 
 
-From 6f90d07a776d7babf30a3322dafd66c8c25db681 Mon Sep 17 00:00:00 2001
+From 209cfd7eda86173415d394a9ff868345197d7b3d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:37 +0100
-Subject: [PATCH 04/14] KEYS: Add a 'trusted' flag and a 'trusted only' flag
+Subject: [PATCH 03/13] KEYS: Add a 'trusted' flag and a 'trusted only' flag
 
 Add KEY_FLAG_TRUSTED to indicate that a key either comes from a trusted source
 or had a cryptographic signature chain that led back to a trusted key the
@@ -571,7 +570,7 @@ index 010dbb6..80d6774 100644
  extern void key_revoke(struct key *key);
  extern void key_invalidate(struct key *key);
 diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
-index cd5cd3f..4ca7072 100644
+index 51c3514..5296721 100644
 --- a/kernel/system_keyring.c
 +++ b/kernel/system_keyring.c
 @@ -40,6 +40,7 @@ static __init int system_trusted_keyring_init(void)
@@ -644,10 +643,10 @@ index f7cdea2..9b6f6e0 100644
 1.8.3.1
 
 
-From 559cc3ad765e1b443bc89965be9ef9ff3caabdcc Mon Sep 17 00:00:00 2001
+From 6549cbca91abf561df8f501c763a8e7822936294 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:10 +0100
-Subject: [PATCH 05/14] KEYS: Rename public key parameter name arrays
+Subject: [PATCH 04/13] KEYS: Rename public key parameter name arrays
 
 Rename the arrays of public key parameters (public key algorithm names, hash
 algorithm names and ID type names) so that the array name ends in "_name".
@@ -799,10 +798,10 @@ index 0034e36..0b6b870 100644
 1.8.3.1
 
 
-From a0aab2065bbdd0bc56ae6d7767e1df7c58b8997f Mon Sep 17 00:00:00 2001
+From b2c8f8924f17c25209d8fe55f74b9d5830ad191c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:18 +0100
-Subject: [PATCH 06/14] KEYS: Move the algorithm pointer array from x509 to
+Subject: [PATCH 05/13] KEYS: Move the algorithm pointer array from x509 to
  public_key.c
 
 Move the public-key algorithm pointer array from x509_public_key.c to
@@ -881,10 +880,10 @@ index 619d570..46bde25 100644
 1.8.3.1
 
 
-From 7009b65ddc1d8bf62dc017795265b9cf331a4d70 Mon Sep 17 00:00:00 2001
+From 760486c4376aab8cd8ce9c7d2ad67a19d713b119 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:24 +0100
-Subject: [PATCH 07/14] KEYS: Store public key algo ID in public_key struct
+Subject: [PATCH 06/13] KEYS: Store public key algo ID in public_key struct
 
 Store public key algo ID in public_key struct for reference purposes.  This
 allows it to be removed from the x509_certificate struct and used to find a
@@ -966,10 +965,10 @@ index 46bde25..05778df 100644
 1.8.3.1
 
 
-From cad6ff6b429f31611ccb231cfe6adcb69d891352 Mon Sep 17 00:00:00 2001
+From 37688af0338d8c521ffefce187b03a5fbaefa423 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:30 +0100
-Subject: [PATCH 08/14] KEYS: Split public_key_verify_signature() and make
+Subject: [PATCH 07/13] KEYS: Split public_key_verify_signature() and make
  available
 
 Modify public_key_verify_signature() so that it now takes a public_key struct
@@ -1082,10 +1081,10 @@ index fac574c..8cb2f70 100644
 1.8.3.1
 
 
-From 87854340605a64fcc54109ea415d9e54c45e8533 Mon Sep 17 00:00:00 2001
+From 49763042e968f7342711ecf28e9465f6d77c0ddd Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:37 +0100
-Subject: [PATCH 09/14] KEYS: Store public key algo ID in public_key_signature
+Subject: [PATCH 08/13] KEYS: Store public key algo ID in public_key_signature
  struct
 
 Store public key algorithm ID in public_key_signature struct for reference
@@ -1115,10 +1114,10 @@ index 05778df..b34fda4 100644
 1.8.3.1
 
 
-From ae4684a05d87123de310b69c616922dc993694ca Mon Sep 17 00:00:00 2001
+From d759ad5c13364bc7dcd6dd66d1a63f29f3432f72 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:16:34 +0100
-Subject: [PATCH 10/14] X.509: struct x509_certificate needs struct tm
+Subject: [PATCH 09/13] X.509: struct x509_certificate needs struct tm
  declaring
 
 struct x509_certificate needs struct tm declaring by #inclusion of linux/time.h
@@ -1147,10 +1146,10 @@ index e583ad0..2d01182 100644
 1.8.3.1
 
 
-From dacde6f44ebe5a5c89bd1a25b35b1b63c139b375 Mon Sep 17 00:00:00 2001
+From 779ecd05627f895cfd6970dcfbd3ed35092f7510 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:02 +0100
-Subject: [PATCH 11/14] X.509: Embed public_key_signature struct and create
+Subject: [PATCH 10/13] X.509: Embed public_key_signature struct and create
  filler function
 
 Embed a public_key_signature struct in struct x509_certificate, eliminating
@@ -1410,10 +1409,10 @@ index 8cb2f70..b7c81d8 100644
 1.8.3.1
 
 
-From 650fdcb141f65f3a03dc7eba1179c823fd1a3a54 Mon Sep 17 00:00:00 2001
+From 81dc804bab8ac3703f237e74464054fae71c429e Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:15 +0100
-Subject: [PATCH 12/14] X.509: Check the algorithm IDs obtained from parsing an
+Subject: [PATCH 11/13] X.509: Check the algorithm IDs obtained from parsing an
  X.509 certificate
 
 Check that the algorithm IDs obtained from the ASN.1 parse by OID lookup
@@ -1451,10 +1450,10 @@ index b7c81d8..eb368d4 100644
 1.8.3.1
 
 
-From 8671bdd55802c4b93b9205b6ecd02c7e351ac5c5 Mon Sep 17 00:00:00 2001
+From 9d3c831f1409174fcda6a21ede05f3a3155b1671 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:31 +0100
-Subject: [PATCH 13/14] X.509: Handle certificates that lack an
+Subject: [PATCH 12/13] X.509: Handle certificates that lack an
  authorityKeyIdentifier field
 
 Handle certificates that lack an authorityKeyIdentifier field by assuming
@@ -1498,10 +1497,10 @@ index eb368d4..0f55e3b 100644
 1.8.3.1
 
 
-From e2d665556f4b60ce76e880a62f98c81622271e71 Mon Sep 17 00:00:00 2001
+From 1a62a422d6b6e084ba88062d1d1f33e6a92dc35c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 18 Jun 2013 17:40:44 +0100
-Subject: [PATCH 14/14] X.509: Remove certificate date checks
+Subject: [PATCH 13/13] X.509: Remove certificate date checks
 
 Remove the certificate date checks that are performed when a certificate is
 parsed.  There are two checks: a valid from and a valid to.  The first check is

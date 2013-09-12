@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 20
+%define gitrev 21
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -748,9 +748,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#rhbz 927469
-Patch23006: fix-child-thread-introspection.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 Patch25032: cve-2013-2147-ciss-info-leak.patch
@@ -1475,9 +1472,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-#rhbz 927469
-ApplyPatch fix-child-thread-introspection.patch
 
 #CVE-2013-2147 rhbz 971242 971249
 ApplyPatch cve-2013-2147-ciss-info-leak.patch
@@ -2295,6 +2289,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git21.1
+- Linux v3.11-9411-gc2d9572
+
 * Wed Sep 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git20.1
 - Linux v3.11-9031-ga22a0fd
 
