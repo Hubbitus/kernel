@@ -764,7 +764,7 @@ Patch25099: HID-CVE-fixes.patch
 #CVE-2013-4343 rhbz 1007733 1007741
 Patch25100: tuntap-correctly-handle-error-in-tun_set_iff.patch
 
-#CVE-2013-4053 rhbz 1007872 1007903
+#CVE-2013-4350 rhbz 1007872 1007903
 Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 Patch25103: fix-arm-btrfs-build.patch
@@ -2304,7 +2304,7 @@ fi
 
 * Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix btrfs build on ARM
-- CVE-2013-4053 net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
+- CVE-2013-4350 net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
 - CVE-2013-4343 net: use-after-free TUNSETIFF (rhbz 1007733 1007741)
 
 * Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git23.1
