@@ -791,7 +791,7 @@ Patch25100: crypto-fix-race-in-larval-lookup.patch
 #CVE-2013-4343 rhbz 1007733 1007741
 Patch25101: tuntap-correctly-handle-error-in-tun_set_iff.patch
 
-#CVE-2013-XXXX rhbz 1007872 1007903
+#CVE-2013-4053 rhbz 1007872 1007903
 Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 # END OF PATCH DEFINITIONS
@@ -1543,7 +1543,7 @@ ApplyPatch crypto-fix-race-in-larval-lookup.patch
 #CVE-2013-4343 rhbz 1007733 1007741
 ApplyPatch tuntap-correctly-handle-error-in-tun_set_iff.patch
 
-#CVE-2013-XXXX rhbz 1007872 1007903
+#CVE-2013-4350 rhbz 1007872 1007903
 ApplyPatch net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 # END OF PATCH APPLICATIONS
@@ -2346,7 +2346,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2013-XXXX net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
+- CVE-2013-4053 net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
 - CVE-2013-4343 net: use-after-free TUNSETIFF (rhbz 1007733 1007741)
 
 * Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org>
