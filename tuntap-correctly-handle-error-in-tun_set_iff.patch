@@ -1,0 +1,101 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.168.104 with SMTP id zv8csp8822oab;
+        Wed, 11 Sep 2013 03:26:37 -0700 (PDT)
+X-Received: by 10.68.202.130 with SMTP id ki2mr879977pbc.43.1378895196744;
+        Wed, 11 Sep 2013 03:26:36 -0700 (PDT)
+Return-Path: <linux-kernel-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id jx3si1809697pbc.204.1969.12.31.16.00.00;
+        Wed, 11 Sep 2013 03:26:36 -0700 (PDT)
+Received-SPF: pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mail=linux-kernel-owner@vger.kernel.org
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1753006Ab3IKKVh (ORCPT <rfc822;paul.gortmaker@gmail.com>
+	+ 99 others); Wed, 11 Sep 2013 06:21:37 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:54338 "EHLO mx1.redhat.com"
+	rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+	id S1751208Ab3IKKVg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+	Wed, 11 Sep 2013 06:21:36 -0400
+Received: from int-mx10.intmail.prod.int.phx2.redhat.com (int-mx10.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id r8BALYs3006442
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK);
+	Wed, 11 Sep 2013 06:21:34 -0400
+Received: from amd-6168-8-1.englab.nay.redhat.com (amd-6168-8-1.englab.nay.redhat.com [10.66.104.52])
+	by int-mx10.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id r8BALVUV014234;
+	Wed, 11 Sep 2013 06:21:32 -0400
+From:	Jason Wang <jasowang@redhat.com>
+To:	davem@davemloft.net, mst@redhat.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc:	wannes.rombouts@epitech.eu, Jason Wang <jasowang@redhat.com>
+Subject: [PATCH net V2] tuntap: correctly handle error in tun_set_iff()
+Date:	Wed, 11 Sep 2013 18:09:48 +0800
+Message-Id: <1378894188-8015-1-git-send-email-jasowang@redhat.com>
+X-Scanned-By: MIMEDefang 2.68 on 10.5.11.23
+Sender:	linux-kernel-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <linux-kernel.vger.kernel.org>
+X-Mailing-List:	linux-kernel@vger.kernel.org
+
+Commit c8d68e6be1c3b242f1c598595830890b65cea64a
+(tuntap: multiqueue support) only call free_netdev() on error in
+tun_set_iff(). This causes several issues:
+
+- memory of tun security were leaked
+- use after free since the flow gc timer was not deleted and the tfile
+  were not detached
+
+This patch solves the above issues.
+
+Reported-by: Wannes Rombouts <wannes.rombouts@epitech.eu>
+Cc: Michael S. Tsirkin <mst@redhat.com>
+Signed-off-by: Jason Wang <jasowang@redhat.com>
+---
+- Changes from V1: shift 1 space for label err_free_netdev and keep
+  commit log under 70 chars per line.
+- The patch were needed for stable kernel 3.8+.
+---
+ drivers/net/tun.c |   11 ++++++++---
+ 1 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/tun.c b/drivers/net/tun.c
+index a639de8..807815f 100644
+--- a/drivers/net/tun.c
++++ b/drivers/net/tun.c
+@@ -1641,11 +1641,11 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
+ 		INIT_LIST_HEAD(&tun->disabled);
+ 		err = tun_attach(tun, file, false);
+ 		if (err < 0)
+-			goto err_free_dev;
++			goto err_free_flow;
+ 
+ 		err = register_netdevice(tun->dev);
+ 		if (err < 0)
+-			goto err_free_dev;
++			goto err_detach;
+ 
+ 		if (device_create_file(&tun->dev->dev, &dev_attr_tun_flags) ||
+ 		    device_create_file(&tun->dev->dev, &dev_attr_owner) ||
+@@ -1689,7 +1689,12 @@ static int tun_set_iff(struct net *net, struct file *file, struct ifreq *ifr)
+ 	strcpy(ifr->ifr_name, tun->dev->name);
+ 	return 0;
+ 
+- err_free_dev:
++err_detach:
++	tun_detach_all(dev);
++err_free_flow:
++	tun_flow_uninit(tun);
++	security_tun_dev_free_security(tun->security);
++err_free_dev:
+ 	free_netdev(dev);
+ 	return err;
+ }
+-- 
+1.7.1
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at  http://www.tux.org/lkml/

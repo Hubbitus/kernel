@@ -761,6 +761,9 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 Patch25099: HID-CVE-fixes.patch
 
+#CVE-2013-4343 rhbz 1007733 1007741
+Patch25100: tuntap-correctly-handle-error-in-tun_set_iff.patch
+
 Patch25101: fix-arm-neon-xor.patch
 
 # END OF PATCH DEFINITIONS
@@ -1485,6 +1488,9 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch HID-CVE-fixes.patch
 
 ApplyPatch fix-arm-neon-xor.patch
+
+#CVE-2013-4343 rhbz 1007733 1007741
+ApplyPatch tuntap-correctly-handle-error-in-tun_set_iff.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2287,6 +2293,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4343 net: use-after-free TUNSETIFF (rhbz 1007733 1007741)
+
 * Thu Sep 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git23.1
 - Linux v3.11-9747-gff812d7
 
