@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 23
+%define gitrev 24
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -767,7 +767,6 @@ Patch25100: tuntap-correctly-handle-error-in-tun_set_iff.patch
 #CVE-2013-XXXX rhbz 1007872 1007903
 Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
-Patch25101: fix-arm-neon-xor.patch
 Patch25103: fix-arm-btrfs-build.patch
 
 # END OF PATCH DEFINITIONS
@@ -1491,7 +1490,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-2897 rhbz 1000536 1002600 CVE-2013-2899 rhbz 1000373 1002604
 ApplyPatch HID-CVE-fixes.patch
 
-ApplyPatch fix-arm-neon-xor.patch
 ApplyPatch fix-arm-btrfs-build.patch
 
 #CVE-2013-4343 rhbz 1007733 1007741
@@ -2301,6 +2299,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git24.1
+- Linux v3.11-10007-g399a946
+
 * Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix btrfs build on ARM
 - CVE-2013-XXXX net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
