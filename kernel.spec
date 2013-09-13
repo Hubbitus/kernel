@@ -768,6 +768,7 @@ Patch25100: tuntap-correctly-handle-error-in-tun_set_iff.patch
 Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 Patch25101: fix-arm-neon-xor.patch
+Patch25103: fix-arm-btrfs-build.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1491,6 +1492,7 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch HID-CVE-fixes.patch
 
 ApplyPatch fix-arm-neon-xor.patch
+ApplyPatch fix-arm-btrfs-build.patch
 
 #CVE-2013-4343 rhbz 1007733 1007741
 ApplyPatch tuntap-correctly-handle-error-in-tun_set_iff.patch
@@ -2300,6 +2302,7 @@ fi
 #                                    ||     ||
 %changelog
 * Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix btrfs build on ARM
 - CVE-2013-XXXX net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
 - CVE-2013-4343 net: use-after-free TUNSETIFF (rhbz 1007733 1007741)
 
