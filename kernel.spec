@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -716,7 +716,6 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 # ARM wandboard
 Patch21030: arm-wandboard-quad.patch
 # https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/patch/?id=3f1a91aa25579ba5e7268a47a73d2a83e4802c62
-Patch21031: arm-imx-fixsound.patch
 
 # AM33xx
 Patch21040: 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
@@ -772,8 +771,6 @@ Patch25077: media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020
 
 #rhbz 1000679
 Patch25078: rt2800-rearrange-bbp-rfcsr-initialization.patch
-
-Patch25090: mei-me-fix-hardware-reset-flow.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -1357,7 +1354,6 @@ ApplyPatch arm-highbank-for-3.12.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
-ApplyPatch arm-imx-fixsound.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
 ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
@@ -1521,8 +1517,6 @@ ApplyPatch iwl4965-better-skb-management-in-rx-path.patch
 
 #rhbz 963715
 ApplyPatch media-cx23885-Fix-TeVii-S471-regression-since-introduction-of-ts2020.patch
-
-ApplyPatch mei-me-fix-hardware-reset-flow.patch
 
 #CVE-2013-2888 rhbz 1000451 1002543 CVE-2013-2889 rhbz 999890 1002548
 #CVE-2013-2891 rhbz 999960 1002555  CVE-2013-2892 rhbz 1000429 1002570
@@ -2345,6 +2339,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Sep 14 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.1-300
+- Linux v3.11.1
+
 * Fri Sep 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4350 net: sctp: ipv6 ipsec encryption bug in sctp_v6_xmit (rhbz 1007872 1007903)
 - CVE-2013-4343 net: use-after-free TUNSETIFF (rhbz 1007733 1007741)
