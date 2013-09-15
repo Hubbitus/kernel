@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 25
+%define gitrev 26
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2299,6 +2299,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Sep 15 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc0.git26.1
+- Linux v3.11-10064-gbff157b
+
 * Sat Sep 14 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Update keys-x509-improv.patch to latest back from upstream git
 
