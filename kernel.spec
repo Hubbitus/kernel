@@ -791,6 +791,9 @@ Patch25101: tuntap-correctly-handle-error-in-tun_set_iff.patch
 #CVE-2013-4350 rhbz 1007872 1007903
 Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
+#CVE-2013-4345 rhbz 1007690 1009136
+Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1539,6 +1542,9 @@ ApplyPatch tuntap-correctly-handle-error-in-tun_set_iff.patch
 
 #CVE-2013-4350 rhbz 1007872 1007903
 ApplyPatch net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
+
+#CVE-2013-4345 rhbz 1007690 1009136
+ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2342,6 +2348,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4345 ansi_cprng: off by one error in non-block size request (rhbz 1007690 1009136)
+
 * Tue Sep 17 2013 Kyle McMartin <kyle@redhat.com>
 - Add nvme.ko to modules.block for anaconda.
 
