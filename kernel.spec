@@ -1811,13 +1811,16 @@ BuildKernel() {
     collect_modules_list()
     {
       sed -r -n -e "s/^([^ ]+) \\.?($2)\$/\\1/p" drivers.undef |
-      LC_ALL=C sort -u > $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
+        LC_ALL=C sort -u > $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
+      if [ ! -z "$3" ]; then
+        grep -v "$3" $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
+      fi
     }
 
     collect_modules_list networking \
     			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
     collect_modules_list block \
-    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size'
+    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_alloc_queue|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size' 'pktcdvd.ko|dm-mod.ko'
     collect_modules_list drm \
     			 'drm_open|drm_init'
     collect_modules_list modesetting \
@@ -2339,6 +2342,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Sep 17 2013 Kyle McMartin <kyle@redhat.com>
+- Add nvme.ko to modules.block for anaconda.
+
 * Sat Sep 14 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.1-300
 - Linux v3.11.1
 
