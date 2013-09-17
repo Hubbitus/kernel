@@ -1813,7 +1813,7 @@ BuildKernel() {
       sed -r -n -e "s/^([^ ]+) \\.?($2)\$/\\1/p" drivers.undef |
         LC_ALL=C sort -u > $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
       if [ ! -z "$3" ]; then
-        grep -v "$3" $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
+        sed -r -e "/^($3)\$/d" -i $RPM_BUILD_ROOT/lib/modules/$KernelVer/modules.$1
       fi
     }
 
