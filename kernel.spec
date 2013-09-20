@@ -797,6 +797,9 @@ Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 #rhbz 928561
 Patch25105: 0001-HID-kye-Add-report-fixup-for-Genius-Gx-Imperator-Key.patch
 
+#rhbz 1008323
+Patch25106: 0001-skge-fix-broken-driver.patch
+
 #rhbz 997705
 Patch25110: rpc-clean-up-decoding-of-gssproxy-linux-creds.patch
 Patch25111: rpc-comment-on-linux_cred-encoding-treat-all-as-unsigned.patch
@@ -1563,6 +1566,9 @@ ApplyPatch rpc-clean-up-decoding-of-gssproxy-linux-creds.patch
 ApplyPatch rpc-comment-on-linux_cred-encoding-treat-all-as-unsigned.patch
 ApplyPatch rpc-fix-huge-kmallocs-in-gss-proxy.patch
 ApplyPatch rpc-let-xdr-layer-allocate-gssproxy-receieve-pages.patch
+
+#rhbz 1008323
+ApplyPatch 0001-skge-fix-broken-driver.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2367,6 +2373,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix broken skge driver (rhbz 1008328)
 - Fix large order rpc allocations (rhbz 997705)
 - Fix multimedia keys on Genius GX keyboard (rhbz 928561)
 
