@@ -759,6 +759,9 @@ Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
 Patch25103: fix-arm-btrfs-build.patch
 
+#rhbz 985522
+Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1477,6 +1480,9 @@ ApplyPatch fix-arm-btrfs-build.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
+
+#rhbz 985522
+ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2282,6 +2288,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix RTC updates from ntp (rhbz 985522)
+
 * Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc1.git4.1
 - Linux v3.12-rc1-250-g7b9e3a6
 
