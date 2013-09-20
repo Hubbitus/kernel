@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -753,12 +753,6 @@ Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
 Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#CVE-2013-4343 rhbz 1007733 1007741
-Patch25100: tuntap-correctly-handle-error-in-tun_set_iff.patch
-
-#CVE-2013-4350 rhbz 1007872 1007903
-Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
@@ -1480,12 +1474,6 @@ ApplyPatch cve-2013-2147-ciss-info-leak.patch
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 ApplyPatch fix-arm-btrfs-build.patch
-
-#CVE-2013-4343 rhbz 1007733 1007741
-ApplyPatch tuntap-correctly-handle-error-in-tun_set_iff.patch
-
-#CVE-2013-4350 rhbz 1007872 1007903
-ApplyPatch net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
@@ -2294,6 +2282,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc1.git4.1
+- Linux v3.12-rc1-250-g7b9e3a6
+
 * Thu Sep 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc1.git3.1
 - Linux v3.12-rc1-101-ged24fee
 
