@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2288,6 +2288,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc1.git5.1
+- Linux v3.12-rc1-250-g7b9e3a6
+
 * Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix RTC updates from ntp (rhbz 985522)
 
