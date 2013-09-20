@@ -794,6 +794,9 @@ Patch25102: net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
+#rhbz 928561
+Patch25105: 0001-HID-kye-Add-report-fixup-for-Genius-Gx-Imperator-Key.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1545,6 +1548,9 @@ ApplyPatch net-sctp-fix-ipv6-ipsec-encryption-bug-in-sctp_v6_xmit.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
+
+#rhbz 928561
+ApplyPatch 0001-HID-kye-Add-report-fixup-for-Genius-Gx-Imperator-Key.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2348,6 +2354,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix multimedia keys on Genius GX keyboard (rhbz 928561)
+
 * Tue Sep 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4345 ansi_cprng: off by one error in non-block size request (rhbz 1007690 1009136)
 
