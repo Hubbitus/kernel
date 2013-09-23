@@ -806,6 +806,9 @@ Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 #rhbz 1010431
 Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
 
+#rhbz 971893
+Patch25109: bonding-driver-alb-learning.patch
+
 #rhbz 997705
 Patch25110: rpc-clean-up-decoding-of-gssproxy-linux-creds.patch
 Patch25111: rpc-comment-on-linux_cred-encoding-treat-all-as-unsigned.patch
@@ -1572,6 +1575,9 @@ ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 1010431
 ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
+
+#rhbz 971893
+ApplyPatch bonding-driver-alb-learning.patch
 
 #rhbz 997705
 ApplyPatch rpc-clean-up-decoding-of-gssproxy-linux-creds.patch
@@ -2384,6 +2390,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 23 2013 Neil Horman <nhorman@redhat.com>
+- Add alb learning packet config knob (rhbz 971893)
+
 * Mon Sep 23 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Revert rt2x00 commit that breaks connectivity (rhbz 1010431)
 
