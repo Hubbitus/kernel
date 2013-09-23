@@ -762,6 +762,9 @@ Patch25103: fix-arm-btrfs-build.patch
 #rhbz 985522
 Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
+#rhbz 1010431
+Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1483,6 +1486,9 @@ ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
 #rhbz 985522
 ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
+
+#rhbz 1010431
+ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2288,6 +2294,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 23 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert rt2x00 commit that breaks connectivity (rhbz 1010431)
+
 * Mon Sep 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc1.git6.1
 - Linux v3.12-rc1-336-gd8524ae
 
