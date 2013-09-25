@@ -984,7 +984,7 @@ AutoReqProv: no\
 %description -n %{name}%{?1:-%{1}}-debuginfo\
 This package provides debug information for package %{name}%{?1:-%{1}}.\
 This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '/.*/%%{KVERREL}%{?1:\+%{1}}/.*|/.*%%{KVERREL}%{?1:\+%{1}}(\.debug)?' -o debuginfo%{?1}.list}\
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '/.*/%%{KVERREL}%{?1:[+]%{1}}/.*|/.*%%{KVERREL}%{?1:\+%{1}}(\.debug)?' -o debuginfo%{?1}.list}\
 %{nil}
 
 #
@@ -2393,6 +2393,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix debuginfo_args regex for + separator (rhbz 1009751)
 - Add another fix for skge (rhbz 1008323)
 
 * Mon Sep 23 2013 Neil Horman <nhorman@redhat.com>
