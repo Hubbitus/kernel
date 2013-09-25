@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -158,7 +158,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -171,7 +171,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -728,9 +728,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #selinux ptrace child permissions
 Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
-#CVE-2013-2147 rhbz 971242 971249
-Patch25032: cve-2013-2147-ciss-info-leak.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
@@ -1437,9 +1434,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-#CVE-2013-2147 rhbz 971242 971249
-ApplyPatch cve-2013-2147-ciss-info-leak.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
@@ -2261,6 +2255,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git1.1
+- Linux v3.12-rc2-33-g22356f4
+- Reenable debugging options.
+
 * Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix debuginfo_args regex for + separator (rhbz 1009751)
 - Fix invalid value passed to pci_unmap_single in skge (rhbz 1008323)
