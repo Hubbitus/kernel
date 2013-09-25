@@ -765,6 +765,9 @@ Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 #rhbz 1010431
 Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
 
+#rhbz 1008323
+Patch25109: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1489,6 +1492,9 @@ ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 1010431
 ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
+
+#rhbz 1008323
+ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2294,6 +2300,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix invalid value passed to pci_unmap_single in skge (rhbz 1008323)
+
 * Tue Sep 24 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git0.1
 - Linux v3.12-rc2
 - Disable debugging options.
