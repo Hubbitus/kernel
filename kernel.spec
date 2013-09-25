@@ -799,6 +799,7 @@ Patch25105: 0001-HID-kye-Add-report-fixup-for-Genius-Gx-Imperator-Key.patch
 
 #rhbz 1008323
 Patch25106: 0001-skge-fix-broken-driver.patch
+Patch25120: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
 #rhbz 985522
 Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
@@ -1587,6 +1588,7 @@ ApplyPatch rpc-let-xdr-layer-allocate-gssproxy-receieve-pages.patch
 
 #rhbz 1008323
 ApplyPatch 0001-skge-fix-broken-driver.patch
+ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2390,6 +2392,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add another fix for skge (rhbz 1008323)
+
 * Mon Sep 23 2013 Neil Horman <nhorman@redhat.com>
 - Add alb learning packet config knob (rhbz 971893)
 
