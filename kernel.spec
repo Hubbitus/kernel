@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -687,8 +687,6 @@ Patch2901: v4l-dvb-experimental.patch
 Patch10000: fs-proc-devtree-remove_proc_entry.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
-
-Patch13003: efi-dont-map-boot-services-on-32bit.patch
 
 Patch14000: hibernate-freeze-filesystems.patch
 
@@ -1407,8 +1405,6 @@ ApplyOptionalPatch v4l-dvb-experimental.patch
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
 
 ApplyPatch disable-i8042-check-on-apple-mac.patch
-
-ApplyPatch efi-dont-map-boot-services-on-32bit.patch
 
 # FIXME: REBASE
 #ApplyPatch hibernate-freeze-filesystems.patch
@@ -2255,6 +2251,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 26 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git2.1
+- Linux v3.12-rc2-83-g4b97280
+
 * Wed Sep 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git1.1
 - Linux v3.12-rc2-33-g22356f4
 - Reenable debugging options.
