@@ -1,0 +1,49 @@
+From 5f4513864304672e6ea9eac60583eeac32e679f2 Mon Sep 17 00:00:00 2001
+From: Henrik Rydberg <rydberg@euromail.se>
+Date: Thu, 26 Sep 2013 06:33:16 +0000
+Subject: hwmon: (applesmc) Check key count before proceeding
+
+After reports from Chris and Josh Boyer of a rare crash in applesmc,
+Guenter pointed at the initialization problem fixed below. The patch
+has not been verified to fix the crash, but should be applied
+regardless.
+
+Reported-by: <jwboyer@fedoraproject.org>
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Henrik Rydberg <rydberg@euromail.se>
+Cc: stable@vger.kernel.org
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+diff --git a/drivers/hwmon/applesmc.c b/drivers/hwmon/applesmc.c
+index 62c2e32..98814d1 100644
+--- a/drivers/hwmon/applesmc.c
++++ b/drivers/hwmon/applesmc.c
+@@ -525,16 +525,25 @@ static int applesmc_init_smcreg_try(void)
+ {
+ 	struct applesmc_registers *s = &smcreg;
+ 	bool left_light_sensor, right_light_sensor;
++	unsigned int count;
+ 	u8 tmp[1];
+ 	int ret;
+ 
+ 	if (s->init_complete)
+ 		return 0;
+ 
+-	ret = read_register_count(&s->key_count);
++	ret = read_register_count(&count);
+ 	if (ret)
+ 		return ret;
+ 
++	if (s->cache && s->key_count != count) {
++		pr_warn("key count changed from %d to %d\n",
++			s->key_count, count);
++		kfree(s->cache);
++		s->cache = NULL;
++	}
++	s->key_count = count;
++
+ 	if (!s->cache)
+ 		s->cache = kcalloc(s->key_count, sizeof(*s->cache), GFP_KERNEL);
+ 	if (!s->cache)
+--
+cgit v0.9.2
