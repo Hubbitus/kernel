@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -746,9 +746,6 @@ Patch25109: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 #rhbz 902012
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
 Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
-
-#rhbz 1011719
-Patch25116: hwmon-applesmc-Check-key-count-before-proceeding.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1457,9 +1454,6 @@ ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 #rhbz 902012
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
 ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
-
-#rhbz 1011719
-ApplyPatch hwmon-applesmc-Check-key-count-before-proceeding.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2265,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 27 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git3.1
+- Linux v3.12-rc2-108-g6cac446
+
 * Fri Sep 27 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix oops from applesmc (rhbz 1011719)
 - Add patches to fix soft lockup from elevator changes (rhbz 902012)
