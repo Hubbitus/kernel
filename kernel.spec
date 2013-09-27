@@ -743,6 +743,10 @@ Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
 #rhbz 1008323
 Patch25109: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
+#rhbz 902012
+Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
+Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1446,6 +1450,10 @@ ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
 
 #rhbz 1008323
 ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
+
+#rhbz 902012
+ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
+ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2251,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 27 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix soft lockup from elevator changes (rhbz 902012)
+
 * Thu Sep 26 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc2.git2.1
 - Linux v3.12-rc2-83-g4b97280
 
