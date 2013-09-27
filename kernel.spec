@@ -2383,6 +2383,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Sep 27 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable VIRTIO_CONSOLE as a module on all ARM (rhbz 1005551)
 - Add patches to fix soft lockup from elevator changes (rhbz 902012)
 
 * Fri Sep 27 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.2-300
