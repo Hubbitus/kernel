@@ -732,8 +732,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
-Patch25103: fix-arm-btrfs-build.patch
-
 #rhbz 985522
 Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
@@ -1436,8 +1434,6 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-ApplyPatch fix-arm-btrfs-build.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
