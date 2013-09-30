@@ -742,6 +742,9 @@ Patch25109: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
 Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
+#rhbz 974072
+Patch25116: rt2800-add-support-for-rf3070.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1444,6 +1447,9 @@ ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 #rhbz 902012
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
 ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
+
+#rhbz 974072
+ApplyPatch rt2800-add-support-for-rf3070.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2250,6 +2256,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Sep 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for rf3070 devices from Stanislaw Gruszka (rhbz 974072)
 - Drop VC_MUTE patch (rhbz 859485)
 
 * Mon Sep 30 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git0.1
