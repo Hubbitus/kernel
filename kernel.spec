@@ -811,6 +811,9 @@ Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 #rhbz 1011719
 Patch25116: hwmon-applesmc-Check-key-count-before-proceeding.patch
 
+#rhbz 974072
+Patch25117: rt2800-add-support-for-rf3070.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1579,6 +1582,9 @@ ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
 #rhbz 1011719
 ApplyPatch hwmon-applesmc-Check-key-count-before-proceeding.patch
+
+#rhbz 974072
+ApplyPatch rt2800-add-support-for-rf3070.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2383,6 +2389,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Sep 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for rf3070 devices from Stanislaw Gruszka (rhbz 974072)
 - Drop VC_MUTE patch (rhbz 859485)
 
 * Fri Sep 27 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.2-301
