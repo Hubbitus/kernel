@@ -2360,6 +2360,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 02 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable options for Intel Low Power Subsystem Support
+
 * Wed Oct 02 2013 Neil Horman <nhorman@redhat.com>
 - Add promiscuity fix for vlans plus bonding (rhbz 1005567)
 
