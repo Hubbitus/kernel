@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -799,6 +799,9 @@ Patch25117: rt2800-add-support-for-rf3070.patch
 
 #rhbz 1005567
 Patch25118: bonding-driver-promisc.patch
+
+#rhbz 1013814
+Patch25119: drm-radeon-dont-set-default-clocks-for-SI-when-DPM-is-disabled.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1557,6 +1560,9 @@ ApplyPatch rt2800-add-support-for-rf3070.patch
 
 #rhbz 1005567
 ApplyPatch bonding-driver-promisc.patch
+
+#rhbz 1013814
+ApplyPatch drm-radeon-dont-set-default-clocks-for-SI-when-DPM-is-disabled.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2360,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 2 2013 Justin M. Forbes <jforbes@fedoraproject.org>
+- drm/radeon: don't set default clocks for SI when DPM is disabled (rhbz 1013814)
+
 * Wed Oct 02 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable options for Intel Low Power Subsystem Support
 

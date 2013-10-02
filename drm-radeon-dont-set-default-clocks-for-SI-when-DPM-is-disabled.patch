@@ -1,0 +1,58 @@
+commit 360991867d83e10827d907ef67206986a98953b3
+Author: Alex Deucher <alexander.deucher@amd.com>
+Date:   Sat Sep 21 14:37:49 2013 -0400
+
+    drm/radeon: don't set default clocks for SI when DPM is disabled
+    
+    This is a partial revert of c6cf7777a32da874fabec4fd1c2a579f0ba4e4dd.
+    
+    We need to take into account the clk voltage dependencies of the
+    board.  Not doing so can lead to stability issues on certain
+    boards if the clks exceed the levels in the dep tables.
+    
+    DPM already takes that into account, so for optimal performance,
+    use DPM.
+    
+    Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+    Cc: stable@vger.kernel.org
+
+diff --git a/drivers/gpu/drm/radeon/radeon_pm.c b/drivers/gpu/drm/radeon/radeon_pm.c
+index 87e1d69..ac07ad1 100644
+--- a/drivers/gpu/drm/radeon/radeon_pm.c
++++ b/drivers/gpu/drm/radeon/radeon_pm.c
+@@ -1002,7 +1002,7 @@ static void radeon_pm_resume_old(struct radeon_device *rdev)
+ {
+ 	/* set up the default clocks if the MC ucode is loaded */
+ 	if ((rdev->family >= CHIP_BARTS) &&
+-	    (rdev->family <= CHIP_HAINAN) &&
++	    (rdev->family <= CHIP_CAYMAN) &&
+ 	    rdev->mc_fw) {
+ 		if (rdev->pm.default_vddc)
+ 			radeon_atom_set_voltage(rdev, rdev->pm.default_vddc,
+@@ -1046,7 +1046,7 @@ static void radeon_pm_resume_dpm(struct radeon_device *rdev)
+ 	if (ret) {
+ 		DRM_ERROR("radeon: dpm resume failed\n");
+ 		if ((rdev->family >= CHIP_BARTS) &&
+-		    (rdev->family <= CHIP_HAINAN) &&
++		    (rdev->family <= CHIP_CAYMAN) &&
+ 		    rdev->mc_fw) {
+ 			if (rdev->pm.default_vddc)
+ 				radeon_atom_set_voltage(rdev, rdev->pm.default_vddc,
+@@ -1097,7 +1097,7 @@ static int radeon_pm_init_old(struct radeon_device *rdev)
+ 		radeon_pm_init_profile(rdev);
+ 		/* set up the default clocks if the MC ucode is loaded */
+ 		if ((rdev->family >= CHIP_BARTS) &&
+-		    (rdev->family <= CHIP_HAINAN) &&
++		    (rdev->family <= CHIP_CAYMAN) &&
+ 		    rdev->mc_fw) {
+ 			if (rdev->pm.default_vddc)
+ 				radeon_atom_set_voltage(rdev, rdev->pm.default_vddc,
+@@ -1183,7 +1183,7 @@ static int radeon_pm_init_dpm(struct radeon_device *rdev)
+ 	if (ret) {
+ 		rdev->pm.dpm_enabled = false;
+ 		if ((rdev->family >= CHIP_BARTS) &&
+-		    (rdev->family <= CHIP_HAINAN) &&
++		    (rdev->family <= CHIP_CAYMAN) &&
+ 		    rdev->mc_fw) {
+ 			if (rdev->pm.default_vddc)
+ 				radeon_atom_set_voltage(rdev, rdev->pm.default_vddc,
