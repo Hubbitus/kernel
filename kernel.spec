@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -734,9 +734,6 @@ Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 1010431
 Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
-#rhbz 1008323
-Patch25109: skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
 #rhbz 902012
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
@@ -1440,9 +1437,6 @@ ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 1010431
 ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
-#rhbz 1008323
-ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 
 #rhbz 902012
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
@@ -2255,6 +2249,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git2.1
+- Linux v3.12-rc3-186-gc31eeac
+- Enable options for Intel Low Power Subsystem Support
+
 * Tue Oct 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git1.1
 - Linux v3.12-rc3-65-gf927318
 - Reenable debugging options.

@@ -331,8 +331,6 @@ CONFIG_I2C_MPC=m
 # CONFIG_IMA is not set
 # CONFIG_TCG_TPM is not set
 
-CONFIG_RFKILL_GPIO=m
-
 # CONFIG_CRYPTO_DEV_FSL_CAAM is not set
 # CONFIG_CRYPTO_SHA1_PPC is not set
 
