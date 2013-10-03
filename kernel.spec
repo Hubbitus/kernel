@@ -2373,6 +2373,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Oct 3 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to support not importing certs from db
 - CVE-2013-4387 ipv6: panic when UFO=On for an interface (rhbz 1011927 1015166)
 
 * Wed Oct 2 2013 Justin M. Forbes <jforbes@fedoraproject.org>
