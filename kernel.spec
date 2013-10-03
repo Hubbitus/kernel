@@ -545,6 +545,7 @@ Source20: Makefile.config
 Source21: config-debug
 Source22: config-nodebug
 Source23: config-generic
+Source24: config-no-extra
 
 Source30: config-x86-generic
 Source31: config-i686-PAE
