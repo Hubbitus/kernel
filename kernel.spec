@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2249,6 +2249,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git3.1
+- Linux v3.12-rc3-253-ge6e7fb1
+
 * Wed Oct 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git2.1
 - Linux v3.12-rc3-186-gc31eeac
 - Enable options for Intel Low Power Subsystem Support
