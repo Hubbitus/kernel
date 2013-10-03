@@ -2252,6 +2252,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to support not importing certs from db
+
 * Thu Oct 03 2013 Kyle McMartin <kyle@fedoraproject.org>
 - Add config-no-extra and disable with_extra on ARM and AArch64 to reduce
   time building untestable code (because the hardware doesn't exist, or it
