@@ -391,6 +391,7 @@ Summary: The Linux kernel
 %define with_perf 0
 %define with_tools 0
 %endif
+%define with_extra 0
 %endif
 
 %ifarch aarch64
@@ -400,6 +401,7 @@ Summary: The Linux kernel
 %define make_target Image.gz
 %define kernel_image arch/arm64/boot/Image.gz
 %define image_install_path boot
+%define with_extra 0
 %endif
 
 # Should make listnewconfig fail if there's config options
@@ -2249,6 +2251,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 03 2013 Kyle McMartin <kyle@fedoraproject.org>
+- Add config-no-extra and disable with_extra on ARM and AArch64 to reduce
+  time building untestable code (because the hardware doesn't exist, or it
+  would be futile.)
+
 * Thu Oct 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git3.1
 - Linux v3.12-rc3-253-ge6e7fb1
 
