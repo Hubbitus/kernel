@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2252,6 +2252,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 03 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc3.git4.1
+- Linux v3.12-rc3-267-g6d15ee4
+
 * Thu Oct 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to support not importing certs from db
 
