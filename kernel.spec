@@ -724,9 +724,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-#selinux ptrace child permissions
-Patch22001: selinux-apply-different-permission-to-ptrace-child.patch
-
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
@@ -1420,9 +1417,6 @@ ApplyPatch nowatchdog-on-virt.patch
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 #pplyPatch weird-root-dentry-name-debug.patch
-
-#selinux ptrace child permissions
-ApplyPatch selinux-apply-different-permission-to-ptrace-child.patch
 
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 ApplyPatch criu-no-expert.patch
