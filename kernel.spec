@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -688,8 +688,6 @@ Patch10000: fs-proc-devtree-remove_proc_entry.patch
 
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch13003: efi-dont-map-boot-services-on-32bit.patch
-
 Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
@@ -788,17 +786,11 @@ Patch25109: bonding-driver-alb-learning.patch
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
 Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
-#rhbz 1011719
-Patch25116: hwmon-applesmc-Check-key-count-before-proceeding.patch
-
 #rhbz 974072
 Patch25117: rt2800-add-support-for-rf3070.patch
 
 #rhbz 1005567
 Patch25118: bonding-driver-promisc.patch
-
-#rhbz 1013814
-Patch25119: drm-radeon-dont-set-default-clocks-for-SI-when-DPM-is-disabled.patch
 
 #CVE-2013-4387 rhbz 1011927 1015166
 Patch25121: ipv6-udp-packets-following-an-UFO-enqueued-packet-ne.patch
@@ -1488,8 +1480,6 @@ ApplyPatch fs-proc-devtree-remove_proc_entry.patch
 
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-ApplyPatch efi-dont-map-boot-services-on-32bit.patch
-
 # FIXME: REBASE
 #ApplyPatch hibernate-freeze-filesystems.patch
 
@@ -1549,17 +1539,11 @@ ApplyPatch skge-fix-invalid-value-passed-to-pci_unmap_sigle.patch
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
 ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
-#rhbz 1011719
-ApplyPatch hwmon-applesmc-Check-key-count-before-proceeding.patch
-
 #rhbz 974072
 ApplyPatch rt2800-add-support-for-rf3070.patch
 
 #rhbz 1005567
 ApplyPatch bonding-driver-promisc.patch
-
-#rhbz 1013814
-ApplyPatch drm-radeon-dont-set-default-clocks-for-SI-when-DPM-is-disabled.patch
 
 #CVE-2013-4387 rhbz 1011927 1015166
 ApplyPatch ipv6-udp-packets-following-an-UFO-enqueued-packet-ne.patch
@@ -2366,6 +2350,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 7 2013 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.11.4
+
 * Thu Oct 3 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to support not importing certs from db
 - CVE-2013-4387 ipv6: panic when UFO=On for an interface (rhbz 1011927 1015166)
