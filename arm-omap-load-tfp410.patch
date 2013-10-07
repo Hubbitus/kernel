@@ -1,14 +1,14 @@
-diff -urNp linux-3.9.4-300.fc19.armv7hl_orig/drivers/video/omap2/dss/core.c linux-3.9.4-300.fc19.armv7hl/drivers/video/omap2/dss/core.c
---- linux-3.9.4-300.fc19.armv7hl_orig/drivers/video/omap2/dss/core.c	2013-04-28 20:36:01.000000000 -0400
-+++ linux-3.9.4-300.fc19.armv7hl/drivers/video/omap2/dss/core.c	2013-05-31 12:24:07.711334359 -0400
-@@ -596,6 +596,9 @@ static int __init omap_dss_init(void)
- {
+diff --git a/drivers/video/omap2/dss/core.c b/drivers/video/omap2/dss/core.c
+index 60d3958..0e304ce 100644
+--- a/drivers/video/omap2/dss/core.c
++++ b/drivers/video/omap2/dss/core.c
+@@ -298,6 +298,9 @@ static int __init omap_dss_init(void)
  	int r;
+ 	int i;
  
-+	/* hack to load panel-tfp410 driver */
-+	request_module("panel-tfp410");
++	/* hack to load encoder-tfp410 driver */
++	request_module("encoder-tfp410");
 +
- 	r = omap_dss_bus_register();
+ 	r = platform_driver_probe(&omap_dss_driver, omap_dss_probe);
  	if (r)
  		return r;
-Binary files linux-3.9.4-300.fc19.armv7hl_orig/drivers/video/omap2/dss/.Makefile.swp and linux-3.9.4-300.fc19.armv7hl/drivers/video/omap2/dss/.Makefile.swp differ

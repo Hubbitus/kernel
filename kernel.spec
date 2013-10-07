@@ -1301,7 +1301,7 @@ ApplyPatch arm-lpae-ax88796.patch
 #ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 #pplyPatch arm-exynos-mp.patch
-#pplyPatch arm-omap-load-tfp410.patch
+ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 #
@@ -2246,6 +2246,17 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 7  2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- General ARM config cleanups
+- Remove old/dupe ARM config options
+- Enable external connectors on ARM
+- Enable i.MX and TI thermal controllers
+- Enable i.MX RNG driver
+- ARM MFD and REGULATOR changes and cleanups
+- AM33xx (BeagleBone) config improvements
+- Rebase OMAP DVI patch
+- Enable console for Zynq-7xxx SoCs
+
 * Sun Oct 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git0.1
 - Linux v3.12-rc4
 - Disable debugging options.
