@@ -801,6 +801,9 @@ Patch25122: netfilter-nf_conntrack-use-RCU-safe-kfree-for-conntr.patch
 #rhbz 982153
 Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
+#rhbz 1015920
+Patch25124: drm-nouveau-bios-init-stub-opcode-0xaa.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1559,6 +1562,9 @@ ApplyPatch netfilter-nf_conntrack-use-RCU-safe-kfree-for-conntr.patch
 
 #rhbz 982153
 ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
+
+#rhbz 1015920
+ApplyPatch drm-nouveau-bios-init-stub-opcode-0xaa.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2363,6 +2369,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Oct 08 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix nouveau crash (rhbz 1015920)
 - Quiet irq remapping stack trace (rhbz 982153)
 - Use RCU safe kfree for conntrack (rhbz 1015989)
 

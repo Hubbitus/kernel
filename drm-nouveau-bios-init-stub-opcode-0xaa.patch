@@ -1,0 +1,109 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.11.131 with SMTP id q3csp149379oab;
+        Mon, 7 Oct 2013 23:45:24 -0700 (PDT)
+X-Received: by 10.68.185.36 with SMTP id ez4mr69490pbc.144.1381214724506;
+        Mon, 07 Oct 2013 23:45:24 -0700 (PDT)
+Return-Path: <stable-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id rz6si25872020pab.249.1969.12.31.16.00.00;
+        Mon, 07 Oct 2013 23:45:24 -0700 (PDT)
+Received-SPF: pass (google.com: best guess record for domain of stable-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of stable-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mail=stable-owner@vger.kernel.org;
+       dkim=neutral (bad format) header.i=@gmail.com;
+       dmarc=fail (p=NONE dis=NONE) header.from=gmail.com
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1754014Ab3JHGow (ORCPT <rfc822;lembacon@gmail.com> + 60 others);
+	Tue, 8 Oct 2013 02:44:52 -0400
+Received: from mail-pa0-f42.google.com ([209.85.220.42]:35990 "EHLO
+	mail-pa0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1753696Ab3JHGov (ORCPT
+	<rfc822;stable@vger.kernel.org>); Tue, 8 Oct 2013 02:44:51 -0400
+Received: by mail-pa0-f42.google.com with SMTP id lj1so8433751pab.15
+        for <stable@vger.kernel.org>; Mon, 07 Oct 2013 23:44:51 -0700 (PDT)
+DKIM-Signature:	v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id;
+        bh=DRveULH9ZaYYXMJRsSw3WWLRMs5ifsnU9G+VUu1PKtk=;
+        b=oCDYfvF1KXEUN6PZU0jit8kMHSKTzIWcR078uMTxLpTjheGcoLWW0efoqsO4Dac3jp
+         +4dHm3NSdeqk4e+aCjnvZw7He+nMGmbWhrf1vx49XCOE4s+YvC/AgSI78pku8BQE/plZ
+         w8F+64e+wNze1FfRAxPPM/PoLdBiuBfvUL18htMmYi/rgq0VRkNk2UwbzvGk5AJE+vwL
+         esavQLjvCuJZTc7i2J9Us53dUcY4aQuYlESFvOUlbDnkkgm5Htrsnyd2Eq7k61/hr0MR
+         /nIFNBXuhIadU5bvf6jpMT+toIK+PA176Yt9eyEgdOAxNXdn5g15mO93/WEyXf7idBfk
+         JLZA==
+X-Received: by 10.68.232.132 with SMTP id to4mr7840579pbc.141.1381214691006;
+        Mon, 07 Oct 2013 23:44:51 -0700 (PDT)
+Received: from turiel.redhat.com (124-148-32-6.dyn.iinet.net.au. [124.148.32.6])
+        by mx.google.com with ESMTPSA id j9sm44764711paj.18.1969.12.31.16.00.00
+        (version=TLSv1.2 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Mon, 07 Oct 2013 23:44:50 -0700 (PDT)
+From:	Ben Skeggs <skeggsb@gmail.com>
+To:	stable@vger.kernel.org
+Cc:	Ben Skeggs <bskeggs@redhat.com>
+Subject: [PATCH] drm/nouveau/bios/init: stub opcode 0xaa
+Date:	Tue,  8 Oct 2013 16:45:08 +1000
+Message-Id: <1381214708-2990-1-git-send-email-skeggsb@gmail.com>
+X-Mailer: git-send-email 1.8.3.2
+Sender:	stable-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <stable.vger.kernel.org>
+X-Mailing-List:	stable@vger.kernel.org
+
+From: Ben Skeggs <bskeggs@redhat.com>
+
+Seen on a large number of recent boards, when triggered results in
+nouveau aborting the card cold boot, giving unpredictable results
+(oopses in the reported cases) later.
+
+commit 5495e39fb3695182b9f2a72fe4169056cada37a1 upstream
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+---
+ drivers/gpu/drm/nouveau/core/subdev/bios/init.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/core/subdev/bios/init.c b/drivers/gpu/drm/nouveau/core/subdev/bios/init.c
+index 0687e64..8f06cca 100644
+--- a/drivers/gpu/drm/nouveau/core/subdev/bios/init.c
++++ b/drivers/gpu/drm/nouveau/core/subdev/bios/init.c
+@@ -579,8 +579,22 @@ static void
+ init_reserved(struct nvbios_init *init)
+ {
+ 	u8 opcode = nv_ro08(init->bios, init->offset);
+-	trace("RESERVED\t0x%02x\n", opcode);
+-	init->offset += 1;
++	u8 length, i;
++
++	switch (opcode) {
++	case 0xaa:
++		length = 4;
++		break;
++	default:
++		length = 1;
++		break;
++	}
++
++	trace("RESERVED 0x%02x\t", opcode);
++	for (i = 1; i < length; i++)
++		cont(" 0x%02x", nv_ro08(init->bios, init->offset + i));
++	cont("\n");
++	init->offset += length;
+ }
+ 
+ /**
+@@ -2135,6 +2149,7 @@ static struct nvbios_init_opcode {
+ 	[0x99] = { init_zm_auxch },
+ 	[0x9a] = { init_i2c_long_if },
+ 	[0xa9] = { init_gpio_ne },
++	[0xaa] = { init_reserved },
+ };
+ 
+ #define init_opcode_nr (sizeof(init_opcode) / sizeof(init_opcode[0]))
+-- 
+1.8.3.2
+
+--
+To unsubscribe from this list: send the line "unsubscribe stable" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
