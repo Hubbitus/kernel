@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -794,6 +794,9 @@ Patch25118: bonding-driver-promisc.patch
 
 #CVE-2013-4387 rhbz 1011927 1015166
 Patch25121: ipv6-udp-packets-following-an-UFO-enqueued-packet-ne.patch
+
+#rhbz 1015989
+Patch25122: netfilter-nf_conntrack-use-RCU-safe-kfree-for-conntr.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1547,6 +1550,9 @@ ApplyPatch bonding-driver-promisc.patch
 
 #CVE-2013-4387 rhbz 1011927 1015166
 ApplyPatch ipv6-udp-packets-following-an-UFO-enqueued-packet-ne.patch
+
+#rhbz 1015989
+ApplyPatch netfilter-nf_conntrack-use-RCU-safe-kfree-for-conntr.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2350,6 +2356,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 08 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Use RCU safe kfree for conntrack (rhbz 1015989)
+
 * Mon Oct 7  2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - General ARM config cleanups
 - Remove old/dupe ARM config options
