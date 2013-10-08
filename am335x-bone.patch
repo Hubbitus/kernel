@@ -1,0 +1,6260 @@
+ .../devicetree/bindings/mmc/ti-omap-hsmmc.txt      |  26 +-
+ .../devicetree/bindings/reset/gpio-reset.txt       |  35 ++
+ arch/arm/boot/dts/Makefile                         |   3 +-
+ arch/arm/boot/dts/am335x-bone.dts                  | 126 +++++
+ arch/arm/boot/dts/am335x-boneblack.dts             | 403 ++++++++++++++++
+ arch/arm/boot/dts/am335x-evm.dts                   |   7 +
+ arch/arm/boot/dts/am335x-evmsk.dts                 |   7 +
+ arch/arm/boot/dts/am33xx.dtsi                      |  60 +++
+ arch/arm/common/edma.c                             |  31 +-
+ arch/arm/configs/da8xx_omapl_defconfig             |   3 +
+ arch/arm/mach-davinci/da830.c                      |   8 +-
+ arch/arm/mach-davinci/da850.c                      |   8 +-
+ arch/arm/mach-davinci/devices-da8xx.c              |  42 +-
+ arch/arm/mach-davinci/devices-tnetv107x.c          |  37 +-
+ arch/arm/mach-davinci/dm355.c                      |  52 ++-
+ arch/arm/mach-davinci/dm365.c                      |  38 +-
+ arch/arm/mach-davinci/dm644x.c                     |  52 ++-
+ arch/arm/mach-davinci/dm646x.c                     |  52 ++-
+ arch/arm/mach-davinci/include/mach/da8xx.h         |   2 +-
+ arch/arm/mach-davinci/include/mach/tnetv107x.h     |   2 +-
+ arch/arm/mach-davinci/serial.c                     |  19 +-
+ arch/arm/mach-davinci/tnetv107x.c                  |   8 +-
+ arch/arm/mach-omap2/Makefile                       |   3 +
+ arch/arm/mach-omap2/am33xx-cpsw.c                  |  94 ++++
+ arch/arm/mach-omap2/board-omap3beagle.c            |   4 +-
+ arch/arm/mach-omap2/board-omap3evm.c               |   4 +-
+ arch/arm/mach-omap2/board-omap3pandora.c           |   2 +-
+ arch/arm/mach-omap2/control.h                      |   4 +
+ arch/arm/mach-omap2/omap_device.c                  | 232 +++++----
+ arch/arm/mach-omap2/omap_hwmod.c                   |   8 +-
+ arch/arm/mach-omap2/usb-host.c                     |  10 +-
+ drivers/base/platform.c                            | 122 +++--
+ drivers/dma/edma.c                                 | 299 +++++++++---
+ drivers/gpu/drm/i2c/tda998x_drv.c                  | 518 ++++++++++++++++++---
+ drivers/gpu/drm/tilcdc/tilcdc_crtc.c               |  71 ++-
+ drivers/gpu/drm/tilcdc/tilcdc_drv.h                |   5 +-
+ drivers/gpu/drm/tilcdc/tilcdc_panel.c              |  49 +-
+ drivers/gpu/drm/tilcdc/tilcdc_slave.c              |  65 ++-
+ drivers/misc/eeprom/at24.c                         |  23 +
+ drivers/mmc/host/omap_hsmmc.c                      | 178 +++++--
+ drivers/of/device.c                                |   3 +
+ drivers/of/of_i2c.c                                | 104 +++--
+ drivers/pinctrl/pinctrl-single.c                   |  12 +-
+ drivers/reset/Kconfig                              |  11 +
+ drivers/reset/Makefile                             |   1 +
+ drivers/reset/gpio-reset.c                         | 169 +++++++
+ drivers/usb/Makefile                               |   2 +-
+ drivers/usb/dwc3/dwc3-exynos.c                     |   8 +-
+ drivers/usb/dwc3/dwc3-pci.c                        |   8 +-
+ drivers/usb/gadget/Kconfig                         |   2 -
+ drivers/usb/host/Kconfig                           |   1 -
+ drivers/usb/musb/am35x.c                           |   2 +-
+ drivers/usb/musb/blackfin.c                        |   2 +-
+ drivers/usb/musb/da8xx.c                           |   2 +-
+ drivers/usb/musb/davinci.c                         |   2 +-
+ drivers/usb/musb/musb_dsps.c                       |   2 +-
+ drivers/usb/musb/tusb6010.c                        |   2 +-
+ drivers/usb/phy/Kconfig                            |  48 +-
+ drivers/usb/phy/Makefile                           |   4 +-
+ drivers/usb/phy/am35x-phy-control.h                |  21 +
+ drivers/usb/phy/phy-am335x-control.c               | 137 ++++++
+ drivers/usb/phy/phy-am335x.c                       |  99 ++++
+ drivers/usb/phy/phy-generic.c                      | 309 ++++++++++++
+ drivers/usb/phy/phy-generic.h                      |  20 +
+ drivers/usb/phy/phy-nop.c                          | 292 ------------
+ include/drm/i2c/tda998x.h                          |  23 +
+ include/linux/dmaengine.h                          |  39 ++
+ include/linux/i2c/eeprom.h                         |  59 +++
+ include/linux/of_i2c.h                             |  11 +
+ include/linux/platform_data/mmc-omap.h             |   3 +
+ include/linux/platform_device.h                    |   4 +
+ include/linux/usb/nop-usb-xceiv.h                  |  29 --
+ include/linux/usb/usb_phy_gen_xceiv.h              |  29 ++
+ sound/soc/soc-dmaengine-pcm.c                      |  22 +
+ 74 files changed, 3315 insertions(+), 879 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/mmc/ti-omap-hsmmc.txt b/Documentation/devicetree/bindings/mmc/ti-omap-hsmmc.txt
+index ed271fc..8c8908a 100644
+--- a/Documentation/devicetree/bindings/mmc/ti-omap-hsmmc.txt
++++ b/Documentation/devicetree/bindings/mmc/ti-omap-hsmmc.txt
+@@ -20,8 +20,29 @@ ti,dual-volt: boolean, supports dual voltage cards
+ ti,non-removable: non-removable slot (like eMMC)
+ ti,needs-special-reset: Requires a special softreset sequence
+ ti,needs-special-hs-handling: HSMMC IP needs special setting for handling High Speed
++dmas: List of DMA specifiers with the controller specific format
++as described in the generic DMA client binding. A tx and rx
++specifier is required.
++dma-names: List of DMA request names. These strings correspond
++1:1 with the DMA specifiers listed in dmas. The string naming is
++to be "rx" and "tx" for RX and TX DMA requests, respectively.
++
++Examples:
++
++[hwmod populated DMA resources]
++
++	mmc1: mmc@0x4809c000 {
++		compatible = "ti,omap4-hsmmc";
++		reg = <0x4809c000 0x400>;
++		ti,hwmods = "mmc1";
++		ti,dual-volt;
++		bus-width = <4>;
++		vmmc-supply = <&vmmc>; /* phandle to regulator node */
++		ti,non-removable;
++	};
++
++[generic DMA request binding]
+ 
+-Example:
+ 	mmc1: mmc@0x4809c000 {
+ 		compatible = "ti,omap4-hsmmc";
+ 		reg = <0x4809c000 0x400>;
+@@ -30,4 +51,7 @@ Example:
+ 		bus-width = <4>;
+ 		vmmc-supply = <&vmmc>; /* phandle to regulator node */
+ 		ti,non-removable;
++		dmas = <&edma 24
++			&edma 25>;
++		dma-names = "tx", "rx";
+ 	};
+diff --git a/Documentation/devicetree/bindings/reset/gpio-reset.txt b/Documentation/devicetree/bindings/reset/gpio-reset.txt
+new file mode 100644
+index 0000000..bca5348
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/gpio-reset.txt
+@@ -0,0 +1,35 @@
++GPIO reset controller
++=====================
++
++A GPIO reset controller controls a single GPIO that is connected to the reset
++pin of a peripheral IC. Please also refer to reset.txt in this directory for
++common reset controller binding usage.
++
++Required properties:
++- compatible: Should be "gpio-reset"
++- reset-gpios: A gpio used as reset line. The gpio specifier for this property
++               depends on the gpio controller that provides the gpio.
++- #reset-cells: 0, see below
++
++Optional properties:
++- reset-delay-us: delay in microseconds. The gpio reset line will be asserted for
++                  this duration to reset.
++- initially-in-reset: boolean. If not set, the initial state should be a
++                      deasserted reset line. If this property exists, the
++                      reset line should be kept in reset.
++
++example:
++
++sii902x_reset: gpio-reset {
++	compatible = "gpio-reset";
++	reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
++	reset-delay-us = <10000>;
++	initially-in-reset;
++	#reset-cells = <0>;
++};
++
++/* Device with nRESET pin connected to GPIO5_0 */
++sii902x@39 {
++	/* ... */
++	resets = <&sii902x_reset>; /* active-low GPIO5_0, 10 ms delay */
++};
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 641b3c9..1b60731 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -173,7 +173,8 @@ dtb-$(CONFIG_ARCH_OMAP2PLUS) += omap2420-h4.dtb \
+ 	am335x-bone.dtb \
+ 	am3517-evm.dtb \
+ 	am3517_mt_ventoux.dtb \
+-	am43x-epos-evm.dtb
++	am43x-epos-evm.dtb \
++	am335x-boneblack.dtb
+ dtb-$(CONFIG_ARCH_ORION5X) += orion5x-lacie-ethernet-disk-mini-v2.dtb
+ dtb-$(CONFIG_ARCH_PRIMA2) += prima2-evb.dtb
+ dtb-$(CONFIG_ARCH_U8500) += snowball.dtb \
+diff --git a/arch/arm/boot/dts/am335x-bone.dts b/arch/arm/boot/dts/am335x-bone.dts
+index 444b4ed..0741775 100644
+--- a/arch/arm/boot/dts/am335x-bone.dts
++++ b/arch/arm/boot/dts/am335x-bone.dts
+@@ -110,6 +110,18 @@
+ 				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
+ 			>;
+ 		};
++		i2c0_pins: pinmux_i2c0_pins {
++			pinctrl-single,pins = <
++				0x188 0x70 	/* i2c0_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE0 */
++				0x18c 0x70	/* i2c0_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE0 */
++			>;
++		};
++		i2c2_pins: pinmux_i2c2_pins {
++			pinctrl-single,pins = <
++				0x178 0x73 	/* uart1_ctsn.i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++				0x17c 0x73	/* uart1_rtsn.i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++			>;
++		};
+ 	};
+ 
+ 	ocp {
+@@ -131,7 +143,39 @@
+ 				reg = <0x24>;
+ 			};
+ 
++			baseboard_eeprom: baseboard_eeprom@50 {
++				compatible = "at,24c256";
++				reg = <0x50>;
++			};
++		};
++
++		i2c2: i2c@4819c000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&i2c2_pins>;
++			status = "okay";
++			clock-frequency = <100000>;
++
++			cape_eeprom0: cape_eeprom0@54 {
++				compatible = "at,24c256";
++				reg = <0x54>;
++			};
++
++			cape_eeprom1: cape_eeprom1@55 {
++				compatible = "at,24c256";
++				reg = <0x55>;
++			};
++
++			cape_eeprom2: cape_eeprom2@56 {
++				compatible = "at,24c256";
++				reg = <0x56>;
++			};
++
++			cape_eeprom3: cape_eeprom3@57 {
++				compatible = "at,24c256";
++				reg = <0x57>;
++			};
+ 		};
++
+ 	};
+ 
+ 	leds {
+@@ -166,6 +210,81 @@
+ 			default-state = "off";
+ 		};
+ 	};
++
++	bone_capemgr {
++		compatible = "ti,bone-capemgr";
++		status = "okay";
++
++		eeprom = <&baseboard_eeprom>;
++
++		baseboardmaps {
++			baseboard_beaglebone: board@0 {
++				board-name = "A335BONE";
++				compatible-name = "ti,beaglebone";
++			};
++
++			baseboard_beaglebone_black: board@1 {
++				board-name = "A335BNLT";
++				compatible-name = "ti,beaglebone-black";
++			};
++		};
++
++		slots {
++			slot@0 {
++				eeprom = <&cape_eeprom0>;
++			};
++
++			slot@1 {
++				eeprom = <&cape_eeprom1>;
++			};
++
++			slot@2 {
++				eeprom = <&cape_eeprom2>;
++			};
++
++			slot@3 {
++				eeprom = <&cape_eeprom3>;
++			};
++
++			/* Beaglebone black has it soldered on */
++			slot@100 {
++				ti,cape-override;
++				priority = <1>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-LT-eMMC-2G";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONE-EMMC-2G";
++			};
++
++			/* Beaglebone black has it soldered on */
++			slot@101 {
++				ti,cape-override;
++				priority = <1>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-Black-HDMI";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONELT-HDMI";
++			};
++
++			/* Beaglebone black has it soldered on (but no audio) */
++			slot@102 {
++				ti,cape-override;
++				priority = <2>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-Black-HDMIN";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONELT-HDMIN";
++			};
++		};
++
++		/* mapping between board names and dtb objects */
++		capemaps {
++			/* capemaps are only needed for special cases */
++		};
++	};
+ };
+ 
+ /include/ "tps65217.dtsi"
+@@ -203,6 +322,8 @@
+ 		};
+ 
+ 		ldo3_reg: regulator@5 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <3300000>;
+ 			regulator-always-on;
+ 		};
+ 
+@@ -234,3 +355,8 @@
+ 	pinctrl-0 = <&davinci_mdio_default>;
+ 	pinctrl-1 = <&davinci_mdio_sleep>;
+ };
++
++&mmc1 {
++	status = "okay";
++	vmmc-supply = <&ldo3_reg>;
++};
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+new file mode 100644
+index 0000000..2ea9d5d
+--- /dev/null
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -0,0 +1,403 @@
++/*
++ * Copyright (C) 2012 Texas Instruments Incorporated - http://www.ti.com/
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++/dts-v1/;
++
++#include "am33xx.dtsi"
++
++/ {
++	model = "TI AM335x BeagleBone";
++	compatible = "ti,am335x-bone", "ti,am33xx";
++
++	cpus {
++		cpu@0 {
++			cpu0-supply = <&dcdc2_reg>;
++
++			/*
++			 * To consider voltage drop between PMIC and SoC,
++			 * tolerance value is reduced to 2% from 4% and
++			 * voltage value is increased as a precaution.
++			 */
++			operating-points = <
++				/* kHz    uV */
++				1000000	1350000
++				800000	1300000
++				600000  1112000
++				300000   969000
++			>;
++		};
++	};
++
++	memory {
++		device_type = "memory";
++		reg = <0x80000000 0x20000000>; /* 512 MB */
++	};
++
++	am33xx_pinmux: pinmux@44e10800 {
++		pinctrl-names = "default";
++		pinctrl-0 = <&clkout2_pin>;
++
++		user_leds_s0: user_leds_s0 {
++			pinctrl-single,pins = <
++				0x54 (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a5.gpio1_21 */
++				0x58 (PIN_OUTPUT_PULLUP | MUX_MODE7)	/* gpmc_a6.gpio1_22 */
++				0x5c (PIN_OUTPUT_PULLDOWN | MUX_MODE7)	/* gpmc_a7.gpio1_23 */
++				0x60 (PIN_OUTPUT_PULLUP | MUX_MODE7)	/* gpmc_a8.gpio1_24 */
++			>;
++		};
++
++		i2c0_pins: pinmux_i2c0_pins {
++			pinctrl-single,pins = <
++				0x188 (PIN_INPUT_PULLUP | MUX_MODE0)	/* i2c0_sda.i2c0_sda */
++				0x18c (PIN_INPUT_PULLUP | MUX_MODE0)	/* i2c0_scl.i2c0_scl */
++			>;
++		};
++
++		uart0_pins: pinmux_uart0_pins {
++			pinctrl-single,pins = <
++				0x170 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart0_rxd.uart0_rxd */
++				0x174 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* uart0_txd.uart0_txd */
++			>;
++		};
++
++		clkout2_pin: pinmux_clkout2_pin {
++			pinctrl-single,pins = <
++				0x1b4 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* xdma_event_intr1.clkout2 */
++			>;
++		};
++
++		cpsw_default: cpsw_default {
++			pinctrl-single,pins = <
++				/* Slave 1 */
++				0x110 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxerr.mii1_rxerr */
++				0x114 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mii1_txen.mii1_txen */
++				0x118 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxdv.mii1_rxdv */
++				0x11c (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mii1_txd3.mii1_txd3 */
++				0x120 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mii1_txd2.mii1_txd2 */
++				0x124 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mii1_txd1.mii1_txd1 */
++				0x128 (PIN_OUTPUT_PULLDOWN | MUX_MODE0)	/* mii1_txd0.mii1_txd0 */
++				0x12c (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_txclk.mii1_txclk */
++				0x130 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxclk.mii1_rxclk */
++				0x134 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxd3.mii1_rxd3 */
++				0x138 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxd2.mii1_rxd2 */
++				0x13c (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxd1.mii1_rxd1 */
++				0x140 (PIN_INPUT_PULLUP | MUX_MODE0)	/* mii1_rxd0.mii1_rxd0 */
++			>;
++		};
++
++		cpsw_sleep: cpsw_sleep {
++			pinctrl-single,pins = <
++				/* Slave 1 reset value */
++				0x110 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x114 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x118 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x11c (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x120 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x124 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x128 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x12c (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x130 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x134 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x138 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x13c (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x140 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++			>;
++		};
++
++		davinci_mdio_default: davinci_mdio_default {
++			pinctrl-single,pins = <
++				/* MDIO */
++				0x148 (PIN_INPUT_PULLUP | SLEWCTRL_FAST | MUX_MODE0)	/* mdio_data.mdio_data */
++				0x14c (PIN_OUTPUT_PULLUP | MUX_MODE0)			/* mdio_clk.mdio_clk */
++			>;
++		};
++
++		davinci_mdio_sleep: davinci_mdio_sleep {
++			pinctrl-single,pins = <
++				/* MDIO reset value */
++				0x148 (PIN_INPUT_PULLDOWN | MUX_MODE7)
++				0x14c (PIN_INPUT_PULLDOWN | MUX_MODE7)
++			>;
++		};
++
++		emmc_pins: pinmux_emmc_pins {
++			pinctrl-single,pins = <
++				0x80 (PIN_INPUT_PULLUP | MUX_MODE2)	/* gpmc_csn1.mmc1_clk */
++				0x84 (PIN_INPUT_PULLUP | MUX_MODE2)	/* gpmc_csn2.mmc1_cmd */
++				0x00 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad0.mmc1_dat0 */
++				0x04 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad1.mmc1_dat1 */
++				0x08 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad2.mmc1_dat2 */
++				0x0c (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad3.mmc1_dat3 */
++				0x10 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad4.mmc1_dat4 */
++				0x14 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad5.mmc1_dat5 */
++				0x18 (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad6.mmc1_dat6 */
++				0x1c (PIN_INPUT_PULLUP | MUX_MODE1)	/* gpmc_ad7.mmc1_dat7 */
++				/* eMMC_RSTn */
++				0x50 (PIN_OUTPUT_PULLUP | MUX_MODE7)	/* gpmc_a4.gpio1_20 */
++			>;
++		};
++
++		i2c0_pins: pinmux_i2c0_pins {
++			pinctrl-single,pins = <
++				0x188 0x70 	/* i2c0_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE0 */
++				0x18c 0x70	/* i2c0_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE0 */
++			>;
++		};
++		i2c2_pins: pinmux_i2c2_pins {
++			pinctrl-single,pins = <
++				0x178 0x73 	/* uart1_ctsn.i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++				0x17c 0x73	/* uart1_rtsn.i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++			>;
++		};
++	};
++
++	ocp {
++		uart0: serial@44e09000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart0_pins>;
++
++			status = "okay";
++		};
++
++		i2c0: i2c@44e0b000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&i2c0_pins>;
++
++			status = "okay";
++			clock-frequency = <400000>;
++
++			tps: tps@24 {
++				reg = <0x24>;
++			};
++
++			baseboard_eeprom: baseboard_eeprom@50 {
++				compatible = "at,24c256";
++				reg = <0x50>;
++			};
++		};
++
++		i2c2: i2c@4819c000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&i2c2_pins>;
++			status = "okay";
++			clock-frequency = <100000>;
++
++			cape_eeprom0: cape_eeprom0@54 {
++				compatible = "at,24c256";
++				reg = <0x54>;
++			};
++
++			cape_eeprom1: cape_eeprom1@55 {
++				compatible = "at,24c256";
++				reg = <0x55>;
++			};
++
++			cape_eeprom2: cape_eeprom2@56 {
++				compatible = "at,24c256";
++				reg = <0x56>;
++			};
++
++			cape_eeprom3: cape_eeprom3@57 {
++				compatible = "at,24c256";
++				reg = <0x57>;
++			};
++		};
++	};
++
++	leds {
++		pinctrl-names = "default";
++		pinctrl-0 = <&user_leds_s0>;
++
++		compatible = "gpio-leds";
++
++		led@2 {
++			label = "beaglebone:blue:heartbeat";
++			gpios = <&gpio1 21 0>;
++			linux,default-trigger = "heartbeat";
++			default-state = "off";
++		};
++
++		led@3 {
++			label = "beaglebone:blue:mmc0";
++			gpios = <&gpio1 22 GPIO_ACTIVE_HIGH>;
++			linux,default-trigger = "mmc0";
++			default-state = "off";
++		};
++
++		led@4 {
++			label = "beaglebone:blue:usr2";
++			gpios = <&gpio1 23 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++
++		led@5 {
++			label = "beaglebone:blue:usr3";
++			gpios = <&gpio1 24 GPIO_ACTIVE_HIGH>;
++			default-state = "off";
++		};
++	};
++
++	vmmcsd_fixed: fixedregulator@0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vmmcsd_fixed";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++	};
++
++	bone_capemgr {
++		compatible = "ti,bone-capemgr";
++		status = "okay";
++
++		eeprom = <&baseboard_eeprom>;
++
++		baseboardmaps {
++			baseboard_beaglebone: board@0 {
++				board-name = "A335BONE";
++				compatible-name = "ti,beaglebone";
++			};
++
++			baseboard_beaglebone_black: board@1 {
++				board-name = "A335BNLT";
++				compatible-name = "ti,beaglebone-black";
++			};
++		};
++
++		slots {
++			slot@0 {
++				eeprom = <&cape_eeprom0>;
++			};
++
++			slot@1 {
++				eeprom = <&cape_eeprom1>;
++			};
++
++			slot@2 {
++				eeprom = <&cape_eeprom2>;
++			};
++
++			slot@3 {
++				eeprom = <&cape_eeprom3>;
++			};
++
++			/* Beaglebone black has it soldered on */
++			slot@100 {
++				ti,cape-override;
++				priority = <1>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-LT-eMMC-2G";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONE-EMMC-2G";
++			};
++
++			/* Beaglebone black has it soldered on */
++			slot@101 {
++				ti,cape-override;
++				priority = <1>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-Black-HDMI";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONELT-HDMI";
++			};
++
++			/* Beaglebone black has it soldered on (but no audio) */
++			slot@102 {
++				ti,cape-override;
++				priority = <2>;
++				compatible = "ti,beaglebone-black";
++				board-name = "Bone-Black-HDMIN";
++				version = "00A0";
++				manufacturer = "Texas Instruments";
++				part-number = "BB-BONELT-HDMIN";
++			};
++		};
++
++		/* mapping between board names and dtb objects */
++		capemaps {
++			/* capemaps are only needed for special cases */
++		};
++	};
++};
++
++/include/ "tps65217.dtsi"
++
++&tps {
++	regulators {
++		dcdc1_reg: regulator@0 {
++			regulator-always-on;
++		};
++
++		dcdc2_reg: regulator@1 {
++			/* VDD_MPU voltage limits 0.95V - 1.26V with +/-4% tolerance */
++			regulator-name = "vdd_mpu";
++			regulator-min-microvolt = <925000>;
++			regulator-max-microvolt = <1325000>;
++			regulator-boot-on;
++			regulator-always-on;
++		};
++
++		dcdc3_reg: regulator@2 {
++			/* VDD_CORE voltage limits 0.95V - 1.1V with +/-4% tolerance */
++			regulator-name = "vdd_core";
++			regulator-min-microvolt = <925000>;
++			regulator-max-microvolt = <1150000>;
++			regulator-boot-on;
++			regulator-always-on;
++		};
++
++		ldo1_reg: regulator@3 {
++			regulator-always-on;
++		};
++
++		ldo2_reg: regulator@4 {
++			regulator-always-on;
++		};
++
++		ldo3_reg: regulator@5 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <1800000>;	/* orig 3.3V*/
++			regulator-always-on;
++		};
++
++		ldo4_reg: regulator@6 {
++			regulator-always-on;
++		};
++	};
++};
++
++&cpsw_emac0 {
++	phy_id = <&davinci_mdio>, <0>;
++};
++
++&cpsw_emac1 {
++	phy_id = <&davinci_mdio>, <1>;
++};
++
++&mac {
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&cpsw_default>;
++	pinctrl-1 = <&cpsw_sleep>;
++};
++
++&mmc1 {
++	status = "okay";
++	vmmc-supply = <&vmmcsd_fixed>;
++	ti,vcc-aux-disable-is-sleep;
++};
++
++&mmc2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emmc_pins>;
++	vmmc-supply = <&ldo3_reg>;
++	bus-width = <8>;
++	ti,non-removable;
++	status = "okay";
++	ti,vcc-aux-disable-is-sleep;
++
++	reset-gpio = <&gpio1 20 GPIO_ACTIVE_HIGH>;
++};
+diff --git a/arch/arm/boot/dts/am335x-evm.dts b/arch/arm/boot/dts/am335x-evm.dts
+index 3aee1a4..44e69d9 100644
+--- a/arch/arm/boot/dts/am335x-evm.dts
++++ b/arch/arm/boot/dts/am335x-evm.dts
+@@ -448,6 +448,8 @@
+ 		};
+ 
+ 		vmmc_reg: regulator@12 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <3300000>;
+ 			regulator-always-on;
+ 		};
+ 	};
+@@ -488,3 +490,8 @@
+ 		ti,adc-channels = <4 5 6 7>;
+ 	};
+ };
++
++&mmc1 {
++	status = "okay";
++	vmmc-supply = <&vmmc_reg>;
++};
+diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
+index 0c8ad17..4e355d6 100644
+--- a/arch/arm/boot/dts/am335x-evmsk.dts
++++ b/arch/arm/boot/dts/am335x-evmsk.dts
+@@ -376,6 +376,8 @@
+ 		};
+ 
+ 		vmmc_reg: regulator@12 {
++			regulator-min-microvolt = <1800000>;
++			regulator-max-microvolt = <3300000>;
+ 			regulator-always-on;
+ 		};
+ 	};
+@@ -402,3 +404,8 @@
+ 	phy_id = <&davinci_mdio>, <1>;
+ 	phy-mode = "rgmii-txid";
+ };
++
++&mmc1 {
++	status = "okay";
++	vmmc-supply = <&vmmc_reg>;
++};
+diff --git a/arch/arm/boot/dts/am33xx.dtsi b/arch/arm/boot/dts/am33xx.dtsi
+index 38b446b..969c81b 100644
+--- a/arch/arm/boot/dts/am33xx.dtsi
++++ b/arch/arm/boot/dts/am33xx.dtsi
+@@ -96,6 +96,18 @@
+ 			reg = <0x48200000 0x1000>;
+ 		};
+ 
++		edma: edma@49000000 {
++			compatible = "ti,edma3";
++			ti,hwmods = "tpcc", "tptc0", "tptc1", "tptc2";
++			reg =	<0x49000000 0x10000>,
++				<0x44e10f90 0x10>;
++			interrupts = <12 13 14>;
++			#dma-cells = <1>;
++			dma-channels = <64>;
++			ti,edma-regions = <4>;
++			ti,edma-slots = <256>;
++		};
++
+ 		gpio0: gpio@44e07000 {
+ 			compatible = "ti,omap4-gpio";
+ 			ti,hwmods = "gpio1";
+@@ -224,6 +236,44 @@
+ 			status = "disabled";
+ 		};
+ 
++		mmc1: mmc@48060000 {
++			compatible = "ti,omap4-hsmmc";
++			ti,hwmods = "mmc1";
++			ti,dual-volt;
++			ti,needs-special-reset;
++			ti,needs-special-hs-handling;
++			dmas = <&edma 24
++				&edma 25>;
++			dma-names = "tx", "rx";
++			interrupts = <64>;
++			interrupt-parent = <&intc>;
++			reg = <0x48060000 0x1000>;
++			status = "disabled";
++		};
++
++		mmc2: mmc@481d8000 {
++			compatible = "ti,omap4-hsmmc";
++			ti,hwmods = "mmc2";
++			ti,needs-special-reset;
++			dmas = <&edma 2
++				&edma 3>;
++			dma-names = "tx", "rx";
++			interrupts = <28>;
++			interrupt-parent = <&intc>;
++			reg = <0x481d8000 0x1000>;
++			status = "disabled";
++		};
++
++		mmc3: mmc@47810000 {
++			compatible = "ti,omap4-hsmmc";
++			ti,hwmods = "mmc3";
++			ti,needs-special-reset;
++			interrupts = <29>;
++			interrupt-parent = <&intc>;
++			reg = <0x47810000 0x1000>;
++			status = "disabled";
++		};
++
+ 		wdt2: wdt@44e35000 {
+ 			compatible = "ti,omap3-wdt";
+ 			ti,hwmods = "wd_timer2";
+@@ -319,6 +369,11 @@
+ 			interrupts = <65>;
+ 			ti,spi-num-cs = <2>;
+ 			ti,hwmods = "spi0";
++			dmas = <&edma 16
++				&edma 17
++				&edma 18
++				&edma 19>;
++			dma-names = "tx0", "rx0", "tx1", "rx1";
+ 			status = "disabled";
+ 		};
+ 
+@@ -330,6 +385,11 @@
+ 			interrupts = <125>;
+ 			ti,spi-num-cs = <2>;
+ 			ti,hwmods = "spi1";
++			dmas = <&edma 42
++				&edma 43
++				&edma 44
++				&edma 45>;
++			dma-names = "tx0", "rx0", "tx1", "rx1";
+ 			status = "disabled";
+ 		};
+ 
+diff --git a/arch/arm/common/edma.c b/arch/arm/common/edma.c
+index 39ad030..18159d7 100644
+--- a/arch/arm/common/edma.c
++++ b/arch/arm/common/edma.c
+@@ -560,14 +560,29 @@ static int reserve_contiguous_slots(int ctlr, unsigned int id,
+ static int prepare_unused_channel_list(struct device *dev, void *data)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	int i, ctlr;
+-
+-	for (i = 0; i < pdev->num_resources; i++) {
+-		if ((pdev->resource[i].flags & IORESOURCE_DMA) &&
+-				(int)pdev->resource[i].start >= 0) {
+-			ctlr = EDMA_CTLR(pdev->resource[i].start);
+-			clear_bit(EDMA_CHAN_SLOT(pdev->resource[i].start),
+-					edma_cc[ctlr]->edma_unused);
++	int i = 0, ctlr;
++	u32 dma_chan;
++	__be32 *dma_chan_p;
++	struct property *prop;
++
++	if (dev->of_node) {
++		of_property_for_each_u32(dev->of_node, "dmas", prop, \
++					 dma_chan_p, dma_chan) {
++			if (i++ & 1) {
++				ctlr = EDMA_CTLR(dma_chan);
++				clear_bit(EDMA_CHAN_SLOT(dma_chan),
++						edma_cc[ctlr]->edma_unused);
++			}
++		}
++	} else {
++		for (; i < pdev->num_resources; i++) {
++			if ((pdev->resource[i].flags & IORESOURCE_DMA) &&
++			    (int)pdev->resource[i].start >= 0) {
++				ctlr = EDMA_CTLR(pdev->resource[i].start);
++				clear_bit(EDMA_CHAN_SLOT(
++					  pdev->resource[i].start),
++					  edma_cc[ctlr]->edma_unused);
++			}
+ 		}
+ 	}
+ 
+diff --git a/arch/arm/configs/da8xx_omapl_defconfig b/arch/arm/configs/da8xx_omapl_defconfig
+index 1571bea..9b50e6c 100644
+--- a/arch/arm/configs/da8xx_omapl_defconfig
++++ b/arch/arm/configs/da8xx_omapl_defconfig
+@@ -106,6 +106,7 @@ CONFIG_DMADEVICES=y
+ CONFIG_TI_EDMA=y
+ CONFIG_EXT2_FS=y
+ CONFIG_EXT3_FS=y
++CONFIG_EXT4_FS=y
+ CONFIG_XFS_FS=m
+ CONFIG_INOTIFY=y
+ CONFIG_AUTOFS4_FS=m
+@@ -137,3 +138,5 @@ CONFIG_DEBUG_ERRORS=y
+ # CONFIG_CRYPTO_HW is not set
+ CONFIG_CRC_CCITT=m
+ CONFIG_CRC_T10DIF=m
++CONFIG_MMC=y
++CONFIG_MMC_DAVINCI=y
+diff --git a/arch/arm/mach-davinci/da830.c b/arch/arm/mach-davinci/da830.c
+index abbaf02..a3ffd52 100644
+--- a/arch/arm/mach-davinci/da830.c
++++ b/arch/arm/mach-davinci/da830.c
+@@ -395,9 +395,9 @@ static struct clk_lookup da830_clks[] = {
+ 	CLK(NULL,		"tptc0",	&tptc0_clk),
+ 	CLK(NULL,		"tptc1",	&tptc1_clk),
+ 	CLK("da830-mmc.0",	NULL,		&mmcsd_clk),
+-	CLK(NULL,		"uart0",	&uart0_clk),
+-	CLK(NULL,		"uart1",	&uart1_clk),
+-	CLK(NULL,		"uart2",	&uart2_clk),
++	CLK("serial8250.0",	NULL,		&uart0_clk),
++	CLK("serial8250.1",	NULL,		&uart1_clk),
++	CLK("serial8250.2",	NULL,		&uart2_clk),
+ 	CLK("spi_davinci.0",	NULL,		&spi0_clk),
+ 	CLK("spi_davinci.1",	NULL,		&spi1_clk),
+ 	CLK(NULL,		"ecap0",	&ecap0_clk),
+@@ -1199,7 +1199,7 @@ static struct davinci_soc_info davinci_soc_info_da830 = {
+ 	.gpio_base		= DA8XX_GPIO_BASE,
+ 	.gpio_num		= 128,
+ 	.gpio_irq		= IRQ_DA8XX_GPIO0,
+-	.serial_dev		= &da8xx_serial_device,
++	.serial_dev		= da8xx_serial_device,
+ 	.emac_pdata		= &da8xx_emac_pdata,
+ };
+ 
+diff --git a/arch/arm/mach-davinci/da850.c b/arch/arm/mach-davinci/da850.c
+index a0d4f60..d4274ab 100644
+--- a/arch/arm/mach-davinci/da850.c
++++ b/arch/arm/mach-davinci/da850.c
+@@ -451,9 +451,9 @@ static struct clk_lookup da850_clks[] = {
+ 	CLK(NULL,		"tpcc1",	&tpcc1_clk),
+ 	CLK(NULL,		"tptc2",	&tptc2_clk),
+ 	CLK("pruss_uio",	"pruss",	&pruss_clk),
+-	CLK(NULL,		"uart0",	&uart0_clk),
+-	CLK(NULL,		"uart1",	&uart1_clk),
+-	CLK(NULL,		"uart2",	&uart2_clk),
++	CLK("serial8250.0",	NULL,		&uart0_clk),
++	CLK("serial8250.1",	NULL,		&uart1_clk),
++	CLK("serial8250.2",	NULL,		&uart2_clk),
+ 	CLK(NULL,		"aintc",	&aintc_clk),
+ 	CLK(NULL,		"gpio",		&gpio_clk),
+ 	CLK("i2c_davinci.2",	NULL,		&i2c1_clk),
+@@ -1301,7 +1301,7 @@ static struct davinci_soc_info davinci_soc_info_da850 = {
+ 	.gpio_base		= DA8XX_GPIO_BASE,
+ 	.gpio_num		= 144,
+ 	.gpio_irq		= IRQ_DA8XX_GPIO0,
+-	.serial_dev		= &da8xx_serial_device,
++	.serial_dev		= da8xx_serial_device,
+ 	.emac_pdata		= &da8xx_emac_pdata,
+ 	.sram_dma		= DA8XX_SHARED_RAM_BASE,
+ 	.sram_len		= SZ_128K,
+diff --git a/arch/arm/mach-davinci/devices-da8xx.c b/arch/arm/mach-davinci/devices-da8xx.c
+index 71a46a3..280f67d 100644
+--- a/arch/arm/mach-davinci/devices-da8xx.c
++++ b/arch/arm/mach-davinci/devices-da8xx.c
+@@ -68,7 +68,7 @@
+ void __iomem *da8xx_syscfg0_base;
+ void __iomem *da8xx_syscfg1_base;
+ 
+-static struct plat_serial8250_port da8xx_serial_pdata[] = {
++static struct plat_serial8250_port da8xx_serial0_pdata[] = {
+ 	{
+ 		.mapbase	= DA8XX_UART0_BASE,
+ 		.irq		= IRQ_DA8XX_UARTINT0,
+@@ -78,6 +78,11 @@ static struct plat_serial8250_port da8xx_serial_pdata[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port da8xx_serial1_pdata[] = {
++	{
+ 		.mapbase	= DA8XX_UART1_BASE,
+ 		.irq		= IRQ_DA8XX_UARTINT1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -86,6 +91,11 @@ static struct plat_serial8250_port da8xx_serial_pdata[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port da8xx_serial2_pdata[] = {
++	{
+ 		.mapbase	= DA8XX_UART2_BASE,
+ 		.irq		= IRQ_DA8XX_UARTINT2,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -95,15 +105,33 @@ static struct plat_serial8250_port da8xx_serial_pdata[] = {
+ 	},
+ 	{
+ 		.flags	= 0,
+-	},
++	}
+ };
+ 
+-struct platform_device da8xx_serial_device = {
+-	.name	= "serial8250",
+-	.id	= PLAT8250_DEV_PLATFORM,
+-	.dev	= {
+-		.platform_data	= da8xx_serial_pdata,
++struct platform_device da8xx_serial_device[] = {
++	{
++		.name	= "serial8250",
++		.id	= PLAT8250_DEV_PLATFORM,
++		.dev	= {
++			.platform_data	= da8xx_serial0_pdata,
++		}
++	},
++	{
++		.name	= "serial8250",
++		.id	= PLAT8250_DEV_PLATFORM1,
++		.dev	= {
++			.platform_data	= da8xx_serial1_pdata,
++		}
+ 	},
++	{
++		.name	= "serial8250",
++		.id	= PLAT8250_DEV_PLATFORM2,
++		.dev	= {
++			.platform_data	= da8xx_serial2_pdata,
++		}
++	},
++	{
++	}
+ };
+ 
+ static s8 da8xx_queue_tc_mapping[][2] = {
+diff --git a/arch/arm/mach-davinci/devices-tnetv107x.c b/arch/arm/mach-davinci/devices-tnetv107x.c
+index 128cb9a..fc4a0fe 100644
+--- a/arch/arm/mach-davinci/devices-tnetv107x.c
++++ b/arch/arm/mach-davinci/devices-tnetv107x.c
+@@ -126,7 +126,7 @@ static struct platform_device edma_device = {
+ 	.dev.platform_data = tnetv107x_edma_info,
+ };
+ 
+-static struct plat_serial8250_port serial_data[] = {
++static struct plat_serial8250_port serial0_platform_data[] = {
+ 	{
+ 		.mapbase	= TNETV107X_UART0_BASE,
+ 		.irq		= IRQ_TNETV107X_UART0,
+@@ -137,6 +137,11 @@ static struct plat_serial8250_port serial_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port serial1_platform_data[] = {
++	{
+ 		.mapbase	= TNETV107X_UART1_BASE,
+ 		.irq		= IRQ_TNETV107X_UART1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -146,6 +151,11 @@ static struct plat_serial8250_port serial_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port serial2_platform_data[] = {
++	{
+ 		.mapbase	= TNETV107X_UART2_BASE,
+ 		.irq		= IRQ_TNETV107X_UART2,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -156,13 +166,28 @@ static struct plat_serial8250_port serial_data[] = {
+ 	},
+ 	{
+ 		.flags	= 0,
+-	},
++	}
+ };
+ 
+-struct platform_device tnetv107x_serial_device = {
+-	.name			= "serial8250",
+-	.id			= PLAT8250_DEV_PLATFORM,
+-	.dev.platform_data	= serial_data,
++
++struct platform_device tnetv107x_serial_device[] = {
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM,
++		.dev.platform_data	= serial0_platform_data,
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM1,
++		.dev.platform_data	= serial1_platform_data,
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM2,
++		.dev.platform_data	= serial2_platform_data,
++	},
++	{
++	}
+ };
+ 
+ static struct resource mmc0_resources[] = {
+diff --git a/arch/arm/mach-davinci/dm355.c b/arch/arm/mach-davinci/dm355.c
+index 86100d1..1701a2d 100644
+--- a/arch/arm/mach-davinci/dm355.c
++++ b/arch/arm/mach-davinci/dm355.c
+@@ -357,9 +357,9 @@ static struct clk_lookup dm355_clks[] = {
+ 	CLK(NULL, "clkout3", &clkout3_clk),
+ 	CLK(NULL, "arm", &arm_clk),
+ 	CLK(NULL, "mjcp", &mjcp_clk),
+-	CLK(NULL, "uart0", &uart0_clk),
+-	CLK(NULL, "uart1", &uart1_clk),
+-	CLK(NULL, "uart2", &uart2_clk),
++	CLK("serial8250.0", NULL, &uart0_clk),
++	CLK("serial8250.1", NULL, &uart1_clk),
++	CLK("serial8250.2", NULL, &uart2_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK("davinci-mcbsp.0", NULL, &asp0_clk),
+ 	CLK("davinci-mcbsp.1", NULL, &asp1_clk),
+@@ -922,7 +922,7 @@ static struct davinci_timer_info dm355_timer_info = {
+ 	.clocksource_id	= T0_TOP,
+ };
+ 
+-static struct plat_serial8250_port dm355_serial_platform_data[] = {
++static struct plat_serial8250_port dm355_serial0_platform_data[] = {
+ 	{
+ 		.mapbase	= DAVINCI_UART0_BASE,
+ 		.irq		= IRQ_UARTINT0,
+@@ -932,6 +932,11 @@ static struct plat_serial8250_port dm355_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm355_serial1_platform_data[] = {
++	{
+ 		.mapbase	= DAVINCI_UART1_BASE,
+ 		.irq		= IRQ_UARTINT1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -940,6 +945,11 @@ static struct plat_serial8250_port dm355_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm355_serial2_platform_data[] = {
++	{
+ 		.mapbase	= DM355_UART2_BASE,
+ 		.irq		= IRQ_DM355_UARTINT2,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -948,16 +958,34 @@ static struct plat_serial8250_port dm355_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
+-		.flags		= 0
+-	},
++		.flags	= 0,
++	}
+ };
+ 
+-static struct platform_device dm355_serial_device = {
+-	.name			= "serial8250",
+-	.id			= PLAT8250_DEV_PLATFORM,
+-	.dev			= {
+-		.platform_data	= dm355_serial_platform_data,
++static struct platform_device dm355_serial_device[] = {
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM,
++		.dev			= {
++			.platform_data	= dm355_serial0_platform_data,
++		}
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM1,
++		.dev			= {
++			.platform_data	= dm355_serial1_platform_data,
++		}
+ 	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM2,
++		.dev			= {
++			.platform_data	= dm355_serial2_platform_data,
++		}
++	},
++	{
++	}
+ };
+ 
+ static struct davinci_soc_info davinci_soc_info_dm355 = {
+@@ -981,7 +1009,7 @@ static struct davinci_soc_info davinci_soc_info_dm355 = {
+ 	.gpio_base		= DAVINCI_GPIO_BASE,
+ 	.gpio_num		= 104,
+ 	.gpio_irq		= IRQ_DM355_GPIOBNK0,
+-	.serial_dev		= &dm355_serial_device,
++	.serial_dev		= dm355_serial_device,
+ 	.sram_dma		= 0x00010000,
+ 	.sram_len		= SZ_32K,
+ };
+diff --git a/arch/arm/mach-davinci/dm365.c b/arch/arm/mach-davinci/dm365.c
+index dad2802..5b3a1bc 100644
+--- a/arch/arm/mach-davinci/dm365.c
++++ b/arch/arm/mach-davinci/dm365.c
+@@ -455,8 +455,8 @@ static struct clk_lookup dm365_clks[] = {
+ 	CLK("vpss", "master", &vpss_master_clk),
+ 	CLK("vpss", "slave", &vpss_slave_clk),
+ 	CLK(NULL, "arm", &arm_clk),
+-	CLK(NULL, "uart0", &uart0_clk),
+-	CLK(NULL, "uart1", &uart1_clk),
++	CLK("serial8250.0", NULL, &uart0_clk),
++	CLK("serial8250.1", NULL, &uart1_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK("da830-mmc.0", NULL, &mmcsd0_clk),
+ 	CLK("da830-mmc.1", NULL, &mmcsd1_clk),
+@@ -1041,7 +1041,7 @@ static struct davinci_timer_info dm365_timer_info = {
+ 
+ #define DM365_UART1_BASE	(IO_PHYS + 0x106000)
+ 
+-static struct plat_serial8250_port dm365_serial_platform_data[] = {
++static struct plat_serial8250_port dm365_serial0_platform_data[] = {
+ 	{
+ 		.mapbase	= DAVINCI_UART0_BASE,
+ 		.irq		= IRQ_UARTINT0,
+@@ -1051,6 +1051,11 @@ static struct plat_serial8250_port dm365_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm365_serial1_platform_data[] = {
++	{
+ 		.mapbase	= DM365_UART1_BASE,
+ 		.irq		= IRQ_UARTINT1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -1059,16 +1064,27 @@ static struct plat_serial8250_port dm365_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
+-		.flags		= 0
+-	},
++		.flags	= 0,
++	}
+ };
+ 
+-static struct platform_device dm365_serial_device = {
+-	.name			= "serial8250",
+-	.id			= PLAT8250_DEV_PLATFORM,
+-	.dev			= {
+-		.platform_data	= dm365_serial_platform_data,
++static struct platform_device dm365_serial_device[] = {
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM,
++		.dev			= {
++			.platform_data	= dm365_serial0_platform_data,
++		}
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM1,
++		.dev			= {
++			.platform_data	= dm365_serial1_platform_data,
++		}
+ 	},
++	{
++	}
+ };
+ 
+ static struct davinci_soc_info davinci_soc_info_dm365 = {
+@@ -1093,7 +1109,7 @@ static struct davinci_soc_info davinci_soc_info_dm365 = {
+ 	.gpio_num		= 104,
+ 	.gpio_irq		= IRQ_DM365_GPIO0,
+ 	.gpio_unbanked		= 8,	/* really 16 ... skip muxed GPIOs */
+-	.serial_dev		= &dm365_serial_device,
++	.serial_dev		= dm365_serial_device,
+ 	.emac_pdata		= &dm365_emac_pdata,
+ 	.sram_dma		= 0x00010000,
+ 	.sram_len		= SZ_32K,
+diff --git a/arch/arm/mach-davinci/dm644x.c b/arch/arm/mach-davinci/dm644x.c
+index a49d182..490eb8c 100644
+--- a/arch/arm/mach-davinci/dm644x.c
++++ b/arch/arm/mach-davinci/dm644x.c
+@@ -303,9 +303,9 @@ static struct clk_lookup dm644x_clks[] = {
+ 	CLK("vpss", "master", &vpss_master_clk),
+ 	CLK("vpss", "slave", &vpss_slave_clk),
+ 	CLK(NULL, "arm", &arm_clk),
+-	CLK(NULL, "uart0", &uart0_clk),
+-	CLK(NULL, "uart1", &uart1_clk),
+-	CLK(NULL, "uart2", &uart2_clk),
++	CLK("serial8250.0", NULL, &uart0_clk),
++	CLK("serial8250.1", NULL, &uart1_clk),
++	CLK("serial8250.2", NULL, &uart2_clk),
+ 	CLK("davinci_emac.1", NULL, &emac_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK("palm_bk3710", NULL, &ide_clk),
+@@ -813,7 +813,7 @@ static struct davinci_timer_info dm644x_timer_info = {
+ 	.clocksource_id	= T0_TOP,
+ };
+ 
+-static struct plat_serial8250_port dm644x_serial_platform_data[] = {
++static struct plat_serial8250_port dm644x_serial0_platform_data[] = {
+ 	{
+ 		.mapbase	= DAVINCI_UART0_BASE,
+ 		.irq		= IRQ_UARTINT0,
+@@ -823,6 +823,11 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm644x_serial1_platform_data[] = {
++	{
+ 		.mapbase	= DAVINCI_UART1_BASE,
+ 		.irq		= IRQ_UARTINT1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -831,6 +836,11 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm644x_serial2_platform_data[] = {
++	{
+ 		.mapbase	= DAVINCI_UART2_BASE,
+ 		.irq		= IRQ_UARTINT2,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -839,16 +849,34 @@ static struct plat_serial8250_port dm644x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
+-		.flags		= 0
+-	},
++		.flags	= 0,
++	}
+ };
+ 
+-static struct platform_device dm644x_serial_device = {
+-	.name			= "serial8250",
+-	.id			= PLAT8250_DEV_PLATFORM,
+-	.dev			= {
+-		.platform_data	= dm644x_serial_platform_data,
++static struct platform_device dm644x_serial_device[] = {
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM,
++		.dev			= {
++			.platform_data	= dm644x_serial0_platform_data,
++		}
+ 	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM1,
++		.dev			= {
++			.platform_data	= dm644x_serial1_platform_data,
++		}
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM2,
++		.dev			= {
++			.platform_data	= dm644x_serial2_platform_data,
++		}
++	},
++	{
++	}
+ };
+ 
+ static struct davinci_soc_info davinci_soc_info_dm644x = {
+@@ -872,7 +900,7 @@ static struct davinci_soc_info davinci_soc_info_dm644x = {
+ 	.gpio_base		= DAVINCI_GPIO_BASE,
+ 	.gpio_num		= 71,
+ 	.gpio_irq		= IRQ_GPIOBNK0,
+-	.serial_dev		= &dm644x_serial_device,
++	.serial_dev		= dm644x_serial_device,
+ 	.emac_pdata		= &dm644x_emac_pdata,
+ 	.sram_dma		= 0x00008000,
+ 	.sram_len		= SZ_16K,
+diff --git a/arch/arm/mach-davinci/dm646x.c b/arch/arm/mach-davinci/dm646x.c
+index d1259e8..23609b1 100644
+--- a/arch/arm/mach-davinci/dm646x.c
++++ b/arch/arm/mach-davinci/dm646x.c
+@@ -342,9 +342,9 @@ static struct clk_lookup dm646x_clks[] = {
+ 	CLK(NULL, "edma_tc1", &edma_tc1_clk),
+ 	CLK(NULL, "edma_tc2", &edma_tc2_clk),
+ 	CLK(NULL, "edma_tc3", &edma_tc3_clk),
+-	CLK(NULL, "uart0", &uart0_clk),
+-	CLK(NULL, "uart1", &uart1_clk),
+-	CLK(NULL, "uart2", &uart2_clk),
++	CLK("serial8250.0", NULL, &uart0_clk),
++	CLK("serial8250.1", NULL, &uart1_clk),
++	CLK("serial8250.2", NULL, &uart2_clk),
+ 	CLK("i2c_davinci.1", NULL, &i2c_clk),
+ 	CLK(NULL, "gpio", &gpio_clk),
+ 	CLK("davinci-mcasp.0", NULL, &mcasp0_clk),
+@@ -790,7 +790,7 @@ static struct davinci_timer_info dm646x_timer_info = {
+ 	.clocksource_id	= T0_TOP,
+ };
+ 
+-static struct plat_serial8250_port dm646x_serial_platform_data[] = {
++static struct plat_serial8250_port dm646x_serial0_platform_data[] = {
+ 	{
+ 		.mapbase	= DAVINCI_UART0_BASE,
+ 		.irq		= IRQ_UARTINT0,
+@@ -800,6 +800,11 @@ static struct plat_serial8250_port dm646x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm646x_serial1_platform_data[] = {
++	{
+ 		.mapbase	= DAVINCI_UART1_BASE,
+ 		.irq		= IRQ_UARTINT1,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -808,6 +813,11 @@ static struct plat_serial8250_port dm646x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
++		.flags	= 0,
++	}
++};
++static struct plat_serial8250_port dm646x_serial2_platform_data[] = {
++	{
+ 		.mapbase	= DAVINCI_UART2_BASE,
+ 		.irq		= IRQ_DM646X_UARTINT2,
+ 		.flags		= UPF_BOOT_AUTOCONF | UPF_SKIP_TEST |
+@@ -816,16 +826,34 @@ static struct plat_serial8250_port dm646x_serial_platform_data[] = {
+ 		.regshift	= 2,
+ 	},
+ 	{
+-		.flags		= 0
+-	},
++		.flags	= 0,
++	}
+ };
+ 
+-static struct platform_device dm646x_serial_device = {
+-	.name			= "serial8250",
+-	.id			= PLAT8250_DEV_PLATFORM,
+-	.dev			= {
+-		.platform_data	= dm646x_serial_platform_data,
++static struct platform_device dm646x_serial_device[] = {
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM,
++		.dev			= {
++			.platform_data	= dm646x_serial0_platform_data,
++		}
++	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM1,
++		.dev			= {
++			.platform_data	= dm646x_serial1_platform_data,
++		}
+ 	},
++	{
++		.name			= "serial8250",
++		.id			= PLAT8250_DEV_PLATFORM2,
++		.dev			= {
++			.platform_data	= dm646x_serial2_platform_data,
++		}
++	},
++	{
++	}
+ };
+ 
+ static struct davinci_soc_info davinci_soc_info_dm646x = {
+@@ -849,7 +877,7 @@ static struct davinci_soc_info davinci_soc_info_dm646x = {
+ 	.gpio_base		= DAVINCI_GPIO_BASE,
+ 	.gpio_num		= 43, /* Only 33 usable */
+ 	.gpio_irq		= IRQ_DM646X_GPIOBNK0,
+-	.serial_dev		= &dm646x_serial_device,
++	.serial_dev		= dm646x_serial_device,
+ 	.emac_pdata		= &dm646x_emac_pdata,
+ 	.sram_dma		= 0x10010000,
+ 	.sram_len		= SZ_32K,
+diff --git a/arch/arm/mach-davinci/include/mach/da8xx.h b/arch/arm/mach-davinci/include/mach/da8xx.h
+index 7b41a5e..aae5307 100644
+--- a/arch/arm/mach-davinci/include/mach/da8xx.h
++++ b/arch/arm/mach-davinci/include/mach/da8xx.h
+@@ -111,7 +111,7 @@ void da8xx_restart(enum reboot_mode mode, const char *cmd);
+ void da8xx_rproc_reserve_cma(void);
+ int da8xx_register_rproc(void);
+ 
+-extern struct platform_device da8xx_serial_device;
++extern struct platform_device da8xx_serial_device[];
+ extern struct emac_platform_data da8xx_emac_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lcd035q3dg01_pdata;
+ extern struct da8xx_lcdc_platform_data sharp_lk043t1dg01_pdata;
+diff --git a/arch/arm/mach-davinci/include/mach/tnetv107x.h b/arch/arm/mach-davinci/include/mach/tnetv107x.h
+index 16314c6..beb7c0e 100644
+--- a/arch/arm/mach-davinci/include/mach/tnetv107x.h
++++ b/arch/arm/mach-davinci/include/mach/tnetv107x.h
+@@ -50,7 +50,7 @@ struct tnetv107x_device_info {
+ };
+ 
+ extern struct platform_device tnetv107x_wdt_device;
+-extern struct platform_device tnetv107x_serial_device;
++extern struct platform_device tnetv107x_serial_device[];
+ 
+ extern void tnetv107x_init(void);
+ extern void tnetv107x_devices_init(struct tnetv107x_device_info *);
+diff --git a/arch/arm/mach-davinci/serial.c b/arch/arm/mach-davinci/serial.c
+index f262581..57e6150 100644
+--- a/arch/arm/mach-davinci/serial.c
++++ b/arch/arm/mach-davinci/serial.c
+@@ -76,7 +76,7 @@ int __init davinci_serial_setup_clk(unsigned instance, unsigned int *rate)
+ 	char name[16];
+ 	struct clk *clk;
+ 	struct davinci_soc_info *soc_info = &davinci_soc_info;
+-	struct device *dev = &soc_info->serial_dev->dev;
++	struct device *dev = &soc_info->serial_dev[instance].dev;
+ 
+ 	sprintf(name, "uart%d", instance);
+ 	clk = clk_get(dev, name);
+@@ -96,19 +96,25 @@ int __init davinci_serial_setup_clk(unsigned instance, unsigned int *rate)
+ 
+ int __init davinci_serial_init(struct davinci_uart_config *info)
+ {
+-	int i, ret;
++	int i, ret = 0;
+ 	struct davinci_soc_info *soc_info = &davinci_soc_info;
+-	struct device *dev = &soc_info->serial_dev->dev;
+-	struct plat_serial8250_port *p = dev->platform_data;
++	struct device *dev;
++	struct plat_serial8250_port *p;
+ 
+ 	/*
+ 	 * Make sure the serial ports are muxed on at this point.
+ 	 * You have to mux them off in device drivers later on if not needed.
+ 	 */
+-	for (i = 0; p->flags; i++, p++) {
++	for (i = 0; soc_info->serial_dev[i].dev.platform_data != NULL; i++) {
++		dev = &soc_info->serial_dev[i].dev;
++		p = dev->platform_data;
+ 		if (!(info->enabled_uarts & (1 << i)))
+ 			continue;
+ 
++		ret = platform_device_register(&soc_info->serial_dev[i]);
++		if (ret)
++			continue;
++
+ 		ret = davinci_serial_setup_clk(i, &p->uartclk);
+ 		if (ret)
+ 			continue;
+@@ -125,6 +131,5 @@ int __init davinci_serial_init(struct davinci_uart_config *info)
+ 		if (p->membase && p->type != PORT_AR7)
+ 			davinci_serial_reset(p);
+ 	}
+-
+-	return platform_device_register(soc_info->serial_dev);
++	return ret;
+ }
+diff --git a/arch/arm/mach-davinci/tnetv107x.c b/arch/arm/mach-davinci/tnetv107x.c
+index 4545667..f4d7fbb 100644
+--- a/arch/arm/mach-davinci/tnetv107x.c
++++ b/arch/arm/mach-davinci/tnetv107x.c
+@@ -264,7 +264,7 @@ static struct clk_lookup clks[] = {
+ 	CLK(NULL,		"clk_chipcfg",		&clk_chipcfg),
+ 	CLK("tnetv107x-ts.0",	NULL,			&clk_tsc),
+ 	CLK(NULL,		"clk_rom",		&clk_rom),
+-	CLK(NULL,		"uart2",		&clk_uart2),
++	CLK("serial8250.2",     NULL,			&clk_uart2),
+ 	CLK(NULL,		"clk_pktsec",		&clk_pktsec),
+ 	CLK("tnetv107x-rng.0",	NULL,			&clk_rng),
+ 	CLK("tnetv107x-pka.0",	NULL,			&clk_pka),
+@@ -274,8 +274,8 @@ static struct clk_lookup clks[] = {
+ 	CLK(NULL,		"clk_gpio",		&clk_gpio),
+ 	CLK(NULL,		"clk_mdio",		&clk_mdio),
+ 	CLK("dm6441-mmc.0",	NULL,			&clk_sdio0),
+-	CLK(NULL,		"uart0",		&clk_uart0),
+-	CLK(NULL,		"uart1",		&clk_uart1),
++	CLK("serial8250.0",	NULL,			&clk_uart0),
++	CLK("serial8250.1",	NULL,			&clk_uart1),
+ 	CLK(NULL,		"timer0",		&clk_timer0),
+ 	CLK(NULL,		"timer1",		&clk_timer1),
+ 	CLK("tnetv107x_wdt.0",	NULL,			&clk_wdt_arm),
+@@ -757,7 +757,7 @@ static struct davinci_soc_info tnetv107x_soc_info = {
+ 	.gpio_type		= GPIO_TYPE_TNETV107X,
+ 	.gpio_num		= TNETV107X_N_GPIO,
+ 	.timer_info		= &timer_info,
+-	.serial_dev		= &tnetv107x_serial_device,
++	.serial_dev		= tnetv107x_serial_device,
+ };
+ 
+ void __init tnetv107x_init(void)
+diff --git a/arch/arm/mach-omap2/Makefile b/arch/arm/mach-omap2/Makefile
+index d4f6715..7c0ef46 100644
+--- a/arch/arm/mach-omap2/Makefile
++++ b/arch/arm/mach-omap2/Makefile
+@@ -295,4 +295,7 @@ endif
+ emac-$(CONFIG_TI_DAVINCI_EMAC)		:= am35xx-emac.o
+ obj-y					+= $(emac-m) $(emac-y)
+ 
++cpsw-$(CONFIG_TI_CPSW)			:= am33xx-cpsw.o
++obj-y					+= $(cpsw-m) $(cpsw-y)
++
+ obj-y					+= common-board-devices.o twl-common.o dss-common.o
+diff --git a/arch/arm/mach-omap2/am33xx-cpsw.c b/arch/arm/mach-omap2/am33xx-cpsw.c
+new file mode 100644
+index 0000000..5a674d9
+--- /dev/null
++++ b/arch/arm/mach-omap2/am33xx-cpsw.c
+@@ -0,0 +1,94 @@
++/*
++ * am335x specific cpsw dt fixups
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation version 2.
++ *
++ * This program is distributed "as is" WITHOUT ANY WARRANTY of any
++ * kind, whether express or implied; without even the implied warranty
++ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include <linux/kernel.h>
++#include <linux/init.h>
++#include <linux/etherdevice.h>
++#include <linux/of.h>
++#include <linux/of_net.h>
++
++#include "soc.h"
++#include "control.h"
++
++/**
++ * am33xx_dt_cpsw_set_mac_from_efuse - Add mac-address property using
++ * ethernet hwaddr from efuse
++ * @np:		Pointer to the cpsw slave to set mac address of
++ * @idx:	Mac address index to use from efuse
++ */
++static void am33xx_dt_cpsw_set_mac_from_efuse(struct device_node *np, int idx)
++{
++	struct property *prop;
++	u32 lo, hi;
++	u8 *mac;
++
++	switch (idx) {
++	case 0:
++		lo = omap_ctrl_readl(AM33XX_CONTROL_MAC_ID0_LOW);
++		hi = omap_ctrl_readl(AM33XX_CONTROL_MAC_ID0_HIGH);
++		break;
++
++	case 1:
++		lo = omap_ctrl_readl(AM33XX_CONTROL_MAC_ID1_LOW);
++		hi = omap_ctrl_readl(AM33XX_CONTROL_MAC_ID1_HIGH);
++		break;
++
++	default:
++		pr_err("cpsw.%d: too many slaves found\n", idx);
++		return;
++	}
++
++	prop = kzalloc(sizeof(*prop) + ETH_ALEN, GFP_KERNEL);
++	if (!prop)
++		return;
++
++	prop->value = prop + 1;
++	prop->length = ETH_ALEN;
++	prop->name = kstrdup("mac-address", GFP_KERNEL);
++	if (!prop->name) {
++		kfree(prop);
++		return;
++	}
++
++	mac = prop->value;
++
++	mac[0] = hi;
++	mac[1] = hi >> 8;
++	mac[2] = hi >> 16;
++	mac[3] = hi >> 24;
++	mac[4] = lo;
++	mac[5] = lo >> 8;
++
++	of_update_property(np, prop);
++
++	pr_info("cpsw.%d: No hwaddr in dt. Using %pM from efuse\n", idx, mac);
++}
++
++static int __init am33xx_dt_cpsw_mac_fixup(void)
++{
++	struct device_node *np, *slave;
++	int idx = 0;
++
++	if (!soc_is_am33xx())
++		return -ENODEV;
++
++	for_each_compatible_node(np, NULL, "ti,cpsw")
++		for_each_node_by_name(slave, "slave") {
++			if (!of_get_mac_address(slave))
++				am33xx_dt_cpsw_set_mac_from_efuse(slave, idx);
++			idx++;
++		}
++
++	return 0;
++}
++arch_initcall(am33xx_dt_cpsw_mac_fixup);
+diff --git a/arch/arm/mach-omap2/board-omap3beagle.c b/arch/arm/mach-omap2/board-omap3beagle.c
+index 04c1165..1c6ae5f 100644
+--- a/arch/arm/mach-omap2/board-omap3beagle.c
++++ b/arch/arm/mach-omap2/board-omap3beagle.c
+@@ -33,7 +33,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mmc/host.h>
+ #include <linux/usb/phy.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include <linux/regulator/machine.h>
+ #include <linux/i2c/twl.h>
+@@ -279,7 +279,7 @@ static struct regulator_consumer_supply beagle_vsim_supply[] = {
+ static struct gpio_led gpio_leds[];
+ 
+ /* PHY's VCC regulator might be added later, so flag that we need it */
+-static struct nop_usb_xceiv_platform_data hsusb2_phy_data = {
++static struct usb_phy_gen_xceiv_platform_data hsusb2_phy_data = {
+ 	.needs_vcc = true,
+ };
+ 
+diff --git a/arch/arm/mach-omap2/board-omap3evm.c b/arch/arm/mach-omap2/board-omap3evm.c
+index 8c02626..52bdddd 100644
+--- a/arch/arm/mach-omap2/board-omap3evm.c
++++ b/arch/arm/mach-omap2/board-omap3evm.c
+@@ -33,7 +33,7 @@
+ #include <linux/i2c/twl.h>
+ #include <linux/usb/otg.h>
+ #include <linux/usb/musb.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ #include <linux/smsc911x.h>
+ 
+ #include <linux/wl12xx.h>
+@@ -468,7 +468,7 @@ struct wl12xx_platform_data omap3evm_wlan_data __initdata = {
+ static struct regulator_consumer_supply omap3evm_vaux2_supplies[] = {
+ 	REGULATOR_SUPPLY("VDD_CSIPHY1", "omap3isp"),	/* OMAP ISP */
+ 	REGULATOR_SUPPLY("VDD_CSIPHY2", "omap3isp"),	/* OMAP ISP */
+-	REGULATOR_SUPPLY("vcc", "nop_usb_xceiv.2"),	/* hsusb port 2 */
++	REGULATOR_SUPPLY("vcc", "usb_phy_gen_xceiv.2"),	/* hsusb port 2 */
+ 	REGULATOR_SUPPLY("vaux2", NULL),
+ };
+ 
+diff --git a/arch/arm/mach-omap2/board-omap3pandora.c b/arch/arm/mach-omap2/board-omap3pandora.c
+index b1547a0..d2b455e 100644
+--- a/arch/arm/mach-omap2/board-omap3pandora.c
++++ b/arch/arm/mach-omap2/board-omap3pandora.c
+@@ -352,7 +352,7 @@ static struct regulator_consumer_supply pandora_vcc_lcd_supply[] = {
+ };
+ 
+ static struct regulator_consumer_supply pandora_usb_phy_supply[] = {
+-	REGULATOR_SUPPLY("vcc", "nop_usb_xceiv.2"),	/* hsusb port 2 */
++	REGULATOR_SUPPLY("vcc", "usb_phy_gen_xceiv.2"),	/* hsusb port 2 */
+ };
+ 
+ /* ads7846 on SPI and 2 nub controllers on I2C */
+diff --git a/arch/arm/mach-omap2/control.h b/arch/arm/mach-omap2/control.h
+index f7d7c2e..5d684b7 100644
+--- a/arch/arm/mach-omap2/control.h
++++ b/arch/arm/mach-omap2/control.h
+@@ -352,6 +352,10 @@
+ /* AM33XX CONTROL_STATUS register */
+ #define AM33XX_CONTROL_STATUS		0x040
+ #define AM33XX_CONTROL_SEC_CLK_CTRL	0x1bc
++#define AM33XX_CONTROL_MAC_ID0_LOW	0x630
++#define AM33XX_CONTROL_MAC_ID0_HIGH	0x634
++#define AM33XX_CONTROL_MAC_ID1_LOW	0x638
++#define AM33XX_CONTROL_MAC_ID1_HIGH	0x63c
+ 
+ /* AM33XX CONTROL_STATUS bitfields (partial) */
+ #define AM33XX_CONTROL_STATUS_SYSBOOT1_SHIFT		22
+diff --git a/arch/arm/mach-omap2/omap_device.c b/arch/arm/mach-omap2/omap_device.c
+index f99f68e..dc7a56d 100644
+--- a/arch/arm/mach-omap2/omap_device.c
++++ b/arch/arm/mach-omap2/omap_device.c
+@@ -330,30 +330,156 @@ static int omap_device_fill_resources(struct omap_device *od,
+ }
+ 
+ /**
+- * _od_fill_dma_resources - fill in array of struct resource with dma resources
++ * omap_device_fixup_resources - Fix platform device resources
+  * @od: struct omap_device *
+- * @res: pointer to an array of struct resource to be filled in
+- *
+- * Populate one or more empty struct resource pointed to by @res with
+- * the dma resource data for this omap_device @od.  Used by
+- * omap_device_alloc() after calling omap_device_count_resources().
+- *
+- * Ideally this function would not be needed at all.  If we have
+- * mechanism to get dma resources from DT.
+  *
+- * Returns 0.
++ * Fixup the platform device resources so that the resources
++ * from the hwmods are included for.
+  */
+-static int _od_fill_dma_resources(struct omap_device *od,
+-				      struct resource *res)
++static int omap_device_fixup_resources(struct omap_device *od)
+ {
+-	int i, r;
++	struct platform_device *pdev = od->pdev;
++	int i, j, ret, res_count;
++	struct resource *res, *r, *rnew, *rn;
++	unsigned long type;
+ 
+-	for (i = 0; i < od->hwmods_cnt; i++) {
+-		r = omap_hwmod_fill_dma_resources(od->hwmods[i], res);
+-		res += r;
++	/*
++	 * DT Boot:
++	 *   OF framework will construct the resource structure (currently
++	 *   does for MEM & IRQ resource) and we should respect/use these
++	 *   resources, killing hwmod dependency.
++	 *   If pdev->num_resources > 0, we assume that MEM & IRQ resources
++	 *   have been allocated by OF layer already (through DTB).
++	 *
++	 * Non-DT Boot:
++	 *   Here, pdev->num_resources = 0, and we should get all the
++	 *   resources from hwmod.
++	 *
++	 * TODO: Once DMA resource is available from OF layer, we should
++	 *   kill filling any resources from hwmod.
++	 */
++
++	/* count number of resources hwmod provides */
++	res_count = omap_device_count_resources(od, IORESOURCE_IRQ |
++					IORESOURCE_DMA | IORESOURCE_MEM);
++
++	/* if no resources from hwmod, we're done already */
++	if (res_count == 0)
++		return 0;
++
++	/* Allocate resources memory to account for all hwmod resources */
++	res = kzalloc(sizeof(struct resource) * res_count, GFP_KERNEL);
++	if (!res) {
++		ret = -ENOMEM;
++		goto fail_no_res;
++	}
++
++	/* fill all the resources */
++	ret = omap_device_fill_resources(od, res);
++	if (ret != 0)
++		goto fail_no_fill;
++
++	/*
++	 * If pdev->num_resources > 0, then assume that,
++	 * MEM and IRQ resources will only come from DT and only
++	 * fill DMA resource from hwmod layer.
++	 */
++	if (pdev->num_resources > 0) {
++
++		dev_dbg(&pdev->dev, "%s(): resources allocated %d hwmod #%d\n",
++			__func__, pdev->num_resources, res_count);
++
++		/* find number of resources needing to be inserted */
++		for (i = 0, j = 0, r = res; i < res_count; i++, r++) {
++			type = resource_type(r);
++			if (type == IORESOURCE_DMA)
++				j++;
++		}
++
++		/* no need to insert anything, just return */
++		if (j == 0) {
++			kfree(res);
++			return 0;
++		}
++
++		/* we need to insert j additional resources */
++		rnew = kzalloc(sizeof(*rnew) *
++				(pdev->num_resources + j), GFP_KERNEL);
++		if (rnew == NULL)
++			goto fail_no_rnew;
++
++		/*
++		 * Unlink any resources from any lists.
++		 * This is important since the copying destroys any
++		 * linkage
++		 */
++		for (i = 0, r = pdev->resource;
++				i < pdev->num_resources; i++, r++) {
++
++			if (!r->parent)
++				continue;
++
++			dev_dbg(&pdev->dev,
++					"Releasing resource %p\n", r);
++			release_resource(r);
++			r->parent = NULL;
++			r->sibling = NULL;
++			r->child = NULL;
++		}
++
++		memcpy(rnew, pdev->resource,
++				sizeof(*rnew) * pdev->num_resources);
++
++		/* now append the resources from the hwmods */
++		rn = rnew + pdev->num_resources;
++		for (i = 0, r = res; i < res_count; i++, r++) {
++
++			type = resource_type(r);
++			if (type != IORESOURCE_DMA)
++				continue;
++
++			/* append the hwmod resource */
++			memcpy(rn, r, sizeof(*r));
++
++			/* make sure these are zeroed out */
++			rn->parent = NULL;
++			rn->child = NULL;
++			rn->sibling = NULL;
++
++			rn++;
++		}
++		kfree(res);	/* we don't need res anymore */
++
++		/* this is our new resource table */
++		res = rnew;
++		res_count = j + pdev->num_resources;
++
++	} else {
++		dev_dbg(&pdev->dev, "%s(): using resources from hwmod %d\n",
++			__func__, res_count);
+ 	}
+ 
++	ret = platform_device_add_resources(pdev, res, res_count);
++	kfree(res);
++
++	/* failed to add the resources? */
++	if (ret != 0)
++		return ret;
++
++	/* finally link all the resources again */
++	ret = platform_device_link_resources(pdev);
++	if (ret != 0)
++		return ret;
++
+ 	return 0;
++
++fail_no_rnew:
++	/* nothing */
++fail_no_fill:
++	kfree(res);
++
++fail_no_res:
++	return ret;
+ }
+ 
+ /**
+@@ -373,9 +499,8 @@ struct omap_device *omap_device_alloc(struct platform_device *pdev,
+ {
+ 	int ret = -ENOMEM;
+ 	struct omap_device *od;
+-	struct resource *res = NULL;
+-	int i, res_count;
+ 	struct omap_hwmod **hwmods;
++	int i;
+ 
+ 	od = kzalloc(sizeof(struct omap_device), GFP_KERNEL);
+ 	if (!od) {
+@@ -385,79 +510,18 @@ struct omap_device *omap_device_alloc(struct platform_device *pdev,
+ 	od->hwmods_cnt = oh_cnt;
+ 
+ 	hwmods = kmemdup(ohs, sizeof(struct omap_hwmod *) * oh_cnt, GFP_KERNEL);
+-	if (!hwmods)
++	if (!hwmods) {
++		ret = -ENOMEM;
+ 		goto oda_exit2;
++	}
+ 
+ 	od->hwmods = hwmods;
+ 	od->pdev = pdev;
+ 
+-	/*
+-	 * Non-DT Boot:
+-	 *   Here, pdev->num_resources = 0, and we should get all the
+-	 *   resources from hwmod.
+-	 *
+-	 * DT Boot:
+-	 *   OF framework will construct the resource structure (currently
+-	 *   does for MEM & IRQ resource) and we should respect/use these
+-	 *   resources, killing hwmod dependency.
+-	 *   If pdev->num_resources > 0, we assume that MEM & IRQ resources
+-	 *   have been allocated by OF layer already (through DTB).
+-	 *   As preparation for the future we examine the OF provided resources
+-	 *   to see if we have DMA resources provided already. In this case
+-	 *   there is no need to update the resources for the device, we use the
+-	 *   OF provided ones.
+-	 *
+-	 * TODO: Once DMA resource is available from OF layer, we should
+-	 *   kill filling any resources from hwmod.
+-	 */
+-	if (!pdev->num_resources) {
+-		/* Count all resources for the device */
+-		res_count = omap_device_count_resources(od, IORESOURCE_IRQ |
+-							    IORESOURCE_DMA |
+-							    IORESOURCE_MEM);
+-	} else {
+-		/* Take a look if we already have DMA resource via DT */
+-		for (i = 0; i < pdev->num_resources; i++) {
+-			struct resource *r = &pdev->resource[i];
+-
+-			/* We have it, no need to touch the resources */
+-			if (r->flags == IORESOURCE_DMA)
+-				goto have_everything;
+-		}
+-		/* Count only DMA resources for the device */
+-		res_count = omap_device_count_resources(od, IORESOURCE_DMA);
+-		/* The device has no DMA resource, no need for update */
+-		if (!res_count)
+-			goto have_everything;
+-
+-		res_count += pdev->num_resources;
+-	}
+-
+-	/* Allocate resources memory to account for new resources */
+-	res = kzalloc(sizeof(struct resource) * res_count, GFP_KERNEL);
+-	if (!res)
+-		goto oda_exit3;
+-
+-	if (!pdev->num_resources) {
+-		dev_dbg(&pdev->dev, "%s: using %d resources from hwmod\n",
+-			__func__, res_count);
+-		omap_device_fill_resources(od, res);
+-	} else {
+-		dev_dbg(&pdev->dev,
+-			"%s: appending %d DMA resources from hwmod\n",
+-			__func__, res_count - pdev->num_resources);
+-		memcpy(res, pdev->resource,
+-		       sizeof(struct resource) * pdev->num_resources);
+-		_od_fill_dma_resources(od, &res[pdev->num_resources]);
+-	}
+-
+-	ret = platform_device_add_resources(pdev, res, res_count);
+-	kfree(res);
+-
+-	if (ret)
++	ret = omap_device_fixup_resources(od);
++	if (ret != 0)
+ 		goto oda_exit3;
+ 
+-have_everything:
+ 	pdev->archdata.od = od;
+ 
+ 	for (i = 0; i < oh_cnt; i++) {
+diff --git a/arch/arm/mach-omap2/omap_hwmod.c b/arch/arm/mach-omap2/omap_hwmod.c
+index 7f4db12..b887451 100644
+--- a/arch/arm/mach-omap2/omap_hwmod.c
++++ b/arch/arm/mach-omap2/omap_hwmod.c
+@@ -784,7 +784,9 @@ static int _init_interface_clks(struct omap_hwmod *oh)
+ 		if (IS_ERR(c)) {
+ 			pr_warning("omap_hwmod: %s: cannot clk_get interface_clk %s\n",
+ 				   oh->name, os->clk);
+-			ret = -EINVAL;
++			if (ret == 0)
++				ret = -EINVAL;
++			continue;
+ 		}
+ 		os->_clk = c;
+ 		/*
+@@ -820,7 +822,9 @@ static int _init_opt_clks(struct omap_hwmod *oh)
+ 		if (IS_ERR(c)) {
+ 			pr_warning("omap_hwmod: %s: cannot clk_get opt_clk %s\n",
+ 				   oh->name, oc->clk);
+-			ret = -EINVAL;
++			if (ret == 0)
++				ret = -EINVAL;
++			continue;
+ 		}
+ 		oc->_clk = c;
+ 		/*
+diff --git a/arch/arm/mach-omap2/usb-host.c b/arch/arm/mach-omap2/usb-host.c
+index 2eb19d4..e83a6a4 100644
+--- a/arch/arm/mach-omap2/usb-host.c
++++ b/arch/arm/mach-omap2/usb-host.c
+@@ -28,7 +28,7 @@
+ #include <linux/io.h>
+ #include <linux/gpio.h>
+ #include <linux/usb/phy.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include "soc.h"
+ #include "omap_device.h"
+@@ -349,7 +349,7 @@ static struct fixed_voltage_config hsusb_reg_config = {
+ 	/* .init_data filled later */
+ };
+ 
+-static const char *nop_name = "nop_usb_xceiv"; /* NOP PHY driver */
++static const char *nop_name = "usb_phy_gen_xceiv"; /* NOP PHY driver */
+ static const char *reg_name = "reg-fixed-voltage"; /* Regulator driver */
+ 
+ /**
+@@ -460,9 +460,9 @@ int usbhs_init_phys(struct usbhs_phy_data *phy, int num_phys)
+ 		pdevinfo.name = nop_name;
+ 		pdevinfo.id = phy->port;
+ 		pdevinfo.data = phy->platform_data;
+-		pdevinfo.size_data = sizeof(struct nop_usb_xceiv_platform_data);
+-
+-		scnprintf(phy_id, MAX_STR, "nop_usb_xceiv.%d",
++		pdevinfo.size_data =
++			sizeof(struct usb_phy_gen_xceiv_platform_data);
++		scnprintf(phy_id, MAX_STR, "usb_phy_gen_xceiv.%d",
+ 					phy->port);
+ 		pdev = platform_device_register_full(&pdevinfo);
+ 		if (IS_ERR(pdev)) {
+diff --git a/drivers/base/platform.c b/drivers/base/platform.c
+index 3c3197a..65c774c 100644
+--- a/drivers/base/platform.c
++++ b/drivers/base/platform.c
+@@ -267,6 +267,80 @@ int platform_device_add_data(struct platform_device *pdev, const void *data,
+ }
+ EXPORT_SYMBOL_GPL(platform_device_add_data);
+ 
++static struct resource *platform_device_parent_resource(
++		struct platform_device *pdev, struct resource *r)
++{
++	unsigned long type;
++
++	if (r->parent)
++		return r->parent;
++
++	type = resource_type(r);
++	switch (type) {
++		case IORESOURCE_MEM:
++			return &iomem_resource;
++		case IORESOURCE_IO:
++			return &ioport_resource;
++		/* TODO: What about the other resources? */
++		default:
++			break;
++	}
++	pr_debug("%s: no parent for resource %p type 0x%lx\n",
++			dev_name(&pdev->dev), r, resource_type(r));
++	return NULL;
++}
++
++int platform_device_unlink_resources(struct platform_device *pdev)
++{
++	struct resource *r;
++	int i;
++
++	for (i = pdev->num_resources - 1; i >= 0; i--) {
++		r = &pdev->resource[i];
++		if (r->parent == NULL)
++			continue;
++		release_resource(r);
++	}
++	return 0;
++}
++EXPORT_SYMBOL_GPL(platform_device_unlink_resources);
++
++int platform_device_link_resources(struct platform_device *pdev)
++{
++	int i;
++	struct resource *p, *r;
++
++	for (i = 0; i < pdev->num_resources; i++) {
++		r = &pdev->resource[i];
++
++		if (r->name == NULL)
++			r->name = dev_name(&pdev->dev);
++
++		/* already linked */
++		if (r->parent != NULL)
++			continue;
++
++		p = platform_device_parent_resource(pdev, r);
++		if (p && insert_resource(p, r)) {
++			pr_err("%s: failed to claim resource %d\n",
++			       dev_name(&pdev->dev), i);
++			goto fail;
++		}
++	}
++
++	return 0;
++
++fail:
++	while (--i >= 0) {
++		r = &pdev->resource[i];
++		if (r->parent == NULL)
++			continue;
++		release_resource(r);
++	}
++	return -EBUSY;
++}
++EXPORT_SYMBOL_GPL(platform_device_link_resources);
++
+ /**
+  * platform_device_add - add a platform device to device hierarchy
+  * @pdev: platform device we're adding
+@@ -276,7 +350,7 @@ EXPORT_SYMBOL_GPL(platform_device_add_data);
+  */
+ int platform_device_add(struct platform_device *pdev)
+ {
+-	int i, ret;
++	int ret;
+ 
+ 	if (!pdev)
+ 		return -EINVAL;
+@@ -308,26 +382,10 @@ int platform_device_add(struct platform_device *pdev)
+ 		break;
+ 	}
+ 
+-	for (i = 0; i < pdev->num_resources; i++) {
+-		struct resource *p, *r = &pdev->resource[i];
+-
+-		if (r->name == NULL)
+-			r->name = dev_name(&pdev->dev);
+-
+-		p = r->parent;
+-		if (!p) {
+-			if (resource_type(r) == IORESOURCE_MEM)
+-				p = &iomem_resource;
+-			else if (resource_type(r) == IORESOURCE_IO)
+-				p = &ioport_resource;
+-		}
+-
+-		if (p && insert_resource(p, r)) {
+-			dev_err(&pdev->dev, "failed to claim resource %d\n", i);
+-			ret = -EBUSY;
+-			goto failed;
+-		}
+-	}
++	/* make sure the resources are linked properly */
++	ret = platform_device_link_resources(pdev);
++	if (ret != 0)
++		goto failed_res;
+ 
+ 	pr_debug("Registering platform device '%s'. Parent at %s\n",
+ 		 dev_name(&pdev->dev), dev_name(pdev->dev.parent));
+@@ -336,20 +394,14 @@ int platform_device_add(struct platform_device *pdev)
+ 	if (ret == 0)
+ 		return ret;
+ 
+- failed:
++	platform_device_unlink_resources(pdev);
++
++ failed_res:
+ 	if (pdev->id_auto) {
+ 		ida_simple_remove(&platform_devid_ida, pdev->id);
+ 		pdev->id = PLATFORM_DEVID_AUTO;
+ 	}
+ 
+-	while (--i >= 0) {
+-		struct resource *r = &pdev->resource[i];
+-		unsigned long type = resource_type(r);
+-
+-		if (type == IORESOURCE_MEM || type == IORESOURCE_IO)
+-			release_resource(r);
+-	}
+-
+  err_out:
+ 	return ret;
+ }
+@@ -365,8 +417,6 @@ EXPORT_SYMBOL_GPL(platform_device_add);
+  */
+ void platform_device_del(struct platform_device *pdev)
+ {
+-	int i;
+-
+ 	if (pdev) {
+ 		device_del(&pdev->dev);
+ 
+@@ -375,13 +425,7 @@ void platform_device_del(struct platform_device *pdev)
+ 			pdev->id = PLATFORM_DEVID_AUTO;
+ 		}
+ 
+-		for (i = 0; i < pdev->num_resources; i++) {
+-			struct resource *r = &pdev->resource[i];
+-			unsigned long type = resource_type(r);
+-
+-			if (type == IORESOURCE_MEM || type == IORESOURCE_IO)
+-				release_resource(r);
+-		}
++		platform_device_unlink_resources(pdev);
+ 	}
+ }
+ EXPORT_SYMBOL_GPL(platform_device_del);
+diff --git a/drivers/dma/edma.c b/drivers/dma/edma.c
+index 5f3e532..cec9a12 100644
+--- a/drivers/dma/edma.c
++++ b/drivers/dma/edma.c
+@@ -70,6 +70,7 @@ struct edma_chan {
+ 	bool				alloced;
+ 	int				slot[EDMA_MAX_SLOTS];
+ 	struct dma_slave_config		cfg;
++	struct dma_slave_sg_limits	sg_limits;
+ };
+ 
+ struct edma_cc {
+@@ -210,6 +211,198 @@ static int edma_control(struct dma_chan *chan, enum dma_ctrl_cmd cmd,
+ 	return ret;
+ }
+ 
++/*
++ * A clean implementation of a PaRAM set configuration abstraction
++ * @chan: Channel who's PaRAM set we're configuring
++ * @src_addr: Source address of the DMA
++ * @dst_addr: Destination address of the DMA
++ * @burst: In units of dev_width, how much to send
++ * @dev_width: How much is the dev_width
++ * @dma_length: Total length of the DMA transfer
++ * @direction: Direction of the transfer
++ */
++static int edma_config_pset(struct dma_chan *chan, struct edmacc_param *pset,
++	dma_addr_t src_addr, dma_addr_t dst_addr, u32 burst,
++	enum dma_slave_buswidth dev_width, unsigned int dma_length,
++	enum dma_transfer_direction direction)
++{
++	struct edma_chan *echan = to_edma_chan(chan);
++	struct device *dev = chan->device->dev;
++	int acnt, bcnt, ccnt, cidx;
++	int src_bidx, dst_bidx, src_cidx, dst_cidx;
++	int absync;
++
++	acnt = dev_width;
++	/*
++	 * If the maxburst is equal to the fifo width, use
++	 * A-synced transfers. This allows for large contiguous
++	 * buffer transfers using only one PaRAM set.
++	 */
++	if (burst == 1) {
++		absync = false;
++		/*
++		 * For the A-sync case, bcnt and ccnt are the remainder
++		 * and quotient respectively of the division of:
++		 * (dma_length / acnt) by (SZ_64K -1). This is so
++		 * that in case bcnt over flows, we have ccnt to use.
++		 * Note: In A-sync tranfer only, bcntrld is used, but it
++		 * only applies for sg_dma_len(sg) >= SZ_64K.
++		 * In this case, the best way adopted is- bccnt for the
++		 * first frame will be the remainder below. Then for
++		 * every successive frame, bcnt will be SZ_64K-1. This
++		 * is assured as bcntrld = 0xffff in end of function.
++		 */
++		ccnt = dma_length / acnt / (SZ_64K - 1);
++		bcnt = dma_length / acnt - ccnt * (SZ_64K - 1);
++		/*
++		 * If bcnt is non-zero, we have a remainder and hence an
++		 * extra frame to transfer, so increment ccnt.
++		 */
++		if (bcnt)
++			ccnt++;
++		else
++			bcnt = SZ_64K - 1;
++		cidx = acnt;
++	/*
++	 * If maxburst is greater than the fifo address_width,
++	 * use AB-synced transfers where A count is the fifo
++	 * address_width and B count is the maxburst. In this
++	 * case, we are limited to transfers of C count frames
++	 * of (address_width * maxburst) where C count is limited
++	 * to SZ_64K-1. This places an upper bound on the length
++	 * of an SG segment that can be handled.
++	 */
++	} else {
++		absync = true;
++		bcnt = burst;
++		ccnt = dma_length / (acnt * bcnt);
++		if (ccnt > (SZ_64K - 1)) {
++			dev_err(dev, "Exceeded max SG segment size\n");
++			return -EINVAL;
++		}
++		cidx = acnt * bcnt;
++	}
++
++	if (direction == DMA_MEM_TO_DEV) {
++		src_bidx = acnt;
++		src_cidx = cidx;
++		dst_bidx = 0;
++		dst_cidx = 0;
++	} else if (direction == DMA_DEV_TO_MEM)  {
++		src_bidx = 0;
++		src_cidx = 0;
++		dst_bidx = acnt;
++		dst_cidx = cidx;
++	} else {
++		dev_err(dev, "%s: direction not implemented yet\n", __func__);
++		return -EINVAL;
++	}
++
++	pset->opt = EDMA_TCC(EDMA_CHAN_SLOT(echan->ch_num));
++	/* Configure A or AB synchronized transfers */
++	if (absync)
++		pset->opt |= SYNCDIM;
++	
++	pset->src = src_addr;
++	pset->dst = dst_addr;
++
++	pset->src_dst_bidx = (dst_bidx << 16) | src_bidx;
++	pset->src_dst_cidx = (dst_cidx << 16) | src_cidx;
++
++	pset->a_b_cnt = bcnt << 16 | acnt;
++	pset->ccnt = ccnt;
++	/*
++	 * Only time when (bcntrld) auto reload is required is for
++	 * A-sync case, and in this case, a requirement of reload value
++	 * of SZ_64K-1 only is assured. 'link' is initially set to NULL
++	 * and then later will be populated by edma_execute.
++	 */
++	pset->link_bcntrld = 0xffffffff;
++	return absync;
++}
++
++static struct dma_async_tx_descriptor *edma_prep_dma_cyclic(
++	struct dma_chan *chan, dma_addr_t buf_addr, size_t buf_len,
++	size_t period_len, enum dma_transfer_direction direction, unsigned long flags,
++	void *context)
++{
++	struct edma_chan *echan = to_edma_chan(chan);
++	struct device *dev = chan->device->dev;
++	struct edma_desc *edesc;
++	dma_addr_t src_addr, dst_addr;
++	enum dma_slave_buswidth dev_width;
++	u32 burst;
++	int i, ret, nr_periods;
++
++	if (unlikely(!echan || !buf_len || !period_len))
++		return NULL;
++
++	if (direction == DMA_DEV_TO_MEM) {
++		src_addr = echan->cfg.src_addr;
++		dst_addr = buf_addr;
++		dev_width = echan->cfg.src_addr_width;
++		burst = echan->cfg.src_maxburst;
++	} else if (direction == DMA_MEM_TO_DEV) {
++		src_addr = buf_addr;
++		dst_addr = echan->cfg.dst_addr;
++		dev_width = echan->cfg.dst_addr_width;
++		burst = echan->cfg.dst_maxburst;
++	} else {
++		dev_err(dev, "%s: bad direction?\n", __func__);
++		return NULL;
++	}
++
++	if (dev_width == DMA_SLAVE_BUSWIDTH_UNDEFINED) {
++		dev_err(dev, "Undefined slave buswidth\n");
++		return NULL;
++	}
++
++	if(unlikely(period_len % buf_len)) {
++		dev_err(dev, "Period should be multiple of Buf length\n");
++		return NULL;
++	}
++
++	nr_periods = period_len / buf_len;
++
++	edesc = kzalloc(sizeof(*edesc) + nr_periods *
++		sizeof(edesc->pset[0]), GFP_ATOMIC);
++	if (!edesc) {
++		dev_dbg(dev, "Failed to allocate a descriptor\n");
++		return NULL;
++	}
++
++	edesc->pset_nr = nr_periods;
++
++	for(i = 0; i < nr_periods; i++) {
++		/* Allocate a PaRAM slot, if needed */
++		if (echan->slot[i] < 0) {
++			echan->slot[i] =
++				edma_alloc_slot(EDMA_CTLR(echan->ch_num),
++						EDMA_SLOT_ANY);
++			if (echan->slot[i] < 0) {
++				dev_err(dev, "Failed to allocate slot\n");
++				return NULL;
++			}
++		}
++
++		if (direction == DMA_DEV_TO_MEM)
++			dst_addr += period_len;
++		else
++			src_addr += period_len;
++
++		ret = edma_config_pset(chan, &edesc->pset[i], src_addr, dst_addr,
++					      burst, dev_width, period_len, direction);
++		if(ret < 0)
++			return NULL;
++
++		edesc->absync = ret;
++		if (i == nr_periods - 1)
++			edesc->pset[i].opt |= TCINTEN;
++	}
++	/* TODO tx_flags (last parameter) needs to be investigated...\n" */
++	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, 0);
++}
++
+ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
+ 	struct dma_chan *chan, struct scatterlist *sgl,
+ 	unsigned int sg_len, enum dma_transfer_direction direction,
+@@ -218,23 +411,21 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
+ 	struct edma_chan *echan = to_edma_chan(chan);
+ 	struct device *dev = chan->device->dev;
+ 	struct edma_desc *edesc;
+-	dma_addr_t dev_addr;
++	dma_addr_t src_addr = 0, dst_addr = 0;
+ 	enum dma_slave_buswidth dev_width;
+ 	u32 burst;
+ 	struct scatterlist *sg;
+-	int i;
+-	int acnt, bcnt, ccnt, src, dst, cidx;
+-	int src_bidx, dst_bidx, src_cidx, dst_cidx;
++	int i, ret;
+ 
+ 	if (unlikely(!echan || !sgl || !sg_len))
+ 		return NULL;
+ 
+ 	if (direction == DMA_DEV_TO_MEM) {
+-		dev_addr = echan->cfg.src_addr;
++		src_addr = echan->cfg.src_addr;
+ 		dev_width = echan->cfg.src_addr_width;
+ 		burst = echan->cfg.src_maxburst;
+ 	} else if (direction == DMA_MEM_TO_DEV) {
+-		dev_addr = echan->cfg.dst_addr;
++		dst_addr = echan->cfg.dst_addr;
+ 		dev_width = echan->cfg.dst_addr_width;
+ 		burst = echan->cfg.dst_maxburst;
+ 	} else {
+@@ -262,7 +453,14 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
+ 
+ 	edesc->pset_nr = sg_len;
+ 
++	/* Configure PaRAM sets for each SG */
+ 	for_each_sg(sgl, sg, sg_len, i) {
++		/* Get address for each SG */
++		if (direction == DMA_DEV_TO_MEM)
++			dst_addr = sg_dma_address(sg);
++		else
++			src_addr = sg_dma_address(sg);
++
+ 		/* Allocate a PaRAM slot, if needed */
+ 		if (echan->slot[i] < 0) {
+ 			echan->slot[i] =
+@@ -274,76 +472,16 @@ static struct dma_async_tx_descriptor *edma_prep_slave_sg(
+ 			}
+ 		}
+ 
+-		acnt = dev_width;
+-
+-		/*
+-		 * If the maxburst is equal to the fifo width, use
+-		 * A-synced transfers. This allows for large contiguous
+-		 * buffer transfers using only one PaRAM set.
+-		 */
+-		if (burst == 1) {
+-			edesc->absync = false;
+-			ccnt = sg_dma_len(sg) / acnt / (SZ_64K - 1);
+-			bcnt = sg_dma_len(sg) / acnt - ccnt * (SZ_64K - 1);
+-			if (bcnt)
+-				ccnt++;
+-			else
+-				bcnt = SZ_64K - 1;
+-			cidx = acnt;
+-		/*
+-		 * If maxburst is greater than the fifo address_width,
+-		 * use AB-synced transfers where A count is the fifo
+-		 * address_width and B count is the maxburst. In this
+-		 * case, we are limited to transfers of C count frames
+-		 * of (address_width * maxburst) where C count is limited
+-		 * to SZ_64K-1. This places an upper bound on the length
+-		 * of an SG segment that can be handled.
+-		 */
+-		} else {
+-			edesc->absync = true;
+-			bcnt = burst;
+-			ccnt = sg_dma_len(sg) / (acnt * bcnt);
+-			if (ccnt > (SZ_64K - 1)) {
+-				dev_err(dev, "Exceeded max SG segment size\n");
+-				return NULL;
+-			}
+-			cidx = acnt * bcnt;
+-		}
++		ret = edma_config_pset(chan, &edesc->pset[i], src_addr, dst_addr,
++				      burst, dev_width, sg_dma_len(sg), direction);
++		if(ret < 0)
++			return NULL;
+ 
+-		if (direction == DMA_MEM_TO_DEV) {
+-			src = sg_dma_address(sg);
+-			dst = dev_addr;
+-			src_bidx = acnt;
+-			src_cidx = cidx;
+-			dst_bidx = 0;
+-			dst_cidx = 0;
+-		} else {
+-			src = dev_addr;
+-			dst = sg_dma_address(sg);
+-			src_bidx = 0;
+-			src_cidx = 0;
+-			dst_bidx = acnt;
+-			dst_cidx = cidx;
+-		}
++		edesc->absync = ret;
+ 
+-		edesc->pset[i].opt = EDMA_TCC(EDMA_CHAN_SLOT(echan->ch_num));
+-		/* Configure A or AB synchronized transfers */
+-		if (edesc->absync)
+-			edesc->pset[i].opt |= SYNCDIM;
+ 		/* If this is the last set, enable completion interrupt flag */
+ 		if (i == sg_len - 1)
+ 			edesc->pset[i].opt |= TCINTEN;
+-
+-		edesc->pset[i].src = src;
+-		edesc->pset[i].dst = dst;
+-
+-		edesc->pset[i].src_dst_bidx = (dst_bidx << 16) | src_bidx;
+-		edesc->pset[i].src_dst_cidx = (dst_cidx << 16) | src_cidx;
+-
+-		edesc->pset[i].a_b_cnt = bcnt << 16 | acnt;
+-		edesc->pset[i].ccnt = ccnt;
+-		edesc->pset[i].link_bcntrld = 0xffffffff;
+-
+ 	}
+ 
+ 	return vchan_tx_prep(&echan->vchan, &edesc->vdesc, tx_flags);
+@@ -368,6 +506,8 @@ static void edma_callback(unsigned ch_num, u16 ch_status, void *data)
+ 		edesc = echan->edesc;
+ 		if (edesc) {
+ 			edma_execute(echan);
++			/* Note: that desc->callback must be setup by EDMA users so that
++			the virt-dma layer calls their callback on vchan_cookie_complete() */
+ 			vchan_cookie_complete(&edesc->vdesc);
+ 		}
+ 
+@@ -462,6 +602,20 @@ static void edma_issue_pending(struct dma_chan *chan)
+ 	spin_unlock_irqrestore(&echan->vchan.lock, flags);
+ }
+ 
++static struct dma_slave_sg_limits
++*edma_get_slave_sg_limits(struct dma_chan *chan,
++			enum dma_slave_buswidth addr_width,
++			u32 maxburst)
++{
++	struct edma_chan *echan;
++
++	echan = to_edma_chan(chan);
++	echan->sg_limits.max_seg_len =
++		(SZ_64K - 1) * addr_width * maxburst;
++
++	return &echan->sg_limits;
++}
++
+ static size_t edma_desc_size(struct edma_desc *edesc)
+ {
+ 	int i;
+@@ -521,6 +675,7 @@ static void __init edma_chan_init(struct edma_cc *ecc,
+ 		echan->ch_num = EDMA_CTLR_CHAN(ecc->ctlr, i);
+ 		echan->ecc = ecc;
+ 		echan->vchan.desc_free = edma_desc_free;
++		echan->sg_limits.max_seg_nr = MAX_NR_SG;
+ 
+ 		vchan_init(&echan->vchan, dma);
+ 
+@@ -534,9 +689,11 @@ static void edma_dma_init(struct edma_cc *ecc, struct dma_device *dma,
+ 			  struct device *dev)
+ {
+ 	dma->device_prep_slave_sg = edma_prep_slave_sg;
++	dma->device_prep_dma_cyclic = edma_prep_dma_cyclic;
+ 	dma->device_alloc_chan_resources = edma_alloc_chan_resources;
+ 	dma->device_free_chan_resources = edma_free_chan_resources;
+ 	dma->device_issue_pending = edma_issue_pending;
++	dma->device_slave_sg_limits = edma_get_slave_sg_limits;
+ 	dma->device_tx_status = edma_tx_status;
+ 	dma->device_control = edma_control;
+ 	dma->dev = dev;
+diff --git a/drivers/gpu/drm/i2c/tda998x_drv.c b/drivers/gpu/drm/i2c/tda998x_drv.c
+index e68b58a..967d0c3 100644
+--- a/drivers/gpu/drm/i2c/tda998x_drv.c
++++ b/drivers/gpu/drm/i2c/tda998x_drv.c
+@@ -23,7 +23,7 @@
+ #include <drm/drm_crtc_helper.h>
+ #include <drm/drm_encoder_slave.h>
+ #include <drm/drm_edid.h>
+-
++#include <drm/i2c/tda998x.h>
+ 
+ #define DBG(fmt, ...) DRM_DEBUG(fmt"\n", ##__VA_ARGS__)
+ 
+@@ -32,6 +32,11 @@ struct tda998x_priv {
+ 	uint16_t rev;
+ 	uint8_t current_page;
+ 	int dpms;
++	bool is_hdmi_sink;
++	u8 vip_cntrl_0;
++	u8 vip_cntrl_1;
++	u8 vip_cntrl_2;
++	struct tda998x_encoder_params params;
+ };
+ 
+ #define to_tda998x_priv(x)  ((struct tda998x_priv *)to_encoder_slave(x)->slave_priv)
+@@ -68,10 +73,13 @@ struct tda998x_priv {
+ # define I2C_MASTER_DIS_MM        (1 << 0)
+ # define I2C_MASTER_DIS_FILT      (1 << 1)
+ # define I2C_MASTER_APP_STRT_LAT  (1 << 2)
++#define REG_FEAT_POWERDOWN        REG(0x00, 0x0e)     /* read/write */
++# define FEAT_POWERDOWN_SPDIF     (1 << 3)
+ #define REG_INT_FLAGS_0           REG(0x00, 0x0f)     /* read/write */
+ #define REG_INT_FLAGS_1           REG(0x00, 0x10)     /* read/write */
+ #define REG_INT_FLAGS_2           REG(0x00, 0x11)     /* read/write */
+ # define INT_FLAGS_2_EDID_BLK_RD  (1 << 1)
++#define REG_ENA_ACLK              REG(0x00, 0x16)     /* read/write */
+ #define REG_ENA_VP_0              REG(0x00, 0x18)     /* read/write */
+ #define REG_ENA_VP_1              REG(0x00, 0x19)     /* read/write */
+ #define REG_ENA_VP_2              REG(0x00, 0x1a)     /* read/write */
+@@ -110,6 +118,8 @@ struct tda998x_priv {
+ #define REG_VIP_CNTRL_5           REG(0x00, 0x25)     /* write */
+ # define VIP_CNTRL_5_CKCASE       (1 << 0)
+ # define VIP_CNTRL_5_SP_CNT(x)    (((x) & 3) << 1)
++#define REG_MUX_AP                REG(0x00, 0x26)     /* read/write */
++#define REG_MUX_VP_VIP_OUT        REG(0x00, 0x27)     /* read/write */
+ #define REG_MAT_CONTRL            REG(0x00, 0x80)     /* write */
+ # define MAT_CONTRL_MAT_SC(x)     (((x) & 3) << 0)
+ # define MAT_CONTRL_MAT_BP        (1 << 2)
+@@ -130,8 +140,12 @@ struct tda998x_priv {
+ #define REG_VS_LINE_END_1_LSB     REG(0x00, 0xae)     /* write */
+ #define REG_VS_PIX_END_1_MSB      REG(0x00, 0xaf)     /* write */
+ #define REG_VS_PIX_END_1_LSB      REG(0x00, 0xb0)     /* write */
++#define REG_VS_LINE_STRT_2_MSB    REG(0x00, 0xb1)     /* write */
++#define REG_VS_LINE_STRT_2_LSB    REG(0x00, 0xb2)     /* write */
+ #define REG_VS_PIX_STRT_2_MSB     REG(0x00, 0xb3)     /* write */
+ #define REG_VS_PIX_STRT_2_LSB     REG(0x00, 0xb4)     /* write */
++#define REG_VS_LINE_END_2_MSB     REG(0x00, 0xb5)     /* write */
++#define REG_VS_LINE_END_2_LSB     REG(0x00, 0xb6)     /* write */
+ #define REG_VS_PIX_END_2_MSB      REG(0x00, 0xb7)     /* write */
+ #define REG_VS_PIX_END_2_LSB      REG(0x00, 0xb8)     /* write */
+ #define REG_HS_PIX_START_MSB      REG(0x00, 0xb9)     /* write */
+@@ -142,21 +156,29 @@ struct tda998x_priv {
+ #define REG_VWIN_START_1_LSB      REG(0x00, 0xbe)     /* write */
+ #define REG_VWIN_END_1_MSB        REG(0x00, 0xbf)     /* write */
+ #define REG_VWIN_END_1_LSB        REG(0x00, 0xc0)     /* write */
++#define REG_VWIN_START_2_MSB      REG(0x00, 0xc1)     /* write */
++#define REG_VWIN_START_2_LSB      REG(0x00, 0xc2)     /* write */
++#define REG_VWIN_END_2_MSB        REG(0x00, 0xc3)     /* write */
++#define REG_VWIN_END_2_LSB        REG(0x00, 0xc4)     /* write */
+ #define REG_DE_START_MSB          REG(0x00, 0xc5)     /* write */
+ #define REG_DE_START_LSB          REG(0x00, 0xc6)     /* write */
+ #define REG_DE_STOP_MSB           REG(0x00, 0xc7)     /* write */
+ #define REG_DE_STOP_LSB           REG(0x00, 0xc8)     /* write */
+ #define REG_TBG_CNTRL_0           REG(0x00, 0xca)     /* write */
++# define TBG_CNTRL_0_TOP_TGL      (1 << 0)
++# define TBG_CNTRL_0_TOP_SEL      (1 << 1)
++# define TBG_CNTRL_0_DE_EXT       (1 << 2)
++# define TBG_CNTRL_0_TOP_EXT      (1 << 3)
+ # define TBG_CNTRL_0_FRAME_DIS    (1 << 5)
+ # define TBG_CNTRL_0_SYNC_MTHD    (1 << 6)
+ # define TBG_CNTRL_0_SYNC_ONCE    (1 << 7)
+ #define REG_TBG_CNTRL_1           REG(0x00, 0xcb)     /* write */
+-# define TBG_CNTRL_1_VH_TGL_0     (1 << 0)
+-# define TBG_CNTRL_1_VH_TGL_1     (1 << 1)
+-# define TBG_CNTRL_1_VH_TGL_2     (1 << 2)
+-# define TBG_CNTRL_1_VHX_EXT_DE   (1 << 3)
+-# define TBG_CNTRL_1_VHX_EXT_HS   (1 << 4)
+-# define TBG_CNTRL_1_VHX_EXT_VS   (1 << 5)
++# define TBG_CNTRL_1_H_TGL        (1 << 0)
++# define TBG_CNTRL_1_V_TGL        (1 << 1)
++# define TBG_CNTRL_1_TGL_EN       (1 << 2)
++# define TBG_CNTRL_1_X_EXT        (1 << 3)
++# define TBG_CNTRL_1_H_EXT        (1 << 4)
++# define TBG_CNTRL_1_V_EXT        (1 << 5)
+ # define TBG_CNTRL_1_DWIN_DIS     (1 << 6)
+ #define REG_ENABLE_SPACE          REG(0x00, 0xd6)     /* write */
+ #define REG_HVF_CNTRL_0           REG(0x00, 0xe4)     /* write */
+@@ -171,6 +193,12 @@ struct tda998x_priv {
+ # define HVF_CNTRL_1_PAD(x)       (((x) & 3) << 4)
+ # define HVF_CNTRL_1_SEMI_PLANAR  (1 << 6)
+ #define REG_RPT_CNTRL             REG(0x00, 0xf0)     /* write */
++#define REG_I2S_FORMAT            REG(0x00, 0xfc)     /* read/write */
++# define I2S_FORMAT(x)            (((x) & 3) << 0)
++#define REG_AIP_CLKSEL            REG(0x00, 0xfd)     /* write */
++# define AIP_CLKSEL_FS(x)         (((x) & 3) << 0)
++# define AIP_CLKSEL_CLK_POL(x)    (((x) & 1) << 2)
++# define AIP_CLKSEL_AIP(x)        (((x) & 7) << 3)
+ 
+ 
+ /* Page 02h: PLL settings */
+@@ -212,6 +240,11 @@ struct tda998x_priv {
+ 
+ 
+ /* Page 10h: information frames and packets */
++#define REG_IF1_HB0               REG(0x10, 0x20)     /* read/write */
++#define REG_IF2_HB0               REG(0x10, 0x40)     /* read/write */
++#define REG_IF3_HB0               REG(0x10, 0x60)     /* read/write */
++#define REG_IF4_HB0               REG(0x10, 0x80)     /* read/write */
++#define REG_IF5_HB0               REG(0x10, 0xa0)     /* read/write */
+ 
+ 
+ /* Page 11h: audio settings and content info packets */
+@@ -221,14 +254,39 @@ struct tda998x_priv {
+ # define AIP_CNTRL_0_LAYOUT       (1 << 2)
+ # define AIP_CNTRL_0_ACR_MAN      (1 << 5)
+ # define AIP_CNTRL_0_RST_CTS      (1 << 6)
++#define REG_CA_I2S                REG(0x11, 0x01)     /* read/write */
++# define CA_I2S_CA_I2S(x)         (((x) & 31) << 0)
++# define CA_I2S_HBR_CHSTAT        (1 << 6)
++#define REG_LATENCY_RD            REG(0x11, 0x04)     /* read/write */
++#define REG_ACR_CTS_0             REG(0x11, 0x05)     /* read/write */
++#define REG_ACR_CTS_1             REG(0x11, 0x06)     /* read/write */
++#define REG_ACR_CTS_2             REG(0x11, 0x07)     /* read/write */
++#define REG_ACR_N_0               REG(0x11, 0x08)     /* read/write */
++#define REG_ACR_N_1               REG(0x11, 0x09)     /* read/write */
++#define REG_ACR_N_2               REG(0x11, 0x0a)     /* read/write */
++#define REG_CTS_N                 REG(0x11, 0x0c)     /* read/write */
++# define CTS_N_K(x)               (((x) & 7) << 0)
++# define CTS_N_M(x)               (((x) & 3) << 4)
+ #define REG_ENC_CNTRL             REG(0x11, 0x0d)     /* read/write */
+ # define ENC_CNTRL_RST_ENC        (1 << 0)
+ # define ENC_CNTRL_RST_SEL        (1 << 1)
+ # define ENC_CNTRL_CTL_CODE(x)    (((x) & 3) << 2)
++#define REG_DIP_FLAGS             REG(0x11, 0x0e)     /* read/write */
++# define DIP_FLAGS_ACR            (1 << 0)
++# define DIP_FLAGS_GC             (1 << 1)
++#define REG_DIP_IF_FLAGS          REG(0x11, 0x0f)     /* read/write */
++# define DIP_IF_FLAGS_IF1         (1 << 1)
++# define DIP_IF_FLAGS_IF2         (1 << 2)
++# define DIP_IF_FLAGS_IF3         (1 << 3)
++# define DIP_IF_FLAGS_IF4         (1 << 4)
++# define DIP_IF_FLAGS_IF5         (1 << 5)
++#define REG_CH_STAT_B(x)          REG(0x11, 0x14 + (x)) /* read/write */
+ 
+ 
+ /* Page 12h: HDCP and OTP */
+ #define REG_TX3                   REG(0x12, 0x9a)     /* read/write */
++#define REG_TX4                   REG(0x12, 0x9b)     /* read/write */
++# define TX4_PD_RAM               (1 << 1)
+ #define REG_TX33                  REG(0x12, 0xb8)     /* read/write */
+ # define TX33_HDMI                (1 << 1)
+ 
+@@ -338,6 +396,23 @@ fail:
+ 	return ret;
+ }
+ 
++static void
++reg_write_range(struct drm_encoder *encoder, uint16_t reg, uint8_t *p, int cnt)
++{
++	struct i2c_client *client = drm_i2c_encoder_get_client(encoder);
++	uint8_t buf[cnt+1];
++	int ret;
++
++	buf[0] = REG2ADDR(reg);
++	memcpy(&buf[1], p, cnt);
++
++	set_page(encoder, reg);
++
++	ret = i2c_master_send(client, buf, cnt + 1);
++	if (ret < 0)
++		dev_err(&client->dev, "Error %d writing to 0x%x\n", ret, reg);
++}
++
+ static uint8_t
+ reg_read(struct drm_encoder *encoder, uint16_t reg)
+ {
+@@ -415,11 +490,192 @@ tda998x_reset(struct drm_encoder *encoder)
+ 	reg_write(encoder, REG_PLL_SCG2,     0x10);
+ }
+ 
++static uint8_t tda998x_cksum(uint8_t *buf, size_t bytes)
++{
++	uint8_t sum = 0;
++
++	while (bytes--)
++		sum += *buf++;
++	return (255 - sum) + 1;
++}
++
++#define HB(x) (x)
++#define PB(x) (HB(2) + 1 + (x))
++
++static void
++tda998x_write_if(struct drm_encoder *encoder, uint8_t bit, uint16_t addr,
++		 uint8_t *buf, size_t size)
++{
++	buf[PB(0)] = tda998x_cksum(buf, size);
++
++	reg_clear(encoder, REG_DIP_IF_FLAGS, bit);
++	reg_write_range(encoder, addr, buf, size);
++	reg_set(encoder, REG_DIP_IF_FLAGS, bit);
++}
++
++static void
++tda998x_write_aif(struct drm_encoder *encoder, struct tda998x_encoder_params *p)
++{
++	uint8_t buf[PB(5) + 1];
++
++	buf[HB(0)] = 0x84;
++	buf[HB(1)] = 0x01;
++	buf[HB(2)] = 10;
++	buf[PB(0)] = 0;
++	buf[PB(1)] = p->audio_frame[1] & 0x07; /* CC */
++	buf[PB(2)] = p->audio_frame[2] & 0x1c; /* SF */
++	buf[PB(4)] = p->audio_frame[4];
++	buf[PB(5)] = p->audio_frame[5] & 0xf8; /* DM_INH + LSV */
++
++	tda998x_write_if(encoder, DIP_IF_FLAGS_IF4, REG_IF4_HB0, buf,
++			 sizeof(buf));
++}
++
++static void
++tda998x_write_avi(struct drm_encoder *encoder, struct drm_display_mode *mode)
++{
++	uint8_t buf[PB(13) + 1];
++
++	memset(buf, 0, sizeof(buf));
++	buf[HB(0)] = 0x82;
++	buf[HB(1)] = 0x02;
++	buf[HB(2)] = 13;
++	buf[PB(4)] = drm_match_cea_mode(mode);
++
++	tda998x_write_if(encoder, DIP_IF_FLAGS_IF2, REG_IF2_HB0, buf,
++			 sizeof(buf));
++}
++
++static void tda998x_audio_mute(struct drm_encoder *encoder, bool on)
++{
++	if (on) {
++		reg_set(encoder, REG_SOFTRESET, SOFTRESET_AUDIO);
++		reg_clear(encoder, REG_SOFTRESET, SOFTRESET_AUDIO);
++		reg_set(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_FIFO);
++	} else {
++		reg_clear(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_FIFO);
++	}
++}
++
++static void
++tda998x_configure_audio(struct drm_encoder *encoder, struct tda998x_encoder_params *p)
++{
++	uint8_t buf[6], clksel_aip, clksel_fs, ca_i2s, cts_n;
++	uint32_t n;
++
++	/* SetAudioPortConfig */
++	reg_write(encoder, REG_ENA_AP, p->audio_cfg);
++	/* SetAudioClockPortConfig */
++	reg_write(encoder, REG_ENA_ACLK, p->audio_clk_cfg);
++
++	/*
++	 * layout = channelAllocation ? 1 : 0;
++	 * AudioInSetConfig(format, i2sFormat, channelAllocation,
++	 *   HDMITX_CHAN_NO_CHANGE, HDMITX_CLKPOLDSD_NO_CHANGE,
++	 *   HDMITX_SWAPDSD_NO_CHANGE, layout, HDMITX_LATENCY_CURRENT,
++	 *   dstRate)
++	 */
++	switch (p->audio_format) {
++	case AFMT_SPDIF:
++		reg_write(encoder, REG_MUX_AP, 0x40);
++		clksel_aip = AIP_CLKSEL_AIP(0);
++		/* FS64SPDIF */
++		clksel_fs = AIP_CLKSEL_FS(2);
++		cts_n = CTS_N_M(3) | CTS_N_K(3);
++		ca_i2s = 0;
++		break;
++
++	case AFMT_I2S:
++		reg_write(encoder, REG_MUX_AP, 0x64);
++		clksel_aip = AIP_CLKSEL_AIP(1);
++		/* ACLK */
++		clksel_fs = AIP_CLKSEL_FS(0);
++		cts_n = CTS_N_M(3) | CTS_N_K(3);
++		ca_i2s = CA_I2S_CA_I2S(0 /* channel allocation */);
++		break;
++	}
++
++	reg_write(encoder, REG_AIP_CLKSEL, clksel_aip);
++//	reg_write(encoder, REG_CA_I2S, ca_i2s);
++//	reg_write(encoder, REG_I2S_FORMAT, I2S_FORMAT(0 /* i2s format */));
++	reg_clear(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_LAYOUT);
++	/* latency? */
++
++	/* get video format */
++
++	/*
++	 * ctsRef = HDMITX_CTSREF_FS64SPDIF, uCtsX = HDMITX_CTSX_64
++	 * AudioInSetCts(ctsRef, rate, VidFmt, vOutFreq,
++	 *   HDMITX_CTS_AUTO, uCtsX, HDMITX_CTSK_USE_CTSX,
++	 *   HDMITX_CTSMTS_USE_CTSX, dstRate)
++	 */
++	/* Auto CTS */
++	reg_clear(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_ACR_MAN);
++	reg_write(encoder, REG_CTS_N, cts_n);
++	reg_write(encoder, REG_AUDIO_DIV, 3);
++
++	/*
++	 * This is the approximate value of N, which happens to be
++	 * the recommended values for non-coherent clocks.
++	 */
++	n = 128 * p->audio_sample_rate / 1000;
++
++	/* Write the CTS and N values */
++	buf[0] = 0x44;
++	buf[1] = 0x42;
++	buf[2] = 0x01;
++	buf[3] = n;
++	buf[4] = n >> 8;
++	buf[5] = n >> 16;
++	reg_write_range(encoder, REG_ACR_CTS_0, buf, 6);
++
++	/* Set CTS clock reference */
++	reg_write(encoder, REG_AIP_CLKSEL, clksel_aip | clksel_fs);
++
++	/* Reset CTS generator */
++	reg_set(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_CTS);
++	reg_clear(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_CTS);
++
++	/* Write the channel status */
++	buf[0] = 0x04;
++	buf[1] = 0x00;
++	buf[2] = 0x00;
++	buf[3] = 0xf1;
++	reg_write_range(encoder, REG_CH_STAT_B(0), buf, 4);
++
++	tda998x_audio_mute(encoder, true);
++	mdelay(20);
++	tda998x_audio_mute(encoder, false);
++
++	/* Write the audio information packet */
++	tda998x_write_aif(encoder, p);
++}
++
+ /* DRM encoder functions */
+ 
+ static void
+ tda998x_encoder_set_config(struct drm_encoder *encoder, void *params)
+ {
++	struct tda998x_priv *priv = to_tda998x_priv(encoder);
++	struct tda998x_encoder_params *p = params;
++
++	priv->vip_cntrl_0 = VIP_CNTRL_0_SWAP_A(p->swap_a) |
++			    (p->mirr_a ? VIP_CNTRL_0_MIRR_A : 0) |
++			    VIP_CNTRL_0_SWAP_B(p->swap_b) |
++			    (p->mirr_b ? VIP_CNTRL_0_MIRR_B : 0);
++	priv->vip_cntrl_1 = VIP_CNTRL_1_SWAP_C(p->swap_c) |
++			    (p->mirr_c ? VIP_CNTRL_1_MIRR_C : 0) |
++			    VIP_CNTRL_1_SWAP_D(p->swap_d) |
++			    (p->mirr_d ? VIP_CNTRL_1_MIRR_D : 0);
++	priv->vip_cntrl_2 = VIP_CNTRL_2_SWAP_E(p->swap_e) |
++			    (p->mirr_e ? VIP_CNTRL_2_MIRR_E : 0) |
++			    VIP_CNTRL_2_SWAP_F(p->swap_f) |
++			    (p->mirr_f ? VIP_CNTRL_2_MIRR_F : 0);
++
++	priv->params = *p;
++
++	if (p->audio_cfg)
++		tda998x_configure_audio(encoder, p);
+ }
+ 
+ static void
+@@ -436,22 +692,22 @@ tda998x_encoder_dpms(struct drm_encoder *encoder, int mode)
+ 
+ 	switch (mode) {
+ 	case DRM_MODE_DPMS_ON:
++		/* Write the default value MUX register */
++		reg_write(encoder, REG_MUX_VP_VIP_OUT, 0x24);
+ 		/* enable audio and video ports */
+-		reg_write(encoder, REG_ENA_AP, 0xff);
++//		reg_write(encoder, REG_ENA_AP, priv->ena_ap);
++//		reg_write(encoder, REG_ENA_ACLK, priv->ena_aclk);
+ 		reg_write(encoder, REG_ENA_VP_0, 0xff);
+ 		reg_write(encoder, REG_ENA_VP_1, 0xff);
+ 		reg_write(encoder, REG_ENA_VP_2, 0xff);
+ 		/* set muxing after enabling ports: */
+-		reg_write(encoder, REG_VIP_CNTRL_0,
+-				VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3));
+-		reg_write(encoder, REG_VIP_CNTRL_1,
+-				VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1));
+-		reg_write(encoder, REG_VIP_CNTRL_2,
+-				VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5));
++		reg_write(encoder, REG_VIP_CNTRL_0, priv->vip_cntrl_0);
++		reg_write(encoder, REG_VIP_CNTRL_1, priv->vip_cntrl_1);
++		reg_write(encoder, REG_VIP_CNTRL_2, priv->vip_cntrl_2);
+ 		break;
+ 	case DRM_MODE_DPMS_OFF:
+ 		/* disable audio and video ports */
+-		reg_write(encoder, REG_ENA_AP, 0x00);
++//		reg_write(encoder, REG_ENA_AP, 0x00);
+ 		reg_write(encoder, REG_ENA_VP_0, 0x00);
+ 		reg_write(encoder, REG_ENA_VP_1, 0x00);
+ 		reg_write(encoder, REG_ENA_VP_2, 0x00);
+@@ -494,42 +750,77 @@ tda998x_encoder_mode_set(struct drm_encoder *encoder,
+ 			struct drm_display_mode *adjusted_mode)
+ {
+ 	struct tda998x_priv *priv = to_tda998x_priv(encoder);
+-	uint16_t hs_start, hs_end, line_start, line_end;
+-	uint16_t vwin_start, vwin_end, de_start, de_end;
+-	uint16_t ref_pix, ref_line, pix_start2;
++	uint16_t ref_pix, ref_line, n_pix, n_line;
++	uint16_t hs_pix_s, hs_pix_e;
++	uint16_t vs1_pix_s, vs1_pix_e, vs1_line_s, vs1_line_e;
++	uint16_t vs2_pix_s, vs2_pix_e, vs2_line_s, vs2_line_e;
++	uint16_t vwin1_line_s, vwin1_line_e;
++	uint16_t vwin2_line_s, vwin2_line_e;
++	uint16_t de_pix_s, de_pix_e;
+ 	uint8_t reg, div, rep;
+ 
+-	hs_start   = mode->hsync_start - mode->hdisplay;
+-	hs_end     = mode->hsync_end - mode->hdisplay;
+-	line_start = 1;
+-	line_end   = 1 + mode->vsync_end - mode->vsync_start;
+-	vwin_start = mode->vtotal - mode->vsync_start;
+-	vwin_end   = vwin_start + mode->vdisplay;
+-	de_start   = mode->htotal - mode->hdisplay;
+-	de_end     = mode->htotal;
+-
+-	pix_start2 = 0;
+-	if (mode->flags & DRM_MODE_FLAG_INTERLACE)
+-		pix_start2 = (mode->htotal / 2) + hs_start;
+-
+-	/* TODO how is this value calculated?  It is 2 for all common
+-	 * formats in the tables in out of tree nxp driver (assuming
+-	 * I've properly deciphered their byzantine table system)
++	/*
++	 * Internally TDA998x is using ITU-R BT.656 style sync but
++	 * we get VESA style sync. TDA998x is using a reference pixel
++	 * relative to ITU to sync to the input frame and for output
++	 * sync generation.
++	 *
++	 * Now there is some issues to take care of:
++	 * - HDMI data islands require sync-before-active
++	 * - TDA998x register values must be > 0 to be enabled
++	 * - REFLINE needs an additional offset of +1
++	 * - REFPIX needs an addtional offset of +1 for UYUV and +3 for RGB
++	 *
++	 * So we add +1 to all horizontal and vertical register values,
++	 * plus an additional +3 for REFPIX as we are using RGB input only.
+ 	 */
+-	ref_line = 2;
++	n_pix        = mode->htotal;
++	n_line       = mode->vtotal;
+ 
+-	/* this might changes for other color formats from the CRTC: */
+-	ref_pix = 3 + hs_start;
++	ref_pix      = 3 + mode->hsync_start - mode->hdisplay;
+ 
+-	div = 148500 / mode->clock;
++	/*
++	 * handle issue on TILCDC where it is outputing
++	 * non-VESA compliant sync signals the workaround
++	 * forces us to invert the HSYNC, so need to adjust display to
++	 * the left by hskew pixels, provided by the tilcdc driver
++	 */
++	if(adjusted_mode && adjusted_mode->flags & DRM_MODE_FLAG_HSKEW)
++		ref_pix += adjusted_mode->hskew;
++
++	de_pix_s     = mode->htotal - mode->hdisplay;
++	de_pix_e     = de_pix_s + mode->hdisplay;
++	hs_pix_s     = mode->hsync_start - mode->hdisplay;
++	hs_pix_e     = hs_pix_s + mode->hsync_end - mode->hsync_start;
++
++	if ((mode->flags & DRM_MODE_FLAG_INTERLACE) == 0) {
++		ref_line     = 1 + mode->vsync_start - mode->vdisplay;
++		vwin1_line_s = mode->vtotal - mode->vdisplay - 1;
++		vwin1_line_e = vwin1_line_s + mode->vdisplay;
++		vs1_pix_s    = vs1_pix_e = hs_pix_s;
++		vs1_line_s   = mode->vsync_start - mode->vdisplay;
++		vs1_line_e   = vs1_line_s +
++			       mode->vsync_end - mode->vsync_start;
++		vwin2_line_s = vwin2_line_e = 0;
++		vs2_pix_s    = vs2_pix_e  = 0;
++		vs2_line_s   = vs2_line_e = 0;
++	} else {
++		ref_line     = 1 + (mode->vsync_start - mode->vdisplay)/2;
++		vwin1_line_s = (mode->vtotal - mode->vdisplay)/2;
++		vwin1_line_e = vwin1_line_s + mode->vdisplay/2;
++		vs1_pix_s    = vs1_pix_e = hs_pix_s;
++		vs1_line_s   = (mode->vsync_start - mode->vdisplay)/2;
++		vs1_line_e   = vs1_line_s +
++			       (mode->vsync_end - mode->vsync_start)/2;
++		vwin2_line_s = vwin1_line_s + mode->vtotal/2;
++		vwin2_line_e = vwin2_line_s + mode->vdisplay/2;
++		vs2_pix_s    = vs2_pix_e = hs_pix_s + mode->htotal/2;
++		vs2_line_s   = vs1_line_s + mode->vtotal/2 ;
++		vs2_line_e   = vs2_line_s +
++			       (mode->vsync_end - mode->vsync_start)/2;
++	}
+ 
+-	DBG("clock=%d, div=%u", mode->clock, div);
+-	DBG("hs_start=%u, hs_end=%u, line_start=%u, line_end=%u",
+-			hs_start, hs_end, line_start, line_end);
+-	DBG("vwin_start=%u, vwin_end=%u, de_start=%u, de_end=%u",
+-			vwin_start, vwin_end, de_start, de_end);
+-	DBG("ref_line=%u, ref_pix=%u, pix_start2=%u",
+-			ref_line, ref_pix, pix_start2);
++	div = 148500 / mode->clock;
+ 
+ 	/* mute the audio FIFO: */
+ 	reg_set(encoder, REG_AIP_CNTRL_0, AIP_CNTRL_0_RST_FIFO);
+@@ -561,9 +852,6 @@ tda998x_encoder_mode_set(struct drm_encoder *encoder,
+ 	reg_write(encoder, REG_PLL_SERIAL_2, PLL_SERIAL_2_SRL_NOSC(div) |
+ 			PLL_SERIAL_2_SRL_PR(rep));
+ 
+-	reg_write16(encoder, REG_VS_PIX_STRT_2_MSB, pix_start2);
+-	reg_write16(encoder, REG_VS_PIX_END_2_MSB, pix_start2);
+-
+ 	/* set color matrix bypass flag: */
+ 	reg_set(encoder, REG_MAT_CONTRL, MAT_CONTRL_MAT_BP);
+ 
+@@ -572,47 +860,74 @@ tda998x_encoder_mode_set(struct drm_encoder *encoder,
+ 
+ 	reg_clear(encoder, REG_TBG_CNTRL_0, TBG_CNTRL_0_SYNC_MTHD);
+ 
++	/*
++	 * Sync on rising HSYNC/VSYNC
++	 */
+ 	reg_write(encoder, REG_VIP_CNTRL_3, 0);
+ 	reg_set(encoder, REG_VIP_CNTRL_3, VIP_CNTRL_3_SYNC_HS);
++
++	/*
++	 * TDA19988 requires high-active sync at input stage,
++	 * so invert low-active sync provided by master encoder here
++	 */
++	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
++		reg_set(encoder, REG_VIP_CNTRL_3, VIP_CNTRL_3_H_TGL);
+ 	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
+ 		reg_set(encoder, REG_VIP_CNTRL_3, VIP_CNTRL_3_V_TGL);
+ 
++	/*
++	 * Always generate sync polarity relative to input sync and
++	 * revert input stage toggled sync at output stage
++	 */
++	reg = TBG_CNTRL_1_TGL_EN;
+ 	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
+-		reg_set(encoder, REG_VIP_CNTRL_3, VIP_CNTRL_3_H_TGL);
++		reg |= TBG_CNTRL_1_H_TGL;
++	if (mode->flags & DRM_MODE_FLAG_NVSYNC)
++		reg |= TBG_CNTRL_1_V_TGL;
++	reg_write(encoder, REG_TBG_CNTRL_1, reg);
+ 
+ 	reg_write(encoder, REG_VIDFORMAT, 0x00);
+-	reg_write16(encoder, REG_NPIX_MSB, mode->hdisplay - 1);
+-	reg_write16(encoder, REG_NLINE_MSB, mode->vdisplay - 1);
+-	reg_write16(encoder, REG_VS_LINE_STRT_1_MSB, line_start);
+-	reg_write16(encoder, REG_VS_LINE_END_1_MSB, line_end);
+-	reg_write16(encoder, REG_VS_PIX_STRT_1_MSB, hs_start);
+-	reg_write16(encoder, REG_VS_PIX_END_1_MSB, hs_start);
+-	reg_write16(encoder, REG_HS_PIX_START_MSB, hs_start);
+-	reg_write16(encoder, REG_HS_PIX_STOP_MSB, hs_end);
+-	reg_write16(encoder, REG_VWIN_START_1_MSB, vwin_start);
+-	reg_write16(encoder, REG_VWIN_END_1_MSB, vwin_end);
+-	reg_write16(encoder, REG_DE_START_MSB, de_start);
+-	reg_write16(encoder, REG_DE_STOP_MSB, de_end);
++	reg_write16(encoder, REG_REFPIX_MSB, ref_pix);
++	reg_write16(encoder, REG_REFLINE_MSB, ref_line);
++	reg_write16(encoder, REG_NPIX_MSB, n_pix);
++	reg_write16(encoder, REG_NLINE_MSB, n_line);
++	reg_write16(encoder, REG_VS_LINE_STRT_1_MSB, vs1_line_s);
++	reg_write16(encoder, REG_VS_PIX_STRT_1_MSB, vs1_pix_s);
++	reg_write16(encoder, REG_VS_LINE_END_1_MSB, vs1_line_e);
++	reg_write16(encoder, REG_VS_PIX_END_1_MSB, vs1_pix_e);
++	reg_write16(encoder, REG_VS_LINE_STRT_2_MSB, vs2_line_s);
++	reg_write16(encoder, REG_VS_PIX_STRT_2_MSB, vs2_pix_s);
++	reg_write16(encoder, REG_VS_LINE_END_2_MSB, vs2_line_e);
++	reg_write16(encoder, REG_VS_PIX_END_2_MSB, vs2_pix_e);
++	reg_write16(encoder, REG_HS_PIX_START_MSB, hs_pix_s);
++	reg_write16(encoder, REG_HS_PIX_STOP_MSB, hs_pix_e);
++	reg_write16(encoder, REG_VWIN_START_1_MSB, vwin1_line_s);
++	reg_write16(encoder, REG_VWIN_END_1_MSB, vwin1_line_e);
++	reg_write16(encoder, REG_VWIN_START_2_MSB, vwin2_line_s);
++	reg_write16(encoder, REG_VWIN_END_2_MSB, vwin2_line_e);
++	reg_write16(encoder, REG_DE_START_MSB, de_pix_s);
++	reg_write16(encoder, REG_DE_STOP_MSB, de_pix_e);
+ 
+ 	if (priv->rev == TDA19988) {
+ 		/* let incoming pixels fill the active space (if any) */
+ 		reg_write(encoder, REG_ENABLE_SPACE, 0x01);
+ 	}
+ 
+-	reg_write16(encoder, REG_REFPIX_MSB, ref_pix);
+-	reg_write16(encoder, REG_REFLINE_MSB, ref_line);
+-
+-	reg = TBG_CNTRL_1_VHX_EXT_DE |
+-			TBG_CNTRL_1_VHX_EXT_HS |
+-			TBG_CNTRL_1_VHX_EXT_VS |
+-			TBG_CNTRL_1_DWIN_DIS | /* HDCP off */
+-			TBG_CNTRL_1_VH_TGL_2;
+-	if (mode->flags & (DRM_MODE_FLAG_NVSYNC | DRM_MODE_FLAG_NHSYNC))
+-		reg |= TBG_CNTRL_1_VH_TGL_0;
+-	reg_set(encoder, REG_TBG_CNTRL_1, reg);
+-
+ 	/* must be last register set: */
+ 	reg_clear(encoder, REG_TBG_CNTRL_0, TBG_CNTRL_0_SYNC_ONCE);
++
++	/* Only setup the info frames if the sink is HDMI */
++	if (priv->is_hdmi_sink) {
++		/* We need to turn HDMI HDCP stuff on to get audio through */
++		reg_clear(encoder, REG_TBG_CNTRL_1, TBG_CNTRL_1_DWIN_DIS);
++		reg_write(encoder, REG_ENC_CNTRL, ENC_CNTRL_CTL_CODE(1));
++		reg_set(encoder, REG_TX33, TX33_HDMI);
++
++		tda998x_write_avi(encoder, adjusted_mode);
++
++		if (priv->params.audio_cfg)
++			tda998x_configure_audio(encoder, &priv->params);
++	}
+ }
+ 
+ static enum drm_connector_status
+@@ -673,6 +988,7 @@ read_edid_block(struct drm_encoder *encoder, uint8_t *buf, int blk)
+ static uint8_t *
+ do_get_edid(struct drm_encoder *encoder)
+ {
++	struct tda998x_priv *priv = to_tda998x_priv(encoder);
+ 	int j = 0, valid_extensions = 0;
+ 	uint8_t *block, *new;
+ 	bool print_bad_edid = drm_debug & DRM_UT_KMS;
+@@ -680,6 +996,9 @@ do_get_edid(struct drm_encoder *encoder)
+ 	if ((block = kmalloc(EDID_LENGTH, GFP_KERNEL)) == NULL)
+ 		return NULL;
+ 
++	if (priv->rev == TDA19988)
++		reg_clear(encoder, REG_TX4, TX4_PD_RAM);
++
+ 	/* base block fetch */
+ 	if (read_edid_block(encoder, block, 0))
+ 		goto fail;
+@@ -689,7 +1008,7 @@ do_get_edid(struct drm_encoder *encoder)
+ 
+ 	/* if there's no extensions, we're done */
+ 	if (block[0x7e] == 0)
+-		return block;
++		goto done;
+ 
+ 	new = krealloc(block, (block[0x7e] + 1) * EDID_LENGTH, GFP_KERNEL);
+ 	if (!new)
+@@ -716,9 +1035,15 @@ do_get_edid(struct drm_encoder *encoder)
+ 		block = new;
+ 	}
+ 
++done:
++	if (priv->rev == TDA19988)
++		reg_set(encoder, REG_TX4, TX4_PD_RAM);
++
+ 	return block;
+ 
+ fail:
++	if (priv->rev == TDA19988)
++		reg_set(encoder, REG_TX4, TX4_PD_RAM);
+ 	dev_warn(encoder->dev->dev, "failed to read EDID\n");
+ 	kfree(block);
+ 	return NULL;
+@@ -728,12 +1053,14 @@ static int
+ tda998x_encoder_get_modes(struct drm_encoder *encoder,
+ 			 struct drm_connector *connector)
+ {
++	struct tda998x_priv *priv = to_tda998x_priv(encoder);
+ 	struct edid *edid = (struct edid *)do_get_edid(encoder);
+ 	int n = 0;
+ 
+ 	if (edid) {
+ 		drm_mode_connector_update_edid_property(connector, edid);
+ 		n = drm_add_edid_modes(connector, edid);
++		priv->is_hdmi_sink = drm_detect_hdmi_monitor(edid);
+ 		kfree(edid);
+ 	}
+ 
+@@ -795,6 +1122,40 @@ tda998x_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static ssize_t i2c_read_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
++{
++	struct drm_encoder *encoder = dev_get_drvdata(dev);
++	unsigned int page, addr;
++	unsigned char val;
++
++	sscanf(buf, "%x %x", &page, &addr);
++
++	val = reg_read(encoder, REG(page, addr));
++
++	printk("i2c read %02x @ page:%02x address:%02x\n", val, page, addr);
++	return size;
++}
++
++static ssize_t i2c_write_store(struct device *dev, struct device_attribute *attr, const char *buf, size_t size)
++{
++	struct drm_encoder *encoder = dev_get_drvdata(dev);
++	unsigned int page, addr, mask, val;
++	unsigned char rval;
++
++	sscanf(buf, "%x %x %x %x", &page, &addr, &mask, &val);
++
++	rval = reg_read(encoder, REG(page, addr));
++	rval &= ~mask;
++	rval |= val & mask;
++	reg_write(encoder, REG(page, addr), rval);
++
++	printk("i2c write %02x @ page:%02x address:%02x\n", rval, page, addr);
++	return size;
++}
++
++static DEVICE_ATTR(i2c_read, S_IWUSR, NULL, i2c_read_store);
++static DEVICE_ATTR(i2c_write, S_IWUSR, NULL, i2c_write_store);
++
+ static int
+ tda998x_encoder_init(struct i2c_client *client,
+ 		    struct drm_device *dev,
+@@ -802,11 +1163,20 @@ tda998x_encoder_init(struct i2c_client *client,
+ {
+ 	struct drm_encoder *encoder = &encoder_slave->base;
+ 	struct tda998x_priv *priv;
++/* debug */
++	device_create_file(&client->dev, &dev_attr_i2c_read);
++	device_create_file(&client->dev, &dev_attr_i2c_write);
++	dev_set_drvdata(&client->dev, encoder);
++/* debug end */
+ 
+ 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
++	priv->vip_cntrl_0 = VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3);
++	priv->vip_cntrl_1 = VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1);
++	priv->vip_cntrl_2 = VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5);
++
+ 	priv->current_page = 0;
+ 	priv->cec = i2c_new_dummy(client->adapter, 0x34);
+ 	priv->dpms = DRM_MODE_DPMS_OFF;
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+index 7418dcd..2aab53e 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_crtc.c
+@@ -69,7 +69,6 @@ static void set_scanout(struct drm_crtc *crtc, int n)
+ 	struct tilcdc_crtc *tilcdc_crtc = to_tilcdc_crtc(crtc);
+ 	struct drm_device *dev = crtc->dev;
+ 
+-	pm_runtime_get_sync(dev->dev);
+ 	tilcdc_write(dev, base_reg[n], tilcdc_crtc->start);
+ 	tilcdc_write(dev, ceil_reg[n], tilcdc_crtc->end);
+ 	if (tilcdc_crtc->scanout[n]) {
+@@ -85,7 +84,6 @@ static void set_scanout(struct drm_crtc *crtc, int n)
+ 	tilcdc_crtc->scanout[n] = crtc->fb;
+ 	drm_framebuffer_reference(tilcdc_crtc->scanout[n]);
+ 	tilcdc_crtc->dirty &= ~stat[n];
+-	pm_runtime_put_sync(dev->dev);
+ }
+ 
+ static void update_scanout(struct drm_crtc *crtc)
+@@ -168,7 +166,9 @@ static int tilcdc_crtc_page_flip(struct drm_crtc *crtc,
+ 
+ 	crtc->fb = fb;
+ 	tilcdc_crtc->event = event;
++	pm_runtime_get_sync(dev->dev);
+ 	update_scanout(crtc);
++	pm_runtime_put_sync(dev->dev);
+ 
+ 	return 0;
+ }
+@@ -379,7 +379,12 @@ static int tilcdc_crtc_mode_set(struct drm_crtc *crtc,
+ 	else
+ 		tilcdc_clear(dev, LCDC_RASTER_TIMING_2_REG, LCDC_SYNC_EDGE);
+ 
+-	if (mode->flags & DRM_MODE_FLAG_NHSYNC)
++	/*
++	 * use value from adjusted_mode here as this might have been changed as part
++	 * of the fixup for NXP TDA998x to solve the issue where tilcdc timings are
++	 * not VESA compliant
++	 */
++	if (adjusted_mode->flags & DRM_MODE_FLAG_NHSYNC)
+ 		tilcdc_set(dev, LCDC_RASTER_TIMING_2_REG, LCDC_INVERT_HSYNC);
+ 	else
+ 		tilcdc_clear(dev, LCDC_RASTER_TIMING_2_REG, LCDC_INVERT_HSYNC);
+@@ -406,7 +411,11 @@ static int tilcdc_crtc_mode_set(struct drm_crtc *crtc,
+ static int tilcdc_crtc_mode_set_base(struct drm_crtc *crtc, int x, int y,
+ 		struct drm_framebuffer *old_fb)
+ {
++	struct drm_device *dev = crtc->dev;
++
++	pm_runtime_get_sync(dev->dev);
+ 	update_scanout(crtc);
++	pm_runtime_put_sync(dev->dev);
+ 	return 0;
+ }
+ 
+@@ -686,3 +695,59 @@ fail:
+ 	tilcdc_crtc_destroy(crtc);
+ 	return NULL;
+ }
++
++struct tilcdc_panel_info *tilcdc_of_get_panel_info(struct device_node *np)
++{
++	struct device_node *info_np;
++	struct tilcdc_panel_info *info;
++	int ret = 0;
++
++	if (!np)
++		return NULL;
++
++	info_np = of_get_child_by_name(np, "panel-info");
++	if (!info_np) {
++		pr_err("%s: could not find panel-info node\n",
++				of_node_full_name(np));
++		return NULL;
++	}
++
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
++	if (!info) {
++		pr_err("%s: allocation failed\n",
++				of_node_full_name(np));
++		goto err_no_mem;
++	}
++
++	ret |= of_property_read_u32(info_np, "ac-bias", &info->ac_bias);
++	ret |= of_property_read_u32(info_np, "ac-bias-intrpt", &info->ac_bias_intrpt);
++	ret |= of_property_read_u32(info_np, "dma-burst-sz", &info->dma_burst_sz);
++	ret |= of_property_read_u32(info_np, "bpp", &info->bpp);
++	ret |= of_property_read_u32(info_np, "fdd", &info->fdd);
++	ret |= of_property_read_u32(info_np, "sync-edge", &info->sync_edge);
++	ret |= of_property_read_u32(info_np, "sync-ctrl", &info->sync_ctrl);
++	ret |= of_property_read_u32(info_np, "raster-order", &info->raster_order);
++	ret |= of_property_read_u32(info_np, "fifo-th", &info->fifo_th);
++
++	/* optional: */
++	info->tft_alt_mode      = of_property_read_bool(info_np, "tft-alt-mode");
++	info->invert_pxl_clk    = of_property_read_bool(info_np, "invert-pxl-clk");
++
++	if (ret) {
++		pr_err("%s: error reading panel-info properties\n",
++				of_node_full_name(info_np));
++		goto err_bad_prop;
++	}
++
++	/* release ref */
++	of_node_put(info_np);
++
++	return info;
++
++err_bad_prop:
++	kfree(info);
++err_no_mem:
++	of_node_put(info_np);
++	return NULL;
++}
++
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_drv.h b/drivers/gpu/drm/tilcdc/tilcdc_drv.h
+index 0938036..f5f00f1 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_drv.h
++++ b/drivers/gpu/drm/tilcdc/tilcdc_drv.h
+@@ -43,7 +43,7 @@
+  * with optimized DDR & EMIF settings tweaked 1920x1080@24 appears to
+  * be supportable
+  */
+-#define TILCDC_DEFAULT_MAX_BANDWIDTH  (1280*1024*60)
++#define TILCDC_DEFAULT_MAX_BANDWIDTH  (1680*1050*60)
+ 
+ 
+ struct tilcdc_drm_private {
+@@ -170,4 +170,7 @@ void tilcdc_crtc_set_panel_info(struct drm_crtc *crtc,
+ int tilcdc_crtc_mode_valid(struct drm_crtc *crtc, struct drm_display_mode *mode);
+ int tilcdc_crtc_max_width(struct drm_crtc *crtc);
+ 
++/* OF helper for reading panel info */
++struct tilcdc_panel_info *tilcdc_of_get_panel_info(struct device_node *np);
++
+ #endif /* __TILCDC_DRV_H__ */
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_panel.c b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
+index 86c6732..284c9ee 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_panel.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_panel.c
+@@ -304,53 +304,6 @@ static const struct tilcdc_module_ops panel_module_ops = {
+  * Device:
+  */
+ 
+-/* maybe move this somewhere common if it is needed by other outputs? */
+-static struct tilcdc_panel_info *of_get_panel_info(struct device_node *np)
+-{
+-	struct device_node *info_np;
+-	struct tilcdc_panel_info *info;
+-	int ret = 0;
+-
+-	if (!np) {
+-		pr_err("%s: no devicenode given\n", __func__);
+-		return NULL;
+-	}
+-
+-	info_np = of_get_child_by_name(np, "panel-info");
+-	if (!info_np) {
+-		pr_err("%s: could not find panel-info node\n", __func__);
+-		return NULL;
+-	}
+-
+-	info = kzalloc(sizeof(*info), GFP_KERNEL);
+-	if (!info) {
+-		pr_err("%s: allocation failed\n", __func__);
+-		return NULL;
+-	}
+-
+-	ret |= of_property_read_u32(info_np, "ac-bias", &info->ac_bias);
+-	ret |= of_property_read_u32(info_np, "ac-bias-intrpt", &info->ac_bias_intrpt);
+-	ret |= of_property_read_u32(info_np, "dma-burst-sz", &info->dma_burst_sz);
+-	ret |= of_property_read_u32(info_np, "bpp", &info->bpp);
+-	ret |= of_property_read_u32(info_np, "fdd", &info->fdd);
+-	ret |= of_property_read_u32(info_np, "sync-edge", &info->sync_edge);
+-	ret |= of_property_read_u32(info_np, "sync-ctrl", &info->sync_ctrl);
+-	ret |= of_property_read_u32(info_np, "raster-order", &info->raster_order);
+-	ret |= of_property_read_u32(info_np, "fifo-th", &info->fifo_th);
+-
+-	/* optional: */
+-	info->tft_alt_mode      = of_property_read_bool(info_np, "tft-alt-mode");
+-	info->invert_pxl_clk    = of_property_read_bool(info_np, "invert-pxl-clk");
+-
+-	if (ret) {
+-		pr_err("%s: error reading panel-info properties\n", __func__);
+-		kfree(info);
+-		return NULL;
+-	}
+-
+-	return info;
+-}
+-
+ static struct of_device_id panel_of_match[];
+ 
+ static int panel_probe(struct platform_device *pdev)
+@@ -387,7 +340,7 @@ static int panel_probe(struct platform_device *pdev)
+ 		goto fail;
+ 	}
+ 
+-	panel_mod->info = of_get_panel_info(node);
++	panel_mod->info = tilcdc_of_get_panel_info(node);
+ 	if (!panel_mod->info) {
+ 		dev_err(&pdev->dev, "could not get panel info\n");
+ 		goto fail;
+diff --git a/drivers/gpu/drm/tilcdc/tilcdc_slave.c b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
+index dfffaf0..4bdc9ba 100644
+--- a/drivers/gpu/drm/tilcdc/tilcdc_slave.c
++++ b/drivers/gpu/drm/tilcdc/tilcdc_slave.c
+@@ -25,23 +25,11 @@
+ 
+ struct slave_module {
+ 	struct tilcdc_module base;
++	struct tilcdc_panel_info *info;
+ 	struct i2c_adapter *i2c;
+ };
+ #define to_slave_module(x) container_of(x, struct slave_module, base)
+ 
+-static const struct tilcdc_panel_info slave_info = {
+-		.bpp                    = 16,
+-		.ac_bias                = 255,
+-		.ac_bias_intrpt         = 0,
+-		.dma_burst_sz           = 16,
+-		.fdd                    = 0x80,
+-		.tft_alt_mode           = 0,
+-		.sync_edge              = 0,
+-		.sync_ctrl              = 1,
+-		.raster_order           = 0,
+-};
+-
+-
+ /*
+  * Encoder:
+  */
+@@ -69,17 +57,38 @@ static void slave_encoder_destroy(struct drm_encoder *encoder)
+ 
+ static void slave_encoder_prepare(struct drm_encoder *encoder)
+ {
++	struct slave_encoder *slave_encoder = to_slave_encoder(encoder);
++
+ 	drm_i2c_encoder_prepare(encoder);
+-	tilcdc_crtc_set_panel_info(encoder->crtc, &slave_info);
++	tilcdc_crtc_set_panel_info(encoder->crtc, slave_encoder->mod->info);
++}
++
++static bool slave_encoder_fixup(struct drm_encoder *encoder,
++		const struct drm_display_mode *mode,
++		struct drm_display_mode *adjusted_mode)
++{
++	adjusted_mode->hskew = mode->hsync_end - mode->hsync_start;
++	adjusted_mode->flags |= DRM_MODE_FLAG_HSKEW;
++
++	if(mode->flags & DRM_MODE_FLAG_NHSYNC) {
++		adjusted_mode->flags |= DRM_MODE_FLAG_PHSYNC;
++		adjusted_mode->flags &= ~DRM_MODE_FLAG_NHSYNC;
++	} else {
++		adjusted_mode->flags |= DRM_MODE_FLAG_NHSYNC;
++		adjusted_mode->flags &= ~DRM_MODE_FLAG_PHSYNC;
++	}
++
++	return drm_i2c_encoder_mode_fixup(encoder, mode, adjusted_mode);
+ }
+ 
++
+ static const struct drm_encoder_funcs slave_encoder_funcs = {
+ 		.destroy        = slave_encoder_destroy,
+ };
+ 
+ static const struct drm_encoder_helper_funcs slave_encoder_helper_funcs = {
+ 		.dpms           = drm_i2c_encoder_dpms,
+-		.mode_fixup     = drm_i2c_encoder_mode_fixup,
++		.mode_fixup     = slave_encoder_fixup,
+ 		.prepare        = slave_encoder_prepare,
+ 		.commit         = drm_i2c_encoder_commit,
+ 		.mode_set       = drm_i2c_encoder_mode_set,
+@@ -276,6 +285,7 @@ static void slave_destroy(struct tilcdc_module *mod)
+ 	struct slave_module *slave_mod = to_slave_module(mod);
+ 
+ 	tilcdc_module_cleanup(mod);
++	kfree(slave_mod->info);
+ 	kfree(slave_mod);
+ }
+ 
+@@ -330,13 +340,25 @@ static int slave_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	slave_mod = kzalloc(sizeof(*slave_mod), GFP_KERNEL);
+-	if (!slave_mod)
+-		return -ENOMEM;
++	slave_mod = devm_kzalloc(&pdev->dev, sizeof(*slave_mod), GFP_KERNEL);
++	if (!slave_mod) {
++		tilcdc_slave_probedefer(false);
++		dev_err(&pdev->dev, "could not allocate slave_mod\n");
++               return -ENOMEM;
++	}
++
++	platform_set_drvdata(pdev, slave_mod);
++
++	slave_mod->info = tilcdc_of_get_panel_info(node);
++	if (!slave_mod->info) {
++		tilcdc_slave_probedefer(false);
++		dev_err(&pdev->dev, "could not get panel info\n");
++		return ret;
++	}
+ 
+ 	mod = &slave_mod->base;
+ 
+-	mod->preferred_bpp = slave_info.bpp;
++	mod->preferred_bpp = slave_mod->info->bpp;
+ 
+ 	slave_mod->i2c = slavei2c;
+ 
+@@ -353,6 +375,11 @@ static int slave_probe(struct platform_device *pdev)
+ 
+ static int slave_remove(struct platform_device *pdev)
+ {
++	struct slave_module *slave_mod = platform_get_drvdata(pdev);
++
++	put_device(&slave_mod->i2c->dev);
++	kfree(slave_mod->info);
++
+ 	return 0;
+ }
+ 
+diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
+index 5d4fd69..7e0474d 100644
+--- a/drivers/misc/eeprom/at24.c
++++ b/drivers/misc/eeprom/at24.c
+@@ -23,6 +23,7 @@
+ #include <linux/of.h>
+ #include <linux/i2c.h>
+ #include <linux/i2c/at24.h>
++#include <linux/i2c/eeprom.h>
+ 
+ /*
+  * I2C EEPROMs from most vendors are inexpensive and mostly interchangeable.
+@@ -658,6 +659,27 @@ static int at24_remove(struct i2c_client *client)
+ 	return 0;
+ }
+ 
++static int at24_command(struct i2c_client *client, unsigned int cmd, void *arg)
++{
++	struct at24_data *at24;
++	const struct memory_accessor **maccp;
++
++	/* only supporting a single command */
++	if (cmd != I2C_EEPROM_GET_MEMORY_ACCESSOR)
++		return -ENOTSUPP;
++
++	/* rudimentary check */
++	if (arg == NULL)
++		return -EINVAL;
++
++	at24 = i2c_get_clientdata(client);
++
++	maccp = arg;
++	*maccp = &at24->macc;
++
++	return 0;
++}
++
+ /*-------------------------------------------------------------------------*/
+ 
+ static struct i2c_driver at24_driver = {
+@@ -668,6 +690,7 @@ static struct i2c_driver at24_driver = {
+ 	.probe = at24_probe,
+ 	.remove = at24_remove,
+ 	.id_table = at24_ids,
++	.command = at24_command,
+ };
+ 
+ static int __init at24_init(void)
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index 1865321..1fe7469 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -40,6 +40,8 @@
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_data/mmc-omap.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/err.h>
+ 
+ /* OMAP HSMMC Host Controller Registers */
+ #define OMAP_HSMMC_SYSSTATUS	0x0014
+@@ -171,7 +173,7 @@ struct omap_hsmmc_host {
+ 	unsigned char		power_mode;
+ 	int			suspended;
+ 	int			irq;
+-	int			use_dma, dma_ch;
++	int			use_dma;
+ 	struct dma_chan		*tx_chan;
+ 	struct dma_chan		*rx_chan;
+ 	int			slot_id;
+@@ -180,10 +182,15 @@ struct omap_hsmmc_host {
+ 	int			protect_card;
+ 	int			reqs_blocked;
+ 	int			use_reg;
+-	int			req_in_progress;
+ 	struct omap_hsmmc_next	next_data;
+ 
+ 	struct	omap_mmc_platform_data	*pdata;
++
++	unsigned int		req_flags;
++#define RQF_REQ_IN_PROGRESS	(1 << 0)
++#define RQF_DMA_IN_PROGRESS	(1 << 1)
++#define RQF_REQ_DONE		(1 << 2)
++#define RQF_DMA_DONE		(1 << 3)
+ };
+ 
+ static int omap_hsmmc_card_detect(struct device *dev, int slot)
+@@ -391,6 +398,7 @@ static inline int omap_hsmmc_have_reg(void)
+ static int omap_hsmmc_gpio_init(struct omap_mmc_platform_data *pdata)
+ {
+ 	int ret;
++	unsigned long flags;
+ 
+ 	if (gpio_is_valid(pdata->slots[0].switch_pin)) {
+ 		if (pdata->slots[0].cover)
+@@ -420,6 +428,24 @@ static int omap_hsmmc_gpio_init(struct omap_mmc_platform_data *pdata)
+ 	} else
+ 		pdata->slots[0].gpio_wp = -EINVAL;
+ 
++	if (gpio_is_valid(pdata->slots[0].gpio_reset)) {
++		flags = pdata->slots[0].gpio_reset_active_low ?
++				GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH;
++		ret = gpio_request_one(pdata->slots[0].gpio_reset, flags,
++				"mmc_reset");
++		if (ret)
++			goto err_free_wp;
++
++		/* hold reset */
++		udelay(pdata->slots[0].gpio_reset_hold_us);
++
++		gpio_set_value(pdata->slots[0].gpio_reset,
++				!pdata->slots[0].gpio_reset_active_low);
++
++	} else
++		pdata->slots[0].gpio_reset = -EINVAL;
++
++
+ 	return 0;
+ 
+ err_free_wp:
+@@ -433,6 +459,8 @@ err_free_sp:
+ 
+ static void omap_hsmmc_gpio_free(struct omap_mmc_platform_data *pdata)
+ {
++	if (gpio_is_valid(pdata->slots[0].gpio_reset))
++		gpio_free(pdata->slots[0].gpio_reset);
+ 	if (gpio_is_valid(pdata->slots[0].gpio_wp))
+ 		gpio_free(pdata->slots[0].gpio_wp);
+ 	if (gpio_is_valid(pdata->slots[0].switch_pin))
+@@ -787,7 +815,7 @@ omap_hsmmc_start_command(struct omap_hsmmc_host *host, struct mmc_command *cmd,
+ 	 * ac, bc, adtc, bcr. Only commands ending an open ended transfer need
+ 	 * a val of 0x3, rest 0x0.
+ 	 */
+-	if (cmd == host->mrq->stop)
++	if (host->mrq && cmd == host->mrq->stop)
+ 		cmdtype = 0x3;
+ 
+ 	cmdreg = (cmd->opcode << 24) | (resptype << 16) | (cmdtype << 22);
+@@ -803,7 +831,8 @@ omap_hsmmc_start_command(struct omap_hsmmc_host *host, struct mmc_command *cmd,
+ 	if (host->use_dma)
+ 		cmdreg |= DMAE;
+ 
+-	host->req_in_progress = 1;
++	host->req_flags |=  RQF_REQ_IN_PROGRESS;
++	host->req_flags &= ~RQF_REQ_DONE;
+ 
+ 	OMAP_HSMMC_WRITE(host->base, ARG, cmd->arg);
+ 	OMAP_HSMMC_WRITE(host->base, CMD, cmdreg);
+@@ -826,19 +855,36 @@ static struct dma_chan *omap_hsmmc_get_dma_chan(struct omap_hsmmc_host *host,
+ 
+ static void omap_hsmmc_request_done(struct omap_hsmmc_host *host, struct mmc_request *mrq)
+ {
+-	int dma_ch;
++	int completed;
+ 	unsigned long flags;
+ 
++	BUG_ON(mrq == NULL);
++
+ 	spin_lock_irqsave(&host->irq_lock, flags);
+-	host->req_in_progress = 0;
+-	dma_ch = host->dma_ch;
+-	spin_unlock_irqrestore(&host->irq_lock, flags);
++
++	host->req_flags &= ~RQF_REQ_IN_PROGRESS;
++	host->req_flags |=  RQF_REQ_DONE;
++
++	/* completed? */
++	if (mrq->data && host->use_dma)
++		completed = (host->req_flags & RQF_DMA_DONE) == RQF_DMA_DONE;
++	else
++		completed = 1;
+ 
+ 	omap_hsmmc_disable_irq(host);
++
+ 	/* Do not complete the request if DMA is still in progress */
+-	if (mrq->data && host->use_dma && dma_ch != -1)
++	if (!completed) {
++		spin_unlock_irqrestore(&host->irq_lock, flags);
++		pr_debug("%s: not completed!\n", __func__);
+ 		return;
++	}
++
++	/* clear the flags now */
++	host->req_flags &= ~(RQF_REQ_DONE | RQF_DMA_DONE);
+ 	host->mrq = NULL;
++	spin_unlock_irqrestore(&host->irq_lock, flags);
++
+ 	mmc_request_done(host->mmc, mrq);
+ }
+ 
+@@ -855,6 +901,7 @@ omap_hsmmc_xfer_done(struct omap_hsmmc_host *host, struct mmc_data *data)
+ 		if (host->cmd && host->cmd->opcode == 6 &&
+ 		    host->response_busy) {
+ 			host->response_busy = 0;
++			pr_debug("%s: response_busy = 0\n", __func__);
+ 			return;
+ 		}
+ 
+@@ -870,9 +917,11 @@ omap_hsmmc_xfer_done(struct omap_hsmmc_host *host, struct mmc_data *data)
+ 		data->bytes_xfered = 0;
+ 
+ 	if (!data->stop) {
++		pr_debug("%s: calling omap_hsmmc_request_done\n", __func__);
+ 		omap_hsmmc_request_done(host, data->mrq);
+ 		return;
+ 	}
++	pr_debug("%s: calling omap_hsmmc_start_command\n", __func__);
+ 	omap_hsmmc_start_command(host, data->stop, NULL);
+ }
+ 
+@@ -882,6 +931,8 @@ omap_hsmmc_xfer_done(struct omap_hsmmc_host *host, struct mmc_data *data)
+ static void
+ omap_hsmmc_cmd_done(struct omap_hsmmc_host *host, struct mmc_command *cmd)
+ {
++	unsigned long flags;
++
+ 	host->cmd = NULL;
+ 
+ 	if (cmd->flags & MMC_RSP_PRESENT) {
+@@ -898,6 +949,18 @@ omap_hsmmc_cmd_done(struct omap_hsmmc_host *host, struct mmc_command *cmd)
+ 	}
+ 	if ((host->data == NULL && !host->response_busy) || cmd->error)
+ 		omap_hsmmc_request_done(host, cmd->mrq);
++	else {
++		spin_lock_irqsave(&host->irq_lock, flags);
++		/* we use DMA, and DMA is completed - kick the can */
++		if ((host->req_flags & RQF_DMA_DONE) != 0) {
++			host->req_flags &= ~(RQF_REQ_IN_PROGRESS | RQF_REQ_DONE | RQF_DMA_DONE);
++			host->mrq = NULL;
++			mmc_request_done(host->mmc, cmd->mrq);
++		} else {
++			pr_debug("%s: not calling omap_hsmmc_request_done!\n", __func__);
++		}
++		spin_unlock_irqrestore(&host->irq_lock, flags);
++	}
+ }
+ 
+ /*
+@@ -905,17 +968,19 @@ omap_hsmmc_cmd_done(struct omap_hsmmc_host *host, struct mmc_command *cmd)
+  */
+ static void omap_hsmmc_dma_cleanup(struct omap_hsmmc_host *host, int errno)
+ {
+-	int dma_ch;
++	int dma_in_progress;
+ 	unsigned long flags;
+ 
+ 	host->data->error = errno;
+ 
+ 	spin_lock_irqsave(&host->irq_lock, flags);
+-	dma_ch = host->dma_ch;
+-	host->dma_ch = -1;
++	dma_in_progress = host->use_dma &&
++			(host->req_flags & RQF_DMA_IN_PROGRESS) != 0;
++	host->req_flags &= ~RQF_DMA_IN_PROGRESS;
++	host->req_flags |=  RQF_DMA_DONE;
+ 	spin_unlock_irqrestore(&host->irq_lock, flags);
+ 
+-	if (host->use_dma && dma_ch != -1) {
++	if (dma_in_progress) {
+ 		struct dma_chan *chan = omap_hsmmc_get_dma_chan(host, host->data);
+ 
+ 		dmaengine_terminate_all(chan);
+@@ -1005,16 +1070,22 @@ static void hsmmc_command_incomplete(struct omap_hsmmc_host *host,
+ 					int err, int end_cmd)
+ {
+ 	if (end_cmd) {
++		pr_debug("%s end_cmd\n", __func__);
+ 		omap_hsmmc_reset_controller_fsm(host, SRC);
+ 		if (host->cmd)
+ 			host->cmd->error = err;
+ 	}
+ 
+ 	if (host->data) {
++		pr_debug("%s host->data; resetting dma\n", __func__);
+ 		omap_hsmmc_reset_controller_fsm(host, SRD);
+ 		omap_hsmmc_dma_cleanup(host, err);
+-	} else if (host->mrq && host->mrq->cmd)
++	} else if (host->mrq && host->mrq->cmd) {
++		pr_debug("%s error\n", __func__);
+ 		host->mrq->cmd->error = err;
++	} else {
++		pr_debug("%s nothing\n", __func__);
++	}
+ }
+ 
+ static void omap_hsmmc_do_irq(struct omap_hsmmc_host *host, int status)
+@@ -1055,13 +1126,13 @@ static irqreturn_t omap_hsmmc_irq(int irq, void *dev_id)
+ 	struct omap_hsmmc_host *host = dev_id;
+ 	int status;
+ 
+-	status = OMAP_HSMMC_READ(host->base, STAT);
+-	while (status & INT_EN_MASK && host->req_in_progress) {
+-		omap_hsmmc_do_irq(host, status);
++	while ((status = OMAP_HSMMC_READ(host->base, STAT)) & INT_EN_MASK) {
++
++		if (host->req_flags & RQF_REQ_IN_PROGRESS)
++			omap_hsmmc_do_irq(host, status);
+ 
+ 		/* Flush posted write */
+ 		OMAP_HSMMC_WRITE(host->base, STAT, status);
+-		status = OMAP_HSMMC_READ(host->base, STAT);
+ 	}
+ 
+ 	return IRQ_HANDLED;
+@@ -1199,13 +1270,15 @@ static irqreturn_t omap_hsmmc_detect(int irq, void *dev_id)
+ static void omap_hsmmc_dma_callback(void *param)
+ {
+ 	struct omap_hsmmc_host *host = param;
++	struct mmc_request *mrq = host->mrq;
+ 	struct dma_chan *chan;
+ 	struct mmc_data *data;
+-	int req_in_progress;
++	int completed;
+ 
+ 	spin_lock_irq(&host->irq_lock);
+-	if (host->dma_ch < 0) {
++	if ((host->req_flags & RQF_DMA_IN_PROGRESS) == 0) {
+ 		spin_unlock_irq(&host->irq_lock);
++		pr_debug("%s: No DMA in progress!\n", __func__);
+ 		return;
+ 	}
+ 
+@@ -1216,17 +1289,22 @@ static void omap_hsmmc_dma_callback(void *param)
+ 			     data->sg, data->sg_len,
+ 			     omap_hsmmc_get_dma_dir(host, data));
+ 
+-	req_in_progress = host->req_in_progress;
+-	host->dma_ch = -1;
+-	spin_unlock_irq(&host->irq_lock);
++	host->req_flags &= ~RQF_DMA_IN_PROGRESS;
++	host->req_flags |= RQF_DMA_DONE;
+ 
+-	/* If DMA has finished after TC, complete the request */
+-	if (!req_in_progress) {
+-		struct mmc_request *mrq = host->mrq;
++	completed = (host->req_flags & RQF_REQ_DONE) != 0;
+ 
+-		host->mrq = NULL;
+-		mmc_request_done(host->mmc, mrq);
++	if (!completed) {
++		spin_unlock_irq(&host->irq_lock);
++		pr_debug("%s: not completed\n", __func__);
++		return;
+ 	}
++
++	host->req_flags &= ~(RQF_REQ_DONE | RQF_DMA_DONE);
++	host->mrq = NULL;
++	spin_unlock_irq(&host->irq_lock);
++
++	mmc_request_done(host->mmc, mrq);
+ }
+ 
+ static int omap_hsmmc_pre_dma_transfer(struct omap_hsmmc_host *host,
+@@ -1294,7 +1372,7 @@ static int omap_hsmmc_start_dma_transfer(struct omap_hsmmc_host *host,
+ 		 */
+ 		return -EINVAL;
+ 
+-	BUG_ON(host->dma_ch != -1);
++	BUG_ON((host->req_flags & RQF_DMA_IN_PROGRESS) != 0);
+ 
+ 	chan = omap_hsmmc_get_dma_chan(host, data);
+ 
+@@ -1328,7 +1406,7 @@ static int omap_hsmmc_start_dma_transfer(struct omap_hsmmc_host *host,
+ 	/* Does not fail */
+ 	dmaengine_submit(tx);
+ 
+-	host->dma_ch = 1;
++	host->req_flags |= RQF_DMA_IN_PROGRESS;
+ 
+ 	dma_async_issue_pending(chan);
+ 
+@@ -1448,8 +1526,11 @@ static void omap_hsmmc_request(struct mmc_host *mmc, struct mmc_request *req)
+ 	struct omap_hsmmc_host *host = mmc_priv(mmc);
+ 	int err;
+ 
+-	BUG_ON(host->req_in_progress);
+-	BUG_ON(host->dma_ch != -1);
++	BUG_ON((host->req_flags & RQF_REQ_IN_PROGRESS) != 0);
++	BUG_ON((host->req_flags & RQF_REQ_DONE) != 0);
++	BUG_ON((host->req_flags & RQF_DMA_IN_PROGRESS) != 0);
++	BUG_ON((host->req_flags & RQF_DMA_DONE) != 0);
++
+ 	if (host->protect_card) {
+ 		if (host->reqs_blocked < 3) {
+ 			/*
+@@ -1719,6 +1800,7 @@ static struct omap_mmc_platform_data *of_get_hsmmc_pdata(struct device *dev)
+ 	struct device_node *np = dev->of_node;
+ 	u32 bus_width, max_freq;
+ 	int cd_gpio, wp_gpio;
++	enum of_gpio_flags reset_flags;
+ 
+ 	cd_gpio = of_get_named_gpio(np, "cd-gpios", 0);
+ 	wp_gpio = of_get_named_gpio(np, "wp-gpios", 0);
+@@ -1736,6 +1818,14 @@ static struct omap_mmc_platform_data *of_get_hsmmc_pdata(struct device *dev)
+ 	pdata->nr_slots = 1;
+ 	pdata->slots[0].switch_pin = cd_gpio;
+ 	pdata->slots[0].gpio_wp = wp_gpio;
++	reset_flags = 0;
++	pdata->slots[0].gpio_reset = of_get_named_gpio_flags(np,
++			"reset-gpios", 0, &reset_flags);
++	pdata->slots[0].gpio_reset_active_low =
++		(reset_flags & OF_GPIO_ACTIVE_LOW) != 0;
++	pdata->slots[0].gpio_reset_hold_us = 100;	/* default */
++	of_property_read_u32(np, "reset-gpio-hold-us",
++			&pdata->slots[0].gpio_reset_hold_us);
+ 
+ 	if (of_find_property(np, "ti,non-removable", NULL)) {
+ 		pdata->slots[0].nonremovable = true;
+@@ -1776,6 +1866,7 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 	const struct of_device_id *match;
+ 	dma_cap_mask_t mask;
+ 	unsigned tx_req, rx_req;
++	struct dma_slave_sg_limits *dma_sg_limits;
+ 	struct pinctrl *pinctrl;
+ 
+ 	match = of_match_device(of_match_ptr(omap_mmc_of_match), &pdev->dev);
+@@ -1801,6 +1892,10 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
++	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
++	if (IS_ERR(pinctrl))
++		dev_warn(&pdev->dev, "unable to select pin group\n");
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (res == NULL || irq < 0)
+@@ -1825,13 +1920,13 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 	host->pdata	= pdata;
+ 	host->dev	= &pdev->dev;
+ 	host->use_dma	= 1;
+-	host->dma_ch	= -1;
+ 	host->irq	= irq;
+ 	host->slot_id	= 0;
+ 	host->mapbase	= res->start + pdata->reg_offset;
+ 	host->base	= ioremap(host->mapbase, SZ_4K);
+ 	host->power_mode = MMC_POWER_OFF;
+ 	host->next_data.cookie = 1;
++	host->req_flags	= 0;
+ 
+ 	platform_set_drvdata(pdev, host);
+ 
+@@ -1892,6 +1987,16 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 	 * as we want. */
+ 	mmc->max_segs = 1024;
+ 
++	/* Eventually we should get our max_segs limitation for EDMA by
++	 * querying the dmaengine API */
++	if (pdev->dev.of_node) {
++		struct device_node *parent = of_node_get(pdev->dev.of_node->parent);
++		struct device_node *node;
++		node = of_find_node_by_name(parent, "edma");
++		if (node)
++			mmc->max_segs = 16;
++	}
++
+ 	mmc->max_blk_size = 512;       /* Block Length at max can be 1024 */
+ 	mmc->max_blk_count = 0xFFFF;    /* No. of Blocks is 16 bits */
+ 	mmc->max_req_size = mmc->max_blk_size * mmc->max_blk_count;
+@@ -1952,6 +2057,13 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 		goto err_irq;
+ 	}
+ 
++	/* Some DMA Engines only handle a limited number of SG segments */
++	dma_sg_limits = dma_get_slave_sg_limits(host->rx_chan,
++						DMA_SLAVE_BUSWIDTH_4_BYTES,
++						mmc->max_blk_size / 4);
++	if (dma_sg_limits && dma_sg_limits->max_seg_nr)
++		mmc->max_segs = dma_sg_limits->max_seg_nr;
++
+ 	/* Request IRQ for MMC operations */
+ 	ret = request_irq(host->irq, omap_hsmmc_irq, 0,
+ 			mmc_hostname(mmc), host);
+diff --git a/drivers/of/device.c b/drivers/of/device.c
+index f685e55..b4b95c6 100644
+--- a/drivers/of/device.c
++++ b/drivers/of/device.c
+@@ -63,6 +63,9 @@ int of_device_add(struct platform_device *ofdev)
+ 	if (!ofdev->dev.parent)
+ 		set_dev_node(&ofdev->dev, of_node_to_nid(ofdev->dev.of_node));
+ 
++	/* make sure we add the resources to the appropriate lists */
++	platform_device_link_resources(ofdev);
++
+ 	return device_add(&ofdev->dev);
+ }
+ 
+diff --git a/drivers/of/of_i2c.c b/drivers/of/of_i2c.c
+index b667264..116a5e0 100644
+--- a/drivers/of/of_i2c.c
++++ b/drivers/of/of_i2c.c
+@@ -17,10 +17,64 @@
+ #include <linux/of_i2c.h>
+ #include <linux/of_irq.h>
+ #include <linux/module.h>
++#include <linux/err.h>
++
++struct i2c_client *
++of_i2c_register_device(struct i2c_adapter *adap,
++		struct device_node *node)
++{
++	struct i2c_client *result;
++	struct i2c_board_info info = {};
++	struct dev_archdata dev_ad = {};
++	const __be32 *addr;
++	int len;
++
++	dev_dbg(&adap->dev, "of_i2c: register %s\n", node->full_name);
++
++	if (of_modalias_node(node, info.type, sizeof(info.type)) < 0) {
++		dev_err(&adap->dev, "of_i2c: modalias failure on %s\n",
++			node->full_name);
++		return ERR_PTR(-EINVAL);
++	}
++
++	addr = of_get_property(node, "reg", &len);
++	if (!addr || (len < sizeof(int))) {
++		dev_err(&adap->dev, "of_i2c: invalid reg on %s\n",
++			node->full_name);
++		return ERR_PTR(-EINVAL);
++	}
++
++	info.addr = be32_to_cpup(addr);
++	if (info.addr > (1 << 10) - 1) {
++		dev_err(&adap->dev, "of_i2c: invalid addr=%x on %s\n",
++			info.addr, node->full_name);
++		return ERR_PTR(-EINVAL);
++	}
++
++	info.irq = irq_of_parse_and_map(node, 0);
++	info.of_node = of_node_get(node);
++	info.archdata = &dev_ad;
++
++	if (of_get_property(node, "wakeup-source", NULL))
++		info.flags |= I2C_CLIENT_WAKE;
++
++	request_module("%s%s", I2C_MODULE_PREFIX, info.type);
++
++	result = i2c_new_device(adap, &info);
++	if (result == NULL) {
++		dev_err(&adap->dev, "of_i2c: Failure registering %s\n",
++			node->full_name);
++		of_node_put(node);
++		irq_dispose_mapping(info.irq);
++		return ERR_PTR(-ENODEV);
++	}
++
++	return result;
++}
++EXPORT_SYMBOL(of_i2c_register_device);
+ 
+ void of_i2c_register_devices(struct i2c_adapter *adap)
+ {
+-	void *result;
+ 	struct device_node *node;
+ 
+ 	/* Only register child devices if the adapter has a node pointer set */
+@@ -29,52 +83,8 @@ void of_i2c_register_devices(struct i2c_adapter *adap)
+ 
+ 	dev_dbg(&adap->dev, "of_i2c: walking child nodes\n");
+ 
+-	for_each_available_child_of_node(adap->dev.of_node, node) {
+-		struct i2c_board_info info = {};
+-		struct dev_archdata dev_ad = {};
+-		const __be32 *addr;
+-		int len;
+-
+-		dev_dbg(&adap->dev, "of_i2c: register %s\n", node->full_name);
+-
+-		if (of_modalias_node(node, info.type, sizeof(info.type)) < 0) {
+-			dev_err(&adap->dev, "of_i2c: modalias failure on %s\n",
+-				node->full_name);
+-			continue;
+-		}
+-
+-		addr = of_get_property(node, "reg", &len);
+-		if (!addr || (len < sizeof(int))) {
+-			dev_err(&adap->dev, "of_i2c: invalid reg on %s\n",
+-				node->full_name);
+-			continue;
+-		}
+-
+-		info.addr = be32_to_cpup(addr);
+-		if (info.addr > (1 << 10) - 1) {
+-			dev_err(&adap->dev, "of_i2c: invalid addr=%x on %s\n",
+-				info.addr, node->full_name);
+-			continue;
+-		}
+-
+-		info.irq = irq_of_parse_and_map(node, 0);
+-		info.of_node = of_node_get(node);
+-		info.archdata = &dev_ad;
+-
+-		if (of_get_property(node, "wakeup-source", NULL))
+-			info.flags |= I2C_CLIENT_WAKE;
+-
+-		request_module("%s%s", I2C_MODULE_PREFIX, info.type);
+-
+-		result = i2c_new_device(adap, &info);
+-		if (result == NULL) {
+-			dev_err(&adap->dev, "of_i2c: Failure registering %s\n",
+-			        node->full_name);
+-			of_node_put(node);
+-			irq_dispose_mapping(info.irq);
+-			continue;
+-		}
+-	}
++	for_each_available_child_of_node(adap->dev.of_node, node)
++		of_i2c_register_device(adap, node);
+ }
+ EXPORT_SYMBOL(of_i2c_register_devices);
+ 
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index 7323cca..ff08c27 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1662,7 +1662,17 @@ static struct platform_driver pcs_driver = {
+ #endif
+ };
+ 
+-module_platform_driver(pcs_driver);
++static int __init pcs_init(void)
++{
++	return platform_driver_register(&pcs_driver);
++}
++postcore_initcall(pcs_init);
++
++static void __exit pcs_exit(void)
++{
++	platform_driver_unregister(&pcs_driver);
++}
++module_exit(pcs_exit);
+ 
+ MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
+ MODULE_DESCRIPTION("One-register-per-pin type device tree based pinctrl driver");
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index c9d04f7..1a862df 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -11,3 +11,14 @@ menuconfig RESET_CONTROLLER
+ 	  via GPIOs or SoC-internal reset controller modules.
+ 
+ 	  If unsure, say no.
++
++if RESET_CONTROLLER
++
++config RESET_GPIO
++	tristate "GPIO reset controller support"
++	depends on GPIOLIB && OF
++	help
++	  This driver provides support for reset lines that are controlled
++	  directly by GPIOs.
++
++endif
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 1e2d83f..b854f20 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -1 +1,2 @@
+ obj-$(CONFIG_RESET_CONTROLLER) += core.o
++obj-$(CONFIG_RESET_GPIO) += gpio-reset.o
+diff --git a/drivers/reset/gpio-reset.c b/drivers/reset/gpio-reset.c
+new file mode 100644
+index 0000000..acc1076
+--- /dev/null
++++ b/drivers/reset/gpio-reset.c
+@@ -0,0 +1,169 @@
++/*
++ * GPIO Reset Controller driver
++ *
++ * Copyright 2013 Philipp Zabel, Pengutronix
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/module.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/reset-controller.h>
++
++struct gpio_reset_data {
++	struct reset_controller_dev rcdev;
++	unsigned int gpio;
++	bool active_low;
++	u32 delay_us;
++};
++
++static void __gpio_reset_set(struct reset_controller_dev *rcdev, int asserted)
++{
++	struct gpio_reset_data *drvdata = container_of(rcdev,
++			struct gpio_reset_data, rcdev);
++	int value = asserted;
++
++	if (drvdata->active_low)
++		value = !value;
++
++	gpio_set_value(drvdata->gpio, value);
++}
++
++static int gpio_reset(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct gpio_reset_data *drvdata = container_of(rcdev,
++			struct gpio_reset_data, rcdev);
++
++	if (drvdata->delay_us < 0)
++		return -ENOSYS;
++
++	__gpio_reset_set(rcdev, 1);
++	udelay(drvdata->delay_us);
++	__gpio_reset_set(rcdev, 0);
++
++	return 0;
++}
++
++static int gpio_reset_assert(struct reset_controller_dev *rcdev,
++		unsigned long id)
++{
++	__gpio_reset_set(rcdev, 1);
++
++	return 0;
++}
++
++static int gpio_reset_deassert(struct reset_controller_dev *rcdev,
++		unsigned long id)
++{
++	__gpio_reset_set(rcdev, 0);
++
++	return 0;
++}
++
++static struct reset_control_ops gpio_reset_ops = {
++	.reset = gpio_reset,
++	.assert = gpio_reset_assert,
++	.deassert = gpio_reset_deassert,
++};
++
++static int of_gpio_reset_xlate(struct reset_controller_dev *rcdev,
++			       const struct of_phandle_args *reset_spec)
++{
++	if (WARN_ON(reset_spec->args_count != 0))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int gpio_reset_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct gpio_reset_data *drvdata;
++	enum of_gpio_flags flags;
++	unsigned long gpio_flags;
++	bool initially_in_reset;
++	int ret;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (drvdata == NULL)
++		return -ENOMEM;
++
++	if (of_gpio_named_count(np, "reset-gpios") != 1)
++		return -EINVAL;
++
++	drvdata->gpio = of_get_named_gpio_flags(np, "reset-gpios", 0, &flags);
++	if (drvdata->gpio == -EPROBE_DEFER) {
++		return drvdata->gpio;
++	} else if (!gpio_is_valid(drvdata->gpio)) {
++		dev_err(&pdev->dev, "invalid reset gpio: %d\n", drvdata->gpio);
++		return drvdata->gpio;
++	}
++
++	drvdata->active_low = flags & OF_GPIO_ACTIVE_LOW;
++
++	ret = of_property_read_u32(np, "reset-delay-us", &drvdata->delay_us);
++	if (ret < 0)
++		return ret;
++
++	initially_in_reset = of_property_read_bool(np, "initially-in-reset");
++	if (drvdata->active_low ^ initially_in_reset)
++		gpio_flags = GPIOF_OUT_INIT_HIGH;
++	else
++		gpio_flags = GPIOF_OUT_INIT_LOW;
++
++	ret = devm_gpio_request_one(&pdev->dev, drvdata->gpio, gpio_flags, NULL);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "failed to request gpio %d: %d\n",
++			drvdata->gpio, ret);
++		return ret;
++	}
++
++	drvdata->rcdev.of_node = np;
++	drvdata->rcdev.owner = THIS_MODULE;
++	drvdata->rcdev.nr_resets = 1;
++	drvdata->rcdev.ops = &gpio_reset_ops;
++	drvdata->rcdev.of_xlate = of_gpio_reset_xlate;
++	reset_controller_register(&drvdata->rcdev);
++
++	platform_set_drvdata(pdev, drvdata);
++
++	return 0;
++}
++
++static int gpio_reset_remove(struct platform_device *pdev)
++{
++	struct gpio_reset_data *drvdata = platform_get_drvdata(pdev);
++
++	reset_controller_unregister(&drvdata->rcdev);
++
++	return 0;
++}
++
++static struct of_device_id gpio_reset_dt_ids[] = {
++	{ .compatible = "gpio-reset" },
++	{ }
++};
++
++static struct platform_driver gpio_reset_driver = {
++	.probe = gpio_reset_probe,
++	.remove = gpio_reset_remove,
++	.driver = {
++		.name = "gpio-reset",
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(gpio_reset_dt_ids),
++	},
++};
++
++module_platform_driver(gpio_reset_driver);
++
++MODULE_AUTHOR("Philipp Zabel <p.zabel@pengutronix.de>");
++MODULE_DESCRIPTION("gpio reset controller");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:gpio-reset");
++MODULE_DEVICE_TABLE(of, gpio_reset_dt_ids);
+diff --git a/drivers/usb/Makefile b/drivers/usb/Makefile
+index 238c5d4..2b3132e 100644
+--- a/drivers/usb/Makefile
++++ b/drivers/usb/Makefile
+@@ -45,7 +45,7 @@ obj-$(CONFIG_USB_MICROTEK)	+= image/
+ obj-$(CONFIG_USB_SERIAL)	+= serial/
+ 
+ obj-$(CONFIG_USB)		+= misc/
+-obj-$(CONFIG_USB_PHY)		+= phy/
++obj-$(CONFIG_USB_SUPPORT)	+= phy/
+ obj-$(CONFIG_EARLY_PRINTK_DBGP)	+= early/
+ 
+ obj-$(CONFIG_USB_ATM)		+= atm/
+diff --git a/drivers/usb/dwc3/dwc3-exynos.c b/drivers/usb/dwc3/dwc3-exynos.c
+index 8ce9d7f..a179c5a 100644
+--- a/drivers/usb/dwc3/dwc3-exynos.c
++++ b/drivers/usb/dwc3/dwc3-exynos.c
+@@ -20,7 +20,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/clk.h>
+ #include <linux/usb/otg.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ 
+@@ -34,13 +34,13 @@ struct dwc3_exynos {
+ 
+ static int dwc3_exynos_register_phys(struct dwc3_exynos *exynos)
+ {
+-	struct nop_usb_xceiv_platform_data pdata;
++	struct usb_phy_gen_xceiv_platform_data pdata;
+ 	struct platform_device	*pdev;
+ 	int			ret;
+ 
+ 	memset(&pdata, 0x00, sizeof(pdata));
+ 
+-	pdev = platform_device_alloc("nop_usb_xceiv", PLATFORM_DEVID_AUTO);
++	pdev = platform_device_alloc("usb_phy_gen_xceiv", PLATFORM_DEVID_AUTO);
+ 	if (!pdev)
+ 		return -ENOMEM;
+ 
+@@ -51,7 +51,7 @@ static int dwc3_exynos_register_phys(struct dwc3_exynos *exynos)
+ 	if (ret)
+ 		goto err1;
+ 
+-	pdev = platform_device_alloc("nop_usb_xceiv", PLATFORM_DEVID_AUTO);
++	pdev = platform_device_alloc("usb_phy_gen_xceiv", PLATFORM_DEVID_AUTO);
+ 	if (!pdev) {
+ 		ret = -ENOMEM;
+ 		goto err1;
+diff --git a/drivers/usb/dwc3/dwc3-pci.c b/drivers/usb/dwc3/dwc3-pci.c
+index ed07ec0..87ea3d5 100644
+--- a/drivers/usb/dwc3/dwc3-pci.c
++++ b/drivers/usb/dwc3/dwc3-pci.c
+@@ -43,7 +43,7 @@
+ #include <linux/platform_device.h>
+ 
+ #include <linux/usb/otg.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ /* FIXME define these in <linux/pci_ids.h> */
+ #define PCI_VENDOR_ID_SYNOPSYS		0x16c3
+@@ -58,13 +58,13 @@ struct dwc3_pci {
+ 
+ static int dwc3_pci_register_phys(struct dwc3_pci *glue)
+ {
+-	struct nop_usb_xceiv_platform_data pdata;
++	struct usb_phy_gen_xceiv_platform_data pdata;
+ 	struct platform_device	*pdev;
+ 	int			ret;
+ 
+ 	memset(&pdata, 0x00, sizeof(pdata));
+ 
+-	pdev = platform_device_alloc("nop_usb_xceiv", 0);
++	pdev = platform_device_alloc("usb_phy_gen_xceiv", 0);
+ 	if (!pdev)
+ 		return -ENOMEM;
+ 
+@@ -75,7 +75,7 @@ static int dwc3_pci_register_phys(struct dwc3_pci *glue)
+ 	if (ret)
+ 		goto err1;
+ 
+-	pdev = platform_device_alloc("nop_usb_xceiv", 1);
++	pdev = platform_device_alloc("usb_phy_gen_xceiv", 1);
+ 	if (!pdev) {
+ 		ret = -ENOMEM;
+ 		goto err1;
+diff --git a/drivers/usb/gadget/Kconfig b/drivers/usb/gadget/Kconfig
+index 8e93683..7ec7283 100644
+--- a/drivers/usb/gadget/Kconfig
++++ b/drivers/usb/gadget/Kconfig
+@@ -144,7 +144,6 @@ config USB_AT91
+ config USB_LPC32XX
+ 	tristate "LPC32XX USB Peripheral Controller"
+ 	depends on ARCH_LPC32XX
+-	depends on USB_PHY
+ 	select USB_ISP1301
+ 	help
+ 	   This option selects the USB device controller in the LPC32xx SoC.
+@@ -206,7 +205,6 @@ config USB_FOTG210_UDC
+ config USB_OMAP
+ 	tristate "OMAP USB Device Controller"
+ 	depends on ARCH_OMAP1
+-	depends on USB_PHY
+ 	select ISP1301_OMAP if MACH_OMAP_H2 || MACH_OMAP_H3 || MACH_OMAP_H4_OTG
+ 	help
+ 	   Many Texas Instruments OMAP processors have flexible full
+diff --git a/drivers/usb/host/Kconfig b/drivers/usb/host/Kconfig
+index 4263d01..3102b52 100644
+--- a/drivers/usb/host/Kconfig
++++ b/drivers/usb/host/Kconfig
+@@ -186,7 +186,6 @@ config USB_EHCI_HCD_AT91
+ config USB_EHCI_MSM
+ 	tristate "Support for Qualcomm QSD/MSM on-chip EHCI USB controller"
+ 	depends on ARCH_MSM
+-	depends on USB_PHY
+ 	select USB_EHCI_ROOT_HUB_TT
+ 	select USB_MSM_OTG
+ 	---help---
+diff --git a/drivers/usb/musb/am35x.c b/drivers/usb/musb/am35x.c
+index 2231850..5733a20 100644
+--- a/drivers/usb/musb/am35x.c
++++ b/drivers/usb/musb/am35x.c
+@@ -33,7 +33,7 @@
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ #include <linux/platform_data/usb-omap.h>
+ 
+ #include "musb_core.h"
+diff --git a/drivers/usb/musb/blackfin.c b/drivers/usb/musb/blackfin.c
+index 6ba8439..195e966 100644
+--- a/drivers/usb/musb/blackfin.c
++++ b/drivers/usb/musb/blackfin.c
+@@ -19,7 +19,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/prefetch.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include <asm/cacheflush.h>
+ 
+diff --git a/drivers/usb/musb/da8xx.c b/drivers/usb/musb/da8xx.c
+index 0da6f64..ccc6b63 100644
+--- a/drivers/usb/musb/da8xx.c
++++ b/drivers/usb/musb/da8xx.c
+@@ -33,7 +33,7 @@
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include <mach/da8xx.h>
+ #include <linux/platform_data/usb-davinci.h>
+diff --git a/drivers/usb/musb/davinci.c b/drivers/usb/musb/davinci.c
+index f8aeaf2..91f300e 100644
+--- a/drivers/usb/musb/davinci.c
++++ b/drivers/usb/musb/davinci.c
+@@ -33,7 +33,7 @@
+ #include <linux/gpio.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include <mach/cputype.h>
+ #include <mach/hardware.h>
+diff --git a/drivers/usb/musb/musb_dsps.c b/drivers/usb/musb/musb_dsps.c
+index 5233804..55fe3c2 100644
+--- a/drivers/usb/musb/musb_dsps.c
++++ b/drivers/usb/musb/musb_dsps.c
+@@ -36,7 +36,7 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/module.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ #include <linux/platform_data/usb-omap.h>
+ #include <linux/sizes.h>
+ 
+diff --git a/drivers/usb/musb/tusb6010.c b/drivers/usb/musb/tusb6010.c
+index 6f8a9ca..c642f09 100644
+--- a/drivers/usb/musb/tusb6010.c
++++ b/drivers/usb/musb/tusb6010.c
+@@ -25,7 +25,7 @@
+ #include <linux/io.h>
+ #include <linux/platform_device.h>
+ #include <linux/dma-mapping.h>
+-#include <linux/usb/nop-usb-xceiv.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
+ 
+ #include "musb_core.h"
+ 
+diff --git a/drivers/usb/phy/Kconfig b/drivers/usb/phy/Kconfig
+index 3622fff..f41c3e1 100644
+--- a/drivers/usb/phy/Kconfig
++++ b/drivers/usb/phy/Kconfig
+@@ -1,22 +1,10 @@
+ #
+ # Physical Layer USB driver configuration
+ #
+-menuconfig USB_PHY
+-	bool "USB Physical Layer drivers"
+-	help
+-	  Most USB controllers have the physical layer signalling part
+-	  (commonly called a PHY) built in.  However, dual-role devices
+-	  (a.k.a. USB on-the-go) which support being USB master or slave
+-	  with the same connector often use an external PHY.
+-
+-	  The drivers in this submenu add support for such PHY devices.
+-	  They are not needed for standard master-only (or the vast
+-	  majority of slave-only) USB interfaces.
++menu "USB Physical Layer drivers"
+ 
+-	  If you're not sure if this applies to you, it probably doesn't;
+-	  say N here.
+-
+-if USB_PHY
++config USB_PHY
++	def_bool n
+ 
+ #
+ # USB Transceiver Drivers
+@@ -24,6 +12,7 @@ if USB_PHY
+ config AB8500_USB
+ 	tristate "AB8500 USB Transceiver Driver"
+ 	depends on AB8500_CORE
++	select USB_PHY
+ 	help
+ 	  Enable this to support the USB OTG transceiver in AB8500 chip.
+ 	  This transceiver supports high and full speed devices plus,
+@@ -33,12 +22,14 @@ config FSL_USB2_OTG
+ 	bool "Freescale USB OTG Transceiver Driver"
+ 	depends on USB_EHCI_FSL && USB_FSL_USB2 && PM_RUNTIME
+ 	select USB_OTG
++	select USB_PHY
+ 	help
+ 	  Enable this to support Freescale USB OTG transceiver.
+ 
+ config ISP1301_OMAP
+ 	tristate "Philips ISP1301 with OMAP OTG"
+ 	depends on I2C && ARCH_OMAP_OTG
++	select USB_PHY
+ 	help
+ 	  If you say yes here you get support for the Philips ISP1301
+ 	  USB-On-The-Go transceiver working with the OMAP OTG controller.
+@@ -52,12 +43,14 @@ config ISP1301_OMAP
+ config MV_U3D_PHY
+ 	bool "Marvell USB 3.0 PHY controller Driver"
+ 	depends on CPU_MMP3
++	select USB_PHY
+ 	help
+ 	  Enable this to support Marvell USB 3.0 phy controller for Marvell
+ 	  SoC.
+ 
+ config NOP_USB_XCEIV
+ 	tristate "NOP USB Transceiver Driver"
++	select USB_PHY
+ 	help
+ 	  This driver is to be used by all the usb transceiver which are either
+ 	  built-in with usb ip or which are autonomous and doesn't require any
+@@ -76,6 +69,7 @@ config OMAP_USB2
+ 	tristate "OMAP USB2 PHY Driver"
+ 	depends on ARCH_OMAP2PLUS
+ 	select OMAP_CONTROL_USB
++	select USB_PHY
+ 	help
+ 	  Enable this to support the transceiver that is part of SOC. This
+ 	  driver takes care of all the PHY functionality apart from comparator.
+@@ -85,12 +79,25 @@ config OMAP_USB2
+ config OMAP_USB3
+ 	tristate "OMAP USB3 PHY Driver"
+ 	select OMAP_CONTROL_USB
++	select USB_PHY
+ 	help
+ 	  Enable this to support the USB3 PHY that is part of SOC. This
+ 	  driver takes care of all the PHY functionality apart from comparator.
+ 	  This driver interacts with the "OMAP Control USB Driver" to power
+ 	  on/off the PHY.
+ 
++config AM335X_CONTROL_USB
++	tristate
++
++config AM335X_PHY_USB
++	tristate "AM335x USB PHY Driver"
++	select USB_PHY
++	select AM335X_CONTROL_USB
++	select NOP_USB_XCEIV
++	help
++	  This driver provides PHY support for that phy which part for the
++	  AM335x SoC.
++
+ config SAMSUNG_USBPHY
+ 	tristate
+ 	help
+@@ -101,6 +108,7 @@ config SAMSUNG_USBPHY
+ config SAMSUNG_USB2PHY
+ 	tristate "Samsung USB 2.0 PHY controller Driver"
+ 	select SAMSUNG_USBPHY
++	select USB_PHY
+ 	help
+ 	  Enable this to support Samsung USB 2.0 (High Speed) PHY controller
+ 	  driver for Samsung SoCs.
+@@ -108,6 +116,7 @@ config SAMSUNG_USB2PHY
+ config SAMSUNG_USB3PHY
+ 	tristate "Samsung USB 3.0 PHY controller Driver"
+ 	select SAMSUNG_USBPHY
++	select USB_PHY
+ 	help
+ 	  Enable this to support Samsung USB 3.0 (Super Speed) phy controller
+ 	  for samsung SoCs.
+@@ -115,6 +124,7 @@ config SAMSUNG_USB3PHY
+ config TWL4030_USB
+ 	tristate "TWL4030 USB Transceiver Driver"
+ 	depends on TWL4030_CORE && REGULATOR_TWL4030 && USB_MUSB_OMAP2PLUS
++	select USB_PHY
+ 	help
+ 	  Enable this to support the USB OTG transceiver on TWL4030
+ 	  family chips (including the TWL5030 and TPS659x0 devices).
+@@ -135,6 +145,7 @@ config TWL6030_USB
+ config USB_GPIO_VBUS
+ 	tristate "GPIO based peripheral-only VBUS sensing 'transceiver'"
+ 	depends on GPIOLIB
++	select USB_PHY
+ 	help
+ 	  Provides simple GPIO VBUS sensing for controllers with an
+ 	  internal transceiver via the usb_phy interface, and
+@@ -145,6 +156,7 @@ config USB_ISP1301
+ 	tristate "NXP ISP1301 USB transceiver support"
+ 	depends on USB || USB_GADGET
+ 	depends on I2C
++	select USB_PHY
+ 	help
+ 	  Say Y here to add support for the NXP ISP1301 USB transceiver driver.
+ 	  This chip is typically used as USB transceiver for USB host, gadget
+@@ -156,6 +168,7 @@ config USB_ISP1301
+ config USB_MSM_OTG
+ 	tristate "OTG support for Qualcomm on-chip USB controller"
+ 	depends on (USB || USB_GADGET) && ARCH_MSM
++	select USB_PHY
+ 	help
+ 	  Enable this to support the USB OTG transceiver on MSM chips. It
+ 	  handles PHY initialization, clock management, and workarounds
+@@ -169,6 +182,7 @@ config USB_MV_OTG
+ 	tristate "Marvell USB OTG support"
+ 	depends on USB_EHCI_MV && USB_MV_UDC && PM_RUNTIME
+ 	select USB_OTG
++	select USB_PHY
+ 	help
+ 	  Say Y here if you want to build Marvell USB OTG transciever
+ 	  driver in kernel (including PXA and MMP series). This driver
+@@ -180,6 +194,7 @@ config USB_MXS_PHY
+ 	tristate "Freescale MXS USB PHY support"
+ 	depends on ARCH_MXC || ARCH_MXS
+ 	select STMP_DEVICE
++	select USB_PHY
+ 	help
+ 	  Enable this to support the Freescale MXS USB PHY.
+ 
+@@ -188,6 +203,7 @@ config USB_MXS_PHY
+ config USB_RCAR_PHY
+ 	tristate "Renesas R-Car USB PHY support"
+ 	depends on USB || USB_GADGET
++	select USB_PHY
+ 	help
+ 	  Say Y here to add support for the Renesas R-Car USB common PHY driver.
+ 	  This chip is typically used as USB PHY for USB host, gadget.
+@@ -210,4 +226,4 @@ config USB_ULPI_VIEWPORT
+ 	  Provides read/write operations to the ULPI phy register set for
+ 	  controllers with a viewport register (e.g. Chipidea/ARC controllers).
+ 
+-endif # USB_PHY
++endmenu
+diff --git a/drivers/usb/phy/Makefile b/drivers/usb/phy/Makefile
+index 070eca3..dae321d 100644
+--- a/drivers/usb/phy/Makefile
++++ b/drivers/usb/phy/Makefile
+@@ -14,8 +14,10 @@ phy-fsl-usb2-objs			:= phy-fsl-usb.o phy-fsm-usb.o
+ obj-$(CONFIG_FSL_USB2_OTG)		+= phy-fsl-usb2.o
+ obj-$(CONFIG_ISP1301_OMAP)		+= phy-isp1301-omap.o
+ obj-$(CONFIG_MV_U3D_PHY)		+= phy-mv-u3d-usb.o
+-obj-$(CONFIG_NOP_USB_XCEIV)		+= phy-nop.o
++obj-$(CONFIG_NOP_USB_XCEIV)		+= phy-generic.o
+ obj-$(CONFIG_OMAP_CONTROL_USB)		+= phy-omap-control.o
++obj-$(CONFIG_AM335X_CONTROL_USB)	+= phy-am335x-control.o
++obj-$(CONFIG_AM335X_PHY_USB)		+= phy-am335x.o
+ obj-$(CONFIG_OMAP_USB2)			+= phy-omap-usb2.o
+ obj-$(CONFIG_OMAP_USB3)			+= phy-omap-usb3.o
+ obj-$(CONFIG_SAMSUNG_USBPHY)		+= phy-samsung-usb.o
+diff --git a/drivers/usb/phy/am35x-phy-control.h b/drivers/usb/phy/am35x-phy-control.h
+new file mode 100644
+index 0000000..b96594d
+--- /dev/null
++++ b/drivers/usb/phy/am35x-phy-control.h
+@@ -0,0 +1,21 @@
++#ifndef _AM335x_PHY_CONTROL_H_
++#define _AM335x_PHY_CONTROL_H_
++
++struct phy_control {
++	void (*phy_power)(struct phy_control *phy_ctrl, u32 id, bool on);
++	void (*phy_wkup)(struct phy_control *phy_ctrl, u32 id, bool on);
++};
++
++static inline void phy_ctrl_power(struct phy_control *phy_ctrl, u32 id, bool on)
++{
++	phy_ctrl->phy_power(phy_ctrl, id, on);
++}
++
++static inline void phy_ctrl_wkup(struct phy_control *phy_ctrl, u32 id, bool on)
++{
++	phy_ctrl->phy_wkup(phy_ctrl, id, on);
++}
++
++struct phy_control *am335x_get_phy_control(struct device *dev);
++
++#endif
+diff --git a/drivers/usb/phy/phy-am335x-control.c b/drivers/usb/phy/phy-am335x-control.c
+new file mode 100644
+index 0000000..22cf07d
+--- /dev/null
++++ b/drivers/usb/phy/phy-am335x-control.c
+@@ -0,0 +1,137 @@
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/err.h>
++#include <linux/of.h>
++#include <linux/io.h>
++
++struct phy_control {
++	void (*phy_power)(struct phy_control *phy_ctrl, u32 id, bool on);
++	void (*phy_wkup)(struct phy_control *phy_ctrl, u32 id, bool on);
++};
++
++struct am335x_control_usb {
++	struct device *dev;
++	void __iomem *phy_reg;
++	void __iomem *wkup;
++	spinlock_t lock;
++	struct phy_control phy_ctrl;
++};
++
++#define AM335X_USB0_CTRL		0x0
++#define AM335X_USB1_CTRL		0x8
++#define AM335x_USB_WKUP			0x0
++
++#define USBPHY_CM_PWRDN		(1 << 0)
++#define USBPHY_OTG_PWRDN	(1 << 1)
++#define USBPHY_OTGVDET_EN	(1 << 19)
++#define USBPHY_OTGSESSEND_EN	(1 << 20)
++
++static void am335x_phy_power(struct phy_control *phy_ctrl, u32 id, bool on)
++{
++	struct am335x_control_usb *usb_ctrl;
++	u32 val;
++	u32 reg;
++
++	usb_ctrl = container_of(phy_ctrl, struct am335x_control_usb, phy_ctrl);
++
++	switch (id) {
++	case 0:
++		reg = AM335X_USB0_CTRL;
++		break;
++	case 1:
++		reg = AM335X_USB1_CTRL;
++		break;
++	default:
++		WARN_ON(1);
++		return;
++	}
++
++	val = readl(usb_ctrl->phy_reg + reg);
++	if (on) {
++		val &= ~(USBPHY_CM_PWRDN | USBPHY_OTG_PWRDN);
++		val |= USBPHY_OTGVDET_EN | USBPHY_OTGSESSEND_EN;
++	} else {
++		val |= USBPHY_CM_PWRDN | USBPHY_OTG_PWRDN;
++	}
++
++	writel(val, usb_ctrl->phy_reg + reg);
++}
++
++static const struct phy_control ctrl_am335x = {
++	.phy_power = am335x_phy_power,
++};
++
++static const struct of_device_id omap_control_usb_id_table[] = {
++	{ .compatible = "ti,am335x-usb-ctrl-module", .data = &ctrl_am335x },
++	{}
++};
++MODULE_DEVICE_TABLE(of, omap_control_usb_id_table);
++
++static struct platform_driver am335x_control_driver;
++static int match(struct device *dev, void *data)
++{
++	struct device_node *node = (struct device_node *)data;
++	return dev->of_node == node &&
++		dev->driver == &am335x_control_driver.driver;
++}
++
++struct phy_control *am335x_get_phy_control(struct device *dev)
++{
++	struct device_node *node;
++	struct am335x_control_usb *ctrl_usb;
++
++	node = of_parse_phandle(dev->of_node, "ti,ctrl_mod", 0);
++	if (!node)
++		return NULL;
++
++	dev = bus_find_device(&platform_bus_type, NULL, node, match);
++	ctrl_usb = dev_get_drvdata(dev);
++	if (!ctrl_usb)
++		return NULL;
++	return &ctrl_usb->phy_ctrl;
++}
++EXPORT_SYMBOL_GPL(am335x_get_phy_control);
++
++static int am335x_control_usb_probe(struct platform_device *pdev)
++{
++	struct resource	*res;
++	struct am335x_control_usb *ctrl_usb;
++	const struct of_device_id *of_id;
++	const struct phy_control *phy_ctrl;
++
++	of_id = of_match_node(omap_control_usb_id_table, pdev->dev.of_node);
++	if (!of_id)
++		return -EINVAL;
++
++	phy_ctrl = of_id->data;
++
++	ctrl_usb = devm_kzalloc(&pdev->dev, sizeof(*ctrl_usb), GFP_KERNEL);
++	if (!ctrl_usb) {
++		dev_err(&pdev->dev, "unable to alloc memory for control usb\n");
++		return -ENOMEM;
++	}
++
++	ctrl_usb->dev = &pdev->dev;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "phy_ctrl");
++	ctrl_usb->phy_reg = devm_ioremap_resource(&pdev->dev, res);
++	if (IS_ERR(ctrl_usb->phy_reg))
++		return PTR_ERR(ctrl_usb->phy_reg);
++	spin_lock_init(&ctrl_usb->lock);
++	ctrl_usb->phy_ctrl = *phy_ctrl;
++
++	dev_set_drvdata(ctrl_usb->dev, ctrl_usb);
++	return 0;
++}
++
++static struct platform_driver am335x_control_driver = {
++	.probe		= am335x_control_usb_probe,
++	.driver		= {
++		.name	= "am335x-control-usb",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(omap_control_usb_id_table),
++	},
++};
++
++module_platform_driver(am335x_control_driver);
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/usb/phy/phy-am335x.c b/drivers/usb/phy/phy-am335x.c
+new file mode 100644
+index 0000000..c4d614d
+--- /dev/null
++++ b/drivers/usb/phy/phy-am335x.c
+@@ -0,0 +1,99 @@
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <linux/usb/otg.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
++#include <linux/slab.h>
++#include <linux/clk.h>
++#include <linux/regulator/consumer.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++
++#include "am35x-phy-control.h"
++#include "phy-generic.h"
++
++struct am335x_phy {
++	struct usb_phy_gen_xceiv usb_phy_gen;
++	struct phy_control *phy_ctrl;
++	int id;
++};
++
++static int am335x_init(struct usb_phy *phy)
++{
++	struct am335x_phy *am_phy = dev_get_drvdata(phy->dev);
++
++	phy_ctrl_power(am_phy->phy_ctrl, am_phy->id, true);
++	return 0;
++}
++
++static void am335x_shutdown(struct usb_phy *phy)
++{
++	struct am335x_phy *am_phy = dev_get_drvdata(phy->dev);
++
++	phy_ctrl_power(am_phy->phy_ctrl, am_phy->id, false);
++}
++
++static int am335x_phy_probe(struct platform_device *pdev)
++{
++	struct am335x_phy *am_phy;
++	struct device *dev = &pdev->dev;
++	int ret;
++
++	am_phy = devm_kzalloc(dev, sizeof(*am_phy), GFP_KERNEL);
++	if (!am_phy)
++		return -ENOMEM;
++
++	am_phy->phy_ctrl = am335x_get_phy_control(dev);
++	if (!am_phy->phy_ctrl)
++		return -EPROBE_DEFER;
++	am_phy->id = of_alias_get_id(pdev->dev.of_node, "phy");
++	if (am_phy->id < 0) {
++		dev_err(&pdev->dev, "Missing PHY id: %d\n", am_phy->id);
++		return am_phy->id;
++	}
++
++	ret = usb_phy_gen_create_phy(dev, &am_phy->usb_phy_gen,
++			USB_PHY_TYPE_USB2, 0, false, false);
++	if (ret)
++		return ret;
++
++	ret = usb_add_phy_dev(&am_phy->usb_phy_gen.phy);
++	if (ret)
++		goto err_add;
++	am_phy->usb_phy_gen.phy.init = am335x_init;
++	am_phy->usb_phy_gen.phy.shutdown = am335x_shutdown;
++
++	platform_set_drvdata(pdev, am_phy);
++	return 0;
++
++err_add:
++	usb_phy_gen_cleanup_phy(&am_phy->usb_phy_gen);
++	return ret;
++}
++
++static int am335x_phy_remove(struct platform_device *pdev)
++{
++	struct am335x_phy *am_phy = platform_get_drvdata(pdev);
++
++	usb_remove_phy(&am_phy->usb_phy_gen.phy);
++	return 0;
++}
++
++static const struct of_device_id am335x_phy_ids[] = {
++	{ .compatible = "ti,am335x-usb-phy" },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, am335x_phy_ids);
++
++static struct platform_driver am335x_phy_driver = {
++	.probe          = am335x_phy_probe,
++	.remove         = am335x_phy_remove,
++	.driver         = {
++		.name   = "am335x-phy-driver",
++		.owner  = THIS_MODULE,
++		.of_match_table = of_match_ptr(am335x_phy_ids),
++	},
++};
++
++module_platform_driver(am335x_phy_driver);
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/usb/phy/phy-generic.c b/drivers/usb/phy/phy-generic.c
+new file mode 100644
+index 0000000..efe59f3
+--- /dev/null
++++ b/drivers/usb/phy/phy-generic.c
+@@ -0,0 +1,309 @@
++/*
++ * drivers/usb/otg/nop-usb-xceiv.c
++ *
++ * NOP USB transceiver for all USB transceiver which are either built-in
++ * into USB IP or which are mostly autonomous.
++ *
++ * Copyright (C) 2009 Texas Instruments Inc
++ * Author: Ajay Kumar Gupta <ajay.gupta@ti.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
++ *
++ * Current status:
++ *	This provides a "nop" transceiver for PHYs which are
++ *	autonomous such as isp1504, isp1707, etc.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/dma-mapping.h>
++#include <linux/usb/otg.h>
++#include <linux/usb/usb_phy_gen_xceiv.h>
++#include <linux/slab.h>
++#include <linux/clk.h>
++#include <linux/regulator/consumer.h>
++#include <linux/of.h>
++
++#include "phy-generic.h"
++
++static struct platform_device *pd;
++
++void usb_nop_xceiv_register(void)
++{
++	if (pd)
++		return;
++	pd = platform_device_register_simple("usb_phy_gen_xceiv", -1, NULL, 0);
++	if (!pd) {
++		pr_err("Unable to register generic usb transceiver\n");
++		return;
++	}
++}
++EXPORT_SYMBOL(usb_nop_xceiv_register);
++
++void usb_nop_xceiv_unregister(void)
++{
++	platform_device_unregister(pd);
++	pd = NULL;
++}
++EXPORT_SYMBOL(usb_nop_xceiv_unregister);
++
++static int nop_set_suspend(struct usb_phy *x, int suspend)
++{
++	return 0;
++}
++
++int usb_gen_phy_init(struct usb_phy *phy)
++{
++	struct usb_phy_gen_xceiv *nop = dev_get_drvdata(phy->dev);
++
++	if (!IS_ERR(nop->vcc)) {
++		if (regulator_enable(nop->vcc))
++			dev_err(phy->dev, "Failed to enable power\n");
++	}
++
++	if (!IS_ERR(nop->clk))
++		clk_enable(nop->clk);
++
++	if (!IS_ERR(nop->reset)) {
++		/* De-assert RESET */
++		if (regulator_enable(nop->reset))
++			dev_err(phy->dev, "Failed to de-assert reset\n");
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(usb_gen_phy_init);
++
++void usb_gen_phy_shutdown(struct usb_phy *phy)
++{
++	struct usb_phy_gen_xceiv *nop = dev_get_drvdata(phy->dev);
++
++	if (!IS_ERR(nop->reset)) {
++		/* Assert RESET */
++		if (regulator_disable(nop->reset))
++			dev_err(phy->dev, "Failed to assert reset\n");
++	}
++
++	if (!IS_ERR(nop->clk))
++		clk_disable(nop->clk);
++
++	if (!IS_ERR(nop->vcc)) {
++		if (regulator_disable(nop->vcc))
++			dev_err(phy->dev, "Failed to disable power\n");
++	}
++}
++EXPORT_SYMBOL_GPL(usb_gen_phy_shutdown);
++
++static int nop_set_peripheral(struct usb_otg *otg, struct usb_gadget *gadget)
++{
++	if (!otg)
++		return -ENODEV;
++
++	if (!gadget) {
++		otg->gadget = NULL;
++		return -ENODEV;
++	}
++
++	otg->gadget = gadget;
++	otg->phy->state = OTG_STATE_B_IDLE;
++	return 0;
++}
++
++static int nop_set_host(struct usb_otg *otg, struct usb_bus *host)
++{
++	if (!otg)
++		return -ENODEV;
++
++	if (!host) {
++		otg->host = NULL;
++		return -ENODEV;
++	}
++
++	otg->host = host;
++	return 0;
++}
++
++int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_gen_xceiv *nop,
++		enum usb_phy_type type, u32 clk_rate, bool needs_vcc,
++		bool needs_reset)
++{
++	int err;
++
++	nop->phy.otg = devm_kzalloc(dev, sizeof(*nop->phy.otg),
++			GFP_KERNEL);
++	if (!nop->phy.otg)
++		return -ENOMEM;
++
++	nop->clk = devm_clk_get(dev, "main_clk");
++	if (IS_ERR(nop->clk)) {
++		dev_dbg(dev, "Can't get phy clock: %ld\n",
++					PTR_ERR(nop->clk));
++	}
++
++	if (!IS_ERR(nop->clk) && clk_rate) {
++		err = clk_set_rate(nop->clk, clk_rate);
++		if (err) {
++			dev_err(dev, "Error setting clock rate\n");
++			return err;
++		}
++	}
++
++	if (!IS_ERR(nop->clk)) {
++		err = clk_prepare(nop->clk);
++		if (err) {
++			dev_err(dev, "Error preparing clock\n");
++			return err;
++		}
++	}
++
++	nop->vcc = devm_regulator_get(dev, "vcc");
++	if (IS_ERR(nop->vcc)) {
++		dev_dbg(dev, "Error getting vcc regulator: %ld\n",
++					PTR_ERR(nop->vcc));
++		if (needs_vcc)
++			return -EPROBE_DEFER;
++	}
++
++	nop->reset = devm_regulator_get(dev, "reset");
++	if (IS_ERR(nop->reset)) {
++		dev_dbg(dev, "Error getting reset regulator: %ld\n",
++					PTR_ERR(nop->reset));
++		if (needs_reset)
++			return -EPROBE_DEFER;
++	}
++
++	nop->dev		= dev;
++	nop->phy.dev		= nop->dev;
++	nop->phy.label		= "nop-xceiv";
++	nop->phy.set_suspend	= nop_set_suspend;
++	nop->phy.state		= OTG_STATE_UNDEFINED;
++	nop->phy.type		= type;
++
++	nop->phy.otg->phy		= &nop->phy;
++	nop->phy.otg->set_host		= nop_set_host;
++	nop->phy.otg->set_peripheral	= nop_set_peripheral;
++
++	ATOMIC_INIT_NOTIFIER_HEAD(&nop->phy.notifier);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(usb_phy_gen_create_phy);
++
++void usb_phy_gen_cleanup_phy(struct usb_phy_gen_xceiv *nop)
++{
++	if (!IS_ERR(nop->clk))
++		clk_unprepare(nop->clk);
++}
++EXPORT_SYMBOL_GPL(usb_phy_gen_cleanup_phy);
++
++static int usb_phy_gen_xceiv_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct usb_phy_gen_xceiv_platform_data *pdata =
++			dev_get_platdata(&pdev->dev);
++	struct usb_phy_gen_xceiv	*nop;
++	enum usb_phy_type	type = USB_PHY_TYPE_USB2;
++	int err;
++	u32 clk_rate = 0;
++	bool needs_vcc = false;
++	bool needs_reset = false;
++
++	if (dev->of_node) {
++		struct device_node *node = dev->of_node;
++
++		if (of_property_read_u32(node, "clock-frequency", &clk_rate))
++			clk_rate = 0;
++
++		needs_vcc = of_property_read_bool(node, "vcc-supply");
++		needs_reset = of_property_read_bool(node, "reset-supply");
++
++	} else if (pdata) {
++		type = pdata->type;
++		clk_rate = pdata->clk_rate;
++		needs_vcc = pdata->needs_vcc;
++		needs_reset = pdata->needs_reset;
++	}
++
++	nop = devm_kzalloc(dev, sizeof(*nop), GFP_KERNEL);
++	if (!nop)
++		return -ENOMEM;
++
++
++	err = usb_phy_gen_create_phy(dev, nop, type, clk_rate, needs_vcc,
++			needs_reset);
++	if (err)
++		return err;
++
++	nop->phy.init		= usb_gen_phy_init;
++	nop->phy.shutdown	= usb_gen_phy_shutdown;
++
++	err = usb_add_phy_dev(&nop->phy);
++	if (err) {
++		dev_err(&pdev->dev, "can't register transceiver, err: %d\n",
++			err);
++		goto err_add;
++	}
++
++	platform_set_drvdata(pdev, nop);
++
++	return 0;
++
++err_add:
++	usb_phy_gen_cleanup_phy(nop);
++	return err;
++}
++
++static int usb_phy_gen_xceiv_remove(struct platform_device *pdev)
++{
++	struct usb_phy_gen_xceiv *nop = platform_get_drvdata(pdev);
++
++	usb_phy_gen_cleanup_phy(nop);
++	usb_remove_phy(&nop->phy);
++
++	return 0;
++}
++
++static const struct of_device_id nop_xceiv_dt_ids[] = {
++	{ .compatible = "usb-nop-xceiv" },
++	{ }
++};
++
++MODULE_DEVICE_TABLE(of, nop_xceiv_dt_ids);
++
++static struct platform_driver usb_phy_gen_xceiv_driver = {
++	.probe		= usb_phy_gen_xceiv_probe,
++	.remove		= usb_phy_gen_xceiv_remove,
++	.driver		= {
++		.name	= "usb_phy_gen_xceiv",
++		.owner	= THIS_MODULE,
++		.of_match_table = nop_xceiv_dt_ids,
++	},
++};
++
++static int __init usb_phy_gen_xceiv_init(void)
++{
++	return platform_driver_register(&usb_phy_gen_xceiv_driver);
++}
++subsys_initcall(usb_phy_gen_xceiv_init);
++
++static void __exit usb_phy_gen_xceiv_exit(void)
++{
++	platform_driver_unregister(&usb_phy_gen_xceiv_driver);
++}
++module_exit(usb_phy_gen_xceiv_exit);
++
++MODULE_ALIAS("platform:usb_phy_gen_xceiv");
++MODULE_AUTHOR("Texas Instruments Inc");
++MODULE_DESCRIPTION("NOP USB Transceiver driver");
++MODULE_LICENSE("GPL");
+diff --git a/drivers/usb/phy/phy-generic.h b/drivers/usb/phy/phy-generic.h
+new file mode 100644
+index 0000000..61687d5
+--- /dev/null
++++ b/drivers/usb/phy/phy-generic.h
+@@ -0,0 +1,20 @@
++#ifndef _PHY_GENERIC_H_
++#define _PHY_GENERIC_H_
++
++struct usb_phy_gen_xceiv {
++	struct usb_phy phy;
++	struct device *dev;
++	struct clk *clk;
++	struct regulator *vcc;
++	struct regulator *reset;
++};
++
++int usb_gen_phy_init(struct usb_phy *phy);
++void usb_gen_phy_shutdown(struct usb_phy *phy);
++
++int usb_phy_gen_create_phy(struct device *dev, struct usb_phy_gen_xceiv *nop,
++		enum usb_phy_type type, u32 clk_rate, bool needs_vcc,
++		bool needs_reset);
++void usb_phy_gen_cleanup_phy(struct usb_phy_gen_xceiv *nop);
++
++#endif
+diff --git a/drivers/usb/phy/phy-nop.c b/drivers/usb/phy/phy-nop.c
+deleted file mode 100644
+index 55445e5d..0000000
+--- a/drivers/usb/phy/phy-nop.c
++++ /dev/null
+@@ -1,292 +0,0 @@
+-/*
+- * drivers/usb/otg/nop-usb-xceiv.c
+- *
+- * NOP USB transceiver for all USB transceiver which are either built-in
+- * into USB IP or which are mostly autonomous.
+- *
+- * Copyright (C) 2009 Texas Instruments Inc
+- * Author: Ajay Kumar Gupta <ajay.gupta@ti.com>
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as published by
+- * the Free Software Foundation; either version 2 of the License, or
+- * (at your option) any later version.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+- *
+- * Current status:
+- *	This provides a "nop" transceiver for PHYs which are
+- *	autonomous such as isp1504, isp1707, etc.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/platform_device.h>
+-#include <linux/dma-mapping.h>
+-#include <linux/usb/otg.h>
+-#include <linux/usb/nop-usb-xceiv.h>
+-#include <linux/slab.h>
+-#include <linux/clk.h>
+-#include <linux/regulator/consumer.h>
+-#include <linux/of.h>
+-
+-struct nop_usb_xceiv {
+-	struct usb_phy phy;
+-	struct device *dev;
+-	struct clk *clk;
+-	struct regulator *vcc;
+-	struct regulator *reset;
+-};
+-
+-static struct platform_device *pd;
+-
+-void usb_nop_xceiv_register(void)
+-{
+-	if (pd)
+-		return;
+-	pd = platform_device_register_simple("nop_usb_xceiv", -1, NULL, 0);
+-	if (!pd) {
+-		printk(KERN_ERR "Unable to register usb nop transceiver\n");
+-		return;
+-	}
+-}
+-EXPORT_SYMBOL(usb_nop_xceiv_register);
+-
+-void usb_nop_xceiv_unregister(void)
+-{
+-	platform_device_unregister(pd);
+-	pd = NULL;
+-}
+-EXPORT_SYMBOL(usb_nop_xceiv_unregister);
+-
+-static int nop_set_suspend(struct usb_phy *x, int suspend)
+-{
+-	return 0;
+-}
+-
+-static int nop_init(struct usb_phy *phy)
+-{
+-	struct nop_usb_xceiv *nop = dev_get_drvdata(phy->dev);
+-
+-	if (!IS_ERR(nop->vcc)) {
+-		if (regulator_enable(nop->vcc))
+-			dev_err(phy->dev, "Failed to enable power\n");
+-	}
+-
+-	if (!IS_ERR(nop->clk))
+-		clk_enable(nop->clk);
+-
+-	if (!IS_ERR(nop->reset)) {
+-		/* De-assert RESET */
+-		if (regulator_enable(nop->reset))
+-			dev_err(phy->dev, "Failed to de-assert reset\n");
+-	}
+-
+-	return 0;
+-}
+-
+-static void nop_shutdown(struct usb_phy *phy)
+-{
+-	struct nop_usb_xceiv *nop = dev_get_drvdata(phy->dev);
+-
+-	if (!IS_ERR(nop->reset)) {
+-		/* Assert RESET */
+-		if (regulator_disable(nop->reset))
+-			dev_err(phy->dev, "Failed to assert reset\n");
+-	}
+-
+-	if (!IS_ERR(nop->clk))
+-		clk_disable(nop->clk);
+-
+-	if (!IS_ERR(nop->vcc)) {
+-		if (regulator_disable(nop->vcc))
+-			dev_err(phy->dev, "Failed to disable power\n");
+-	}
+-}
+-
+-static int nop_set_peripheral(struct usb_otg *otg, struct usb_gadget *gadget)
+-{
+-	if (!otg)
+-		return -ENODEV;
+-
+-	if (!gadget) {
+-		otg->gadget = NULL;
+-		return -ENODEV;
+-	}
+-
+-	otg->gadget = gadget;
+-	otg->phy->state = OTG_STATE_B_IDLE;
+-	return 0;
+-}
+-
+-static int nop_set_host(struct usb_otg *otg, struct usb_bus *host)
+-{
+-	if (!otg)
+-		return -ENODEV;
+-
+-	if (!host) {
+-		otg->host = NULL;
+-		return -ENODEV;
+-	}
+-
+-	otg->host = host;
+-	return 0;
+-}
+-
+-static int nop_usb_xceiv_probe(struct platform_device *pdev)
+-{
+-	struct device *dev = &pdev->dev;
+-	struct nop_usb_xceiv_platform_data *pdata = pdev->dev.platform_data;
+-	struct nop_usb_xceiv	*nop;
+-	enum usb_phy_type	type = USB_PHY_TYPE_USB2;
+-	int err;
+-	u32 clk_rate = 0;
+-	bool needs_vcc = false;
+-	bool needs_reset = false;
+-
+-	nop = devm_kzalloc(&pdev->dev, sizeof(*nop), GFP_KERNEL);
+-	if (!nop)
+-		return -ENOMEM;
+-
+-	nop->phy.otg = devm_kzalloc(&pdev->dev, sizeof(*nop->phy.otg),
+-							GFP_KERNEL);
+-	if (!nop->phy.otg)
+-		return -ENOMEM;
+-
+-	if (dev->of_node) {
+-		struct device_node *node = dev->of_node;
+-
+-		if (of_property_read_u32(node, "clock-frequency", &clk_rate))
+-			clk_rate = 0;
+-
+-		needs_vcc = of_property_read_bool(node, "vcc-supply");
+-		needs_reset = of_property_read_bool(node, "reset-supply");
+-
+-	} else if (pdata) {
+-		type = pdata->type;
+-		clk_rate = pdata->clk_rate;
+-		needs_vcc = pdata->needs_vcc;
+-		needs_reset = pdata->needs_reset;
+-	}
+-
+-	nop->clk = devm_clk_get(&pdev->dev, "main_clk");
+-	if (IS_ERR(nop->clk)) {
+-		dev_dbg(&pdev->dev, "Can't get phy clock: %ld\n",
+-					PTR_ERR(nop->clk));
+-	}
+-
+-	if (!IS_ERR(nop->clk) && clk_rate) {
+-		err = clk_set_rate(nop->clk, clk_rate);
+-		if (err) {
+-			dev_err(&pdev->dev, "Error setting clock rate\n");
+-			return err;
+-		}
+-	}
+-
+-	if (!IS_ERR(nop->clk)) {
+-		err = clk_prepare(nop->clk);
+-		if (err) {
+-			dev_err(&pdev->dev, "Error preparing clock\n");
+-			return err;
+-		}
+-	}
+-
+-	nop->vcc = devm_regulator_get(&pdev->dev, "vcc");
+-	if (IS_ERR(nop->vcc)) {
+-		dev_dbg(&pdev->dev, "Error getting vcc regulator: %ld\n",
+-					PTR_ERR(nop->vcc));
+-		if (needs_vcc)
+-			return -EPROBE_DEFER;
+-	}
+-
+-	nop->reset = devm_regulator_get(&pdev->dev, "reset");
+-	if (IS_ERR(nop->reset)) {
+-		dev_dbg(&pdev->dev, "Error getting reset regulator: %ld\n",
+-					PTR_ERR(nop->reset));
+-		if (needs_reset)
+-			return -EPROBE_DEFER;
+-	}
+-
+-	nop->dev		= &pdev->dev;
+-	nop->phy.dev		= nop->dev;
+-	nop->phy.label		= "nop-xceiv";
+-	nop->phy.set_suspend	= nop_set_suspend;
+-	nop->phy.init		= nop_init;
+-	nop->phy.shutdown	= nop_shutdown;
+-	nop->phy.state		= OTG_STATE_UNDEFINED;
+-	nop->phy.type		= type;
+-
+-	nop->phy.otg->phy		= &nop->phy;
+-	nop->phy.otg->set_host		= nop_set_host;
+-	nop->phy.otg->set_peripheral	= nop_set_peripheral;
+-
+-	err = usb_add_phy_dev(&nop->phy);
+-	if (err) {
+-		dev_err(&pdev->dev, "can't register transceiver, err: %d\n",
+-			err);
+-		goto err_add;
+-	}
+-
+-	platform_set_drvdata(pdev, nop);
+-
+-	ATOMIC_INIT_NOTIFIER_HEAD(&nop->phy.notifier);
+-
+-	return 0;
+-
+-err_add:
+-	if (!IS_ERR(nop->clk))
+-		clk_unprepare(nop->clk);
+-	return err;
+-}
+-
+-static int nop_usb_xceiv_remove(struct platform_device *pdev)
+-{
+-	struct nop_usb_xceiv *nop = platform_get_drvdata(pdev);
+-
+-	if (!IS_ERR(nop->clk))
+-		clk_unprepare(nop->clk);
+-
+-	usb_remove_phy(&nop->phy);
+-
+-	return 0;
+-}
+-
+-static const struct of_device_id nop_xceiv_dt_ids[] = {
+-	{ .compatible = "usb-nop-xceiv" },
+-	{ }
+-};
+-
+-MODULE_DEVICE_TABLE(of, nop_xceiv_dt_ids);
+-
+-static struct platform_driver nop_usb_xceiv_driver = {
+-	.probe		= nop_usb_xceiv_probe,
+-	.remove		= nop_usb_xceiv_remove,
+-	.driver		= {
+-		.name	= "nop_usb_xceiv",
+-		.owner	= THIS_MODULE,
+-		.of_match_table = nop_xceiv_dt_ids,
+-	},
+-};
+-
+-static int __init nop_usb_xceiv_init(void)
+-{
+-	return platform_driver_register(&nop_usb_xceiv_driver);
+-}
+-subsys_initcall(nop_usb_xceiv_init);
+-
+-static void __exit nop_usb_xceiv_exit(void)
+-{
+-	platform_driver_unregister(&nop_usb_xceiv_driver);
+-}
+-module_exit(nop_usb_xceiv_exit);
+-
+-MODULE_ALIAS("platform:nop_usb_xceiv");
+-MODULE_AUTHOR("Texas Instruments Inc");
+-MODULE_DESCRIPTION("NOP USB Transceiver driver");
+-MODULE_LICENSE("GPL");
+diff --git a/include/drm/i2c/tda998x.h b/include/drm/i2c/tda998x.h
+new file mode 100644
+index 0000000..41f799f
+--- /dev/null
++++ b/include/drm/i2c/tda998x.h
+@@ -0,0 +1,23 @@
++#ifndef __TDA998X_H__
++#define __TDA998X_H__
++
++enum tda998x_audio_format {
++	AFMT_I2S,
++	AFMT_SPDIF,
++};
++
++struct tda998x_encoder_params {
++	int audio_cfg;
++	int audio_clk_cfg;
++	enum tda998x_audio_format audio_format;
++	int audio_sample_rate;
++	char audio_frame[6];
++	int swap_a, mirr_a;
++	int swap_b, mirr_b;
++	int swap_c, mirr_c;
++	int swap_d, mirr_d;
++	int swap_e, mirr_e;
++	int swap_f, mirr_f;
++};
++
++#endif
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index cb286b1..d71fe5d 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -370,6 +370,18 @@ struct dma_slave_config {
+ 	unsigned int slave_id;
+ };
+ 
++/* struct dma_slave_sg_limits - expose SG transfer limits of a channel
++ *
++ * @max_seg_nr: maximum number of SG segments supported on a SG/SLAVE
++ *	    channel (0 for no maximum or not a SG/SLAVE channel)
++ * @max_seg_len: maximum length of SG segments supported on a SG/SLAVE
++ *	     channel (0 for no maximum or not a SG/SLAVE channel)
++ */
++struct dma_slave_sg_limits {
++	u32 max_seg_nr;
++	u32 max_seg_len;
++};
++
+ static inline const char *dma_chan_name(struct dma_chan *chan)
+ {
+ 	return dev_name(&chan->dev->device);
+@@ -532,6 +544,7 @@ struct dma_tx_state {
+  *	struct with auxiliary transfer status information, otherwise the call
+  *	will just return a simple status code
+  * @device_issue_pending: push pending transactions to hardware
++ * @device_slave_sg_limits: return the slave SG capabilities
+  */
+ struct dma_device {
+ 
+@@ -597,6 +610,9 @@ struct dma_device {
+ 					    dma_cookie_t cookie,
+ 					    struct dma_tx_state *txstate);
+ 	void (*device_issue_pending)(struct dma_chan *chan);
++	struct dma_slave_sg_limits *(*device_slave_sg_limits)(
++		struct dma_chan *chan, enum dma_slave_buswidth addr_width,
++		u32 maxburst);
+ };
+ 
+ static inline int dmaengine_device_control(struct dma_chan *chan,
+@@ -958,6 +974,29 @@ dma_set_tx_state(struct dma_tx_state *st, dma_cookie_t last, dma_cookie_t used,
+ 	}
+ }
+ 
++/**
++ * dma_get_slave_sg_limits - get DMAC SG transfer capabilities
++ * @chan: target DMA channel
++ * @addr_width: address width of the DMA transfer
++ * @maxburst: maximum DMA transfer burst size
++ *
++ * Get SG transfer capabilities for a specified channel. If the dmaengine
++ * driver does not implement SG transfer capabilities then NULL is
++ * returned.
++ */
++static inline struct dma_slave_sg_limits
++*dma_get_slave_sg_limits(struct dma_chan *chan,
++		       enum dma_slave_buswidth addr_width,
++		       u32 maxburst)
++{
++	if (chan->device->device_slave_sg_limits)
++		return chan->device->device_slave_sg_limits(chan,
++							  addr_width,
++							  maxburst);
++
++	return NULL;
++}
++
+ enum dma_status dma_sync_wait(struct dma_chan *chan, dma_cookie_t cookie);
+ #ifdef CONFIG_DMA_ENGINE
+ enum dma_status dma_wait_for_async_tx(struct dma_async_tx_descriptor *tx);
+diff --git a/include/linux/i2c/eeprom.h b/include/linux/i2c/eeprom.h
+new file mode 100644
+index 0000000..1393980
+--- /dev/null
++++ b/include/linux/i2c/eeprom.h
+@@ -0,0 +1,59 @@
++/*
++ * i2c/eeprom.h
++ *
++ * In-kernel interface for accessing eeprom memory.
++ *
++ * Copyright (C) 2012 Texas Instruments Inc.
++ *                    Pantelis Antoniou <panto@antoniou-consulting.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++#ifndef I2C_EEPROM_H
++#define I2C_EEPROM_H
++
++#include <linux/types.h>
++#include <linux/memory.h>
++#include <linux/err.h>
++#include <linux/i2c.h>
++
++/*
++ * The method called in the client is
++ *
++ * int command(struct i2c_client *client, unsigned int cmd, void *arg);
++ *
++ * A single command is supported, which returns a pointer to the memory
++ * accessor already available, but which was only accessible via platform
++ * callbacks. We can't use platform callbacks anymore for device tree
++ * platforms, hence this interface.
++ *
++ */
++
++/* interface commands */
++#define I2C_EEPROM_GET_MEMORY_ACCESSOR	1
++
++static inline struct memory_accessor *
++i2c_eeprom_get_memory_accessor(struct i2c_client *client)
++{
++	int ret;
++	struct memory_accessor *macc;
++
++	/* verify that the i2c client's driver has a command method */
++	if (!client || !client->driver || !client->driver->command)
++		return ERR_PTR(-ENOTSUPP);
++
++	macc = NULL;
++	ret = client->driver->command(client, I2C_EEPROM_GET_MEMORY_ACCESSOR,
++			&macc);
++	if (ret != 0)
++		return ERR_PTR(ret);
++
++	if (macc == NULL)
++		return ERR_PTR(-ENOTSUPP);
++
++	return macc;
++}
++
++#endif
+diff --git a/include/linux/of_i2c.h b/include/linux/of_i2c.h
+index cfb545c..53fca8f 100644
+--- a/include/linux/of_i2c.h
++++ b/include/linux/of_i2c.h
+@@ -15,6 +15,9 @@
+ #if defined(CONFIG_OF_I2C) || defined(CONFIG_OF_I2C_MODULE)
+ #include <linux/i2c.h>
+ 
++struct i2c_client *
++of_i2c_register_device(struct i2c_adapter *adap, struct device_node *node);
++
+ extern void of_i2c_register_devices(struct i2c_adapter *adap);
+ 
+ /* must call put_device() when done with returned i2c_client device */
+@@ -25,6 +28,14 @@ extern struct i2c_adapter *of_find_i2c_adapter_by_node(
+ 						struct device_node *node);
+ 
+ #else
++
++static inline struct i2c_client *
++of_i2c_register_device(struct i2c_adapter *adap,
++		struct device_node *node)
++{
++	return ERR_PTR(-ENODEV);
++}
++
+ static inline void of_i2c_register_devices(struct i2c_adapter *adap)
+ {
+ 	return;
+diff --git a/include/linux/platform_data/mmc-omap.h b/include/linux/platform_data/mmc-omap.h
+index 2bf1b30..d548994 100644
+--- a/include/linux/platform_data/mmc-omap.h
++++ b/include/linux/platform_data/mmc-omap.h
+@@ -115,6 +115,9 @@ struct omap_mmc_platform_data {
+ 
+ 		int switch_pin;			/* gpio (card detect) */
+ 		int gpio_wp;			/* gpio (write protect) */
++		int gpio_reset;			/* gpio (reset) */
++		int gpio_reset_active_low;	/* 1 if reset is active low */
++		u32 gpio_reset_hold_us;		/* time to hold in us */
+ 
+ 		int (*set_bus_mode)(struct device *dev, int slot, int bus_mode);
+ 		int (*set_power)(struct device *dev, int slot,
+diff --git a/include/linux/platform_device.h b/include/linux/platform_device.h
+index ce8e4ff..fb3dbce 100644
+--- a/include/linux/platform_device.h
++++ b/include/linux/platform_device.h
+@@ -325,4 +325,8 @@ extern int platform_pm_restore(struct device *dev);
+ #define USE_PLATFORM_PM_SLEEP_OPS
+ #endif
+ 
++/* helper functions for resource list managment */
++int platform_device_unlink_resources(struct platform_device *pdev);
++int platform_device_link_resources(struct platform_device *pdev);
++
+ #endif /* _PLATFORM_DEVICE_H_ */
+diff --git a/include/linux/usb/nop-usb-xceiv.h b/include/linux/usb/nop-usb-xceiv.h
+deleted file mode 100644
+index 148d351..0000000
+--- a/include/linux/usb/nop-usb-xceiv.h
++++ /dev/null
+@@ -1,29 +0,0 @@
+-#ifndef __LINUX_USB_NOP_XCEIV_H
+-#define __LINUX_USB_NOP_XCEIV_H
+-
+-#include <linux/usb/otg.h>
+-
+-struct nop_usb_xceiv_platform_data {
+-	enum usb_phy_type type;
+-	unsigned long clk_rate;
+-
+-	/* if set fails with -EPROBE_DEFER if can't get regulator */
+-	unsigned int needs_vcc:1;
+-	unsigned int needs_reset:1;
+-};
+-
+-#if defined(CONFIG_NOP_USB_XCEIV) || (defined(CONFIG_NOP_USB_XCEIV_MODULE) && defined(MODULE))
+-/* sometimes transceivers are accessed only through e.g. ULPI */
+-extern void usb_nop_xceiv_register(void);
+-extern void usb_nop_xceiv_unregister(void);
+-#else
+-static inline void usb_nop_xceiv_register(void)
+-{
+-}
+-
+-static inline void usb_nop_xceiv_unregister(void)
+-{
+-}
+-#endif
+-
+-#endif /* __LINUX_USB_NOP_XCEIV_H */
+diff --git a/include/linux/usb/usb_phy_gen_xceiv.h b/include/linux/usb/usb_phy_gen_xceiv.h
+new file mode 100644
+index 0000000..f9a7e7b
+--- /dev/null
++++ b/include/linux/usb/usb_phy_gen_xceiv.h
+@@ -0,0 +1,29 @@
++#ifndef __LINUX_USB_NOP_XCEIV_H
++#define __LINUX_USB_NOP_XCEIV_H
++
++#include <linux/usb/otg.h>
++
++struct usb_phy_gen_xceiv_platform_data {
++	enum usb_phy_type type;
++	unsigned long clk_rate;
++
++	/* if set fails with -EPROBE_DEFER if can't get regulator */
++	unsigned int needs_vcc:1;
++	unsigned int needs_reset:1;
++};
++
++#if IS_ENABLED(CONFIG_NOP_USB_XCEIV)
++/* sometimes transceivers are accessed only through e.g. ULPI */
++extern void usb_nop_xceiv_register(void);
++extern void usb_nop_xceiv_unregister(void);
++#else
++static inline void usb_nop_xceiv_register(void)
++{
++}
++
++static inline void usb_nop_xceiv_unregister(void)
++{
++}
++#endif
++
++#endif /* __LINUX_USB_NOP_XCEIV_H */
+diff --git a/sound/soc/soc-dmaengine-pcm.c b/sound/soc/soc-dmaengine-pcm.c
+index aa924d9..461fe4f 100644
+--- a/sound/soc/soc-dmaengine-pcm.c
++++ b/sound/soc/soc-dmaengine-pcm.c
+@@ -276,6 +276,16 @@ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_channel);
+ 
++struct dma_chan *snd_dmaengine_pcm_request_slave_channel(
++	struct snd_pcm_substream *substream, char *name)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++
++	return dma_request_slave_channel(dev, name);
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_slave_channel);
++
+ /**
+  * snd_dmaengine_pcm_open - Open a dmaengine based PCM substream
+  * @substream: PCM substream
+@@ -334,6 +344,18 @@ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
+ 
++int snd_dmaengine_pcm_open_request_slave_chan(struct snd_pcm_substream *substream, char *name)
++{
++	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		return snd_dmaengine_pcm_open(substream,
++			    snd_dmaengine_pcm_request_slave_channel(substream, "tx"));
++	} else {
++		return snd_dmaengine_pcm_open(substream,
++			    snd_dmaengine_pcm_request_slave_channel(substream, "rx"));
++	}
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_slave_chan);
++
+ /**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream

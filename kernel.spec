@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -716,24 +716,7 @@ Patch21030: arm-wandboard-quad.patch
 # https://git.kernel.org/cgit/linux/kernel/git/broonie/sound.git/patch/?id=3f1a91aa25579ba5e7268a47a73d2a83e4802c62
 
 # AM33xx
-Patch21040: 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
-Patch21041: 0001-ARM-davinci-uart-move-to-devid-based-clk_get.patch
-Patch21042: 0002-dma-edma-add-device_slave_sg_limits-support.patch
-Patch21043: 0003-dmaengine-add-dma_get_slave_sg_limits.patch
-Patch21044: 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
-Patch21045: 0005-da8xx-config-Enable-MMC-and-FS-options.patch
-Patch21046: 0006-ARM-dts-add-AM33XX-EDMA-support.patch
-Patch21047: 0007-ARM-dts-add-AM33XX-SPI-DMA-support.patch
-Patch21048: 0008-ARM-dts-add-AM33XX-MMC-support.patch
-Patch21049: 0009-DMA-EDMA-Split-out-PaRAM-set-calculations-into-its-o.patch
-Patch21050: 0010-DMA-EDMA-Add-support-for-Cyclic-DMA.patch
-Patch21051: 0011-sound-soc-soc-dmaengine-pcm-Add-support-for-new-DMAE.patch
-Patch21052: 0012-mmc-omap_hsmmc-Fix-the-crashes-due-to-the-interrupts.patch
-Patch21053: 0013-ARM-EDMA-Fix-clearing-of-unused-list-for-DT-DMA-reso.patch
-Patch21054: 0001-omap-hsmmc-Correct-usage-of-of_find_node_by_name.patch
-Patch21055: 0002-omap_hsmmc-Add-reset-gpio.patch
-Patch21056: 0001-am335x-dts-Add-beaglebone-black-DTS.patch
-Patch21057: 0002-dts-beaglebone-Add-I2C-definitions-for-EEPROMs-capes.patch
+Patch21100: am335x-bone.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1382,24 +1365,7 @@ ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-wandboard-quad.patch
 
 # Fix OMAP and AM33xx (BeagleBone)
-ApplyPatch 0001-reset-Add-driver-for-gpio-controlled-reset-pins.patch
-ApplyPatch 0001-ARM-davinci-uart-move-to-devid-based-clk_get.patch
-ApplyPatch 0002-dma-edma-add-device_slave_sg_limits-support.patch
-ApplyPatch 0003-dmaengine-add-dma_get_slave_sg_limits.patch
-ApplyPatch 0004-mmc-omap_hsmmc-set-max_segs-based-on-dma-engine-limi.patch
-ApplyPatch 0005-da8xx-config-Enable-MMC-and-FS-options.patch
-ApplyPatch 0006-ARM-dts-add-AM33XX-EDMA-support.patch
-ApplyPatch 0007-ARM-dts-add-AM33XX-SPI-DMA-support.patch
-ApplyPatch 0008-ARM-dts-add-AM33XX-MMC-support.patch
-ApplyPatch 0009-DMA-EDMA-Split-out-PaRAM-set-calculations-into-its-o.patch
-ApplyPatch 0010-DMA-EDMA-Add-support-for-Cyclic-DMA.patch
-ApplyPatch 0011-sound-soc-soc-dmaengine-pcm-Add-support-for-new-DMAE.patch
-ApplyPatch 0012-mmc-omap_hsmmc-Fix-the-crashes-due-to-the-interrupts.patch
-ApplyPatch 0013-ARM-EDMA-Fix-clearing-of-unused-list-for-DT-DMA-reso.patch
-ApplyPatch 0001-omap-hsmmc-Correct-usage-of-of_find_node_by_name.patch
-ApplyPatch 0002-omap_hsmmc-Add-reset-gpio.patch
-ApplyPatch 0001-am335x-dts-Add-beaglebone-black-DTS.patch
-ApplyPatch 0002-dts-beaglebone-Add-I2C-definitions-for-EEPROMs-capes.patch
+ApplyPatch am335x-bone.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2394,6 +2360,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 11 2013 Kyle McMartin <kyle@fedoraproject.org> - 3.11.4-302
+- Enable Beaglebone Black support, drop split up patches in favour of a
+  git patch.
+- Fix up some config options to make BBB work better.
+
 * Fri Oct 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix segfault in cpupower set (rhbz 1000439)
 

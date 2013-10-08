@@ -47,7 +47,7 @@ CONFIG_OF_DEVICE=y
 CONFIG_OF_EARLY_FLATTREE=y
 CONFIG_OF_FLATTREE=y
 CONFIG_OF_GPIO=y
-CONFIG_OF_I2C=m
+CONFIG_OF_I2C=y
 CONFIG_OF_IRQ=y
 CONFIG_OF_MDIO=m
 CONFIG_OF_MTD=y
@@ -102,3 +102,29 @@ CONFIG_SMC911X=m
 # CONFIG_LEDS_RENESAS_TPU is not set
 # CONFIG_LOCK_STAT is not set
 # CONFIG_PCIEPORTBUS is not set
+
+CONFIG_I2C=y
+
+### turn off things which make no sense on embedded SoC
+
+# core
+
+# CONFIG_INFINIBAND is not set
+# CONFIG_ISDN is not set
+
+# netdrv
+
+# CONFIG_NET_VENDOR_DEC is not set
+# CONFIG_NET_VENDOR_CHELSIO is not set
+# CONFIG_NET_VENDOR_EXAR is not set
+# CONFIG_NET_VENDOR_INTEL is not set
+# CONFIG_NET_VENDOR_MELLANOX is not set
+
+# scsi
+
+# CONFIG_BLK_DEV_3W_XXXX_RAID is not set
+# CONFIG_SCSI_3W_SAS is not set
+# CONFIG_SCSI_PM8001 is not set
+# CONFIG_SCSI_IPS is not set
+# CONFIG_SCSI_CXGB3_ISCSI is not set
+# CONFIG_SCSI_CXGB4_ISCSI is not set
