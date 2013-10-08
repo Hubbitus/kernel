@@ -703,7 +703,6 @@ Patch15000: nowatchdog-on-virt.patch
 
 # lpae
 Patch21001: arm-lpae-ax88796.patch
-Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 Patch21005: arm-exynos-mp.patch
 
@@ -1301,7 +1300,6 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-lpae-ax88796.patch
-#ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 #pplyPatch arm-exynos-mp.patch
 ApplyPatch arm-omap-load-tfp410.patch
