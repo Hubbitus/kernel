@@ -2350,6 +2350,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 7  2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- General ARM config cleanups
+- Remove old/dupe ARM config options
+- Enable external connectors on ARM
+- Enable i.MX RNG driver
+- ARM MFD and REGULATOR changes and cleanups
+- Enable console for Zynq-7xxx SoCs
+
 * Mon Oct 7 2013 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.11.4
 
