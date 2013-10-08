@@ -2252,6 +2252,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 8  2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Tiny ARM config update
+
 * Tue Oct 08 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git1.1
 - Linux v3.12-rc4-19-g8b5ede6
 - Reenable debugging options.
