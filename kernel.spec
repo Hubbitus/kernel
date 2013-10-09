@@ -804,6 +804,9 @@ Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 #rhbz 1015920
 Patch25124: drm-nouveau-bios-init-stub-opcode-0xaa.patch
 
+#rhbz 998732
+Patch25125: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1565,6 +1568,9 @@ ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
 #rhbz 1015920
 ApplyPatch drm-nouveau-bios-init-stub-opcode-0xaa.patch
+
+#rhbz 998732
+ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2368,6 +2374,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix VFIO IOMMU crash (rhbz 998732)
+
 * Tue Oct 08 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix nouveau crash (rhbz 1015920)
 - Quiet irq remapping stack trace (rhbz 982153)
