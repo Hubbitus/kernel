@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1948,7 +1948,6 @@ find $RPM_BUILD_ROOT/usr/include \
 %endif
 
 %if %{with_perf}
-mkdir -p $RPM_BUILD_ROOT/%{_libexecdir}/perf-core
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
 
@@ -2256,6 +2255,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git2.1
+- Linux v3.12-rc4-29-g0e7a3ed
+
 * Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix VFIO IOMMU crash (rhbz 998732)
 
