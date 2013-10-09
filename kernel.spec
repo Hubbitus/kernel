@@ -807,6 +807,10 @@ Patch25124: drm-nouveau-bios-init-stub-opcode-0xaa.patch
 #rhbz 998732
 Patch25125: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 
+#rhbz 896695
+Patch25126: 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
+Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1571,6 +1575,10 @@ ApplyPatch drm-nouveau-bios-init-stub-opcode-0xaa.patch
 
 #rhbz 998732
 ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
+
+#rhbz 896695
+ApplyPatch 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
+ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2375,6 +2383,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Don't trigger a stack trace on crashing iwlwifi firmware (rhbz 896695)
 - Add patch to fix VFIO IOMMU crash (rhbz 998732)
 
 * Tue Oct 08 2013 Josh Boyer <jwboyer@fedoraproject.org>
