@@ -744,6 +744,9 @@ Patch25116: rt2800-add-support-for-rf3070.patch
 #rhbz 982153
 Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
+#rhbz 998732
+Patch25124: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1445,6 +1448,9 @@ ApplyPatch rt2800-add-support-for-rf3070.patch
 
 #rhbz 982153
 ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
+
+#rhbz 998732
+ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2250,6 +2256,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix VFIO IOMMU crash (rhbz 998732)
+
 * Tue Oct 8  2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Tiny ARM config update
 
