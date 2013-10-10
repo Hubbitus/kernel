@@ -751,6 +751,9 @@ Patch25124: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 Patch25126: 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
 Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
+#rhbz 993744
+Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1459,6 +1462,9 @@ ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 #rhbz 896695
 ApplyPatch 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
 ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
+
+#rhbz 993744
+ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2263,6 +2269,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 10 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix large order allocation in dm mq policy (rhbz 993744)
+
 * Wed Oct 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git2.1
 - Don't trigger a stack trace on crashing iwlwifi firmware (rhbz 896695)
 - Linux v3.12-rc4-29-g0e7a3ed
