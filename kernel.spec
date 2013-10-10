@@ -2388,6 +2388,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 10 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.4-301
+- Tag for build
+
 * Thu Oct 10 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - USB OHCI accept very late isochronous URBs (in 3.11.4) (rhbz 975158)
 - Fix large order allocation in dm mq policy (rhbz 993744)
