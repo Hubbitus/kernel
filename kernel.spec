@@ -2275,6 +2275,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 11 2013 Kyle McMartin <kyle@fedoraproject.org>
+- Turn off some drivers on aarch64 and armv7hl that are unlikely to ever be
+  seen there.
+
 * Fri Oct 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git3.1
 - Fix segfault in cpupower set (rhbz 1000439)
 - Linux v3.12-rc4-62-g2fe80d3
