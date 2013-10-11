@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2269,6 +2269,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git3.1
+- Linux v3.12-rc4-62-g2fe80d3
+
 * Thu Oct 10 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix large order allocation in dm mq policy (rhbz 993744)
 
