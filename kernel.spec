@@ -2275,6 +2275,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 13 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates/cleanups
+- ARM GPIO/I2C updates
+- ARM usb gadget updates
+
 * Sat Oct 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc4.git4.1
 - Linux v3.12-rc4-91-g46f3751
 
