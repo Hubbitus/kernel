@@ -2275,6 +2275,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IIO and various sensor options for Win8 laptops (rhbz 995510)
+
 * Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc5.git1.1
 - Linux v3.12-rc5-36-g1e52db6
 - Reenable debugging options.
