@@ -1,0 +1,154 @@
+From 062c2e4363451d49ef840232fe65e8bff0dde2a5 Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Fri, 27 Sep 2013 18:09:54 -0400
+Subject: [PATCH 1/4] drm/radeon: use 64-bit math to calculate CTS values for
+ audio (v2)
+
+Avoid losing precision.  See bug:
+https://bugs.freedesktop.org/show_bug.cgi?id=69675
+
+v2: fix math as per Anssi's comments.
+
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/radeon/r600_hdmi.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/r600_hdmi.c b/drivers/gpu/drm/radeon/r600_hdmi.c
+index b0fa600..49043a5 100644
+--- a/drivers/gpu/drm/radeon/r600_hdmi.c
++++ b/drivers/gpu/drm/radeon/r600_hdmi.c
+@@ -75,8 +75,15 @@ static const struct radeon_hdmi_acr r600_hdmi_predefined_acr[] = {
+  */
+ static void r600_hdmi_calc_cts(uint32_t clock, int *CTS, int N, int freq)
+ {
+-	if (*CTS == 0)
+-		*CTS = clock * N / (128 * freq) * 1000;
++	u64 n;
++	u32 d;
++
++	if (*CTS == 0) {
++		n = (u64)clock * (u64)N * 1000ULL;
++		d = 128 * freq;
++		do_div(n, d);
++		*CTS = n;
++	}
+ 	DRM_DEBUG("Using ACR timing N=%d CTS=%d for frequency %d\n",
+ 		  N, *CTS, freq);
+ }
+-- 
+1.8.3.1
+
+
+From e7d12c2f98ae1e68c7298e5028048d150fa553a1 Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Fri, 27 Sep 2013 18:19:42 -0400
+Subject: [PATCH 2/4] drm/radeon: fix N/CTS clock matching for audio
+
+The drm code that calculates the 1001 clocks rounds up
+rather than truncating.  This allows the table to match
+properly on those modes.
+
+See bug:
+https://bugs.freedesktop.org/show_bug.cgi?id=69675
+
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/radeon/r600_hdmi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/r600_hdmi.c b/drivers/gpu/drm/radeon/r600_hdmi.c
+index 49043a5..567703f 100644
+--- a/drivers/gpu/drm/radeon/r600_hdmi.c
++++ b/drivers/gpu/drm/radeon/r600_hdmi.c
+@@ -57,15 +57,15 @@ enum r600_hdmi_iec_status_bits {
+ static const struct radeon_hdmi_acr r600_hdmi_predefined_acr[] = {
+     /*	     32kHz	  44.1kHz	48kHz    */
+     /* Clock      N     CTS      N     CTS      N     CTS */
+-    {  25174,  4576,  28125,  7007,  31250,  6864,  28125 }, /*  25,20/1.001 MHz */
++    {  25175,  4576,  28125,  7007,  31250,  6864,  28125 }, /*  25,20/1.001 MHz */
+     {  25200,  4096,  25200,  6272,  28000,  6144,  25200 }, /*  25.20       MHz */
+     {  27000,  4096,  27000,  6272,  30000,  6144,  27000 }, /*  27.00       MHz */
+     {  27027,  4096,  27027,  6272,  30030,  6144,  27027 }, /*  27.00*1.001 MHz */
+     {  54000,  4096,  54000,  6272,  60000,  6144,  54000 }, /*  54.00       MHz */
+     {  54054,  4096,  54054,  6272,  60060,  6144,  54054 }, /*  54.00*1.001 MHz */
+-    {  74175, 11648, 210937, 17836, 234375, 11648, 140625 }, /*  74.25/1.001 MHz */
++    {  74176, 11648, 210937, 17836, 234375, 11648, 140625 }, /*  74.25/1.001 MHz */
+     {  74250,  4096,  74250,  6272,  82500,  6144,  74250 }, /*  74.25       MHz */
+-    { 148351, 11648, 421875,  8918, 234375,  5824, 140625 }, /* 148.50/1.001 MHz */
++    { 148352, 11648, 421875,  8918, 234375,  5824, 140625 }, /* 148.50/1.001 MHz */
+     { 148500,  4096, 148500,  6272, 165000,  6144, 148500 }, /* 148.50       MHz */
+     {      0,  4096,      0,  6272,      0,  6144,      0 }  /* Other */
+ };
+-- 
+1.8.3.1
+
+
+From ee0fec312a1c4e26f255955da942562cd8908a4b Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Fri, 27 Sep 2013 18:22:15 -0400
+Subject: [PATCH 3/4] drm/radeon: use hw generated CTS/N values for audio
+
+Use the hw generated values rather than calculating
+them in the driver.  There may be some older r6xx
+asics where this doesn't work correctly.  This remains
+to be seen.
+
+See bug:
+https://bugs.freedesktop.org/show_bug.cgi?id=69675
+
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+---
+ drivers/gpu/drm/radeon/r600_hdmi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/radeon/r600_hdmi.c b/drivers/gpu/drm/radeon/r600_hdmi.c
+index 567703f..e2ae1c2 100644
+--- a/drivers/gpu/drm/radeon/r600_hdmi.c
++++ b/drivers/gpu/drm/radeon/r600_hdmi.c
+@@ -451,8 +451,7 @@ void r600_hdmi_setmode(struct drm_encoder *encoder, struct drm_display_mode *mod
+ 	}
+ 
+ 	WREG32(HDMI0_ACR_PACKET_CONTROL + offset,
+-	       HDMI0_ACR_AUTO_SEND | /* allow hw to sent ACR packets when required */
+-	       HDMI0_ACR_SOURCE); /* select SW CTS value */
++	       HDMI0_ACR_AUTO_SEND); /* allow hw to sent ACR packets when required */
+ 
+ 	WREG32(HDMI0_VBI_PACKET_CONTROL + offset,
+ 	       HDMI0_NULL_SEND | /* send null packets when required */
+-- 
+1.8.3.1
+
+
+From b852c985010a77c850b7548d64bbb964ca462b02 Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Thu, 10 Oct 2013 11:47:01 -0400
+Subject: [PATCH 4/4] drm/radeon: re-enable sw ACR support on pre-DCE4
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+HW ACR support may have issues on some older chips, so
+use SW ACR for now until we've tested further.
+
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+CC: Rafał Miłecki <zajec5@gmail.com>
+---
+ drivers/gpu/drm/radeon/r600_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/radeon/r600_hdmi.c b/drivers/gpu/drm/radeon/r600_hdmi.c
+index e2ae1c2..5b72931 100644
+--- a/drivers/gpu/drm/radeon/r600_hdmi.c
++++ b/drivers/gpu/drm/radeon/r600_hdmi.c
+@@ -451,6 +451,7 @@ void r600_hdmi_setmode(struct drm_encoder *encoder, struct drm_display_mode *mod
+ 	}
+ 
+ 	WREG32(HDMI0_ACR_PACKET_CONTROL + offset,
++	       HDMI0_ACR_SOURCE | /* select SW CTS value - XXX verify that hw CTS works on all families */
+ 	       HDMI0_ACR_AUTO_SEND); /* allow hw to sent ACR packets when required */
+ 
+ 	WREG32(HDMI0_VBI_PACKET_CONTROL + offset,
+-- 
+1.8.3.1
+

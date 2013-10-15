@@ -779,6 +779,9 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 #rhbz 1000439
 Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
+#rhbz 1010679
+Patch25130: fix-radeon-sound.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1515,6 +1518,9 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
+
+#rhbz 1010679
+ApplyPatch fix-radeon-sound.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2318,6 +2324,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix regression in radeon sound (rhbz 1010679)
+
 * Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.5-301
 - Build BIG_KEYS into the kernel (rhbz 1017683)
 
