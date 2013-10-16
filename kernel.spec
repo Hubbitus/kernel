@@ -627,8 +627,6 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
-Patch110: vmbugon-warnon.patch
-
 #atch200: debug-bad-pte-dmi.patch
 Patch201: debug-bad-pte-modules.patch
 
@@ -1286,8 +1284,6 @@ ApplyOptionalPatch compile-fixes.patch
 
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch upstream-reverts.patch -R
-
-ApplyPatch vmbugon-warnon.patch
 
 #plyPatch debug-bad-pte-dmi.patch
 ApplyPatch debug-bad-pte-modules.patch
