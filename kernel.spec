@@ -627,9 +627,6 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
-#atch200: debug-bad-pte-dmi.patch
-Patch201: debug-bad-pte-modules.patch
-
 Patch390: defaults-acpi-video.patch
 Patch396: acpi-sony-nonvs-blacklist.patch
 
@@ -1284,9 +1281,6 @@ ApplyOptionalPatch compile-fixes.patch
 
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch upstream-reverts.patch -R
-
-#plyPatch debug-bad-pte-dmi.patch
-ApplyPatch debug-bad-pte-modules.patch
 
 # Architecture patches
 # x86(-64)
