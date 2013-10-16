@@ -742,6 +742,9 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 #rhbz 1000439
 Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
+#rhbz 1011714
+Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1440,6 +1443,9 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
+
+#rhbz 1011714
+ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2245,6 +2251,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix btrfs balance/scrub issue (rhbz 1011714)
 - Clean up a bunch of stale patches
 
 * Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc5.git2.1
