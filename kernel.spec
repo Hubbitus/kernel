@@ -666,7 +666,6 @@ Patch1003: sysrq-secure-boot.patch
 
 # DRM
 #atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
-#Patch1800: drm-vgem.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -1389,7 +1388,6 @@ ApplyPatch sysrq-secure-boot.patch
 
 # DRM core
 #ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
-#ApplyPatch drm-vgem.patch
 
 # Nouveau DRM
 
