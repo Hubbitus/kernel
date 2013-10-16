@@ -627,8 +627,6 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
-Patch100: taint-vbox.patch
-
 Patch110: vmbugon-warnon.patch
 
 #atch200: debug-bad-pte-dmi.patch
@@ -1288,8 +1286,6 @@ ApplyOptionalPatch compile-fixes.patch
 
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch upstream-reverts.patch -R
-
-ApplyPatch taint-vbox.patch
 
 ApplyPatch vmbugon-warnon.patch
 
