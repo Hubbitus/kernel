@@ -2275,7 +2275,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Wed Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Oct 16 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config updates for IIO and enable sensors for ARM platforms
+
+* Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable VIRTIO_CONSOLE as a module on all ARM (rhbz 1005551)
 
 * Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
