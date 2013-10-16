@@ -677,11 +677,6 @@ Patch1825: drm-i915-dp-stfu.patch
 # silence the ACPI blacklist code
 Patch2802: silence-acpi-blacklist.patch
 
-# media patches
-Patch2899: v4l-dvb-fixes.patch
-Patch2900: v4l-dvb-update.patch
-Patch2901: v4l-dvb-experimental.patch
-
 # fs fixes
 
 # NFSv4
@@ -1407,12 +1402,6 @@ ApplyPatch drm-i915-dp-stfu.patch
 
 # silence the ACPI blacklist code
 ApplyPatch silence-acpi-blacklist.patch
-
-# V4L/DVB updates/fixes/experimental drivers
-#  apply if non-empty
-ApplyOptionalPatch v4l-dvb-fixes.patch
-ApplyOptionalPatch v4l-dvb-update.patch
-ApplyOptionalPatch v4l-dvb-experimental.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
