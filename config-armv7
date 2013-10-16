@@ -17,7 +17,6 @@ CONFIG_ARCH_ZYNQ=y
 # These are supported in the LPAE kernel
 # CONFIG_ARM_LPAE is not set
 # CONFIG_XEN is not set
-# CONFIG_VIRTIO_CONSOLE is not set
 # CONFIG_ARM_VIRT_EXT is not set
 
 # mvebu

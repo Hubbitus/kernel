@@ -2275,6 +2275,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable VIRTIO_CONSOLE as a module on all ARM (rhbz 1005551)
+
 * Tue Oct 15 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable IIO and various sensor options for Win8 laptops (rhbz 995510)
 
