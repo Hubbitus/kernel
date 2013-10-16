@@ -670,7 +670,6 @@ Patch1003: sysrq-secure-boot.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1824: drm-intel-next.patch
 Patch1825: drm-i915-dp-stfu.patch
 
 # Quiet boot fixes
@@ -1395,7 +1394,6 @@ ApplyPatch sysrq-secure-boot.patch
 # Nouveau DRM
 
 # Intel DRM
-ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
 
 # Radeon DRM
