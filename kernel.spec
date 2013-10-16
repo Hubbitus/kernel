@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2275,6 +2275,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc5.git2.1
+- Linux v3.12-rc5-48-g34ec4de
+
 * Wed Oct 16 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM config updates for IIO and enable sensors for ARM platforms
 
