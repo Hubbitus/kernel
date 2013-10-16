@@ -665,7 +665,6 @@ Patch1003: sysrq-secure-boot.patch
 # virt + ksm patches
 
 # DRM
-#atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -1387,7 +1386,6 @@ ApplyPatch sysrq-secure-boot.patch
 # Assorted Virt Fixes
 
 # DRM core
-#ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
 
 # Nouveau DRM
 
