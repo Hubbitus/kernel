@@ -748,6 +748,9 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 
+#rhbz 1015558
+Patch25133: fix-buslogic.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1452,6 +1455,9 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
+
+#rhbz 1015558
+ApplyPatch fix-buslogic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2260,6 +2266,7 @@ fi
 - Linux v3.12-rc5-78-g056cdce
 
 * Thu Oct 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix BusLogic error (rhbz 1015558)
 - Fix rt2800usb polling timeouts and throughput issues (rhbz 984696)
 
 * Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
