@@ -745,6 +745,9 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 #rhbz 1011714
 Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
+#rhbz 984696
+Patch25132: rt2800usb-slow-down-TX-status-polling.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1446,6 +1449,9 @@ ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #rhbz 1011714
 ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
+
+#rhbz 984696
+ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2250,6 +2256,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix rt2800usb polling timeouts and throughput issues (rhbz 984696)
+
 * Wed Oct 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix btrfs balance/scrub issue (rhbz 1011714)
 - Clean up a bunch of stale patches
