@@ -648,6 +648,7 @@ Patch800: crash-driver.patch
 Patch900: keys-expand-keyring.patch
 Patch901: keys-krb-support.patch
 Patch902: keys-x509-improv.patch
+Patch903: keyring-quota.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1371,6 +1372,7 @@ ApplyPatch crash-driver.patch
 ApplyPatch keys-expand-keyring.patch
 ApplyPatch keys-krb-support.patch
 ApplyPatch keys-x509-improv.patch
+ApplyPatch keyring-quota.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2262,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 18 2013 Josh Boyer <jwboyer@fedoraproject.org> 
+- Fix keyring quota misaccounting (rhbz 1017683)
+
 * Thu Oct 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc5.git3.1
 - Linux v3.12-rc5-78-g056cdce
 
