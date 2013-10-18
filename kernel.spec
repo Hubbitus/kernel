@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2264,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc5.git4.1
+- Linux v3.12-rc5-123-g04919af
+
 * Fri Oct 18 2013 Josh Boyer <jwboyer@fedoraproject.org> 
 - Fix keyring quota misaccounting (rhbz 1017683)
 
