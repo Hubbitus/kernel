@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 303
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -652,6 +652,7 @@ Patch800: crash-driver.patch
 Patch900: keys-expand-keyring.patch
 Patch901: keys-krb-support.patch
 Patch902: keys-x509-improv.patch
+Patch903: keyring-quota.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1424,6 +1425,7 @@ ApplyPatch crash-driver.patch
 ApplyPatch keys-expand-keyring.patch
 ApplyPatch keys-krb-support.patch
 ApplyPatch keys-x509-improv.patch
+ApplyPatch keyring-quota.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2342,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.5-303
+- Fix keyring quota misaccounting (rhbz 1017683)
+
 * Thu Oct 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix BusLogic error (rhbz 1015558)
 - Fix rt2800usb polling timeouts and throughput issues (rhbz 984696)
