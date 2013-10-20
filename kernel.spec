@@ -2264,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Build BIG_KEYS into the kernel (rhbz 1017683)
+
 * Sun Oct 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable U8500 SoC (Snowball) on ARM
 
