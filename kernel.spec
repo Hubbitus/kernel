@@ -2264,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 20 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable U8500 SoC (Snowball) on ARM
+
 * Sun Oct 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git0.1
 - Linux v3.12-rc6
 - Disable debugging options.
