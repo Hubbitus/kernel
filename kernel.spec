@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2344,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 21 2013 Kyle McMartin <kyle@fedoraproject.org> - 3.11.6-301
+- Reduce scope of am335x-bone.patch, as it broke serial on Wandboard.
+
 * Mon Oct 21 2013 Kyle McMartin <kyle@fedoraproject.org>
 - aarch64: add AFTER_LINK to $vdsold for debuginfo generation of the vdso.
 
