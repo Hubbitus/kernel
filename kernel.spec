@@ -2264,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 21 2013 Kyle McMartin <kyle@fedoraproject.org>
+- aarch64: add AFTER_LINK to $vdsold for debuginfo generation of the vdso.
+
 * Sun Oct 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Build BIG_KEYS into the kernel (rhbz 1017683)
 
