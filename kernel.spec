@@ -2344,6 +2344,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 21 2013 Kyle McMartin <kyle@fedoraproject.org>
+- aarch64: add AFTER_LINK to $vdsold for debuginfo generation of the vdso.
+
 * Fri Oct 18 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.6-300
 - Linux v3.11.6
 
