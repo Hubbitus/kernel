@@ -2264,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 22 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config update
+
 * Mon Oct 21 2013 Kyle McMartin <kyle@fedoraproject.org>
 - aarch64: add AFTER_LINK to $vdsold for debuginfo generation of the vdso.
 
