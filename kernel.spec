@@ -750,6 +750,9 @@ Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 #rhbz 1015558
 Patch25133: fix-buslogic.patch
 
+#rhbz 989251
+Patch25134: tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1458,6 +1461,9 @@ ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
 #rhbz 1015558
 ApplyPatch fix-buslogic.patch
+
+#rhbz 989251
+ApplyPatch tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2262,6 +2268,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix warning in tcp_fastretrans_alert (rhbz 989251)
+
 * Tue Oct 22 2013 Kyle McMartin <kyle@fedoraproject.org>
 - armv7hl,aarch64: re-enable kernel-modules-extra temporarily
 
