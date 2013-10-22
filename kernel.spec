@@ -2350,6 +2350,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 22 2013 Adam Jackson <ajax@redhat.com>
+- Drop voodoo1 fbdev driver
+
 * Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix warning in tcp_fastretrans_alert (rhbz 989251)
 
