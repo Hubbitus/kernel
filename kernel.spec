@@ -2259,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Build virtio drivers as modules (rhbz 1019569)
+
 * Tue Oct 22 2013 Adam Jackson <ajax@redhat.com>
 - Drop voodoo1 fbdev driver
 
