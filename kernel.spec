@@ -2259,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 22 2013 Adam Jackson <ajax@redhat.com>
+- Drop voodoo1 fbdev driver
+
 * Tue Oct 22 2013 Kyle McMartin <kyle@fedoraproject.org>
 - Clean up kernel Provides, nobody references kernel-drm, or kernel-modeset...
   drop pre-F20 ARM flavor names. Turn off AutoProv on the main kernel package.
