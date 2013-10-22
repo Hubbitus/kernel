@@ -453,16 +453,8 @@ Summary: The Linux kernel
 %define kernel_reqprovconf \
 Provides: kernel = %{rpmversion}-%{pkg_release}\
 Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:+%{1}}\
-Provides: kernel-drm = 4.3.0\
 Provides: kernel-drm-nouveau = 16\
-Provides: kernel-modeset = 1\
 Provides: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Provides: kernel-highbank\
-Provides: kernel-highbank-uname-r = %{KVERREL}%{?1:+%{1}}\
-Provides: kernel-omap\
-Provides: kernel-omap-uname-r = %{KVERREL}%{?1:+%{1}}\
-Provides: kernel-tegra\
-Provides: kernel-tegra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
@@ -473,8 +465,7 @@ Requires(preun): systemd >= 200\
 # We can't let RPM do the dependencies automatic because it'll then pick up\
 # a correct but undesirable perl dependency from the module headers which\
 # isn't required for the kernel proper to function\
-AutoReq: no\
-AutoProv: yes\
+AutoReqProv: no\
 %{nil}
 
 Name: kernel%{?variant}
@@ -2268,6 +2259,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 22 2013 Kyle McMartin <kyle@fedoraproject.org>
+- Clean up kernel Provides, nobody references kernel-drm, or kernel-modeset...
+  drop pre-F20 ARM flavor names. Turn off AutoProv on the main kernel package.
+
 * Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix warning in tcp_fastretrans_alert (rhbz 989251)
 
