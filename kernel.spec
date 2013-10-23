@@ -484,13 +484,13 @@ ExclusiveOS: Linux
 #
 # List the packages used during the kernel build
 #
-BuildRequires: module-init-tools, patch >= 2.5.4, bash >= 2.03, sh-utils, tar
-BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make >= 3.78, diffutils, gawk
-BuildRequires: gcc >= 3.4.2, binutils >= 2.12, redhat-rpm-config, hmaccalc
+BuildRequires: kmod, patch, bash, sh-utils, tar
+BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
+BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
 BuildRequires: xmlto, asciidoc
 %if %{with_sparse}
-BuildRequires: sparse >= 0.4.1
+BuildRequires: sparse
 %endif
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
@@ -501,11 +501,7 @@ BuildRequires: pciutils-devel gettext
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
-# Fancy new debuginfo generation introduced in Fedora 8/RHEL 6.
-# The -r flag to find-debuginfo.sh invokes eu-strip --reloc-debug-sections
-# which reduces the number of relocations in kernel module .ko.debug files and
-# was introduced with rpm 4.9 and elfutils 0.153.
-BuildRequires: rpm-build >= 4.9.0-1, elfutils >= elfutils-0.153-1
+BuildRequires: rpm-build, elfutils
 %define debuginfo_args --strict-build-id -r
 %endif
 
@@ -2245,6 +2241,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 23 2013 Kyle McMartin <kyle@fedoraproject.org>
+- Clean up some BuildRequires that reference hilariously old packages.
+  Replace module-init-tools BR with kmod.
+
 * Wed Oct 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git2.1
 - Linux v3.12-rc6-275-g320437af
 
