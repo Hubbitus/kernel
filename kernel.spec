@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -706,9 +706,6 @@ Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 #rhbz 985522
 Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
-#rhbz 1010431
-Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
 #rhbz 902012
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
 Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
@@ -723,7 +720,6 @@ Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 Patch25124: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 
 #rhbz 896695
-Patch25126: 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
 Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
 #rhbz 993744
@@ -740,9 +736,6 @@ Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 
 #rhbz 1015558
 Patch25133: fix-buslogic.patch
-
-#rhbz 989251
-Patch25134: tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1418,9 +1411,6 @@ ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 #rhbz 985522
 ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
-#rhbz 1010431
-ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
 #rhbz 902012
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
 ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
@@ -1435,7 +1425,6 @@ ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
 
 #rhbz 896695
-ApplyPatch 0001-iwlwifi-don-t-WARN-on-host-commands-sent-when-firmwa.patch
 ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
 #rhbz 993744
@@ -1452,9 +1441,6 @@ ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
 #rhbz 1015558
 ApplyPatch fix-buslogic.patch
-
-#rhbz 989251
-ApplyPatch tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2259,6 +2245,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git2.1
+- Linux v3.12-rc6-275-g320437af
+
 * Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Build virtio drivers as modules (rhbz 1019569)
 
