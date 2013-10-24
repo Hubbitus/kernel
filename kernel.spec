@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -729,9 +729,6 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
-
-#rhbz 1015558
-Patch25133: fix-buslogic.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1434,9 +1431,6 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
-
-#rhbz 1015558
-ApplyPatch fix-buslogic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2241,6 +2235,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 24 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git3.1
+- Linux v3.12-rc6-284-ge6036c0
+
 * Wed Oct 23 2013 Kyle McMartin <kyle@fedoraproject.org>
 - Clean up some BuildRequires that reference hilariously old packages.
   Replace module-init-tools BR with kmod.
