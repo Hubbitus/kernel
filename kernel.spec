@@ -675,13 +675,16 @@ Patch15000: nowatchdog-on-virt.patch
 # lpae
 Patch21001: arm-lpae-ax88796.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
-Patch21005: arm-exynos-mp.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
 
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
+
+# ARM i.MX6
+# http://www.spinics.net/lists/devicetree/msg08276.html
+Patch21030: arm-imx6-utilite.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1280,9 +1283,9 @@ ApplyOptionalPatch upstream-reverts.patch -R
 #
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
-#pplyPatch arm-exynos-mp.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-imx6-utilite.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2235,6 +2238,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 24 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch for i.MX6 Utilite device dtb
+
 * Thu Oct 24 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git3.1
 - Linux v3.12-rc6-284-ge6036c0
 
