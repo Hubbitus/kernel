@@ -624,11 +624,13 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
+#drop with next rebase
 Patch100: taint-vbox.patch
 
+#drop with next rebase
 Patch110: vmbugon-warnon.patch
 
-#atch200: debug-bad-pte-dmi.patch
+#drop with next rebase
 Patch201: debug-bad-pte-modules.patch
 
 Patch390: defaults-acpi-video.patch
@@ -663,8 +665,6 @@ Patch1003: sysrq-secure-boot.patch
 # virt + ksm patches
 
 # DRM
-#atch1700: drm-edid-try-harder-to-fix-up-broken-headers.patch
-#Patch1800: drm-vgem.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
@@ -701,7 +701,6 @@ Patch15000: nowatchdog-on-virt.patch
 
 # lpae
 Patch21001: arm-lpae-ax88796.patch
-Patch21003: arm-dma-amba_pl08x-avoid-64bit-division.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 Patch21005: arm-exynos-mp.patch
 Patch21006: arm-highbank-for-3.12.patch
@@ -1335,11 +1334,13 @@ ApplyOptionalPatch compile-fixes.patch
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch upstream-reverts.patch -R
 
+#drop with next rebase
 ApplyPatch taint-vbox.patch
 
+#drop with next rebase
 ApplyPatch vmbugon-warnon.patch
 
-#plyPatch debug-bad-pte-dmi.patch
+#drop with next rebase
 ApplyPatch debug-bad-pte-modules.patch
 
 # Architecture patches
@@ -1351,7 +1352,6 @@ ApplyPatch debug-bad-pte-modules.patch
 # ARM
 #
 ApplyPatch arm-lpae-ax88796.patch
-#ApplyPatch arm-dma-amba_pl08x-avoid-64bit-division.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-exynos-mp.patch
 ApplyPatch arm-highbank-for-3.12.patch
@@ -1439,8 +1439,6 @@ ApplyPatch sysrq-secure-boot.patch
 # Assorted Virt Fixes
 
 # DRM core
-#ApplyPatch drm-edid-try-harder-to-fix-up-broken-headers.patch
-#ApplyPatch drm-vgem.patch
 
 # Nouveau DRM
 
@@ -2350,6 +2348,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 24 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Remove completely unapplied patches
+
 * Tue Oct 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Build virtio drivers as modules (rhbz 1019569)
 
