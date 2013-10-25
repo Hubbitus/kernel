@@ -733,6 +733,9 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 
+#rhbz 1023413
+Patch25133: alps-Support-for-Dell-XT2-model.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1434,6 +1437,9 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
+
+#rhbz 1023413
+ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2238,6 +2244,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add touchpad support for Dell XT2 (rhbz 1023413)
+
 * Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git4.1
 - Linux v3.12-rc6-292-g4208c47
 
