@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2238,6 +2238,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc6.git4.1
+- Linux v3.12-rc6-292-g4208c47
+
 * Thu Oct 24 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch for i.MX6 Utilite device dtb
 
