@@ -1,5 +1,8 @@
 **** Backports and patches headed/already upsteram *****************************
 
+* alps-Support-for-Dell-XT2-model.patch
+  - http://article.gmane.org/gmane.linux.kernel.input/32484
+
 * tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch (rhbz 989251)
   - Backport of upstream commit 031afe4990a7c9dbff41a3a742c44d3e740ea0a1
 

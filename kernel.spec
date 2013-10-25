@@ -794,6 +794,9 @@ Patch25133: fix-buslogic.patch
 #rhbz 989251
 Patch25134: tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
 
+#rhbz 1023413
+Patch25135: alps-Support-for-Dell-XT2-model.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1545,6 +1548,9 @@ ApplyPatch fix-buslogic.patch
 
 #rhbz 989251
 ApplyPatch tcp-fix-incorrect-ca_state-in-tail-loss-probe.patch
+
+#rhbz 1023413
+ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2348,6 +2354,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add touchpad support for Dell XT2 (rhbz 1023413)
+
 * Thu Oct 24 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Remove completely unapplied patches
 
