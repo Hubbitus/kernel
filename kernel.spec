@@ -794,7 +794,7 @@ Patch25133: fix-buslogic.patch
 #rhbz 1023413
 Patch25135: alps-Support-for-Dell-XT2-model.patch
 
-#CVE-2013-XXXX rhbz 1023477 1023495
+#CVE-2013-4470 rhbz 1023477 1023495
 Patch25136: net_311.mbox
 
 # END OF PATCH DEFINITIONS
@@ -1549,7 +1549,7 @@ ApplyPatch fix-buslogic.patch
 #rhbz 1023413
 ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
-#CVE-2013-XXXX rhbz 1023477 1023495
+#CVE-2013-4470 rhbz 1023477 1023495
 ApplyPatch net_311.mbox
 
 # END OF PATCH APPLICATIONS
@@ -2355,7 +2355,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2013-XXXX net: memory corruption with UDP_CORK and UFO (rhbz 1023477 1023495)
+- CVE-2013-4470 net: memory corruption with UDP_CORK and UFO (rhbz 1023477 1023495)
 - Add touchpad support for Dell XT2 (rhbz 1023413)
 
 * Thu Oct 24 2013 Josh Boyer <jwboyer@fedoraproject.org>
