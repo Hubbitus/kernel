@@ -1,0 +1,39 @@
+From dde2356c8466298bd77fa699e0ea296372eed47b Mon Sep 17 00:00:00 2001
+From: Sachin Prabhu <sprabhu@redhat.com>
+Date: Fri, 27 Sep 2013 17:35:42 +0000
+Subject: cifs: Allow LANMAN auth method for servers supporting unencapsulated authentication methods
+
+This allows users to use LANMAN authentication on servers which support
+unencapsulated authentication.
+
+The patch fixes a regression where users using plaintext authentication
+were no longer able to do so because of changed bought in by patch
+3f618223dc0bdcbc8d510350e78ee2195ff93768
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1011621
+
+Reported-by: Panos Kavalagios <Panagiotis.Kavalagios@eurodyn.com>
+Reviewed-by: Jeff Layton <jlayton@redhat.com>
+Signed-off-by: Sachin Prabhu <sprabhu@redhat.com>
+Signed-off-by: Steve French <smfrench@gmail.com>
+---
+(limited to 'fs/cifs')
+
+diff --git a/fs/cifs/sess.c b/fs/cifs/sess.c
+index 352358d..e87387d 100644
+--- a/fs/cifs/sess.c
++++ b/fs/cifs/sess.c
+@@ -500,9 +500,9 @@ select_sectype(struct TCP_Server_Info *server, enum securityEnum requested)
+ 				return NTLMv2;
+ 			if (global_secflags & CIFSSEC_MAY_NTLM)
+ 				return NTLM;
+-			/* Fallthrough */
+ 		default:
+-			return Unspecified;
++			/* Fallthrough to attempt LANMAN authentication next */
++			break;
+ 		}
+ 	case CIFS_NEGFLAVOR_LANMAN:
+ 		switch (requested) {
+--
+cgit v0.9.2

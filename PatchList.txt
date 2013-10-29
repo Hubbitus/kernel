@@ -1,5 +1,8 @@
 **** Backports and patches headed/already upsteram *****************************
 
+* cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch (rhbz 1011621)
+  - Backport of upstream commit dde2356c8466298bd77fa699e0ea296372eed47b
+
 * net_311.mbox (rhbz 1023495)
   - Networking patches queued for 3.11.7
 

@@ -797,6 +797,9 @@ Patch25135: alps-Support-for-Dell-XT2-model.patch
 #CVE-2013-4470 rhbz 1023477 1023495
 Patch25136: net_311.mbox
 
+#rhbz 1011621
+Patch25137: cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1551,6 +1554,9 @@ ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
 #CVE-2013-4470 rhbz 1023477 1023495
 ApplyPatch net_311.mbox
+
+#rhbz 1011621
+ApplyPatch cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2354,6 +2360,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 29 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix plaintext auth regression in cifs (rhbz 1011621)
+
 * Fri Oct 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4470 net: memory corruption with UDP_CORK and UFO (rhbz 1023477 1023495)
 - Add touchpad support for Dell XT2 (rhbz 1023413)
