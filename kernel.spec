@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2244,6 +2244,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 31 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git2.1
+- Linux v3.12-rc7-48-g12aee27
+
 * Tue Oct 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git1.1
 - Linux v3.12-rc7-9-gc9ca72f
 - Fixes sg_open lock held when returning to userspace (rhbz 1018620)
