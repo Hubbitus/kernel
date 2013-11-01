@@ -1,5 +1,8 @@
 **** Backports and patches headed/already upstream *****************************
 
+* net-flow_dissector-fail-on-evil-iph-ihl.patch (rhbz 1007939 1025647)
+  - Should hit upstream and stable soon
+
 * intel-3.12-stable-fixes.patch (rhbz 995782)
   - Backport of upstream commits:
   4f56d12ebb28fceac4c6e60c8993fbfc122e1399

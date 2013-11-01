@@ -803,6 +803,9 @@ Patch25137: cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 #rhbz 995782
 Patch25138: intel-3.12-stable-fixes.patch
 
+#CVE-2013-4348 rhbz 1007939 1025647
+Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1563,6 +1566,9 @@ ApplyPatch cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 
 #rhbz 995782
 ApplyPatch intel-3.12-stable-fixes.patch
+
+#CVE-2013-4348 rhbz 1007939 1025647
+ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2366,6 +2372,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4348 net: deadloop path in skb_flow_dissect (rhbz 1007939 1025647)
+
 * Thu Oct 31 2013 Josh Boyer <jwboyer@fedoraprorject.org>
 - Fix display regression on Dell XPS 13 machines (rhbz 995782)
 
