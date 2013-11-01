@@ -625,6 +625,8 @@ Patch470: die-floppy-die.patch
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
+Patch600: x86-allow-1024-cpus.patch
+
 Patch800: crash-driver.patch
 
 # crypto/
@@ -1278,6 +1280,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
+ApplyPatch x86-allow-1024-cpus.patch
 
 # ARM64
 
