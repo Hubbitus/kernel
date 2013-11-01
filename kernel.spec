@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -732,9 +732,6 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
-
-#rhbz 1023413
-Patch25133: alps-Support-for-Dell-XT2-model.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
@@ -1440,9 +1437,6 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
-
-#rhbz 1023413
-ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
@@ -2250,6 +2244,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git3.1
+- Linux v3.12-rc7-79-g4f794ee
+- Set NR_CPUS=1024 on non-debug x86_64 builds (MAXSMP is set on debug)
+
 * Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4348 net: deadloop path in skb_flow_dissect (rhbz 1007939 1025647)
 
