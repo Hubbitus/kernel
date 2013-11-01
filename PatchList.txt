@@ -1,4 +1,12 @@
-**** Backports and patches headed/already upsteram *****************************
+**** Backports and patches headed/already upstream *****************************
+
+* intel-3.12-stable-fixes.patch (rhbz 995782)
+  - Backport of upstream commits:
+  4f56d12ebb28fceac4c6e60c8993fbfc122e1399
+  7195a50b5c7e00cc3312934fd022c3006b533d12
+  c6cd2ee2d59111a07cd9199564c9bdcb2d11e5cf
+  645378d85ee524e429aa4cf52806047b56cdc596
+  1fbc0d789d12fec313c91912fc11733fdfbab863
 
 * cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch (rhbz 1011621)
   - Backport of upstream commit dde2356c8466298bd77fa699e0ea296372eed47b

@@ -800,6 +800,9 @@ Patch25136: net_311.mbox
 #rhbz 1011621
 Patch25137: cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 
+#rhbz 995782
+Patch25138: intel-3.12-stable-fixes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1557,6 +1560,9 @@ ApplyPatch net_311.mbox
 
 #rhbz 1011621
 ApplyPatch cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
+
+#rhbz 995782
+ApplyPatch intel-3.12-stable-fixes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2360,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 31 2013 Josh Boyer <jwboyer@fedoraprorject.org>
+- Fix display regression on Dell XPS 13 machines (rhbz 995782)
+
 * Tue Oct 29 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix plaintext auth regression in cifs (rhbz 1011621)
 
