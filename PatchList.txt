@@ -1,5 +1,8 @@
 **** Backports and patches headed/already upsteram *****************************
 
+* net-flow_dissector-fail-on-evil-iph-ihl.patch (rhbz 1007939 1025647)
+  - Should hit upstream and stable soon
+
 * alps-Support-for-Dell-XT2-model.patch (rhbz 1023413)
   - http://article.gmane.org/gmane.linux.kernel.input/32484
 

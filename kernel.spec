@@ -736,6 +736,9 @@ Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 #rhbz 1023413
 Patch25133: alps-Support-for-Dell-XT2-model.patch
 
+#CVE-2013-4348 rhbz 1007939 1025647
+Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1440,6 +1443,9 @@ ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
 #rhbz 1023413
 ApplyPatch alps-Support-for-Dell-XT2-model.patch
+
+#CVE-2013-4348 rhbz 1007939 1025647
+ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2244,6 +2250,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4348 net: deadloop path in skb_flow_dissect (rhbz 1007939 1025647)
+
 * Thu Oct 31 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git2.1
 - Linux v3.12-rc7-48-g12aee27
 
