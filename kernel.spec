@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2247,6 +2247,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git4.1
+- Linux v3.12-rc7-111-g9581b7d
+
 * Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-0.rc7.git3.1
 - Linux v3.12-rc7-79-g4f794ee
 - Set NR_CPUS=1024 on non-debug x86_64 builds (MAXSMP is set on debug)
