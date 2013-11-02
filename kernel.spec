@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -805,6 +805,10 @@ Patch25138: intel-3.12-stable-fixes.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
+
+#rhbz 1010603
+Patch25140: 0001-Revert-epoll-use-freezable-blocking-call.patch
+Patch25141: 0001-Revert-select-use-freezable-blocking-call.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1569,6 +1573,10 @@ ApplyPatch intel-3.12-stable-fixes.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
+
+#rhbz 1010603
+ApplyPatch 0001-Revert-epoll-use-freezable-blocking-call.patch
+ApplyPatch 0001-Revert-select-use-freezable-blocking-call.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2372,7 +2380,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.6-302
+- Revert blocking patches causing systemd to crash on resume (rhbz 1010603)
 - CVE-2013-4348 net: deadloop path in skb_flow_dissect (rhbz 1007939 1025647)
 
 * Thu Oct 31 2013 Josh Boyer <jwboyer@fedoraprorject.org>

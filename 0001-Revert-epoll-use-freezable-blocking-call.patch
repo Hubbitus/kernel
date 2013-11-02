@@ -1,0 +1,49 @@
+From c511851de162e8ec03d62e7d7feecbdf590d881d Mon Sep 17 00:00:00 2001
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Date: Tue, 29 Oct 2013 13:12:56 +0100
+Subject: [PATCH] Revert "epoll: use freezable blocking call"
+
+This reverts commit 1c441e921201 (epoll: use freezable blocking call)
+which is reported to cause user space memory corruption to happen
+after suspend to RAM.
+
+Since it appears to be extremely difficult to root cause this
+problem, it is best to revert the offending commit and try to address
+the original issue in a better way later.
+
+References: https://bugzilla.kernel.org/show_bug.cgi?id=61781
+Reported-by: Natrio <natrio@list.ru>
+Reported-by: Jeff Pohlmeyer <yetanothergeek@gmail.com>
+Bisected-by: Leo Wolf <jclw@ymail.com>
+Fixes: 1c441e921201 (epoll: use freezable blocking call)
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: 3.11+ <stable@vger.kernel.org> # 3.11+
+---
+ fs/eventpoll.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/eventpoll.c b/fs/eventpoll.c
+index 473e09d..810c28f 100644
+--- a/fs/eventpoll.c
++++ b/fs/eventpoll.c
+@@ -34,7 +34,6 @@
+ #include <linux/mutex.h>
+ #include <linux/anon_inodes.h>
+ #include <linux/device.h>
+-#include <linux/freezer.h>
+ #include <asm/uaccess.h>
+ #include <asm/io.h>
+ #include <asm/mman.h>
+@@ -1605,8 +1604,7 @@ fetch_events:
+ 			}
+ 
+ 			spin_unlock_irqrestore(&ep->lock, flags);
+-			if (!freezable_schedule_hrtimeout_range(to, slack,
+-								HRTIMER_MODE_ABS))
++			if (!schedule_hrtimeout_range(to, slack, HRTIMER_MODE_ABS))
+ 				timed_out = 1;
+ 
+ 			spin_lock_irqsave(&ep->lock, flags);
+-- 
+1.8.3.1
+

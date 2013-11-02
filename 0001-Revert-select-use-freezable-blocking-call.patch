@@ -1,0 +1,55 @@
+From 59612d187912750f416fbffe0c00bc0811c54ab5 Mon Sep 17 00:00:00 2001
+From: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Date: Tue, 29 Oct 2013 23:43:08 +0100
+Subject: [PATCH] Revert "select: use freezable blocking call"
+
+This reverts commit 9745cdb36da8 (select: use freezable blocking call)
+that triggers problems during resume from suspend to RAM on Paul Bolle's
+32-bit x86 machines.  Paul says:
+
+  Ever since I tried running (release candidates of) v3.11 on the two
+  working i686s I still have lying around I ran into issues on resuming
+  from suspend. Reverting 9745cdb36da8 (select: use freezable blocking
+  call) resolves those issues.
+
+  Resuming from suspend on i686 on (release candidates of) v3.11 and
+  later triggers issues like:
+
+  traps: systemd[1] general protection ip:b738e490 sp:bf882fc0 error:0 in libc-2.16.so[b731c000+1b0000]
+
+  and
+
+  traps: rtkit-daemon[552] general protection ip:804d6e5 sp:b6cb32f0 error:0 in rtkit-daemon[8048000+d000]
+
+  Once I hit the systemd error I can only get out of the mess that the
+  system is at that point by power cycling it.
+
+Since we are reverting another freezer-related change causing similar
+problems to happen, this one should be reverted as well.
+
+References: https://lkml.org/lkml/2013/10/29/583
+Reported-by: Paul Bolle <pebolle@tiscali.nl>
+Fixes: 9745cdb36da8 (select: use freezable blocking call)
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Cc: 3.11+ <stable@vger.kernel.org> # 3.11+
+---
+ fs/select.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/fs/select.c b/fs/select.c
+index 35d4adc7..dfd5cb1 100644
+--- a/fs/select.c
++++ b/fs/select.c
+@@ -238,8 +238,7 @@ int poll_schedule_timeout(struct poll_wqueues *pwq, int state,
+ 
+ 	set_current_state(state);
+ 	if (!pwq->triggered)
+-		rc = freezable_schedule_hrtimeout_range(expires, slack,
+-							HRTIMER_MODE_ABS);
++		rc = schedule_hrtimeout_range(expires, slack, HRTIMER_MODE_ABS);
+ 	__set_current_state(TASK_RUNNING);
+ 
+ 	/*
+-- 
+1.8.3.1
+

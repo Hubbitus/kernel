@@ -1,5 +1,11 @@
 **** Backports and patches headed/already upstream *****************************
 
+* 0001-Revert-epoll-use-freezable-blocking-call.patch
+  0001-Revert-select-use-freezable-blocking-call.patch (rhbz 1010603)
+  - Backport of upstream commits:
+  c511851de162e8ec03d62e7d7feecbdf590d881d
+  59612d187912750f416fbffe0c00bc0811c54ab5
+
 * net-flow_dissector-fail-on-evil-iph-ihl.patch (rhbz 1007939 1025647)
   - Should hit upstream and stable soon
 
