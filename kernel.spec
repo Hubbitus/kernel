@@ -807,6 +807,9 @@ Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
 Patch25140: 0001-Revert-epoll-use-freezable-blocking-call.patch
 Patch25141: 0001-Revert-select-use-freezable-blocking-call.patch
 
+#rhbz 1025769
+Patch25142: iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1571,6 +1574,9 @@ ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
 #rhbz 1010603
 ApplyPatch 0001-Revert-epoll-use-freezable-blocking-call.patch
 ApplyPatch 0001-Revert-select-use-freezable-blocking-call.patch
+
+#rhbz 1025769
+ApplyPatch iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2374,7 +2380,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Nov 04 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.7-300
+* Mon Nov 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.7-300
+- Add patch to fix iwlwifi queue settings backtrace (rhbz 1025769)
+
+* Mon Nov 04 2013 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.11.7
 
 * Fri Nov 01 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.6-302
