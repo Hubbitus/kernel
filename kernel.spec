@@ -2380,6 +2380,14 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 05 2013 Kyle McMartin <kyle@fedoraproject.org>
+- crash-driver.patch: "port" to {arm,aarch64,ppc64,s390x} and enable
+  CONFIG_CRASH modular on those architectures.
+
+* Mon Nov 04 2013 Kyle McMartin <kyle@fedoraproject.org>
+- arm-exynos-mp.patch: install exynos-*.dtb by properly using the
+  ARCH_EXYNOS_COMMON Kconfig symbol selected by EXYNOS4 && EXYNOS5.
+
 * Mon Nov 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.7-300
 - Add patch to fix iwlwifi queue settings backtrace (rhbz 1025769)
 

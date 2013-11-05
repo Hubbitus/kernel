@@ -426,3 +426,14 @@ index 9855dfc..fcb2045 100644
  	select S3C64XX_DMA if ARCH_S3C64XX
  	select S3C2410_DMA if ARCH_S3C24XX
  	help
+--- Makefile.orig	2013-11-04 12:47:11.527488114 -0500
++++ b/arch/arm/boot/dts/Makefile	2013-11-04 12:47:18.933540972 -0500
+@@ -48,7 +48,7 @@
+ dtb-$(CONFIG_ARCH_DOVE) += dove-cm-a510.dtb \
+ 	dove-cubox.dtb \
+ 	dove-dove-db.dtb
+-dtb-$(CONFIG_ARCH_EXYNOS) += exynos4210-origen.dtb \
++dtb-$(CONFIG_ARCH_EXYNOS_COMMON) += exynos4210-origen.dtb \
+ 	exynos4210-smdkv310.dtb \
+ 	exynos4210-trats.dtb \
+ 	exynos4210-universal_c210.dtb \
