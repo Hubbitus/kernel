@@ -2247,6 +2247,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 05 2013 Kyle McMartin <kyle@fedoraproject.org>
+- Enable crash on {arm,aarch64,ppc64,s390x}
+
 * Mon Nov 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-1
 - Linux v3.12
 - Disable debugging options.
