@@ -1,0 +1,226 @@
+Bugzilla: N/A
+Upstream-status: Queued for 3.13
+
+From db8edc33193879f39c1b52521e20f4d6eb4e9858 Mon Sep 17 00:00:00 2001
+From: Dave Airlie <airlied@redhat.com>
+Date: Fri, 08 Nov 2013 06:36:45 +0000
+Subject: drm/qxl: backport fixes for Fedora
+
+This pulls these changes from drm-next back into Fedora.
+
+drm/qxl: prefer the monitor config resolution (b080742393e2c1)
+drm/qxl: remove unnecessary check (a40a60d912a101e8dfb08ee1)
+drm/qxl: fix disabling extra monitors from client (5cab51cb3381157)
+qxl: avoid an oops in the deferred io code. (cc87509d87696d7cd39)
+drm/qxl: support 64bit surface bar (35541782dcc1e502)
+qxl: add a connector property to denote hotplug should rescan modes. (4695b03970df37)
+
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+---
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index 835caba..1d975eb 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -110,7 +110,9 @@ void qxl_display_read_client_monitors_config(struct qxl_device *qdev)
+ 	drm_helper_hpd_irq_event(qdev->ddev);
+ }
+ 
+-static int qxl_add_monitors_config_modes(struct drm_connector *connector)
++static int qxl_add_monitors_config_modes(struct drm_connector *connector,
++                                         unsigned *pwidth,
++                                         unsigned *pheight)
+ {
+ 	struct drm_device *dev = connector->dev;
+ 	struct qxl_device *qdev = dev->dev_private;
+@@ -126,11 +128,15 @@ static int qxl_add_monitors_config_modes(struct drm_connector *connector)
+ 	mode = drm_cvt_mode(dev, head->width, head->height, 60, false, false,
+ 			    false);
+ 	mode->type |= DRM_MODE_TYPE_PREFERRED;
++	*pwidth = head->width;
++	*pheight = head->height;
+ 	drm_mode_probed_add(connector, mode);
+ 	return 1;
+ }
+ 
+-static int qxl_add_common_modes(struct drm_connector *connector)
++static int qxl_add_common_modes(struct drm_connector *connector,
++                                unsigned pwidth,
++                                unsigned pheight)
+ {
+ 	struct drm_device *dev = connector->dev;
+ 	struct drm_display_mode *mode = NULL;
+@@ -159,12 +165,9 @@ static int qxl_add_common_modes(struct drm_connector *connector)
+ 	};
+ 
+ 	for (i = 0; i < ARRAY_SIZE(common_modes); i++) {
+-		if (common_modes[i].w < 320 || common_modes[i].h < 200)
+-			continue;
+-
+ 		mode = drm_cvt_mode(dev, common_modes[i].w, common_modes[i].h,
+ 				    60, false, false, false);
+-		if (common_modes[i].w == 1024 && common_modes[i].h == 768)
++		if (common_modes[i].w == pwidth && common_modes[i].h == pheight)
+ 			mode->type |= DRM_MODE_TYPE_PREFERRED;
+ 		drm_mode_probed_add(connector, mode);
+ 	}
+@@ -720,16 +723,18 @@ static int qxl_conn_get_modes(struct drm_connector *connector)
+ {
+ 	int ret = 0;
+ 	struct qxl_device *qdev = connector->dev->dev_private;
++	unsigned pwidth = 1024;
++	unsigned pheight = 768;
+ 
+ 	DRM_DEBUG_KMS("monitors_config=%p\n", qdev->monitors_config);
+ 	/* TODO: what should we do here? only show the configured modes for the
+ 	 * device, or allow the full list, or both? */
+ 	if (qdev->monitors_config && qdev->monitors_config->count) {
+-		ret = qxl_add_monitors_config_modes(connector);
++		ret = qxl_add_monitors_config_modes(connector, &pwidth, &pheight);
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	ret += qxl_add_common_modes(connector);
++	ret += qxl_add_common_modes(connector, pwidth, pheight);
+ 	return ret;
+ }
+ 
+@@ -793,7 +798,10 @@ static enum drm_connector_status qxl_conn_detect(
+ 		     qdev->client_monitors_config->count > output->index &&
+ 		     qxl_head_enabled(&qdev->client_monitors_config->heads[output->index]));
+ 
+-	DRM_DEBUG("\n");
++	DRM_DEBUG("#%d connected: %d\n", output->index, connected);
++	if (!connected)
++		qxl_monitors_config_set(qdev, output->index, 0, 0, 0, 0, 0);
++
+ 	return connected ? connector_status_connected
+ 			 : connector_status_disconnected;
+ }
+@@ -835,8 +843,21 @@ static const struct drm_encoder_funcs qxl_enc_funcs = {
+ 	.destroy = qxl_enc_destroy,
+ };
+ 
++static int qxl_mode_create_hotplug_mode_update_property(struct qxl_device *qdev)
++{
++	if (qdev->hotplug_mode_update_property)
++		return 0;
++
++	qdev->hotplug_mode_update_property =
++		drm_property_create_range(qdev->ddev, DRM_MODE_PROP_IMMUTABLE,
++					  "hotplug_mode_update", 0, 1);
++
++	return 0;
++}
++
+ static int qdev_output_init(struct drm_device *dev, int num_output)
+ {
++	struct qxl_device *qdev = dev->dev_private;
+ 	struct qxl_output *qxl_output;
+ 	struct drm_connector *connector;
+ 	struct drm_encoder *encoder;
+@@ -863,6 +884,8 @@ static int qdev_output_init(struct drm_device *dev, int num_output)
+ 	drm_encoder_helper_add(encoder, &qxl_enc_helper_funcs);
+ 	drm_connector_helper_add(connector, &qxl_connector_helper_funcs);
+ 
++	drm_object_attach_property(&connector->base,
++				   qdev->hotplug_mode_update_property, 0);
+ 	drm_sysfs_connector_add(connector);
+ 	return 0;
+ }
+@@ -975,6 +998,9 @@ int qxl_modeset_init(struct qxl_device *qdev)
+ 	qdev->ddev->mode_config.max_height = 8192;
+ 
+ 	qdev->ddev->mode_config.fb_base = qdev->vram_base;
++
++	qxl_mode_create_hotplug_mode_update_property(qdev);
++
+ 	for (i = 0 ; i < qxl_num_crtc; ++i) {
+ 		qdev_crtc_init(qdev->ddev, i);
+ 		qdev_output_init(qdev->ddev, i);
+diff --git a/drivers/gpu/drm/qxl/qxl_drv.h b/drivers/gpu/drm/qxl/qxl_drv.h
+index 7e96f4f..18c599d 100644
+--- a/drivers/gpu/drm/qxl/qxl_drv.h
++++ b/drivers/gpu/drm/qxl/qxl_drv.h
+@@ -323,6 +323,8 @@ struct qxl_device {
+ 	struct work_struct gc_work;
+ 
+ 	struct work_struct fb_work;
++
++	struct drm_property *hotplug_mode_update_property;
+ };
+ 
+ /* forward declaration for QXL_INFO_IO */
+diff --git a/drivers/gpu/drm/qxl/qxl_fb.c b/drivers/gpu/drm/qxl/qxl_fb.c
+index 88722f2..f437b30 100644
+--- a/drivers/gpu/drm/qxl/qxl_fb.c
++++ b/drivers/gpu/drm/qxl/qxl_fb.c
+@@ -108,7 +108,7 @@ static void qxl_fb_dirty_flush(struct fb_info *info)
+ 	u32 x1, x2, y1, y2;
+ 
+ 	/* TODO: hard coding 32 bpp */
+-	int stride = qfbdev->qfb.base.pitches[0] * 4;
++	int stride = qfbdev->qfb.base.pitches[0];
+ 
+ 	x1 = qfbdev->dirty.x1;
+ 	x2 = qfbdev->dirty.x2;
+diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
+index 9e8da9e..e0ddd5b 100644
+--- a/drivers/gpu/drm/qxl/qxl_kms.c
++++ b/drivers/gpu/drm/qxl/qxl_kms.c
+@@ -120,7 +120,7 @@ int qxl_device_init(struct qxl_device *qdev,
+ 		    struct pci_dev *pdev,
+ 		    unsigned long flags)
+ {
+-	int r;
++	int r, sb;
+ 
+ 	qdev->dev = &pdev->dev;
+ 	qdev->ddev = ddev;
+@@ -136,21 +136,39 @@ int qxl_device_init(struct qxl_device *qdev,
+ 	qdev->rom_base = pci_resource_start(pdev, 2);
+ 	qdev->rom_size = pci_resource_len(pdev, 2);
+ 	qdev->vram_base = pci_resource_start(pdev, 0);
+-	qdev->surfaceram_base = pci_resource_start(pdev, 1);
+-	qdev->surfaceram_size = pci_resource_len(pdev, 1);
+ 	qdev->io_base = pci_resource_start(pdev, 3);
+ 
+ 	qdev->vram_mapping = io_mapping_create_wc(qdev->vram_base, pci_resource_len(pdev, 0));
+-	qdev->surface_mapping = io_mapping_create_wc(qdev->surfaceram_base, qdev->surfaceram_size);
+-	DRM_DEBUG_KMS("qxl: vram %llx-%llx(%dM %dk), surface %llx-%llx(%dM %dk)\n",
++
++	if (pci_resource_len(pdev, 4) > 0) {
++		/* 64bit surface bar present */
++		sb = 4;
++		qdev->surfaceram_base = pci_resource_start(pdev, sb);
++		qdev->surfaceram_size = pci_resource_len(pdev, sb);
++		qdev->surface_mapping =
++			io_mapping_create_wc(qdev->surfaceram_base,
++					     qdev->surfaceram_size);
++	}
++	if (qdev->surface_mapping == NULL) {
++		/* 64bit surface bar not present (or mapping failed) */
++		sb = 1;
++		qdev->surfaceram_base = pci_resource_start(pdev, sb);
++		qdev->surfaceram_size = pci_resource_len(pdev, sb);
++		qdev->surface_mapping =
++			io_mapping_create_wc(qdev->surfaceram_base,
++					     qdev->surfaceram_size);
++	}
++
++	DRM_DEBUG_KMS("qxl: vram %llx-%llx(%dM %dk), surface %llx-%llx(%dM %dk, %s)\n",
+ 		 (unsigned long long)qdev->vram_base,
+ 		 (unsigned long long)pci_resource_end(pdev, 0),
+ 		 (int)pci_resource_len(pdev, 0) / 1024 / 1024,
+ 		 (int)pci_resource_len(pdev, 0) / 1024,
+ 		 (unsigned long long)qdev->surfaceram_base,
+-		 (unsigned long long)pci_resource_end(pdev, 1),
++		 (unsigned long long)pci_resource_end(pdev, sb),
+ 		 (int)qdev->surfaceram_size / 1024 / 1024,
+-		 (int)qdev->surfaceram_size / 1024);
++		 (int)qdev->surfaceram_size / 1024,
++		 (sb == 4) ? "64bit" : "32bit");
+ 
+ 	qdev->rom = ioremap(qdev->rom_base, qdev->rom_size);
+ 	if (!qdev->rom) {
+--
+cgit v0.9.0.2-2-gbebe
