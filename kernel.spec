@@ -740,6 +740,8 @@ Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
+Patch25141: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1447,6 +1449,8 @@ ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
+
+ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2252,6 +2256,7 @@ fi
 #                                    ||     ||
 %changelog
 * Sat Nov 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Daniel Stone to avoid high order allocations in evdev
 - Add qxl backport fixes from Dave Airlie
 
 * Tue Nov 05 2013 Kyle McMartin <kyle@fedoraproject.org>

@@ -1,0 +1,64 @@
+From 92eb77d0ffbaa71b501a0a8dabf09a351bf4267f Mon Sep 17 00:00:00 2001
+From: Daniel Stone <daniel@fooishbar.org>
+Date: Thu, 31 Oct 2013 07:25:34 +0000
+Subject: Input: evdev - fall back to vmalloc for client event buffer
+
+evdev always tries to allocate the event buffer for clients using
+kzalloc rather than vmalloc, presumably to avoid mapping overhead where
+possible.  However, drivers like bcm5974, which claims support for
+reporting 16 fingers simultaneously, can have an extraordinarily large
+buffer.  The resultant contiguous order-4 allocation attempt fails due
+to fragmentation, and the device is thus unusable until reboot.
+
+Try kzalloc if we can to avoid the mapping overhead, but if that fails,
+fall back to vzalloc.
+
+Signed-off-by: Daniel Stone <daniels@collabora.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+diff --git a/drivers/input/evdev.c b/drivers/input/evdev.c
+index b6ded17..a06e125 100644
+--- a/drivers/input/evdev.c
++++ b/drivers/input/evdev.c
+@@ -18,6 +18,8 @@
+ #include <linux/poll.h>
+ #include <linux/sched.h>
+ #include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/mm.h>
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/input/mt.h>
+@@ -369,7 +371,11 @@ static int evdev_release(struct inode *inode, struct file *file)
+ 	mutex_unlock(&evdev->mutex);
+ 
+ 	evdev_detach_client(evdev, client);
+-	kfree(client);
++
++	if (is_vmalloc_addr(client))
++		vfree(client);
++	else
++		kfree(client);
+ 
+ 	evdev_close_device(evdev);
+ 
+@@ -389,12 +395,14 @@ static int evdev_open(struct inode *inode, struct file *file)
+ {
+ 	struct evdev *evdev = container_of(inode->i_cdev, struct evdev, cdev);
+ 	unsigned int bufsize = evdev_compute_buffer_size(evdev->handle.dev);
++	unsigned int size = sizeof(struct evdev_client) +
++					bufsize * sizeof(struct input_event);
+ 	struct evdev_client *client;
+ 	int error;
+ 
+-	client = kzalloc(sizeof(struct evdev_client) +
+-				bufsize * sizeof(struct input_event),
+-			 GFP_KERNEL);
++	client = kzalloc(size, GFP_KERNEL | __GFP_NOWARN);
++	if (!client)
++		client = vzalloc(size);
+ 	if (!client)
+ 		return -ENOMEM;
+ 
+--
+cgit v0.9.2
