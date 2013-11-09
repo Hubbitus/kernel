@@ -810,6 +810,8 @@ Patch25141: 0001-Revert-select-use-freezable-blocking-call.patch
 #rhbz 1025769
 Patch25142: iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
 
+Patch25143: drm-qxl-backport-fixes-for-Fedora.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1577,6 +1579,8 @@ ApplyPatch 0001-Revert-select-use-freezable-blocking-call.patch
 
 #rhbz 1025769
 ApplyPatch iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
+
+ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2380,6 +2384,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Nov 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add qxl backport fixes from Dave Airlie
+
 * Tue Nov 05 2013 Kyle McMartin <kyle@fedoraproject.org>
 - crash-driver.patch: "port" to {arm,aarch64,ppc64,s390x} and enable
   CONFIG_CRASH modular on those architectures.
