@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -158,7 +158,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -171,7 +171,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -734,9 +734,6 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
-
-#CVE-2013-4348 rhbz 1007939 1025647
-Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
@@ -1444,9 +1441,6 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
-
-#CVE-2013-4348 rhbz 1007939 1025647
-ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
 
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
@@ -2255,6 +2249,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git1.3
+- Linux v3.12-2839-gedae583
+- Reenable debugging options.
+
 * Sat Nov 09 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.0-2
 - Add patch from Daniel Stone to avoid high order allocations in evdev
 - Add qxl backport fixes from Dave Airlie
