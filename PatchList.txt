@@ -1,8 +1,5 @@
 **** Backports and patches headed/already upsteram *****************************
 
-* net-flow_dissector-fail-on-evil-iph-ihl.patch (rhbz 1007939 1025647)
-  - Should hit upstream and stable soon
-
 * rt2800usb-slow-down-TX-status-polling.patch (rhbz 984696)
   - Still pending upstream.  Fixes https://bugzilla.kernel.org/show_bug.cgi?id=62781
 
@@ -30,9 +27,6 @@
 * elevator-Fix-a-race-in-elevator-switching-and-md.patch
 * elevator-acquire-q-sysfs_lock-in-elevator_change.patch (rhbz 902012)
   - I believe these are both queued for the next upstream release
-
-* ntp-Make-periodic-RTC-update-more-reliable.patch (rhbz 985522)
-  - I believe this is queued in John Stultz's tree for 3.13
 
 * ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch (rhbz 1007690 1009136)
   - Fixes CVE-2013-4345

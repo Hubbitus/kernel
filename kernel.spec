@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -625,7 +625,7 @@ Patch470: die-floppy-die.patch
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
-Patch600: x86-allow-1024-cpus.patch
+Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch800: crash-driver.patch
 
@@ -703,9 +703,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
-
-#rhbz 985522
-Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 902012
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
@@ -1281,7 +1278,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
-ApplyPatch x86-allow-1024-cpus.patch
+ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
 
@@ -1410,9 +1407,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
-
-#rhbz 985522
-ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
 #rhbz 902012
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
@@ -1944,6 +1938,8 @@ find $RPM_BUILD_ROOT/usr/include \
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+# remove the 'trace' symlink.
+rm -f %{buildroot}%{_bindir}/trace
 
 # python-perf extension
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
@@ -2249,6 +2245,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git2.1
+- Linux v3.12-4849-g10d0c97
+
 * Mon Nov 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git1.3
 - Linux v3.12-2839-gedae583
 - Reenable debugging options.
