@@ -670,6 +670,7 @@ Patch1003: sysrq-secure-boot.patch
 # intel drm is all merged upstream
 Patch1824: drm-intel-next.patch
 Patch1825: drm-i915-dp-stfu.patch
+Patch1826: drm-i915-hush-check-crtc-state.patch
 
 # Quiet boot fixes
 # silence the ACPI blacklist code
@@ -1465,6 +1466,7 @@ ApplyPatch sysrq-secure-boot.patch
 # Intel DRM
 ApplyOptionalPatch drm-intel-next.patch
 ApplyPatch drm-i915-dp-stfu.patch
+ApplyPatch drm-i915-hush-check-crtc-state.patch
 
 # Radeon DRM
 
@@ -2388,6 +2390,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Nov 13 2013 Adam Jackson <ajax@redhat.com>
+- Hush i915's check_crtc_state()
+
 * Sat Nov 09 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Daniel Stone to avoid high order allocations in evdev
 - Add qxl backport fixes from Dave Airlie
