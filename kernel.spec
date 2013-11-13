@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -709,17 +709,11 @@ Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
 Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
-#rhbz 974072
-Patch25116: rt2800-add-support-for-rf3070.patch
-
 #rhbz 982153
 Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
 #rhbz 998732
 Patch25124: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
-
-#rhbz 896695
-Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
@@ -729,9 +723,6 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #rhbz 1011714
 Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
-
-#rhbz 984696
-Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 
 Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
@@ -1416,17 +1407,11 @@ ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
 ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
 
-#rhbz 974072
-ApplyPatch rt2800-add-support-for-rf3070.patch
-
 #rhbz 982153
 ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
 #rhbz 998732
 ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
-
-#rhbz 896695
-ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
@@ -1436,9 +1421,6 @@ ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #rhbz 1011714
 ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
-
-#rhbz 984696
-ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
@@ -2251,6 +2233,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git3.1
+- Linux v3.12-7033-g42a2d92
+
 * Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix imx-drm build issues
 

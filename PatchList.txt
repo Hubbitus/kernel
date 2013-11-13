@@ -1,8 +1,5 @@
 **** Backports and patches headed/already upsteram *****************************
 
-* rt2800usb-slow-down-TX-status-polling.patch (rhbz 984696)
-  - Still pending upstream.  Fixes https://bugzilla.kernel.org/show_bug.cgi?id=62781
-
 * btrfs-relocate-csums-properly-with-prealloc-ext.patch (rhbz 1011714)
   - Still pending upstream
 
@@ -12,17 +9,11 @@
 * dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch (rhbz 993744)
   - Still pending upstream
 
-* 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch (rhbz 896695)
-  - Still pending upstream
-
 * vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch (rhbz 998732)
   - Still pending upstream
 
 * iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch (rhbz 982153)
   - Still pending upstream
-
-* rt2800-add-support-for-rf3070.patch (rhbz 974072)
-  - Actually I'm unsure of what the upstream status on this one is.
 
 * elevator-Fix-a-race-in-elevator-switching-and-md.patch
 * elevator-acquire-q-sysfs_lock-in-elevator_change.patch (rhbz 902012)

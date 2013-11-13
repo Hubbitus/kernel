@@ -64,6 +64,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_QUOTA_DEBUG=y/# CONFIG_QUOTA_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_PER_CPU_MAPS=y/# CONFIG_DEBUG_PER_CPU_MAPS is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_PERCPU_TEST=m/# CONFIG_PERCPU_TEST is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_TEST_LIST_SORT=y/# CONFIG_TEST_LIST_SORT is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_TEST_STRING_HELPERS=m/# CONFIG_TEST_STRING_HELPERS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_ATOMIC_SLEEP=y/# CONFIG_DEBUG_ATOMIC_SLEEP is not set/' config-nodebug
