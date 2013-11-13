@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -748,9 +748,6 @@ Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 #rhbz 985522
 Patch25107: ntp-Make-periodic-RTC-update-more-reliable.patch
 
-#rhbz 1010431
-Patch25108: Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
 #rhbz 971893
 Patch25109: bonding-driver-alb-learning.patch
 
@@ -789,9 +786,6 @@ Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
 #rhbz 984696
 Patch25132: rt2800usb-slow-down-TX-status-polling.patch
 
-#rhbz 1015558
-Patch25133: fix-buslogic.patch
-
 #rhbz 1023413
 Patch25135: alps-Support-for-Dell-XT2-model.patch
 
@@ -803,10 +797,6 @@ Patch25138: intel-3.12-stable-fixes.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 Patch25139: net-flow_dissector-fail-on-evil-iph-ihl.patch
-
-#rhbz 1010603
-Patch25140: 0001-Revert-epoll-use-freezable-blocking-call.patch
-Patch25141: 0001-Revert-select-use-freezable-blocking-call.patch
 
 #rhbz 1025769
 Patch25142: iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
@@ -1521,9 +1511,6 @@ ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 #rhbz 985522
 ApplyPatch ntp-Make-periodic-RTC-update-more-reliable.patch
 
-#rhbz 1010431
-ApplyPatch Revert-rt2x00pci-Use-PCI-MSIs-whenever-possible.patch
-
 #rhbz 971893
 ApplyPatch bonding-driver-alb-learning.patch
 
@@ -1562,9 +1549,6 @@ ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
 #rhbz 984696
 ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 
-#rhbz 1015558
-ApplyPatch fix-buslogic.patch
-
 #rhbz 1023413
 ApplyPatch alps-Support-for-Dell-XT2-model.patch
 
@@ -1576,10 +1560,6 @@ ApplyPatch intel-3.12-stable-fixes.patch
 
 #CVE-2013-4348 rhbz 1007939 1025647
 ApplyPatch net-flow_dissector-fail-on-evil-iph-ihl.patch
-
-#rhbz 1010603
-ApplyPatch 0001-Revert-epoll-use-freezable-blocking-call.patch
-ApplyPatch 0001-Revert-select-use-freezable-blocking-call.patch
 
 #rhbz 1025769
 ApplyPatch iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
@@ -2390,6 +2370,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Nov 13 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.8-300
+- Linux v3.11.8
+
 * Wed Nov 13 2013 Adam Jackson <ajax@redhat.com>
 - Hush i915's check_crtc_state()
 
