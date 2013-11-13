@@ -444,7 +444,7 @@ index 13fb113..2dbc299 100644
  	set_cred_user_ns(new, ns);
  
 +#ifdef CONFIG_PERSISTENT_KEYRINGS
-+	rwsem_init(&ns->persistent_keyring_register_sem);
++	init_rwsem(&ns->persistent_keyring_register_sem);
 +#endif
  	return 0;
  }
@@ -699,10 +699,10 @@ index 0000000..631a022
 +		/* You can only see your own persistent cache if you're not
 +		 * sufficiently privileged.
 +		 */
-+		if (uid != current_uid() &&
-+		    uid != current_suid() &&
-+		    uid != current_euid() &&
-+		    uid != current_fsuid() &&
++		if (!uid_eq(uid, current_uid()) &&
++		  /*  uid_eq(uid, current_suid()) && */
++		    !uid_eq(uid, current_euid()) &&
++		  /*  uid_eq(uid, current_fsuid()) && */
 +		    !ns_capable(ns, CAP_SETUID))
 +			return -EPERM;
 +	}

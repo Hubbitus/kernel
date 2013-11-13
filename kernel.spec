@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -626,6 +626,9 @@ Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
 Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+
+#rhbz 917708
+Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 Patch800: crash-driver.patch
 
@@ -1341,6 +1344,8 @@ ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
 
+#rhbz 917708
+ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
@@ -2233,6 +2238,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git3.2
+- Enable USER_NS for root-only processes (rhbz 917708)
+
 * Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git3.1
 - Linux v3.12-7033-g42a2d92
 
