@@ -2238,6 +2238,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 13 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM configs
+
 * Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git3.2
 - Enable USER_NS for root-only processes (rhbz 917708)
 
