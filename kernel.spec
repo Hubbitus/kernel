@@ -737,6 +737,8 @@ Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
 Patch25141: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
+Patch25142: 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1441,6 +1443,8 @@ ApplyPatch rt2800usb-slow-down-TX-status-polling.patch
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
 ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
+
+ApplyPatch 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2247,6 +2251,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix imx-drm build issues
+
 * Wed Nov 13 2013 Adam Jackson <ajax@redhat.com>
 - Hush i915's check_crtc_state()
 

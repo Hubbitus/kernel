@@ -1,0 +1,54 @@
+Bugzilla: N/A
+Upstream-status: https://lkml.org/lkml/2013/11/12/413 (hopefully 3.13)
+
+From ce4a59012b5f2a9b521cad4610f055a792841951 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Tue, 12 Nov 2013 11:03:57 -0500
+Subject: [PATCH] staging: imx-drm: Fix modular build of DRM_IMX_IPUV3
+
+commit b8d181e408af (staging: drm/imx: add drm plane support) added a file
+to the make target for DRM_IMX_IPUV3 but didn't adjust the objs required
+to actually build that as a module.  Kbuild got confused and this lead to
+link errors like:
+
+ERROR: "ipu_plane_disable" [drivers/staging/imx-drm/ipuv3-crtc.ko] undefined!
+ERROR: "ipu_plane_enable" [drivers/staging/imx-drm/ipuv3-crtc.ko] undefined!
+
+Additionally, it added a call to imx_drm_crtc_id which also fails with a
+link error as above.  To fix this, we adjust the make target with the proper
+objs, which will change the name of the resulting .ko.  We also add an
+EXPORT_SYMBOL_GPL for imx_drm_crtc_id.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ drivers/staging/imx-drm/Makefile       | 4 +++-
+ drivers/staging/imx-drm/imx-drm-core.c | 1 +
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/imx-drm/Makefile b/drivers/staging/imx-drm/Makefile
+index 2c3a9e1..8742432 100644
+--- a/drivers/staging/imx-drm/Makefile
++++ b/drivers/staging/imx-drm/Makefile
+@@ -8,4 +8,6 @@ obj-$(CONFIG_DRM_IMX_TVE) += imx-tve.o
+ obj-$(CONFIG_DRM_IMX_LDB) += imx-ldb.o
+ obj-$(CONFIG_DRM_IMX_FB_HELPER) += imx-fbdev.o
+ obj-$(CONFIG_DRM_IMX_IPUV3_CORE) += ipu-v3/
+-obj-$(CONFIG_DRM_IMX_IPUV3)	+= ipuv3-crtc.o ipuv3-plane.o
++
++imx-ipuv3-crtc-objs  := ipuv3-crtc.o ipuv3-plane.o
++obj-$(CONFIG_DRM_IMX_IPUV3)	+= imx-ipuv3-crtc.o
+diff --git a/drivers/staging/imx-drm/imx-drm-core.c b/drivers/staging/imx-drm/imx-drm-core.c
+index 4483d47..2b366d8 100644
+--- a/drivers/staging/imx-drm/imx-drm-core.c
++++ b/drivers/staging/imx-drm/imx-drm-core.c
+@@ -72,6 +72,7 @@ int imx_drm_crtc_id(struct imx_drm_crtc *crtc)
+ {
+ 	return crtc->pipe;
+ }
++EXPORT_SYMBOL_GPL(imx_drm_crtc_id);
+ 
+ static void imx_drm_driver_lastclose(struct drm_device *drm)
+ {
+-- 
+1.8.3.1
+
