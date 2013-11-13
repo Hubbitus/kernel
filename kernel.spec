@@ -650,6 +650,7 @@ Patch1003: sysrq-secure-boot.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1825: drm-i915-dp-stfu.patch
+Patch1826: drm-i915-hush-check-crtc-state.patch
 
 # Quiet boot fixes
 # silence the ACPI blacklist code
@@ -1373,6 +1374,7 @@ ApplyPatch sysrq-secure-boot.patch
 
 # Intel DRM
 ApplyPatch drm-i915-dp-stfu.patch
+ApplyPatch drm-i915-hush-check-crtc-state.patch
 
 # Radeon DRM
 
@@ -2245,6 +2247,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 13 2013 Adam Jackson <ajax@redhat.com>
+- Hush i915's check_crtc_state()
+
 * Tue Nov 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git2.1
 - Linux v3.12-4849-g10d0c97
 
