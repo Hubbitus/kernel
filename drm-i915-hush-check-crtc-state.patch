@@ -1,3 +1,6 @@
+Bugzilla: 1027037 1028785
+Upstream-status: http://lists.freedesktop.org/archives/intel-gfx/2013-November/035948.html
+
 This is _by far_ the most common backtrace for i915 on retrace.fp.o, and
 it's mostly useless noise.  There's not enough context when it's generated
 to know if something actually went wrong.  Downgrade the message to
