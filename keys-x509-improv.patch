@@ -1,4 +1,4 @@
-From 775d395f8bd8ef08971c77f54c38ec7b9355ba4f Mon Sep 17 00:00:00 2001
+From db25f1d9f45079db5860c0fd1938032248ad2f06 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:10 +0100
 Subject: [PATCH 01/18] KEYS: Rename public key parameter name arrays
@@ -153,7 +153,7 @@ index f2970bd..ee47640 100644
 1.8.3.1
 
 
-From d12f06db05dacb455714f00f070cce844fb3e44c Mon Sep 17 00:00:00 2001
+From 1881703e6a0943f5d45278d19ffc5268495f57a8 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:18 +0100
 Subject: [PATCH 02/18] KEYS: Move the algorithm pointer array from x509 to
@@ -235,7 +235,7 @@ index 619d570..46bde25 100644
 1.8.3.1
 
 
-From 8d2905bce58b356e9b5313a4aaebb5085bb4c151 Mon Sep 17 00:00:00 2001
+From 564f7dc3b31d53d195d046e6a717e9a2277296bd Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:24 +0100
 Subject: [PATCH 03/18] KEYS: Store public key algo ID in public_key struct
@@ -320,7 +320,7 @@ index 46bde25..05778df 100644
 1.8.3.1
 
 
-From df1662a5b9f37a88c1e112d4052eca79efc8e6fc Mon Sep 17 00:00:00 2001
+From 2666dd8e330d6792cc32e8739e89f9ad0acd04c6 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:30 +0100
 Subject: [PATCH 04/18] KEYS: Split public_key_verify_signature() and make
@@ -436,7 +436,7 @@ index fac574c..8cb2f70 100644
 1.8.3.1
 
 
-From 322d3b7e2debb3c7983dce2b80a5aefa4e7b1bda Mon Sep 17 00:00:00 2001
+From 9c814dcdc6d5836d82dc194f8f11ca9769251439 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:37 +0100
 Subject: [PATCH 05/18] KEYS: Store public key algo ID in public_key_signature
@@ -469,7 +469,7 @@ index 05778df..b34fda4 100644
 1.8.3.1
 
 
-From 743143dd12661df376dcfc916b626b01d8ec84a4 Mon Sep 17 00:00:00 2001
+From b467a1c6be1c64c6abf4efd357a348f39c4b7daa Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:16:34 +0100
 Subject: [PATCH 06/18] X.509: struct x509_certificate needs struct tm
@@ -501,7 +501,7 @@ index e583ad0..2d01182 100644
 1.8.3.1
 
 
-From a326ca89468c73dacb00fa247e92873d09e1387b Mon Sep 17 00:00:00 2001
+From 37137e9377322a4fe92f679d78f8181feefe4d21 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:02 +0100
 Subject: [PATCH 07/18] X.509: Embed public_key_signature struct and create
@@ -764,7 +764,7 @@ index 8cb2f70..b7c81d8 100644
 1.8.3.1
 
 
-From 2857db9154b0fcfb8ba490c12f98cd47cc3f46fc Mon Sep 17 00:00:00 2001
+From 51432bf93bf4ff11cccf91c5ca22e9e92c05f4b4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:15 +0100
 Subject: [PATCH 08/18] X.509: Check the algorithm IDs obtained from parsing an
@@ -805,7 +805,7 @@ index b7c81d8..eb368d4 100644
 1.8.3.1
 
 
-From f78f0e8694517a3b1e5393d6ea0d46084bdc816a Mon Sep 17 00:00:00 2001
+From 8f943dd14f8a4d8aa2126f8544e140d019ceb36d Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:31 +0100
 Subject: [PATCH 09/18] X.509: Handle certificates that lack an
@@ -852,7 +852,7 @@ index eb368d4..0f55e3b 100644
 1.8.3.1
 
 
-From 4d729ace6be1c3b2b5d9b0d0301a4ffd342ec74a Mon Sep 17 00:00:00 2001
+From 89c63be02d8eea6403d6b7d7a045e8f115787a81 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 18 Jun 2013 17:40:44 +0100
 Subject: [PATCH 10/18] X.509: Remove certificate date checks
@@ -933,7 +933,7 @@ index 0f55e3b..c1540e8 100644
 1.8.3.1
 
 
-From 33f859fea67ab5307da4049e947fbc23cdd13a27 Mon Sep 17 00:00:00 2001
+From cdbd1f60c92814fa44ca968dd3fdc78c8b65400c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:13 +0100
 Subject: [PATCH 11/18] KEYS: Load *.x509 files into kernel keyring
@@ -950,10 +950,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  2 files changed, 30 insertions(+), 8 deletions(-)
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 1ce4755..c34e5f9 100644
+index 09a9c94..0246125 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -142,17 +142,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+@@ -123,17 +123,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
  ifeq ($(CONFIG_MODULE_SIG),y)
@@ -1016,7 +1016,7 @@ index 4a9a86d..6fe03c7 100644
 1.8.3.1
 
 
-From 068606ba7df3206e5a09b544b4b89ed09cd30f44 Mon Sep 17 00:00:00 2001
+From d38add998f9fb35e901e022c14b0f771823b35e2 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 17:13:15 +0100
 Subject: [PATCH 12/18] KEYS: Have make canonicalise the paths of the X.509
@@ -1031,10 +1031,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 9 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/Makefile b/kernel/Makefile
-index c34e5f9..2c24195 100644
+index 0246125..c71d596 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -144,13 +144,19 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+@@ -125,13 +125,19 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  ifeq ($(CONFIG_MODULE_SIG),y)
  ###############################################################################
  #
@@ -1061,7 +1061,7 @@ index c34e5f9..2c24195 100644
 1.8.3.1
 
 
-From 9006cfbd669e9ba52d1a91db2ffd9482ad8a6090 Mon Sep 17 00:00:00 2001
+From 1e326161658f6c4bd5dba53bc2076d915400124a Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:30 +0100
 Subject: [PATCH 13/18] KEYS: Separate the kernel signature checking keyring
@@ -1118,10 +1118,10 @@ index 0000000..8dabc39
 +
 +#endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 18bd9e3..cf14d07 100644
+index 5496f30..b5c524c 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1668,6 +1668,18 @@ config BASE_SMALL
+@@ -1675,6 +1675,18 @@ config BASE_SMALL
  	default 0 if BASE_FULL
  	default 1 if !BASE_FULL
  
@@ -1140,7 +1140,7 @@ index 18bd9e3..cf14d07 100644
  menuconfig MODULES
  	bool "Enable loadable module support"
  	option modules
-@@ -1741,6 +1753,7 @@ config MODULE_SRCVERSION_ALL
+@@ -1748,6 +1760,7 @@ config MODULE_SRCVERSION_ALL
  config MODULE_SIG
  	bool "Module signature verification"
  	depends on MODULES
@@ -1149,12 +1149,12 @@ index 18bd9e3..cf14d07 100644
  	select CRYPTO
  	select ASYMMETRIC_KEY_TYPE
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 2c24195..6313698 100644
+index c71d596..bbaf7d5 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -54,8 +54,9 @@ obj-$(CONFIG_SMP) += spinlock.o
- obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
- obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+@@ -41,8 +41,9 @@ ifneq ($(CONFIG_SMP),y)
+ obj-y += up.o
+ endif
  obj-$(CONFIG_UID16) += uid16.o
 +obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
@@ -1163,7 +1163,7 @@ index 2c24195..6313698 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -141,11 +142,11 @@ targets += timeconst.h
+@@ -122,11 +123,11 @@ targets += timeconst.h
  $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
  	$(call if_changed,bc)
  
@@ -1177,7 +1177,7 @@ index 2c24195..6313698 100644
  #
  # We look in the source root and the build root for all files whose name ends
  # in ".x509".  Unfortunately, this will generate duplicate filenames, so we
-@@ -153,6 +154,7 @@ ifeq ($(CONFIG_MODULE_SIG),y)
+@@ -134,6 +135,7 @@ ifeq ($(CONFIG_MODULE_SIG),y)
  # duplicates.
  #
  ###############################################################################
@@ -1185,7 +1185,7 @@ index 2c24195..6313698 100644
  X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
  X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
  X509_CERTIFICATES := $(sort $(foreach CERT,$(X509_CERTIFICATES-y), \
-@@ -169,10 +171,11 @@ $(shell rm $(obj)/.x509.list)
+@@ -150,10 +152,11 @@ $(shell rm $(obj)/.x509.list)
  endif
  endif
  
@@ -1199,7 +1199,7 @@ index 2c24195..6313698 100644
  targets += $(obj)/x509_certificate_list
  $(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
  	$(call if_changed,x509certs)
-@@ -182,7 +185,9 @@ $(obj)/.x509.list:
+@@ -163,7 +166,9 @@ $(obj)/.x509.list:
  	@echo $(X509_CERTIFICATES) >$@
  
  clean-files := x509_certificate_list .x509.list
@@ -1498,7 +1498,7 @@ index 0000000..51c3514
 1.8.3.1
 
 
-From c0522b3236c27359bd61fee0f0b74be9f8e2ad60 Mon Sep 17 00:00:00 2001
+From 5d862c1ec2e5e033527a5e6ac17042d8d7408f7b Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:07:37 +0100
 Subject: [PATCH 14/18] KEYS: Add a 'trusted' flag and a 'trusted only' flag
@@ -1627,7 +1627,7 @@ index f7cdea2..9b6f6e0 100644
 1.8.3.1
 
 
-From e8e9a6af1d2de6aca01751ccaf0475ed46f9bdb2 Mon Sep 17 00:00:00 2001
+From 6270395cb613c47a5ca459649c4d4ba6eeea2ce4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Wed, 4 Sep 2013 19:28:03 +0100
 Subject: [PATCH 15/18] KEYS: Set the asymmetric-key type default search method
@@ -1671,7 +1671,7 @@ index cf80765..b77eb53 100644
 1.8.3.1
 
 
-From dfb7781ebba28004f95f7af4e039d8b44697c87c Mon Sep 17 00:00:00 2001
+From cf64858d1b141c9c7d3477f686a923eb8908b438 Mon Sep 17 00:00:00 2001
 From: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Date: Tue, 20 Aug 2013 14:36:26 -0400
 Subject: [PATCH 16/18] KEYS: Make the system 'trusted' keyring viewable by
@@ -1716,7 +1716,7 @@ index 5296721..564dd93 100644
 1.8.3.1
 
 
-From 052744b12209e66ede2a04ec31b9bb7ff40bbc9a Mon Sep 17 00:00:00 2001
+From c8bbb1491c7be6193f502e4d1326f2bd23263616 Mon Sep 17 00:00:00 2001
 From: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Date: Tue, 20 Aug 2013 14:36:27 -0400
 Subject: [PATCH 17/18] KEYS: verify a certificate is signed by a 'trusted' key
@@ -1852,7 +1852,7 @@ index c1540e8..8761264 100644
 1.8.3.1
 
 
-From 8b39d9a6d9f805f6a2e837bf8b9595f701ea4a1c Mon Sep 17 00:00:00 2001
+From 40faeaee1ca7822dc39d24db4b04e4d6c2feba4d Mon Sep 17 00:00:00 2001
 From: Mimi Zohar <zohar@linux.vnet.ibm.com>
 Date: Wed, 4 Sep 2013 13:26:22 +0100
 Subject: [PATCH 18/18] KEYS: initialize root uid and session keyrings early

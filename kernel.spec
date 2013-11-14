@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -497,7 +497,7 @@ BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel 
 BuildRequires: audit-libs-devel
 %endif
 %if %{with_tools}
-BuildRequires: pciutils-devel gettext
+BuildRequires: pciutils-devel gettext ncurses-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
@@ -708,10 +708,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
-#rhbz 902012
-Patch25114: elevator-Fix-a-race-in-elevator-switching-and-md.patch
-Patch25115: elevator-acquire-q-sysfs_lock-in-elevator_change.patch
-
 #rhbz 982153
 Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
@@ -882,7 +878,7 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
 
 %endif # with_tools
 
@@ -1408,10 +1404,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
-#rhbz 902012
-ApplyPatch elevator-Fix-a-race-in-elevator-switching-and-md.patch
-ApplyPatch elevator-acquire-q-sysfs_lock-in-elevator_change.patch
-
 #rhbz 982153
 ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
 
@@ -1817,6 +1809,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
    popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
+pushd tools/thermal/tmon/
+%{make}
+popd
 %endif
 
 %if %{with_doc}
@@ -1973,6 +1968,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
    make DESTDIR=%{buildroot} install
    popd
 %endif #turbostat/x86_energy_perf_policy
+pushd tools/thermal/tmon
+make INSTALL_ROOT=%{buildroot} install
+popd
 %endif
 
 %if %{with_bootwrapper}
@@ -2151,6 +2149,7 @@ fi
 %{_bindir}/turbostat
 %{_mandir}/man8/turbostat*
 %endif
+%{_bindir}/tmon
 %endif
 
 %if %{with_debuginfo}
@@ -2238,6 +2237,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Nov 14 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git4.1
+- Linux v3.12-8333-g4fbf888
+- Build tmon in kernel-tools
+- Disable ARM NEON optimised AES and OMAP2PLUS cpufreq because they don't build
+
 * Thu Nov 14 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update ARM configs
 - Enable ARM NEON optimised AES

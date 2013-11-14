@@ -15,10 +15,6 @@
 * iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch (rhbz 982153)
   - Still pending upstream
 
-* elevator-Fix-a-race-in-elevator-switching-and-md.patch
-* elevator-acquire-q-sysfs_lock-in-elevator_change.patch (rhbz 902012)
-  - I believe these are both queued for the next upstream release
-
 * ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch (rhbz 1007690 1009136)
   - Fixes CVE-2013-4345
 
