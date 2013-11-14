@@ -805,6 +805,9 @@ Patch25143: drm-qxl-backport-fixes-for-Fedora.patch
 
 Patch25144: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
+#CVE-2013-4563 rhbz 1030015 1030017
+Patch25145: ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1567,6 +1570,9 @@ ApplyPatch iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
 ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
+
+#CVE-2013-4563 rhbz 1030015 1030017
+ApplyPatch ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2370,6 +2376,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Nov 14 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4563: net: large udp packet over IPv6 over UFO-enabled device with TBF qdisc panic (rhbz 1030015 1030017)
+
 * Wed Nov 13 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.11.8-300
 - Linux v3.11.8
 
