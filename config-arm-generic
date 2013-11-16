@@ -135,6 +135,10 @@ CONFIG_SMC911X=m
 # CONFIG_LEDS_RENESAS_TPU is not set
 # CONFIG_LOCK_STAT is not set
 
+# CONFIG_DRM_ARMADA is not set
+# CONFIG_DRM_TEGRA is not set
+# CONFIG_SHMOBILE_IOMMU is not set
+
 ### turn off things which make no sense on embedded SoC
 
 # core

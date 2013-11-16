@@ -1,18 +1,9 @@
 **** Backports and patches headed/already upsteram *****************************
 
-* btrfs-relocate-csums-properly-with-prealloc-ext.patch (rhbz 1011714)
-  - Still pending upstream
-
 * cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch (rhbz 1000439)
   - Queued for next upstream release I believe.  Fixes a segfault in cpupower
 
 * dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch (rhbz 993744)
-  - Still pending upstream
-
-* vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch (rhbz 998732)
-  - Still pending upstream
-
-* iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch (rhbz 982153)
   - Still pending upstream
 
 * ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch (rhbz 1007690 1009136)

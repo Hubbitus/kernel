@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -692,6 +692,8 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 # http://www.spinics.net/lists/devicetree/msg08276.html
 Patch21030: arm-imx6-utilite.patch
 
+Patch21031: fix-arm-xen-driver-build.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -708,24 +710,11 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
-#rhbz 982153
-Patch25123: iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
-
-#rhbz 998732
-Patch25124: vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
-
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-#rhbz 1011714
-Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
-
-Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
-
-Patch25141: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
 Patch25142: 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
@@ -1284,6 +1273,8 @@ ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-imx6-utilite.patch
 
+ApplyPatch fix-arm-xen-driver-build.patch
+
 #
 # bugfixes to drivers and filesystems
 #
@@ -1404,24 +1395,11 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #CVE-2013-4345 rhbz 1007690 1009136
 ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
-#rhbz 982153
-ApplyPatch iommu-Remove-stack-trace-from-broken-irq-remapping-warning.patch
-
-#rhbz 998732
-ApplyPatch vfio-iommu-Fixed-interaction-of-VFIO_IOMMU_MAP_DMA.patch
-
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-#rhbz 1011714
-ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
-
-ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
-
-ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
 ApplyPatch 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
@@ -2237,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Nov 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git5.1
+- Linux v3.12-9888-gf63c482
+
 * Thu Nov 14 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git4.1
 - Linux v3.12-8333-g4fbf888
 - Build tmon in kernel-tools
