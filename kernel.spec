@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2215,6 +2215,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Nov 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git6.1
+- Linux v3.12-10087-g1213959
+- Update s390x config from Dan Horák
+
 * Sat Nov 16 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git5.1
 - Linux v3.12-9888-gf63c482
 
