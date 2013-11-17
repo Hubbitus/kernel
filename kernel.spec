@@ -2215,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Nov 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix up ARM usb gadget config to make it useful
+
 * Sun Nov 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git6.1
 - Linux v3.12-10087-g1213959
 - Update s390x config from Dan Horák
