@@ -539,7 +539,9 @@ CONFIG_SND_SOC_TEGRA20_AC97=m
 CONFIG_SND_SOC_TEGRA30_AHUB=m
 CONFIG_SND_SOC_TEGRA30_I2S=m
 
-# CONFIG_DRM_TEGRA is not set # bool only, for some reason??
+# bool only, upstream aiming for modular in 3.14
+# https://lkml.org/lkml/2013/11/18/47
+# CONFIG_DRM_TEGRA is not set
 
 # AC100 (PAZ00)
 CONFIG_MFD_NVEC=y
