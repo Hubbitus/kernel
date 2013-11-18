@@ -1,3 +1,6 @@
+Bugzilla: 1010679
+Upstream-status: 3.13
+
 From 908171aa738b5bbcc6241cec46f73fcd57dd00d4 Mon Sep 17 00:00:00 2001
 From: Pierre Ossman <pierre@ossman.eu>
 Date: Wed, 6 Nov 2013 20:00:32 +0100
