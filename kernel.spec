@@ -812,6 +812,9 @@ Patch25145: ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
 Patch25146: 0001-ip6_output-fragment-outgoing-reassembled-skb-properl.patch
 Patch25147: 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
 
+#rhbz 1011362
+Patch25148: alx-Reset-phy-speed-after-resume.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1581,6 +1584,9 @@ ApplyPatch ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
 #rhbz 1015905
 ApplyPatch 0001-ip6_output-fragment-outgoing-reassembled-skb-properl.patch
 ApplyPatch 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
+
+#rhbz 1011362
+ApplyPatch alx-Reset-phy-speed-after-resume.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2385,6 +2391,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix ALX phy issues after resume (rhbz 1011362)
 - Fix ipv6 sit panic with packet size > mtu (from Michele Baldessari) (rbhz 1015905)
 
 * Thu Nov 14 2013 Josh Boyer <jwboyer@fedoraproject.org>
