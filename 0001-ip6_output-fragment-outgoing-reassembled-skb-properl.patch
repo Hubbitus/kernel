@@ -1,0 +1,39 @@
+Bugzilla: 1015905
+Upstream-status: 3.13 (should hit stable)
+
+From 90e4e23d52fd04f228eed2c3d341136c50058b37 Mon Sep 17 00:00:00 2001
+From: Jiri Pirko <jiri@resnulli.us>
+Date: Wed, 6 Nov 2013 17:52:19 +0100
+Subject: [PATCH 1/2] ip6_output: fragment outgoing reassembled skb properly
+
+If reassembled packet would fit into outdev MTU, it is not fragmented
+according the original frag size and it is send as single big packet.
+
+The second case is if skb is gso. In that case fragmentation does not happen
+according to the original frag size.
+
+This patch fixes these.
+
+Signed-off-by: Jiri Pirko <jiri@resnulli.us>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+---
+ net/ipv6/ip6_output.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/net/ipv6/ip6_output.c b/net/ipv6/ip6_output.c
+index 5b25f85..f80f2fa 100644
+--- a/net/ipv6/ip6_output.c
++++ b/net/ipv6/ip6_output.c
+@@ -150,7 +150,8 @@ static int ip6_finish_output2(struct sk_buff *skb)
+ static int ip6_finish_output(struct sk_buff *skb)
+ {
+ 	if ((skb->len > ip6_skb_dst_mtu(skb) && !skb_is_gso(skb)) ||
+-	    dst_allfrag(skb_dst(skb)))
++	    dst_allfrag(skb_dst(skb)) ||
++	    (IP6CB(skb)->frag_max_size && skb->len > IP6CB(skb)->frag_max_size))
+ 		return ip6_fragment(skb, ip6_finish_output2);
+ 	else
+ 		return ip6_finish_output2(skb);
+-- 
+1.8.3.1
+

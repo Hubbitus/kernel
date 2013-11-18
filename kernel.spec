@@ -808,6 +808,10 @@ Patch25144: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 #CVE-2013-4563 rhbz 1030015 1030017
 Patch25145: ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
 
+#rhbz 1015905
+Patch25146: 0001-ip6_output-fragment-outgoing-reassembled-skb-properl.patch
+Patch25147: 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1573,6 +1577,10 @@ ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
 #CVE-2013-4563 rhbz 1030015 1030017
 ApplyPatch ipv6-fix-headroom-calculation-in-udp6_ufo_fragment.patch
+
+#rhbz 1015905
+ApplyPatch 0001-ip6_output-fragment-outgoing-reassembled-skb-properl.patch
+ApplyPatch 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2376,6 +2384,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ipv6 sit panic with packet size > mtu (from Michele Baldessari) (rbhz 1015905)
+
 * Thu Nov 14 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4563: net: large udp packet over IPv6 over UFO-enabled device with TBF qdisc panic (rhbz 1030015 1030017)
 
