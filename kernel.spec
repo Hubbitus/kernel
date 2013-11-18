@@ -779,6 +779,7 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #rhbz 1010679
 Patch25130: fix-radeon-sound.patch
+Patch25149: drm-radeon-24hz-audio-fixes.patch
 
 #rhbz 1011714
 Patch25131: btrfs-relocate-csums-properly-with-prealloc-ext.patch
@@ -1552,6 +1553,7 @@ ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #rhbz 1010679
 ApplyPatch fix-radeon-sound.patch
+ApplyPatch drm-radeon-24hz-audio-fixes.patch
 
 #rhbz 1011714
 ApplyPatch btrfs-relocate-csums-properly-with-prealloc-ext.patch
@@ -2391,6 +2393,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches from Pierre Ossman to fix 24Hz/24p radeon audio (rhbz 1010679)
 - Add patch to fix ALX phy issues after resume (rhbz 1011362)
 - Fix ipv6 sit panic with packet size > mtu (from Michele Baldessari) (rbhz 1015905)
 
