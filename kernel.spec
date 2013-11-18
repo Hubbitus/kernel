@@ -816,6 +816,9 @@ Patch25147: 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
 #rhbz 1011362
 Patch25148: alx-Reset-phy-speed-after-resume.patch
 
+#rhbz 1031086
+Patch25150: slab_common-Do-not-check-for-duplicate-slab-names.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1589,6 +1592,9 @@ ApplyPatch 0002-netfilter-push-reasm-skb-through-instead-of-original.patch
 
 #rhbz 1011362
 ApplyPatch alx-Reset-phy-speed-after-resume.patch
+
+#rhbz 1031086
+ApplyPatch slab_common-Do-not-check-for-duplicate-slab-names.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2393,6 +2399,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix crash from slab when using md-raid mirrors (rhbz 1031086)
 - Add patches from Pierre Ossman to fix 24Hz/24p radeon audio (rhbz 1010679)
 - Add patch to fix ALX phy issues after resume (rhbz 1011362)
 - Fix ipv6 sit panic with packet size > mtu (from Michele Baldessari) (rbhz 1015905)
