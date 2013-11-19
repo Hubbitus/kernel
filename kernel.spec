@@ -2215,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 19 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable CGROUP_HUGETLB on ppc64/ppc64p7 and x86_64 (rhbz 1031984)
+
 * Tue Nov 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git8.1
 - Linux v3.12-10554-g801a760
 
