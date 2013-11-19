@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2215,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git7.1
+- Linux v3.12-10553-g27b5c3f
+
 * Sun Nov 17 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix up ARM usb gadget config to make it useful
 
