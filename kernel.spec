@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2215,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git9.1
+- Linux v3.12-10710-gb4789b8
+
 * Tue Nov 19 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable CGROUP_HUGETLB on ppc64/ppc64p7 and x86_64 (rhbz 1031984)
 
