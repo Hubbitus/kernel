@@ -2210,6 +2210,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Nov 21 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some minor ARM config updates
+
 * Thu Nov 21 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git10.1
 - Linux v3.12-10928-g527d151
 - Drop ACPI blacklist year options and patch (removed with upstream commit 4c47cb197e13 )
