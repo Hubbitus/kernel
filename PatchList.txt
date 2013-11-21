@@ -36,7 +36,6 @@ https://dev.openwrt.org/browser/trunk/package/mac80211/patches/552-ath9k_rx_dma_
 	Turn into CONFIG_ options and upstream ?
 
 * input-kill-stupid-messages.patch
-* silence-acpi-blacklist.patch
 * silence-fbcon-logo.patch
 * silence-noise.patch
 	Fedora local 'hush' patches.  (TODO: push more upstream)

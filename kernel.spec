@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -656,8 +656,6 @@ Patch1825: drm-i915-dp-stfu.patch
 Patch1826: drm-i915-hush-check-crtc-state.patch
 
 # Quiet boot fixes
-# silence the ACPI blacklist code
-Patch2802: silence-acpi-blacklist.patch
 
 # fs fixes
 
@@ -1362,9 +1360,6 @@ ApplyPatch drm-i915-dp-stfu.patch
 ApplyPatch drm-i915-hush-check-crtc-state.patch
 
 # Radeon DRM
-
-# silence the ACPI blacklist code
-ApplyPatch silence-acpi-blacklist.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
@@ -2215,6 +2210,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Nov 21 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git10.1
+- Linux v3.12-10928-g527d151
+- Drop ACPI blacklist year options and patch (removed with upstream commit 4c47cb197e13 )
+
 * Wed Nov 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git9.1
 - Linux v3.12-10710-gb4789b8
 
