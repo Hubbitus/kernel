@@ -816,6 +816,11 @@ Patch25150: slab_common-Do-not-check-for-duplicate-slab-names.patch
 #rhbz 967652
 Patch25151: KVM-x86-fix-emulation-of-movzbl-bpl-eax.patch
 
+# Fix 15sec NFS mount delay
+Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
+Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
+Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1589,6 +1594,11 @@ ApplyPatch slab_common-Do-not-check-for-duplicate-slab-names.patch
 
 #rhbz 967652
 ApplyPatch KVM-x86-fix-emulation-of-movzbl-bpl-eax.patch
+
+# Fix 15sec NFS mount delay
+ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
+ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
+ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2392,6 +2402,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches from Jeff Layton to fix 15sec NFS mount hang
+
 * Wed Nov 20 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.9-300
 - Linux v3.11.9
 
