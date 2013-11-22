@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -633,12 +633,6 @@ Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 Patch800: crash-driver.patch
 
 # crypto/
-
-# keys
-Patch900: keys-expand-keyring.patch
-Patch901: keys-krb-support.patch
-Patch902: keys-x509-improv.patch
-Patch903: keyring-quota.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1336,12 +1330,6 @@ ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 ApplyPatch crash-driver.patch
 
 # crypto/
-
-# keys
-ApplyPatch keys-expand-keyring.patch
-ApplyPatch keys-krb-support.patch
-ApplyPatch keys-x509-improv.patch
-ApplyPatch keyring-quota.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2210,6 +2198,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git11.1
+- Linux v3.12-11097-ga5d6e63
+- Drop all the keys-* patches because they were merged upstream.  Yay!
+
 * Thu Nov 21 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some minor ARM config updates
 

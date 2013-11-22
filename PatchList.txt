@@ -20,12 +20,6 @@ https://dev.openwrt.org/browser/trunk/package/mac80211/patches/552-ath9k_rx_dma_
   - Fedora secure boot support.
   - Dear Matthew, this is your fault.  Run sed already and get a new set out.
 
-* keys-expand-keyring.patch
-* keys-krb-support.patch
-* keys-x509-improv.patch
-* keyring-quota.patch
-  - I believe these are all now queued for 3.13 in James Morris' tree.
-
 **** Other stuff that should go upstream (in decreasing likelyhood) ************
 
 * defaults-acpi-video.patch
