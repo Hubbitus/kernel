@@ -1,3 +1,5 @@
+Bugzilla: N/A
+Upstream-status: queued in NFS git tree (for 3.13/3.14?)
 
 Currently, the client will attempt to use krb5i in the SETCLIENTID call
 even if rpc.gssd isn't running. When that fails, it'll then fall back to
