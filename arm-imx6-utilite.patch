@@ -18,15 +18,15 @@ the Ethernet adapter and the hearbeat led.
 Signed-off-by: Valentin Raevsky <valentin@xxxxxxxxxxxxxx>
 Acked-by: Igor Grinberg <grinberg@xxxxxxxxxxxxxx>
 ---
- arch/arm/boot/dts/cm-fx6.dts |   51 ++++++++++++++++++++++++++++++++++++++++++
+ arch/arm/boot/dts/imx6q-cm-fx6.dts |   51 ++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 51 insertions(+)
- create mode 100644 arch/arm/boot/dts/cm-fx6.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-cm-fx6.dts
 
-diff --git a/arch/arm/boot/dts/cm-fx6.dts b/arch/arm/boot/dts/cm-fx6.dts
+diff --git a/arch/arm/boot/dts/imx6q-cm-fx6.dts b/arch/arm/boot/dts/imx6q-cm-fx6.dts
 new file mode 100644
 index 0000000..1080215
 --- /dev/null
-+++ b/arch/arm/boot/dts/cm-fx6.dts
++++ b/arch/arm/boot/dts/imx6q-cm-fx6.dts
 @@ -0,0 +1,51 @@
 +/*
 + * Copyright 2013 CompuLab Ltd.
@@ -79,6 +79,17 @@ index 0000000..1080215
 +	pinctrl-0 = <&pinctrl_uart4_1>;
 +	status = "okay";
 +};
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -137,6 +137,7 @@
+ 	imx6dl-sabresd.dtb \
+ 	imx6dl-wandboard.dtb \
+ 	imx6q-arm2.dtb \
++	imx6q-cm-fx6.dtb \
+ 	imx6q-phytec-pbab01.dtb \
+ 	imx6q-sabreauto.dtb \
+ 	imx6q-sabrelite.dtb \
 -- 
 1.7.9.5
 

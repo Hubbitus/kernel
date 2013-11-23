@@ -2198,6 +2198,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 22 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix ARM Utilite DTB
+
 * Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc0.git11.1
 - Linux v3.12-11097-ga5d6e63
 - Drop all the keys-* patches because they were merged upstream.  Yay!
