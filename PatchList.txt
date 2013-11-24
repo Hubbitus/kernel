@@ -6,9 +6,6 @@
 * dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch (rhbz 993744)
   - Still pending upstream
 
-* ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch (rhbz 1007690 1009136)
-  - Fixes CVE-2013-4345
-
 * ath9k_rx_dma_stop_check.patch (rhbz 892811)
   - Fixes some DMA issue on specific hardware.  Taken from
 https://dev.openwrt.org/browser/trunk/package/mac80211/patches/552-ath9k_rx_dma_stop_check.patch?rev=34910

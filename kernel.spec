@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -158,7 +158,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -171,7 +171,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -698,9 +698,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#CVE-2013-4345 rhbz 1007690 1009136
-Patch25104: ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
@@ -1374,9 +1371,6 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#CVE-2013-4345 rhbz 1007690 1009136
-ApplyPatch ansi_cprng-Fix-off-by-one-error-in-non-block-size-request.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
@@ -2198,6 +2192,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Nov 24 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git1.1
+- Linux v3.13-rc1-77-g4c1cc40
+- Reenable debugging options.
+
 * Sat Nov 23 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git0.1
 - Linux v3.13-rc1
 - Disable debugging options.
