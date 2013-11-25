@@ -824,6 +824,9 @@ Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
 #CVE-2013-6378 rhbz 1033578 1034183
 Patch25155: libertas-potential-oops-in-debugfs.patch
 
+#CVE-2013-6380 rhbz 1033593 1034304
+Patch25156: aacraid-prevent-invalid-pointer-dereference.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1605,6 +1608,9 @@ ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
 
 #CVE-2013-6378 rhbz 1033578 1034183
 ApplyPatch libertas-potential-oops-in-debugfs.patch
+
+#CVE-2013-6380 rhbz 1033593 1034304
+ApplyPatch aacraid-prevent-invalid-pointer-dereference.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2409,6 +2415,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6380 aacraid: invalid pointer dereference (rhbz 1033593 1034304)
 - CVE-2013-6378 libertas: potential oops in debugfs (rhbz 1033578 1034183)
 
 * Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
