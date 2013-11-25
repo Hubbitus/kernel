@@ -821,6 +821,9 @@ Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
 Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
 
+#CVE-2013-6378 rhbz 1033578 1034183
+Patch25155: libertas-potential-oops-in-debugfs.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1599,6 +1602,9 @@ ApplyPatch KVM-x86-fix-emulation-of-movzbl-bpl-eax.patch
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
 ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
+
+#CVE-2013-6378 rhbz 1033578 1034183
+ApplyPatch libertas-potential-oops-in-debugfs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2402,6 +2408,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6378 libertas: potential oops in debugfs (rhbz 1033578 1034183)
+
 * Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches from Jeff Layton to fix 15sec NFS mount hang
 
