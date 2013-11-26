@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2198,6 +2198,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git3.1
+- Linux v3.13-rc1-128-g0e4b074
+
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix crash driver build and re-enable on s390x (from Dan Horák)
 - CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
