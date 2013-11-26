@@ -827,6 +827,9 @@ Patch25155: libertas-potential-oops-in-debugfs.patch
 #CVE-2013-6380 rhbz 1033593 1034304
 Patch25156: aacraid-prevent-invalid-pointer-dereference.patch
 
+#CVE-2013-6382 rhbz 1033603 1034670
+Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1611,6 +1614,9 @@ ApplyPatch libertas-potential-oops-in-debugfs.patch
 
 #CVE-2013-6380 rhbz 1033593 1034304
 ApplyPatch aacraid-prevent-invalid-pointer-dereference.patch
+
+#CVE-2013-6382 rhbz 1033603 1034670
+ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2414,6 +2420,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
+
 * Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-6380 aacraid: invalid pointer dereference (rhbz 1033593 1034304)
 - CVE-2013-6378 libertas: potential oops in debugfs (rhbz 1033578 1034183)
