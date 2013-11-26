@@ -833,6 +833,9 @@ Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 #rhbz 1022733
 Patch25158: via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
 
+#rhbz 998342
+Patch25159: usbnet-fix-status-interrupt-urb-handling.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1623,6 +1626,9 @@ ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
 #rhbz 1022733
 ApplyPatch via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
+
+#rhbz 998342
+ApplyPatch usbnet-fix-status-interrupt-urb-handling.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2427,6 +2433,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix usbnet URB handling (rhbz 998342)
 - Fix crash in via-velocity driver (rhbz 1022733)
 - CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
 
