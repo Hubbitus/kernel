@@ -707,6 +707,9 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 Patch25142: 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
+#CVE-2013-6382 rhbz 1033603 1034670
+Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1379,6 +1382,9 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 ApplyPatch 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
+
+#CVE-2013-6382 rhbz 1033603 1034670
+ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2192,6 +2198,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
+
 * Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git2.1
 - Linux v3.13-rc1-85-g7e3528c
 
