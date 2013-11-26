@@ -830,6 +830,9 @@ Patch25156: aacraid-prevent-invalid-pointer-dereference.patch
 #CVE-2013-6382 rhbz 1033603 1034670
 Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
+#rhbz 1022733
+Patch25158: via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1617,6 +1620,9 @@ ApplyPatch aacraid-prevent-invalid-pointer-dereference.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
+#rhbz 1022733
+ApplyPatch via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2421,6 +2427,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash in via-velocity driver (rhbz 1022733)
 - CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
 
 * Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org>
