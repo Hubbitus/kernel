@@ -2418,6 +2418,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash driver build and re-enable on s390x (from Dan Horák)
+
 * Sat Nov 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-6405 net: leak of uninited mem to userspace via recv syscalls (rhbz 1035875 1035887)
 
