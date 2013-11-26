@@ -2199,6 +2199,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash driver build and re-enable on s390x (from Dan Horák)
 - CVE-2013-6382 xfs: missing check for ZERO_SIZE_PTR (rhbz 1033603 1034670)
 
 * Mon Nov 25 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git2.1
