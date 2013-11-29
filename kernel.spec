@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -704,8 +704,6 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-Patch25142: 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
@@ -1380,8 +1378,6 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-ApplyPatch 0001-staging-imx-drm-Fix-modular-build-of-DRM_IMX_IPUV3.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
@@ -2198,6 +2194,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git4.1
+- Linux v3.13-rc1-252-gdda9cc3
+
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc1.git3.1
 - Linux v3.13-rc1-128-g0e4b074
 
