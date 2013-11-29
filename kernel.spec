@@ -797,6 +797,7 @@ Patch25137: cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 Patch25142: iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
 
 Patch25143: drm-qxl-backport-fixes-for-Fedora.patch
+Patch25160: drm-qxl-fix-memory-leak-in-release-list-handling.patch
 
 Patch25144: Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
@@ -1591,6 +1592,7 @@ ApplyPatch cifs-Allow-LANMAN-auth-for-unencapsulated-auth-methods.patch
 ApplyPatch iwlwifi-dvm-dont-override-mac80211-queue-setting.patch
 
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
+ApplyPatch drm-qxl-fix-memory-leak-in-release-list-handling.patch
 
 ApplyPatch Input-evdev-fall-back-to-vmalloc-for-client-event-buffer.patch
 
@@ -2432,6 +2434,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Nov 29 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix memory leak in qxl (from Dave Airlie)
+
 * Tue Nov 26 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix usbnet URB handling (rhbz 998342)
 - Fix crash in via-velocity driver (rhbz 1022733)
