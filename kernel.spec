@@ -825,6 +825,10 @@ Patch25158: via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
 #rhbz 998342
 Patch25159: usbnet-fix-status-interrupt-urb-handling.patch
 
+#CVE-2013-6405 rhbz 1035875 1035887
+Patch25161: inet-prevent-leakage-of-uninitialized-memory-to-user.patch
+Patch25162: inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1607,6 +1611,10 @@ ApplyPatch via-velocity-fix-netif_receive_skb-use-in-irq-disable.patch
 
 #rhbz 998342
 ApplyPatch usbnet-fix-status-interrupt-urb-handling.patch
+
+#CVE-2013-6405 rhbz 1035875 1035887
+ApplyPatch inet-prevent-leakage-of-uninitialized-memory-to-user.patch
+ApplyPatch inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2410,6 +2418,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Nov 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6405 net: leak of uninited mem to userspace via recv syscalls (rhbz 1035875 1035887)
+
 * Fri Nov 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.11.10-300
 - Linux v3.11.10
 - Fix memory leak in qxl (from Dave Airlie)
