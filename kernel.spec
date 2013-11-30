@@ -2194,6 +2194,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Nov 30 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+- Enable sound compressed offload on ARM
+
 * Fri Nov 29 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git0.1
 - Linux v3.13-rc2
 - Disable debugging options.
