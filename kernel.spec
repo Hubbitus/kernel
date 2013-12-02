@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-# % define buildid .local
+%define buildid .hu.1
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -816,6 +816,17 @@ Patch25150: slab_common-Do-not-check-for-duplicate-slab-names.patch
 #rhbz 967652
 Patch25151: KVM-x86-fix-emulation-of-movzbl-bpl-eax.patch
 
+# Hubbitus
+# 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
+Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v6r2-3.11.patch
+Patch30002: 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.11.patch
+Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.11.0.patch
+
+Patch30004: uksm-0.1.2.2-for-v3.11.ge.7.patch
+
+Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
+# end Hubbitus patches
+
 # Fix 15sec NFS mount delay
 Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
@@ -1594,6 +1605,16 @@ ApplyPatch slab_common-Do-not-check-for-duplicate-slab-names.patch
 
 #rhbz 967652
 ApplyPatch KVM-x86-fix-emulation-of-movzbl-bpl-eax.patch
+
+#+Hu
+ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v6r2-3.11.patch
+ApplyPatch 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.11.patch
+ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.11.0.patch
+
+ApplyPatch uksm-0.1.2.2-for-v3.11.ge.7.patch --fuzz=2
+
+#? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
+#/Hu
 
 # Fix 15sec NFS mount delay
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
@@ -2402,6 +2423,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Nov 24 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.11.9-300.hu.1
+- Linux v3.11.9.hu.1 Fedora 20. Port from F19 (zcache, tuxonice, uksm, bfq)
+- Update patches:
+	UKSM: uksm-0.1.2.2-for-v3.11.ge.7.patch
+	Tuxonice: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 (disabled because terminate build)
+
 * Fri Nov 22 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches from Jeff Layton to fix 15sec NFS mount hang
 
