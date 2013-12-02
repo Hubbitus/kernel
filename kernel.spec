@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -684,8 +684,6 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 # http://www.spinics.net/lists/devicetree/msg08276.html
 Patch21030: arm-imx6-utilite.patch
 
-Patch21031: fix-arm-xen-driver-build.patch
-
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1262,8 +1260,6 @@ ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-imx6-utilite.patch
-
-ApplyPatch fix-arm-xen-driver-build.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2194,6 +2190,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git2.1
+- Linux v3.13-rc2-119-ga45299e
+
 * Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git1.1
 - Linux v3.13-rc2-1-gaf91706
 - Reenable debugging options.
