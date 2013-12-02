@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -158,7 +158,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -171,7 +171,7 @@ Summary: The Linux kernel
 %define doc_build_fail true
 %endif
 
-%define rawhide_skip_docs 0
+%define rawhide_skip_docs 1
 %if 0%{?rawhide_skip_docs}
 %define with_doc 0
 %define doc_build_fail true
@@ -2194,6 +2194,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git1.1
+- Linux v3.13-rc2-1-gaf91706
+- Reenable debugging options.
+
 * Sat Nov 30 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 - Enable sound compressed offload on ARM
