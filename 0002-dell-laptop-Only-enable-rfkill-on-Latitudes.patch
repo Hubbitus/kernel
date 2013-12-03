@@ -1,0 +1,104 @@
+Bugzilla: 958826
+Upstream-status: 3.13
+
+From 2a92551845bbbc8421ba908cd14bbdf065e0f454 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:17 +0100
+Subject: [PATCH 2/2] dell-laptop: Only enable rfkill on Latitudes
+
+The rfkill functionality was removed from the dell-laptop driver because it
+was causing problems on various non Latitude models, and the blacklist kept
+growing and growing. In the thread discussing this Dell mentioned that they
+only QA the rfkill acpi interface on Latitudes and indeed there have been
+no blacklist entries for Latitudes.
+
+Note that the blacklist contained no Vostros either, and most Vostros have
+a hardware switch too, so we could consider supporting Vostros with a
+hardware switch too.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 57 +++++---------------------------------
+ 1 file changed, 7 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 55f75a2..bae932b 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -119,53 +119,6 @@ static const struct dmi_system_id dell_device_table[] __initconst = {
+ };
+ MODULE_DEVICE_TABLE(dmi, dell_device_table);
+ 
+-static struct dmi_system_id dell_blacklist[] = {
+-	/* Supported by compal-laptop */
+-	{
+-		.ident = "Dell Mini 9",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 910"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 10",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1010"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 10v",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1011"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 1012",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1012"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Inspiron 11z",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1110"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 12",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1210"),
+-		},
+-	},
+-	{}
+-};
+-
+ static struct dmi_system_id dell_quirks[] = {
+ 	{
+ 		.callback = dmi_matched,
+@@ -579,11 +532,15 @@ static int __init dell_setup_rfkill(void)
+ {
+ 	int status;
+ 	int ret;
++	const char *product;
+ 
+-	if (dmi_check_system(dell_blacklist)) {
+-		pr_info("Blacklisted hardware detected - not enabling rfkill\n");
++	/*
++	 * rfkill causes trouble on various non Latitudes, according to Dell
++	 * actually testing the rfkill functionality is only done on Latitudes.
++	 */
++	product = dmi_get_system_info(DMI_PRODUCT_NAME);
++	if (!product || strncmp(product, "Latitude", 8))
+ 		return 0;
+-	}
+ 
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+-- 
+1.8.3.1
+
