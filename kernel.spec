@@ -2190,6 +2190,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Dec  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM cleanups and remove obsolete options
+
 * Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git2.1
 - Linux v3.13-rc2-119-ga45299e
 
