@@ -1,0 +1,1017 @@
+Bugzilla: 958826
+Upstream-status: 3.13
+
+From 4cc8a57425c623753b10b77b15392e5b83baa5a3 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:16 +0100
+Subject: [PATCH 01/12] Revert "dell-laptop: Remove rfkill code"
+
+Without rfkill functionality in dell-laptop I have the following problems:
+-If the hardware radio switch is set to disable the radio, then userspace
+ will still think it can use wireless and bluetooth.
+-The wwan / 3g modem cannot be soft blocked without the dell-laptop rfkill
+ functionality
+
+I know the rfkill functionality was removed from the dell-laptop driver because
+it caused more problems then it fixed, and the blacklist for it was growing out
+of control.
+
+But in the thread discussing this Dell mentioned that they only QA the rfkill
+acpi interface on Latitudes and indeed there have been no blacklist entries
+for Latitudes. Therefor I would like to bring the rfkill functionality back
+only for Latitudes. This patch is a straight-forward revert. The next patch
+in this set will drop the blacklist and replace it with a Latitude check.
+
+This reverts commit a6c2390cd6d2083d27a2359658e08f2d3df375ac.
+
+Conflicts:
+	drivers/platform/x86/dell-laptop.c
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 289 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 289 insertions(+)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index bb77e18..55f75a2 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -21,6 +21,7 @@
+ #include <linux/err.h>
+ #include <linux/dmi.h>
+ #include <linux/io.h>
++#include <linux/rfkill.h>
+ #include <linux/power_supply.h>
+ #include <linux/acpi.h>
+ #include <linux/mm.h>
+@@ -89,6 +90,9 @@ static struct platform_driver platform_driver = {
+ 
+ static struct platform_device *platform_device;
+ static struct backlight_device *dell_backlight_device;
++static struct rfkill *wifi_rfkill;
++static struct rfkill *bluetooth_rfkill;
++static struct rfkill *wwan_rfkill;
+ 
+ static const struct dmi_system_id dell_device_table[] __initconst = {
+ 	{
+@@ -115,6 +119,53 @@ static const struct dmi_system_id dell_device_table[] __initconst = {
+ };
+ MODULE_DEVICE_TABLE(dmi, dell_device_table);
+ 
++static struct dmi_system_id dell_blacklist[] = {
++	/* Supported by compal-laptop */
++	{
++		.ident = "Dell Mini 9",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 910"),
++		},
++	},
++	{
++		.ident = "Dell Mini 10",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1010"),
++		},
++	},
++	{
++		.ident = "Dell Mini 10v",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1011"),
++		},
++	},
++	{
++		.ident = "Dell Mini 1012",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1012"),
++		},
++	},
++	{
++		.ident = "Dell Inspiron 11z",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1110"),
++		},
++	},
++	{
++		.ident = "Dell Mini 12",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1210"),
++		},
++	},
++	{}
++};
++
+ static struct dmi_system_id dell_quirks[] = {
+ 	{
+ 		.callback = dmi_matched,
+@@ -355,6 +406,94 @@ dell_send_request(struct calling_interface_buffer *buffer, int class,
+ 	return buffer;
+ }
+ 
++/* Derived from information in DellWirelessCtl.cpp:
++   Class 17, select 11 is radio control. It returns an array of 32-bit values.
++
++   Input byte 0 = 0: Wireless information
++
++   result[0]: return code
++   result[1]:
++     Bit 0:      Hardware switch supported
++     Bit 1:      Wifi locator supported
++     Bit 2:      Wifi is supported
++     Bit 3:      Bluetooth is supported
++     Bit 4:      WWAN is supported
++     Bit 5:      Wireless keyboard supported
++     Bits 6-7:   Reserved
++     Bit 8:      Wifi is installed
++     Bit 9:      Bluetooth is installed
++     Bit 10:     WWAN is installed
++     Bits 11-15: Reserved
++     Bit 16:     Hardware switch is on
++     Bit 17:     Wifi is blocked
++     Bit 18:     Bluetooth is blocked
++     Bit 19:     WWAN is blocked
++     Bits 20-31: Reserved
++   result[2]: NVRAM size in bytes
++   result[3]: NVRAM format version number
++
++   Input byte 0 = 2: Wireless switch configuration
++   result[0]: return code
++   result[1]:
++     Bit 0:      Wifi controlled by switch
++     Bit 1:      Bluetooth controlled by switch
++     Bit 2:      WWAN controlled by switch
++     Bits 3-6:   Reserved
++     Bit 7:      Wireless switch config locked
++     Bit 8:      Wifi locator enabled
++     Bits 9-14:  Reserved
++     Bit 15:     Wifi locator setting locked
++     Bits 16-31: Reserved
++*/
++
++static int dell_rfkill_set(void *data, bool blocked)
++{
++	int disable = blocked ? 1 : 0;
++	unsigned long radio = (unsigned long)data;
++	int hwswitch_bit = (unsigned long)data - 1;
++	int ret = 0;
++
++	get_buffer();
++	dell_send_request(buffer, 17, 11);
++
++	/* If the hardware switch controls this radio, and the hardware
++	   switch is disabled, don't allow changing the software state */
++	if ((hwswitch_state & BIT(hwswitch_bit)) &&
++	    !(buffer->output[1] & BIT(16))) {
++		ret = -EINVAL;
++		goto out;
++	}
++
++	buffer->input[0] = (1 | (radio<<8) | (disable << 16));
++	dell_send_request(buffer, 17, 11);
++
++out:
++	release_buffer();
++	return ret;
++}
++
++static void dell_rfkill_query(struct rfkill *rfkill, void *data)
++{
++	int status;
++	int bit = (unsigned long)data + 16;
++	int hwswitch_bit = (unsigned long)data - 1;
++
++	get_buffer();
++	dell_send_request(buffer, 17, 11);
++	status = buffer->output[1];
++	release_buffer();
++
++	rfkill_set_sw_state(rfkill, !!(status & BIT(bit)));
++
++	if (hwswitch_state & (BIT(hwswitch_bit)))
++		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
++}
++
++static const struct rfkill_ops dell_rfkill_ops = {
++	.set_block = dell_rfkill_set,
++	.query = dell_rfkill_query,
++};
++
+ static struct dentry *dell_laptop_dir;
+ 
+ static int dell_debugfs_show(struct seq_file *s, void *data)
+@@ -424,6 +563,108 @@ static const struct file_operations dell_debugfs_fops = {
+ 	.release = single_release,
+ };
+ 
++static void dell_update_rfkill(struct work_struct *ignored)
++{
++	if (wifi_rfkill)
++		dell_rfkill_query(wifi_rfkill, (void *)1);
++	if (bluetooth_rfkill)
++		dell_rfkill_query(bluetooth_rfkill, (void *)2);
++	if (wwan_rfkill)
++		dell_rfkill_query(wwan_rfkill, (void *)3);
++}
++static DECLARE_DELAYED_WORK(dell_rfkill_work, dell_update_rfkill);
++
++
++static int __init dell_setup_rfkill(void)
++{
++	int status;
++	int ret;
++
++	if (dmi_check_system(dell_blacklist)) {
++		pr_info("Blacklisted hardware detected - not enabling rfkill\n");
++		return 0;
++	}
++
++	get_buffer();
++	dell_send_request(buffer, 17, 11);
++	status = buffer->output[1];
++	buffer->input[0] = 0x2;
++	dell_send_request(buffer, 17, 11);
++	hwswitch_state = buffer->output[1];
++	release_buffer();
++
++	if ((status & (1<<2|1<<8)) == (1<<2|1<<8)) {
++		wifi_rfkill = rfkill_alloc("dell-wifi", &platform_device->dev,
++					   RFKILL_TYPE_WLAN,
++					   &dell_rfkill_ops, (void *) 1);
++		if (!wifi_rfkill) {
++			ret = -ENOMEM;
++			goto err_wifi;
++		}
++		ret = rfkill_register(wifi_rfkill);
++		if (ret)
++			goto err_wifi;
++	}
++
++	if ((status & (1<<3|1<<9)) == (1<<3|1<<9)) {
++		bluetooth_rfkill = rfkill_alloc("dell-bluetooth",
++						&platform_device->dev,
++						RFKILL_TYPE_BLUETOOTH,
++						&dell_rfkill_ops, (void *) 2);
++		if (!bluetooth_rfkill) {
++			ret = -ENOMEM;
++			goto err_bluetooth;
++		}
++		ret = rfkill_register(bluetooth_rfkill);
++		if (ret)
++			goto err_bluetooth;
++	}
++
++	if ((status & (1<<4|1<<10)) == (1<<4|1<<10)) {
++		wwan_rfkill = rfkill_alloc("dell-wwan",
++					   &platform_device->dev,
++					   RFKILL_TYPE_WWAN,
++					   &dell_rfkill_ops, (void *) 3);
++		if (!wwan_rfkill) {
++			ret = -ENOMEM;
++			goto err_wwan;
++		}
++		ret = rfkill_register(wwan_rfkill);
++		if (ret)
++			goto err_wwan;
++	}
++
++	return 0;
++err_wwan:
++	rfkill_destroy(wwan_rfkill);
++	if (bluetooth_rfkill)
++		rfkill_unregister(bluetooth_rfkill);
++err_bluetooth:
++	rfkill_destroy(bluetooth_rfkill);
++	if (wifi_rfkill)
++		rfkill_unregister(wifi_rfkill);
++err_wifi:
++	rfkill_destroy(wifi_rfkill);
++
++	return ret;
++}
++
++static void dell_cleanup_rfkill(void)
++{
++	if (wifi_rfkill) {
++		rfkill_unregister(wifi_rfkill);
++		rfkill_destroy(wifi_rfkill);
++	}
++	if (bluetooth_rfkill) {
++		rfkill_unregister(bluetooth_rfkill);
++		rfkill_destroy(bluetooth_rfkill);
++	}
++	if (wwan_rfkill) {
++		rfkill_unregister(wwan_rfkill);
++		rfkill_destroy(wwan_rfkill);
++	}
++}
++
+ static int dell_send_intensity(struct backlight_device *bd)
+ {
+ 	int ret = 0;
+@@ -515,6 +756,30 @@ static void touchpad_led_exit(void)
+ 	led_classdev_unregister(&touchpad_led);
+ }
+ 
++static bool dell_laptop_i8042_filter(unsigned char data, unsigned char str,
++			      struct serio *port)
++{
++	static bool extended;
++
++	if (str & 0x20)
++		return false;
++
++	if (unlikely(data == 0xe0)) {
++		extended = true;
++		return false;
++	} else if (unlikely(extended)) {
++		switch (data) {
++		case 0x8:
++			schedule_delayed_work(&dell_rfkill_work,
++					      round_jiffies_relative(HZ));
++			break;
++		}
++		extended = false;
++	}
++
++	return false;
++}
++
+ static int __init dell_init(void)
+ {
+ 	int max_intensity = 0;
+@@ -557,10 +822,26 @@ static int __init dell_init(void)
+ 	}
+ 	buffer = page_address(bufferpage);
+ 
++	ret = dell_setup_rfkill();
++
++	if (ret) {
++		pr_warn("Unable to setup rfkill\n");
++		goto fail_rfkill;
++	}
++
++	ret = i8042_install_filter(dell_laptop_i8042_filter);
++	if (ret) {
++		pr_warn("Unable to install key filter\n");
++		goto fail_filter;
++	}
++
+ 	if (quirks && quirks->touchpad_led)
+ 		touchpad_led_init(&platform_device->dev);
+ 
+ 	dell_laptop_dir = debugfs_create_dir("dell_laptop", NULL);
++	if (dell_laptop_dir != NULL)
++		debugfs_create_file("rfkill", 0444, dell_laptop_dir, NULL,
++				    &dell_debugfs_fops);
+ 
+ #ifdef CONFIG_ACPI
+ 	/* In the event of an ACPI backlight being available, don't
+@@ -603,6 +884,11 @@ static int __init dell_init(void)
+ 	return 0;
+ 
+ fail_backlight:
++	i8042_remove_filter(dell_laptop_i8042_filter);
++	cancel_delayed_work_sync(&dell_rfkill_work);
++fail_filter:
++	dell_cleanup_rfkill();
++fail_rfkill:
+ 	free_page((unsigned long)bufferpage);
+ fail_buffer:
+ 	platform_device_del(platform_device);
+@@ -620,7 +906,10 @@ static void __exit dell_exit(void)
+ 	debugfs_remove_recursive(dell_laptop_dir);
+ 	if (quirks && quirks->touchpad_led)
+ 		touchpad_led_exit();
++	i8042_remove_filter(dell_laptop_i8042_filter);
++	cancel_delayed_work_sync(&dell_rfkill_work);
+ 	backlight_device_unregister(dell_backlight_device);
++	dell_cleanup_rfkill();
+ 	if (platform_device) {
+ 		platform_device_unregister(platform_device);
+ 		platform_driver_unregister(&platform_driver);
+-- 
+1.8.3.1
+
+
+From 2a92551845bbbc8421ba908cd14bbdf065e0f454 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:17 +0100
+Subject: [PATCH 02/12] dell-laptop: Only enable rfkill on Latitudes
+
+The rfkill functionality was removed from the dell-laptop driver because it
+was causing problems on various non Latitude models, and the blacklist kept
+growing and growing. In the thread discussing this Dell mentioned that they
+only QA the rfkill acpi interface on Latitudes and indeed there have been
+no blacklist entries for Latitudes.
+
+Note that the blacklist contained no Vostros either, and most Vostros have
+a hardware switch too, so we could consider supporting Vostros with a
+hardware switch too.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 57 +++++---------------------------------
+ 1 file changed, 7 insertions(+), 50 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 55f75a2..bae932b 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -119,53 +119,6 @@ static const struct dmi_system_id dell_device_table[] __initconst = {
+ };
+ MODULE_DEVICE_TABLE(dmi, dell_device_table);
+ 
+-static struct dmi_system_id dell_blacklist[] = {
+-	/* Supported by compal-laptop */
+-	{
+-		.ident = "Dell Mini 9",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 910"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 10",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1010"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 10v",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1011"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 1012",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1012"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Inspiron 11z",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1110"),
+-		},
+-	},
+-	{
+-		.ident = "Dell Mini 12",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Inspiron 1210"),
+-		},
+-	},
+-	{}
+-};
+-
+ static struct dmi_system_id dell_quirks[] = {
+ 	{
+ 		.callback = dmi_matched,
+@@ -579,11 +532,15 @@ static int __init dell_setup_rfkill(void)
+ {
+ 	int status;
+ 	int ret;
++	const char *product;
+ 
+-	if (dmi_check_system(dell_blacklist)) {
+-		pr_info("Blacklisted hardware detected - not enabling rfkill\n");
++	/*
++	 * rfkill causes trouble on various non Latitudes, according to Dell
++	 * actually testing the rfkill functionality is only done on Latitudes.
++	 */
++	product = dmi_get_system_info(DMI_PRODUCT_NAME);
++	if (!product || strncmp(product, "Latitude", 8))
+ 		return 0;
+-	}
+ 
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+-- 
+1.8.3.1
+
+
+From ddde708217af6d5fe43c0086247c05ed317076b4 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:18 +0100
+Subject: [PATCH 03/12] dell-laptop: If there is no hwswitch, then clear all
+ hw-controlled bits
+
+To ensure we don't enter any hw-switch related code paths on machines without
+a hw-switch.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index bae932b..48fabf6 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -548,6 +548,9 @@ static int __init dell_setup_rfkill(void)
+ 	buffer->input[0] = 0x2;
+ 	dell_send_request(buffer, 17, 11);
+ 	hwswitch_state = buffer->output[1];
++	/* If there is no hwswitch, then clear all hw-controlled bits */
++	if (!(status & BIT(0)))
++		hwswitch_state &= ~7;
+ 	release_buffer();
+ 
+ 	if ((status & (1<<2|1<<8)) == (1<<2|1<<8)) {
+-- 
+1.8.3.1
+
+
+From d038880efd9dd222c67fd31fbfca3440d0db3a06 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:19 +0100
+Subject: [PATCH 04/12] dell-laptop: Only get status from BIOS once when
+ updating
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 28 +++++++++++++++++++---------
+ 1 file changed, 19 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 48fabf6..06f281b 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -425,21 +425,24 @@ out:
+ 	return ret;
+ }
+ 
++static void dell_rfkill_update(struct rfkill *rfkill, int radio, int status)
++{
++	rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
++
++	if (hwswitch_state & (BIT(radio - 1)))
++		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
++}
++
+ static void dell_rfkill_query(struct rfkill *rfkill, void *data)
+ {
+ 	int status;
+-	int bit = (unsigned long)data + 16;
+-	int hwswitch_bit = (unsigned long)data - 1;
+ 
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+ 	status = buffer->output[1];
+ 	release_buffer();
+ 
+-	rfkill_set_sw_state(rfkill, !!(status & BIT(bit)));
+-
+-	if (hwswitch_state & (BIT(hwswitch_bit)))
+-		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
++	dell_rfkill_update(rfkill, (unsigned long)data, status);
+ }
+ 
+ static const struct rfkill_ops dell_rfkill_ops = {
+@@ -518,12 +521,19 @@ static const struct file_operations dell_debugfs_fops = {
+ 
+ static void dell_update_rfkill(struct work_struct *ignored)
+ {
++	int status;
++
++	get_buffer();
++	dell_send_request(buffer, 17, 11);
++	status = buffer->output[1];
++	release_buffer();
++
+ 	if (wifi_rfkill)
+-		dell_rfkill_query(wifi_rfkill, (void *)1);
++		dell_rfkill_update(wifi_rfkill, 1, status);
+ 	if (bluetooth_rfkill)
+-		dell_rfkill_query(bluetooth_rfkill, (void *)2);
++		dell_rfkill_update(bluetooth_rfkill, 2, status);
+ 	if (wwan_rfkill)
+-		dell_rfkill_query(wwan_rfkill, (void *)3);
++		dell_rfkill_update(wwan_rfkill, 3, status);
+ }
+ static DECLARE_DELAYED_WORK(dell_rfkill_work, dell_update_rfkill);
+ 
+-- 
+1.8.3.1
+
+
+From 33f9359abb9f6ded3e7b6dc98b1468c83404af49 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:20 +0100
+Subject: [PATCH 05/12] dell-laptop: Don't set sw_state from the query callback
+
+The query callback should only update the hw_state, see the comment in
+net/rfkill/core.c in rfkill_set_block, which is its only caller.
+
+rfkill_set_block will modify the sw_state directly after calling query so
+calling set_sw_state is an expensive NOP.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 27 +++++++++++++++++++--------
+ 1 file changed, 19 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 06f281b..7f47396 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -425,10 +425,15 @@ out:
+ 	return ret;
+ }
+ 
+-static void dell_rfkill_update(struct rfkill *rfkill, int radio, int status)
++static void dell_rfkill_update_sw_state(struct rfkill *rfkill, int radio,
++					int status)
+ {
+ 	rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
++}
+ 
++static void dell_rfkill_update_hw_state(struct rfkill *rfkill, int radio,
++					int status)
++{
+ 	if (hwswitch_state & (BIT(radio - 1)))
+ 		rfkill_set_hw_state(rfkill, !(status & BIT(16)));
+ }
+@@ -442,7 +447,7 @@ static void dell_rfkill_query(struct rfkill *rfkill, void *data)
+ 	status = buffer->output[1];
+ 	release_buffer();
+ 
+-	dell_rfkill_update(rfkill, (unsigned long)data, status);
++	dell_rfkill_update_hw_state(rfkill, (unsigned long)data, status);
+ }
+ 
+ static const struct rfkill_ops dell_rfkill_ops = {
+@@ -528,12 +533,18 @@ static void dell_update_rfkill(struct work_struct *ignored)
+ 	status = buffer->output[1];
+ 	release_buffer();
+ 
+-	if (wifi_rfkill)
+-		dell_rfkill_update(wifi_rfkill, 1, status);
+-	if (bluetooth_rfkill)
+-		dell_rfkill_update(bluetooth_rfkill, 2, status);
+-	if (wwan_rfkill)
+-		dell_rfkill_update(wwan_rfkill, 3, status);
++	if (wifi_rfkill) {
++		dell_rfkill_update_hw_state(wifi_rfkill, 1, status);
++		dell_rfkill_update_sw_state(wifi_rfkill, 1, status);
++	}
++	if (bluetooth_rfkill) {
++		dell_rfkill_update_hw_state(bluetooth_rfkill, 2, status);
++		dell_rfkill_update_sw_state(bluetooth_rfkill, 2, status);
++	}
++	if (wwan_rfkill) {
++		dell_rfkill_update_hw_state(wwan_rfkill, 3, status);
++		dell_rfkill_update_sw_state(wwan_rfkill, 3, status);
++	}
+ }
+ static DECLARE_DELAYED_WORK(dell_rfkill_work, dell_update_rfkill);
+ 
+-- 
+1.8.3.1
+
+
+From 3f56588a79a06a0499db0077cad6675762ddc40e Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:21 +0100
+Subject: [PATCH 06/12] dell-laptop: Don't read-back sw_state on machines with
+ a hardware switch
+
+On machines with a hardware switch, the blocking settings can not be changed
+through a Fn + wireless-key combo, so there is no reason to read back the
+blocking state from the BIOS.
+
+Reading back is not only not necessary it is actually harmful, since on some
+machines the blocking state will be cleared to all 0 after a wireless switch
+toggle, even for radios not controlled by the hw-switch (yeah firmware bugs).
+
+This causes "magic" changes to the sw_state. This is inconsistent with other
+rfkill drivers which preserve the sw_state over a hw kill on / off.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 7f47396..80de0cc 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -428,7 +428,10 @@ out:
+ static void dell_rfkill_update_sw_state(struct rfkill *rfkill, int radio,
+ 					int status)
+ {
+-	rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
++	if (!(status & BIT(0))) {
++		/* No hw-switch, sync BIOS state to sw_state */
++		rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
++	}
+ }
+ 
+ static void dell_rfkill_update_hw_state(struct rfkill *rfkill, int radio,
+-- 
+1.8.3.1
+
+
+From 4d39d88ceb83e88953a76df8b1fa10f43f328038 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:22 +0100
+Subject: [PATCH 07/12] dell-laptop: Allow changing the sw_state while the
+ radio is blocked by hw
+
+This makes dell-laptop's rfkill code consistent with other drivers which
+allow sw_state changes while hw blocked.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 80de0cc..834f499 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -404,7 +404,6 @@ static int dell_rfkill_set(void *data, bool blocked)
+ 	int disable = blocked ? 1 : 0;
+ 	unsigned long radio = (unsigned long)data;
+ 	int hwswitch_bit = (unsigned long)data - 1;
+-	int ret = 0;
+ 
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+@@ -412,17 +411,15 @@ static int dell_rfkill_set(void *data, bool blocked)
+ 	/* If the hardware switch controls this radio, and the hardware
+ 	   switch is disabled, don't allow changing the software state */
+ 	if ((hwswitch_state & BIT(hwswitch_bit)) &&
+-	    !(buffer->output[1] & BIT(16))) {
+-		ret = -EINVAL;
++	    !(buffer->output[1] & BIT(16)))
+ 		goto out;
+-	}
+ 
+ 	buffer->input[0] = (1 | (radio<<8) | (disable << 16));
+ 	dell_send_request(buffer, 17, 11);
+ 
+ out:
+ 	release_buffer();
+-	return ret;
++	return 0;
+ }
+ 
+ static void dell_rfkill_update_sw_state(struct rfkill *rfkill, int radio,
+-- 
+1.8.3.1
+
+
+From 04c9a3a06c47b337b90a91e458716262cc45b103 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:23 +0100
+Subject: [PATCH 08/12] dell-laptop: Sync current block state to BIOS on hw
+ switch change
+
+This is necessary for 3 reasons:
+1) To apply sw_state changes made while hw-blocked
+2) To set all the blocked bits for hw-switch controlled radios to 1 when the
+   switch gets changed to off, this is necessary on some models to actually
+   turn the radio status LEDs off.
+3) On some models non hw-switch controlled radios will have their block bit
+   cleared (potentially undoing a soft-block) on hw-switch toggle, this
+   restores the sw-block in this case.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 834f499..7f59624 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -422,10 +422,16 @@ out:
+ 	return 0;
+ }
+ 
++/* Must be called with the buffer held */
+ static void dell_rfkill_update_sw_state(struct rfkill *rfkill, int radio,
+ 					int status)
+ {
+-	if (!(status & BIT(0))) {
++	if (status & BIT(0)) {
++		/* Has hw-switch, sync sw_state to BIOS */
++		int block = rfkill_blocked(rfkill);
++		buffer->input[0] = (1 | (radio << 8) | (block << 16));
++		dell_send_request(buffer, 17, 11);
++	} else {
+ 		/* No hw-switch, sync BIOS state to sw_state */
+ 		rfkill_set_sw_state(rfkill, !!(status & BIT(radio + 16)));
+ 	}
+@@ -445,9 +451,10 @@ static void dell_rfkill_query(struct rfkill *rfkill, void *data)
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+ 	status = buffer->output[1];
+-	release_buffer();
+ 
+ 	dell_rfkill_update_hw_state(rfkill, (unsigned long)data, status);
++
++	release_buffer();
+ }
+ 
+ static const struct rfkill_ops dell_rfkill_ops = {
+@@ -531,7 +538,6 @@ static void dell_update_rfkill(struct work_struct *ignored)
+ 	get_buffer();
+ 	dell_send_request(buffer, 17, 11);
+ 	status = buffer->output[1];
+-	release_buffer();
+ 
+ 	if (wifi_rfkill) {
+ 		dell_rfkill_update_hw_state(wifi_rfkill, 1, status);
+@@ -545,6 +551,8 @@ static void dell_update_rfkill(struct work_struct *ignored)
+ 		dell_rfkill_update_hw_state(wwan_rfkill, 3, status);
+ 		dell_rfkill_update_sw_state(wwan_rfkill, 3, status);
+ 	}
++
++	release_buffer();
+ }
+ static DECLARE_DELAYED_WORK(dell_rfkill_work, dell_update_rfkill);
+ 
+-- 
+1.8.3.1
+
+
+From ed1128989ab242f44664b446702a512e5695c4b7 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:24 +0100
+Subject: [PATCH 09/12] dell-laptop: Do not skip setting blocked bit rfkill_set
+ while hw-blocked
+
+Instead when hw-blocked always write 1 to the blocked bit for the radio in
+question. This is necessary to properly set all the blocked bits for hw-switch
+controlled radios to 1 after power-on and resume.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index 7f59624..b33b779 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -409,15 +409,14 @@ static int dell_rfkill_set(void *data, bool blocked)
+ 	dell_send_request(buffer, 17, 11);
+ 
+ 	/* If the hardware switch controls this radio, and the hardware
+-	   switch is disabled, don't allow changing the software state */
++	   switch is disabled, always disable the radio */
+ 	if ((hwswitch_state & BIT(hwswitch_bit)) &&
+ 	    !(buffer->output[1] & BIT(16)))
+-		goto out;
++		disable = 1;
+ 
+ 	buffer->input[0] = (1 | (radio<<8) | (disable << 16));
+ 	dell_send_request(buffer, 17, 11);
+ 
+-out:
+ 	release_buffer();
+ 	return 0;
+ }
+-- 
+1.8.3.1
+
+
+From 26c22d63a70f62e0832c6d9f2a2690ab0155d584 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:25 +0100
+Subject: [PATCH 10/12] dell-laptop: Wait less long before updating rfkill
+ after an rfkill keypress
+
+Some time is needed for the BIOS to do its work, but 250ms should be plenty.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index b33b779..fe20f67 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -759,7 +759,7 @@ static bool dell_laptop_i8042_filter(unsigned char data, unsigned char str,
+ 		switch (data) {
+ 		case 0x8:
+ 			schedule_delayed_work(&dell_rfkill_work,
+-					      round_jiffies_relative(HZ));
++					      round_jiffies_relative(HZ / 4));
+ 			break;
+ 		}
+ 		extended = false;
+-- 
+1.8.3.1
+
+
+From 8e0e668d0aa09d2eb0a7a260b6c7801796e01bd3 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:26 +0100
+Subject: [PATCH 11/12] dell-laptop: Add a force_rfkill module parameter
+
+Setting force_rfkill will cause the dell-laptop rfkill code to skip its
+whitelist checks, this will allow individual users to override the whitelist,
+as well as to gather info from users to improve the checks.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index fe20f67..bd67c89 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -93,6 +93,10 @@ static struct backlight_device *dell_backlight_device;
+ static struct rfkill *wifi_rfkill;
+ static struct rfkill *bluetooth_rfkill;
+ static struct rfkill *wwan_rfkill;
++static bool force_rfkill;
++
++module_param(force_rfkill, bool, 0444);
++MODULE_PARM_DESC(force_rfkill, "enable rfkill on non whitelisted models");
+ 
+ static const struct dmi_system_id dell_device_table[] __initconst = {
+ 	{
+@@ -567,7 +571,7 @@ static int __init dell_setup_rfkill(void)
+ 	 * actually testing the rfkill functionality is only done on Latitudes.
+ 	 */
+ 	product = dmi_get_system_info(DMI_PRODUCT_NAME);
+-	if (!product || strncmp(product, "Latitude", 8))
++	if (!force_rfkill && (!product || strncmp(product, "Latitude", 8)))
+ 		return 0;
+ 
+ 	get_buffer();
+-- 
+1.8.3.1
+
+
+From 2bd4ac139259bb605fc0325a7dda33e2fbb67ae3 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 17 Nov 2013 14:00:27 +0100
+Subject: [PATCH 12/12] dell-laptop: Only enable rfkill functionality on
+ laptops with a hw killswitch
+
+All my testing has been on laptops with a hw killswitch, so to be on the
+safe side disable rfkill functionality on models without a hw killswitch for
+now. Once we gather some feedback on laptops without a hw killswitch this
+decision maybe reconsidered.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+---
+ drivers/platform/x86/dell-laptop.c | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/x86/dell-laptop.c b/drivers/platform/x86/dell-laptop.c
+index bd67c89..c608b1d 100644
+--- a/drivers/platform/x86/dell-laptop.c
++++ b/drivers/platform/x86/dell-laptop.c
+@@ -580,11 +580,18 @@ static int __init dell_setup_rfkill(void)
+ 	buffer->input[0] = 0x2;
+ 	dell_send_request(buffer, 17, 11);
+ 	hwswitch_state = buffer->output[1];
+-	/* If there is no hwswitch, then clear all hw-controlled bits */
+-	if (!(status & BIT(0)))
+-		hwswitch_state &= ~7;
+ 	release_buffer();
+ 
++	if (!(status & BIT(0))) {
++		if (force_rfkill) {
++			/* No hwsitch, clear all hw-controlled bits */
++			hwswitch_state &= ~7;
++		} else {
++			/* rfkill is only tested on laptops with a hwswitch */
++			return 0;
++		}
++	}
++
+ 	if ((status & (1<<2|1<<8)) == (1<<2|1<<8)) {
+ 		wifi_rfkill = rfkill_alloc("dell-wifi", &platform_device->dev,
+ 					   RFKILL_TYPE_WLAN,
+-- 
+1.8.3.1
+

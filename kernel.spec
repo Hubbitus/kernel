@@ -830,8 +830,7 @@ Patch25161: inet-prevent-leakage-of-uninitialized-memory-to-user.patch
 Patch25162: inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
 
 #rhbz 958826
-Patch25164: 0001-Revert-dell-laptop-Remove-rfkill-code.patch
-Patch25165: 0002-dell-laptop-Only-enable-rfkill-on-Latitudes.patch
+Patch25164: dell-laptop.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1621,8 +1620,7 @@ ApplyPatch inet-prevent-leakage-of-uninitialized-memory-to-user.patch
 ApplyPatch inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
 
 #rhbz 958826
-ApplyPatch 0001-Revert-dell-laptop-Remove-rfkill-code.patch
-ApplyPatch 0002-dell-laptop-Only-enable-rfkill-on-Latitudes.patch
+ApplyPatch dell-laptop.patch
 
 # END OF PATCH APPLICATIONS
 
