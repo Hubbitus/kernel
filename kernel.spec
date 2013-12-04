@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2190,6 +2190,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 04 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git3.1
+- Linux v3.13-rc2-208-g8ecffd7
+
 * Tue Dec  3 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM cleanups and remove obsolete options
 
