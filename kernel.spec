@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -654,7 +654,7 @@ Patch800: crash-driver.patch
 Patch900: keys-expand-keyring.patch
 Patch901: keys-krb-support.patch
 Patch902: keys-x509-improv.patch
-Patch903: keyring-quota.patch
+Patch903: keys-fixes.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1466,7 +1466,7 @@ ApplyPatch crash-driver.patch
 ApplyPatch keys-expand-keyring.patch
 ApplyPatch keys-krb-support.patch
 ApplyPatch keys-x509-improv.patch
-ApplyPatch keyring-quota.patch
+ApplyPatch keys-fixes.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -2424,6 +2424,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 04 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add various fixes for keys crashes and an SELinux issue (rhbz 1035000)
+
 * Tue Dec 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to fix rfkill switch on Dell machines (rhbz 958826)
 
