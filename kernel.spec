@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2190,6 +2190,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git5.1
+- Linux v3.13-rc2-265-gef1e4e3
+
 * Thu Dec 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git4.1
 - Linux v3.13-rc2-215-g53c6de5
 - Enable PR kvm module on ppc64 (rhbz 1038541)
