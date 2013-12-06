@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2196,6 +2196,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git7.1
+- Linux v3.13-rc2-326-g843f4f4
+
 * Fri Dec 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git6.1
 - Linux v3.13-rc2-295-g002acf1
 - Add test fix patch for crypto backtrace (rhbz 1038472)
