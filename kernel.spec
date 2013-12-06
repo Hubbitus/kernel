@@ -2424,6 +2424,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec  6 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix up ARM usb gadget config to make it useful
+
 * Wed Dec 04 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add various fixes for keys crashes and an SELinux issue (rhbz 1035000)
 
