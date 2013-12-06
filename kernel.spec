@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -705,6 +705,9 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
+#rhbz 1038472
+Patch25158: crypto-backtrace-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1377,6 +1380,9 @@ ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
+#rhbz 1038472
+ApplyPatch crypto-backtrace-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2190,6 +2196,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 06 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git6.1
+- Linux v3.13-rc2-295-g002acf1
+- Add test fix patch for crypto backtrace (rhbz 1038472)
+
 * Thu Dec 05 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc2.git5.1
 - Linux v3.13-rc2-265-gef1e4e3
 
