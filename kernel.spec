@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -705,6 +705,11 @@ Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
+#rhbz 1033965
+Patch25169: 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
+
+Patch25170: 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1377,6 +1382,11 @@ ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+
+#rhbz 1033965
+ApplyPatch 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
+
+ApplyPatch 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2190,6 +2200,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Dec 10 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git1.2
+- Revert upstream selinux change causing sync hang (rhbz 1033965)
+- Add patch to fix radeon from crashing
+
 * Tue Dec 10 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git1.1
 - Linux v3.13-rc3-157-g17b2112
 - Reenable debugging options.
