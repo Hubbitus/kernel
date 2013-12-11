@@ -835,6 +835,9 @@ Patch25164: dell-laptop.patch
 #CVE-2013-XXXX rhbz 1039845 1039874
 Patch25165: net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
 
+#rhbz 1030802
+Patch25170: Input-elantech-add-support-for-newer-August-2013-dev.patch
+Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1628,6 +1631,10 @@ ApplyPatch dell-laptop.patch
 
 #CVE-2013-XXXX rhbz 1039845 1039874
 ApplyPatch net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
+
+#rhbz 1030802
+ApplyPatch Input-elantech-add-support-for-newer-August-2013-dev.patch
+ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2431,6 +2438,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
+
 * Tue Dec 10 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-XXXX net: memory leak in recvmsg (rhbz 1039845 1039874)
 
