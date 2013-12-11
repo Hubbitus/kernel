@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2206,6 +2206,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git2.1
+- Linux v3.13-rc3-174-g9538e10
+
 * Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
 
