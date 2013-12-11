@@ -711,6 +711,9 @@ Patch25169: 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
 
 Patch25170: 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
+#rhbz 1030802
+Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1387,6 +1390,9 @@ ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 ApplyPatch 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
 
 ApplyPatch 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
+
+#rhbz 1030802
+ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2200,6 +2206,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
+
 * Tue Dec 10 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git1.2
 - Revert upstream selinux change causing sync hang (rhbz 1033965)
 - Add patch to fix radeon from crashing
