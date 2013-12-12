@@ -2439,6 +2439,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 2 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.11.10-300.hu.1
+- v3.11.10-300.hu.1
+
 * Sat Nov 30 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-6405 net: leak of uninited mem to userspace via recv syscalls (rhbz 1035875 1035887)
 
