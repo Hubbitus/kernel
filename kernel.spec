@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -702,9 +702,6 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-#CVE-2013-6382 rhbz 1033603 1034670
-Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
 #rhbz 1033965
 Patch25169: 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
@@ -1394,9 +1391,6 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #rhbz 1000439
 ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
-#CVE-2013-6382 rhbz 1033603 1034670
-ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
 
 #rhbz 1033965
 ApplyPatch 0001-Revert-selinux-consider-filesystem-subtype-in-polici.patch
@@ -2230,6 +2224,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git3.1
+- Linux v3.13-rc3-249-g2208f65
+
 * Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-4587 kvm: out-of-bounds access (rhbz 1030986 1042071)
 - CVE-2013-6376 kvm: BUG_ON in apic_cluster_id (rhbz 1033106 1042099)
