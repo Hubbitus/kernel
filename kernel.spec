@@ -839,6 +839,9 @@ Patch25165: net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
 Patch25170: Input-elantech-add-support-for-newer-August-2013-dev.patch
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
+#CVE-2013-6367 rhbz 1032207 1042081
+Patch25172: KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1635,6 +1638,9 @@ ApplyPatch net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
 #rhbz 1030802
 ApplyPatch Input-elantech-add-support-for-newer-August-2013-dev.patch
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
+
+#CVE-2013-6367 rhbz 1032207 1042081
+ApplyPatch KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2438,6 +2444,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6367 kvm: division by 0 in apic_get_tmcct (rhbz 1032207 1042081)
+
 * Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
 
