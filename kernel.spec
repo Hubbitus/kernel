@@ -714,6 +714,9 @@ Patch25170: 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
+#CVE-2013-6367 rhbz 1032207 1042081
+Patch25172: KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1393,6 +1396,9 @@ ApplyPatch 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
+
+#CVE-2013-6367 rhbz 1032207 1042081
+ApplyPatch KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2206,6 +2212,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6367 kvm: division by 0 in apic_get_tmcct (rhbz 1032207 1042081)
+
 * Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git2.1
 - Linux v3.13-rc3-174-g9538e10
 
