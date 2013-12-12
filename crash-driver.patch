@@ -1,6 +1,6 @@
-From 9fcd8dd1ccc20ea8d466d48e887e92b832e22d56 Mon Sep 17 00:00:00 2001
+From 1786bc697d34af944e29437ce44337b0eb8b6799 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@dreadnought.bos.jkkm.org>
-Date: Tue, 5 Nov 2013 13:16:00 -0500
+Date: Tue, 26 Nov 2013 12:42:46 -0500
 Subject: [PATCH] crash-driver
 
 ---
@@ -10,12 +10,13 @@ Subject: [PATCH] crash-driver
  arch/ia64/kernel/ia64_ksyms.c    |   3 +
  arch/powerpc/include/asm/crash.h |   6 ++
  arch/s390/include/asm/crash.h    |  60 ++++++++++++++++++
+ arch/s390/mm/maccess.c           |   2 +
  arch/x86/include/asm/crash.h     |   6 ++
  drivers/char/Kconfig             |   3 +
  drivers/char/Makefile            |   2 +
  drivers/char/crash.c             | 128 +++++++++++++++++++++++++++++++++++++++
  include/asm-generic/crash.h      |  72 ++++++++++++++++++++++
- 11 files changed, 382 insertions(+)
+ 12 files changed, 384 insertions(+)
  create mode 100644 arch/arm/include/asm/crash.h
  create mode 100644 arch/arm64/include/asm/crash.h
  create mode 100644 arch/ia64/include/asm/crash.h
@@ -237,6 +238,23 @@ index 0000000..552be5e
 +#endif /* __KERNEL__ */
 +
 +#endif /* _S390_CRASH_H */
+diff --git a/arch/s390/mm/maccess.c b/arch/s390/mm/maccess.c
+index d1e0e0c..a2be459 100644
+--- a/arch/s390/mm/maccess.c
++++ b/arch/s390/mm/maccess.c
+@@ -219,6 +219,7 @@ void *xlate_dev_mem_ptr(unsigned long addr)
+ 	put_online_cpus();
+ 	return bounce;
+ }
++EXPORT_SYMBOL_GPL(xlate_dev_mem_ptr);
+ 
+ /*
+  * Free converted buffer for /dev/mem access (if necessary)
+@@ -228,3 +229,4 @@ void unxlate_dev_mem_ptr(unsigned long addr, void *buf)
+ 	if ((void *) addr != buf)
+ 		free_page((unsigned long) buf);
+ }
++EXPORT_SYMBOL_GPL(unxlate_dev_mem_ptr);
 diff --git a/arch/x86/include/asm/crash.h b/arch/x86/include/asm/crash.h
 new file mode 100644
 index 0000000..27a4156
@@ -250,7 +268,7 @@ index 0000000..27a4156
 +
 +#endif /* _X86_CRASH_H */
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index 1421997..72a8b74 100644
+index fa3243d..83643e5b 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
 @@ -4,6 +4,9 @@

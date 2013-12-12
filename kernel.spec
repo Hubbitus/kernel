@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -654,7 +654,7 @@ Patch800: crash-driver.patch
 Patch900: keys-expand-keyring.patch
 Patch901: keys-krb-support.patch
 Patch902: keys-x509-improv.patch
-Patch903: keyring-quota.patch
+Patch903: keys-fixes.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -839,6 +839,16 @@ Patch25159: usbnet-fix-status-interrupt-urb-handling.patch
 #CVE-2013-6405 rhbz 1035875 1035887
 Patch25161: inet-prevent-leakage-of-uninitialized-memory-to-user.patch
 Patch25162: inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
+
+#rhbz 958826
+Patch25164: dell-laptop.patch
+
+#CVE-2013-XXXX rhbz 1039845 1039874
+Patch25165: net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
+
+#rhbz 1030802
+Patch25170: Input-elantech-add-support-for-newer-August-2013-dev.patch
+Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1474,7 +1484,7 @@ ApplyPatch crash-driver.patch
 ApplyPatch keys-expand-keyring.patch
 ApplyPatch keys-krb-support.patch
 ApplyPatch keys-x509-improv.patch
-ApplyPatch keyring-quota.patch
+ApplyPatch keys-fixes.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -1636,6 +1646,16 @@ ApplyPatch usbnet-fix-status-interrupt-urb-handling.patch
 #CVE-2013-6405 rhbz 1035875 1035887
 ApplyPatch inet-prevent-leakage-of-uninitialized-memory-to-user.patch
 ApplyPatch inet-fix-addr_len-msg_namelen-assignment-in-recv_error-and-rxpmtu-functions.patch
+
+#rhbz 958826
+ApplyPatch dell-laptop.patch
+
+#CVE-2013-XXXX rhbz 1039845 1039874
+ApplyPatch net-rework-recvmsg-handler-msg_name-and-msg_namelen-.patch
+
+#rhbz 1030802
+ApplyPatch Input-elantech-add-support-for-newer-August-2013-dev.patch
+ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2439,6 +2459,24 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
+
+* Tue Dec 10 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-XXXX net: memory leak in recvmsg (rhbz 1039845 1039874)
+
+* Fri Dec  6 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix up ARM usb gadget config to make it useful
+
+* Wed Dec 04 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add various fixes for keys crashes and an SELinux issue (rhbz 1035000)
+
+* Tue Dec 03 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix rfkill switch on Dell machines (rhbz 958826)
+
+* Mon Dec 02 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash driver build and re-enable on s390x (from Dan Horák)
+
 * Mon Dec 2 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.11.10-300.hu.1
 - v3.11.10-300.hu.1
 
