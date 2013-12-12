@@ -720,6 +720,9 @@ Patch25172: KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
 #CVE-2013-6368 rhbz 1032210 1042090
 Patch25173: KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
 
+#CVE-2013-6376 rhbz 1033106 1042099
+Patch25174: KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1405,6 +1408,9 @@ ApplyPatch KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
 
 #CVE-2013-6368 rhbz 1032210 1042090
 ApplyPatch KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
+
+#CVE-2013-6376 rhbz 1033106 1042099
+ApplyPatch KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2219,6 +2225,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-6376 kvm: BUG_ON in apic_cluster_id (rhbz 1033106 1042099)
 - CVE-2013-6368 kvm: cross page vapic_addr access (rhbz 1032210 1042090)
 - CVE-2013-6367 kvm: division by 0 in apic_get_tmcct (rhbz 1032207 1042081)
 
