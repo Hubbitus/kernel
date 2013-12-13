@@ -634,6 +634,8 @@ Patch800: crash-driver.patch
 
 # crypto/
 
+Patch900: keys-fixes.patch
+
 # secure boot
 Patch1000: secure-modules.patch
 Patch1001: modsign-uefi.patch
@@ -1327,6 +1329,8 @@ ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
+
+ApplyPatch keys-fixes.patch
 
 # crypto/
 
@@ -2200,6 +2204,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- More keys fixes from upstream to fix keyctl_get_persisent crash (rhbz 1043033)
+
 * Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git4.1
 - Linux v3.13-rc3-302-g8d27637
 
