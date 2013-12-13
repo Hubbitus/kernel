@@ -1,0 +1,23 @@
+Bugzilla: 1012025
+Upstream-status: An initial work around for the cpsw driver issue trying to access HW registers
+with clock disabled. Upstream is working on a proper fix with the hope to land it in 3.13.
+
+--- linux-3.12.4-1.fc20.x86_64/drivers/net/ethernet/ti/cpsw.c.orig	2013-12-11 20:52:41.576478796 +0000
++++ linux-3.12.4-1.fc20.x86_64/drivers/net/ethernet/ti/cpsw.c	2013-12-11 20:55:14.418692261 +0000
+@@ -2001,6 +2001,8 @@
+ 		goto clean_cpsw_iores_ret;
+ 	}
+ 	priv->regs = ss_regs;
++
++	pm_runtime_get_sync(&pdev->dev);
+ 	priv->version = __raw_readl(&priv->regs->id_ver);
+ 	priv->host_port = HOST_PORT_NUM;
+ 
+@@ -2161,6 +2163,7 @@
+ 			goto clean_irq_ret;
+ 		}
+ 	}
++	pm_runtime_put_sync(&pdev->dev);
+ 
+ 	return 0;
+ 

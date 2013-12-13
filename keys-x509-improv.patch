@@ -1,653 +1,7 @@
-From abaac4978b6719e7ae12babb6be5e35184b61cde Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 30 Aug 2013 16:07:13 +0100
-Subject: [PATCH 01/14] KEYS: Load *.x509 files into kernel keyring
-
-Load all the files matching the pattern "*.x509" that are to be found in kernel
-base source dir and base build dir into the module signing keyring.
-
-The "extra_certificates" file is then redundant.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- kernel/Makefile              | 35 +++++++++++++++++++++++++++++------
- kernel/modsign_certificate.S |  3 +--
- 2 files changed, 30 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 470839d..4a2ee4e 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -141,17 +141,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
- 	$(call if_changed,bc)
- 
- ifeq ($(CONFIG_MODULE_SIG),y)
-+###############################################################################
- #
--# Pull the signing certificate and any extra certificates into the kernel
-+# Roll all the X.509 certificates that we can find together and pull
-+# them into the kernel.
- #
-+###############################################################################
-+X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
-+X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
-+X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
-+
-+ifeq ($(X509_CERTIFICATES),)
-+$(warning *** No X.509 certificates found ***)
-+endif
-+
-+ifneq ($(wildcard $(obj)/.x509.list),)
-+ifneq ($(shell cat $(obj)/.x509.list),$(X509_CERTIFICATES))
-+$(info X.509 certificate list changed)
-+$(shell rm $(obj)/.x509.list)
-+endif
-+endif
-+
-+kernel/modsign_certificate.o: $(obj)/x509_certificate_list
- 
--quiet_cmd_touch = TOUCH   $@
--      cmd_touch = touch   $@
-+quiet_cmd_x509certs  = CERTS   $@
-+      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@
-+targets += $(obj)/x509_certificate_list
-+$(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
-+	$(call if_changed,x509certs)
- 
--extra_certificates:
--	$(call cmd,touch)
-+targets += $(obj)/.x509.list
-+$(obj)/.x509.list:
-+	@echo $(X509_CERTIFICATES) >$@
- 
--kernel/modsign_certificate.o: signing_key.x509 extra_certificates
-+clean-files := x509_certificate_list .x509.list
- 
- ###############################################################################
- #
-diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
-index 4a9a86d..6fe03c7 100644
---- a/kernel/modsign_certificate.S
-+++ b/kernel/modsign_certificate.S
-@@ -7,6 +7,5 @@
- 	.section ".init.data","aw"
- 
- GLOBAL(modsign_certificate_list)
--	.incbin "signing_key.x509"
--	.incbin "extra_certificates"
-+	.incbin "kernel/x509_certificate_list"
- GLOBAL(modsign_certificate_list_end)
--- 
-1.8.3.1
-
-
-
-From 2d6ac2896c3b4b48be96b7dbdfda1668609e35aa Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 30 Aug 2013 16:07:30 +0100
-Subject: [PATCH 03/14] KEYS: Separate the kernel signature checking keyring
- from module signing
-
-Separate the kernel signature checking keyring from module signing so that it
-can be used by code other than the module-signing code.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- include/keys/system_keyring.h |  23 ++++++++++
- init/Kconfig                  |  13 ++++++
- kernel/Makefile               |  17 ++++---
- kernel/modsign_certificate.S  |  11 -----
- kernel/modsign_pubkey.c       | 104 ------------------------------------------
- kernel/module-internal.h      |   2 -
- kernel/module_signing.c       |   3 +-
- kernel/system_certificates.S  |  11 +++++
- kernel/system_keyring.c       | 103 +++++++++++++++++++++++++++++++++++++++++
- 9 files changed, 163 insertions(+), 124 deletions(-)
- create mode 100644 include/keys/system_keyring.h
- delete mode 100644 kernel/modsign_certificate.S
- delete mode 100644 kernel/modsign_pubkey.c
- create mode 100644 kernel/system_certificates.S
- create mode 100644 kernel/system_keyring.c
-
-diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-new file mode 100644
-index 0000000..8dabc39
---- /dev/null
-+++ b/include/keys/system_keyring.h
-@@ -0,0 +1,23 @@
-+/* System keyring containing trusted public keys.
-+ *
-+ * Copyright (C) 2013 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public Licence
-+ * as published by the Free Software Foundation; either version
-+ * 2 of the Licence, or (at your option) any later version.
-+ */
-+
-+#ifndef _KEYS_SYSTEM_KEYRING_H
-+#define _KEYS_SYSTEM_KEYRING_H
-+
-+#ifdef CONFIG_SYSTEM_TRUSTED_KEYRING
-+
-+#include <linux/key.h>
-+
-+extern struct key *system_trusted_keyring;
-+
-+#endif
-+
-+#endif /* _KEYS_SYSTEM_KEYRING_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index 247084b..6abf0e0 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1664,6 +1664,18 @@ config BASE_SMALL
- 	default 0 if BASE_FULL
- 	default 1 if !BASE_FULL
- 
-+config SYSTEM_TRUSTED_KEYRING
-+	bool "Provide system-wide ring of trusted keys"
-+	depends on KEYS
-+	help
-+	  Provide a system keyring to which trusted keys can be added.  Keys in
-+	  the keyring are considered to be trusted.  Keys may be added at will
-+	  by the kernel from compiled-in data and from hardware key stores, but
-+	  userspace may only add extra keys if those keys can be verified by
-+	  keys already in the keyring.
-+
-+	  Keys in this keyring are used by module signature checking.
-+
- menuconfig MODULES
- 	bool "Enable loadable module support"
- 	help
-@@ -1736,6 +1748,7 @@ config MODULE_SRCVERSION_ALL
- config MODULE_SIG
- 	bool "Module signature verification"
- 	depends on MODULES
-+	select SYSTEM_TRUSTED_KEYRING
- 	select KEYS
- 	select CRYPTO
- 	select ASYMMETRIC_KEY_TYPE
-diff --git a/kernel/Makefile b/kernel/Makefile
-index 7bd1565..68f7182 100644
---- a/kernel/Makefile
-+++ b/kernel/Makefile
-@@ -52,8 +52,9 @@ obj-$(CONFIG_SMP) += spinlock.o
- obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
- obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
- obj-$(CONFIG_UID16) += uid16.o
-+obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
- obj-$(CONFIG_MODULES) += module.o
--obj-$(CONFIG_MODULE_SIG) += module_signing.o modsign_pubkey.o modsign_certificate.o
-+obj-$(CONFIG_MODULE_SIG) += module_signing.o
- obj-$(CONFIG_KALLSYMS) += kallsyms.o
- obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
- obj-$(CONFIG_KEXEC) += kexec.o
-@@ -140,13 +141,14 @@ targets += timeconst.h
- $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
- 	$(call if_changed,bc)
- 
--ifeq ($(CONFIG_MODULE_SIG),y)
- ###############################################################################
- #
--# Roll all the X.509 certificates that we can find together and pull
--# them into the kernel.
-+# Roll all the X.509 certificates that we can find together and pull them into
-+# the kernel so that they get loaded into the system trusted keyring during
-+# boot.
- #
- ###############################################################################
-+ifeq ($(CONFIG_SYSTEM_TRUSTED_KEYRING),y)
- X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
- X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
- X509_CERTIFICATES := $(sort $(realpath $(X509_CERTIFICATES-y)))
-@@ -162,10 +164,11 @@ $(shell rm $(obj)/.x509.list)
- endif
- endif
- 
--kernel/modsign_certificate.o: $(obj)/x509_certificate_list
-+kernel/system_certificates.o: $(obj)/x509_certificate_list
- 
- quiet_cmd_x509certs  = CERTS   $@
--      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@
-+      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@ $(foreach X509,$(X509_CERTIFICATES),; echo "  - Including cert $(X509)")
-+
- targets += $(obj)/x509_certificate_list
- $(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
- 	$(call if_changed,x509certs)
-@@ -175,7 +178,9 @@ $(obj)/.x509.list:
- 	@echo $(X509_CERTIFICATES) >$@
- 
- clean-files := x509_certificate_list .x509.list
-+endif
- 
-+ifeq ($(CONFIG_MODULE_SIG),y)
- ###############################################################################
- #
- # If module signing is requested, say by allyesconfig, but a key has not been
-diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
-deleted file mode 100644
-index 6fe03c7..0000000
---- a/kernel/modsign_certificate.S
-+++ /dev/null
-@@ -1,11 +0,0 @@
--#include <linux/export.h>
--
--#define GLOBAL(name)	\
--	.globl VMLINUX_SYMBOL(name);	\
--	VMLINUX_SYMBOL(name):
--
--	.section ".init.data","aw"
--
--GLOBAL(modsign_certificate_list)
--	.incbin "kernel/x509_certificate_list"
--GLOBAL(modsign_certificate_list_end)
-diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
-deleted file mode 100644
-index 2b6e699..0000000
---- a/kernel/modsign_pubkey.c
-+++ /dev/null
-@@ -1,104 +0,0 @@
--/* Public keys for module signature verification
-- *
-- * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
-- * Written by David Howells (dhowells@redhat.com)
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public Licence
-- * as published by the Free Software Foundation; either version
-- * 2 of the Licence, or (at your option) any later version.
-- */
--
--#include <linux/kernel.h>
--#include <linux/sched.h>
--#include <linux/cred.h>
--#include <linux/err.h>
--#include <keys/asymmetric-type.h>
--#include "module-internal.h"
--
--struct key *modsign_keyring;
--
--extern __initdata const u8 modsign_certificate_list[];
--extern __initdata const u8 modsign_certificate_list_end[];
--
--/*
-- * We need to make sure ccache doesn't cache the .o file as it doesn't notice
-- * if modsign.pub changes.
-- */
--static __initdata const char annoy_ccache[] = __TIME__ "foo";
--
--/*
-- * Load the compiled-in keys
-- */
--static __init int module_verify_init(void)
--{
--	pr_notice("Initialise module verification\n");
--
--	modsign_keyring = keyring_alloc(".module_sign",
--					KUIDT_INIT(0), KGIDT_INIT(0),
--					current_cred(),
--					((KEY_POS_ALL & ~KEY_POS_SETATTR) |
--					 KEY_USR_VIEW | KEY_USR_READ),
--					KEY_ALLOC_NOT_IN_QUOTA, NULL);
--	if (IS_ERR(modsign_keyring))
--		panic("Can't allocate module signing keyring\n");
--
--	return 0;
--}
--
--/*
-- * Must be initialised before we try and load the keys into the keyring.
-- */
--device_initcall(module_verify_init);
--
--/*
-- * Load the compiled-in keys
-- */
--static __init int load_module_signing_keys(void)
--{
--	key_ref_t key;
--	const u8 *p, *end;
--	size_t plen;
--
--	pr_notice("Loading module verification certificates\n");
--
--	end = modsign_certificate_list_end;
--	p = modsign_certificate_list;
--	while (p < end) {
--		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
--		 * than 256 bytes in size.
--		 */
--		if (end - p < 4)
--			goto dodgy_cert;
--		if (p[0] != 0x30 &&
--		    p[1] != 0x82)
--			goto dodgy_cert;
--		plen = (p[2] << 8) | p[3];
--		plen += 4;
--		if (plen > end - p)
--			goto dodgy_cert;
--
--		key = key_create_or_update(make_key_ref(modsign_keyring, 1),
--					   "asymmetric",
--					   NULL,
--					   p,
--					   plen,
--					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
--					   KEY_USR_VIEW,
--					   KEY_ALLOC_NOT_IN_QUOTA);
--		if (IS_ERR(key))
--			pr_err("MODSIGN: Problem loading in-kernel X.509 certificate (%ld)\n",
--			       PTR_ERR(key));
--		else
--			pr_notice("MODSIGN: Loaded cert '%s'\n",
--				  key_ref_to_ptr(key)->description);
--		p += plen;
--	}
--
--	return 0;
--
--dodgy_cert:
--	pr_err("MODSIGN: Problem parsing in-kernel X.509 certificate list\n");
--	return 0;
--}
--late_initcall(load_module_signing_keys);
-diff --git a/kernel/module-internal.h b/kernel/module-internal.h
-index 24f9247..915e123 100644
---- a/kernel/module-internal.h
-+++ b/kernel/module-internal.h
-@@ -9,6 +9,4 @@
-  * 2 of the Licence, or (at your option) any later version.
-  */
- 
--extern struct key *modsign_keyring;
--
- extern int mod_verify_sig(const void *mod, unsigned long *_modlen);
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index f2970bd..0034e36 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -14,6 +14,7 @@
- #include <crypto/public_key.h>
- #include <crypto/hash.h>
- #include <keys/asymmetric-type.h>
-+#include <keys/system_keyring.h>
- #include "module-internal.h"
- 
- /*
-@@ -157,7 +158,7 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
- 
- 	pr_debug("Look up: \"%s\"\n", id);
- 
--	key = keyring_search(make_key_ref(modsign_keyring, 1),
-+	key = keyring_search(make_key_ref(system_trusted_keyring, 1),
- 			     &key_type_asymmetric, id);
- 	if (IS_ERR(key))
- 		pr_warn("Request for unknown module key '%s' err %ld\n",
-diff --git a/kernel/system_certificates.S b/kernel/system_certificates.S
-new file mode 100644
-index 0000000..5cffe86
---- /dev/null
-+++ b/kernel/system_certificates.S
-@@ -0,0 +1,11 @@
-+#include <linux/export.h>
-+
-+#define GLOBAL(name)	\
-+	.globl VMLINUX_SYMBOL(name);	\
-+	VMLINUX_SYMBOL(name):
-+
-+	.section ".init.data","aw"
-+
-+GLOBAL(system_certificate_list)
-+	.incbin "kernel/x509_certificate_list"
-+GLOBAL(system_certificate_list_end)
-diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
-new file mode 100644
-index 0000000..cd5cd3f
---- /dev/null
-+++ b/kernel/system_keyring.c
-@@ -0,0 +1,103 @@
-+/* System trusted keyring for trusted public keys
-+ *
-+ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
-+ * Written by David Howells (dhowells@redhat.com)
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public Licence
-+ * as published by the Free Software Foundation; either version
-+ * 2 of the Licence, or (at your option) any later version.
-+ */
-+
-+#include <linux/export.h>
-+#include <linux/kernel.h>
-+#include <linux/sched.h>
-+#include <linux/cred.h>
-+#include <linux/err.h>
-+#include <keys/asymmetric-type.h>
-+#include <keys/system_keyring.h>
-+#include "module-internal.h"
-+
-+struct key *system_trusted_keyring;
-+EXPORT_SYMBOL_GPL(system_trusted_keyring);
-+
-+extern __initdata const u8 system_certificate_list[];
-+extern __initdata const u8 system_certificate_list_end[];
-+
-+/*
-+ * Load the compiled-in keys
-+ */
-+static __init int system_trusted_keyring_init(void)
-+{
-+	pr_notice("Initialise system trusted keyring\n");
-+
-+	system_trusted_keyring =
-+		keyring_alloc(".system_keyring",
-+			      KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
-+			      ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+			       KEY_USR_VIEW | KEY_USR_READ),
-+			      KEY_ALLOC_NOT_IN_QUOTA, NULL);
-+	if (IS_ERR(system_trusted_keyring))
-+		panic("Can't allocate system trusted keyring\n");
-+
-+	return 0;
-+}
-+
-+/*
-+ * Must be initialised before we try and load the keys into the keyring.
-+ */
-+device_initcall(system_trusted_keyring_init);
-+
-+/*
-+ * Load the compiled-in list of X.509 certificates.
-+ */
-+static __init int load_system_certificate_list(void)
-+{
-+	key_ref_t key;
-+	const u8 *p, *end;
-+	size_t plen;
-+
-+	pr_notice("Loading compiled-in X.509 certificates\n");
-+
-+	end = system_certificate_list_end;
-+	p = system_certificate_list;
-+	while (p < end) {
-+		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
-+		 * than 256 bytes in size.
-+		 */
-+		if (end - p < 4)
-+			goto dodgy_cert;
-+		if (p[0] != 0x30 &&
-+		    p[1] != 0x82)
-+			goto dodgy_cert;
-+		plen = (p[2] << 8) | p[3];
-+		plen += 4;
-+		if (plen > end - p)
-+			goto dodgy_cert;
-+
-+		key = key_create_or_update(make_key_ref(system_trusted_keyring, 1),
-+					   "asymmetric",
-+					   NULL,
-+					   p,
-+					   plen,
-+					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+					   KEY_USR_VIEW,
-+					   KEY_ALLOC_NOT_IN_QUOTA);
-+		if (IS_ERR(key)) {
-+			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
-+			       PTR_ERR(key));
-+		} else {
-+			pr_notice("Loaded X.509 cert '%s'\n",
-+				  key_ref_to_ptr(key)->description);
-+			key_ref_put(key);
-+		}
-+		p += plen;
-+	}
-+
-+	return 0;
-+
-+dodgy_cert:
-+	pr_err("Problem parsing in-kernel X.509 certificate list\n");
-+	return 0;
-+}
-+late_initcall(load_system_certificate_list);
--- 
-1.8.3.1
-
-
-From 6f90d07a776d7babf30a3322dafd66c8c25db681 Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 30 Aug 2013 16:07:37 +0100
-Subject: [PATCH 04/14] KEYS: Add a 'trusted' flag and a 'trusted only' flag
-
-Add KEY_FLAG_TRUSTED to indicate that a key either comes from a trusted source
-or had a cryptographic signature chain that led back to a trusted key the
-kernel already possessed.
-
-Add KEY_FLAGS_TRUSTED_ONLY to indicate that a keyring will only accept links to
-keys marked with KEY_FLAGS_TRUSTED.
-
-Signed-off-by: David Howells <dhowells@redhat.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
- include/linux/key-type.h | 1 +
- include/linux/key.h      | 3 +++
- kernel/system_keyring.c  | 4 +++-
- security/keys/key.c      | 8 ++++++++
- security/keys/keyring.c  | 4 ++++
- 5 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/key-type.h b/include/linux/key-type.h
-index f58737b..a74c3a8 100644
---- a/include/linux/key-type.h
-+++ b/include/linux/key-type.h
-@@ -45,6 +45,7 @@ struct key_preparsed_payload {
- 	const void	*data;		/* Raw data */
- 	size_t		datalen;	/* Raw datalen */
- 	size_t		quotalen;	/* Quota length for proposed payload */
-+	bool		trusted;	/* True if key is trusted */
- };
- 
- typedef int (*request_key_actor_t)(struct key_construction *key,
-diff --git a/include/linux/key.h b/include/linux/key.h
-index 010dbb6..80d6774 100644
---- a/include/linux/key.h
-+++ b/include/linux/key.h
-@@ -168,6 +168,8 @@ struct key {
- #define KEY_FLAG_NEGATIVE	5	/* set if key is negative */
- #define KEY_FLAG_ROOT_CAN_CLEAR	6	/* set if key can be cleared by root without permission */
- #define KEY_FLAG_INVALIDATED	7	/* set if key has been invalidated */
-+#define KEY_FLAG_TRUSTED	8	/* set if key is trusted */
-+#define KEY_FLAG_TRUSTED_ONLY	9	/* set if keyring only accepts links to trusted keys */
- 
- 	/* the key type and key description string
- 	 * - the desc is used to match a key against search criteria
-@@ -218,6 +220,7 @@ extern struct key *key_alloc(struct key_type *type,
- #define KEY_ALLOC_IN_QUOTA	0x0000	/* add to quota, reject if would overrun */
- #define KEY_ALLOC_QUOTA_OVERRUN	0x0001	/* add to quota, permit even if overrun */
- #define KEY_ALLOC_NOT_IN_QUOTA	0x0002	/* not in quota */
-+#define KEY_ALLOC_TRUSTED	0x0004	/* Key should be flagged as trusted */
- 
- extern void key_revoke(struct key *key);
- extern void key_invalidate(struct key *key);
-diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
-index cd5cd3f..4ca7072 100644
---- a/kernel/system_keyring.c
-+++ b/kernel/system_keyring.c
-@@ -40,6 +40,7 @@ static __init int system_trusted_keyring_init(void)
- 	if (IS_ERR(system_trusted_keyring))
- 		panic("Can't allocate system trusted keyring\n");
- 
-+	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
- 	return 0;
- }
- 
-@@ -82,7 +83,8 @@ static __init int load_system_certificate_list(void)
- 					   plen,
- 					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
- 					   KEY_USR_VIEW,
--					   KEY_ALLOC_NOT_IN_QUOTA);
-+					   KEY_ALLOC_NOT_IN_QUOTA |
-+					   KEY_ALLOC_TRUSTED);
- 		if (IS_ERR(key)) {
- 			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
- 			       PTR_ERR(key));
-diff --git a/security/keys/key.c b/security/keys/key.c
-index a819b5c..d331ea9 100644
---- a/security/keys/key.c
-+++ b/security/keys/key.c
-@@ -300,6 +300,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
- 
- 	if (!(flags & KEY_ALLOC_NOT_IN_QUOTA))
- 		key->flags |= 1 << KEY_FLAG_IN_QUOTA;
-+	if (flags & KEY_ALLOC_TRUSTED)
-+		key->flags |= 1 << KEY_FLAG_TRUSTED;
- 
- 	memset(&key->type_data, 0, sizeof(key->type_data));
- 
-@@ -813,6 +815,7 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
- 	prep.data = payload;
- 	prep.datalen = plen;
- 	prep.quotalen = index_key.type->def_datalen;
-+	prep.trusted = flags & KEY_ALLOC_TRUSTED;
- 	if (index_key.type->preparse) {
- 		ret = index_key.type->preparse(&prep);
- 		if (ret < 0) {
-@@ -827,6 +830,11 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
- 	}
- 	index_key.desc_len = strlen(index_key.description);
- 
-+	key_ref = ERR_PTR(-EPERM);
-+	if (!prep.trusted && test_bit(KEY_FLAG_TRUSTED_ONLY, &keyring->flags))
-+		goto error_free_prep;
-+	flags |= prep.trusted ? KEY_ALLOC_TRUSTED : 0;
-+
- 	ret = __key_link_begin(keyring, &index_key, &edit);
- 	if (ret < 0) {
- 		key_ref = ERR_PTR(ret);
-diff --git a/security/keys/keyring.c b/security/keys/keyring.c
-index f7cdea2..9b6f6e0 100644
---- a/security/keys/keyring.c
-+++ b/security/keys/keyring.c
-@@ -1183,6 +1183,10 @@ int key_link(struct key *keyring, struct key *key)
- 	key_check(keyring);
- 	key_check(key);
- 
-+	if (test_bit(KEY_FLAG_TRUSTED_ONLY, &keyring->flags) &&
-+	    !test_bit(KEY_FLAG_TRUSTED, &key->flags))
-+		return -EPERM;
-+
- 	ret = __key_link_begin(keyring, &key->index_key, &edit);
- 	if (ret == 0) {
- 		kdebug("begun {%d,%d}", keyring->serial, atomic_read(&keyring->usage));
--- 
-1.8.3.1
-
-
-From 559cc3ad765e1b443bc89965be9ef9ff3caabdcc Mon Sep 17 00:00:00 2001
+From 775d395f8bd8ef08971c77f54c38ec7b9355ba4f Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:10 +0100
-Subject: [PATCH 05/14] KEYS: Rename public key parameter name arrays
+Subject: [PATCH 01/18] KEYS: Rename public key parameter name arrays
 
 Rename the arrays of public key parameters (public key algorithm names, hash
 algorithm names and ID type names) so that the array name ends in "_name".
@@ -774,10 +128,10 @@ index f5b0224..619d570 100644
  /*
   * Cryptographic data for the public-key subtype of the asymmetric key type.
 diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index 0034e36..0b6b870 100644
+index f2970bd..ee47640 100644
 --- a/kernel/module_signing.c
 +++ b/kernel/module_signing.c
-@@ -55,7 +55,7 @@ static struct public_key_signature *mod_make_digest(enum pkey_hash_algo hash,
+@@ -54,7 +54,7 @@ static struct public_key_signature *mod_make_digest(enum pkey_hash_algo hash,
  	/* Allocate the hashing algorithm we're going to need and find out how
  	 * big the hash operational data will be.
  	 */
@@ -786,7 +140,7 @@ index 0034e36..0b6b870 100644
  	if (IS_ERR(tfm))
  		return (PTR_ERR(tfm) == -ENOENT) ? ERR_PTR(-ENOPKG) : ERR_CAST(tfm);
  
-@@ -218,7 +218,7 @@ int mod_verify_sig(const void *mod, unsigned long *_modlen)
+@@ -217,7 +217,7 @@ int mod_verify_sig(const void *mod, unsigned long *_modlen)
  		return -ENOPKG;
  
  	if (ms.hash >= PKEY_HASH__LAST ||
@@ -799,10 +153,10 @@ index 0034e36..0b6b870 100644
 1.8.3.1
 
 
-From a0aab2065bbdd0bc56ae6d7767e1df7c58b8997f Mon Sep 17 00:00:00 2001
+From d12f06db05dacb455714f00f070cce844fb3e44c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:18 +0100
-Subject: [PATCH 06/14] KEYS: Move the algorithm pointer array from x509 to
+Subject: [PATCH 02/18] KEYS: Move the algorithm pointer array from x509 to
  public_key.c
 
 Move the public-key algorithm pointer array from x509_public_key.c to
@@ -881,10 +235,10 @@ index 619d570..46bde25 100644
 1.8.3.1
 
 
-From 7009b65ddc1d8bf62dc017795265b9cf331a4d70 Mon Sep 17 00:00:00 2001
+From 8d2905bce58b356e9b5313a4aaebb5085bb4c151 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:24 +0100
-Subject: [PATCH 07/14] KEYS: Store public key algo ID in public_key struct
+Subject: [PATCH 03/18] KEYS: Store public key algo ID in public_key struct
 
 Store public key algo ID in public_key struct for reference purposes.  This
 allows it to be removed from the x509_certificate struct and used to find a
@@ -966,10 +320,10 @@ index 46bde25..05778df 100644
 1.8.3.1
 
 
-From cad6ff6b429f31611ccb231cfe6adcb69d891352 Mon Sep 17 00:00:00 2001
+From df1662a5b9f37a88c1e112d4052eca79efc8e6fc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:30 +0100
-Subject: [PATCH 08/14] KEYS: Split public_key_verify_signature() and make
+Subject: [PATCH 04/18] KEYS: Split public_key_verify_signature() and make
  available
 
 Modify public_key_verify_signature() so that it now takes a public_key struct
@@ -1082,10 +436,10 @@ index fac574c..8cb2f70 100644
 1.8.3.1
 
 
-From 87854340605a64fcc54109ea415d9e54c45e8533 Mon Sep 17 00:00:00 2001
+From 322d3b7e2debb3c7983dce2b80a5aefa4e7b1bda Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:15:37 +0100
-Subject: [PATCH 09/14] KEYS: Store public key algo ID in public_key_signature
+Subject: [PATCH 05/18] KEYS: Store public key algo ID in public_key_signature
  struct
 
 Store public key algorithm ID in public_key_signature struct for reference
@@ -1115,10 +469,10 @@ index 05778df..b34fda4 100644
 1.8.3.1
 
 
-From ae4684a05d87123de310b69c616922dc993694ca Mon Sep 17 00:00:00 2001
+From 743143dd12661df376dcfc916b626b01d8ec84a4 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:16:34 +0100
-Subject: [PATCH 10/14] X.509: struct x509_certificate needs struct tm
+Subject: [PATCH 06/18] X.509: struct x509_certificate needs struct tm
  declaring
 
 struct x509_certificate needs struct tm declaring by #inclusion of linux/time.h
@@ -1147,10 +501,10 @@ index e583ad0..2d01182 100644
 1.8.3.1
 
 
-From dacde6f44ebe5a5c89bd1a25b35b1b63c139b375 Mon Sep 17 00:00:00 2001
+From a326ca89468c73dacb00fa247e92873d09e1387b Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:02 +0100
-Subject: [PATCH 11/14] X.509: Embed public_key_signature struct and create
+Subject: [PATCH 07/18] X.509: Embed public_key_signature struct and create
  filler function
 
 Embed a public_key_signature struct in struct x509_certificate, eliminating
@@ -1410,10 +764,10 @@ index 8cb2f70..b7c81d8 100644
 1.8.3.1
 
 
-From 650fdcb141f65f3a03dc7eba1179c823fd1a3a54 Mon Sep 17 00:00:00 2001
+From 2857db9154b0fcfb8ba490c12f98cd47cc3f46fc Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:15 +0100
-Subject: [PATCH 12/14] X.509: Check the algorithm IDs obtained from parsing an
+Subject: [PATCH 08/18] X.509: Check the algorithm IDs obtained from parsing an
  X.509 certificate
 
 Check that the algorithm IDs obtained from the ASN.1 parse by OID lookup
@@ -1451,10 +805,10 @@ index b7c81d8..eb368d4 100644
 1.8.3.1
 
 
-From 8671bdd55802c4b93b9205b6ecd02c7e351ac5c5 Mon Sep 17 00:00:00 2001
+From f78f0e8694517a3b1e5393d6ea0d46084bdc816a Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 16:18:31 +0100
-Subject: [PATCH 13/14] X.509: Handle certificates that lack an
+Subject: [PATCH 09/18] X.509: Handle certificates that lack an
  authorityKeyIdentifier field
 
 Handle certificates that lack an authorityKeyIdentifier field by assuming
@@ -1498,83 +852,957 @@ index eb368d4..0f55e3b 100644
 1.8.3.1
 
 
-From e2d665556f4b60ce76e880a62f98c81622271e71 Mon Sep 17 00:00:00 2001
+From 33f859fea67ab5307da4049e947fbc23cdd13a27 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
-Date: Tue, 18 Jun 2013 17:40:44 +0100
-Subject: [PATCH 14/14] X.509: Remove certificate date checks
+Date: Fri, 30 Aug 2013 16:07:13 +0100
+Subject: [PATCH 11/18] KEYS: Load *.x509 files into kernel keyring
 
-Remove the certificate date checks that are performed when a certificate is
-parsed.  There are two checks: a valid from and a valid to.  The first check is
-causing a lot of problems with system clocks that don't keep good time and the
-second places an implicit expiry date upon the kernel when used for module
-signing, so do we really need them?
+Load all the files matching the pattern "*.x509" that are to be found in kernel
+base source dir and base build dir into the module signing keyring.
+
+The "extra_certificates" file is then redundant.
 
 Signed-off-by: David Howells <dhowells@redhat.com>
-cc: David Woodhouse <dwmw2@infradead.org>
-cc: Rusty Russell <rusty@rustcorp.com.au>
-cc: Josh Boyer <jwboyer@redhat.com>
-cc: Alexander Holler <holler@ahsoftware.de>
-cc: stable@vger.kernel.org
 ---
- crypto/asymmetric_keys/x509_public_key.c | 38 --------------------------------
- 1 file changed, 38 deletions(-)
+ kernel/Makefile              | 35 +++++++++++++++++++++++++++++------
+ kernel/modsign_certificate.S |  3 +--
+ 2 files changed, 30 insertions(+), 8 deletions(-)
 
-diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric_keys/x509_public_key.c
-index 0f55e3b..c1540e8 100644
---- a/crypto/asymmetric_keys/x509_public_key.c
-+++ b/crypto/asymmetric_keys/x509_public_key.c
-@@ -108,7 +108,6 @@ EXPORT_SYMBOL_GPL(x509_check_signature);
- static int x509_key_preparse(struct key_preparsed_payload *prep)
- {
- 	struct x509_certificate *cert;
--	struct tm now;
- 	size_t srlen, sulen;
- 	char *desc = NULL;
- 	int ret;
-@@ -150,43 +149,6 @@ static int x509_key_preparse(struct key_preparsed_payload *prep)
- 		goto error_free_cert;
- 	}
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 1ce4755..c34e5f9 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -142,17 +142,40 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+ 	$(call if_changed,bc)
  
--	time_to_tm(CURRENT_TIME.tv_sec, 0, &now);
--	pr_devel("Now: %04ld-%02d-%02d %02d:%02d:%02d\n",
--		 now.tm_year + 1900, now.tm_mon + 1, now.tm_mday,
--		 now.tm_hour, now.tm_min,  now.tm_sec);
--	if (now.tm_year < cert->valid_from.tm_year ||
--	    (now.tm_year == cert->valid_from.tm_year &&
--	     (now.tm_mon < cert->valid_from.tm_mon ||
--	      (now.tm_mon == cert->valid_from.tm_mon &&
--	       (now.tm_mday < cert->valid_from.tm_mday ||
--		(now.tm_mday == cert->valid_from.tm_mday &&
--		 (now.tm_hour < cert->valid_from.tm_hour ||
--		  (now.tm_hour == cert->valid_from.tm_hour &&
--		   (now.tm_min < cert->valid_from.tm_min ||
--		    (now.tm_min == cert->valid_from.tm_min &&
--		     (now.tm_sec < cert->valid_from.tm_sec
--		      ))))))))))) {
--		pr_warn("Cert %s is not yet valid\n", cert->fingerprint);
--		ret = -EKEYREJECTED;
--		goto error_free_cert;
--	}
--	if (now.tm_year > cert->valid_to.tm_year ||
--	    (now.tm_year == cert->valid_to.tm_year &&
--	     (now.tm_mon > cert->valid_to.tm_mon ||
--	      (now.tm_mon == cert->valid_to.tm_mon &&
--	       (now.tm_mday > cert->valid_to.tm_mday ||
--		(now.tm_mday == cert->valid_to.tm_mday &&
--		 (now.tm_hour > cert->valid_to.tm_hour ||
--		  (now.tm_hour == cert->valid_to.tm_hour &&
--		   (now.tm_min > cert->valid_to.tm_min ||
--		    (now.tm_min == cert->valid_to.tm_min &&
--		     (now.tm_sec > cert->valid_to.tm_sec
--		      ))))))))))) {
--		pr_warn("Cert %s has expired\n", cert->fingerprint);
--		ret = -EKEYEXPIRED;
--		goto error_free_cert;
+ ifeq ($(CONFIG_MODULE_SIG),y)
++###############################################################################
+ #
+-# Pull the signing certificate and any extra certificates into the kernel
++# Roll all the X.509 certificates that we can find together and pull
++# them into the kernel.
+ #
++###############################################################################
++X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
++X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
++X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
++
++ifeq ($(X509_CERTIFICATES),)
++$(warning *** No X.509 certificates found ***)
++endif
++
++ifneq ($(wildcard $(obj)/.x509.list),)
++ifneq ($(shell cat $(obj)/.x509.list),$(X509_CERTIFICATES))
++$(info X.509 certificate list changed)
++$(shell rm $(obj)/.x509.list)
++endif
++endif
++
++kernel/modsign_certificate.o: $(obj)/x509_certificate_list
+ 
+-quiet_cmd_touch = TOUCH   $@
+-      cmd_touch = touch   $@
++quiet_cmd_x509certs  = CERTS   $@
++      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@
++targets += $(obj)/x509_certificate_list
++$(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
++	$(call if_changed,x509certs)
+ 
+-extra_certificates:
+-	$(call cmd,touch)
++targets += $(obj)/.x509.list
++$(obj)/.x509.list:
++	@echo $(X509_CERTIFICATES) >$@
+ 
+-kernel/modsign_certificate.o: signing_key.x509 extra_certificates
++clean-files := x509_certificate_list .x509.list
+ 
+ ###############################################################################
+ #
+diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
+index 4a9a86d..6fe03c7 100644
+--- a/kernel/modsign_certificate.S
++++ b/kernel/modsign_certificate.S
+@@ -7,6 +7,5 @@
+ 	.section ".init.data","aw"
+ 
+ GLOBAL(modsign_certificate_list)
+-	.incbin "signing_key.x509"
+-	.incbin "extra_certificates"
++	.incbin "kernel/x509_certificate_list"
+ GLOBAL(modsign_certificate_list_end)
+-- 
+1.8.3.1
+
+
+From 068606ba7df3206e5a09b544b4b89ed09cd30f44 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 30 Aug 2013 17:13:15 +0100
+Subject: [PATCH 12/18] KEYS: Have make canonicalise the paths of the X.509
+ certs better to deduplicate
+
+Have make canonicalise the paths of the X.509 certificates before we sort them
+as this allows $(sort) to better remove duplicates.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/Makefile | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/Makefile b/kernel/Makefile
+index c34e5f9..2c24195 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -144,13 +144,19 @@ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+ ifeq ($(CONFIG_MODULE_SIG),y)
+ ###############################################################################
+ #
+-# Roll all the X.509 certificates that we can find together and pull
+-# them into the kernel.
++# Roll all the X.509 certificates that we can find together and pull them into
++# the kernel.
++#
++# We look in the source root and the build root for all files whose name ends
++# in ".x509".  Unfortunately, this will generate duplicate filenames, so we
++# have make canonicalise the pathnames and then sort them to discard the
++# duplicates.
+ #
+ ###############################################################################
+ X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
+ X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
+-X509_CERTIFICATES := $(sort $(X509_CERTIFICATES-y))
++X509_CERTIFICATES := $(sort $(foreach CERT,$(X509_CERTIFICATES-y), \
++				$(or $(realpath $(CERT)),$(CERT))))
+ 
+ ifeq ($(X509_CERTIFICATES),)
+ $(warning *** No X.509 certificates found ***)
+-- 
+1.8.3.1
+
+
+From 9006cfbd669e9ba52d1a91db2ffd9482ad8a6090 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 30 Aug 2013 16:07:30 +0100
+Subject: [PATCH 13/18] KEYS: Separate the kernel signature checking keyring
+ from module signing
+
+Separate the kernel signature checking keyring from module signing so that it
+can be used by code other than the module-signing code.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ include/keys/system_keyring.h |  23 ++++++++++
+ init/Kconfig                  |  13 ++++++
+ kernel/Makefile               |  15 ++++--
+ kernel/modsign_certificate.S  |  11 -----
+ kernel/modsign_pubkey.c       | 104 ------------------------------------------
+ kernel/module-internal.h      |   2 -
+ kernel/module_signing.c       |   3 +-
+ kernel/system_certificates.S  |  11 +++++
+ kernel/system_keyring.c       | 103 +++++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 162 insertions(+), 123 deletions(-)
+ create mode 100644 include/keys/system_keyring.h
+ delete mode 100644 kernel/modsign_certificate.S
+ delete mode 100644 kernel/modsign_pubkey.c
+ create mode 100644 kernel/system_certificates.S
+ create mode 100644 kernel/system_keyring.c
+
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+new file mode 100644
+index 0000000..8dabc39
+--- /dev/null
++++ b/include/keys/system_keyring.h
+@@ -0,0 +1,23 @@
++/* System keyring containing trusted public keys.
++ *
++ * Copyright (C) 2013 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#ifndef _KEYS_SYSTEM_KEYRING_H
++#define _KEYS_SYSTEM_KEYRING_H
++
++#ifdef CONFIG_SYSTEM_TRUSTED_KEYRING
++
++#include <linux/key.h>
++
++extern struct key *system_trusted_keyring;
++
++#endif
++
++#endif /* _KEYS_SYSTEM_KEYRING_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 18bd9e3..cf14d07 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1668,6 +1668,18 @@ config BASE_SMALL
+ 	default 0 if BASE_FULL
+ 	default 1 if !BASE_FULL
+ 
++config SYSTEM_TRUSTED_KEYRING
++	bool "Provide system-wide ring of trusted keys"
++	depends on KEYS
++	help
++	  Provide a system keyring to which trusted keys can be added.  Keys in
++	  the keyring are considered to be trusted.  Keys may be added at will
++	  by the kernel from compiled-in data and from hardware key stores, but
++	  userspace may only add extra keys if those keys can be verified by
++	  keys already in the keyring.
++
++	  Keys in this keyring are used by module signature checking.
++
+ menuconfig MODULES
+ 	bool "Enable loadable module support"
+ 	option modules
+@@ -1741,6 +1753,7 @@ config MODULE_SRCVERSION_ALL
+ config MODULE_SIG
+ 	bool "Module signature verification"
+ 	depends on MODULES
++	select SYSTEM_TRUSTED_KEYRING
+ 	select KEYS
+ 	select CRYPTO
+ 	select ASYMMETRIC_KEY_TYPE
+diff --git a/kernel/Makefile b/kernel/Makefile
+index 2c24195..6313698 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -54,8 +54,9 @@ obj-$(CONFIG_SMP) += spinlock.o
+ obj-$(CONFIG_DEBUG_SPINLOCK) += spinlock.o
+ obj-$(CONFIG_PROVE_LOCKING) += spinlock.o
+ obj-$(CONFIG_UID16) += uid16.o
++obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
+ obj-$(CONFIG_MODULES) += module.o
+-obj-$(CONFIG_MODULE_SIG) += module_signing.o modsign_pubkey.o modsign_certificate.o
++obj-$(CONFIG_MODULE_SIG) += module_signing.o
+ obj-$(CONFIG_KALLSYMS) += kallsyms.o
+ obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
+ obj-$(CONFIG_KEXEC) += kexec.o
+@@ -141,11 +142,11 @@ targets += timeconst.h
+ $(obj)/timeconst.h: $(obj)/hz.bc $(src)/timeconst.bc FORCE
+ 	$(call if_changed,bc)
+ 
+-ifeq ($(CONFIG_MODULE_SIG),y)
+ ###############################################################################
+ #
+ # Roll all the X.509 certificates that we can find together and pull them into
+-# the kernel.
++# the kernel so that they get loaded into the system trusted keyring during
++# boot.
+ #
+ # We look in the source root and the build root for all files whose name ends
+ # in ".x509".  Unfortunately, this will generate duplicate filenames, so we
+@@ -153,6 +154,7 @@ ifeq ($(CONFIG_MODULE_SIG),y)
+ # duplicates.
+ #
+ ###############################################################################
++ifeq ($(CONFIG_SYSTEM_TRUSTED_KEYRING),y)
+ X509_CERTIFICATES-y := $(wildcard *.x509) $(wildcard $(srctree)/*.x509)
+ X509_CERTIFICATES-$(CONFIG_MODULE_SIG) += signing_key.x509
+ X509_CERTIFICATES := $(sort $(foreach CERT,$(X509_CERTIFICATES-y), \
+@@ -169,10 +171,11 @@ $(shell rm $(obj)/.x509.list)
+ endif
+ endif
+ 
+-kernel/modsign_certificate.o: $(obj)/x509_certificate_list
++kernel/system_certificates.o: $(obj)/x509_certificate_list
+ 
+ quiet_cmd_x509certs  = CERTS   $@
+-      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@
++      cmd_x509certs  = cat $(X509_CERTIFICATES) /dev/null >$@ $(foreach X509,$(X509_CERTIFICATES),; echo "  - Including cert $(X509)")
++
+ targets += $(obj)/x509_certificate_list
+ $(obj)/x509_certificate_list: $(X509_CERTIFICATES) $(obj)/.x509.list
+ 	$(call if_changed,x509certs)
+@@ -182,7 +185,9 @@ $(obj)/.x509.list:
+ 	@echo $(X509_CERTIFICATES) >$@
+ 
+ clean-files := x509_certificate_list .x509.list
++endif
+ 
++ifeq ($(CONFIG_MODULE_SIG),y)
+ ###############################################################################
+ #
+ # If module signing is requested, say by allyesconfig, but a key has not been
+diff --git a/kernel/modsign_certificate.S b/kernel/modsign_certificate.S
+deleted file mode 100644
+index 6fe03c7..0000000
+--- a/kernel/modsign_certificate.S
++++ /dev/null
+@@ -1,11 +0,0 @@
+-#include <linux/export.h>
+-
+-#define GLOBAL(name)	\
+-	.globl VMLINUX_SYMBOL(name);	\
+-	VMLINUX_SYMBOL(name):
+-
+-	.section ".init.data","aw"
+-
+-GLOBAL(modsign_certificate_list)
+-	.incbin "kernel/x509_certificate_list"
+-GLOBAL(modsign_certificate_list_end)
+diff --git a/kernel/modsign_pubkey.c b/kernel/modsign_pubkey.c
+deleted file mode 100644
+index 7cbd450..0000000
+--- a/kernel/modsign_pubkey.c
++++ /dev/null
+@@ -1,104 +0,0 @@
+-/* Public keys for module signature verification
+- *
+- * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
+- * Written by David Howells (dhowells@redhat.com)
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public Licence
+- * as published by the Free Software Foundation; either version
+- * 2 of the Licence, or (at your option) any later version.
+- */
+-
+-#include <linux/kernel.h>
+-#include <linux/sched.h>
+-#include <linux/cred.h>
+-#include <linux/err.h>
+-#include <keys/asymmetric-type.h>
+-#include "module-internal.h"
+-
+-struct key *modsign_keyring;
+-
+-extern __initconst const u8 modsign_certificate_list[];
+-extern __initconst const u8 modsign_certificate_list_end[];
+-
+-/*
+- * We need to make sure ccache doesn't cache the .o file as it doesn't notice
+- * if modsign.pub changes.
+- */
+-static __initconst const char annoy_ccache[] = __TIME__ "foo";
+-
+-/*
+- * Load the compiled-in keys
+- */
+-static __init int module_verify_init(void)
+-{
+-	pr_notice("Initialise module verification\n");
+-
+-	modsign_keyring = keyring_alloc(".module_sign",
+-					KUIDT_INIT(0), KGIDT_INIT(0),
+-					current_cred(),
+-					((KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-					 KEY_USR_VIEW | KEY_USR_READ),
+-					KEY_ALLOC_NOT_IN_QUOTA, NULL);
+-	if (IS_ERR(modsign_keyring))
+-		panic("Can't allocate module signing keyring\n");
+-
+-	return 0;
+-}
+-
+-/*
+- * Must be initialised before we try and load the keys into the keyring.
+- */
+-device_initcall(module_verify_init);
+-
+-/*
+- * Load the compiled-in keys
+- */
+-static __init int load_module_signing_keys(void)
+-{
+-	key_ref_t key;
+-	const u8 *p, *end;
+-	size_t plen;
+-
+-	pr_notice("Loading module verification certificates\n");
+-
+-	end = modsign_certificate_list_end;
+-	p = modsign_certificate_list;
+-	while (p < end) {
+-		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
+-		 * than 256 bytes in size.
+-		 */
+-		if (end - p < 4)
+-			goto dodgy_cert;
+-		if (p[0] != 0x30 &&
+-		    p[1] != 0x82)
+-			goto dodgy_cert;
+-		plen = (p[2] << 8) | p[3];
+-		plen += 4;
+-		if (plen > end - p)
+-			goto dodgy_cert;
+-
+-		key = key_create_or_update(make_key_ref(modsign_keyring, 1),
+-					   "asymmetric",
+-					   NULL,
+-					   p,
+-					   plen,
+-					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-					   KEY_USR_VIEW,
+-					   KEY_ALLOC_NOT_IN_QUOTA);
+-		if (IS_ERR(key))
+-			pr_err("MODSIGN: Problem loading in-kernel X.509 certificate (%ld)\n",
+-			       PTR_ERR(key));
+-		else
+-			pr_notice("MODSIGN: Loaded cert '%s'\n",
+-				  key_ref_to_ptr(key)->description);
+-		p += plen;
 -	}
 -
- 	cert->pub->algo = pkey_algo[cert->pub->pkey_algo];
- 	cert->pub->id_type = PKEY_ID_X509;
+-	return 0;
+-
+-dodgy_cert:
+-	pr_err("MODSIGN: Problem parsing in-kernel X.509 certificate list\n");
+-	return 0;
+-}
+-late_initcall(load_module_signing_keys);
+diff --git a/kernel/module-internal.h b/kernel/module-internal.h
+index 24f9247..915e123 100644
+--- a/kernel/module-internal.h
++++ b/kernel/module-internal.h
+@@ -9,6 +9,4 @@
+  * 2 of the Licence, or (at your option) any later version.
+  */
  
+-extern struct key *modsign_keyring;
+-
+ extern int mod_verify_sig(const void *mod, unsigned long *_modlen);
+diff --git a/kernel/module_signing.c b/kernel/module_signing.c
+index ee47640..0b6b870 100644
+--- a/kernel/module_signing.c
++++ b/kernel/module_signing.c
+@@ -14,6 +14,7 @@
+ #include <crypto/public_key.h>
+ #include <crypto/hash.h>
+ #include <keys/asymmetric-type.h>
++#include <keys/system_keyring.h>
+ #include "module-internal.h"
+ 
+ /*
+@@ -157,7 +158,7 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
+ 
+ 	pr_debug("Look up: \"%s\"\n", id);
+ 
+-	key = keyring_search(make_key_ref(modsign_keyring, 1),
++	key = keyring_search(make_key_ref(system_trusted_keyring, 1),
+ 			     &key_type_asymmetric, id);
+ 	if (IS_ERR(key))
+ 		pr_warn("Request for unknown module key '%s' err %ld\n",
+diff --git a/kernel/system_certificates.S b/kernel/system_certificates.S
+new file mode 100644
+index 0000000..5cffe86
+--- /dev/null
++++ b/kernel/system_certificates.S
+@@ -0,0 +1,11 @@
++#include <linux/export.h>
++
++#define GLOBAL(name)	\
++	.globl VMLINUX_SYMBOL(name);	\
++	VMLINUX_SYMBOL(name):
++
++	.section ".init.data","aw"
++
++GLOBAL(system_certificate_list)
++	.incbin "kernel/x509_certificate_list"
++GLOBAL(system_certificate_list_end)
+diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
+new file mode 100644
+index 0000000..51c3514
+--- /dev/null
++++ b/kernel/system_keyring.c
+@@ -0,0 +1,103 @@
++/* System trusted keyring for trusted public keys
++ *
++ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#include <linux/export.h>
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/cred.h>
++#include <linux/err.h>
++#include <keys/asymmetric-type.h>
++#include <keys/system_keyring.h>
++#include "module-internal.h"
++
++struct key *system_trusted_keyring;
++EXPORT_SYMBOL_GPL(system_trusted_keyring);
++
++extern __initconst const u8 system_certificate_list[];
++extern __initconst const u8 system_certificate_list_end[];
++
++/*
++ * Load the compiled-in keys
++ */
++static __init int system_trusted_keyring_init(void)
++{
++	pr_notice("Initialise system trusted keyring\n");
++
++	system_trusted_keyring =
++		keyring_alloc(".system_keyring",
++			      KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
++			      ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
++			       KEY_USR_VIEW | KEY_USR_READ),
++			      KEY_ALLOC_NOT_IN_QUOTA, NULL);
++	if (IS_ERR(system_trusted_keyring))
++		panic("Can't allocate system trusted keyring\n");
++
++	return 0;
++}
++
++/*
++ * Must be initialised before we try and load the keys into the keyring.
++ */
++device_initcall(system_trusted_keyring_init);
++
++/*
++ * Load the compiled-in list of X.509 certificates.
++ */
++static __init int load_system_certificate_list(void)
++{
++	key_ref_t key;
++	const u8 *p, *end;
++	size_t plen;
++
++	pr_notice("Loading compiled-in X.509 certificates\n");
++
++	end = system_certificate_list_end;
++	p = system_certificate_list;
++	while (p < end) {
++		/* Each cert begins with an ASN.1 SEQUENCE tag and must be more
++		 * than 256 bytes in size.
++		 */
++		if (end - p < 4)
++			goto dodgy_cert;
++		if (p[0] != 0x30 &&
++		    p[1] != 0x82)
++			goto dodgy_cert;
++		plen = (p[2] << 8) | p[3];
++		plen += 4;
++		if (plen > end - p)
++			goto dodgy_cert;
++
++		key = key_create_or_update(make_key_ref(system_trusted_keyring, 1),
++					   "asymmetric",
++					   NULL,
++					   p,
++					   plen,
++					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
++					   KEY_USR_VIEW,
++					   KEY_ALLOC_NOT_IN_QUOTA);
++		if (IS_ERR(key)) {
++			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
++			       PTR_ERR(key));
++		} else {
++			pr_notice("Loaded X.509 cert '%s'\n",
++				  key_ref_to_ptr(key)->description);
++			key_ref_put(key);
++		}
++		p += plen;
++	}
++
++	return 0;
++
++dodgy_cert:
++	pr_err("Problem parsing in-kernel X.509 certificate list\n");
++	return 0;
++}
++late_initcall(load_system_certificate_list);
+-- 
+1.8.3.1
+
+
+From c0522b3236c27359bd61fee0f0b74be9f8e2ad60 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 30 Aug 2013 16:07:37 +0100
+Subject: [PATCH 14/18] KEYS: Add a 'trusted' flag and a 'trusted only' flag
+
+Add KEY_FLAG_TRUSTED to indicate that a key either comes from a trusted source
+or had a cryptographic signature chain that led back to a trusted key the
+kernel already possessed.
+
+Add KEY_FLAGS_TRUSTED_ONLY to indicate that a keyring will only accept links to
+keys marked with KEY_FLAGS_TRUSTED.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+---
+ include/linux/key-type.h | 1 +
+ include/linux/key.h      | 3 +++
+ kernel/system_keyring.c  | 4 +++-
+ security/keys/key.c      | 8 ++++++++
+ security/keys/keyring.c  | 4 ++++
+ 5 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/key-type.h b/include/linux/key-type.h
+index f58737b..a74c3a8 100644
+--- a/include/linux/key-type.h
++++ b/include/linux/key-type.h
+@@ -45,6 +45,7 @@ struct key_preparsed_payload {
+ 	const void	*data;		/* Raw data */
+ 	size_t		datalen;	/* Raw datalen */
+ 	size_t		quotalen;	/* Quota length for proposed payload */
++	bool		trusted;	/* True if key is trusted */
+ };
+ 
+ typedef int (*request_key_actor_t)(struct key_construction *key,
+diff --git a/include/linux/key.h b/include/linux/key.h
+index 010dbb6..80d6774 100644
+--- a/include/linux/key.h
++++ b/include/linux/key.h
+@@ -168,6 +168,8 @@ struct key {
+ #define KEY_FLAG_NEGATIVE	5	/* set if key is negative */
+ #define KEY_FLAG_ROOT_CAN_CLEAR	6	/* set if key can be cleared by root without permission */
+ #define KEY_FLAG_INVALIDATED	7	/* set if key has been invalidated */
++#define KEY_FLAG_TRUSTED	8	/* set if key is trusted */
++#define KEY_FLAG_TRUSTED_ONLY	9	/* set if keyring only accepts links to trusted keys */
+ 
+ 	/* the key type and key description string
+ 	 * - the desc is used to match a key against search criteria
+@@ -218,6 +220,7 @@ extern struct key *key_alloc(struct key_type *type,
+ #define KEY_ALLOC_IN_QUOTA	0x0000	/* add to quota, reject if would overrun */
+ #define KEY_ALLOC_QUOTA_OVERRUN	0x0001	/* add to quota, permit even if overrun */
+ #define KEY_ALLOC_NOT_IN_QUOTA	0x0002	/* not in quota */
++#define KEY_ALLOC_TRUSTED	0x0004	/* Key should be flagged as trusted */
+ 
+ extern void key_revoke(struct key *key);
+ extern void key_invalidate(struct key *key);
+diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
+index 51c3514..5296721 100644
+--- a/kernel/system_keyring.c
++++ b/kernel/system_keyring.c
+@@ -40,6 +40,7 @@ static __init int system_trusted_keyring_init(void)
+ 	if (IS_ERR(system_trusted_keyring))
+ 		panic("Can't allocate system trusted keyring\n");
+ 
++	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
+ 	return 0;
+ }
+ 
+@@ -82,7 +83,8 @@ static __init int load_system_certificate_list(void)
+ 					   plen,
+ 					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
+ 					   KEY_USR_VIEW,
+-					   KEY_ALLOC_NOT_IN_QUOTA);
++					   KEY_ALLOC_NOT_IN_QUOTA |
++					   KEY_ALLOC_TRUSTED);
+ 		if (IS_ERR(key)) {
+ 			pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
+ 			       PTR_ERR(key));
+diff --git a/security/keys/key.c b/security/keys/key.c
+index a819b5c..d331ea9 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -300,6 +300,8 @@ struct key *key_alloc(struct key_type *type, const char *desc,
+ 
+ 	if (!(flags & KEY_ALLOC_NOT_IN_QUOTA))
+ 		key->flags |= 1 << KEY_FLAG_IN_QUOTA;
++	if (flags & KEY_ALLOC_TRUSTED)
++		key->flags |= 1 << KEY_FLAG_TRUSTED;
+ 
+ 	memset(&key->type_data, 0, sizeof(key->type_data));
+ 
+@@ -813,6 +815,7 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
+ 	prep.data = payload;
+ 	prep.datalen = plen;
+ 	prep.quotalen = index_key.type->def_datalen;
++	prep.trusted = flags & KEY_ALLOC_TRUSTED;
+ 	if (index_key.type->preparse) {
+ 		ret = index_key.type->preparse(&prep);
+ 		if (ret < 0) {
+@@ -827,6 +830,11 @@ key_ref_t key_create_or_update(key_ref_t keyring_ref,
+ 	}
+ 	index_key.desc_len = strlen(index_key.description);
+ 
++	key_ref = ERR_PTR(-EPERM);
++	if (!prep.trusted && test_bit(KEY_FLAG_TRUSTED_ONLY, &keyring->flags))
++		goto error_free_prep;
++	flags |= prep.trusted ? KEY_ALLOC_TRUSTED : 0;
++
+ 	ret = __key_link_begin(keyring, &index_key, &edit);
+ 	if (ret < 0) {
+ 		key_ref = ERR_PTR(ret);
+diff --git a/security/keys/keyring.c b/security/keys/keyring.c
+index f7cdea2..9b6f6e0 100644
+--- a/security/keys/keyring.c
++++ b/security/keys/keyring.c
+@@ -1183,6 +1183,10 @@ int key_link(struct key *keyring, struct key *key)
+ 	key_check(keyring);
+ 	key_check(key);
+ 
++	if (test_bit(KEY_FLAG_TRUSTED_ONLY, &keyring->flags) &&
++	    !test_bit(KEY_FLAG_TRUSTED, &key->flags))
++		return -EPERM;
++
+ 	ret = __key_link_begin(keyring, &key->index_key, &edit);
+ 	if (ret == 0) {
+ 		kdebug("begun {%d,%d}", keyring->serial, atomic_read(&keyring->usage));
+-- 
+1.8.3.1
+
+
+From e8e9a6af1d2de6aca01751ccaf0475ed46f9bdb2 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 4 Sep 2013 19:28:03 +0100
+Subject: [PATCH 15/18] KEYS: Set the asymmetric-key type default search method
+
+The keyring expansion patches introduces a new search method by which
+key_search() attempts to walk directly to the key that has exactly the same
+description as the requested one.
+
+However, this causes inexact matching of asymmetric keys to fail.  The
+solution to this is to select iterative rather than direct search as the
+default search type for asymmetric keys.
+
+As an example, the kernel might have a key like this:
+
+	Magrathea: Glacier signing key: 6a2a0f82bad7e396665f465e4e3e1f9bd24b1226
+
+and:
+
+	keyctl search <keyring-ID> asymmetric id:d24b1226
+
+should find the key, despite that not being its exact description.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ crypto/asymmetric_keys/asymmetric_type.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric_keys/asymmetric_type.c
+index cf80765..b77eb53 100644
+--- a/crypto/asymmetric_keys/asymmetric_type.c
++++ b/crypto/asymmetric_keys/asymmetric_type.c
+@@ -209,6 +209,7 @@ struct key_type key_type_asymmetric = {
+ 	.match		= asymmetric_key_match,
+ 	.destroy	= asymmetric_key_destroy,
+ 	.describe	= asymmetric_key_describe,
++	.def_lookup_type = KEYRING_SEARCH_LOOKUP_ITERATE,
+ };
+ EXPORT_SYMBOL_GPL(key_type_asymmetric);
+ 
+-- 
+1.8.3.1
+
+
+From dfb7781ebba28004f95f7af4e039d8b44697c87c Mon Sep 17 00:00:00 2001
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date: Tue, 20 Aug 2013 14:36:26 -0400
+Subject: [PATCH 16/18] KEYS: Make the system 'trusted' keyring viewable by
+ userspace
+
+Give the root user the ability to read the system keyring and put read
+permission on the trusted keys added during boot.  The latter is actually more
+theoretical than real for the moment as asymmetric keys do not currently
+provide a read operation.
+
+Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/system_keyring.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
+index 5296721..564dd93 100644
+--- a/kernel/system_keyring.c
++++ b/kernel/system_keyring.c
+@@ -35,7 +35,7 @@ static __init int system_trusted_keyring_init(void)
+ 		keyring_alloc(".system_keyring",
+ 			      KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
+ 			      ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-			       KEY_USR_VIEW | KEY_USR_READ),
++			      KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH),
+ 			      KEY_ALLOC_NOT_IN_QUOTA, NULL);
+ 	if (IS_ERR(system_trusted_keyring))
+ 		panic("Can't allocate system trusted keyring\n");
+@@ -81,8 +81,8 @@ static __init int load_system_certificate_list(void)
+ 					   NULL,
+ 					   p,
+ 					   plen,
+-					   (KEY_POS_ALL & ~KEY_POS_SETATTR) |
+-					   KEY_USR_VIEW,
++					   ((KEY_POS_ALL & ~KEY_POS_SETATTR) |
++					   KEY_USR_VIEW | KEY_USR_READ),
+ 					   KEY_ALLOC_NOT_IN_QUOTA |
+ 					   KEY_ALLOC_TRUSTED);
+ 		if (IS_ERR(key)) {
+-- 
+1.8.3.1
+
+
+From 052744b12209e66ede2a04ec31b9bb7ff40bbc9a Mon Sep 17 00:00:00 2001
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date: Tue, 20 Aug 2013 14:36:27 -0400
+Subject: [PATCH 17/18] KEYS: verify a certificate is signed by a 'trusted' key
+
+Only public keys, with certificates signed by an existing
+'trusted' key on the system trusted keyring, should be added
+to a trusted keyring.  This patch adds support for verifying
+a certificate's signature.
+
+This is derived from David Howells pkcs7_request_asymmetric_key() patch.
+
+Signed-off-by: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ crypto/asymmetric_keys/x509_public_key.c | 81 +++++++++++++++++++++++++++++++-
+ 1 file changed, 80 insertions(+), 1 deletion(-)
+
+diff --git a/crypto/asymmetric_keys/x509_public_key.c b/crypto/asymmetric_keys/x509_public_key.c
+index c1540e8..8761264 100644
+--- a/crypto/asymmetric_keys/x509_public_key.c
++++ b/crypto/asymmetric_keys/x509_public_key.c
+@@ -18,12 +18,60 @@
+ #include <linux/asn1_decoder.h>
+ #include <keys/asymmetric-subtype.h>
+ #include <keys/asymmetric-parser.h>
++#include <keys/system_keyring.h>
+ #include <crypto/hash.h>
+ #include "asymmetric_keys.h"
+ #include "public_key.h"
+ #include "x509_parser.h"
+ 
+ /*
++ * Find a key in the given keyring by issuer and authority.
++ */
++static struct key *x509_request_asymmetric_key(
++	struct key *keyring,
++	const char *signer, size_t signer_len,
++	const char *authority, size_t auth_len)
++{
++	key_ref_t key;
++	char *id;
++
++	/* Construct an identifier. */
++	id = kmalloc(signer_len + 2 + auth_len + 1, GFP_KERNEL);
++	if (!id)
++		return ERR_PTR(-ENOMEM);
++
++	memcpy(id, signer, signer_len);
++	id[signer_len + 0] = ':';
++	id[signer_len + 1] = ' ';
++	memcpy(id + signer_len + 2, authority, auth_len);
++	id[signer_len + 2 + auth_len] = 0;
++
++	pr_debug("Look up: \"%s\"\n", id);
++
++	key = keyring_search(make_key_ref(keyring, 1),
++			     &key_type_asymmetric, id);
++	if (IS_ERR(key))
++		pr_debug("Request for module key '%s' err %ld\n",
++			 id, PTR_ERR(key));
++	kfree(id);
++
++	if (IS_ERR(key)) {
++		switch (PTR_ERR(key)) {
++			/* Hide some search errors */
++		case -EACCES:
++		case -ENOTDIR:
++		case -EAGAIN:
++			return ERR_PTR(-ENOKEY);
++		default:
++			return ERR_CAST(key);
++		}
++	}
++
++	pr_devel("<==%s() = 0 [%x]\n", __func__, key_serial(key_ref_to_ptr(key)));
++	return key_ref_to_ptr(key);
++}
++
++/*
+  * Set up the signature parameters in an X.509 certificate.  This involves
+  * digesting the signed data and extracting the signature.
+  */
+@@ -103,6 +151,33 @@ int x509_check_signature(const struct public_key *pub,
+ EXPORT_SYMBOL_GPL(x509_check_signature);
+ 
+ /*
++ * Check the new certificate against the ones in the trust keyring.  If one of
++ * those is the signing key and validates the new certificate, then mark the
++ * new certificate as being trusted.
++ *
++ * Return 0 if the new certificate was successfully validated, 1 if we couldn't
++ * find a matching parent certificate in the trusted list and an error if there
++ * is a matching certificate but the signature check fails.
++ */
++static int x509_validate_trust(struct x509_certificate *cert,
++			       struct key *trust_keyring)
++{
++	const struct public_key *pk;
++	struct key *key;
++	int ret = 1;
++
++	key = x509_request_asymmetric_key(trust_keyring,
++					  cert->issuer, strlen(cert->issuer),
++					  cert->authority,
++					  strlen(cert->authority));
++	if (!IS_ERR(key))  {
++		pk = key->payload.data;
++		ret = x509_check_signature(pk, cert);
++	}
++	return ret;
++}
++
++/*
+  * Attempt to parse a data blob for a key as an X509 certificate.
+  */
+ static int x509_key_preparse(struct key_preparsed_payload *prep)
+@@ -155,9 +230,13 @@ static int x509_key_preparse(struct key_preparsed_payload *prep)
+ 	/* Check the signature on the key if it appears to be self-signed */
+ 	if (!cert->authority ||
+ 	    strcmp(cert->fingerprint, cert->authority) == 0) {
+-		ret = x509_check_signature(cert->pub, cert);
++		ret = x509_check_signature(cert->pub, cert); /* self-signed */
+ 		if (ret < 0)
+ 			goto error_free_cert;
++	} else {
++		ret = x509_validate_trust(cert, system_trusted_keyring);
++		if (!ret)
++			prep->trusted = 1;
+ 	}
+ 
+ 	/* Propose a description */
+-- 
+1.8.3.1
+
+
+From 8b39d9a6d9f805f6a2e837bf8b9595f701ea4a1c Mon Sep 17 00:00:00 2001
+From: Mimi Zohar <zohar@linux.vnet.ibm.com>
+Date: Wed, 4 Sep 2013 13:26:22 +0100
+Subject: [PATCH 18/18] KEYS: initialize root uid and session keyrings early
+
+In order to create the integrity keyrings (eg. _evm, _ima), root's
+uid and session keyrings need to be initialized early.
+
+Signed-off-by: Mimi Zohar <zohar@us.ibm.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ security/keys/process_keys.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/security/keys/process_keys.c b/security/keys/process_keys.c
+index 68548ea..0cf8a13 100644
+--- a/security/keys/process_keys.c
++++ b/security/keys/process_keys.c
+@@ -857,3 +857,13 @@ void key_change_session_keyring(struct callback_head *twork)
+ 
+ 	commit_creds(new);
+ }
++
++/*
++ * Make sure that root's user and user-session keyrings exist.
++ */
++static int __init init_root_keyring(void)
++{
++	return install_user_keyrings();
++}
++
++late_initcall(init_root_keyring);
 -- 
 1.8.3.1
 
