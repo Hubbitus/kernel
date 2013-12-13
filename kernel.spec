@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -710,18 +710,6 @@ Patch25170: 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#CVE-2013-6367 rhbz 1032207 1042081
-Patch25172: KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
-
-#CVE-2013-6368 rhbz 1032210 1042090
-Patch25173: KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
-
-#CVE-2013-6376 rhbz 1033106 1042099
-Patch25174: KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
-
-#CVE-2013-4587 rhbz 1030986 1042071
-Patch25175: KVM-Improve-create-VCPU-parameter.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1399,18 +1387,6 @@ ApplyPatch 0001-drm-radeon-dpm-Fix-hwmon-crash.patch
 
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#CVE-2013-6367 rhbz 1032207 1042081
-ApplyPatch KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
-
-#CVE-2013-6368 rhbz 1032210 1042090
-ApplyPatch KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
-
-#CVE-2013-6376 rhbz 1033106 1042099
-ApplyPatch KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
-
-#CVE-2013-4587 rhbz 1030986 1042071
-ApplyPatch KVM-Improve-create-VCPU-parameter.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2224,6 +2200,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git4.1
+- Linux v3.13-rc3-302-g8d27637
+
 * Thu Dec 12 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git3.1
 - Linux v3.13-rc3-249-g2208f65
 
