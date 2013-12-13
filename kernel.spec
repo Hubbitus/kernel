@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2275,6 +2275,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- More keys fixes from upstream to fix keyctl_get_persisent crash (rhbz 1043033)
+
 * Fri Dec 13 2013 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.5-300
 - Linux v3.12.5 rebase
 
