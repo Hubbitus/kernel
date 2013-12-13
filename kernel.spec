@@ -2275,7 +2275,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org> 3.12.5-301
 - More keys fixes from upstream to fix keyctl_get_persisent crash (rhbz 1043033)
 
 * Fri Dec 13 2013 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.5-300
