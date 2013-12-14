@@ -488,12 +488,14 @@ BuildRequires: kmod, patch, bash, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
+%if %{with_doc}
 BuildRequires: xmlto, asciidoc
+%endif
 %if %{with_sparse}
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
 %endif
 %if %{with_tools}
@@ -517,6 +519,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 
 Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
 
+Source10: perf-man.tar.gz
 Source11: x509.genkey
 
 Source15: merge.pl
@@ -1747,8 +1750,7 @@ BuildKernel %make_target %kernel_image smp
   make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_LIBNUMA=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
-%{perf_make} all
-%{perf_make} man || %{doc_build_fail}
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT all
 %endif
 
 %if %{with_tools}
@@ -1892,7 +1894,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-bin
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -1900,7 +1902,10 @@ rm -f %{buildroot}%{_bindir}/trace
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
 
 # perf man pages (note: implicit rpm magic compresses them later)
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-man || %{doc_build_fail}
+mkdir -p %{buildroot}/%{_mandir}/man1
+pushd %{buildroot}/%{_mandir}/man1
+tar -xf %{SOURCE10}
+popd
 %endif
 
 %if %{with_tools}
@@ -2204,6 +2209,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Dec 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Wrap doc BR in with_doc
+- Stop building perf in build AND install because that's stupid
+- Use prebuilt perf man pages
+
 * Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - More keys fixes from upstream to fix keyctl_get_persisent crash (rhbz 1043033)
 
