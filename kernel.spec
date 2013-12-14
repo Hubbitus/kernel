@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2209,7 +2209,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Sat Dec 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Sat Dec 14 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc3.git5.1
+- Linux v3.13-rc3-362-gb2077eb
+
+* Sat Dec 14 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Wrap doc BR in with_doc
 - Stop building perf in build AND install because that's stupid
 - Use prebuilt perf man pages
