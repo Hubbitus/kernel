@@ -759,6 +759,9 @@ Patch25174: KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
 #CVE-2013-4587 rhbz 1030986 1042071
 Patch25175: KVM-Improve-create-VCPU-parameter.patch
 
+#rhbz 1025770
+Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1472,6 +1475,9 @@ ApplyPatch KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
 
 #CVE-2013-4587 rhbz 1030986 1042071
 ApplyPatch KVM-Improve-create-VCPU-parameter.patch
+
+#rhbz 1025770
+ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2275,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Dec 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix host lockup in bridge code when starting from virt guest (rhbz 1025770)
+
 * Fri Dec 13 2013 Josh Boyer <jwboyer@fedoraproject.org> 3.12.5-301
 - More keys fixes from upstream to fix keyctl_get_persisent crash (rhbz 1043033)
 
