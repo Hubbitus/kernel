@@ -2459,6 +2459,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Dec 12 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.11.10-301.hu.1
+- v3.11.10-301.hu.1
+
 * Wed Dec 11 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to support ETPS/2 Elantech touchpads (rhbz 1030802)
 
