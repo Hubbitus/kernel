@@ -2283,7 +2283,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
+* Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.5-302
 - Add patch to avoid using queued trim on M500 SSD (rhbz 1024002)
 
 * Mon Dec 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
