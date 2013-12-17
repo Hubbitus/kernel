@@ -622,7 +622,6 @@ Patch09: upstream-reverts.patch
 # Standalone patches
 
 Patch390: defaults-acpi-video.patch
-Patch396: acpi-sony-nonvs-blacklist.patch
 
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
@@ -1341,7 +1340,6 @@ ApplyPatch arm-am33xx-cpsw.patch
 
 # ACPI
 ApplyPatch defaults-acpi-video.patch
-ApplyPatch acpi-sony-nonvs-blacklist.patch
 
 #
 # PCI
