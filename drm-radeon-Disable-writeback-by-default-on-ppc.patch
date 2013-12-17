@@ -1,3 +1,6 @@
+Bugzilla: N/A
+Upstream-status: Replaced by http://lists.freedesktop.org/archives/dri-devel/2013-December/050290.html in 3.14
+
 From b67e0a6a7409f9c1a12e573fb7d8d80ee455b103 Mon Sep 17 00:00:00 2001
 From: Adam Jackson <ajax@redhat.com>
 Date: Mon, 17 Jun 2013 09:59:34 -0400

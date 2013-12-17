@@ -1,3 +1,6 @@
+Bugzilla: N/A
+Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
+
 From 0fc411ee00c81b8a18b1417d31f2736fad155d89 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
