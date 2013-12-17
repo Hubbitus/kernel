@@ -657,7 +657,6 @@ Patch1003: sysrq-secure-boot.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1825: drm-i915-dp-stfu.patch
 
 # Quiet boot fixes
 # silence the ACPI blacklist code
@@ -1400,7 +1399,6 @@ ApplyPatch sysrq-secure-boot.patch
 # Nouveau DRM
 
 # Intel DRM
-ApplyPatch drm-i915-dp-stfu.patch
 
 # Radeon DRM
 
