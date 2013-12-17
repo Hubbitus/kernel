@@ -760,6 +760,9 @@ Patch25175: KVM-Improve-create-VCPU-parameter.patch
 #rhbz 1025770
 Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
 
+#rhbz 1024002
+Patch25177: libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1474,6 +1477,9 @@ ApplyPatch KVM-Improve-create-VCPU-parameter.patch
 
 #rhbz 1025770
 ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
+
+#rhbz 1024002
+ApplyPatch libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2277,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to avoid using queued trim on M500 SSD (rhbz 1024002)
+
 * Mon Dec 16 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix host lockup in bridge code when starting from virt guest (rhbz 1025770)
 
