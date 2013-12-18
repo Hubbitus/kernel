@@ -2189,6 +2189,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix nowatchdog-on-virt.patch to actually work in KVM guests
+
 * Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git1.1
 - Linux v3.13-rc4-21-g0eda402
 - Reenable debugging options.
