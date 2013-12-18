@@ -2283,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix nowatchdog-on-virt.patch to actually work in KVM guests
+
 * Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.12.5-302
 - Add patch to avoid using queued trim on M500 SSD (rhbz 1024002)
 
