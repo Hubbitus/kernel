@@ -2190,6 +2190,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Reenable MEMORY_HOTPLUG on x86_64
 - Fix nowatchdog-on-virt.patch to actually work in KVM guests
 
 * Tue Dec 17 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git1.1
