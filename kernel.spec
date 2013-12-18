@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2189,6 +2189,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git3.1
+- Linux v3.13-rc4-99-g35eecf0
+
 * Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git2.1
 - Linux v3.13-rc4-38-gb0031f2
 
