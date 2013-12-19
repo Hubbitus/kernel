@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -635,8 +635,6 @@ Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 Patch800: crash-driver.patch
 
 # crypto/
-
-Patch900: keys-fixes.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -1321,8 +1319,6 @@ ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
-
-ApplyPatch keys-fixes.patch
 
 # crypto/
 
@@ -2189,6 +2185,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git4.1
+- Linux v3.13-rc4-144-ga36c160
+
 * Thu Dec 19 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - copy kernel trees around with 'cp -al' so symlinks are preserved.  Fixes
   weird build failures with coreutils 8.22 (rhbz 1044801)
