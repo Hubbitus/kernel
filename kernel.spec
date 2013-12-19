@@ -1142,7 +1142,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
     done
     if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{kversion} ]] ; then
 %setup -q -n kernel-%{kversion}%{?dist} -c -T
-      cp -rl $sharedir/vanilla-%{kversion} .
+      cp -al $sharedir/vanilla-%{kversion} .
     else
 %setup -q -n kernel-%{kversion}%{?dist} -c
       mv linux-%{kversion} vanilla-%{kversion}
@@ -1159,12 +1159,12 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
   done
   if [[ ! -z $sharedir  &&  -d $sharedir/vanilla-%{vanillaversion} ]] ; then
 
-    cp -rl $sharedir/vanilla-%{vanillaversion} .
+    cp -al $sharedir/vanilla-%{vanillaversion} .
 
   else
 
     # Need to apply patches to the base vanilla version.
-    cp -rl vanilla-%{kversion} vanilla-%{vanillaversion}
+    cp -al vanilla-%{kversion} vanilla-%{vanillaversion}
     cd vanilla-%{vanillaversion}
 
 # Update vanilla to the latest upstream.
@@ -1195,7 +1195,7 @@ else
 fi
 
 # Now build the fedora kernel tree.
-cp -rl vanilla-%{vanillaversion} linux-%{KVERREL}
+cp -al vanilla-%{vanillaversion} linux-%{KVERREL}
 
 cd linux-%{KVERREL}
 
@@ -2189,6 +2189,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 19 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- copy kernel trees around with 'cp -al' so symlinks are preserved.  Fixes
+  weird build failures with coreutils 8.22 (rhbz 1044801)
+
 * Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git3.1
 - Linux v3.13-rc4-99-g35eecf0
 
