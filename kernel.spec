@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 303
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -734,6 +734,10 @@ Patch25148: alx-Reset-phy-speed-after-resume.patch
 Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
 Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
+#rhbz 1037793
+Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
@@ -1452,6 +1456,10 @@ ApplyPatch alx-Reset-phy-speed-after-resume.patch
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
 ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
+#rhbz 1037793
+ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #CVE-2013-6382 rhbz 1033603 1034670
 ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
@@ -2283,6 +2291,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Dec 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix dummy gssd entry (rhbz 1037793)
+
 * Wed Dec 18 2013 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix nowatchdog-on-virt.patch to actually work in KVM guests
 
