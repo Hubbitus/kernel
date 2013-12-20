@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -700,6 +700,15 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
+
+# Fix 15sec NFS mount delay
+Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
+Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
+Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
+#rhbz 1037793
+Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
@@ -1367,6 +1376,15 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
+
+# Fix 15sec NFS mount delay
+ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
+ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
+ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
+#rhbz 1037793
+ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
@@ -2185,6 +2203,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix dummy gssd entry (rhbz 1037793)
+
 * Thu Dec 19 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc4.git4.1
 - Linux v3.13-rc4-144-ga36c160
 
