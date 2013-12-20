@@ -1,0 +1,610 @@
+Bugzilla: 1012025
+Upstream-status: In beagle github repository https://github.com/beagleboard/kernel
+
+From 82fe302f565e00cfde3e96c6132df93b39525e7b Mon Sep 17 00:00:00 2001
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Date: Tue, 28 May 2013 17:06:15 +0200
+Subject: [PATCH] reset: Add driver for gpio-controlled reset pins
+
+This driver implements a reset controller device that toggle a gpio
+connected to a reset pin of a peripheral IC. The delay between assertion
+and de-assertion of the reset signal can be configured via device tree.
+
+Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+Reviewed-by: Stephen Warren <swarren@nvidia.com>
+---
+ .../devicetree/bindings/reset/gpio-reset.txt       |  35 +++++
+ drivers/reset/Kconfig                              |  11 ++
+ drivers/reset/Makefile                             |   1 +
+ drivers/reset/gpio-reset.c                         | 169 +++++++++++++++++++++
+ 4 files changed, 216 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/reset/gpio-reset.txt
+ create mode 100644 drivers/reset/gpio-reset.c
+
+diff --git a/Documentation/devicetree/bindings/reset/gpio-reset.txt b/Documentation/devicetree/bindings/reset/gpio-reset.txt
+new file mode 100644
+index 0000000..bca5348
+--- /dev/null
++++ b/Documentation/devicetree/bindings/reset/gpio-reset.txt
+@@ -0,0 +1,35 @@
++GPIO reset controller
++=====================
++
++A GPIO reset controller controls a single GPIO that is connected to the reset
++pin of a peripheral IC. Please also refer to reset.txt in this directory for
++common reset controller binding usage.
++
++Required properties:
++- compatible: Should be "gpio-reset"
++- reset-gpios: A gpio used as reset line. The gpio specifier for this property
++               depends on the gpio controller that provides the gpio.
++- #reset-cells: 0, see below
++
++Optional properties:
++- reset-delay-us: delay in microseconds. The gpio reset line will be asserted for
++                  this duration to reset.
++- initially-in-reset: boolean. If not set, the initial state should be a
++                      deasserted reset line. If this property exists, the
++                      reset line should be kept in reset.
++
++example:
++
++sii902x_reset: gpio-reset {
++	compatible = "gpio-reset";
++	reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
++	reset-delay-us = <10000>;
++	initially-in-reset;
++	#reset-cells = <0>;
++};
++
++/* Device with nRESET pin connected to GPIO5_0 */
++sii902x@39 {
++	/* ... */
++	resets = <&sii902x_reset>; /* active-low GPIO5_0, 10 ms delay */
++};
+diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
+index c9d04f7..1a862df 100644
+--- a/drivers/reset/Kconfig
++++ b/drivers/reset/Kconfig
+@@ -11,3 +11,14 @@ menuconfig RESET_CONTROLLER
+ 	  via GPIOs or SoC-internal reset controller modules.
+ 
+ 	  If unsure, say no.
++
++if RESET_CONTROLLER
++
++config RESET_GPIO
++	tristate "GPIO reset controller support"
++	depends on GPIOLIB && OF
++	help
++	  This driver provides support for reset lines that are controlled
++	  directly by GPIOs.
++
++endif
+diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
+index 1e2d83f..b854f20 100644
+--- a/drivers/reset/Makefile
++++ b/drivers/reset/Makefile
+@@ -1 +1,2 @@
+ obj-$(CONFIG_RESET_CONTROLLER) += core.o
++obj-$(CONFIG_RESET_GPIO) += gpio-reset.o
+diff --git a/drivers/reset/gpio-reset.c b/drivers/reset/gpio-reset.c
+new file mode 100644
+index 0000000..acc1076
+--- /dev/null
++++ b/drivers/reset/gpio-reset.c
+@@ -0,0 +1,169 @@
++/*
++ * GPIO Reset Controller driver
++ *
++ * Copyright 2013 Philipp Zabel, Pengutronix
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++#include <linux/delay.h>
++#include <linux/err.h>
++#include <linux/gpio.h>
++#include <linux/module.h>
++#include <linux/of_gpio.h>
++#include <linux/platform_device.h>
++#include <linux/reset-controller.h>
++
++struct gpio_reset_data {
++	struct reset_controller_dev rcdev;
++	unsigned int gpio;
++	bool active_low;
++	u32 delay_us;
++};
++
++static void __gpio_reset_set(struct reset_controller_dev *rcdev, int asserted)
++{
++	struct gpio_reset_data *drvdata = container_of(rcdev,
++			struct gpio_reset_data, rcdev);
++	int value = asserted;
++
++	if (drvdata->active_low)
++		value = !value;
++
++	gpio_set_value(drvdata->gpio, value);
++}
++
++static int gpio_reset(struct reset_controller_dev *rcdev, unsigned long id)
++{
++	struct gpio_reset_data *drvdata = container_of(rcdev,
++			struct gpio_reset_data, rcdev);
++
++	if (drvdata->delay_us < 0)
++		return -ENOSYS;
++
++	__gpio_reset_set(rcdev, 1);
++	udelay(drvdata->delay_us);
++	__gpio_reset_set(rcdev, 0);
++
++	return 0;
++}
++
++static int gpio_reset_assert(struct reset_controller_dev *rcdev,
++		unsigned long id)
++{
++	__gpio_reset_set(rcdev, 1);
++
++	return 0;
++}
++
++static int gpio_reset_deassert(struct reset_controller_dev *rcdev,
++		unsigned long id)
++{
++	__gpio_reset_set(rcdev, 0);
++
++	return 0;
++}
++
++static struct reset_control_ops gpio_reset_ops = {
++	.reset = gpio_reset,
++	.assert = gpio_reset_assert,
++	.deassert = gpio_reset_deassert,
++};
++
++static int of_gpio_reset_xlate(struct reset_controller_dev *rcdev,
++			       const struct of_phandle_args *reset_spec)
++{
++	if (WARN_ON(reset_spec->args_count != 0))
++		return -EINVAL;
++
++	return 0;
++}
++
++static int gpio_reset_probe(struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	struct gpio_reset_data *drvdata;
++	enum of_gpio_flags flags;
++	unsigned long gpio_flags;
++	bool initially_in_reset;
++	int ret;
++
++	drvdata = devm_kzalloc(&pdev->dev, sizeof(*drvdata), GFP_KERNEL);
++	if (drvdata == NULL)
++		return -ENOMEM;
++
++	if (of_gpio_named_count(np, "reset-gpios") != 1)
++		return -EINVAL;
++
++	drvdata->gpio = of_get_named_gpio_flags(np, "reset-gpios", 0, &flags);
++	if (drvdata->gpio == -EPROBE_DEFER) {
++		return drvdata->gpio;
++	} else if (!gpio_is_valid(drvdata->gpio)) {
++		dev_err(&pdev->dev, "invalid reset gpio: %d\n", drvdata->gpio);
++		return drvdata->gpio;
++	}
++
++	drvdata->active_low = flags & OF_GPIO_ACTIVE_LOW;
++
++	ret = of_property_read_u32(np, "reset-delay-us", &drvdata->delay_us);
++	if (ret < 0)
++		return ret;
++
++	initially_in_reset = of_property_read_bool(np, "initially-in-reset");
++	if (drvdata->active_low ^ initially_in_reset)
++		gpio_flags = GPIOF_OUT_INIT_HIGH;
++	else
++		gpio_flags = GPIOF_OUT_INIT_LOW;
++
++	ret = devm_gpio_request_one(&pdev->dev, drvdata->gpio, gpio_flags, NULL);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "failed to request gpio %d: %d\n",
++			drvdata->gpio, ret);
++		return ret;
++	}
++
++	drvdata->rcdev.of_node = np;
++	drvdata->rcdev.owner = THIS_MODULE;
++	drvdata->rcdev.nr_resets = 1;
++	drvdata->rcdev.ops = &gpio_reset_ops;
++	drvdata->rcdev.of_xlate = of_gpio_reset_xlate;
++	reset_controller_register(&drvdata->rcdev);
++
++	platform_set_drvdata(pdev, drvdata);
++
++	return 0;
++}
++
++static int gpio_reset_remove(struct platform_device *pdev)
++{
++	struct gpio_reset_data *drvdata = platform_get_drvdata(pdev);
++
++	reset_controller_unregister(&drvdata->rcdev);
++
++	return 0;
++}
++
++static struct of_device_id gpio_reset_dt_ids[] = {
++	{ .compatible = "gpio-reset" },
++	{ }
++};
++
++static struct platform_driver gpio_reset_driver = {
++	.probe = gpio_reset_probe,
++	.remove = gpio_reset_remove,
++	.driver = {
++		.name = "gpio-reset",
++		.owner = THIS_MODULE,
++		.of_match_table = of_match_ptr(gpio_reset_dt_ids),
++	},
++};
++
++module_platform_driver(gpio_reset_driver);
++
++MODULE_AUTHOR("Philipp Zabel <p.zabel@pengutronix.de>");
++MODULE_DESCRIPTION("gpio reset controller");
++MODULE_LICENSE("GPL");
++MODULE_ALIAS("platform:gpio-reset");
++MODULE_DEVICE_TABLE(of, gpio_reset_dt_ids);
+-- 
+1.8.2.1
+
+From 03664ac63b20b55af9522449bbad048476d259d5 Mon Sep 17 00:00:00 2001
+From: Joel Fernandes <joelf@ti.com>
+Date: Wed, 3 Jul 2013 17:29:44 -0500
+Subject: [PATCH 2/2] sound: soc: soc-dmaengine-pcm: Add support for new
+ DMAEngine request API
+
+Formerly these resources were coming HWMOD on OMAP-like SoCs. With the
+impending removal of HWMOD data, drivers are being converted to use the
+"of-dma" method of requesting DMA channels which from DT and can be obtained
+using the dma_request_slave_channel API. Add support to the soc-dmaengine-pcm
+helpers so that we can fetch and open channels using this method.
+
+Signed-off-by: Joel Fernandes <joelf@ti.com>
+---
+ sound/core/pcm_dmaengine.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
+index aa924d9..461fe4f 100644
+--- a/sound/core/pcm_dmaengine.c
++++ b/sound/core/pcm_dmaengine.c
+@@ -276,6 +276,16 @@ struct dma_chan *snd_dmaengine_pcm_request_channel(dma_filter_fn filter_fn,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_channel);
+ 
++struct dma_chan *snd_dmaengine_pcm_request_slave_channel(
++	struct snd_pcm_substream *substream, char *name)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct device *dev = snd_soc_dai_get_drvdata(rtd->cpu_dai);
++
++	return dma_request_slave_channel(dev, name);
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_request_slave_channel);
++
+ /**
+  * snd_dmaengine_pcm_open - Open a dmaengine based PCM substream
+  * @substream: PCM substream
+@@ -334,6 +344,18 @@ int snd_dmaengine_pcm_open_request_chan(struct snd_pcm_substream *substream,
+ }
+ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_chan);
+ 
++int snd_dmaengine_pcm_open_request_slave_chan(struct snd_pcm_substream *substream, char *name)
++{
++	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		return snd_dmaengine_pcm_open(substream,
++			    snd_dmaengine_pcm_request_slave_channel(substream, "tx"));
++	} else {
++		return snd_dmaengine_pcm_open(substream,
++			    snd_dmaengine_pcm_request_slave_channel(substream, "rx"));
++	}
++}
++EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_open_request_slave_chan);
++
+ /**
+  * snd_dmaengine_pcm_close - Close a dmaengine based PCM substream
+  * @substream: PCM substream
+-- 
+1.8.4.rc3
+
+From ae38683badc8c80b29ccc8aa4e059f900b603551 Mon Sep 17 00:00:00 2001
+From: Pantelis Antoniou <panto@antoniou-consulting.com>
+Date: Fri, 26 Oct 2012 15:48:00 +0300
+Subject: [PATCH 1/2] omap-hsmmc: Correct usage of of_find_node_by_name
+
+of_find_node_by_name expect to have the parent node reference taken.
+---
+ drivers/mmc/host/omap_hsmmc.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index 6ac63df..f5b660c 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -1893,6 +1893,16 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 	 * as we want. */
+ 	mmc->max_segs = 1024;
+ 
++	/* Eventually we should get our max_segs limitation for EDMA by
++	 * querying the dmaengine API */
++	if (pdev->dev.of_node) {
++		struct device_node *parent = of_node_get(pdev->dev.of_node->parent);
++		struct device_node *node;
++		node = of_find_node_by_name(parent, "edma");
++		if (node)
++			mmc->max_segs = 16;
++	}
++
+ 	mmc->max_blk_size = 512;       /* Block Length at max can be 1024 */
+ 	mmc->max_blk_count = 0xFFFF;    /* No. of Blocks is 16 bits */
+ 	mmc->max_req_size = mmc->max_blk_size * mmc->max_blk_count;
+-- 
+1.8.2.1
+
+From 5d93a65cfc4ff6aaf78ab49f71daa2a644ea2ace Mon Sep 17 00:00:00 2001
+From: Pantelis Antoniou <panto@antoniou-consulting.com>
+Date: Fri, 30 Nov 2012 12:18:16 +0200
+Subject: [PATCH 2/2] omap_hsmmc: Add reset gpio
+
+Add a gpio property for controlling reset of the mmc device.
+eMMC on the beaglebone black requires it.
+
+Signed-off-by: Pantelis Antoniou <panto@antoniou-consulting.com>
+---
+ drivers/mmc/host/omap_hsmmc.c          | 40 +++++++++++++++++++++++++++++++++-
+ include/linux/platform_data/mmc-omap.h |  3 +++
+ 2 files changed, 42 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/omap_hsmmc.c b/drivers/mmc/host/omap_hsmmc.c
+index f5b660c..1bdb90f 100644
+--- a/drivers/mmc/host/omap_hsmmc.c
++++ b/drivers/mmc/host/omap_hsmmc.c
+@@ -41,6 +41,8 @@
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/platform_data/mmc-omap.h>
++#include <linux/pinctrl/consumer.h>
++#include <linux/err.h>
+ 
+ /* OMAP HSMMC Host Controller Registers */
+ #define OMAP_HSMMC_SYSSTATUS	0x0014
+@@ -392,6 +394,7 @@ static inline int omap_hsmmc_have_reg(void)
+ static int omap_hsmmc_gpio_init(struct omap_mmc_platform_data *pdata)
+ {
+ 	int ret;
++	unsigned long flags;
+ 
+ 	if (gpio_is_valid(pdata->slots[0].switch_pin)) {
+ 		if (pdata->slots[0].cover)
+@@ -421,6 +424,24 @@ static int omap_hsmmc_gpio_init(struct omap_mmc_platform_data *pdata)
+ 	} else
+ 		pdata->slots[0].gpio_wp = -EINVAL;
+ 
++	if (gpio_is_valid(pdata->slots[0].gpio_reset)) {
++		flags = pdata->slots[0].gpio_reset_active_low ?
++				GPIOF_OUT_INIT_LOW : GPIOF_OUT_INIT_HIGH;
++		ret = gpio_request_one(pdata->slots[0].gpio_reset, flags,
++				"mmc_reset");
++		if (ret)
++			goto err_free_wp;
++
++		/* hold reset */
++		udelay(pdata->slots[0].gpio_reset_hold_us);
++
++		gpio_set_value(pdata->slots[0].gpio_reset,
++				!pdata->slots[0].gpio_reset_active_low);
++
++	} else
++		pdata->slots[0].gpio_reset = -EINVAL;
++
++
+ 	return 0;
+ 
+ err_free_wp:
+@@ -434,6 +455,8 @@ err_free_sp:
+ 
+ static void omap_hsmmc_gpio_free(struct omap_mmc_platform_data *pdata)
+ {
++	if (gpio_is_valid(pdata->slots[0].gpio_reset))
++		gpio_free(pdata->slots[0].gpio_reset);
+ 	if (gpio_is_valid(pdata->slots[0].gpio_wp))
+ 		gpio_free(pdata->slots[0].gpio_wp);
+ 	if (gpio_is_valid(pdata->slots[0].switch_pin))
+@@ -788,7 +811,7 @@ omap_hsmmc_start_command(struct omap_hsmmc_host *host, struct mmc_command *cmd,
+ 	 * ac, bc, adtc, bcr. Only commands ending an open ended transfer need
+ 	 * a val of 0x3, rest 0x0.
+ 	 */
+-	if (cmd == host->mrq->stop)
++	if (host->mrq && cmd == host->mrq->stop)
+ 		cmdtype = 0x3;
+ 
+ 	cmdreg = (cmd->opcode << 24) | (resptype << 16) | (cmdtype << 22);
+@@ -830,6 +853,8 @@ static void omap_hsmmc_request_done(struct omap_hsmmc_host *host, struct mmc_req
+ 	int dma_ch;
+ 	unsigned long flags;
+ 
++	BUG_ON(mrq == NULL);
++
+ 	spin_lock_irqsave(&host->irq_lock, flags);
+ 	host->req_in_progress = 0;
+ 	dma_ch = host->dma_ch;
+@@ -1720,6 +1745,7 @@ static struct omap_mmc_platform_data *of_get_hsmmc_pdata(struct device *dev)
+ 	struct device_node *np = dev->of_node;
+ 	u32 bus_width, max_freq;
+ 	int cd_gpio, wp_gpio;
++	enum of_gpio_flags reset_flags;
+ 
+ 	cd_gpio = of_get_named_gpio(np, "cd-gpios", 0);
+ 	wp_gpio = of_get_named_gpio(np, "wp-gpios", 0);
+@@ -1737,6 +1763,14 @@ static struct omap_mmc_platform_data *of_get_hsmmc_pdata(struct device *dev)
+ 	pdata->nr_slots = 1;
+ 	pdata->slots[0].switch_pin = cd_gpio;
+ 	pdata->slots[0].gpio_wp = wp_gpio;
++	reset_flags = 0;
++	pdata->slots[0].gpio_reset = of_get_named_gpio_flags(np,
++			"reset-gpios", 0, &reset_flags);
++	pdata->slots[0].gpio_reset_active_low =
++		(reset_flags & OF_GPIO_ACTIVE_LOW) != 0;
++	pdata->slots[0].gpio_reset_hold_us = 100;	/* default */
++	of_property_read_u32(np, "reset-gpio-hold-us",
++			&pdata->slots[0].gpio_reset_hold_us);
+ 
+ 	if (of_find_property(np, "ti,non-removable", NULL)) {
+ 		pdata->slots[0].nonremovable = true;
+@@ -1802,6 +1836,10 @@ static int omap_hsmmc_probe(struct platform_device *pdev)
+ 		return -ENXIO;
+ 	}
+ 
++	pinctrl = devm_pinctrl_get_select_default(&pdev->dev);
++	if (IS_ERR(pinctrl))
++		dev_warn(&pdev->dev, "unable to select pin group\n");
++
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (res == NULL || irq < 0)
+diff --git a/include/linux/platform_data/mmc-omap.h b/include/linux/platform_data/mmc-omap.h
+index 2bf1b30..d548994 100644
+--- a/include/linux/platform_data/mmc-omap.h
++++ b/include/linux/platform_data/mmc-omap.h
+@@ -115,6 +115,9 @@ struct omap_mmc_platform_data {
+ 
+ 		int switch_pin;			/* gpio (card detect) */
+ 		int gpio_wp;			/* gpio (write protect) */
++		int gpio_reset;			/* gpio (reset) */
++		int gpio_reset_active_low;	/* 1 if reset is active low */
++		u32 gpio_reset_hold_us;		/* time to hold in us */
+ 
+ 		int (*set_bus_mode)(struct device *dev, int slot, int bus_mode);
+ 		int (*set_power)(struct device *dev, int slot,
+-- 
+1.8.2.1
+
+From b45e4df71f07f2178db133db540e3f15e0b4ec05 Mon Sep 17 00:00:00 2001
+From: Pantelis Antoniou <panto@antoniou-consulting.com>
+Date: Sat, 15 Sep 2012 12:00:41 +0300
+Subject: [PATCH] pinctrl: pinctrl-single must be initialized early.
+
+When using pinctrl-single to handle i2c initialization, it has
+to be done early. Whether this is the best way to do so, is an
+exercise left to the reader.
+---
+ drivers/pinctrl/pinctrl-single.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
+index a82ace4..aeef35d 100644
+--- a/drivers/pinctrl/pinctrl-single.c
++++ b/drivers/pinctrl/pinctrl-single.c
+@@ -1673,7 +1673,17 @@ static struct platform_driver pcs_driver = {
+ #endif
+ };
+ 
+-module_platform_driver(pcs_driver);
++static int __init pcs_init(void)
++{
++	return platform_driver_register(&pcs_driver);
++}
++postcore_initcall(pcs_init);
++
++static void __exit pcs_exit(void)
++{
++	platform_driver_unregister(&pcs_driver);
++}
++module_exit(pcs_exit);
+ 
+ MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
+ MODULE_DESCRIPTION("One-register-per-pin type device tree based pinctrl driver");
+-- 
+1.8.2.1
+
+From e5e7abd2de7d8d4c74b5a1ccc6d47988250bd17d Mon Sep 17 00:00:00 2001
+From: Pantelis Antoniou <panto@antoniou-consulting.com>
+Date: Fri, 28 Jun 2013 18:39:55 +0300
+Subject: [PATCH 1/4] dts: beaglebone: Add I2C definitions for EEPROMs & capes
+
+Add the I2C definitions for the EEPROM devices on the baseboard
+and on the possibly connected capes.
+
+Signed-off-by: Pantelis Antoniou <panto@antoniou-consulting.com>
+---
+ arch/arm/boot/dts/am335x-bone-common.dtsi | 39 +++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
+index e3f27ec..2d12775 100644
+--- a/arch/arm/boot/dts/am335x-bone-common.dtsi
++++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
+@@ -84,6 +84,13 @@
+ 		>;
+ 	};
+ 
++	i2c2_pins: pinmux_i2c2_pins {
++		pinctrl-single,pins = <
++			0x178 0x73 	/* uart1_ctsn.i2c2_sda, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++			0x17c 0x73	/* uart1_rtsn.i2c2_scl, SLEWCTRL_SLOW | INPUT_PULLUP | MODE3 */
++		>;
++	};
++
+ 	uart0_pins: pinmux_uart0_pins {
+ 		pinctrl-single,pins = <
+ 			0x170 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart0_rxd.uart0_rxd */
+@@ -220,6 +227,38 @@
+ 		reg = <0x24>;
+ 	};
+ 
++	baseboard_eeprom: baseboard_eeprom@50 {
++		compatible = "at,24c256";
++		reg = <0x50>;
++	};
++};
++
++&i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c2_pins>;
++
++	status = "okay";
++	clock-frequency = <100000>;
++
++	cape_eeprom0: cape_eeprom0@54 {
++		compatible = "at,24c256";
++		reg = <0x54>;
++	};
++
++	cape_eeprom1: cape_eeprom1@55 {
++		compatible = "at,24c256";
++		reg = <0x55>;
++	};
++
++	cape_eeprom2: cape_eeprom2@56 {
++		compatible = "at,24c256";
++		reg = <0x56>;
++	};
++
++	cape_eeprom3: cape_eeprom3@57 {
++		compatible = "at,24c256";
++		reg = <0x57>;
++	};
+ };
+ 
+ /include/ "tps65217.dtsi"
+-- 
+1.8.4.rc3

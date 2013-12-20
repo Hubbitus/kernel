@@ -14,16 +14,19 @@ extraneous newline from the message.
 Signed-off-by: Jeff Layton <jlayton@redhat.com>
 Signed-off-by: Trond Myklebust <Trond.Myklebust@netapp.com>
 ---
+ Fixed up to apply to 3.12.1 by Josh Boyer <jwboyer@fedoraproject.org>
+
  include/linux/sunrpc/rpc_pipe_fs.h |    2 ++
  net/sunrpc/auth_gss/auth_gss.c     |   17 +++++++----------
  net/sunrpc/netns.h                 |    2 --
  net/sunrpc/rpc_pipe.c              |   14 ++++++++++----
  4 files changed, 19 insertions(+), 16 deletions(-)
 
-diff -up linux-3.11.9-200.fc19.x86_64/include/linux/sunrpc/rpc_pipe_fs.h.orig linux-3.11.9-200.fc19.x86_64/include/linux/sunrpc/rpc_pipe_fs.h
---- linux-3.11.9-200.fc19.x86_64/include/linux/sunrpc/rpc_pipe_fs.h.orig	2013-11-21 10:11:17.893026000 -0500
-+++ linux-3.11.9-200.fc19.x86_64/include/linux/sunrpc/rpc_pipe_fs.h	2013-11-21 10:14:17.709348000 -0500
-@@ -94,5 +94,7 @@ extern int rpc_unlink(struct dentry *);
+diff --git a/include/linux/sunrpc/rpc_pipe_fs.h b/include/linux/sunrpc/rpc_pipe_fs.h
+index 85f1342..7f490be 100644
+--- a/include/linux/sunrpc/rpc_pipe_fs.h
++++ b/include/linux/sunrpc/rpc_pipe_fs.h
+@@ -131,5 +131,7 @@ extern int rpc_unlink(struct dentry *);
  extern int register_rpc_pipefs(void);
  extern void unregister_rpc_pipefs(void);
  
@@ -31,10 +34,11 @@ diff -up linux-3.11.9-200.fc19.x86_64/include/linux/sunrpc/rpc_pipe_fs.h.orig li
 +
  #endif
  #endif
-diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c
---- linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig	2013-09-02 16:46:10.000000000 -0400
-+++ linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c	2013-11-21 10:18:33.681923000 -0500
-@@ -507,8 +507,7 @@ static void warn_gssd(void)
+diff --git a/net/sunrpc/auth_gss/auth_gss.c b/net/sunrpc/auth_gss/auth_gss.c
+index 0846566..1ada878 100644
+--- a/net/sunrpc/auth_gss/auth_gss.c
++++ b/net/sunrpc/auth_gss/auth_gss.c
+@@ -517,8 +517,7 @@ static void warn_gssd(void)
  	unsigned long now = jiffies;
  
  	if (time_after(now, ratelimit)) {
@@ -44,7 +48,7 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig linux-
  		ratelimit = now + 15*HZ;
  	}
  }
-@@ -571,7 +570,6 @@ gss_create_upcall(struct gss_auth *gss_a
+@@ -581,7 +580,6 @@ gss_create_upcall(struct gss_auth *gss_auth, struct gss_cred *gss_cred)
  	struct rpc_pipe *pipe;
  	struct rpc_cred *cred = &gss_cred->gc_base;
  	struct gss_upcall_msg *gss_msg;
@@ -52,7 +56,7 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig linux-
  	DEFINE_WAIT(wait);
  	int err;
  
-@@ -579,17 +577,16 @@ gss_create_upcall(struct gss_auth *gss_a
+@@ -589,17 +587,16 @@ gss_create_upcall(struct gss_auth *gss_auth, struct gss_cred *gss_cred)
  		__func__, from_kuid(&init_user_ns, cred->cr_uid));
  retry:
  	err = 0;
@@ -65,7 +69,7 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig linux-
 +		warn_gssd();
 +		return -EACCES;
 +	}
- 	gss_msg = gss_setup_upcall(gss_auth->client, gss_auth, cred);
+ 	gss_msg = gss_setup_upcall(gss_auth, cred);
  	if (PTR_ERR(gss_msg) == -EAGAIN) {
  		err = wait_event_interruptible_timeout(pipe_version_waitqueue,
 -				sn->pipe_version >= 0, timeout);
@@ -76,9 +80,10 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/auth_gss/auth_gss.c.orig linux-
  			warn_gssd();
  			err = -EACCES;
  		}
-diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/netns.h.orig linux-3.11.9-200.fc19.x86_64/net/sunrpc/netns.h
---- linux-3.11.9-200.fc19.x86_64/net/sunrpc/netns.h.orig	2013-11-21 10:11:17.897029000 -0500
-+++ linux-3.11.9-200.fc19.x86_64/net/sunrpc/netns.h	2013-11-21 10:14:17.722351000 -0500
+diff --git a/net/sunrpc/netns.h b/net/sunrpc/netns.h
+index 8a8e841..94e506f 100644
+--- a/net/sunrpc/netns.h
++++ b/net/sunrpc/netns.h
 @@ -33,8 +33,6 @@ struct sunrpc_net {
  	int pipe_version;
  	atomic_t pipe_users;
@@ -88,9 +93,10 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/netns.h.orig linux-3.11.9-200.f
  };
  
  extern int sunrpc_net_id;
-diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c.orig linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c
---- linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c.orig	2013-11-21 10:11:17.903026000 -0500
-+++ linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c	2013-11-21 10:14:17.727348000 -0500
+diff --git a/net/sunrpc/rpc_pipe.c b/net/sunrpc/rpc_pipe.c
+index 40aef18..ad444f3 100644
+--- a/net/sunrpc/rpc_pipe.c
++++ b/net/sunrpc/rpc_pipe.c
 @@ -216,14 +216,11 @@ rpc_destroy_inode(struct inode *inode)
  static int
  rpc_pipe_open(struct inode *inode, struct file *filp)
@@ -106,7 +112,7 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c.orig linux-3.11.9-20
  	pipe = RPC_I(inode)->pipe;
  	if (pipe == NULL)
  		goto out;
-@@ -1082,7 +1079,6 @@ int rpc_pipefs_init_net(struct net *net)
+@@ -1231,7 +1228,6 @@ int rpc_pipefs_init_net(struct net *net)
  		return PTR_ERR(sn->gssd_dummy);
  
  	mutex_init(&sn->pipefs_sb_lock);
@@ -114,7 +120,7 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c.orig linux-3.11.9-20
  	sn->pipe_version = -1;
  	return 0;
  }
-@@ -1236,6 +1232,16 @@ err_depopulate:
+@@ -1385,6 +1381,16 @@ err_depopulate:
  	return err;
  }
  
@@ -131,4 +137,3 @@ diff -up linux-3.11.9-200.fc19.x86_64/net/sunrpc/rpc_pipe.c.orig linux-3.11.9-20
  static struct dentry *
  rpc_mount(struct file_system_type *fs_type,
  		int flags, const char *dev_name, void *data)
-

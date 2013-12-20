@@ -1,4 +1,4 @@
-From 64160c504842a359801cff17464931fa028ff164 Mon Sep 17 00:00:00 2001
+From d7ccdaa17aab12a49f5e9e327b55167c4af26bf8 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 15:37:54 +0100
 Subject: [PATCH 1/2] KEYS: Implement a big key type that can save to tmpfs
@@ -308,7 +308,7 @@ index 0000000..5f9defc
 1.8.3.1
 
 
-From b1e5b74e060add16de8d6005802644fa1700167f Mon Sep 17 00:00:00 2001
+From 862e98313b10123fa4352117b0b0c0f5a530cefb Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Fri, 30 Aug 2013 15:37:54 +0100
 Subject: [PATCH 2/2] KEYS: Add per-user_namespace registers for persistent
@@ -377,7 +377,7 @@ Tested-by: Simo Sorce <simo@redhat.com>
 cc: Serge E. Hallyn <serge.hallyn@ubuntu.com>
 cc: Eric W. Biederman <ebiederm@xmission.com>
 ---
- include/linux/user_namespace.h |   6 ++
+ include/linux/user_namespace.h |   7 ++
  include/uapi/linux/keyctl.h    |   1 +
  kernel/user.c                  |   4 +
  kernel/user_namespace.c        |   6 ++
@@ -388,23 +388,24 @@ cc: Eric W. Biederman <ebiederm@xmission.com>
  security/keys/keyctl.c         |   3 +
  security/keys/persistent.c     | 169 +++++++++++++++++++++++++++++++++++++++++
  security/keys/sysctl.c         |  11 +++
- 11 files changed, 230 insertions(+)
+ 11 files changed, 231 insertions(+)
  create mode 100644 security/keys/persistent.c
 
 diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
-index b6b215f..cf21958 100644
+index 4db2985..bb0639d 100644
 --- a/include/linux/user_namespace.h
 +++ b/include/linux/user_namespace.h
-@@ -28,6 +28,12 @@ struct user_namespace {
+@@ -27,6 +27,13 @@ struct user_namespace {
+ 	kuid_t			owner;
+ 	kgid_t			group;
  	unsigned int		proc_inum;
- 	bool			may_mount_sysfs;
- 	bool			may_mount_proc;
 +
 +	/* Register of per-UID persistent keyrings for this namespace */
 +#ifdef CONFIG_PERSISTENT_KEYRINGS
 +	struct key		*persistent_keyring_register;
 +	struct rw_semaphore	persistent_keyring_register_sem;
 +#endif
++
  };
  
  extern struct user_namespace init_user_ns;
@@ -420,13 +421,13 @@ index c9b7f4fa..840cb99 100644
  
  #endif /*  _LINUX_KEYCTL_H */
 diff --git a/kernel/user.c b/kernel/user.c
-index 69b4c3d..6c9e1b9 100644
+index 5bbb919..a3a0dbf 100644
 --- a/kernel/user.c
 +++ b/kernel/user.c
-@@ -53,6 +53,10 @@ struct user_namespace init_user_ns = {
+@@ -51,6 +51,10 @@ struct user_namespace init_user_ns = {
+ 	.owner = GLOBAL_ROOT_UID,
+ 	.group = GLOBAL_ROOT_GID,
  	.proc_inum = PROC_USER_INIT_INO,
- 	.may_mount_sysfs = true,
- 	.may_mount_proc = true,
 +#ifdef CONFIG_KEYS_KERBEROS_CACHE
 +	.krb_cache_register_sem =
 +	__RWSEM_INITIALIZER(init_user_ns.krb_cache_register_sem),
@@ -435,12 +436,12 @@ index 69b4c3d..6c9e1b9 100644
  EXPORT_SYMBOL_GPL(init_user_ns);
  
 diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index d8c30db..ef7985e 100644
+index 13fb113..2dbc299 100644
 --- a/kernel/user_namespace.c
 +++ b/kernel/user_namespace.c
-@@ -99,6 +99,9 @@ int create_user_ns(struct cred *new)
+@@ -101,6 +101,9 @@ int create_user_ns(struct cred *new)
  
- 	update_mnt_policy(ns);
+ 	set_cred_user_ns(new, ns);
  
 +#ifdef CONFIG_PERSISTENT_KEYRINGS
 +	rwsem_init(&ns->persistent_keyring_register_sem);
@@ -448,7 +449,7 @@ index d8c30db..ef7985e 100644
  	return 0;
  }
  
-@@ -123,6 +126,9 @@ void free_user_ns(struct user_namespace *ns)
+@@ -130,6 +133,9 @@ void free_user_ns(struct user_namespace *ns)
  
  	do {
  		parent = ns->parent;

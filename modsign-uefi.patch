@@ -321,8 +321,8 @@ index 564dd93..389b50d 100644
 +struct key *system_blacklist_keyring;
 +#endif
  
- extern __initdata const u8 system_certificate_list[];
- extern __initdata const u8 system_certificate_list_end[];
+ extern __initconst const u8 system_certificate_list[];
+ extern __initconst const u8 system_certificate_list_end[];
 @@ -41,6 +44,20 @@ static __init int system_trusted_keyring_init(void)
  		panic("Can't allocate system trusted keyring\n");
  

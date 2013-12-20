@@ -150,19 +150,6 @@ index 7e96f4f..18c599d 100644
  };
  
  /* forward declaration for QXL_INFO_IO */
-diff --git a/drivers/gpu/drm/qxl/qxl_fb.c b/drivers/gpu/drm/qxl/qxl_fb.c
-index 88722f2..f437b30 100644
---- a/drivers/gpu/drm/qxl/qxl_fb.c
-+++ b/drivers/gpu/drm/qxl/qxl_fb.c
-@@ -108,7 +108,7 @@ static void qxl_fb_dirty_flush(struct fb_info *info)
- 	u32 x1, x2, y1, y2;
- 
- 	/* TODO: hard coding 32 bpp */
--	int stride = qfbdev->qfb.base.pitches[0] * 4;
-+	int stride = qfbdev->qfb.base.pitches[0];
- 
- 	x1 = qfbdev->dirty.x1;
- 	x2 = qfbdev->dirty.x2;
 diff --git a/drivers/gpu/drm/qxl/qxl_kms.c b/drivers/gpu/drm/qxl/qxl_kms.c
 index 9e8da9e..e0ddd5b 100644
 --- a/drivers/gpu/drm/qxl/qxl_kms.c
