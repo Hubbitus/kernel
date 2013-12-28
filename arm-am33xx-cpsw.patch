@@ -1,23 +1,55 @@
-Bugzilla: 1012025
-Upstream-status: An initial work around for the cpsw driver issue trying to access HW registers
-with clock disabled. Upstream is working on a proper fix with the hope to land it in 3.13.
+Bugzilla: 1012025 1043271
+Upstream-status: The following upstream commits in 3.13 fix issues with the ti_cpsw driver.
+The upstream hash is:
 
---- linux-3.12.4-1.fc20.x86_64/drivers/net/ethernet/ti/cpsw.c.orig	2013-12-11 20:52:41.576478796 +0000
-+++ linux-3.12.4-1.fc20.x86_64/drivers/net/ethernet/ti/cpsw.c	2013-12-11 20:55:14.418692261 +0000
-@@ -2001,6 +2001,8 @@
+f280e89ad6a29d9969cb6b216123c798e1689bc4
+
+--- a/drivers/net/ethernet/ti/cpsw.c.orig	2013-11-03 23:41:51.000000000 +0000
++++ b/drivers/net/ethernet/ti/cpsw.c	2013-12-15 22:55:00.842417685 +0000
+@@ -1144,6 +1149,12 @@
+ 		 * receive descs
+ 		 */
+ 		cpsw_info(priv, ifup, "submitted %d rx descriptors\n", i);
++
++		if (cpts_register(&priv->pdev->dev, priv->cpts,
++				  priv->data.cpts_clock_mult,
++				  priv->data.cpts_clock_shift))
++			dev_err(priv->dev, "error registering cpts device\n");
++
+ 	}
+ 
+ 	/* Enable Interrupt pacing if configured */
+@@ -1190,6 +1201,7 @@
+ 	netif_carrier_off(priv->ndev);
+ 
+ 	if (cpsw_common_res_usage_state(priv) <= 1) {
++		cpts_unregister(priv->cpts);
+ 		cpsw_intr_disable(priv);
+ 		cpdma_ctlr_int_ctrl(priv->dma, false);
+ 		cpdma_ctlr_stop(priv->dma);
+@@ -2001,9 +2013,16 @@
  		goto clean_cpsw_iores_ret;
  	}
  	priv->regs = ss_regs;
-+
-+	pm_runtime_get_sync(&pdev->dev);
- 	priv->version = __raw_readl(&priv->regs->id_ver);
+-	priv->version = __raw_readl(&priv->regs->id_ver);
  	priv->host_port = HOST_PORT_NUM;
  
-@@ -2161,6 +2163,7 @@
- 			goto clean_irq_ret;
- 		}
- 	}
++	/* Need to enable clocks with runtime PM api to access module
++	 *  13 +        * registers
++	 *   12 +        */
++	pm_runtime_get_sync(&pdev->dev);
++	priv->version = readl(&priv->regs->id_ver);
 +	pm_runtime_put_sync(&pdev->dev);
++
++
+ 	priv->cpsw_wr_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+ 	if (!priv->cpsw_wr_res) {
+ 		dev_err(priv->dev, "error getting i/o resource\n");
+@@ -2204,7 +2223,6 @@
+ 		unregister_netdev(cpsw_get_slave_ndev(priv, 1));
+ 	unregister_netdev(ndev);
  
- 	return 0;
+-	cpts_unregister(priv->cpts);
+ 	for (i = 0; i < priv->num_irqs; i++)
+ 		free_irq(priv->irqs_table[i], priv);
  

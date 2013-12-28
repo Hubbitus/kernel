@@ -2259,6 +2259,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Dec 28 2013 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update am33xx (BeagleBone) cpsw patch to upstream version
+
 * Mon Dec 23 2013 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.6-300
 - Linux v3.12.6
 
