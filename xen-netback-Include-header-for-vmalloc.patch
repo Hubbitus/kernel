@@ -1,0 +1,30 @@
+From 46da818ba960d637a1f618a4076b53b8859dbcb7 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Sun, 5 Jan 2014 10:15:07 -0500
+Subject: [PATCH] xen-netback: Include header for vmalloc
+
+Commit ac3d5ac27735 ("xen-netback: fix guest-receive-side array sizes")
+added calls to vmalloc and vfree in the interface.c file without including
+<linux/vmalloc.h>.  This causes build failures if the
+-Werror=implicit-function-declaration flag is passed.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ drivers/net/xen-netback/interface.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/xen-netback/interface.c b/drivers/net/xen-netback/interface.c
+index 34ca4e5..fff8cdd 100644
+--- a/drivers/net/xen-netback/interface.c
++++ b/drivers/net/xen-netback/interface.c
+@@ -34,6 +34,7 @@
+ #include <linux/ethtool.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/if_vlan.h>
++#include <linux/vmalloc.h>
+ 
+ #include <xen/events.h>
+ #include <asm/xen/hypercall.h>
+-- 
+1.8.4.2
+

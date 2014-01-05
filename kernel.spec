@@ -713,6 +713,8 @@ Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
+Patch25172: xen-netback-Include-header-for-vmalloc.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1388,6 +1390,8 @@ ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.
 
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
+
+ApplyPatch xen-netback-Include-header-for-vmalloc.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2205,6 +2209,7 @@ fi
 %changelog
 * Sun Jan 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13-0.0.rc7.git0.1
 - Linux v3.13-rc7
+- Fix xen-netback build failure on ARM
 
 * Mon Dec 30 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc6.git0.1
 - Linux v3.13-rc6
