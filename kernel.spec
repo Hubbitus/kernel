@@ -93,7 +93,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -2203,6 +2203,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Jan 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13-0.0.rc7.git0.1
+- Linux v3.13-rc7
+
 * Mon Dec 30 2013 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc6.git0.1
 - Linux v3.13-rc6
 
