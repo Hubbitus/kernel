@@ -754,6 +754,9 @@ Patch25177: libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-
 #CVE-2013-4579 rhbz 1032753 1033072
 Patch25178: ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 
+#rhbz 924916
+Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1462,6 +1465,9 @@ ApplyPatch libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-S
 
 #CVE-2013-4579 rhbz 1032753 1033072
 ApplyPatch ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
+
+#rhbz 924916
+ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2266,6 +2272,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in KVM with invalid root_hpa (rhbz 924916)
 - CVE-2013-4579: ath9k_htc improper MAC update (rhbz 1032753 1033072)
 
 * Sat Dec 28 2013 Peter Robinson <pbrobinson@fedoraproject.org>
