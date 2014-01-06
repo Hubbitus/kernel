@@ -715,6 +715,9 @@ Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
 Patch25172: xen-netback-Include-header-for-vmalloc.patch
 
+#rhbz 924916
+Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1392,6 +1395,9 @@ ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
 ApplyPatch xen-netback-Include-header-for-vmalloc.patch
+
+#rhbz 924916
+ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2207,6 +2213,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in KVM with invalid root_hpa (rhbz 924916)
+
 * Sun Jan 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13-0.0.rc7.git0.1
 - Linux v3.13-rc7
 - Fix xen-netback build failure on ARM
