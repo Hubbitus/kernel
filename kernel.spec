@@ -751,6 +751,9 @@ Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
 #rhbz 1024002
 Patch25177: libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
 
+#CVE-2013-4579 rhbz 1032753 1033072
+Patch25178: ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1456,6 +1459,9 @@ ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
 
 #rhbz 1024002
 ApplyPatch libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
+
+#CVE-2013-4579 rhbz 1032753 1033072
+ApplyPatch ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2259,6 +2265,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-4579: ath9k_htc improper MAC update (rhbz 1032753 1033072)
+
 * Sat Dec 28 2013 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update am33xx (BeagleBone) cpsw patch to upstream version
 
