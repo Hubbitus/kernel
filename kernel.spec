@@ -760,6 +760,9 @@ Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 #rhbz 1047892
 Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
+#rhbz 1044471
+Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1474,6 +1477,9 @@ ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
 #rhbz 1047892
 ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
+
+#rhbz 1044471
+ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2278,6 +2284,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for BCM57786 devices to tg3 (rhbz 1044471)
 - Fix use after free crash in KVM (rhbz 1047892)
 - Fix oops in KVM with invalid root_hpa (rhbz 924916)
 - CVE-2013-4579: ath9k_htc improper MAC update (rhbz 1032753 1033072)
