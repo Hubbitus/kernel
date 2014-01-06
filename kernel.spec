@@ -757,6 +757,9 @@ Patch25178: ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 #rhbz 924916
 Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
+#rhbz 1047892
+Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1468,6 +1471,9 @@ ApplyPatch ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 
 #rhbz 924916
 ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
+
+#rhbz 1047892
+ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2272,6 +2278,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix use after free crash in KVM (rhbz 1047892)
 - Fix oops in KVM with invalid root_hpa (rhbz 924916)
 - CVE-2013-4579: ath9k_htc improper MAC update (rhbz 1032753 1033072)
 
