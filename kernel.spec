@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -118,6 +118,8 @@ Summary: The Linux kernel
 %define with_pae       %{?_without_pae:       0} %{?!_without_pae:       1}
 # kernel-debug
 %define with_debug     %{?_without_debug:     0} %{?!_without_debug:     1}
+# kernel-doc
+%define with_doc       %{?_without_doc:       0} %{?!_without_doc:       1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
 # kernel-modules-extra
@@ -160,6 +162,20 @@ Summary: The Linux kernel
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
+
+# Build the kernel-doc package, but don't fail the build if it botches.
+# Here "true" means "continue" and "false" means "fail the build".
+%if 0%{?released_kernel}
+%define doc_build_fail false
+%else
+%define doc_build_fail true
+%endif
+
+%define rawhide_skip_docs 1
+%if 0%{?rawhide_skip_docs}
+%define with_doc 0
+%define doc_build_fail true
+%endif
 
 # pkg_release is what we'll fill in for the rpm Release: field
 %if 0%{?released_kernel}
@@ -284,6 +300,11 @@ Summary: The Linux kernel
 # don't do debug builds on anything but i686 and x86_64
 %ifnarch i686 x86_64
 %define with_debug 0
+%endif
+
+# only package docs noarch
+%ifnarch noarch
+%define with_doc 0
 %endif
 
 # don't build noarch kernels or headers (duh)
@@ -467,6 +488,9 @@ BuildRequires: kmod, patch, bash, sh-utils, tar
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
+%if %{with_doc}
+BuildRequires: xmlto, asciidoc
+%endif
 %if %{with_sparse}
 BuildRequires: sparse
 %endif
@@ -711,6 +735,19 @@ The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
 of the operating system: memory allocation, process allocation, device
 input and output, etc.
+
+
+%package doc
+Summary: Various documentation bits found in the kernel source
+Group: Documentation
+%description doc
+This package contains documentation files from the kernel
+source. Various bits of information about the Linux kernel and the
+device drivers shipped with it are documented in these files.
+
+You'll want to install this package if you need a reference to the
+options that can be passed to Linux kernel modules at load time.
+
 
 %package headers
 Summary: Header files for the Linux kernel for use by glibc
@@ -1762,6 +1799,15 @@ pushd tools/thermal/tmon/
 popd
 %endif
 
+%if %{with_doc}
+# Make the HTML pages.
+make htmldocs || %{doc_build_fail}
+
+# sometimes non-world-readable files sneak into the kernel source tree
+chmod -R a=rX Documentation
+find Documentation -type d | xargs chmod u+w
+%endif
+
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
 # code the value in the following invocations.  This is somewhat sub-optimal
 # but we're doing this inside of an RPM macro and it isn't as easy as it
@@ -1829,6 +1875,15 @@ popd
 %install
 
 cd linux-%{KVERREL}
+
+%if %{with_doc}
+docdir=$RPM_BUILD_ROOT%{_datadir}/doc/kernel-doc-%{rpmversion}
+
+# copy the source over
+mkdir -p $docdir
+tar -h -f - --exclude=man --exclude='.*' -c Documentation | tar xf - -C $docdir
+
+%endif # with_doc
 
 # We have to do the headers install before the tools install because the
 # kernel headers_install will remove any header files in /usr/include that
@@ -2032,6 +2087,15 @@ fi
 %{_libdir}/kernel-wrapper
 %endif
 
+# only some architecture builds need kernel-doc
+%if %{with_doc}
+%files doc
+%defattr(-,root,root)
+%{_datadir}/doc/kernel-doc-%{rpmversion}/Documentation/*
+%dir %{_datadir}/doc/kernel-doc-%{rpmversion}/Documentation
+%dir %{_datadir}/doc/kernel-doc-%{rpmversion}
+%endif
+
 %if %{with_perf}
 %files -n perf
 %defattr(-,root,root)
@@ -2161,10 +2225,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Tue Jan 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
-- Drop -doc subpackage
-
-* Tue Jan 07 2014 Josh Boyer <jwboyer@fedoraproject.com> - 3.13.0-0.rc7.git1.1
+* Tue Jan 07 2014 Josh Boyer <jwboyer@redhat.com> - 3.13.0-0.rc7.git1.1
 - Linux v3.13-rc7-55-gef350bb
 - Reenable debugging options.
 

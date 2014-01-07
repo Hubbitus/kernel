@@ -102,6 +102,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_USB_UAS is not set/CONFIG_USB_UAS=m/' config-generic
 
 	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
+	@perl -pi -e 's/^%define rawhide_skip_docs 0/%define rawhide_skip_docs 1/' kernel.spec
 	@rpmdev-bumpspec -c "Reenable debugging options." kernel.spec
 
 nodebuginfo:
@@ -110,6 +111,7 @@ nodebug: release
 	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
 release: config-release
 	@perl -pi -e 's/^%define debugbuildsenabled 0/%define debugbuildsenabled 1/' kernel.spec
+	@perl -pi -e 's/^%define rawhide_skip_docs 1/%define rawhide_skip_docs 0/' kernel.spec
 	@rpmdev-bumpspec -c "Disable debugging options." kernel.spec
 
 include Makefile.release
