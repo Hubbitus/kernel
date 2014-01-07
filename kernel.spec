@@ -2229,6 +2229,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Change DEFAULT_MMAP_MIN_ADDR to 64k on x86_64
+
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for Wacom Intuos 5 S devices (rhbz 1046238)
 - Fix use after free crash in KVM (rhbz 1047892)
