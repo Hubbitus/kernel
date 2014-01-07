@@ -1,0 +1,155 @@
+Bugzilla: 1046238
+Upstream-status: Queued for 3.14
+
+From 961794a00eab03f4344b7d5e825e8e789e55da87 Mon Sep 17 00:00:00 2001
+From: Ping Cheng <pinglinux@gmail.com>
+Date: Thu, 5 Dec 2013 12:54:53 -0800
+Subject: [PATCH] Input: wacom - add reporting of SW_MUTE_DEVICE events
+
+New Intuos series models added a hardware switch to turn touch
+data on/off. The state of the switch is reported periodically
+from the tablet. To report the state the driver will emit SW_MUTE_DEVICE
+events.
+
+Reviewed_by: Chris Bagwell <chris@cnpbagwell.com>
+Acked-by: Peter Hutterer <peter.hutterer@who-t.net>
+Tested-by: Jason Gerecke <killertofu@gmail.com>
+Signed-off-by: Ping Cheng <pingc@wacom.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/tablet/wacom_sys.c | 12 ++++++++++++
+ drivers/input/tablet/wacom_wac.c | 30 +++++++++++++++++++++++++++---
+ drivers/input/tablet/wacom_wac.h |  5 +++++
+ 3 files changed, 44 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/input/tablet/wacom_sys.c b/drivers/input/tablet/wacom_sys.c
+index 8318826..b16ebef 100644
+--- a/drivers/input/tablet/wacom_sys.c
++++ b/drivers/input/tablet/wacom_sys.c
+@@ -1197,6 +1197,8 @@ static void wacom_wireless_work(struct work_struct *work)
+ 		wacom_wac1->features.device_type = BTN_TOOL_PEN;
+ 		snprintf(wacom_wac1->name, WACOM_NAME_MAX, "%s (WL) Pen",
+ 			 wacom_wac1->features.name);
++		wacom_wac1->shared->touch_max = wacom_wac1->features.touch_max;
++		wacom_wac1->shared->type = wacom_wac1->features.type;
+ 		error = wacom_register_input(wacom1);
+ 		if (error)
+ 			goto fail;
+@@ -1218,6 +1220,10 @@ static void wacom_wireless_work(struct work_struct *work)
+ 			error = wacom_register_input(wacom2);
+ 			if (error)
+ 				goto fail;
++
++			if (wacom_wac1->features.type == INTUOSHT &&
++			    wacom_wac1->features.touch_max)
++				wacom_wac->shared->touch_input = wacom_wac2->input;
+ 		}
+ 
+ 		error = wacom_initialize_battery(wacom);
+@@ -1396,6 +1402,12 @@ static int wacom_probe(struct usb_interface *intf, const struct usb_device_id *i
+ 			goto fail5;
+ 		}
+ 	}
++
++	if (wacom_wac->features.type == INTUOSHT && wacom_wac->features.touch_max) {
++		if (wacom_wac->features.device_type == BTN_TOOL_FINGER)
++			wacom_wac->shared->touch_input = wacom_wac->input;
++	}
++
+ 	return 0;
+ 
+  fail5: wacom_destroy_leds(wacom);
+diff --git a/drivers/input/tablet/wacom_wac.c b/drivers/input/tablet/wacom_wac.c
+index 7655088..048e5b3 100644
+--- a/drivers/input/tablet/wacom_wac.c
++++ b/drivers/input/tablet/wacom_wac.c
+@@ -1219,13 +1219,23 @@ static int wacom_bpt3_touch(struct wacom_wac *wacom)
+ 
+ static int wacom_bpt_pen(struct wacom_wac *wacom)
+ {
++	struct wacom_features *features = &wacom->features;
+ 	struct input_dev *input = wacom->input;
+ 	unsigned char *data = wacom->data;
+ 	int prox = 0, x = 0, y = 0, p = 0, d = 0, pen = 0, btn1 = 0, btn2 = 0;
+ 
+-	if (data[0] != WACOM_REPORT_PENABLED)
++	if (data[0] != WACOM_REPORT_PENABLED && data[0] != WACOM_REPORT_USB)
+ 	    return 0;
+ 
++	if (data[0] == WACOM_REPORT_USB) {
++		if (features->type == INTUOSHT && features->touch_max) {
++			input_report_switch(wacom->shared->touch_input,
++					    SW_MUTE_DEVICE, data[8] & 0x40);
++			input_sync(wacom->shared->touch_input);
++		}
++		return 0;
++	}
++
+ 	prox = (data[1] & 0x20) == 0x20;
+ 
+ 	/*
+@@ -1258,8 +1268,8 @@ static int wacom_bpt_pen(struct wacom_wac *wacom)
+ 		 * touching and applying pressure; do not report negative
+ 		 * distance.
+ 		 */
+-		if (data[8] <= wacom->features.distance_max)
+-			d = wacom->features.distance_max - data[8];
++		if (data[8] <= features->distance_max)
++			d = features->distance_max - data[8];
+ 
+ 		pen = data[1] & 0x01;
+ 		btn1 = data[1] & 0x02;
+@@ -1310,6 +1320,13 @@ static int wacom_wireless_irq(struct wacom_wac *wacom, size_t len)
+ 	if (connected) {
+ 		int pid, battery;
+ 
++		if ((wacom->shared->type == INTUOSHT) &&
++				wacom->shared->touch_max) {
++			input_report_switch(wacom->shared->touch_input,
++					SW_MUTE_DEVICE, data[5] & 0x40);
++			input_sync(wacom->shared->touch_input);
++		}
++
+ 		pid = get_unaligned_be16(&data[6]);
+ 		battery = data[5] & 0x3f;
+ 		if (wacom->pid != pid) {
+@@ -1779,6 +1796,13 @@ int wacom_setup_input_capabilities(struct input_dev *input_dev,
+ 		break;
+ 
+ 	case INTUOSHT:
++		if (features->touch_max &&
++		    features->device_type == BTN_TOOL_FINGER) {
++			input_dev->evbit[0] |= BIT_MASK(EV_SW);
++			__set_bit(SW_MUTE_DEVICE, input_dev->swbit);
++		}
++		/* fall through */
++
+ 	case BAMBOO_PT:
+ 		__clear_bit(ABS_MISC, input_dev->absbit);
+ 
+diff --git a/drivers/input/tablet/wacom_wac.h b/drivers/input/tablet/wacom_wac.h
+index 854cceb..3600cf7 100644
+--- a/drivers/input/tablet/wacom_wac.h
++++ b/drivers/input/tablet/wacom_wac.h
+@@ -55,6 +55,7 @@
+ #define WACOM_REPORT_TPC1FGE		18
+ #define WACOM_REPORT_24HDT		1
+ #define WACOM_REPORT_WL			128
++#define WACOM_REPORT_USB		192
+ 
+ /* device quirks */
+ #define WACOM_QUIRK_MULTI_INPUT		0x0001
+@@ -131,6 +132,10 @@ struct wacom_features {
+ struct wacom_shared {
+ 	bool stylus_in_proximity;
+ 	bool touch_down;
++	/* for wireless device to access USB interfaces */
++	unsigned touch_max;
++	int type;
++	struct input_dev *touch_input;
+ };
+ 
+ struct wacom_wac {
+-- 
+1.8.4.2
+
