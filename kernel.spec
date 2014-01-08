@@ -700,6 +700,9 @@ Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
 Patch25182: 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
 Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
+#rhbz 953211
+Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1373,6 +1376,9 @@ ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
 ApplyPatch 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
 ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
+
+#rhbz 953211
+ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2161,6 +2167,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport support for ALPS Dolphin devices (rhbz 953211)
+
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc7.git2.1
 - Linux v3.13-rc7-67-gceb3b02
 - Enable BCMA_DRIVER_GPIO by turning on GPIOLIB everywhere (rhbz 1021098)
