@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -762,6 +762,9 @@ Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
 #rhbz 1044471
 Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
+
+#rhbz 953211
+Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1480,6 +1483,9 @@ ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
 #rhbz 1044471
 ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
+
+#rhbz 953211
+ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2284,6 +2290,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport support for ALPS Dolphin devices (rhbz 953211)
 - Enable BCMA_DRIVER_GPIO by turning on GPIOLIB everywhere (rhbz 1021098)
 
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
