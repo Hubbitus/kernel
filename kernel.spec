@@ -2283,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable BCMA_DRIVER_GPIO by turning on GPIOLIB everywhere (rhbz 1021098)
+
 * Mon Jan 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for BCM57786 devices to tg3 (rhbz 1044471)
 - Fix use after free crash in KVM (rhbz 1047892)
