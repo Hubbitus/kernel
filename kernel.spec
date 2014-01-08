@@ -2168,6 +2168,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable aic94xx driver (from Paul Bolle)
 - Backport support for ALPS Dolphin devices (rhbz 953211)
 
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc7.git2.1
