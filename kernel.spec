@@ -95,7 +95,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2167,6 +2167,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc7.git3.1
+- Linux v3.13-rc7-72-g7d1c153
+
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Disable aic94xx driver (from Paul Bolle)
 - Backport support for ALPS Dolphin devices (rhbz 953211)
