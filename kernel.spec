@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -722,9 +722,6 @@ Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
-#rhbz 1000439
-Patch25129: cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
 Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
 #rhbz 1011362
@@ -747,12 +744,6 @@ Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
 #rhbz 1025770
 Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
-
-#rhbz 1024002
-Patch25177: libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
-
-#CVE-2013-4579 rhbz 1032753 1033072
-Patch25178: ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 
 #rhbz 924916
 Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
@@ -1443,9 +1434,6 @@ ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
-#rhbz 1000439
-ApplyPatch cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch
-
 ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
 #rhbz 1011362
@@ -1468,12 +1456,6 @@ ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
 #rhbz 1025770
 ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
-
-#rhbz 1024002
-ApplyPatch libata-implement-ATA_HORKAGE_NO_NCQ_TRIM-and-apply-it-to-Micro-M500-SSDs.patch
-
-#CVE-2013-4579 rhbz 1032753 1033072
-ApplyPatch ath9k_htc-properly-set-MAC-address-and-BSSID-mask.patch
 
 #rhbz 924916
 ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
@@ -2289,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jan 10 2014 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.7-300
+- Linux v3.12.7
+
 * Wed Jan 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport support for ALPS Dolphin devices (rhbz 953211)
 - Enable BCMA_DRIVER_GPIO by turning on GPIOLIB everywhere (rhbz 1021098)
