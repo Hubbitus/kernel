@@ -2167,6 +2167,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Jan 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates and cleanups
+
 * Sun Jan 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc8.git0.1
 - Linux v3.13-rc8
 - Disable debugging options.
