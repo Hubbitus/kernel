@@ -2271,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable generic cpufreq-cpu0 driver on ARM
+
 * Fri Jan 10 2014 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.7-300
 - Linux v3.12.7
 
