@@ -2169,6 +2169,7 @@ fi
 %changelog
 * Sun Jan 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates and cleanups
+- Enable generic cpufreq-cpu0 driver on ARM
 
 * Sun Jan 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc8.git0.1
 - Linux v3.13-rc8
