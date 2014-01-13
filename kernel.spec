@@ -208,16 +208,6 @@ Summary: The Linux kernel
 %if %{nopatches}
 %define with_bootwrapper 0
 %define variant -vanilla
-%else
-%define variant_fedora -fedora
-%endif
-
-%define using_upstream_branch 0
-%if 0%{?upstream_branch:1}
-%define stable_update 0
-%define using_upstream_branch 1
-%define variant -%{upstream_branch}%{?variant_fedora}
-%define pkg_release 0.%{fedora_build}%{upstream_branch_tag}%{?buildid}%{?dist}
 %endif
 
 %if !%{debugbuildsenabled}
@@ -383,7 +373,7 @@ Summary: The Linux kernel
 
 # Should make listnewconfig fail if there's config options
 # printed out?
-%if %{nopatches}%{using_upstream_branch}
+%if %{nopatches}
 %define listnewconfig_fail 0
 %else
 %define listnewconfig_fail 1
@@ -570,10 +560,6 @@ Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
-%endif
-
-%if %{using_upstream_branch}
-### BRANCH PATCH ###
 %endif
 
 # we also need compile fixes for -vanilla
@@ -1021,14 +1007,12 @@ ApplyPatch()
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-%if !%{using_upstream_branch}
   if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-3." ] ; then
       echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
-%endif
   case "$patch" in
   *.bz2) bunzip2 < "$RPM_SOURCE_DIR/$patch" | $patch_command ${1+"$@"} ;;
   *.gz)  gunzip  < "$RPM_SOURCE_DIR/$patch" | $patch_command ${1+"$@"} ;;
@@ -1189,10 +1173,6 @@ ApplyPatch %{stable_patch_00}
 %endif
 %if 0%{?stable_rc}
 ApplyPatch %{stable_patch_01}
-%endif
-
-%if %{using_upstream_branch}
-### BRANCH APPLY ###
 %endif
 
 # Drop some necessary files from the source dir into the buildroot
