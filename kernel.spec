@@ -757,6 +757,9 @@ Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
 #rhbz 953211
 Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
 
+#rhbz 1040128
+Patch25183: ipv6-route-cache-expiration.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1468,6 +1471,9 @@ ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
 
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
+
+#rhbz 1040128
+ApplyPatch ipv6-route-cache-expiration.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2271,6 +2277,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 14 2014 Neil Horman <nhorman@redhat.com>
+- Backport ipv6 route cache expiration fix (rhbz 1040128)
+
 * Sun Jan 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable generic cpufreq-cpu0 driver on ARM
 - Enable thermal userspace support for ARM
