@@ -16,35 +16,7 @@ Summary: The Linux kernel
 %global signmodules 0
 %endif
 
-# Save original buildid for later if it's defined
-%if 0%{?buildid:1}
-%global orig_buildid %{buildid}
-%undefine buildid
-%endif
-
-###################################################################
-# Polite request for people who spin their own kernel rpms:
-# please modify the "buildid" define in a way that identifies
-# that the kernel isn't the stock distribution kernel, for example,
-# by setting the define to ".local" or ".bz123456". This will be
-# appended to the full kernel version.
-#
-# (Uncomment the '#' and both spaces below to set the buildid.)
-#
 # % define buildid .local
-###################################################################
-
-# The buildid can also be specified on the rpmbuild command line
-# by adding --define="buildid .whatever". If both the specfile and
-# the environment define a buildid they will be concatenated together.
-%if 0%{?orig_buildid:1}
-%if 0%{?buildid:1}
-%global srpm_buildid %{buildid}
-%define buildid %{srpm_buildid}%{orig_buildid}
-%else
-%define buildid %{orig_buildid}
-%endif
-%endif
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
