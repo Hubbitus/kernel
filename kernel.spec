@@ -2167,6 +2167,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 14 2014 Kyle McMartin <kyle@fedoraproject.org>
+- aarch64: enable 4K pages and CONFIG_COMPAT.
+
 * Mon Jan 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc8.git1.1
 - Linux v3.13-rc8-5-ga6da83f
 - Reenable debugging options.
