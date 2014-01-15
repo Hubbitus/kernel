@@ -47,16 +47,10 @@ Summary: The Linux kernel
 
 # Do we have a -stable update to apply?
 %define stable_update 0
-# Is it a -stable RC?
-%define stable_rc 0
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
 %define stable_base %{stable_update}
-%if 0%{?stable_rc}
-# stable RCs are incremental patches, so we need the previous stable patch
-%define stable_base %(echo $((%{stable_update} - 1)))
-%endif
 %endif
 %define rpmversion 3.%{base_sublevel}.%{stable_update}
 
@@ -136,12 +130,7 @@ Summary: The Linux kernel
 # pkg_release is what we'll fill in for the rpm Release: field
 %if 0%{?released_kernel}
 
-%if 0%{?stable_rc}
-%define stable_rctag .rc%{stable_rc}
-%define pkg_release 0%{stable_rctag}.%{fedora_build}%{?buildid}%{?dist}
-%else
 %define pkg_release %{fedora_build}%{?buildid}%{?dist}
-%endif
 
 %else
 
@@ -511,10 +500,6 @@ Source2001: cpupower.config
 %if 0%{?stable_base}
 %define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
 Patch00: %{stable_patch_00}
-%endif
-%if 0%{?stable_rc}
-%define    stable_patch_01  patch-3.%{base_sublevel}.%{stable_update}-rc%{stable_rc}.xz
-Patch01: %{stable_patch_01}
 %endif
 
 # non-released_kernel case
@@ -1142,9 +1127,6 @@ cd linux-%{KVERREL}
 # released_kernel with possible stable updates
 %if 0%{?stable_base}
 ApplyPatch %{stable_patch_00}
-%endif
-%if 0%{?stable_rc}
-ApplyPatch %{stable_patch_01}
 %endif
 
 # Drop some necessary files from the source dir into the buildroot
