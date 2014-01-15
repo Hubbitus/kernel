@@ -760,6 +760,9 @@ Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
 #rhbz 1040128
 Patch25183: ipv6-route-cache-expiration.patch
 
+#CVE-2014-1438 rhbz 1053599 1052914
+Patch25184: x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1474,6 +1477,9 @@ ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
 #rhbz 1040128
 ApplyPatch ipv6-route-cache-expiration.patch
+
+#CVE-2014-1438 rhbz 1053599 1052914
+ApplyPatch x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2277,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-1438 x86: exceptions are not cleared in AMD FXSAVE workaround (rhbz 1053599 1052914)
+
 * Tue Jan 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix k-m-e Provides to be explicit to only the package flavor (rhbz 1046246)
 
