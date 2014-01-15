@@ -763,6 +763,9 @@ Patch25183: ipv6-route-cache-expiration.patch
 #CVE-2014-1438 rhbz 1053599 1052914
 Patch25184: x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
 
+#CVE-2014-1446 rhbz 1053620 1053647
+Patch25185: hamradio-yam-fix-info-leak-in-ioctl.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1480,6 +1483,9 @@ ApplyPatch ipv6-route-cache-expiration.patch
 
 #CVE-2014-1438 rhbz 1053599 1052914
 ApplyPatch x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
+
+#CVE-2014-1446 rhbz 1053620 1053647
+ApplyPatch hamradio-yam-fix-info-leak-in-ioctl.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2284,6 +2290,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jan 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-1446 hamradio/yam: information leak in ioctl (rhbz 1053620 1053647)
 - CVE-2014-1438 x86: exceptions are not cleared in AMD FXSAVE workaround (rhbz 1053599 1052914)
 
 * Tue Jan 14 2014 Josh Boyer <jwboyer@fedoraproject.org>

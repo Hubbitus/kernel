@@ -1,0 +1,36 @@
+Bugzilla: 1053647
+Upstream-status: 3.13 and 3.12.8
+
+From foo@baz Mon Jan 13 09:44:41 PST 2014
+From: =?UTF-8?q?Salva=20Peir=C3=B3?= <speiro@ai2.upv.es>
+Date: Tue, 17 Dec 2013 10:06:30 +0100
+Subject: hamradio/yam: fix info leak in ioctl
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+From: Salva Peiró <speiro@ai2.upv.es>
+
+[ Upstream commit 8e3fbf870481eb53b2d3a322d1fc395ad8b367ed ]
+
+The yam_ioctl() code fails to initialise the cmd field
+of the struct yamdrv_ioctl_cfg. Add an explicit memset(0)
+before filling the structure to avoid the 4-byte info leak.
+
+Signed-off-by: Salva Peiró <speiro@ai2.upv.es>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ drivers/net/hamradio/yam.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/drivers/net/hamradio/yam.c
++++ b/drivers/net/hamradio/yam.c
+@@ -1057,6 +1057,7 @@ static int yam_ioctl(struct net_device *
+ 		break;
+ 
+ 	case SIOCYAMGCFG:
++		memset(&yi, 0, sizeof(yi));
+ 		yi.cfg.mask = 0xffffffff;
+ 		yi.cfg.iobase = yp->iobase;
+ 		yi.cfg.irq = yp->irq;
