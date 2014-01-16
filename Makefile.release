@@ -6,7 +6,6 @@
 # Anything that changes kernel.spec itself should go in the main Makefile.
 
 config-release:
-	@perl -pi -e 's/CONFIG_SLUB_DEBUG_ON=y/# CONFIG_SLUB_DEBUG_ON is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_LOCK_STAT=y/# CONFIG_LOCK_STAT is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_STACK_USAGE=y/# CONFIG_DEBUG_STACK_USAGE is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_SLAB=y/# CONFIG_DEBUG_SLAB is not set/' config-nodebug

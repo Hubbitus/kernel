@@ -26,7 +26,6 @@ extremedebug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PAGEALLOC is not set/CONFIG_DEBUG_PAGEALLOC=y/' config-nodebug
 
 debug:
-	@perl -pi -e 's/# CONFIG_SLUB_DEBUG_ON is not set/CONFIG_SLUB_DEBUG_ON=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_LOCK_STAT is not set/CONFIG_LOCK_STAT=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_STACK_USAGE is not set/CONFIG_DEBUG_STACK_USAGE=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SLAB is not set/CONFIG_DEBUG_SLAB=y/' config-nodebug
