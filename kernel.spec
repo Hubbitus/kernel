@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -742,9 +742,6 @@ Patch25164: dell-laptop.patch
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
-#rhbz 1025770
-Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
-
 #rhbz 924916
 Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
@@ -756,15 +753,6 @@ Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
 
 #rhbz 953211
 Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1040128
-Patch25183: ipv6-route-cache-expiration.patch
-
-#CVE-2014-1438 rhbz 1053599 1052914
-Patch25184: x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
-
-#CVE-2014-1446 rhbz 1053620 1053647
-Patch25185: hamradio-yam-fix-info-leak-in-ioctl.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1463,9 +1451,6 @@ ApplyPatch dell-laptop.patch
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
-#rhbz 1025770
-ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
-
 #rhbz 924916
 ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 
@@ -1478,16 +1463,6 @@ ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
-#rhbz 1040128
-ApplyPatch ipv6-route-cache-expiration.patch
-
-#CVE-2014-1438 rhbz 1053599 1052914
-ApplyPatch x86-fpu-amd-clear-exceptions-in-amd-fxsave-workaround.patch
-
-#CVE-2014-1446 rhbz 1053620 1053647
-ApplyPatch hamradio-yam-fix-info-leak-in-ioctl.patch
-
-# END OF PATCH APPLICATIONS
 
 %endif
 
@@ -2289,6 +2264,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+
+* Wed Jan 15 2014 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.8-300
+- Linux v3.12.8
+
 * Wed Jan 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-1446 hamradio/yam: information leak in ioctl (rhbz 1053620 1053647)
 - CVE-2014-1438 x86: exceptions are not cleared in AMD FXSAVE workaround (rhbz 1053599 1052914)
