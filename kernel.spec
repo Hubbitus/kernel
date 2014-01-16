@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -745,28 +745,16 @@ Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
 Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
 Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
-
-#CVE-2013-6382 rhbz 1033603 1034670
-Patch25157: xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+#rhbz 1037793
+Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #rhbz 958826
 Patch25164: dell-laptop.patch
 
 #rhbz 1030802
-Patch25170: Input-elantech-add-support-for-newer-August-2013-dev.patch
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#CVE-2013-6367 rhbz 1032207 1042081
-Patch25172: KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
-
-#CVE-2013-6368 rhbz 1032210 1042090
-Patch25173: KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
-
-#CVE-2013-6376 rhbz 1033106 1042099
-Patch25174: KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
-
-#CVE-2013-4587 rhbz 1030986 1042071
-Patch25175: KVM-Improve-create-VCPU-parameter.patch
 
 #rhbz 1025770
 Patch25176: br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
@@ -1473,28 +1461,16 @@ ApplyPatch uksm-0.1.2.2-for-v3.12.patch --fuzz=2
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
 ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
-
-#CVE-2013-6382 rhbz 1033603 1034670
-ApplyPatch xfs-underflow-bug-in-xfs_attrlist_by_handle.patch
+#rhbz 1037793
+ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
+ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
+ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 #rhbz 958826
 ApplyPatch dell-laptop.patch
 
 #rhbz 1030802
-ApplyPatch Input-elantech-add-support-for-newer-August-2013-dev.patch
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#CVE-2013-6367 rhbz 1032207 1042081
-ApplyPatch KVM-x86-Fix-potential-divide-by-0-in-lapic.patch
-
-#CVE-2013-6368 rhbz 1032210 1042090
-ApplyPatch KVM-x86-Convert-vapic-synchronization-to-_cached-functions.patch
-
-#CVE-2013-6376 rhbz 1033106 1042099
-ApplyPatch KVM-x86-fix-guest-initiated-crash-with-x2apic.patch
-
-#CVE-2013-4587 rhbz 1030986 1042071
-ApplyPatch KVM-Improve-create-VCPU-parameter.patch
 
 #rhbz 1025770
 ApplyPatch br-fix-use-of-rx_handler_data-in-code-executed-on-no.patch
@@ -2304,6 +2280,15 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Dec 25 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.6-300.hu.1
+- v3.12.6-300.hu.1
+
+* Mon Dec 23 2013 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.6-300
+- Linux v3.12.6
+
+* Fri Dec 20 2013 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix dummy gssd entry (rhbz 1037793)
+
 * Fri Dec 20 2013 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.5-302.hu.1
 - v3.12.5-302.hu.1
 
