@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2092,6 +2092,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc8.git4.1
+- Linux v3.13-rc8-76-g7d0d46d
+
 * Sat Jan 18 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable ARM_GLOBAL_TIMER on ARM used by a number of Cortex-A9 and later platforms
 
