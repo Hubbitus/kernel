@@ -2092,6 +2092,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 18 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ARM_GLOBAL_TIMER on ARM used by a number of Cortex-A9 and later platforms
+
 * Thu Jan 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-0.rc8.git3.1
 - Linux v3.13-rc8-46-g85ce70f
 
