@@ -4727,7 +4727,7 @@ CONFIG_OPTIMIZE_INLINING=y
 # FIXME: This should be x86/ia64 only
 # CONFIG_HP_ILO is not set
 
-# CONFIG_GPIOLIB is not set
+CONFIG_GPIOLIB=y
 # CONFIG_PINCTRL is not set
 # CONFIG_DEBUG_PINCTRL is not set
 # CONFIG_PINMUX is not set
