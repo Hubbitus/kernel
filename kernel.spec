@@ -2092,6 +2092,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 20 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Enable CONFIG_KVM on AArch64.
+
 * Mon Jan 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.0-1
 - Linux v3.13
 - Disable debugging options.
