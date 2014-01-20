@@ -5,3 +5,4 @@ clog
 *.orig
 kernel-[23].*/
 /perf-man.tar.gz
+/perf-man-3.13.tar.gz
