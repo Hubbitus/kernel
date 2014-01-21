@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -645,6 +645,8 @@ Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
+
+Patch25185: perf-plugin-dir.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1313,6 +1315,8 @@ ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
+
+ApplyPatch perf-plugin-dir.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2092,6 +2096,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git1.1
+- Linux v3.13-737-g7fe67a1
+- Reenable debugging options.  Enable SLUB_DEBUG
+
 * Mon Jan 20 2014 Kyle McMartin <kyle@fedoraproject.org>
 - Enable CONFIG_KVM on AArch64.
 
