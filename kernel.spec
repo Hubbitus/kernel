@@ -1147,7 +1147,7 @@ make -f %{SOURCE19} config-release
 make -f %{SOURCE20} VERSION=%{version} configs
 
 # Merge in any user-provided local config option changes
-for i in kernel-%{version}-*.config
+for i in %{all_arch_configs}
 do
   mv $i $i.tmp
   ./merge.pl %{SOURCE1000} $i.tmp > $i
