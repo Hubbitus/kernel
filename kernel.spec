@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -647,6 +647,8 @@ Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
 
 Patch25185: perf-plugin-dir.patch
+
+Patch25186: peterz-printk-timestamp-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1317,6 +1319,8 @@ ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
 ApplyPatch perf-plugin-dir.patch
+
+ApplyPatch peterz-printk-timestamp-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2096,6 +2100,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git5.1
+- Linux v3.13-3667-ge1ba845
+
 * Wed Jan 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git4.1
 - Linux v3.13-3477-gdf32e43
 
