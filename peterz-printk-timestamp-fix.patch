@@ -1,31 +1,31 @@
                                                                                                                                                                                                                                                                
 Delivered-To: jwboyer@gmail.com
-Received: by 10.76.27.197 with SMTP id v5csp306204oag;
-        Wed, 22 Jan 2014 13:13:54 -0800 (PST)
-X-Received: by 10.66.4.130 with SMTP id k2mr4030960pak.95.1390425233906;
-        Wed, 22 Jan 2014 13:13:53 -0800 (PST)
+Received: by 10.76.27.197 with SMTP id v5csp2271oag;
+        Thu, 23 Jan 2014 01:54:21 -0800 (PST)
+X-Received: by 10.66.136.131 with SMTP id qa3mr7006698pab.77.1390470860654;
+        Thu, 23 Jan 2014 01:54:20 -0800 (PST)
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
-        by mx.google.com with ESMTP id i3si11289288pbe.19.2014.01.22.13.12.44
+        by mx.google.com with ESMTP id qv10si13378362pbb.142.2014.01.23.01.53.38
         for <multiple recipients>;
-        Wed, 22 Jan 2014 13:13:53 -0800 (PST)
+        Thu, 23 Jan 2014 01:54:20 -0800 (PST)
 Received-SPF: pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) client-ip=209.132.180.67;
 Authentication-Results: mx.google.com;
        spf=pass (google.com: best guess record for domain of linux-kernel-owner@vger.kernel.org designates 209.132.180.67 as permitted sender) smtp.mail=linux-kernel-owner@vger.kernel.org
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-	id S1753416AbaAVVIi (ORCPT <rfc822;ksvahn@gmail.com> + 99 others);
-	Wed, 22 Jan 2014 16:08:38 -0500
-Received: from merlin.infradead.org ([205.233.59.134]:42768 "EHLO
+	id S1751970AbaAWJsq (ORCPT <rfc822;ksvahn@gmail.com> + 99 others);
+	Thu, 23 Jan 2014 04:48:46 -0500
+Received: from merlin.infradead.org ([205.233.59.134]:55711 "EHLO
 	merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-	with ESMTP id S1753275AbaAVVIh (ORCPT
+	with ESMTP id S1751445AbaAWJso (ORCPT
 	<rfc822;linux-kernel@vger.kernel.org>);
-	Wed, 22 Jan 2014 16:08:37 -0500
-Received: from dhcp-077-248-225-117.chello.nl ([77.248.225.117] helo=laptop)
+	Thu, 23 Jan 2014 04:48:44 -0500
+Received: from dhcp-077-248-225-117.chello.nl ([77.248.225.117] helo=twins)
 	by merlin.infradead.org with esmtpsa (Exim 4.80.1 #2 (Red Hat Linux))
-	id 1W6527-0004v6-BO; Wed, 22 Jan 2014 21:08:24 +0000
-Received: by laptop (Postfix, from userid 1000)
-	id 83FEF1034BE15; Wed, 22 Jan 2014 22:08:14 +0100 (CET)
-Date:	Wed, 22 Jan 2014 22:08:14 +0100
+	id 1W6GtY-00025n-Ny; Thu, 23 Jan 2014 09:48:21 +0000
+Received: by twins (Postfix, from userid 1000)
+	id 0B4E580383F6; Thu, 23 Jan 2014 10:48:04 +0100 (CET)
+Date:	Thu, 23 Jan 2014 10:48:04 +0100
 From:	Peter Zijlstra <peterz@infradead.org>
 To:	Markus Trippelsdorf <markus@trippelsdorf.de>
 Cc:	Sasha Levin <sasha.levin@oracle.com>,
@@ -39,10 +39,8 @@ Cc:	Sasha Levin <sasha.levin@oracle.com>,
 	Andy Lutomirski <luto@amacapital.net>,
 	linux-kernel@vger.kernel.org, dyoung@redhat.com
 Subject: Re: [PATCH 13/15] sched: Use a static_key for sched_clock_stable
-Message-ID: <20140122210814.GC9481@laptop.programming.kicks-ass.net>
-References: <20140122120757.GL31570@twins.programming.kicks-ass.net>
- <20140122122609.GA392@x4>
- <20140122123022.GN31570@twins.programming.kicks-ass.net>
+Message-ID: <20140123094804.GP30183@twins.programming.kicks-ass.net>
+References: <20140122123022.GN31570@twins.programming.kicks-ass.net>
  <20140122131456.GA389@x4>
  <52DFD50E.800@oracle.com>
  <20140122183538.GA389@x4>
@@ -50,74 +48,67 @@ References: <20140122120757.GL31570@twins.programming.kicks-ass.net>
  <20140122190905.GA391@x4>
  <20140122191254.GA390@x4>
  <20140122201605.GU11314@laptop.programming.kicks-ass.net>
+ <20140122210814.GC9481@laptop.programming.kicks-ass.net>
+ <20140122211740.GA391@x4>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20140122201605.GU11314@laptop.programming.kicks-ass.net>
+In-Reply-To: <20140122211740.GA391@x4>
 User-Agent: Mutt/1.5.21 (2012-12-30)
 Sender:	linux-kernel-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List:	linux-kernel@vger.kernel.org
 
+On Wed, Jan 22, 2014 at 10:17:40PM +0100, Markus Trippelsdorf wrote:
+> Yes. Thanks Peter.
 > 
-> I think its the right region to look through. My current suspect is the
-> linear continuity fit with the initial 'random' multiplier.
-> 
-> That initial 'random' multiplier can get us quite high, and we'll fit
-> the function to match that but continue at a sane rate.
-> 
-> I'll try and prod a little more later this evening as time permits.
 
-Does this cure things?
+Ah much simpler patch that should have the same effect:
 
 ---
- arch/x86/kernel/tsc.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Subject: sched/x86/tsc: Initialize multiplier to 0
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Wed, 22 Jan 2014 22:08:14 +0100
 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index a3acbac2ee72..bb04148c5fe0 100644
+Since we keep the clock value linearly continuous on frequency change,
+make sure the initial multiplier is 0, such that out initial value is
+0. Without this we compute the initial value at whatever the TSC has
+managed to reach since power-on.
+
+Fixes: 20d1c86a57762 ("sched/clock, x86: Rewrite cyc2ns() to avoid the need to disable IRQs")
+Cc: lenb@kernel.org
+Cc: rjw@rjwysocki.net
+Cc: Eliezer Tamir <eliezer.tamir@linux.intel.com>
+Cc: rui.zhang@intel.com
+Cc: jacob.jun.pan@linux.intel.com
+Cc: Mike Galbraith <bitbucket@online.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: hpa@zytor.com
+Cc: paulmck@linux.vnet.ibm.com
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Andy Lutomirski <luto@amacapital.net>
+Cc: Arjan van de Ven <arjan@linux.intel.com>
+Cc: Sasha Levin <sasha.levin@oracle.com>
+Cc: dyoung@redhat.com
+Reported-by: Markus Trippelsdorf <markus@trippelsdorf.de>
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+---
+ arch/x86/kernel/tsc.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 --- a/arch/x86/kernel/tsc.c
 +++ b/arch/x86/kernel/tsc.c
-@@ -237,7 +237,7 @@ static inline unsigned long long cycles_2_ns(unsigned long long cyc)
- /* XXX surely we already have this someplace in the kernel?! */
- #define DIV_ROUND(n, d) (((n) + ((d) / 2)) / (d))
+@@ -180,7 +180,7 @@ static void cyc2ns_write_end(int cpu, st
  
--static void set_cyc2ns_scale(unsigned long cpu_khz, int cpu)
-+static void set_cyc2ns_scale(unsigned long cpu_khz, int cpu, bool origin)
+ static void cyc2ns_data_init(struct cyc2ns_data *data)
  {
- 	unsigned long long tsc_now, ns_now;
- 	struct cyc2ns_data *data;
-@@ -252,7 +252,10 @@ static void set_cyc2ns_scale(unsigned long cpu_khz, int cpu)
- 	data = cyc2ns_write_begin(cpu);
- 
- 	rdtscll(tsc_now);
--	ns_now = cycles_2_ns(tsc_now);
-+	if (origin)
-+		ns_now = 0;
-+	else
-+		ns_now = cycles_2_ns(tsc_now);
- 
- 	/*
- 	 * Compute a new multiplier as per the above comment and ensure our
-@@ -926,7 +929,7 @@ static int time_cpufreq_notifier(struct notifier_block *nb, unsigned long val,
- 			mark_tsc_unstable("cpufreq changes");
- 	}
- 
--	set_cyc2ns_scale(tsc_khz, freq->cpu);
-+	set_cyc2ns_scale(tsc_khz, freq->cpu, false);
- 
- 	return 0;
- }
-@@ -1199,7 +1202,7 @@ void __init tsc_init(void)
- 	 */
- 	for_each_possible_cpu(cpu) {
- 		cyc2ns_init(cpu);
--		set_cyc2ns_scale(cpu_khz, cpu);
-+		set_cyc2ns_scale(cpu_khz, cpu, true);
- 	}
- 
- 	if (tsc_disabled > 0)
+-	data->cyc2ns_mul = 1U << CYC2NS_SCALE_FACTOR;
++	data->cyc2ns_mul = 0;
+ 	data->cyc2ns_shift = CYC2NS_SCALE_FACTOR;
+ 	data->cyc2ns_offset = 0;
+ 	data->__count = 0;
 --
 To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
 the body of a message to majordomo@vger.kernel.org

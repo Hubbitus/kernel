@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -403,7 +403,7 @@ Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
 URL: http://www.kernel.org/
 Version: %{rpmversion}
-Release: %{pkg_release}
+Release: %{pkg_release}.1
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
 ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64
@@ -631,12 +631,6 @@ Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails
 
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
 #rhbz 1003167 1046238
 Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
@@ -1303,12 +1297,6 @@ ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.
 
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
 #rhbz 1003167 1046238
 ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
@@ -2100,6 +2088,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git6.1.1
+- Linux v3.13-3995-g0dc3fd0
+
 * Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git5.1
 - Linux v3.13-3667-ge1ba845
 
