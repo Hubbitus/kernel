@@ -644,6 +644,8 @@ Patch25185: perf-plugin-dir.patch
 
 Patch25186: peterz-printk-timestamp-fix.patch
 
+Patch25187: revert-fsnotify-changes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1309,6 +1311,10 @@ ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 ApplyPatch perf-plugin-dir.patch
 
 ApplyPatch peterz-printk-timestamp-fix.patch
+
+# Davej and others are reporting slab corruption with the fsnotify changes.
+# Revert them until they're worked out upstream
+ApplyPatch revert-fsnotify-changes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2089,6 +2095,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git6.1.1
+- Revert fsnotify changes as they cause slab corruption for multiple people
 - Linux v3.13-3995-g0dc3fd0
 
 * Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git5.1

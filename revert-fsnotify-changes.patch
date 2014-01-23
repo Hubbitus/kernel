@@ -1,0 +1,2027 @@
+From 8fc16f2010c5d2f4200f172da86590da73f6c89e Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Thu, 23 Jan 2014 10:20:08 -0500
+Subject: [PATCH 1/3] Revert "fsnotify: remove pointless NULL initializers"
+
+This reverts commit 56b27cf6030dd36c56a5542ab8bfa406d337f083.
+---
+ fs/notify/dnotify/dnotify.c   | 3 +++
+ fs/notify/fanotify/fanotify.c | 1 +
+ kernel/audit_tree.c           | 2 ++
+ kernel/audit_watch.c          | 3 +++
+ 4 files changed, 9 insertions(+)
+
+diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
+index 0b9ff43..928688e 100644
+--- a/fs/notify/dnotify/dnotify.c
++++ b/fs/notify/dnotify/dnotify.c
+@@ -138,6 +138,9 @@ static void dnotify_free_mark(struct fsnotify_mark *fsn_mark)
+ 
+ static struct fsnotify_ops dnotify_fsnotify_ops = {
+ 	.handle_event = dnotify_handle_event,
++	.free_group_priv = NULL,
++	.freeing_mark = NULL,
++	.free_event = NULL,
+ };
+ 
+ /*
+diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+index 5877262..1f8f052 100644
+--- a/fs/notify/fanotify/fanotify.c
++++ b/fs/notify/fanotify/fanotify.c
+@@ -230,4 +230,5 @@ const struct fsnotify_ops fanotify_fsnotify_ops = {
+ 	.handle_event = fanotify_handle_event,
+ 	.free_group_priv = fanotify_free_group_priv,
+ 	.free_event = fanotify_free_event,
++	.freeing_mark = NULL,
+ };
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index 67ccf0e..ae8103b 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -936,6 +936,8 @@ static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify
+ 
+ static const struct fsnotify_ops audit_tree_ops = {
+ 	.handle_event = audit_tree_handle_event,
++	.free_group_priv = NULL,
++	.free_event = NULL,
+ 	.freeing_mark = audit_tree_freeing_mark,
+ };
+ 
+diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
+index 2596fac..367ac9a 100644
+--- a/kernel/audit_watch.c
++++ b/kernel/audit_watch.c
+@@ -505,6 +505,9 @@ static int audit_watch_handle_event(struct fsnotify_group *group,
+ 
+ static const struct fsnotify_ops audit_watch_fsnotify_ops = {
+ 	.handle_event = 	audit_watch_handle_event,
++	.free_group_priv = 	NULL,
++	.freeing_mark = 	NULL,
++	.free_event = 		NULL,
+ };
+ 
+ static int __init audit_watch_init(void)
+-- 
+1.8.4.2
+
+
+From 24bd25cea32de37512189a9aeb1c2bd3b2a83cfe Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Thu, 23 Jan 2014 10:20:17 -0500
+Subject: [PATCH 2/3] Revert "fsnotify: remove .should_send_event callback"
+
+This reverts commit 83c4c4b0a3aadc1ce7b5b2870ce1fc1f65498da0.
+---
+ fs/notify/dnotify/dnotify.c          | 22 ++++++++++++++++++----
+ fs/notify/fanotify/fanotify.c        | 18 ++++++++----------
+ fs/notify/fsnotify.c                 |  5 +++++
+ fs/notify/inotify/inotify_fsnotify.c | 24 +++++++++++++++++-------
+ include/linux/fsnotify_backend.h     |  4 ++++
+ kernel/audit_tree.c                  | 12 +++++++++++-
+ kernel/audit_watch.c                 |  9 +++++++++
+ 7 files changed, 72 insertions(+), 22 deletions(-)
+
+diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
+index 928688e..bfca53d 100644
+--- a/fs/notify/dnotify/dnotify.c
++++ b/fs/notify/dnotify/dnotify.c
+@@ -94,10 +94,6 @@ static int dnotify_handle_event(struct fsnotify_group *group,
+ 	struct fown_struct *fown;
+ 	__u32 test_mask = mask & ~FS_EVENT_ON_CHILD;
+ 
+-	/* not a dir, dnotify doesn't care */
+-	if (!S_ISDIR(inode->i_mode))
+-		return 0;
+-
+ 	BUG_ON(vfsmount_mark);
+ 
+ 	dn_mark = container_of(inode_mark, struct dnotify_mark, fsn_mark);
+@@ -125,6 +121,23 @@ static int dnotify_handle_event(struct fsnotify_group *group,
+ 	return 0;
+ }
+ 
++/*
++ * Given an inode and mask determine if dnotify would be interested in sending
++ * userspace notification for that pair.
++ */
++static bool dnotify_should_send_event(struct fsnotify_group *group,
++				      struct inode *inode,
++				      struct fsnotify_mark *inode_mark,
++				      struct fsnotify_mark *vfsmount_mark,
++				      __u32 mask, void *data, int data_type)
++{
++	/* not a dir, dnotify doesn't care */
++	if (!S_ISDIR(inode->i_mode))
++		return false;
++
++	return true;
++}
++
+ static void dnotify_free_mark(struct fsnotify_mark *fsn_mark)
+ {
+ 	struct dnotify_mark *dn_mark = container_of(fsn_mark,
+@@ -138,6 +151,7 @@ static void dnotify_free_mark(struct fsnotify_mark *fsn_mark)
+ 
+ static struct fsnotify_ops dnotify_fsnotify_ops = {
+ 	.handle_event = dnotify_handle_event,
++	.should_send_event = dnotify_should_send_event,
+ 	.free_group_priv = NULL,
+ 	.freeing_mark = NULL,
+ 	.free_event = NULL,
+diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+index 1f8f052..c26268d 100644
+--- a/fs/notify/fanotify/fanotify.c
++++ b/fs/notify/fanotify/fanotify.c
+@@ -88,17 +88,18 @@ static int fanotify_get_response_from_access(struct fsnotify_group *group,
+ }
+ #endif
+ 
+-static bool fanotify_should_send_event(struct fsnotify_mark *inode_mark,
++static bool fanotify_should_send_event(struct fsnotify_group *group,
++				       struct inode *inode,
++				       struct fsnotify_mark *inode_mark,
+ 				       struct fsnotify_mark *vfsmnt_mark,
+-				       u32 event_mask,
+-				       void *data, int data_type)
++				       __u32 event_mask, void *data, int data_type)
+ {
+ 	__u32 marks_mask, marks_ignored_mask;
+ 	struct path *path = data;
+ 
+-	pr_debug("%s: inode_mark=%p vfsmnt_mark=%p mask=%x data=%p"
+-		 " data_type=%d\n", __func__, inode_mark, vfsmnt_mark,
+-		 event_mask, data, data_type);
++	pr_debug("%s: group=%p inode=%p inode_mark=%p vfsmnt_mark=%p "
++		 "mask=%x data=%p data_type=%d\n", __func__, group, inode,
++		 inode_mark, vfsmnt_mark, event_mask, data, data_type);
+ 
+ 	/* if we don't have enough info to send an event to userspace say no */
+ 	if (data_type != FSNOTIFY_EVENT_PATH)
+@@ -162,10 +163,6 @@ static int fanotify_handle_event(struct fsnotify_group *group,
+ 	BUILD_BUG_ON(FAN_ACCESS_PERM != FS_ACCESS_PERM);
+ 	BUILD_BUG_ON(FAN_ONDIR != FS_ISDIR);
+ 
+-	if (!fanotify_should_send_event(inode_mark, fanotify_mark, mask, data,
+-					data_type))
+-		return 0;
+-
+ 	pr_debug("%s: group=%p inode=%p mask=%x\n", __func__, group, inode,
+ 		 mask);
+ 
+@@ -228,6 +225,7 @@ static void fanotify_free_event(struct fsnotify_event *fsn_event)
+ 
+ const struct fsnotify_ops fanotify_fsnotify_ops = {
+ 	.handle_event = fanotify_handle_event,
++	.should_send_event = fanotify_should_send_event,
+ 	.free_group_priv = fanotify_free_group_priv,
+ 	.free_event = fanotify_free_event,
+ 	.freeing_mark = NULL,
+diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+index 1d4e1ea..7c754c9 100644
+--- a/fs/notify/fsnotify.c
++++ b/fs/notify/fsnotify.c
+@@ -177,6 +177,11 @@ static int send_to_group(struct inode *to_tell,
+ 	if (!inode_test_mask && !vfsmount_test_mask)
+ 		return 0;
+ 
++	if (group->ops->should_send_event(group, to_tell, inode_mark,
++					  vfsmount_mark, mask, data,
++					  data_is) == false)
++		return 0;
++
+ 	return group->ops->handle_event(group, to_tell, inode_mark,
+ 					vfsmount_mark, mask, data, data_is,
+ 					file_name);
+diff --git a/fs/notify/inotify/inotify_fsnotify.c b/fs/notify/inotify/inotify_fsnotify.c
+index aad1a35..6fabbd1 100644
+--- a/fs/notify/inotify/inotify_fsnotify.c
++++ b/fs/notify/inotify/inotify_fsnotify.c
+@@ -81,13 +81,6 @@ int inotify_handle_event(struct fsnotify_group *group,
+ 
+ 	BUG_ON(vfsmount_mark);
+ 
+-	if ((inode_mark->mask & FS_EXCL_UNLINK) &&
+-	    (data_type == FSNOTIFY_EVENT_PATH)) {
+-		struct path *path = data;
+-
+-		if (d_unlinked(path->dentry))
+-			return 0;
+-	}
+ 	if (file_name) {
+ 		len = strlen(file_name);
+ 		alloc_len += len + 1;
+@@ -129,6 +122,22 @@ static void inotify_freeing_mark(struct fsnotify_mark *fsn_mark, struct fsnotify
+ 	inotify_ignored_and_remove_idr(fsn_mark, group);
+ }
+ 
++static bool inotify_should_send_event(struct fsnotify_group *group, struct inode *inode,
++				      struct fsnotify_mark *inode_mark,
++				      struct fsnotify_mark *vfsmount_mark,
++				      __u32 mask, void *data, int data_type)
++{
++	if ((inode_mark->mask & FS_EXCL_UNLINK) &&
++	    (data_type == FSNOTIFY_EVENT_PATH)) {
++		struct path *path = data;
++
++		if (d_unlinked(path->dentry))
++			return false;
++	}
++
++	return true;
++}
++
+ /*
+  * This is NEVER supposed to be called.  Inotify marks should either have been
+  * removed from the idr when the watch was removed or in the
+@@ -180,6 +189,7 @@ static void inotify_free_event(struct fsnotify_event *fsn_event)
+ 
+ const struct fsnotify_ops inotify_fsnotify_ops = {
+ 	.handle_event = inotify_handle_event,
++	.should_send_event = inotify_should_send_event,
+ 	.free_group_priv = inotify_free_group_priv,
+ 	.free_event = inotify_free_event,
+ 	.freeing_mark = inotify_freeing_mark,
+diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+index 7d8d5e6..7f3d7dcf 100644
+--- a/include/linux/fsnotify_backend.h
++++ b/include/linux/fsnotify_backend.h
+@@ -94,6 +94,10 @@ struct fsnotify_fname;
+  * 		userspace messages that marks have been removed.
+  */
+ struct fsnotify_ops {
++	bool (*should_send_event)(struct fsnotify_group *group, struct inode *inode,
++				  struct fsnotify_mark *inode_mark,
++				  struct fsnotify_mark *vfsmount_mark,
++				  __u32 mask, void *data, int data_type);
+ 	int (*handle_event)(struct fsnotify_group *group,
+ 			    struct inode *inode,
+ 			    struct fsnotify_mark *inode_mark,
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index ae8103b..bcc0b18 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -918,7 +918,8 @@ static int audit_tree_handle_event(struct fsnotify_group *group,
+ 				   u32 mask, void *data, int data_type,
+ 				   const unsigned char *file_name)
+ {
+-	return 0;
++	BUG();
++	return -EOPNOTSUPP;
+ }
+ 
+ static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify_group *group)
+@@ -934,8 +935,17 @@ static void audit_tree_freeing_mark(struct fsnotify_mark *entry, struct fsnotify
+ 	BUG_ON(atomic_read(&entry->refcnt) < 1);
+ }
+ 
++static bool audit_tree_send_event(struct fsnotify_group *group, struct inode *inode,
++				  struct fsnotify_mark *inode_mark,
++				  struct fsnotify_mark *vfsmount_mark,
++				  __u32 mask, void *data, int data_type)
++{
++	return false;
++}
++
+ static const struct fsnotify_ops audit_tree_ops = {
+ 	.handle_event = audit_tree_handle_event,
++	.should_send_event = audit_tree_send_event,
+ 	.free_group_priv = NULL,
+ 	.free_event = NULL,
+ 	.freeing_mark = audit_tree_freeing_mark,
+diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
+index 367ac9a..a760c32 100644
+--- a/kernel/audit_watch.c
++++ b/kernel/audit_watch.c
+@@ -465,6 +465,14 @@ void audit_remove_watch_rule(struct audit_krule *krule)
+ 	}
+ }
+ 
++static bool audit_watch_should_send_event(struct fsnotify_group *group, struct inode *inode,
++					  struct fsnotify_mark *inode_mark,
++					  struct fsnotify_mark *vfsmount_mark,
++					  __u32 mask, void *data, int data_type)
++{
++       return true;
++}
++
+ /* Update watch data in audit rules based on fsnotify events. */
+ static int audit_watch_handle_event(struct fsnotify_group *group,
+ 				    struct inode *to_tell,
+@@ -504,6 +512,7 @@ static int audit_watch_handle_event(struct fsnotify_group *group,
+ }
+ 
+ static const struct fsnotify_ops audit_watch_fsnotify_ops = {
++	.should_send_event = 	audit_watch_should_send_event,
+ 	.handle_event = 	audit_watch_handle_event,
+ 	.free_group_priv = 	NULL,
+ 	.freeing_mark = 	NULL,
+-- 
+1.8.4.2
+
+
+From 0be830523466a37554f73c26487d71ed313a44d1 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Thu, 23 Jan 2014 10:20:25 -0500
+Subject: [PATCH 3/3] Revert "fsnotify: do not share events between
+ notification groups"
+
+This reverts commit 7053aee26a3548ebaba046ae2e52396ccf56ac6c.
+---
+ fs/notify/dnotify/dnotify.c          |  11 +-
+ fs/notify/fanotify/fanotify.c        | 211 +++++++++++-----------
+ fs/notify/fanotify/fanotify.h        |  23 ---
+ fs/notify/fanotify/fanotify_user.c   |  41 ++---
+ fs/notify/fsnotify.c                 |  37 ++--
+ fs/notify/group.c                    |   1 -
+ fs/notify/inotify/inotify.h          |  21 +--
+ fs/notify/inotify/inotify_fsnotify.c | 125 ++++++++-----
+ fs/notify/inotify/inotify_user.c     |  86 ++++++---
+ fs/notify/notification.c             | 334 ++++++++++++++++++++++++++++++++---
+ include/linux/fsnotify_backend.h     | 114 +++++++++---
+ kernel/audit_tree.c                  |   8 +-
+ kernel/audit_watch.c                 |  14 +-
+ 13 files changed, 708 insertions(+), 318 deletions(-)
+ delete mode 100644 fs/notify/fanotify/fanotify.h
+
+diff --git a/fs/notify/dnotify/dnotify.c b/fs/notify/dnotify/dnotify.c
+index bfca53d..1fedd5f 100644
+--- a/fs/notify/dnotify/dnotify.c
++++ b/fs/notify/dnotify/dnotify.c
+@@ -82,20 +82,21 @@ static void dnotify_recalc_inode_mask(struct fsnotify_mark *fsn_mark)
+  * events.
+  */
+ static int dnotify_handle_event(struct fsnotify_group *group,
+-				struct inode *inode,
+ 				struct fsnotify_mark *inode_mark,
+ 				struct fsnotify_mark *vfsmount_mark,
+-				u32 mask, void *data, int data_type,
+-				const unsigned char *file_name)
++				struct fsnotify_event *event)
+ {
+ 	struct dnotify_mark *dn_mark;
++	struct inode *to_tell;
+ 	struct dnotify_struct *dn;
+ 	struct dnotify_struct **prev;
+ 	struct fown_struct *fown;
+-	__u32 test_mask = mask & ~FS_EVENT_ON_CHILD;
++	__u32 test_mask = event->mask & ~FS_EVENT_ON_CHILD;
+ 
+ 	BUG_ON(vfsmount_mark);
+ 
++	to_tell = event->to_tell;
++
+ 	dn_mark = container_of(inode_mark, struct dnotify_mark, fsn_mark);
+ 
+ 	spin_lock(&inode_mark->lock);
+@@ -154,7 +155,7 @@ static struct fsnotify_ops dnotify_fsnotify_ops = {
+ 	.should_send_event = dnotify_should_send_event,
+ 	.free_group_priv = NULL,
+ 	.freeing_mark = NULL,
+-	.free_event = NULL,
++	.free_event_priv = NULL,
+ };
+ 
+ /*
+diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
+index c26268d..0c2f912 100644
+--- a/fs/notify/fanotify/fanotify.c
++++ b/fs/notify/fanotify/fanotify.c
+@@ -9,27 +9,31 @@
+ #include <linux/types.h>
+ #include <linux/wait.h>
+ 
+-#include "fanotify.h"
+-
+-static bool should_merge(struct fsnotify_event *old_fsn,
+-			 struct fsnotify_event *new_fsn)
++static bool should_merge(struct fsnotify_event *old, struct fsnotify_event *new)
+ {
+-	struct fanotify_event_info *old, *new;
++	pr_debug("%s: old=%p new=%p\n", __func__, old, new);
+ 
++	if (old->to_tell == new->to_tell &&
++	    old->data_type == new->data_type &&
++	    old->tgid == new->tgid) {
++		switch (old->data_type) {
++		case (FSNOTIFY_EVENT_PATH):
+ #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+-	/* dont merge two permission events */
+-	if ((old_fsn->mask & FAN_ALL_PERM_EVENTS) &&
+-	    (new_fsn->mask & FAN_ALL_PERM_EVENTS))
+-		return false;
++			/* dont merge two permission events */
++			if ((old->mask & FAN_ALL_PERM_EVENTS) &&
++			    (new->mask & FAN_ALL_PERM_EVENTS))
++				return false;
+ #endif
+-	pr_debug("%s: old=%p new=%p\n", __func__, old_fsn, new_fsn);
+-	old = FANOTIFY_E(old_fsn);
+-	new = FANOTIFY_E(new_fsn);
+-
+-	if (old_fsn->inode == new_fsn->inode && old->tgid == new->tgid &&
+-	    old->path.mnt == new->path.mnt &&
+-	    old->path.dentry == new->path.dentry)
+-		return true;
++			if ((old->path.mnt == new->path.mnt) &&
++			    (old->path.dentry == new->path.dentry))
++				return true;
++			break;
++		case (FSNOTIFY_EVENT_NONE):
++			return true;
++		default:
++			BUG();
++		};
++	}
+ 	return false;
+ }
+ 
+@@ -37,28 +41,59 @@ static bool should_merge(struct fsnotify_event *old_fsn,
+ static struct fsnotify_event *fanotify_merge(struct list_head *list,
+ 					     struct fsnotify_event *event)
+ {
+-	struct fsnotify_event *test_event;
+-	bool do_merge = false;
++	struct fsnotify_event_holder *test_holder;
++	struct fsnotify_event *test_event = NULL;
++	struct fsnotify_event *new_event;
+ 
+ 	pr_debug("%s: list=%p event=%p\n", __func__, list, event);
+ 
+-	list_for_each_entry_reverse(test_event, list, list) {
+-		if (should_merge(test_event, event)) {
+-			do_merge = true;
++
++	list_for_each_entry_reverse(test_holder, list, event_list) {
++		if (should_merge(test_holder->event, event)) {
++			test_event = test_holder->event;
+ 			break;
+ 		}
+ 	}
+ 
+-	if (!do_merge)
++	if (!test_event)
+ 		return NULL;
+ 
+-	test_event->mask |= event->mask;
+-	return test_event;
++	fsnotify_get_event(test_event);
++
++	/* if they are exactly the same we are done */
++	if (test_event->mask == event->mask)
++		return test_event;
++
++	/*
++	 * if the refcnt == 2 this is the only queue
++	 * for this event and so we can update the mask
++	 * in place.
++	 */
++	if (atomic_read(&test_event->refcnt) == 2) {
++		test_event->mask |= event->mask;
++		return test_event;
++	}
++
++	new_event = fsnotify_clone_event(test_event);
++
++	/* done with test_event */
++	fsnotify_put_event(test_event);
++
++	/* couldn't allocate memory, merge was not possible */
++	if (unlikely(!new_event))
++		return ERR_PTR(-ENOMEM);
++
++	/* build new event and replace it on the list */
++	new_event->mask = (test_event->mask | event->mask);
++	fsnotify_replace_event(test_holder, new_event);
++
++	/* we hold a reference on new_event from clone_event */
++	return new_event;
+ }
+ 
+ #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+ static int fanotify_get_response_from_access(struct fsnotify_group *group,
+-					     struct fanotify_event_info *event)
++					     struct fsnotify_event *event)
+ {
+ 	int ret;
+ 
+@@ -71,6 +106,7 @@ static int fanotify_get_response_from_access(struct fsnotify_group *group,
+ 		return 0;
+ 
+ 	/* userspace responded, convert to something usable */
++	spin_lock(&event->lock);
+ 	switch (event->response) {
+ 	case FAN_ALLOW:
+ 		ret = 0;
+@@ -80,6 +116,7 @@ static int fanotify_get_response_from_access(struct fsnotify_group *group,
+ 		ret = -EPERM;
+ 	}
+ 	event->response = 0;
++	spin_unlock(&event->lock);
+ 
+ 	pr_debug("%s: group=%p event=%p about to return ret=%d\n", __func__,
+ 		 group, event, ret);
+@@ -88,8 +125,48 @@ static int fanotify_get_response_from_access(struct fsnotify_group *group,
+ }
+ #endif
+ 
++static int fanotify_handle_event(struct fsnotify_group *group,
++				 struct fsnotify_mark *inode_mark,
++				 struct fsnotify_mark *fanotify_mark,
++				 struct fsnotify_event *event)
++{
++	int ret = 0;
++	struct fsnotify_event *notify_event = NULL;
++
++	BUILD_BUG_ON(FAN_ACCESS != FS_ACCESS);
++	BUILD_BUG_ON(FAN_MODIFY != FS_MODIFY);
++	BUILD_BUG_ON(FAN_CLOSE_NOWRITE != FS_CLOSE_NOWRITE);
++	BUILD_BUG_ON(FAN_CLOSE_WRITE != FS_CLOSE_WRITE);
++	BUILD_BUG_ON(FAN_OPEN != FS_OPEN);
++	BUILD_BUG_ON(FAN_EVENT_ON_CHILD != FS_EVENT_ON_CHILD);
++	BUILD_BUG_ON(FAN_Q_OVERFLOW != FS_Q_OVERFLOW);
++	BUILD_BUG_ON(FAN_OPEN_PERM != FS_OPEN_PERM);
++	BUILD_BUG_ON(FAN_ACCESS_PERM != FS_ACCESS_PERM);
++	BUILD_BUG_ON(FAN_ONDIR != FS_ISDIR);
++
++	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
++
++	notify_event = fsnotify_add_notify_event(group, event, NULL, fanotify_merge);
++	if (IS_ERR(notify_event))
++		return PTR_ERR(notify_event);
++
++#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
++	if (event->mask & FAN_ALL_PERM_EVENTS) {
++		/* if we merged we need to wait on the new event */
++		if (notify_event)
++			event = notify_event;
++		ret = fanotify_get_response_from_access(group, event);
++	}
++#endif
++
++	if (notify_event)
++		fsnotify_put_event(notify_event);
++
++	return ret;
++}
++
+ static bool fanotify_should_send_event(struct fsnotify_group *group,
+-				       struct inode *inode,
++				       struct inode *to_tell,
+ 				       struct fsnotify_mark *inode_mark,
+ 				       struct fsnotify_mark *vfsmnt_mark,
+ 				       __u32 event_mask, void *data, int data_type)
+@@ -97,8 +174,8 @@ static bool fanotify_should_send_event(struct fsnotify_group *group,
+ 	__u32 marks_mask, marks_ignored_mask;
+ 	struct path *path = data;
+ 
+-	pr_debug("%s: group=%p inode=%p inode_mark=%p vfsmnt_mark=%p "
+-		 "mask=%x data=%p data_type=%d\n", __func__, group, inode,
++	pr_debug("%s: group=%p to_tell=%p inode_mark=%p vfsmnt_mark=%p "
++		 "mask=%x data=%p data_type=%d\n", __func__, group, to_tell,
+ 		 inode_mark, vfsmnt_mark, event_mask, data, data_type);
+ 
+ 	/* if we don't have enough info to send an event to userspace say no */
+@@ -140,70 +217,6 @@ static bool fanotify_should_send_event(struct fsnotify_group *group,
+ 	return false;
+ }
+ 
+-static int fanotify_handle_event(struct fsnotify_group *group,
+-				 struct inode *inode,
+-				 struct fsnotify_mark *inode_mark,
+-				 struct fsnotify_mark *fanotify_mark,
+-				 u32 mask, void *data, int data_type,
+-				 const unsigned char *file_name)
+-{
+-	int ret = 0;
+-	struct fanotify_event_info *event;
+-	struct fsnotify_event *fsn_event;
+-	struct fsnotify_event *notify_fsn_event;
+-
+-	BUILD_BUG_ON(FAN_ACCESS != FS_ACCESS);
+-	BUILD_BUG_ON(FAN_MODIFY != FS_MODIFY);
+-	BUILD_BUG_ON(FAN_CLOSE_NOWRITE != FS_CLOSE_NOWRITE);
+-	BUILD_BUG_ON(FAN_CLOSE_WRITE != FS_CLOSE_WRITE);
+-	BUILD_BUG_ON(FAN_OPEN != FS_OPEN);
+-	BUILD_BUG_ON(FAN_EVENT_ON_CHILD != FS_EVENT_ON_CHILD);
+-	BUILD_BUG_ON(FAN_Q_OVERFLOW != FS_Q_OVERFLOW);
+-	BUILD_BUG_ON(FAN_OPEN_PERM != FS_OPEN_PERM);
+-	BUILD_BUG_ON(FAN_ACCESS_PERM != FS_ACCESS_PERM);
+-	BUILD_BUG_ON(FAN_ONDIR != FS_ISDIR);
+-
+-	pr_debug("%s: group=%p inode=%p mask=%x\n", __func__, group, inode,
+-		 mask);
+-
+-	event = kmem_cache_alloc(fanotify_event_cachep, GFP_KERNEL);
+-	if (unlikely(!event))
+-		return -ENOMEM;
+-
+-	fsn_event = &event->fse;
+-	fsnotify_init_event(fsn_event, inode, mask);
+-	event->tgid = get_pid(task_tgid(current));
+-	if (data_type == FSNOTIFY_EVENT_PATH) {
+-		struct path *path = data;
+-		event->path = *path;
+-		path_get(&event->path);
+-	} else {
+-		event->path.mnt = NULL;
+-		event->path.dentry = NULL;
+-	}
+-#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+-	event->response = 0;
+-#endif
+-
+-	notify_fsn_event = fsnotify_add_notify_event(group, fsn_event,
+-						     fanotify_merge);
+-	if (notify_fsn_event) {
+-		/* Our event wasn't used in the end. Free it. */
+-		fsnotify_destroy_event(group, fsn_event);
+-		if (IS_ERR(notify_fsn_event))
+-			return PTR_ERR(notify_fsn_event);
+-		/* We need to ask about a different events after a merge... */
+-		event = FANOTIFY_E(notify_fsn_event);
+-		fsn_event = notify_fsn_event;
+-	}
+-
+-#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+-	if (fsn_event->mask & FAN_ALL_PERM_EVENTS)
+-		ret = fanotify_get_response_from_access(group, event);
+-#endif
+-	return ret;
+-}
+-
+ static void fanotify_free_group_priv(struct fsnotify_group *group)
+ {
+ 	struct user_struct *user;
+@@ -213,20 +226,10 @@ static void fanotify_free_group_priv(struct fsnotify_group *group)
+ 	free_uid(user);
+ }
+ 
+-static void fanotify_free_event(struct fsnotify_event *fsn_event)
+-{
+-	struct fanotify_event_info *event;
+-
+-	event = FANOTIFY_E(fsn_event);
+-	path_put(&event->path);
+-	put_pid(event->tgid);
+-	kmem_cache_free(fanotify_event_cachep, event);
+-}
+-
+ const struct fsnotify_ops fanotify_fsnotify_ops = {
+ 	.handle_event = fanotify_handle_event,
+ 	.should_send_event = fanotify_should_send_event,
+ 	.free_group_priv = fanotify_free_group_priv,
+-	.free_event = fanotify_free_event,
++	.free_event_priv = NULL,
+ 	.freeing_mark = NULL,
+ };
+diff --git a/fs/notify/fanotify/fanotify.h b/fs/notify/fanotify/fanotify.h
+deleted file mode 100644
+index 0e90174..0000000
+--- a/fs/notify/fanotify/fanotify.h
++++ /dev/null
+@@ -1,23 +0,0 @@
+-#include <linux/fsnotify_backend.h>
+-#include <linux/path.h>
+-#include <linux/slab.h>
+-
+-extern struct kmem_cache *fanotify_event_cachep;
+-
+-struct fanotify_event_info {
+-	struct fsnotify_event fse;
+-	/*
+-	 * We hold ref to this path so it may be dereferenced at any point
+-	 * during this object's lifetime
+-	 */
+-	struct path path;
+-	struct pid *tgid;
+-#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+-	u32 response;	/* userspace answer to question */
+-#endif
+-};
+-
+-static inline struct fanotify_event_info *FANOTIFY_E(struct fsnotify_event *fse)
+-{
+-	return container_of(fse, struct fanotify_event_info, fse);
+-}
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 57d7c08..e44cb64 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -19,7 +19,6 @@
+ 
+ #include "../../mount.h"
+ #include "../fdinfo.h"
+-#include "fanotify.h"
+ 
+ #define FANOTIFY_DEFAULT_MAX_EVENTS	16384
+ #define FANOTIFY_DEFAULT_MAX_MARKS	8192
+@@ -29,12 +28,11 @@ extern const struct fsnotify_ops fanotify_fsnotify_ops;
+ 
+ static struct kmem_cache *fanotify_mark_cache __read_mostly;
+ static struct kmem_cache *fanotify_response_event_cache __read_mostly;
+-struct kmem_cache *fanotify_event_cachep __read_mostly;
+ 
+ struct fanotify_response_event {
+ 	struct list_head list;
+ 	__s32 fd;
+-	struct fanotify_event_info *event;
++	struct fsnotify_event *event;
+ };
+ 
+ /*
+@@ -63,8 +61,8 @@ static struct fsnotify_event *get_one_event(struct fsnotify_group *group,
+ }
+ 
+ static int create_fd(struct fsnotify_group *group,
+-		     struct fanotify_event_info *event,
+-		     struct file **file)
++			struct fsnotify_event *event,
++			struct file **file)
+ {
+ 	int client_fd;
+ 	struct file *new_file;
+@@ -75,6 +73,12 @@ static int create_fd(struct fsnotify_group *group,
+ 	if (client_fd < 0)
+ 		return client_fd;
+ 
++	if (event->data_type != FSNOTIFY_EVENT_PATH) {
++		WARN_ON(1);
++		put_unused_fd(client_fd);
++		return -EINVAL;
++	}
++
+ 	/*
+ 	 * we need a new file handle for the userspace program so it can read even if it was
+ 	 * originally opened O_WRONLY.
+@@ -105,25 +109,23 @@ static int create_fd(struct fsnotify_group *group,
+ }
+ 
+ static int fill_event_metadata(struct fsnotify_group *group,
+-			       struct fanotify_event_metadata *metadata,
+-			       struct fsnotify_event *fsn_event,
+-			       struct file **file)
++				   struct fanotify_event_metadata *metadata,
++				   struct fsnotify_event *event,
++				   struct file **file)
+ {
+ 	int ret = 0;
+-	struct fanotify_event_info *event;
+ 
+ 	pr_debug("%s: group=%p metadata=%p event=%p\n", __func__,
+-		 group, metadata, fsn_event);
++		 group, metadata, event);
+ 
+ 	*file = NULL;
+-	event = container_of(fsn_event, struct fanotify_event_info, fse);
+ 	metadata->event_len = FAN_EVENT_METADATA_LEN;
+ 	metadata->metadata_len = FAN_EVENT_METADATA_LEN;
+ 	metadata->vers = FANOTIFY_METADATA_VERSION;
+ 	metadata->reserved = 0;
+-	metadata->mask = fsn_event->mask & FAN_ALL_OUTGOING_EVENTS;
++	metadata->mask = event->mask & FAN_ALL_OUTGOING_EVENTS;
+ 	metadata->pid = pid_vnr(event->tgid);
+-	if (unlikely(fsn_event->mask & FAN_Q_OVERFLOW))
++	if (unlikely(event->mask & FAN_Q_OVERFLOW))
+ 		metadata->fd = FAN_NOFD;
+ 	else {
+ 		metadata->fd = create_fd(group, event, file);
+@@ -207,7 +209,7 @@ static int prepare_for_access_response(struct fsnotify_group *group,
+ 	if (!re)
+ 		return -ENOMEM;
+ 
+-	re->event = FANOTIFY_E(event);
++	re->event = event;
+ 	re->fd = fd;
+ 
+ 	mutex_lock(&group->fanotify_data.access_mutex);
+@@ -215,7 +217,7 @@ static int prepare_for_access_response(struct fsnotify_group *group,
+ 	if (atomic_read(&group->fanotify_data.bypass_perm)) {
+ 		mutex_unlock(&group->fanotify_data.access_mutex);
+ 		kmem_cache_free(fanotify_response_event_cache, re);
+-		FANOTIFY_E(event)->response = FAN_ALLOW;
++		event->response = FAN_ALLOW;
+ 		return 0;
+ 	}
+ 		
+@@ -271,7 +273,7 @@ out_close_fd:
+ out:
+ #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+ 	if (event->mask & FAN_ALL_PERM_EVENTS) {
+-		FANOTIFY_E(event)->response = FAN_DENY;
++		event->response = FAN_DENY;
+ 		wake_up(&group->fanotify_data.access_waitq);
+ 	}
+ #endif
+@@ -319,7 +321,7 @@ static ssize_t fanotify_read(struct file *file, char __user *buf,
+ 			if (IS_ERR(kevent))
+ 				break;
+ 			ret = copy_event_to_user(group, kevent, buf);
+-			fsnotify_destroy_event(group, kevent);
++			fsnotify_put_event(kevent);
+ 			if (ret < 0)
+ 				break;
+ 			buf += ret;
+@@ -407,7 +409,7 @@ static int fanotify_release(struct inode *ignored, struct file *file)
+ static long fanotify_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ {
+ 	struct fsnotify_group *group;
+-	struct fsnotify_event *fsn_event;
++	struct fsnotify_event_holder *holder;
+ 	void __user *p;
+ 	int ret = -ENOTTY;
+ 	size_t send_len = 0;
+@@ -419,7 +421,7 @@ static long fanotify_ioctl(struct file *file, unsigned int cmd, unsigned long ar
+ 	switch (cmd) {
+ 	case FIONREAD:
+ 		mutex_lock(&group->notification_mutex);
+-		list_for_each_entry(fsn_event, &group->notification_list, list)
++		list_for_each_entry(holder, &group->notification_list, event_list)
+ 			send_len += FAN_EVENT_METADATA_LEN;
+ 		mutex_unlock(&group->notification_mutex);
+ 		ret = put_user(send_len, (int __user *) p);
+@@ -904,7 +906,6 @@ static int __init fanotify_user_setup(void)
+ 	fanotify_mark_cache = KMEM_CACHE(fsnotify_mark, SLAB_PANIC);
+ 	fanotify_response_event_cache = KMEM_CACHE(fanotify_response_event,
+ 						   SLAB_PANIC);
+-	fanotify_event_cachep = KMEM_CACHE(fanotify_event_info, SLAB_PANIC);
+ 
+ 	return 0;
+ }
+diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+index 7c754c9..4bb21d6 100644
+--- a/fs/notify/fsnotify.c
++++ b/fs/notify/fsnotify.c
+@@ -128,7 +128,8 @@ static int send_to_group(struct inode *to_tell,
+ 			 struct fsnotify_mark *vfsmount_mark,
+ 			 __u32 mask, void *data,
+ 			 int data_is, u32 cookie,
+-			 const unsigned char *file_name)
++			 const unsigned char *file_name,
++			 struct fsnotify_event **event)
+ {
+ 	struct fsnotify_group *group = NULL;
+ 	__u32 inode_test_mask = 0;
+@@ -169,10 +170,10 @@ static int send_to_group(struct inode *to_tell,
+ 
+ 	pr_debug("%s: group=%p to_tell=%p mask=%x inode_mark=%p"
+ 		 " inode_test_mask=%x vfsmount_mark=%p vfsmount_test_mask=%x"
+-		 " data=%p data_is=%d cookie=%d\n",
++		 " data=%p data_is=%d cookie=%d event=%p\n",
+ 		 __func__, group, to_tell, mask, inode_mark,
+ 		 inode_test_mask, vfsmount_mark, vfsmount_test_mask, data,
+-		 data_is, cookie);
++		 data_is, cookie, *event);
+ 
+ 	if (!inode_test_mask && !vfsmount_test_mask)
+ 		return 0;
+@@ -182,9 +183,14 @@ static int send_to_group(struct inode *to_tell,
+ 					  data_is) == false)
+ 		return 0;
+ 
+-	return group->ops->handle_event(group, to_tell, inode_mark,
+-					vfsmount_mark, mask, data, data_is,
+-					file_name);
++	if (!*event) {
++		*event = fsnotify_create_event(to_tell, mask, data,
++						data_is, file_name,
++						cookie, GFP_KERNEL);
++		if (!*event)
++			return -ENOMEM;
++	}
++	return group->ops->handle_event(group, inode_mark, vfsmount_mark, *event);
+ }
+ 
+ /*
+@@ -199,6 +205,7 @@ int fsnotify(struct inode *to_tell, __u32 mask, void *data, int data_is,
+ 	struct hlist_node *inode_node = NULL, *vfsmount_node = NULL;
+ 	struct fsnotify_mark *inode_mark = NULL, *vfsmount_mark = NULL;
+ 	struct fsnotify_group *inode_group, *vfsmount_group;
++	struct fsnotify_event *event = NULL;
+ 	struct mount *mnt;
+ 	int idx, ret = 0;
+ 	/* global tests shouldn't care about events on child only the specific event */
+@@ -251,18 +258,18 @@ int fsnotify(struct inode *to_tell, __u32 mask, void *data, int data_is,
+ 
+ 		if (inode_group > vfsmount_group) {
+ 			/* handle inode */
+-			ret = send_to_group(to_tell, inode_mark, NULL, mask,
+-					    data, data_is, cookie, file_name);
++			ret = send_to_group(to_tell, inode_mark, NULL, mask, data,
++					    data_is, cookie, file_name, &event);
+ 			/* we didn't use the vfsmount_mark */
+ 			vfsmount_group = NULL;
+ 		} else if (vfsmount_group > inode_group) {
+-			ret = send_to_group(to_tell, NULL, vfsmount_mark, mask,
+-					    data, data_is, cookie, file_name);
++			ret = send_to_group(to_tell, NULL, vfsmount_mark, mask, data,
++					    data_is, cookie, file_name, &event);
+ 			inode_group = NULL;
+ 		} else {
+ 			ret = send_to_group(to_tell, inode_mark, vfsmount_mark,
+-					    mask, data, data_is, cookie,
+-					    file_name);
++					    mask, data, data_is, cookie, file_name,
++					    &event);
+ 		}
+ 
+ 		if (ret && (mask & ALL_FSNOTIFY_PERM_EVENTS))
+@@ -278,6 +285,12 @@ int fsnotify(struct inode *to_tell, __u32 mask, void *data, int data_is,
+ 	ret = 0;
+ out:
+ 	srcu_read_unlock(&fsnotify_mark_srcu, idx);
++	/*
++	 * fsnotify_create_event() took a reference so the event can't be cleaned
++	 * up while we are still trying to add it to lists, drop that one.
++	 */
++	if (event)
++		fsnotify_put_event(event);
+ 
+ 	return ret;
+ }
+diff --git a/fs/notify/group.c b/fs/notify/group.c
+index ee674fe..bd2625b 100644
+--- a/fs/notify/group.c
++++ b/fs/notify/group.c
+@@ -99,7 +99,6 @@ struct fsnotify_group *fsnotify_alloc_group(const struct fsnotify_ops *ops)
+ 	INIT_LIST_HEAD(&group->marks_list);
+ 
+ 	group->ops = ops;
+-	fsnotify_init_event(&group->overflow_event, NULL, FS_Q_OVERFLOW);
+ 
+ 	return group;
+ }
+diff --git a/fs/notify/inotify/inotify.h b/fs/notify/inotify/inotify.h
+index 485eef3..b6642e4 100644
+--- a/fs/notify/inotify/inotify.h
++++ b/fs/notify/inotify/inotify.h
+@@ -2,12 +2,11 @@
+ #include <linux/inotify.h>
+ #include <linux/slab.h> /* struct kmem_cache */
+ 
+-struct inotify_event_info {
+-	struct fsnotify_event fse;
++extern struct kmem_cache *event_priv_cachep;
++
++struct inotify_event_private_data {
++	struct fsnotify_event_private_data fsnotify_event_priv_data;
+ 	int wd;
+-	u32 sync_cookie;
+-	int name_len;
+-	char name[];
+ };
+ 
+ struct inotify_inode_mark {
+@@ -15,18 +14,8 @@ struct inotify_inode_mark {
+ 	int wd;
+ };
+ 
+-static inline struct inotify_event_info *INOTIFY_E(struct fsnotify_event *fse)
+-{
+-	return container_of(fse, struct inotify_event_info, fse);
+-}
+-
+ extern void inotify_ignored_and_remove_idr(struct fsnotify_mark *fsn_mark,
+ 					   struct fsnotify_group *group);
+-extern int inotify_handle_event(struct fsnotify_group *group,
+-				struct inode *inode,
+-				struct fsnotify_mark *inode_mark,
+-				struct fsnotify_mark *vfsmount_mark,
+-				u32 mask, void *data, int data_type,
+-				const unsigned char *file_name);
++extern void inotify_free_event_priv(struct fsnotify_event_private_data *event_priv);
+ 
+ extern const struct fsnotify_ops inotify_fsnotify_ops;
+diff --git a/fs/notify/inotify/inotify_fsnotify.c b/fs/notify/inotify/inotify_fsnotify.c
+index 6fabbd1..4216308 100644
+--- a/fs/notify/inotify/inotify_fsnotify.c
++++ b/fs/notify/inotify/inotify_fsnotify.c
+@@ -34,80 +34,100 @@
+ #include "inotify.h"
+ 
+ /*
+- * Check if 2 events contain the same information.
++ * Check if 2 events contain the same information.  We do not compare private data
++ * but at this moment that isn't a problem for any know fsnotify listeners.
+  */
+-static bool event_compare(struct fsnotify_event *old_fsn,
+-			  struct fsnotify_event *new_fsn)
++static bool event_compare(struct fsnotify_event *old, struct fsnotify_event *new)
+ {
+-	struct inotify_event_info *old, *new;
+-
+-	if (old_fsn->mask & FS_IN_IGNORED)
+-		return false;
+-	old = INOTIFY_E(old_fsn);
+-	new = INOTIFY_E(new_fsn);
+-	if ((old_fsn->mask == new_fsn->mask) &&
+-	    (old_fsn->inode == new_fsn->inode) &&
+-	    (old->name_len == new->name_len) &&
+-	    (!old->name_len || !strcmp(old->name, new->name)))
+-		return true;
++	if ((old->mask == new->mask) &&
++	    (old->to_tell == new->to_tell) &&
++	    (old->data_type == new->data_type) &&
++	    (old->name_len == new->name_len)) {
++		switch (old->data_type) {
++		case (FSNOTIFY_EVENT_INODE):
++			/* remember, after old was put on the wait_q we aren't
++			 * allowed to look at the inode any more, only thing
++			 * left to check was if the file_name is the same */
++			if (!old->name_len ||
++			    !strcmp(old->file_name, new->file_name))
++				return true;
++			break;
++		case (FSNOTIFY_EVENT_PATH):
++			if ((old->path.mnt == new->path.mnt) &&
++			    (old->path.dentry == new->path.dentry))
++				return true;
++			break;
++		case (FSNOTIFY_EVENT_NONE):
++			if (old->mask & FS_Q_OVERFLOW)
++				return true;
++			else if (old->mask & FS_IN_IGNORED)
++				return false;
++			return true;
++		};
++	}
+ 	return false;
+ }
+ 
+ static struct fsnotify_event *inotify_merge(struct list_head *list,
+ 					    struct fsnotify_event *event)
+ {
++	struct fsnotify_event_holder *last_holder;
+ 	struct fsnotify_event *last_event;
+ 
+-	last_event = list_entry(list->prev, struct fsnotify_event, list);
+-	if (!event_compare(last_event, event))
+-		return NULL;
++	/* and the list better be locked by something too */
++	spin_lock(&event->lock);
++
++	last_holder = list_entry(list->prev, struct fsnotify_event_holder, event_list);
++	last_event = last_holder->event;
++	if (event_compare(last_event, event))
++		fsnotify_get_event(last_event);
++	else
++		last_event = NULL;
++
++	spin_unlock(&event->lock);
++
+ 	return last_event;
+ }
+ 
+-int inotify_handle_event(struct fsnotify_group *group,
+-			 struct inode *inode,
+-			 struct fsnotify_mark *inode_mark,
+-			 struct fsnotify_mark *vfsmount_mark,
+-			 u32 mask, void *data, int data_type,
+-			 const unsigned char *file_name)
++static int inotify_handle_event(struct fsnotify_group *group,
++				struct fsnotify_mark *inode_mark,
++				struct fsnotify_mark *vfsmount_mark,
++				struct fsnotify_event *event)
+ {
+ 	struct inotify_inode_mark *i_mark;
+-	struct inotify_event_info *event;
++	struct inode *to_tell;
++	struct inotify_event_private_data *event_priv;
++	struct fsnotify_event_private_data *fsn_event_priv;
+ 	struct fsnotify_event *added_event;
+-	struct fsnotify_event *fsn_event;
+-	int ret = 0;
+-	int len = 0;
+-	int alloc_len = sizeof(struct inotify_event_info);
++	int wd, ret = 0;
+ 
+ 	BUG_ON(vfsmount_mark);
+ 
+-	if (file_name) {
+-		len = strlen(file_name);
+-		alloc_len += len + 1;
+-	}
++	pr_debug("%s: group=%p event=%p to_tell=%p mask=%x\n", __func__, group,
++		 event, event->to_tell, event->mask);
+ 
+-	pr_debug("%s: group=%p inode=%p mask=%x\n", __func__, group, inode,
+-		 mask);
++	to_tell = event->to_tell;
+ 
+ 	i_mark = container_of(inode_mark, struct inotify_inode_mark,
+ 			      fsn_mark);
++	wd = i_mark->wd;
+ 
+-	event = kmalloc(alloc_len, GFP_KERNEL);
+-	if (unlikely(!event))
++	event_priv = kmem_cache_alloc(event_priv_cachep, GFP_KERNEL);
++	if (unlikely(!event_priv))
+ 		return -ENOMEM;
+ 
+-	fsn_event = &event->fse;
+-	fsnotify_init_event(fsn_event, inode, mask);
+-	event->wd = i_mark->wd;
+-	event->name_len = len;
+-	if (len)
+-		strcpy(event->name, file_name);
++	fsn_event_priv = &event_priv->fsnotify_event_priv_data;
+ 
+-	added_event = fsnotify_add_notify_event(group, fsn_event, inotify_merge);
++	fsnotify_get_group(group);
++	fsn_event_priv->group = group;
++	event_priv->wd = wd;
++
++	added_event = fsnotify_add_notify_event(group, event, fsn_event_priv, inotify_merge);
+ 	if (added_event) {
+-		/* Our event wasn't used in the end. Free it. */
+-		fsnotify_destroy_event(group, fsn_event);
+-		if (IS_ERR(added_event))
++		inotify_free_event_priv(fsn_event_priv);
++		if (!IS_ERR(added_event))
++			fsnotify_put_event(added_event);
++		else
+ 			ret = PTR_ERR(added_event);
+ 	}
+ 
+@@ -182,15 +202,22 @@ static void inotify_free_group_priv(struct fsnotify_group *group)
+ 	free_uid(group->inotify_data.user);
+ }
+ 
+-static void inotify_free_event(struct fsnotify_event *fsn_event)
++void inotify_free_event_priv(struct fsnotify_event_private_data *fsn_event_priv)
+ {
+-	kfree(INOTIFY_E(fsn_event));
++	struct inotify_event_private_data *event_priv;
++
++
++	event_priv = container_of(fsn_event_priv, struct inotify_event_private_data,
++				  fsnotify_event_priv_data);
++
++	fsnotify_put_group(fsn_event_priv->group);
++	kmem_cache_free(event_priv_cachep, event_priv);
+ }
+ 
+ const struct fsnotify_ops inotify_fsnotify_ops = {
+ 	.handle_event = inotify_handle_event,
+ 	.should_send_event = inotify_should_send_event,
+ 	.free_group_priv = inotify_free_group_priv,
+-	.free_event = inotify_free_event,
++	.free_event_priv = inotify_free_event_priv,
+ 	.freeing_mark = inotify_freeing_mark,
+ };
+diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+index 497395c..1bb6dc8 100644
+--- a/fs/notify/inotify/inotify_user.c
++++ b/fs/notify/inotify/inotify_user.c
+@@ -50,6 +50,7 @@ static int inotify_max_queued_events __read_mostly;
+ static int inotify_max_user_watches __read_mostly;
+ 
+ static struct kmem_cache *inotify_inode_mark_cachep __read_mostly;
++struct kmem_cache *event_priv_cachep __read_mostly;
+ 
+ #ifdef CONFIG_SYSCTL
+ 
+@@ -123,11 +124,8 @@ static unsigned int inotify_poll(struct file *file, poll_table *wait)
+ 	return ret;
+ }
+ 
+-static int round_event_name_len(struct fsnotify_event *fsn_event)
++static int round_event_name_len(struct fsnotify_event *event)
+ {
+-	struct inotify_event_info *event;
+-
+-	event = INOTIFY_E(fsn_event);
+ 	if (!event->name_len)
+ 		return 0;
+ 	return roundup(event->name_len + 1, sizeof(struct inotify_event));
+@@ -171,27 +169,40 @@ static struct fsnotify_event *get_one_event(struct fsnotify_group *group,
+  * buffer we had in "get_one_event()" above.
+  */
+ static ssize_t copy_event_to_user(struct fsnotify_group *group,
+-				  struct fsnotify_event *fsn_event,
++				  struct fsnotify_event *event,
+ 				  char __user *buf)
+ {
+ 	struct inotify_event inotify_event;
+-	struct inotify_event_info *event;
++	struct fsnotify_event_private_data *fsn_priv;
++	struct inotify_event_private_data *priv;
+ 	size_t event_size = sizeof(struct inotify_event);
+ 	size_t name_len;
+ 	size_t pad_name_len;
+ 
+-	pr_debug("%s: group=%p event=%p\n", __func__, group, fsn_event);
++	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
++
++	/* we get the inotify watch descriptor from the event private data */
++	spin_lock(&event->lock);
++	fsn_priv = fsnotify_remove_priv_from_event(group, event);
++	spin_unlock(&event->lock);
++
++	if (!fsn_priv)
++		inotify_event.wd = -1;
++	else {
++		priv = container_of(fsn_priv, struct inotify_event_private_data,
++				    fsnotify_event_priv_data);
++		inotify_event.wd = priv->wd;
++		inotify_free_event_priv(fsn_priv);
++	}
+ 
+-	event = INOTIFY_E(fsn_event);
+ 	name_len = event->name_len;
+ 	/*
+ 	 * round up name length so it is a multiple of event_size
+ 	 * plus an extra byte for the terminating '\0'.
+ 	 */
+-	pad_name_len = round_event_name_len(fsn_event);
++	pad_name_len = round_event_name_len(event);
+ 	inotify_event.len = pad_name_len;
+-	inotify_event.mask = inotify_mask_to_arg(fsn_event->mask);
+-	inotify_event.wd = event->wd;
++	inotify_event.mask = inotify_mask_to_arg(event->mask);
+ 	inotify_event.cookie = event->sync_cookie;
+ 
+ 	/* send the main event */
+@@ -207,7 +218,7 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
+ 	 */
+ 	if (pad_name_len) {
+ 		/* copy the path name */
+-		if (copy_to_user(buf, event->name, name_len))
++		if (copy_to_user(buf, event->file_name, name_len))
+ 			return -EFAULT;
+ 		buf += name_len;
+ 
+@@ -246,7 +257,7 @@ static ssize_t inotify_read(struct file *file, char __user *buf,
+ 			if (IS_ERR(kevent))
+ 				break;
+ 			ret = copy_event_to_user(group, kevent, buf);
+-			fsnotify_destroy_event(group, kevent);
++			fsnotify_put_event(kevent);
+ 			if (ret < 0)
+ 				break;
+ 			buf += ret;
+@@ -289,7 +300,8 @@ static long inotify_ioctl(struct file *file, unsigned int cmd,
+ 			  unsigned long arg)
+ {
+ 	struct fsnotify_group *group;
+-	struct fsnotify_event *fsn_event;
++	struct fsnotify_event_holder *holder;
++	struct fsnotify_event *event;
+ 	void __user *p;
+ 	int ret = -ENOTTY;
+ 	size_t send_len = 0;
+@@ -302,10 +314,10 @@ static long inotify_ioctl(struct file *file, unsigned int cmd,
+ 	switch (cmd) {
+ 	case FIONREAD:
+ 		mutex_lock(&group->notification_mutex);
+-		list_for_each_entry(fsn_event, &group->notification_list,
+-				    list) {
++		list_for_each_entry(holder, &group->notification_list, event_list) {
++			event = holder->event;
+ 			send_len += sizeof(struct inotify_event);
+-			send_len += round_event_name_len(fsn_event);
++			send_len += round_event_name_len(event);
+ 		}
+ 		mutex_unlock(&group->notification_mutex);
+ 		ret = put_user(send_len, (int __user *) p);
+@@ -492,12 +504,43 @@ void inotify_ignored_and_remove_idr(struct fsnotify_mark *fsn_mark,
+ 				    struct fsnotify_group *group)
+ {
+ 	struct inotify_inode_mark *i_mark;
+-
+-	/* Queue ignore event for the watch */
+-	inotify_handle_event(group, NULL, fsn_mark, NULL, FS_IN_IGNORED,
+-			     NULL, FSNOTIFY_EVENT_NONE, NULL);
++	struct fsnotify_event *ignored_event, *notify_event;
++	struct inotify_event_private_data *event_priv;
++	struct fsnotify_event_private_data *fsn_event_priv;
++	int ret;
+ 
+ 	i_mark = container_of(fsn_mark, struct inotify_inode_mark, fsn_mark);
++
++	ignored_event = fsnotify_create_event(NULL, FS_IN_IGNORED, NULL,
++					      FSNOTIFY_EVENT_NONE, NULL, 0,
++					      GFP_NOFS);
++	if (!ignored_event)
++		goto skip_send_ignore;
++
++	event_priv = kmem_cache_alloc(event_priv_cachep, GFP_NOFS);
++	if (unlikely(!event_priv))
++		goto skip_send_ignore;
++
++	fsn_event_priv = &event_priv->fsnotify_event_priv_data;
++
++	fsnotify_get_group(group);
++	fsn_event_priv->group = group;
++	event_priv->wd = i_mark->wd;
++
++	notify_event = fsnotify_add_notify_event(group, ignored_event, fsn_event_priv, NULL);
++	if (notify_event) {
++		if (IS_ERR(notify_event))
++			ret = PTR_ERR(notify_event);
++		else
++			fsnotify_put_event(notify_event);
++		inotify_free_event_priv(fsn_event_priv);
++	}
++
++skip_send_ignore:
++	/* matches the reference taken when the event was created */
++	if (ignored_event)
++		fsnotify_put_event(ignored_event);
++
+ 	/* remove this mark from the idr */
+ 	inotify_remove_from_idr(group, i_mark);
+ 
+@@ -794,6 +837,7 @@ static int __init inotify_user_setup(void)
+ 	BUG_ON(hweight32(ALL_INOTIFY_BITS) != 21);
+ 
+ 	inotify_inode_mark_cachep = KMEM_CACHE(inotify_inode_mark, SLAB_PANIC);
++	event_priv_cachep = KMEM_CACHE(inotify_event_private_data, SLAB_PANIC);
+ 
+ 	inotify_max_queued_events = 16384;
+ 	inotify_max_user_instances = 128;
+diff --git a/fs/notify/notification.c b/fs/notify/notification.c
+index 952237b..7b51b05 100644
+--- a/fs/notify/notification.c
++++ b/fs/notify/notification.c
+@@ -48,6 +48,15 @@
+ #include <linux/fsnotify_backend.h>
+ #include "fsnotify.h"
+ 
++static struct kmem_cache *fsnotify_event_cachep;
++static struct kmem_cache *fsnotify_event_holder_cachep;
++/*
++ * This is a magic event we send when the q is too full.  Since it doesn't
++ * hold real event information we just keep one system wide and use it any time
++ * it is needed.  It's refcnt is set 1 at kernel init time and will never
++ * get set to 0 so it will never get 'freed'
++ */
++static struct fsnotify_event *q_overflow_event;
+ static atomic_t fsnotify_sync_cookie = ATOMIC_INIT(0);
+ 
+ /**
+@@ -67,14 +76,60 @@ bool fsnotify_notify_queue_is_empty(struct fsnotify_group *group)
+ 	return list_empty(&group->notification_list) ? true : false;
+ }
+ 
+-void fsnotify_destroy_event(struct fsnotify_group *group,
+-			    struct fsnotify_event *event)
++void fsnotify_get_event(struct fsnotify_event *event)
+ {
+-	/* Overflow events are per-group and we don't want to free them */
+-	if (!event || event->mask == FS_Q_OVERFLOW)
++	atomic_inc(&event->refcnt);
++}
++
++void fsnotify_put_event(struct fsnotify_event *event)
++{
++	if (!event)
+ 		return;
+ 
+-	group->ops->free_event(event);
++	if (atomic_dec_and_test(&event->refcnt)) {
++		pr_debug("%s: event=%p\n", __func__, event);
++
++		if (event->data_type == FSNOTIFY_EVENT_PATH)
++			path_put(&event->path);
++
++		BUG_ON(!list_empty(&event->private_data_list));
++
++		kfree(event->file_name);
++		put_pid(event->tgid);
++		kmem_cache_free(fsnotify_event_cachep, event);
++	}
++}
++
++struct fsnotify_event_holder *fsnotify_alloc_event_holder(void)
++{
++	return kmem_cache_alloc(fsnotify_event_holder_cachep, GFP_KERNEL);
++}
++
++void fsnotify_destroy_event_holder(struct fsnotify_event_holder *holder)
++{
++	if (holder)
++		kmem_cache_free(fsnotify_event_holder_cachep, holder);
++}
++
++/*
++ * Find the private data that the group previously attached to this event when
++ * the group added the event to the notification queue (fsnotify_add_notify_event)
++ */
++struct fsnotify_event_private_data *fsnotify_remove_priv_from_event(struct fsnotify_group *group, struct fsnotify_event *event)
++{
++	struct fsnotify_event_private_data *lpriv;
++	struct fsnotify_event_private_data *priv = NULL;
++
++	assert_spin_locked(&event->lock);
++
++	list_for_each_entry(lpriv, &event->private_data_list, event_list) {
++		if (lpriv->group == group) {
++			priv = lpriv;
++			list_del(&priv->event_list);
++			break;
++		}
++	}
++	return priv;
+ }
+ 
+ /*
+@@ -82,35 +137,91 @@ void fsnotify_destroy_event(struct fsnotify_group *group,
+  * event off the queue to deal with.  If the event is successfully added to the
+  * group's notification queue, a reference is taken on event.
+  */
+-struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group,
+-						 struct fsnotify_event *event,
++struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group, struct fsnotify_event *event,
++						 struct fsnotify_event_private_data *priv,
+ 						 struct fsnotify_event *(*merge)(struct list_head *,
+ 										 struct fsnotify_event *))
+ {
+ 	struct fsnotify_event *return_event = NULL;
++	struct fsnotify_event_holder *holder = NULL;
+ 	struct list_head *list = &group->notification_list;
+ 
+-	pr_debug("%s: group=%p event=%p\n", __func__, group, event);
++	pr_debug("%s: group=%p event=%p priv=%p\n", __func__, group, event, priv);
++
++	/*
++	 * There is one fsnotify_event_holder embedded inside each fsnotify_event.
++	 * Check if we expect to be able to use that holder.  If not alloc a new
++	 * holder.
++	 * For the overflow event it's possible that something will use the in
++	 * event holder before we get the lock so we may need to jump back and
++	 * alloc a new holder, this can't happen for most events...
++	 */
++	if (!list_empty(&event->holder.event_list)) {
++alloc_holder:
++		holder = fsnotify_alloc_event_holder();
++		if (!holder)
++			return ERR_PTR(-ENOMEM);
++	}
+ 
+ 	mutex_lock(&group->notification_mutex);
+ 
+ 	if (group->q_len >= group->max_events) {
+-		/* Queue overflow event only if it isn't already queued */
+-		if (list_empty(&group->overflow_event.list))
+-			event = &group->overflow_event;
++		event = q_overflow_event;
++
++		/*
++		 * we need to return the overflow event
++		 * which means we need a ref
++		 */
++		fsnotify_get_event(event);
+ 		return_event = event;
++
++		/* sorry, no private data on the overflow event */
++		priv = NULL;
+ 	}
+ 
+ 	if (!list_empty(list) && merge) {
+-		return_event = merge(list, event);
+-		if (return_event) {
++		struct fsnotify_event *tmp;
++
++		tmp = merge(list, event);
++		if (tmp) {
+ 			mutex_unlock(&group->notification_mutex);
+-			return return_event;
++
++			if (return_event)
++				fsnotify_put_event(return_event);
++			if (holder != &event->holder)
++				fsnotify_destroy_event_holder(holder);
++			return tmp;
++		}
++	}
++
++	spin_lock(&event->lock);
++
++	if (list_empty(&event->holder.event_list)) {
++		if (unlikely(holder))
++			fsnotify_destroy_event_holder(holder);
++		holder = &event->holder;
++	} else if (unlikely(!holder)) {
++		/* between the time we checked above and got the lock the in
++		 * event holder was used, go back and get a new one */
++		spin_unlock(&event->lock);
++		mutex_unlock(&group->notification_mutex);
++
++		if (return_event) {
++			fsnotify_put_event(return_event);
++			return_event = NULL;
+ 		}
++
++		goto alloc_holder;
+ 	}
+ 
+ 	group->q_len++;
+-	list_add_tail(&event->list, list);
++	holder->event = event;
++
++	fsnotify_get_event(event);
++	list_add_tail(&holder->event_list, list);
++	if (priv)
++		list_add_tail(&priv->event_list, &event->private_data_list);
++	spin_unlock(&event->lock);
+ 	mutex_unlock(&group->notification_mutex);
+ 
+ 	wake_up(&group->notification_waitq);
+@@ -119,20 +230,32 @@ struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group,
+ }
+ 
+ /*
+- * Remove and return the first event from the notification list.  It is the
+- * responsibility of the caller to destroy the obtained event
++ * Remove and return the first event from the notification list.  There is a
++ * reference held on this event since it was on the list.  It is the responsibility
++ * of the caller to drop this reference.
+  */
+ struct fsnotify_event *fsnotify_remove_notify_event(struct fsnotify_group *group)
+ {
+ 	struct fsnotify_event *event;
++	struct fsnotify_event_holder *holder;
+ 
+ 	BUG_ON(!mutex_is_locked(&group->notification_mutex));
+ 
+ 	pr_debug("%s: group=%p\n", __func__, group);
+ 
+-	event = list_first_entry(&group->notification_list,
+-				 struct fsnotify_event, list);
+-	list_del(&event->list);
++	holder = list_first_entry(&group->notification_list, struct fsnotify_event_holder, event_list);
++
++	event = holder->event;
++
++	spin_lock(&event->lock);
++	holder->event = NULL;
++	list_del_init(&holder->event_list);
++	spin_unlock(&event->lock);
++
++	/* event == holder means we are referenced through the in event holder */
++	if (holder != &event->holder)
++		fsnotify_destroy_event_holder(holder);
++
+ 	group->q_len--;
+ 
+ 	return event;
+@@ -143,10 +266,15 @@ struct fsnotify_event *fsnotify_remove_notify_event(struct fsnotify_group *group
+  */
+ struct fsnotify_event *fsnotify_peek_notify_event(struct fsnotify_group *group)
+ {
++	struct fsnotify_event *event;
++	struct fsnotify_event_holder *holder;
++
+ 	BUG_ON(!mutex_is_locked(&group->notification_mutex));
+ 
+-	return list_first_entry(&group->notification_list,
+-				struct fsnotify_event, list);
++	holder = list_first_entry(&group->notification_list, struct fsnotify_event_holder, event_list);
++	event = holder->event;
++
++	return event;
+ }
+ 
+ /*
+@@ -156,31 +284,181 @@ struct fsnotify_event *fsnotify_peek_notify_event(struct fsnotify_group *group)
+ void fsnotify_flush_notify(struct fsnotify_group *group)
+ {
+ 	struct fsnotify_event *event;
++	struct fsnotify_event_private_data *priv;
+ 
+ 	mutex_lock(&group->notification_mutex);
+ 	while (!fsnotify_notify_queue_is_empty(group)) {
+ 		event = fsnotify_remove_notify_event(group);
+-		fsnotify_destroy_event(group, event);
++		/* if they don't implement free_event_priv they better not have attached any */
++		if (group->ops->free_event_priv) {
++			spin_lock(&event->lock);
++			priv = fsnotify_remove_priv_from_event(group, event);
++			spin_unlock(&event->lock);
++			if (priv)
++				group->ops->free_event_priv(priv);
++		}
++		fsnotify_put_event(event); /* matches fsnotify_add_notify_event */
+ 	}
+ 	mutex_unlock(&group->notification_mutex);
+ }
+ 
++static void initialize_event(struct fsnotify_event *event)
++{
++	INIT_LIST_HEAD(&event->holder.event_list);
++	atomic_set(&event->refcnt, 1);
++
++	spin_lock_init(&event->lock);
++
++	INIT_LIST_HEAD(&event->private_data_list);
++}
++
++/*
++ * Caller damn well better be holding whatever mutex is protecting the
++ * old_holder->event_list and the new_event must be a clean event which
++ * cannot be found anywhere else in the kernel.
++ */
++int fsnotify_replace_event(struct fsnotify_event_holder *old_holder,
++			   struct fsnotify_event *new_event)
++{
++	struct fsnotify_event *old_event = old_holder->event;
++	struct fsnotify_event_holder *new_holder = &new_event->holder;
++
++	enum event_spinlock_class {
++		SPINLOCK_OLD,
++		SPINLOCK_NEW,
++	};
++
++	pr_debug("%s: old_event=%p new_event=%p\n", __func__, old_event, new_event);
++
++	/*
++	 * if the new_event's embedded holder is in use someone
++	 * screwed up and didn't give us a clean new event.
++	 */
++	BUG_ON(!list_empty(&new_holder->event_list));
++
++	spin_lock_nested(&old_event->lock, SPINLOCK_OLD);
++	spin_lock_nested(&new_event->lock, SPINLOCK_NEW);
++
++	new_holder->event = new_event;
++	list_replace_init(&old_holder->event_list, &new_holder->event_list);
++
++	spin_unlock(&new_event->lock);
++	spin_unlock(&old_event->lock);
++
++	/* event == holder means we are referenced through the in event holder */
++	if (old_holder != &old_event->holder)
++		fsnotify_destroy_event_holder(old_holder);
++
++	fsnotify_get_event(new_event); /* on the list take reference */
++	fsnotify_put_event(old_event); /* off the list, drop reference */
++
++	return 0;
++}
++
++struct fsnotify_event *fsnotify_clone_event(struct fsnotify_event *old_event)
++{
++	struct fsnotify_event *event;
++
++	event = kmem_cache_alloc(fsnotify_event_cachep, GFP_KERNEL);
++	if (!event)
++		return NULL;
++
++	pr_debug("%s: old_event=%p new_event=%p\n", __func__, old_event, event);
++
++	memcpy(event, old_event, sizeof(*event));
++	initialize_event(event);
++
++	if (event->name_len) {
++		event->file_name = kstrdup(old_event->file_name, GFP_KERNEL);
++		if (!event->file_name) {
++			kmem_cache_free(fsnotify_event_cachep, event);
++			return NULL;
++		}
++	}
++	event->tgid = get_pid(old_event->tgid);
++	if (event->data_type == FSNOTIFY_EVENT_PATH)
++		path_get(&event->path);
++
++	return event;
++}
++
+ /*
+  * fsnotify_create_event - Allocate a new event which will be sent to each
+  * group's handle_event function if the group was interested in this
+  * particular event.
+  *
+- * @inode the inode which is supposed to receive the event (sometimes a
++ * @to_tell the inode which is supposed to receive the event (sometimes a
+  *	parent of the inode to which the event happened.
+  * @mask what actually happened.
+  * @data pointer to the object which was actually affected
+  * @data_type flag indication if the data is a file, path, inode, nothing...
+  * @name the filename, if available
+  */
+-void fsnotify_init_event(struct fsnotify_event *event, struct inode *inode,
+-			 u32 mask)
++struct fsnotify_event *fsnotify_create_event(struct inode *to_tell, __u32 mask, void *data,
++					     int data_type, const unsigned char *name,
++					     u32 cookie, gfp_t gfp)
+ {
+-	INIT_LIST_HEAD(&event->list);
+-	event->inode = inode;
++	struct fsnotify_event *event;
++
++	event = kmem_cache_zalloc(fsnotify_event_cachep, gfp);
++	if (!event)
++		return NULL;
++
++	pr_debug("%s: event=%p to_tell=%p mask=%x data=%p data_type=%d\n",
++		 __func__, event, to_tell, mask, data, data_type);
++
++	initialize_event(event);
++
++	if (name) {
++		event->file_name = kstrdup(name, gfp);
++		if (!event->file_name) {
++			kmem_cache_free(fsnotify_event_cachep, event);
++			return NULL;
++		}
++		event->name_len = strlen(event->file_name);
++	}
++
++	event->tgid = get_pid(task_tgid(current));
++	event->sync_cookie = cookie;
++	event->to_tell = to_tell;
++	event->data_type = data_type;
++
++	switch (data_type) {
++	case FSNOTIFY_EVENT_PATH: {
++		struct path *path = data;
++		event->path.dentry = path->dentry;
++		event->path.mnt = path->mnt;
++		path_get(&event->path);
++		break;
++	}
++	case FSNOTIFY_EVENT_INODE:
++		event->inode = data;
++		break;
++	case FSNOTIFY_EVENT_NONE:
++		event->inode = NULL;
++		event->path.dentry = NULL;
++		event->path.mnt = NULL;
++		break;
++	default:
++		BUG();
++	}
++
+ 	event->mask = mask;
++
++	return event;
++}
++
++static __init int fsnotify_notification_init(void)
++{
++	fsnotify_event_cachep = KMEM_CACHE(fsnotify_event, SLAB_PANIC);
++	fsnotify_event_holder_cachep = KMEM_CACHE(fsnotify_event_holder, SLAB_PANIC);
++
++	q_overflow_event = fsnotify_create_event(NULL, FS_Q_OVERFLOW, NULL,
++						 FSNOTIFY_EVENT_NONE, NULL, 0,
++						 GFP_KERNEL);
++	if (!q_overflow_event)
++		panic("unable to allocate fsnotify q_overflow_event\n");
++
++	return 0;
+ }
++subsys_initcall(fsnotify_notification_init);
+diff --git a/include/linux/fsnotify_backend.h b/include/linux/fsnotify_backend.h
+index 7f3d7dcf..4b2ee8d 100644
+--- a/include/linux/fsnotify_backend.h
++++ b/include/linux/fsnotify_backend.h
+@@ -15,6 +15,7 @@
+ #include <linux/path.h> /* struct path */
+ #include <linux/spinlock.h>
+ #include <linux/types.h>
++
+ #include <linux/atomic.h>
+ 
+ /*
+@@ -78,7 +79,6 @@ struct fsnotify_group;
+ struct fsnotify_event;
+ struct fsnotify_mark;
+ struct fsnotify_event_private_data;
+-struct fsnotify_fname;
+ 
+ /*
+  * Each group much define these ops.  The fsnotify infrastructure will call
+@@ -99,26 +99,12 @@ struct fsnotify_ops {
+ 				  struct fsnotify_mark *vfsmount_mark,
+ 				  __u32 mask, void *data, int data_type);
+ 	int (*handle_event)(struct fsnotify_group *group,
+-			    struct inode *inode,
+ 			    struct fsnotify_mark *inode_mark,
+ 			    struct fsnotify_mark *vfsmount_mark,
+-			    u32 mask, void *data, int data_type,
+-			    const unsigned char *file_name);
++			    struct fsnotify_event *event);
+ 	void (*free_group_priv)(struct fsnotify_group *group);
+ 	void (*freeing_mark)(struct fsnotify_mark *mark, struct fsnotify_group *group);
+-	void (*free_event)(struct fsnotify_event *event);
+-};
+-
+-/*
+- * all of the information about the original object we want to now send to
+- * a group.  If you want to carry more info from the accessing task to the
+- * listener this structure is where you need to be adding fields.
+- */
+-struct fsnotify_event {
+-	struct list_head list;
+-	/* inode may ONLY be dereferenced during handle_event(). */
+-	struct inode *inode;	/* either the inode the event happened to or its parent */
+-	u32 mask;		/* the type of access, bitwise OR for FS_* event types */
++	void (*free_event_priv)(struct fsnotify_event_private_data *priv);
+ };
+ 
+ /*
+@@ -162,11 +148,7 @@ struct fsnotify_group {
+ 					 * a group */
+ 	struct list_head marks_list;	/* all inode marks for this group */
+ 
+-	struct fasync_struct *fsn_fa;    /* async notification */
+-
+-	struct fsnotify_event overflow_event;	/* Event we queue when the
+-						 * notification list is too
+-						 * full */
++	struct fasync_struct    *fsn_fa;    /* async notification */
+ 
+ 	/* groups can define private fields here or use the void *private */
+ 	union {
+@@ -195,10 +177,76 @@ struct fsnotify_group {
+ 	};
+ };
+ 
++/*
++ * A single event can be queued in multiple group->notification_lists.
++ *
++ * each group->notification_list will point to an event_holder which in turns points
++ * to the actual event that needs to be sent to userspace.
++ *
++ * Seemed cheaper to create a refcnt'd event and a small holder for every group
++ * than create a different event for every group
++ *
++ */
++struct fsnotify_event_holder {
++	struct fsnotify_event *event;
++	struct list_head event_list;
++};
++
++/*
++ * Inotify needs to tack data onto an event.  This struct lets us later find the
++ * correct private data of the correct group.
++ */
++struct fsnotify_event_private_data {
++	struct fsnotify_group *group;
++	struct list_head event_list;
++};
++
++/*
++ * all of the information about the original object we want to now send to
++ * a group.  If you want to carry more info from the accessing task to the
++ * listener this structure is where you need to be adding fields.
++ */
++struct fsnotify_event {
++	/*
++	 * If we create an event we are also likely going to need a holder
++	 * to link to a group.  So embed one holder in the event.  Means only
++	 * one allocation for the common case where we only have one group
++	 */
++	struct fsnotify_event_holder holder;
++	spinlock_t lock;	/* protection for the associated event_holder and private_list */
++	/* to_tell may ONLY be dereferenced during handle_event(). */
++	struct inode *to_tell;	/* either the inode the event happened to or its parent */
++	/*
++	 * depending on the event type we should have either a path or inode
++	 * We hold a reference on path, but NOT on inode.  Since we have the ref on
++	 * the path, it may be dereferenced at any point during this object's
++	 * lifetime.  That reference is dropped when this object's refcnt hits
++	 * 0.  If this event contains an inode instead of a path, the inode may
++	 * ONLY be used during handle_event().
++	 */
++	union {
++		struct path path;
++		struct inode *inode;
++	};
+ /* when calling fsnotify tell it if the data is a path or inode */
+ #define FSNOTIFY_EVENT_NONE	0
+ #define FSNOTIFY_EVENT_PATH	1
+ #define FSNOTIFY_EVENT_INODE	2
++	int data_type;		/* which of the above union we have */
++	atomic_t refcnt;	/* how many groups still are using/need to send this event */
++	__u32 mask;		/* the type of access, bitwise OR for FS_* event types */
++
++	u32 sync_cookie;	/* used to corrolate events, namely inotify mv events */
++	const unsigned char *file_name;
++	size_t name_len;
++	struct pid *tgid;
++
++#ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
++	__u32 response;	/* userspace answer to question */
++#endif /* CONFIG_FANOTIFY_ACCESS_PERMISSIONS */
++
++	struct list_head private_data_list;	/* groups can store private data here */
++};
+ 
+ /*
+  * Inode specific fields in an fsnotify_mark
+@@ -322,12 +370,17 @@ extern void fsnotify_put_group(struct fsnotify_group *group);
+ extern void fsnotify_destroy_group(struct fsnotify_group *group);
+ /* fasync handler function */
+ extern int fsnotify_fasync(int fd, struct file *file, int on);
+-/* Free event from memory */
+-extern void fsnotify_destroy_event(struct fsnotify_group *group,
+-				   struct fsnotify_event *event);
++/* take a reference to an event */
++extern void fsnotify_get_event(struct fsnotify_event *event);
++extern void fsnotify_put_event(struct fsnotify_event *event);
++/* find private data previously attached to an event and unlink it */
++extern struct fsnotify_event_private_data *fsnotify_remove_priv_from_event(struct fsnotify_group *group,
++									   struct fsnotify_event *event);
++
+ /* attach the event to the group notification queue */
+ extern struct fsnotify_event *fsnotify_add_notify_event(struct fsnotify_group *group,
+ 							struct fsnotify_event *event,
++							struct fsnotify_event_private_data *priv,
+ 							struct fsnotify_event *(*merge)(struct list_head *,
+ 											struct fsnotify_event *));
+ /* true if the group notification queue is empty */
+@@ -377,8 +430,15 @@ extern void fsnotify_put_mark(struct fsnotify_mark *mark);
+ extern void fsnotify_unmount_inodes(struct list_head *list);
+ 
+ /* put here because inotify does some weird stuff when destroying watches */
+-extern void fsnotify_init_event(struct fsnotify_event *event,
+-				struct inode *to_tell, u32 mask);
++extern struct fsnotify_event *fsnotify_create_event(struct inode *to_tell, __u32 mask,
++						    void *data, int data_is,
++						    const unsigned char *name,
++						    u32 cookie, gfp_t gfp);
++
++/* fanotify likes to change events after they are on lists... */
++extern struct fsnotify_event *fsnotify_clone_event(struct fsnotify_event *old_event);
++extern int fsnotify_replace_event(struct fsnotify_event_holder *old_holder,
++				  struct fsnotify_event *new_event);
+ 
+ #else
+ 
+diff --git a/kernel/audit_tree.c b/kernel/audit_tree.c
+index bcc0b18..43c307d 100644
+--- a/kernel/audit_tree.c
++++ b/kernel/audit_tree.c
+@@ -912,11 +912,9 @@ static void evict_chunk(struct audit_chunk *chunk)
+ }
+ 
+ static int audit_tree_handle_event(struct fsnotify_group *group,
+-				   struct inode *to_tell,
+ 				   struct fsnotify_mark *inode_mark,
+-				   struct fsnotify_mark *vfsmount_mark,
+-				   u32 mask, void *data, int data_type,
+-				   const unsigned char *file_name)
++				   struct fsnotify_mark *vfsmonut_mark,
++				   struct fsnotify_event *event)
+ {
+ 	BUG();
+ 	return -EOPNOTSUPP;
+@@ -947,7 +945,7 @@ static const struct fsnotify_ops audit_tree_ops = {
+ 	.handle_event = audit_tree_handle_event,
+ 	.should_send_event = audit_tree_send_event,
+ 	.free_group_priv = NULL,
+-	.free_event = NULL,
++	.free_event_priv = NULL,
+ 	.freeing_mark = audit_tree_freeing_mark,
+ };
+ 
+diff --git a/kernel/audit_watch.c b/kernel/audit_watch.c
+index a760c32..22831c4 100644
+--- a/kernel/audit_watch.c
++++ b/kernel/audit_watch.c
+@@ -475,25 +475,25 @@ static bool audit_watch_should_send_event(struct fsnotify_group *group, struct i
+ 
+ /* Update watch data in audit rules based on fsnotify events. */
+ static int audit_watch_handle_event(struct fsnotify_group *group,
+-				    struct inode *to_tell,
+ 				    struct fsnotify_mark *inode_mark,
+ 				    struct fsnotify_mark *vfsmount_mark,
+-				    u32 mask, void *data, int data_type,
+-				    const unsigned char *dname)
++				    struct fsnotify_event *event)
+ {
+ 	struct inode *inode;
++	__u32 mask = event->mask;
++	const char *dname = event->file_name;
+ 	struct audit_parent *parent;
+ 
+ 	parent = container_of(inode_mark, struct audit_parent, mark);
+ 
+ 	BUG_ON(group != audit_watch_group);
+ 
+-	switch (data_type) {
++	switch (event->data_type) {
+ 	case (FSNOTIFY_EVENT_PATH):
+-		inode = ((struct path *)data)->dentry->d_inode;
++		inode = event->path.dentry->d_inode;
+ 		break;
+ 	case (FSNOTIFY_EVENT_INODE):
+-		inode = (struct inode *)data;
++		inode = event->inode;
+ 		break;
+ 	default:
+ 		BUG();
+@@ -516,7 +516,7 @@ static const struct fsnotify_ops audit_watch_fsnotify_ops = {
+ 	.handle_event = 	audit_watch_handle_event,
+ 	.free_group_priv = 	NULL,
+ 	.freeing_mark = 	NULL,
+-	.free_event = 		NULL,
++	.free_event_priv = 	NULL,
+ };
+ 
+ static int __init audit_watch_init(void)
+-- 
+1.8.4.2
+
