@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -576,8 +576,6 @@ Patch1826: drm-i915-hush-check-crtc-state.patch
 # NFSv4
 
 # patches headed upstream
-Patch10000: fs-proc-devtree-remove_proc_entry.patch
-
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch14000: hibernate-freeze-filesystems.patch
@@ -1260,8 +1258,6 @@ ApplyPatch drm-i915-hush-check-crtc-state.patch
 # Radeon DRM
 
 # Patches headed upstream
-ApplyPatch fs-proc-devtree-remove_proc_entry.patch
-
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 # FIXME: REBASE
@@ -2094,6 +2090,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jan 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git8.1
+- Linux v3.13-5617-g3aacd62
+
 * Thu Jan 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git7.1
 - Linux v3.13-4156-g90804ed
 
