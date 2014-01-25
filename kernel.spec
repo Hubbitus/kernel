@@ -2090,6 +2090,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 25 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Initial ARM config updates for 3.14
+- Disable highbank cpuidle driver
+- Enable mtd-nand drivers on ARM
+- Update CPU thermal scaling options for ARM
+
 * Fri Jan 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git8.1
 - Linux v3.13-5617-g3aacd62
 
