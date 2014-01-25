@@ -2041,6 +2041,7 @@ fi
 %endif\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
 /boot/config-%{KVERREL}%{?2:+%{2}}\
+%dir /lib/modules\
 %dir /lib/modules/%{KVERREL}%{?2:+%{2}}\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/kernel\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/build\
@@ -2090,6 +2091,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 25 2014 Ville Skyttä <ville.skytta@iki.fi>
+- Own the /lib/modules dir.
+
 * Sat Jan 25 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Initial ARM config updates for 3.14
 - Disable highbank cpuidle driver
