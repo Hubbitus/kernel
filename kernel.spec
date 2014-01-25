@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -627,22 +627,14 @@ Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 1003167 1046238
-Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-Patch25182: 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
-#rhbz 953211
-Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
 Patch25185: perf-plugin-dir.patch
 
 Patch25186: peterz-printk-timestamp-fix.patch
 
 Patch25187: revert-fsnotify-changes.patch
+
+#rhbz 1057529
+Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1293,17 +1285,6 @@ ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 1003167 1046238
-ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-ApplyPatch 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
-#rhbz 953211
-ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
 ApplyPatch perf-plugin-dir.patch
 
 ApplyPatch peterz-printk-timestamp-fix.patch
@@ -1311,6 +1292,9 @@ ApplyPatch peterz-printk-timestamp-fix.patch
 # Davej and others are reporting slab corruption with the fsnotify changes.
 # Revert them until they're worked out upstream
 ApplyPatch revert-fsnotify-changes.patch
+
+# rhbz 1057529
+ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2091,6 +2075,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git9.1
+- Linux v3.13-6058-g2d08cd0
+- Quiet incorrect usb phy error (rhbz 1057529)
+
 * Sat Jan 25 2014 Ville Skyttä <ville.skytta@iki.fi>
 - Own the /lib/modules dir.
 

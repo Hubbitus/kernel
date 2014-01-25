@@ -1,0 +1,34 @@
+From 80f13c7cb8c2b83b6b38a953ad69b91cab9dc614 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Sat, 25 Jan 2014 10:00:41 -0500
+Subject: [PATCH] usb: phy: Quiet unable to find transceiver message
+
+commit 1ae5799ef6317 ("usb: hcd: Initialize USB phy if needed") allows
+the USB layer to initialize external PHYs if needed.  However, a PHY is
+not needed in all cases.  The usb_get_phy_device function will print
+an error message, "unable to find transceiver" but everything still
+functions normally.
+
+Drop the severity of this message to pr_debug.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ drivers/usb/phy/phy.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/usb/phy/phy.c b/drivers/usb/phy/phy.c
+index e6f61e4..c7fe880 100644
+--- a/drivers/usb/phy/phy.c
++++ b/drivers/usb/phy/phy.c
+@@ -228,7 +228,7 @@ struct usb_phy *usb_get_phy_dev(struct device *dev, u8 index)
+ 
+ 	phy = __usb_find_phy_dev(dev, &phy_bind_list, index);
+ 	if (IS_ERR(phy) || !try_module_get(phy->dev->driver->owner)) {
+-		pr_err("unable to find transceiver\n");
++		pr_debug("unable to find transceiver\n");
+ 		goto err0;
+ 	}
+ 
+-- 
+1.8.5.3
+
