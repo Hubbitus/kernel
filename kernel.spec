@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -626,10 +626,6 @@ Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
 Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-Patch25185: perf-plugin-dir.patch
-
-Patch25186: peterz-printk-timestamp-fix.patch
 
 Patch25187: revert-fsnotify-changes.patch
 
@@ -1284,10 +1280,6 @@ ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
 ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-ApplyPatch perf-plugin-dir.patch
-
-ApplyPatch peterz-printk-timestamp-fix.patch
 
 # Davej and others are reporting slab corruption with the fsnotify changes.
 # Revert them until they're worked out upstream
@@ -2075,6 +2067,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git10.1
+- Linux v3.13-8330-g4ba9920
+
 * Sat Jan 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git9.1
 - Linux v3.13-6058-g2d08cd0
 - Quiet incorrect usb phy error (rhbz 1057529)
