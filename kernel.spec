@@ -2264,6 +2264,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jan 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+- Disable highbank cpuidle driver
+- Update CPU thermal scaling options for ARM
 
 * Wed Jan 15 2014 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.8-300
 - Linux v3.12.8
