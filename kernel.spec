@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -753,6 +753,9 @@ Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
 
 #rhbz 953211
 Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
+
+#rhbz 1056711
+Patch25183: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1462,6 +1465,9 @@ ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
 
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
+
+#rhbz 1056711
+ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 
 
 %endif
@@ -2264,6 +2270,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jan 27 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.9-300
+- Backport new IPv6 address flag IFA_F_NOPREFIXROUTE and IFA_F_MANAGETEMPADDR (rhbz 1056711)
+- Linux v3.12.9
+
 * Sun Jan 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 - Disable highbank cpuidle driver
