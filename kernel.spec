@@ -1469,6 +1469,7 @@ ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 #rhbz 1056711
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 
+# END OF PATCH APPLICATIONS
 
 %endif
 
