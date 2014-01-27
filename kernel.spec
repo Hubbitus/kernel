@@ -632,6 +632,8 @@ Patch25187: revert-fsnotify-changes.patch
 #rhbz 1057529
 Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
+Patch25189: ath9k-fix-bad-udelay.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1287,6 +1289,8 @@ ApplyPatch revert-fsnotify-changes.patch
 
 # rhbz 1057529
 ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
+
+ApplyPatch ath9k-fix-bad-udelay.patch
 
 # END OF PATCH APPLICATIONS
 
