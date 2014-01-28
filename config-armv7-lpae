@@ -14,7 +14,6 @@ CONFIG_ARCH_EXYNOS5=y
 # CONFIG_SOC_AM43XX is not set
 # CONFIG_ARCH_ROCKCHIP is not set
 # CONFIG_ARCH_SOCFPGA is not set
-# CONFIG_ARCH_SUNXI is not set
 # CONFIG_ARCH_TEGRA is not set
 # CONFIG_ARCH_ZYNQ is not set
 

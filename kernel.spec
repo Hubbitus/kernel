@@ -2073,6 +2073,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 27 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build AllWinner (sunxi) on LPAE too (Cortex-A7 supports LPAE/KVM)
+
 * Mon Jan 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git12.1
 - Linux v3.13-8631-gba635f8
 
