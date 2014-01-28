@@ -1,52 +1,7 @@
-                                                                                                                                                                                                                                                               
-Delivered-To: jwboyer@gmail.com
-Received: by 10.76.27.197 with SMTP id v5csp121130oag;
-        Mon, 27 Jan 2014 07:29:10 -0800 (PST)
-X-Received: by 10.68.137.65 with SMTP id qg1mr20771227pbb.124.1390836550393;
-        Mon, 27 Jan 2014 07:29:10 -0800 (PST)
-Return-Path: <balbi@ti.com>
-Received: from bastion.fedoraproject.org (bastion02.fedoraproject.org. [209.132.181.3])
-        by mx.google.com with ESMTP id yy4si11903048pbc.9.2014.01.27.07.29.07
-        for <jwboyer@gmail.com>;
-        Mon, 27 Jan 2014 07:29:07 -0800 (PST)
-Received-SPF: fail (google.com: domain of balbi@ti.com does not designate 209.132.181.3 as permitted sender) client-ip=209.132.181.3;
-Authentication-Results: mx.google.com;
-       spf=hardfail (google.com: domain of balbi@ti.com does not designate 209.132.181.3 as permitted sender) smtp.mail=balbi@ti.com
-Received: by bastion02.phx2.fedoraproject.org (Postfix)
-	id 9A80D40273; Mon, 27 Jan 2014 15:29:06 +0000 (UTC)
-Delivered-To: jwboyer@fedoraproject.org
-Received: from mx1.redhat.com (ext-mx13.extmail.prod.ext.phx2.redhat.com [10.5.110.18])
-	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id 85E144011D
-	for <jwboyer@fedoraproject.org>; Mon, 27 Jan 2014 15:29:06 +0000 (UTC)
-Received: from devils.ext.ti.com (devils.ext.ti.com [198.47.26.153])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s0RFT29Q007074
-	for <jwboyer@fedoraproject.org>; Mon, 27 Jan 2014 10:29:03 -0500
-Received: from dlelxv90.itg.ti.com ([172.17.2.17])
-	by devils.ext.ti.com (8.13.7/8.13.7) with ESMTP id s0RFT1Wo001747;
-	Mon, 27 Jan 2014 09:29:01 -0600
-Received: from DFLE72.ent.ti.com (dfle72.ent.ti.com [128.247.5.109])
-	by dlelxv90.itg.ti.com (8.14.3/8.13.8) with ESMTP id s0RFT1qC011168;
-	Mon, 27 Jan 2014 09:29:01 -0600
-Received: from dflp33.itg.ti.com (10.64.6.16) by DFLE72.ent.ti.com
- (128.247.5.109) with Microsoft SMTP Server id 14.2.342.3; Mon, 27 Jan 2014
- 09:29:01 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])	by
- dflp33.itg.ti.com (8.14.3/8.13.8) with ESMTP id s0RFT0hK021639;	Mon, 27 Jan
- 2014 09:29:01 -0600
+From fa08d92aa0b550b3db2b569a7a93de117c5b7542 Mon Sep 17 00:00:00 2001
 From: Felipe Balbi <balbi@ti.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <jwboyer@fedoraproject.org>,
-        Linux USB Mailing List
-	<linux-usb@vger.kernel.org>,
-        Felipe Balbi <balbi@ti.com>
-Subject: [PATCH] usb: phy: move some error messages to debug
 Date: Mon, 27 Jan 2014 09:27:46 -0600
-Message-ID: <1390836466-16007-1-git-send-email-balbi@ti.com>
-X-Mailer: git-send-email 1.8.5.2
-MIME-Version: 1.0
-Content-Type: text/plain
-X-RedHat-Spam-Score: -7.473  (BAYES_00,DCC_REPUT_13_19,RCVD_IN_DNSWL_HI,RP_MATCHES_RCVD,SPF_PASS)
-X-Scanned-By: MIMEDefang 2.68 on 10.5.110.18
+Subject: [PATCH] usb: phy: move some error messages to debug
 
 the PHY layer is supposed to be optional,
 considering some PHY have no control bus
@@ -58,16 +13,17 @@ a PHY driver would emit annoying error messages.
 
 In this patch we're decreasing those messages
 to debugging only and we also add a PHY prefix
-so we know where they're coming from.
+or use dev_dbg so we know where they're coming from.
 
 Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
 Signed-off-by: Felipe Balbi <balbi@ti.com>
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
  drivers/usb/phy/phy.c | 8 +++-----
  1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/usb/phy/phy.c b/drivers/usb/phy/phy.c
-index e6f61e4..29840c2 100644
+index e6f61e4..8afa813 100644
 --- a/drivers/usb/phy/phy.c
 +++ b/drivers/usb/phy/phy.c
 @@ -130,7 +130,7 @@ struct usb_phy *usb_get_phy(enum usb_phy_type type)
@@ -84,7 +40,7 @@ index e6f61e4..29840c2 100644
  	phy = __usb_find_phy_dev(dev, &phy_bind_list, index);
  	if (IS_ERR(phy) || !try_module_get(phy->dev->driver->owner)) {
 -		pr_err("unable to find transceiver\n");
-+		pr_debug("PHY: unable to find transceiver\n");
++		dev_dbg(dev, "unable to find transceiver\n");
  		goto err0;
  	}
  
@@ -101,5 +57,5 @@ index e6f61e4..29840c2 100644
  	phy_bind->dev_name = dev_name;
  	phy_bind->phy_dev_name = phy_dev_name;
 -- 
-1.8.5.2
+1.8.5.3
 

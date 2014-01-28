@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2073,6 +2073,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git13.1
+- Linux v3.13-8789-g54c0a4b
+- Enable CONFIG_CC_STACKPROTECTOR_STRONG on x86
+
 * Mon Jan 27 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build AllWinner (sunxi) on LPAE too (Cortex-A7 supports LPAE/KVM)
 
