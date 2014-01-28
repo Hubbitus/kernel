@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 13
+%define gitrev 14
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -617,15 +617,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-# Fix 15sec NFS mount delay
-Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
-Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 Patch25187: revert-fsnotify-changes.patch
 
@@ -1274,15 +1265,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-# Fix 15sec NFS mount delay
-ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
-ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
 # Davej and others are reporting slab corruption with the fsnotify changes.
 # Revert them until they're worked out upstream
@@ -2073,6 +2055,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git14.1
+- Linux v3.13-8905-g627f4b3
+
 * Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git13.1
 - Linux v3.13-8789-g54c0a4b
 - Enable CONFIG_CC_STACKPROTECTOR_STRONG on x86
