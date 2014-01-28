@@ -1,3 +1,6 @@
+Bugzilla: 1057533
+Upstream-status: Submitted for 3.14 and CC'd to stable
+
 From 22accca01713b13dac386ca90b787aadf88f6551 Mon Sep 17 00:00:00 2001
 From: Stanislaw Gruszka <sgruszka@redhat.com>
 Date: Sat, 25 Jan 2014 09:13:37 +0000
