@@ -760,6 +760,9 @@ Patch25183: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.pa
 #rhbz 1057533
 Patch25184: i915-remove-pm_qos-request-on-error.patch
 
+#rhbz 990955
+Patch25185: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1474,6 +1477,9 @@ ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.pat
 
 #rhbz 1057533
 ApplyPatch i915-remove-pm_qos-request-on-error.patch
+
+#rhbz 990955
+ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2277,6 +2283,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Stanislaw Gruszka to fix ath9k BUG (rhbz 990955)
+
 * Mon Jan 27 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.9-300
 - Backport new IPv6 address flag IFA_F_NOPREFIXROUTE and IFA_F_MANAGETEMPADDR (rhbz 1056711)
 - Linux v3.12.9
