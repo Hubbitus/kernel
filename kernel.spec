@@ -736,6 +736,8 @@ Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.12.0.patc
 Patch30004: uksm-0.1.2.2-for-v3.12.patch
 
 Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
+
+Patch30006: pksm-v0.2-for-linux3.6.0.patch
 # end Hubbitus patches
 
 # Fix 15sec NFS mount delay
@@ -1453,6 +1455,7 @@ ApplyPatch 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.12.patch
 ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.12.0.patch
 
 ApplyPatch uksm-0.1.2.2-for-v3.12.patch --fuzz=2
+#? ApplyPatch pksm-v0.2-for-linux3.6.0.patch --fuzz=2
 
 #? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
 #/Hu
@@ -2285,7 +2288,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Wed Jan 15 2014 Justin M. Forbes <jforbes@fedoraproject.org - 3.12.8-300
+* Sat Jan 18 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.8-300.hu.1
+- 3.12.8-300.hu.1
+#? - Try experimental PKSM patch ( https://pksm.googlecode.com/files/pksm-v0.2-for-linux3.6.0.patch ) instead of UKSM
+
+* Wed Jan 15 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.8-300
 - Linux v3.12.8
 
 * Wed Jan 15 2014 Josh Boyer <jwboyer@fedoraproject.org>

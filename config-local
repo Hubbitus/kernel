@@ -7,6 +7,7 @@ CONFIG_ZCACHE_WRITEBACK=y
 # CONFIG_ZCACHE_DEBUG is not set
 CONFIG_KSM=y
 CONFIG_UKSM=y
+CONFIG_PKSM=y
 # https://groups.google.com/forum/#!msg/chakra-devel/0azu1a22LTs/bEwKElM2CYMJ
 CONFIG_TOI_CORE=m
 CONFIG_TOI_FILE=m
