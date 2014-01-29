@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -766,6 +766,15 @@ Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
 
 #rhbz 953211
 Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
+
+#rhbz 1056711
+Patch25183: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
+
+#rhbz 1057533
+Patch25184: i915-remove-pm_qos-request-on-error.patch
+
+#rhbz 990955
+Patch25185: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1487,6 +1496,16 @@ ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
+#rhbz 1056711
+ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
+
+#rhbz 1057533
+ApplyPatch i915-remove-pm_qos-request-on-error.patch
+
+#rhbz 990955
+ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
+
+# END OF PATCH APPLICATIONS
 
 %endif
 
@@ -2288,6 +2307,19 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Stanislaw Gruszka to fix ath9k BUG (rhbz 990955)
+
+* Mon Jan 27 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.9-300
+- Backport new IPv6 address flag IFA_F_NOPREFIXROUTE and IFA_F_MANAGETEMPADDR (rhbz 1056711)
+- Linux v3.12.9
+- i915: remove pm_qos request on error (rhbz 1057533)
+
+* Sun Jan 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+- Disable highbank cpuidle driver
+- Update CPU thermal scaling options for ARM
+
 * Sat Jan 18 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.8-300.hu.1
 - 3.12.8-300.hu.1
 #? - Try experimental PKSM patch ( https://pksm.googlecode.com/files/pksm-v0.2-for-linux3.6.0.patch ) instead of UKSM
