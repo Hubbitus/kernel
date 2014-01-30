@@ -624,6 +624,11 @@ Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 Patch25189: ath9k-fix-bad-udelay.patch
 Patch25190: perf-fix-asm-hash-build.patch
 
+#rhbz 1055105
+Patch25191: kernfs-oops-fix.patch
+
+Patch25192: imx-hdmi-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1269,6 +1274,11 @@ ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 ApplyPatch ath9k-fix-bad-udelay.patch
 ApplyPatch perf-fix-asm-hash-build.patch
+
+#rhbz 1055105
+ApplyPatch kernfs-oops-fix.patch
+
+ApplyPatch imx-hdmi-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2051,6 +2061,7 @@ fi
 %changelog
 * Thu Jan 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git17.1
 - Linux v3.13-10094-g9b0cd30
+- Add patches to fix imx-hdmi build, and fix kernfs lockdep oops (rhbz 1055105)
 
 * Thu Jan 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git16.1
 - Linux v3.13-9240-g1329311
