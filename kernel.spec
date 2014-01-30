@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 15
+%define gitrev 16
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -617,8 +617,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-Patch25187: revert-fsnotify-changes.patch
 
 #rhbz 1057529
 Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
@@ -1265,10 +1263,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-# Davej and others are reporting slab corruption with the fsnotify changes.
-# Revert them until they're worked out upstream
-ApplyPatch revert-fsnotify-changes.patch
 
 # rhbz 1057529
 ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
@@ -2055,6 +2049,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git16.1
+- Linux v3.13-9240-g1329311
+
 * Wed Jan 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git15.1
 - Linux v3.13-9218-g0e47c96
 
