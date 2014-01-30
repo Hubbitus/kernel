@@ -79,17 +79,16 @@ index 0000000..1080215
 +	pinctrl-0 = <&pinctrl_uart4_1>;
 +	status = "okay";
 +};
+
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index b9d6a8b..b821d2c 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -137,6 +137,7 @@
- 	imx6dl-sabresd.dtb \
+@@ -159,6 +159,7 @@ dtb-$(CONFIG_ARCH_MXC) += \
  	imx6dl-wandboard.dtb \
  	imx6q-arm2.dtb \
+ 	imx6q-cubox-i.dtb \
 +	imx6q-cm-fx6.dtb \
  	imx6q-phytec-pbab01.dtb \
  	imx6q-sabreauto.dtb \
  	imx6q-sabrelite.dtb \
--- 
-1.7.9.5
-
