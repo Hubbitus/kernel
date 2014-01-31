@@ -2307,6 +2307,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jan 29 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.9-300.hu.1
+- 3.12.9-300.hu.1
+
 * Tue Jan 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Stanislaw Gruszka to fix ath9k BUG (rhbz 990955)
 
