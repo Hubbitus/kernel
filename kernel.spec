@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 18
+%define gitrev 19
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -628,6 +628,7 @@ Patch25190: perf-fix-asm-hash-build.patch
 Patch25191: kernfs-oops-fix.patch
 
 Patch25192: imx-hdmi-fix.patch
+Patch25193: fix-exynos-hdmi-build.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1279,6 +1280,7 @@ ApplyPatch perf-fix-asm-hash-build.patch
 ApplyPatch kernfs-oops-fix.patch
 
 ApplyPatch imx-hdmi-fix.patch
+ApplyPatch fix-exynos-hdmi-build.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2059,6 +2061,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jan 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git19.1
+- Linux v3.13-10637-ge7651b8
+- Enable ZRAM/ZSMALLOC (rhbz 1058072)
+- Turn EXYNOS_HDMI back on now that it should build
+
 * Thu Jan 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git18.1
 - Linux v3.13-10231-g53d8ab2
 

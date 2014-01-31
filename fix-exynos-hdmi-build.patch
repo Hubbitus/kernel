@@ -1,0 +1,104 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.27.197 with SMTP id v5csp80417oag;
+        Thu, 30 Jan 2014 22:14:25 -0800 (PST)
+X-Received: by 10.67.8.102 with SMTP id dj6mr18890418pad.10.1391148865030;
+        Thu, 30 Jan 2014 22:14:25 -0800 (PST)
+Return-Path: <sachin.kamat@linaro.org>
+Received: from bastion.fedoraproject.org (bastion02.fedoraproject.org. [209.132.181.3])
+        by mx.google.com with ESMTP id ui8si9189230pac.148.2014.01.30.22.14.24
+        for <jwboyer@gmail.com>;
+        Thu, 30 Jan 2014 22:14:25 -0800 (PST)
+Received-SPF: neutral (google.com: 209.132.181.3 is neither permitted nor denied by best guess record for domain of sachin.kamat@linaro.org) client-ip=209.132.181.3;
+Authentication-Results: mx.google.com;
+       spf=neutral (google.com: 209.132.181.3 is neither permitted nor denied by best guess record for domain of sachin.kamat@linaro.org) smtp.mail=sachin.kamat@linaro.org
+Received: by bastion02.phx2.fedoraproject.org (Postfix)
+	id 4AC1340335; Fri, 31 Jan 2014 06:14:24 +0000 (UTC)
+Delivered-To: jwboyer@fedoraproject.org
+Received: from mx1.redhat.com (ext-mx14.extmail.prod.ext.phx2.redhat.com [10.5.110.19])
+	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id 9B3D740215
+	for <jwboyer@fedoraproject.org>; Fri, 31 Jan 2014 06:14:23 +0000 (UTC)
+Received: from mail-pb0-f48.google.com (mail-pb0-f48.google.com [209.85.160.48])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s0V6EM4n000397
+	for <jwboyer@fedoraproject.org>; Fri, 31 Jan 2014 01:14:22 -0500
+Received: by mail-pb0-f48.google.com with SMTP id rr13so4032576pbb.21
+        for <jwboyer@fedoraproject.org>; Thu, 30 Jan 2014 22:14:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-type:content-transfer-encoding;
+        bh=BGRkmAtr6oCuCVzH3/VAO4vZHPWjXG3HvWVgh3iYoyc=;
+        b=BV8FNC6/36vQ7hzewqa1KDU2eZ5djh+grZwutUPwJvgdFm9Unvryca/uZ10/pYNbtR
+         fh2+Zd0EnkUdtzeZbpNKm4NyEhs41JxVAP4Qda7ySJDwQ/plJLdFMD3HJhrV3s8nLbK0
+         bqbYK2daVba2fuZkU3dR31JB4rRHo1mSKjgjM+5BnhbVswUE4Dr+6qa7hcQP2kKFzfSQ
+         PM1t2bWEt95Tas4qSt3LJpKb9nyibCKS2JuOcj9Efimu5UwxSNtRd4wkzBA2jR3S+HmG
+         Ev1TK17AmVEu7KeXFo2GR2IXyBss+qlov3L9IkaswFgDQdpDQFL/uyQJtBNSZjoESeSJ
+         f/Ow==
+X-Gm-Message-State: ALoCoQnV+4N5+WjFdFY1kKQz4MFAPtjWuLYpCVMRAOMT17Na1YgH48TOQoz14TivrxYcSpWzRgTO
+X-Received: by 10.68.191.73 with SMTP id gw9mr18958285pbc.158.1391148862198;
+        Thu, 30 Jan 2014 22:14:22 -0800 (PST)
+Received: from linaro.sisodomain.com ([115.113.119.130])
+        by mx.google.com with ESMTPSA id nu10sm23776585pbb.16.2014.01.30.22.14.18
+        for <multiple recipients>
+        (version=TLSv1.1 cipher=ECDHE-RSA-RC4-SHA bits=128/128);
+        Thu, 30 Jan 2014 22:14:21 -0800 (PST)
+From: Sachin Kamat <sachin.kamat@linaro.org>
+To: dri-devel@lists.freedesktop.org
+Cc: inki.dae@samsung.com, jy0922.shim@samsung.com, sw0312.kim@samsung.com,
+        airlied@linux.ie, rahul.sharma@samsung.com, jwboyer@fedoraproject.org,
+        sachin.kamat@linaro.org, patches@linaro.org
+Subject: [PATCH 1/1] drm/exynos: Fix build error in exynos_hdmi.c
+Date: Fri, 31 Jan 2014 11:39:32 +0530
+Message-Id: <1391148572-24130-1-git-send-email-sachin.kamat@linaro.org>
+X-Mailer: git-send-email 1.7.9.5
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-RedHat-Spam-Score: -3.001  (BAYES_00,DCC_REPUT_00_12,RCVD_IN_DNSWL_LOW,SPF_PASS)
+X-Scanned-By: MIMEDefang 2.68 on 10.5.110.19
+
+‘hdmi_infoframe’ is already defined in include/linux/hdmi.h.
+Rename the local variable to avoid the following build error:
+drivers/gpu/drm/exynos/exynos_hdmi.c:382:8: error: ‘hdmi_infoframe’ defined as wrong kind of tag
+ struct hdmi_infoframe {
+
+Signed-off-by: Sachin Kamat <sachin.kamat@linaro.org>
+Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ drivers/gpu/drm/exynos/exynos_hdmi.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/exynos/exynos_hdmi.c b/drivers/gpu/drm/exynos/exynos_hdmi.c
+index a0e10ae..0d4407c 100644
+--- a/drivers/gpu/drm/exynos/exynos_hdmi.c
++++ b/drivers/gpu/drm/exynos/exynos_hdmi.c
+@@ -379,7 +379,7 @@ static const struct hdmiphy_config hdmiphy_v14_configs[] = {
+ 	},
+ };
+ 
+-struct hdmi_infoframe {
++struct hdmi_frameinfo {
+ 	enum HDMI_PACKET_TYPE type;
+ 	u8 ver;
+ 	u8 len;
+@@ -682,7 +682,7 @@ static u8 hdmi_chksum(struct hdmi_context *hdata,
+ }
+ 
+ static void hdmi_reg_infoframe(struct hdmi_context *hdata,
+-			struct hdmi_infoframe *infoframe)
++			struct hdmi_frameinfo *infoframe)
+ {
+ 	u32 hdr_sum;
+ 	u8 chksum;
+@@ -985,7 +985,7 @@ static void hdmi_conf_reset(struct hdmi_context *hdata)
+ 
+ static void hdmi_conf_init(struct hdmi_context *hdata)
+ {
+-	struct hdmi_infoframe infoframe;
++	struct hdmi_frameinfo infoframe;
+ 
+ 	/* disable HPD interrupts from HDMI IP block, use GPIO instead */
+ 	hdmi_reg_writemask(hdata, HDMI_INTC_CON, 0, HDMI_INTC_EN_GLOBAL |
+-- 
+1.7.9.5
+
