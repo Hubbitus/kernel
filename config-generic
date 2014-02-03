@@ -198,7 +198,6 @@ CONFIG_BINFMT_MISC=m
 # Device Drivers
 #
 
-# CONFIG_COMMON_CLK_DEBUG is not set
 # CONFIG_COMMON_CLK_SI5351 is not set
 
 #

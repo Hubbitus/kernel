@@ -2061,6 +2061,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb  3 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Re-enable modular Tegra DRM driver
+- Add SD driver for ZYNQ SoCs
+
 * Fri Jan 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc0.git19.1
 - Linux v3.13-10637-ge7651b8
 - Enable ZRAM/ZSMALLOC (rhbz 1058072)
