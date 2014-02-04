@@ -324,7 +324,7 @@ Summary: The Linux kernel
 %endif
 
 %ifarch aarch64
-%define all_arch_configs kernel-%{version}-aarch64.config
+%define all_arch_configs kernel-%{version}-aarch64*.config
 %define asmarch arm64
 %define hdrarch arm64
 %define make_target Image.gz
