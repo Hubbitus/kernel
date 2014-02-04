@@ -324,7 +324,7 @@ Summary: The Linux kernel
 %endif
 
 %ifarch aarch64
-%define all_arch_configs kernel-%{version}-arm64.config
+%define all_arch_configs kernel-%{version}-aarch64.config
 %define asmarch arm64
 %define hdrarch arm64
 %define make_target Image.gz
@@ -2067,6 +2067,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 04 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Fix %all_arch_configs on aarch64.
+
 * Tue Feb 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git0.2
 - Add NUMA oops patches
 - Reenable debugging options.
