@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -629,6 +629,9 @@ Patch25191: kernfs-oops-fix.patch
 
 Patch25192: imx-hdmi-fix.patch
 Patch25193: fix-exynos-hdmi-build.patch
+
+Patch25194: tang-numa-1.patch
+Patch25915: tang-numa-2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1281,6 +1284,9 @@ ApplyPatch kernfs-oops-fix.patch
 
 ApplyPatch imx-hdmi-fix.patch
 ApplyPatch fix-exynos-hdmi-build.patch
+
+ApplyPatch tang-numa-1.patch
+ApplyPatch tang-numa-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2061,6 +2067,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git0.2
+- Add NUMA oops patches
+- Reenable debugging options.
+
 * Mon Feb 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git0.1
 - Linux v3.14-rc1
 - Disable debugging options.
