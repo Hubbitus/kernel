@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -629,9 +629,6 @@ Patch25191: kernfs-oops-fix.patch
 
 Patch25192: imx-hdmi-fix.patch
 Patch25193: fix-exynos-hdmi-build.patch
-
-Patch25194: tang-numa-1.patch
-Patch25915: tang-numa-2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1284,9 +1281,6 @@ ApplyPatch kernfs-oops-fix.patch
 
 ApplyPatch imx-hdmi-fix.patch
 ApplyPatch fix-exynos-hdmi-build.patch
-
-ApplyPatch tang-numa-1.patch
-ApplyPatch tang-numa-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2067,6 +2061,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git3.1
+- Linux v3.14-rc1-86-g9343224
+
 * Thu Feb 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git2.1
 - Linux v3.14-rc1-54-gef42c58
 
