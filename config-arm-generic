@@ -158,6 +158,8 @@ CONFIG_THERMAL_GOV_USER_SPACE=y
 
 # CONFIG_ARM_PTDUMP is not set
 
+# CONFIG_PATA_PLATFORM is not set
+
 ### turn off things which make no sense on embedded SoC
 
 # core

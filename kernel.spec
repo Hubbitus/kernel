@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -623,9 +623,6 @@ Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 Patch25189: ath9k-fix-bad-udelay.patch
 Patch25190: perf-fix-asm-hash-build.patch
-
-#rhbz 1055105
-Patch25191: kernfs-oops-fix.patch
 
 Patch25192: imx-hdmi-fix.patch
 Patch25193: fix-exynos-hdmi-build.patch
@@ -1275,9 +1272,6 @@ ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 ApplyPatch ath9k-fix-bad-udelay.patch
 ApplyPatch perf-fix-asm-hash-build.patch
-
-#rhbz 1055105
-ApplyPatch kernfs-oops-fix.patch
 
 ApplyPatch imx-hdmi-fix.patch
 ApplyPatch fix-exynos-hdmi-build.patch
@@ -2061,6 +2055,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Feb 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git4.1
+- Linux v3.14-rc1-150-g34a9bff
+
 * Fri Feb 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git3.1
 - Linux v3.14-rc1-86-g9343224
 
