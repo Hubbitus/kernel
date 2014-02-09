@@ -2055,6 +2055,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Feb  9 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable CMA on aarch64
+- Disable KVM temporarily on aarch64
+- Minor ARM config updates and cleanups
+
 * Sun Feb 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git5.1.1
 - Linux v3.14-rc1-182-g4944790
 
