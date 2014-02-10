@@ -1,7 +1,7 @@
 Bugzilla: 953211
 Upstream-status: Queued for 3.14
 
-From 3d3ce020cb0335e1fe5074f009cdb5818ecbc50e Mon Sep 17 00:00:00 2001
+From 4081924b7b6ce876fdb8e8049f1a5ba9c1496483 Mon Sep 17 00:00:00 2001
 From: Yunkang Tang <tommywill2011@gmail.com>
 Date: Thu, 26 Dec 2013 14:54:19 -0800
 Subject: [PATCH] Input: ALPS - add support for "Dolphin" devices
@@ -17,10 +17,10 @@ Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
  2 files changed, 179 insertions(+), 42 deletions(-)
 
 diff --git a/drivers/input/mouse/alps.c b/drivers/input/mouse/alps.c
-index 7c5d72a..a914d8a 100644
+index 5cf62e3..fb15c64 100644
 --- a/drivers/input/mouse/alps.c
 +++ b/drivers/input/mouse/alps.c
-@@ -257,6 +257,57 @@ static void alps_process_packet_v1_v2(struct psmouse *psmouse)
+@@ -277,6 +277,57 @@ static void alps_process_packet_v1_v2(struct psmouse *psmouse)
  }
  
  /*
@@ -78,7 +78,7 @@ index 7c5d72a..a914d8a 100644
   * Process bitmap data from v3 and v4 protocols. Returns the number of
   * fingers detected. A return value of 0 means at least one of the
   * bitmaps was empty.
-@@ -461,7 +512,8 @@ static void alps_decode_buttons_v3(struct alps_fields *f, unsigned char *p)
+@@ -481,7 +532,8 @@ static void alps_decode_buttons_v3(struct alps_fields *f, unsigned char *p)
  	f->ts_middle = !!(p[3] & 0x40);
  }
  
@@ -88,7 +88,7 @@ index 7c5d72a..a914d8a 100644
  {
  	f->first_mp = !!(p[4] & 0x40);
  	f->is_mp = !!(p[0] & 0x40);
-@@ -482,48 +534,61 @@ static void alps_decode_pinnacle(struct alps_fields *f, unsigned char *p)
+@@ -502,48 +554,61 @@ static void alps_decode_pinnacle(struct alps_fields *f, unsigned char *p)
  	alps_decode_buttons_v3(f, p);
  }
  
@@ -171,7 +171,7 @@ index 7c5d72a..a914d8a 100644
  
  	/*
  	 * There's no single feature of touchpad position and bitmap packets
-@@ -540,19 +605,38 @@ static void alps_process_touchpad_packet_v3(struct psmouse *psmouse)
+@@ -560,19 +625,38 @@ static void alps_process_touchpad_packet_v3(struct psmouse *psmouse)
  		 */
  		if (f.is_mp) {
  			fingers = f.fingers;
@@ -223,7 +223,7 @@ index 7c5d72a..a914d8a 100644
  		} else {
  			priv->multi_packet = 0;
  		}
-@@ -642,7 +726,7 @@ static void alps_process_packet_v3(struct psmouse *psmouse)
+@@ -662,7 +746,7 @@ static void alps_process_packet_v3(struct psmouse *psmouse)
  		return;
  	}
  
@@ -231,8 +231,8 @@ index 7c5d72a..a914d8a 100644
 +	alps_process_touchpad_packet_v3_v5(psmouse);
  }
  
- static void alps_process_packet_v4(struct psmouse *psmouse)
-@@ -1519,6 +1603,52 @@ error:
+ static void alps_process_packet_v6(struct psmouse *psmouse)
+@@ -1709,6 +1793,52 @@ error:
  	return -1;
  }
  
@@ -285,7 +285,7 @@ index 7c5d72a..a914d8a 100644
  static int alps_hw_init_dolphin_v1(struct psmouse *psmouse)
  {
  	struct ps2dev *ps2dev = &psmouse->ps2dev;
-@@ -1571,13 +1701,13 @@ static void alps_set_defaults(struct alps_data *priv)
+@@ -1763,13 +1893,13 @@ static void alps_set_defaults(struct alps_data *priv)
  		break;
  	case ALPS_PROTO_V5:
  		priv->hw_init = alps_hw_init_dolphin_v1;
@@ -301,7 +301,7 @@ index 7c5d72a..a914d8a 100644
  		priv->flags = 0;
  		priv->x_max = 1360;
  		priv->y_max = 660;
-@@ -1645,11 +1775,13 @@ static int alps_identify(struct psmouse *psmouse, struct alps_data *priv)
+@@ -1845,11 +1975,13 @@ static int alps_identify(struct psmouse *psmouse, struct alps_data *priv)
  	if (alps_match_table(psmouse, priv, e7, ec) == 0) {
  		return 0;
  	} else if (e7[0] == 0x73 && e7[1] == 0x03 && e7[2] == 0x50 &&
@@ -319,12 +319,12 @@ index 7c5d72a..a914d8a 100644
  		priv->proto_version = ALPS_PROTO_V3;
  		alps_set_defaults(priv);
 diff --git a/drivers/input/mouse/alps.h b/drivers/input/mouse/alps.h
-index eee5985..c5c53f4 100644
+index 704f0f9..03f88b6 100644
 --- a/drivers/input/mouse/alps.h
 +++ b/drivers/input/mouse/alps.h
-@@ -18,6 +18,10 @@
- #define ALPS_PROTO_V4	4
+@@ -19,6 +19,10 @@
  #define ALPS_PROTO_V5	5
+ #define ALPS_PROTO_V6	6
  
 +#define DOLPHIN_COUNT_PER_ELECTRODE	64
 +#define DOLPHIN_PROFILE_XOFFSET		8	/* x-electrode offset */
@@ -333,7 +333,7 @@ index eee5985..c5c53f4 100644
  /**
   * struct alps_model_info - touchpad ID table
   * @signature: E7 response string to match.
-@@ -145,7 +149,8 @@ struct alps_data {
+@@ -146,7 +150,8 @@ struct alps_data {
  
  	int (*hw_init)(struct psmouse *psmouse);
  	void (*process_packet)(struct psmouse *psmouse);
