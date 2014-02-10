@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -403,7 +403,7 @@ Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
 URL: http://www.kernel.org/
 Version: %{rpmversion}
-Release: %{pkg_release}.1
+Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
 ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64
@@ -622,7 +622,6 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 Patch25189: ath9k-fix-bad-udelay.patch
-Patch25190: perf-fix-asm-hash-build.patch
 
 Patch25192: imx-hdmi-fix.patch
 Patch25193: fix-exynos-hdmi-build.patch
@@ -1271,7 +1270,6 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
 ApplyPatch ath9k-fix-bad-udelay.patch
-ApplyPatch perf-fix-asm-hash-build.patch
 
 ApplyPatch imx-hdmi-fix.patch
 ApplyPatch fix-exynos-hdmi-build.patch
@@ -2055,6 +2053,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git0.1
+- Linux v3.14-rc2
+- Disable debugging options.
+
 * Sun Feb  9 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable CMA on aarch64
 - Disable KVM temporarily on aarch64
