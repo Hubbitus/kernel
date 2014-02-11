@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -502,11 +502,11 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
 %endif
 %if %{with_tools}
-BuildRequires: pciutils-devel gettext
+BuildRequires: pciutils-devel gettext ncurses-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
@@ -1840,6 +1840,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
    popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
+pushd tools/thermal/tmon/
+%{make}
+popd
 %endif
 
 %if %{with_doc}
@@ -1954,6 +1957,8 @@ find $RPM_BUILD_ROOT/usr/include \
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+# remove the 'trace' symlink.
+rm -f %{buildroot}%{_bindir}/trace
 
 # python-perf extension
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
@@ -1994,6 +1999,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
    make DESTDIR=%{buildroot} install
    popd
 %endif #turbostat/x86_energy_perf_policy
+pushd tools/thermal/tmon
+make INSTALL_ROOT=%{buildroot} install
+popd
 %endif
 
 %if %{with_bootwrapper}
@@ -2172,6 +2180,7 @@ fi
 %{_bindir}/turbostat
 %{_mandir}/man8/turbostat*
 %endif
+%{_bindir}/tmon
 %endif
 
 %if %{with_debuginfo}
@@ -2258,6 +2267,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Feb 12 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.2-200
+- Packaging fixes for tmon and trace
+
 * Tue Feb 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update am33xx (BeagleBone) patch for 3.13
 - Minor ARM updates
