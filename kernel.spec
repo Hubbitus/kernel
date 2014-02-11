@@ -693,8 +693,7 @@ Patch21025: arm-imx6-utilite.patch
 
 # am33xx (BeagleBone)
 # https://github.com/beagleboard/kernel
-# Pulled primarily from the above git repo. First patch is all in arm-soc
-# scheduled for 3.13. The others should be landing via other trees
+# Pulled primarily from the above git repo and should be landing upstream
 Patch21031: arm-am33xx-bblack.patch
 
 #rhbz 754518
@@ -2259,6 +2258,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update am33xx (BeagleBone) patch for 3.13
+- Minor ARM updates
+
 * Mon Feb 10 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.13.2
 - Fixes (rhbz 1062144)
