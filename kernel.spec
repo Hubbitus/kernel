@@ -763,6 +763,9 @@ Patch25195: cgroup-fixes.patch
 Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
+#rhbz 1051918
+Patch25198: pinctrl-protect-pinctrl_list-add.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1481,6 +1484,9 @@ ApplyPatch cgroup-fixes.patch
 #rhbz 1064430 1056711
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
+
+#rhbz 1051918
+ApplyPatch pinctrl-protect-pinctrl_list-add.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2295,6 +2301,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix list corruption from pinctrl (rhbz 1051918)
 - Add IFA_FLAGS for IPv6 temporary addresses back (rhbz 1064430)
 - Fix cgroup destroy oops (rhbz 1045755)
 - Fix backtrace in amd_e400_idle (rhbz 1031296)

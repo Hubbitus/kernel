@@ -1,0 +1,38 @@
+From 7b320cb1ed2dbd2c5f2a778197baf76fd6bf545a Mon Sep 17 00:00:00 2001
+From: Stanislaw Gruszka <sgruszka@redhat.com>
+Date: Tue, 4 Feb 2014 09:07:09 +0100
+Subject: [PATCH] pinctrl: protect pinctrl_list add
+
+We have few fedora bug reports about list corruption on pinctrl,
+for example:
+https://bugzilla.redhat.com/show_bug.cgi?id=1051918
+
+Most likely corruption happen due lack of protection of pinctrl_list
+when adding new nodes to it. Patch corrects that.
+
+Fixes: 42fed7ba44e ("pinctrl: move subsystem mutex to pinctrl_dev struct")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stanislaw Gruszka <sgruszka@redhat.com>
+Acked-by: Stephen Warren <swarren@nvidia.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/pinctrl/core.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 5ee61a4..cab020a 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -851,7 +851,9 @@ static struct pinctrl *create_pinctrl(struct device *dev)
+ 	kref_init(&p->users);
+ 
+ 	/* Add the pinctrl handle to the global list */
++	mutex_lock(&pinctrl_list_mutex);
+ 	list_add_tail(&p->node, &pinctrl_list);
++	mutex_unlock(&pinctrl_list_mutex);
+ 
+ 	return p;
+ }
+-- 
+1.8.5.3
+
