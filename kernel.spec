@@ -629,6 +629,9 @@ Patch25193: fix-exynos-hdmi-build.patch
 #rhbz 1031296
 Patch25194: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
+#rhbz 1045755
+Patch25195: cgroup-fixes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1279,6 +1282,9 @@ ApplyPatch fix-exynos-hdmi-build.patch
 
 #rhbz 1031296
 ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
+
+#rhbz 1045755
+ApplyPatch cgroup-fixes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2060,6 +2066,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix cgroup destroy oops (rhbz 1045755)
 - Fix backtrace in amd_e400_idle (rhbz 1031296)
 
 * Tue Feb 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git1.1
