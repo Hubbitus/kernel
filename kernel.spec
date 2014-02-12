@@ -753,6 +753,9 @@ Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 #CVE-2014-1874 rhbz 1062356 1062507
 Patch25188: SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
 
+#rhbz 1031296
+Patch25189: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1461,6 +1464,9 @@ ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
 #CVE-2014-1874 rhbz 1062356 1062507
 ApplyPatch SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
+
+#rhbz 1031296
+ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2274,6 +2280,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backtrace in amd_e400_idle (rhbz 1031296)
 - CVE-2014-1874 SELinux: local denial of service (rhbz 1062356 1062507)
 
 * Wed Feb 12 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.2-200
