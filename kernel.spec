@@ -626,6 +626,9 @@ Patch25189: ath9k-fix-bad-udelay.patch
 Patch25192: imx-hdmi-fix.patch
 Patch25193: fix-exynos-hdmi-build.patch
 
+#rhbz 1031296
+Patch25194: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1273,6 +1276,9 @@ ApplyPatch ath9k-fix-bad-udelay.patch
 
 ApplyPatch imx-hdmi-fix.patch
 ApplyPatch fix-exynos-hdmi-build.patch
+
+#rhbz 1031296
+ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2053,6 +2059,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backtrace in amd_e400_idle (rhbz 1031296)
+
 * Tue Feb 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git1.1
 - Linux v3.14-rc2-26-g6792dfe
 - Reenable debugging options.
