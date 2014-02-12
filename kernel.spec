@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -621,10 +621,7 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 #rhbz 1057529
 Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
-Patch25189: ath9k-fix-bad-udelay.patch
-
 Patch25192: imx-hdmi-fix.patch
-Patch25193: fix-exynos-hdmi-build.patch
 
 #rhbz 1031296
 Patch25194: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
@@ -1275,10 +1272,7 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 # rhbz 1057529
 ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
 
-ApplyPatch ath9k-fix-bad-udelay.patch
-
 ApplyPatch imx-hdmi-fix.patch
-ApplyPatch fix-exynos-hdmi-build.patch
 
 #rhbz 1031296
 ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
@@ -2065,6 +2059,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git2.1
+- Linux v3.14-rc2-267-g9398a10
+
 * Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix cgroup destroy oops (rhbz 1045755)
 - Fix backtrace in amd_e400_idle (rhbz 1031296)
