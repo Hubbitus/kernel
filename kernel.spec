@@ -2315,6 +2315,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Feb 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.10-300.hu.1
+- 3.12.10-300.hu.1
+
 * Thu Feb 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.10-300
 - Linux v3.12.10
 
