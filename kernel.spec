@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -740,9 +740,6 @@ Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1057533
-Patch25185: i915-remove-pm_qos-request-on-error.patch
 
 #rhbz 990955
 Patch25186: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
@@ -1462,9 +1459,6 @@ ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1057533
-ApplyPatch i915-remove-pm_qos-request-on-error.patch
 
 #rhbz 990955
 ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
@@ -2300,6 +2294,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.3-200
+- Linux v3.13.3
+
 * Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix list corruption from pinctrl (rhbz 1051918)
 - Add IFA_FLAGS for IPv6 temporary addresses back (rhbz 1064430)
