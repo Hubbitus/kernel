@@ -629,6 +629,10 @@ Patch25194: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 #rhbz 1045755
 Patch25195: cgroup-fixes.patch
 
+#CVE-2014-0069 rhbz 1064253 1062578
+Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
+Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1279,6 +1283,11 @@ ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 #rhbz 1045755
 ApplyPatch cgroup-fixes.patch
+
+#CVE-2014-0069 rhbz 1064253 1062578
+ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
+ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
 
 # END OF PATCH APPLICATIONS
 
@@ -2059,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062578)
+
 * Thu Feb 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git3.1
 - Linux v3.14-rc2-271-g4675348
 
