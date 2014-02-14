@@ -62,19 +62,19 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 12
+%define base_sublevel 13
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 10
+%define stable_update 3
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -502,11 +502,11 @@ BuildRequires: xmlto, asciidoc
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
 %endif
 %if %{with_tools}
-BuildRequires: pciutils-devel gettext
+BuildRequires: pciutils-devel gettext ncurses-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
@@ -633,17 +633,14 @@ Patch470: die-floppy-die.patch
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
-Patch600: x86-allow-1024-cpus.patch
+Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+
+#rhbz 917708
+Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 Patch800: crash-driver.patch
 
 # crypto/
-
-# keys
-Patch900: keys-expand-keyring.patch
-Patch901: keys-krb-support.patch
-Patch902: keys-x509-improv.patch
-Patch903: keys-fixes.patch
 
 # secure boot
 Patch1000: secure-modules.patch
@@ -657,10 +654,9 @@ Patch1003: sysrq-secure-boot.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
+Patch1826: drm-i915-hush-check-crtc-state.patch
 
 # Quiet boot fixes
-# silence the ACPI blacklist code
-Patch2802: silence-acpi-blacklist.patch
 
 # fs fixes
 
@@ -697,11 +693,8 @@ Patch21025: arm-imx6-utilite.patch
 
 # am33xx (BeagleBone)
 # https://github.com/beagleboard/kernel
-# Pulled primarily from the above git repo. First patch is all in arm-soc
-# scheduled for 3.13. The others should be landing via other trees
-Patch21030: arm-am33xx-arm-soc-upstream.patch
+# Pulled primarily from the above git repo and should be landing upstream
 Patch21031: arm-am33xx-bblack.patch
-Patch21032: arm-am33xx-cpsw.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -716,13 +709,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 896695
-Patch25127: 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
-
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-Patch25140: drm-qxl-backport-fixes-for-Fedora.patch
 
 #rhbz 1011362
 Patch25148: alx-Reset-phy-speed-after-resume.patch
@@ -749,9 +737,6 @@ Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 958826
-Patch25164: dell-laptop.patch
-
 #rhbz 1030802
 Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
 
@@ -761,24 +746,35 @@ Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 #rhbz 1047892
 Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
-#rhbz 1044471
-Patch25181: tg3-Add-support-for-new-577xx-device-ids.patch
+#rhbz 1003167 1046238
+Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
+Patch25182: 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
+Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
-Patch25182: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1056711
-Patch25183: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-Patch25155: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#rhbz 1057533
-Patch25184: i915-remove-pm_qos-request-on-error.patch
+Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
 
 #rhbz 990955
-Patch25185: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
+Patch25186: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 
 #rhbz 950630
-Patch25186: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
+Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
+
+#CVE-2014-1874 rhbz 1062356 1062507
+Patch25188: SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
+
+#rhbz 1031296
+Patch25189: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
+
+#rhbz 1045755
+Patch25195: cgroup-fixes.patch
+
+#rhbz 1064430 1056711
+Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
+Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
+
+#rhbz 1051918
+Patch25198: pinctrl-protect-pinctrl_list-add.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1322,7 +1318,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
-ApplyPatch x86-allow-1024-cpus.patch
+ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
 
@@ -1335,9 +1331,7 @@ ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-imx6-utilite.patch
 
-ApplyPatch arm-am33xx-arm-soc-upstream.patch
 ApplyPatch arm-am33xx-bblack.patch
-ApplyPatch arm-am33xx-cpsw.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1394,6 +1388,8 @@ ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
 
+#rhbz 917708
+ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
@@ -1401,10 +1397,6 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # keys
-ApplyPatch keys-expand-keyring.patch
-ApplyPatch keys-krb-support.patch
-ApplyPatch keys-x509-improv.patch
-ApplyPatch keys-fixes.patch
 
 # secure boot
 ApplyPatch secure-modules.patch
@@ -1419,11 +1411,9 @@ ApplyPatch sysrq-secure-boot.patch
 # Nouveau DRM
 
 # Intel DRM
+ApplyPatch drm-i915-hush-check-crtc-state.patch
 
 # Radeon DRM
-
-# silence the ACPI blacklist code
-ApplyPatch silence-acpi-blacklist.patch
 
 # Patches headed upstream
 ApplyPatch fs-proc-devtree-remove_proc_entry.patch
@@ -1451,13 +1441,8 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 896695
-ApplyPatch 0002-iwlwifi-don-t-WARN-on-bad-firmware-state.patch
-
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-ApplyPatch drm-qxl-backport-fixes-for-Fedora.patch
 
 #rhbz 1011362
 ApplyPatch alx-Reset-phy-speed-after-resume.patch
@@ -1482,9 +1467,6 @@ ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 958826
-ApplyPatch dell-laptop.patch
-
 #rhbz 1030802
 ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
 
@@ -1494,24 +1476,36 @@ ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
 #rhbz 1047892
 ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
 
-#rhbz 1044471
-ApplyPatch tg3-Add-support-for-new-577xx-device-ids.patch
+#rhbz 1003167 1046238
+ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
+ApplyPatch 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
+ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1056711
-ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#rhbz 1057533
-ApplyPatch i915-remove-pm_qos-request-on-error.patch
 
 #rhbz 990955
 ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 
 #rhbz 950630
 ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
+
+#CVE-2014-1874 rhbz 1062356 1062507
+ApplyPatch SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
+
+#rhbz 1031296
+ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
+
+#rhbz 1045755
+ApplyPatch cgroup-fixes.patch
+
+#rhbz 1064430 1056711
+ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
+ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
+
+#rhbz 1051918
+ApplyPatch pinctrl-protect-pinctrl_list-add.patch
+
 
 # END OF PATCH APPLICATIONS
 
@@ -1897,6 +1891,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
    popd
 %endif #turbostat/x86_energy_perf_policy
 %endif
+pushd tools/thermal/tmon/
+%{make}
+popd
 %endif
 
 %if %{with_doc}
@@ -2011,6 +2008,8 @@ find $RPM_BUILD_ROOT/usr/include \
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+# remove the 'trace' symlink.
+rm -f %{buildroot}%{_bindir}/trace
 
 # python-perf extension
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
@@ -2051,6 +2050,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
    make DESTDIR=%{buildroot} install
    popd
 %endif #turbostat/x86_energy_perf_policy
+pushd tools/thermal/tmon
+make INSTALL_ROOT=%{buildroot} install
+popd
 %endif
 
 %if %{with_bootwrapper}
@@ -2229,6 +2231,7 @@ fi
 %{_bindir}/turbostat
 %{_mandir}/man8/turbostat*
 %endif
+%{_bindir}/tmon
 %endif
 
 %if %{with_debuginfo}
@@ -2315,6 +2318,30 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 14 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.3-200.hu.1
+- 3.13.3-200.hu.1
+
+* Thu Feb 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.3-200
+- Linux v3.13.3
+
+* Wed Feb 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix list corruption from pinctrl (rhbz 1051918)
+- Add IFA_FLAGS for IPv6 temporary addresses back (rhbz 1064430)
+- Fix cgroup destroy oops (rhbz 1045755)
+- Fix backtrace in amd_e400_idle (rhbz 1031296)
+- CVE-2014-1874 SELinux: local denial of service (rhbz 1062356 1062507)
+
+* Wed Feb 12 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.2-200
+- Packaging fixes for tmon and trace
+
+* Tue Feb 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update am33xx (BeagleBone) patch for 3.13
+- Minor ARM updates
+
+* Mon Feb 10 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.13.2
+- Fixes (rhbz 1062144)
+
 * Sat Feb 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.10-300.hu.1
 - 3.12.10-300.hu.1
 
