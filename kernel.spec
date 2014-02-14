@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2302,7 +2302,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.3-201
 - CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062584)
 
 * Thu Feb 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.3-200
