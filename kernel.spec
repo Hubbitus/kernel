@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2068,7 +2068,8 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git4.1
+- Linux v3.14-rc2-342-g5e57dc8
 - CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062578)
 
 * Thu Feb 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git3.1
