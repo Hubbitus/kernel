@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -617,14 +617,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-#rhbz 1057529
-Patch25188: 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
-
-Patch25192: imx-hdmi-fix.patch
-
-#rhbz 1031296
-Patch25194: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 #rhbz 1045755
 Patch25195: cgroup-fixes.patch
@@ -1272,14 +1264,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-# rhbz 1057529
-ApplyPatch 0001-usb-phy-Quiet-unable-to-find-transceiver-message.patch
-
-ApplyPatch imx-hdmi-fix.patch
-
-#rhbz 1031296
-ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 #rhbz 1045755
 ApplyPatch cgroup-fixes.patch
@@ -2068,6 +2052,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git0.1
+- Linux v3.14-rc3
+- Disable debugging options.
+- Enable CONFIG_PPC_DENORMALIZATION (from Tony Breeds)
+
 * Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc2.git4.1
 - Linux v3.14-rc2-342-g5e57dc8
 - CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062578)
