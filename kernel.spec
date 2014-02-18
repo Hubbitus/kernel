@@ -767,6 +767,9 @@ Patch25198: pinctrl-protect-pinctrl_list-add.patch
 Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
+#rhbz 1054408
+Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1489,6 +1492,9 @@ ApplyPatch pinctrl-protect-pinctrl_list-add.patch
 #CVE-2014-0069 rhbz 1064253 1062584
 ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1054408
+ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2302,6 +2308,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix r8169 ethernet after suspend (rhbz 1054408)
+
 * Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.3-201
 - CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062584)
 
