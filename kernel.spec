@@ -628,6 +628,9 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 #rhbz 1062833
 Patch25202: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
+#rhbz 1054408
+Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1277,6 +1280,9 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1062833
 ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
+
+#rhbz 1054408
+ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2061,6 +2067,7 @@ fi
 * Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git1.1
 - Linux v3.14-rc3-20-g60f76ea
 - Reenable debugging options.
+- Fix r8169 ethernet after suspend (rhbz 1054408)
 
 * Mon Feb 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git0.1
 - Linux v3.14-rc3
