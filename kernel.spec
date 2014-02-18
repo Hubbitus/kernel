@@ -2310,6 +2310,7 @@ fi
 %changelog
 * Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix r8169 ethernet after suspend (rhbz 1054408)
+- Enable INTEL_MIC drivers (rhbz 1064086)
 
 * Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.3-201
 - CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062584)
