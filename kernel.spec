@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -624,6 +624,9 @@ Patch25195: cgroup-fixes.patch
 #CVE-2014-0069 rhbz 1064253 1062578
 Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1062833
+Patch25202: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1271,6 +1274,9 @@ ApplyPatch cgroup-fixes.patch
 #CVE-2014-0069 rhbz 1064253 1062578
 ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1062833
+ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2052,6 +2058,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git1.1
+- Linux v3.14-rc3-20-g60f76ea
+- Reenable debugging options.
+
 * Mon Feb 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git0.1
 - Linux v3.14-rc3
 - Disable debugging options.
