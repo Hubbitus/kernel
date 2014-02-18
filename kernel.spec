@@ -2068,6 +2068,7 @@ fi
 - Linux v3.14-rc3-20-g60f76ea
 - Reenable debugging options.
 - Fix r8169 ethernet after suspend (rhbz 1054408)
+- Enable INTEL_MIC drivers (rhbz 1064086)
 
 * Mon Feb 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git0.1
 - Linux v3.14-rc3

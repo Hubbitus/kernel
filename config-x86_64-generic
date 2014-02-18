@@ -46,8 +46,8 @@ CONFIG_ACPI_HOTPLUG_MEMORY=y
 
 # CONFIG_INTEL_SCU_IPC is not set
 
-# CONFIG_INTEL_MIC_HOST is not set
-# CONFIG_INTEL_MIC_CARD is not set
+CONFIG_INTEL_MIC_HOST=m
+CONFIG_INTEL_MIC_CARD=m
 
 # SHPC has half-arsed PCI probing, which makes it load on too many systems
 CONFIG_HOTPLUG_PCI_SHPC=m
