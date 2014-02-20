@@ -717,11 +717,11 @@ Patch25148: alx-Reset-phy-speed-after-resume.patch
 
 # Hubbitus
 # 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
-Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v6r2-3.12.patch
-Patch30002: 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.12.patch
-Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.12.0.patch
+Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
+Patch30002: 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
+Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r1-for-3.13.0.patch
 
-Patch30004: uksm-0.1.2.2-for-v3.12.patch
+Patch30004: uksm-0.1.2.2-for-v3.13.patch
 
 Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
 
@@ -1448,11 +1448,11 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 ApplyPatch alx-Reset-phy-speed-after-resume.patch
 
 #+Hu
-ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v6r2-3.12.patch
-ApplyPatch 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.12.patch
-ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.12.0.patch
+ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
+ApplyPatch 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
+ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r1-for-3.13.0.patch
 
-ApplyPatch uksm-0.1.2.2-for-v3.12.patch --fuzz=2
+ApplyPatch uksm-0.1.2.2-for-v3.13.patch --fuzz=2
 #? ApplyPatch pksm-v0.2-for-linux3.6.0.patch --fuzz=2
 
 #? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
@@ -2320,6 +2320,11 @@ fi
 %changelog
 * Fri Feb 14 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.3-200.hu.1
 - 3.13.3-200.hu.1
+- Update uksm-0.1.2.2-for-v3.12.patch to http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.13.patch
+- Update BFQ patches Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v6r2-3.12.patch, Patch30002: 0002-block-introduce-the-BFQ-v6r2-I-O-sched-for-3.12.patch, Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v6r2-for-3.12.0.patch
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r1/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r1/0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r1/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r1-for-3.13.0.patch
 
 * Thu Feb 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.3-200
 - Linux v3.13.3
