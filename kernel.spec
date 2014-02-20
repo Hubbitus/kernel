@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -775,6 +775,13 @@ Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
 #rhbz 1051918
 Patch25198: pinctrl-protect-pinctrl_list-add.patch
+
+#CVE-2014-0069 rhbz 1064253 1062584
+Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
+Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1054408
+Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1505,6 +1512,13 @@ ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
 #rhbz 1051918
 ApplyPatch pinctrl-protect-pinctrl_list-add.patch
+
+#CVE-2014-0069 rhbz 1064253 1062584
+ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
+ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1054408
+ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2318,6 +2332,13 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix r8169 ethernet after suspend (rhbz 1054408)
+- Enable INTEL_MIC drivers (rhbz 1064086)
+
+* Fri Feb 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.3-201
+- CVE-2014-0069 cifs: incorrect handling of bogus user pointers (rhbz 1064253 1062584)
+
 * Fri Feb 14 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.3-200.hu.1
 - 3.13.3-200.hu.1
 - Update uksm-0.1.2.2-for-v3.12.patch to http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.13.patch
