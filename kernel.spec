@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -617,9 +617,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-#rhbz 1045755
-Patch25195: cgroup-fixes.patch
 
 #CVE-2014-0069 rhbz 1064253 1062578
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
@@ -1269,9 +1266,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-#rhbz 1045755
-ApplyPatch cgroup-fixes.patch
 
 #CVE-2014-0069 rhbz 1064253 1062578
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
@@ -2062,6 +2056,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Feb 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git5.1
+- Linux v3.14-rc3-219-gd158fc7
+
 * Thu Feb 20 2014 Kyle McMartin <kyle@fedoraproject.org>
 - armv7: disable CONFIG_DEBUG_SET_MODULE_RONX until debugged (rhbz#1067113)
 
