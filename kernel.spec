@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -747,9 +747,6 @@ Patch25186: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 #rhbz 950630
 Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
-#CVE-2014-1874 rhbz 1062356 1062507
-Patch25188: SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
-
 #rhbz 1031296
 Patch25189: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
@@ -759,9 +756,6 @@ Patch25195: cgroup-fixes.patch
 #rhbz 1064430 1056711
 Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#rhbz 1051918
-Patch25198: pinctrl-protect-pinctrl_list-add.patch
 
 #CVE-2014-0069 rhbz 1064253 1062584
 Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
@@ -1473,9 +1467,6 @@ ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 #rhbz 950630
 ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
-#CVE-2014-1874 rhbz 1062356 1062507
-ApplyPatch SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
-
 #rhbz 1031296
 ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
@@ -1485,9 +1476,6 @@ ApplyPatch cgroup-fixes.patch
 #rhbz 1064430 1056711
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#rhbz 1051918
-ApplyPatch pinctrl-protect-pinctrl_list-add.patch
 
 #CVE-2014-0069 rhbz 1064253 1062584
 ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
@@ -2308,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 20 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.4-200
+- Linux v3.13.4
+
 * Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix r8169 ethernet after suspend (rhbz 1054408)
 - Enable INTEL_MIC drivers (rhbz 1064086)
