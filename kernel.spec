@@ -2062,6 +2062,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Feb 20 2014 Kyle McMartin <kyle@fedoraproject.org>
+- armv7: disable CONFIG_DEBUG_SET_MODULE_RONX until debugged (rhbz#1067113)
+
 * Thu Feb 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git4.1
 - Linux v3.14-rc3-184-ge95003c
 
