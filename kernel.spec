@@ -2296,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 20 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Rebase i.MX6 Utilite to upstream version
+
 * Thu Feb 20 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.4-200
 - Linux v3.13.4
 

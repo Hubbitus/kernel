@@ -1,35 +1,54 @@
-Add initial support for cm-fx6 module.
+commit 682d055e6ac5c3855f51649de6d68e9bb29c26a6
+Author: Valentin Raevsky <valentin@compulab.co.il>
+Date:   Tue Oct 29 14:11:43 2013 +0200
 
-cm-fx6 is a module based on mx6q SoC with the following features:
-- Up to 4GB of DDR3
-- 1 LCD/DVI output port
-- 1 HDMI output port
-- 2 LVDS LCD ports
-- Gigabit Ethernet
-- Analog Audio
-- CAN
-- SATA
-- NAND
-- PCIE
+    ARM: dts: Add initial support for cm-fx6.
+    
+    Add initial support for cm-fx6 module.
+    
+    cm-fx6 is a module based on mx6q SoC with the following features:
+    - Up to 4GB of DDR3
+    - 1 LCD/DVI output port
+    - 1 HDMI output port
+    - 2 LVDS LCD ports
+    - Gigabit Ethernet
+    - Analog Audio
+    - CAN
+    - SATA
+    - NAND
+    - PCIE
+    
+    This patch allows to boot up the module, configures the serial console,
+    the Ethernet adapter and the heartbeat led.
+    
+    cm-fx6 is embedded inside the Utilite computer.
+    
+    Signed-off-by: Valentin Raevsky <valentin@compulab.co.il>
+    Signed-off-by: Igor Grinberg <grinberg@compulab.co.il>
+    Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
 
-This patch allows to boot up the module, configures the serial console,
-the Ethernet adapter and the hearbeat led.
-
-Signed-off-by: Valentin Raevsky <valentin@xxxxxxxxxxxxxx>
-Acked-by: Igor Grinberg <grinberg@xxxxxxxxxxxxxx>
----
- arch/arm/boot/dts/imx6q-cm-fx6.dts |   51 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6q-cm-fx6.dts
-
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 8081479..5672e91 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -137,6 +137,7 @@
+ 	imx6dl-sabresd.dtb \
+ 	imx6dl-wandboard.dtb \
+ 	imx6q-arm2.dtb \
++	imx6q-cm-fx6.dtb \
+ 	imx6q-phytec-pbab01.dtb \
+ 	imx6q-sabreauto.dtb \
+ 	imx6q-sabrelite.dtb \
 diff --git a/arch/arm/boot/dts/imx6q-cm-fx6.dts b/arch/arm/boot/dts/imx6q-cm-fx6.dts
 new file mode 100644
-index 0000000..1080215
+index 0000000..99b46f8
 --- /dev/null
 +++ b/arch/arm/boot/dts/imx6q-cm-fx6.dts
-@@ -0,0 +1,51 @@
+@@ -0,0 +1,107 @@
 +/*
 + * Copyright 2013 CompuLab Ltd.
++ *
++ * Author: Valentin Raevsky <valentin@compulab.co.il>
 + *
 + * The code contained herein is licensed under the GNU General Public
 + * License. You may obtain a copy of the GNU General Public License
@@ -53,7 +72,7 @@ index 0000000..1080215
 +	leds {
 +		compatible = "gpio-leds";
 +
-+		debug-led {
++		heartbeat-led {
 +			label = "Heartbeat";
 +			gpios = <&gpio2 31 0>;
 +			linux,default-trigger = "heartbeat";
@@ -61,35 +80,102 @@ index 0000000..1080215
 +	};
 +};
 +
-+&gpmi {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_gpmi_nand_1>;
-+	status = "okay";
-+};
-+
 +&fec {
 +	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet_1>;
++	pinctrl-0 = <&pinctrl_enet>;
 +	phy-mode = "rgmii";
 +	status = "okay";
 +};
 +
-+&uart4 {
++&gpmi {
 +	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4_1>;
++	pinctrl-0 = <&pinctrl_gpmi_nand>;
 +	status = "okay";
 +};
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -137,6 +137,7 @@
- 	imx6dl-sabresd.dtb \
- 	imx6dl-wandboard.dtb \
- 	imx6q-arm2.dtb \
-+	imx6q-cm-fx6.dtb \
- 	imx6q-phytec-pbab01.dtb \
- 	imx6q-sabreauto.dtb \
- 	imx6q-sabrelite.dtb \
--- 
-1.7.9.5
++
++&iomuxc {
++	imx6q-cm-fx6 {
++		pinctrl_enet: enetgrp {
++			fsl,pins = <
++				MX6QDL_PAD_RGMII_RXC__RGMII_RXC		0x1b0b0
++				MX6QDL_PAD_RGMII_RD0__RGMII_RD0		0x1b0b0
++				MX6QDL_PAD_RGMII_RD1__RGMII_RD1		0x1b0b0
++				MX6QDL_PAD_RGMII_RD2__RGMII_RD2		0x1b0b0
++				MX6QDL_PAD_RGMII_RD3__RGMII_RD3		0x1b0b0
++				MX6QDL_PAD_RGMII_RX_CTL__RGMII_RX_CTL	0x1b0b0
++				MX6QDL_PAD_RGMII_TXC__RGMII_TXC		0x1b0b0
++				MX6QDL_PAD_RGMII_TD0__RGMII_TD0		0x1b0b0
++				MX6QDL_PAD_RGMII_TD1__RGMII_TD1		0x1b0b0
++				MX6QDL_PAD_RGMII_TD2__RGMII_TD2		0x1b0b0
++				MX6QDL_PAD_RGMII_TD3__RGMII_TD3		0x1b0b0
++				MX6QDL_PAD_RGMII_TX_CTL__RGMII_TX_CTL	0x1b0b0
++				MX6QDL_PAD_ENET_REF_CLK__ENET_TX_CLK	0x1b0b0
++				MX6QDL_PAD_ENET_MDIO__ENET_MDIO		0x1b0b0
++				MX6QDL_PAD_ENET_MDC__ENET_MDC		0x1b0b0
++				MX6QDL_PAD_GPIO_16__ENET_REF_CLK	0x4001b0a8
++			>;
++		};
++
++		pinctrl_gpmi_nand: gpminandgrp {
++			fsl,pins = <
++				MX6QDL_PAD_NANDF_CLE__NAND_CLE		0xb0b1
++				MX6QDL_PAD_NANDF_ALE__NAND_ALE		0xb0b1
++				MX6QDL_PAD_NANDF_WP_B__NAND_WP_B	0xb0b1
++				MX6QDL_PAD_NANDF_RB0__NAND_READY_B	0xb000
++				MX6QDL_PAD_NANDF_CS0__NAND_CE0_B	0xb0b1
++				MX6QDL_PAD_NANDF_CS1__NAND_CE1_B	0xb0b1
++				MX6QDL_PAD_SD4_CMD__NAND_RE_B		0xb0b1
++				MX6QDL_PAD_SD4_CLK__NAND_WE_B		0xb0b1
++				MX6QDL_PAD_NANDF_D0__NAND_DATA00	0xb0b1
++				MX6QDL_PAD_NANDF_D1__NAND_DATA01	0xb0b1
++				MX6QDL_PAD_NANDF_D2__NAND_DATA02	0xb0b1
++				MX6QDL_PAD_NANDF_D3__NAND_DATA03	0xb0b1
++				MX6QDL_PAD_NANDF_D4__NAND_DATA04	0xb0b1
++				MX6QDL_PAD_NANDF_D5__NAND_DATA05	0xb0b1
++				MX6QDL_PAD_NANDF_D6__NAND_DATA06	0xb0b1
++				MX6QDL_PAD_NANDF_D7__NAND_DATA07	0xb0b1
++				MX6QDL_PAD_SD4_DAT0__NAND_DQS		0x00b1
++			>;
++		};
++
++		pinctrl_uart4: uart4grp {
++			fsl,pins = <
++				MX6QDL_PAD_KEY_COL0__UART4_TX_DATA	0x1b0b1
++				MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA	0x1b0b1
++			>;
++		};
++	};
++};
++
++&uart4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_uart4>;
++	status = "okay";
++};
+commit a26be0f051e03b9676a39799ca64d5888361d70e
+Author: Sascha Hauer <s.hauer@pengutronix.de>
+Date:   Thu Jan 16 13:44:19 2014 +0100
 
+    ARM: dts: imx6q: Add spi4 alias
+    
+    The quad version has a SPI controller more than the other
+    versions. Add an alias for it.
+    
+    Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+    Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+
+diff --git a/arch/arm/boot/dts/imx6q.dtsi b/arch/arm/boot/dts/imx6q.dtsi
+index 6295fa8..422d169 100644
+--- a/arch/arm/boot/dts/imx6q.dtsi
++++ b/arch/arm/boot/dts/imx6q.dtsi
+@@ -13,6 +13,10 @@
+ #include "imx6qdl.dtsi"
+ 
+ / {
++	aliases {
++		spi4 = &ecspi5;
++	};
++
+ 	cpus {
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
