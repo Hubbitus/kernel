@@ -2305,10 +2305,10 @@ fi
 * Fri Feb 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix WARN from e100 from Michele Baldessari (rhbz 994438)
 
-* Thu Feb 20 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+* Thu Feb 20 2014 Peter Robinson <pbrobinson@fedoraproject.org> - 3.13.4-200
 - Rebase i.MX6 Utilite to upstream version
 
-* Thu Feb 20 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.4-200
+* Thu Feb 20 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.13.4
 
 * Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
