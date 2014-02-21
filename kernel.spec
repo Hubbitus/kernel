@@ -764,6 +764,9 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 #rhbz 1054408
 Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
+#rhbz 994438
+Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1483,6 +1486,9 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1054408
 ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
+
+#rhbz 994438
+ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix WARN from e100 from Michele Baldessari (rhbz 994438)
+
 * Thu Feb 20 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Rebase i.MX6 Utilite to upstream version
 
