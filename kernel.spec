@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 5
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -623,9 +623,6 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1062833
 Patch25202: dma-debug-account-for-cachelines-and-read-only-mappings.patch
-
-#rhbz 1054408
-Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1272,10 +1269,6 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1062833
 ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
-
-#rhbz 1054408
-ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
-
 
 # END OF PATCH APPLICATIONS
 
@@ -2056,6 +2049,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git0.1
+- Linux v3.14-rc4
+- Disable debugging options.
+
 * Thu Feb 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc3.git5.1
 - Linux v3.14-rc3-219-gd158fc7
 
