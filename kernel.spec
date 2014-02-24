@@ -2297,6 +2297,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2039 s390: crash due to linkage stack instructions (rhbz 1067558 1068758)
 - Fix lockdep issue in EHCI when using threaded IRQs (rhbz 1056170)
 
 * Mon Feb 24 2014 Justin M. Forbes <jforbes@fedoraproject.org>
