@@ -2332,6 +2332,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 20 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.3-201.hu.1
+- 3.13.3-201.hu.1
+
 * Tue Feb 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix r8169 ethernet after suspend (rhbz 1054408)
 - Enable INTEL_MIC drivers (rhbz 1064086)
