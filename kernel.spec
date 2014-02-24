@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -760,9 +760,6 @@ Patch25186: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 #rhbz 950630
 Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
-#CVE-2014-1874 rhbz 1062356 1062507
-Patch25188: SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
-
 #rhbz 1031296
 Patch25189: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
@@ -773,15 +770,15 @@ Patch25195: cgroup-fixes.patch
 Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
-#rhbz 1051918
-Patch25198: pinctrl-protect-pinctrl_list-add.patch
-
 #CVE-2014-0069 rhbz 1064253 1062584
 Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1054408
 Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
+
+#rhbz 994438
+Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1497,9 +1494,6 @@ ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
 #rhbz 950630
 ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
-#CVE-2014-1874 rhbz 1062356 1062507
-ApplyPatch SELinux-Fix-kernel-BUG-on-empty-security-contexts.patch
-
 #rhbz 1031296
 ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
@@ -1510,15 +1504,15 @@ ApplyPatch cgroup-fixes.patch
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
-#rhbz 1051918
-ApplyPatch pinctrl-protect-pinctrl_list-add.patch
-
 #CVE-2014-0069 rhbz 1064253 1062584
 ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1054408
 ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
+
+#rhbz 994438
+ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2332,6 +2326,15 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix WARN from e100 from Michele Baldessari (rhbz 994438)
+
+* Thu Feb 20 2014 Peter Robinson <pbrobinson@fedoraproject.org> - 3.13.4-200
+- Rebase i.MX6 Utilite to upstream version
+
+* Thu Feb 20 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.13.4
+
 * Thu Feb 20 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.3-201.hu.1
 - 3.13.3-201.hu.1
 
