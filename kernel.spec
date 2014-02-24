@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -741,14 +741,8 @@ Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
 
-#rhbz 990955
-Patch25186: ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
-
 #rhbz 950630
 Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
-
-#rhbz 1031296
-Patch25189: tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 #rhbz 1045755
 Patch25195: cgroup-fixes.patch
@@ -1464,14 +1458,8 @@ ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
-#rhbz 990955
-ApplyPatch ath9k_htc-make-sta_rc_update-atomic-for-most-calls.patch
-
 #rhbz 950630
 ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
-
-#rhbz 1031296
-ApplyPatch tick-Clear-broadcast-pending-bit-when-switching-to-oneshot.patch
 
 #rhbz 1045755
 ApplyPatch cgroup-fixes.patch
@@ -2302,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 24 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.13.5
+
 * Fri Feb 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix WARN from e100 from Michele Baldessari (rhbz 994438)
 
