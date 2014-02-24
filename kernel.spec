@@ -624,6 +624,9 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 #rhbz 1062833
 Patch25202: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
+#rhbz 1056170
+Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1269,6 +1272,9 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1062833
 ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
+
+#rhbz 1056170
+ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2049,6 +2055,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix lockdep issue in EHCI when using threaded IRQs (rhbz 1056170)
+
 * Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git0.1
 - Linux v3.14-rc4
 - Disable debugging options.
