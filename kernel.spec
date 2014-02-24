@@ -761,6 +761,9 @@ Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patc
 #rhbz 994438
 Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
+#rhbz 1056170
+Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1477,6 +1480,9 @@ ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
 #rhbz 994438
 ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
+
+#rhbz 1056170
+ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2290,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix lockdep issue in EHCI when using threaded IRQs (rhbz 1056170)
+
 * Mon Feb 24 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.13.5
 
