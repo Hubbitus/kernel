@@ -621,8 +621,11 @@ Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 #CVE-2014-0069 rhbz 1064253 1062578
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
+#rhbz 1068862
+Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
+
 #rhbz 1062833
-Patch25202: dma-debug-account-for-cachelines-and-read-only-mappings.patch
+Patch25203: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 #rhbz 1056170
 Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
@@ -1269,6 +1272,9 @@ ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
 #CVE-2014-0069 rhbz 1064253 1062578
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1068862
+ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1062833
 ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
@@ -2055,6 +2061,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix mounting issues on cifs (rhbz 1068862)
+
 * Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix lockdep issue in EHCI when using threaded IRQs (rhbz 1056170)
 
