@@ -755,6 +755,9 @@ Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
+#rhbz 1068862
+Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
+
 #rhbz 1054408
 Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
 
@@ -1474,6 +1477,9 @@ ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 #CVE-2014-0069 rhbz 1064253 1062584
 ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
+
+#rhbz 1068862
+ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1054408
 ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Feb 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix mounting issues on cifs (rhbz 1068862)
+
 * Mon Feb 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-200
 - CVE-2014-2039 s390: crash due to linkage stack instructions (rhbz 1067558 1068758)
 - Fix lockdep issue in EHCI when using threaded IRQs (rhbz 1056170)
