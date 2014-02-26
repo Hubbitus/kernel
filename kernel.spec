@@ -2061,6 +2061,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Feb 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Re-enable KVM on aarch64 now it builds again
+
 * Tue Feb 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix mounting issues on cifs (rhbz 1068862)
 
