@@ -712,9 +712,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
-#rhbz 1011362
-Patch25148: alx-Reset-phy-speed-after-resume.patch
-
 # Fix 15sec NFS mount delay
 Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
@@ -1434,9 +1431,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
-#rhbz 1011362
-ApplyPatch alx-Reset-phy-speed-after-resume.patch
 
 # Fix 15sec NFS mount delay
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
@@ -2302,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop alx phy reset patch that is already in 3.13
+
 * Tue Feb 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix mounting issues on cifs (rhbz 1068862)
 
