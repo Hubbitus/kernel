@@ -634,6 +634,9 @@ Patch25203: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 #rhbz 1056170
 Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
+#CVE-2014-0102 rhbz 1071396
+Patch25026: keyring-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1286,6 +1289,9 @@ ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 #rhbz 1056170
 ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
+
+#CVE-2014-0102 rhbz 1071396
+ApplyPatch keyring-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2066,6 +2072,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0102 keyctl_link can be used to cause an oops (rhbz 1071396)
+
 * Thu Feb 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git2.1
 - Linux v3.14-rc4-45-gd2a0476
 
