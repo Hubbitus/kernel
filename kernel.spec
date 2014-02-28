@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2072,6 +2072,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git3.1
+- Linux v3.14-rc4-78-gd8efcf3
+
 * Fri Feb 28 2014 Kyle McMartin <kyle@fedoraproject.org>
 - Enable appropriate CONFIG_XZ_DEC_$arch options to ensure we can mount
   squashfs images on supported architectures.
