@@ -2072,6 +2072,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 28 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Enable appropriate CONFIG_XZ_DEC_$arch options to ensure we can mount
+  squashfs images on supported architectures.
+
 * Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-0102 keyctl_link can be used to cause an oops (rhbz 1071396)
 
