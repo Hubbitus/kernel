@@ -773,6 +773,9 @@ Patch25027: kvm-x86-fix-emulator-buffer-overflow.patch
 #rhbz 1065087
 Patch25028: tty-Fix-low_latency-BUG.patch
 
+#rhbz 1066064
+Patch25029: audit-don-t-generate-loginuid-log-when-audit-disable.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1501,6 +1504,9 @@ ApplyPatch kvm-x86-fix-emulator-buffer-overflow.patch
 
 #rhbz 1065087
 ApplyPatch tty-Fix-low_latency-BUG.patch
+
+#rhbz 1066064
+ApplyPatch audit-don-t-generate-loginuid-log-when-audit-disable.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2313,6 +2319,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix overly verbose audit logs (rhbz 1066064)
+
 * Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-201
 - CVE-2014-0049 kvm: mmio_fragments out-of-bounds access (rhbz 1062368 1071837)
 - Fix atomic sched BUG in tty low_latency (rhbz 1065087)
