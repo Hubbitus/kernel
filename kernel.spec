@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -403,7 +403,7 @@ Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
 URL: http://www.kernel.org/
 Version: %{rpmversion}
-Release: %{pkg_release}
+Release: %{pkg_release}.1
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
 ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64
@@ -630,9 +630,6 @@ Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1062833
 Patch25203: dma-debug-account-for-cachelines-and-read-only-mappings.patch
-
-#rhbz 1056170
-Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
@@ -1286,9 +1283,6 @@ ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1062833
 ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
-
-#rhbz 1056170
-ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
@@ -2072,6 +2066,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc5.git0.1
+- Linux v3.14-rc5
+- Disable debugging options.
+
 * Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git3.1
 - Linux v3.14-rc4-78-gd8efcf3
 
