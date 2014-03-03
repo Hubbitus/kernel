@@ -779,6 +779,9 @@ Patch25029: audit-don-t-generate-loginuid-log-when-audit-disable.patch
 #CVE-2014-0101 rhbz 1072029 1070705
 Patch25030: net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
 
+#CVE-2014-0100 rhbz 1072026 1070618
+Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1513,6 +1516,9 @@ ApplyPatch audit-don-t-generate-loginuid-log-when-audit-disable.patch
 
 #CVE-2014-0101 rhbz 1072029 1070705
 ApplyPatch net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
+
+#CVE-2014-0100 rhbz 1072026 1070618
+ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2326,6 +2332,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0100 net: inet frag race condition use-after-free (rhbz 1072026 1070618)
 - CVE-2014-0101 sctp: null ptr deref when processing auth cookie_echo chunk (rhbz 1070209 1070705)
 - Fix overly verbose audit logs (rhbz 1066064)
 
