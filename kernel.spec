@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 202
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2331,7 +2331,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-202
 - CVE-2014-0100 net: inet frag race condition use-after-free (rhbz 1072026 1070618)
 - CVE-2014-0101 sctp: null ptr deref when processing auth cookie_echo chunk (rhbz 1070209 1070705)
 - Fix overly verbose audit logs (rhbz 1066064)
