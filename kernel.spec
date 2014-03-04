@@ -785,6 +785,9 @@ Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 #rhbz 1027465
 Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
+#rhbz 1013466
+Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1525,6 +1528,9 @@ ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
 #rhbz 1027465
 ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
+
+#rhbz 1013466
+ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2338,6 +2344,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix MAC-before-DAC check for mmap_zero (rhbz 1013466)
 - Fix hidp crash with apple bluetooth trackpads (rhbz 1027465)
 
 * Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-202
