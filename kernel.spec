@@ -782,6 +782,9 @@ Patch25030: net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-cap
 #CVE-2014-0100 rhbz 1072026 1070618
 Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
+#rhbz 1027465
+Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1519,6 +1522,9 @@ ApplyPatch net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capa
 
 #CVE-2014-0100 rhbz 1072026 1070618
 ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
+
+#rhbz 1027465
+ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2331,6 +2337,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix hidp crash with apple bluetooth trackpads (rhbz 1027465)
+
 * Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-202
 - CVE-2014-0100 net: inet frag race condition use-after-free (rhbz 1072026 1070618)
 - CVE-2014-0101 sctp: null ptr deref when processing auth cookie_echo chunk (rhbz 1070209 1070705)
