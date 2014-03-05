@@ -2326,6 +2326,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Feb 27 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.5-200.hu.1
+- 3.13.5-200.hu.1
+
 * Tue Feb 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix mounting issues on cifs (rhbz 1068862)
 
