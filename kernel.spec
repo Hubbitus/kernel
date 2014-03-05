@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -627,9 +627,6 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 1062833
-Patch25203: dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
@@ -1280,9 +1277,6 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 1062833
-ApplyPatch dma-debug-account-for-cachelines-and-read-only-mappings.patch
 
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
@@ -2066,6 +2060,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Mar 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc5.git2.1
+- Linux v3.14-rc5-185-gc3bebc7
+
 * Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc5.git1.1
 - Linux v3.14-rc5-43-g0c0bd34
 - Reenable debugging options.
