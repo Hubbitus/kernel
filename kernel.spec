@@ -788,6 +788,9 @@ Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 #rhbz 1013466
 Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
+#rhbz 1071998
+Patch25034: bug-1071998.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1531,6 +1534,9 @@ ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1071998
+ApplyPatch bug-1071998.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2343,6 +2349,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix bogus WARN in iwlwifi (rhbz 1071998)
+
 * Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix MAC-before-DAC check for mmap_zero (rhbz 1013466)
 - Fix hidp crash with apple bluetooth trackpads (rhbz 1027465)
