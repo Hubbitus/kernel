@@ -1,0 +1,35 @@
+From 414794ae6a59c38f6e5793ad50df97cba3dda4e3 Mon Sep 17 00:00:00 2001
+From: Tony Breeds <tony@bakeyournoodle.com>
+Date: Thu, 30 Jan 2014 19:58:55 +1100
+Subject: [PATCH] powerpc/le: Avoid creatng R_PPC64_TOCSAVE relocations for
+ modules.
+
+When building modules with a native le toolchain the linker will
+generate R_PPC64_TOCSAVE relocations when it's safe to omit saving r2 on
+a plt call.  This isn't helpful in the conext of a kernel module and the
+kernel will fail to load those modules with an error like:
+	nf_conntrack: Unknown ADD relocation: 109
+
+This patch tells the linker to avoid createing R_PPC64_TOCSAVE
+relocations allowing modules to load.
+
+Signed-off-by: Tony Breeds <tony@bakeyournoodle.com>
+---
+ arch/powerpc/Makefile | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/powerpc/Makefile b/arch/powerpc/Makefile
+index 0f4344e..fff3945 100644
+--- a/arch/powerpc/Makefile
++++ b/arch/powerpc/Makefile
+@@ -74,6 +74,9 @@ override CROSS32AS += -mlittle-endian
+ LDEMULATION	:= lppc
+ GNUTARGET	:= powerpcle
+ MULTIPLEWORD	:= -mno-multiple
++ifeq ($(call cc-option-yn,-mno-save-toc-indirect),y)
++       KBUILD_CFLAGS_MODULE += -mno-save-toc-indirect
++endif
+ else
+ ifeq ($(call cc-option-yn,-mbig-endian),y)
+ override CC	+= -mbig-endian
+-- 

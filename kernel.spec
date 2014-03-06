@@ -222,7 +222,7 @@ Summary: The Linux kernel
 
 %if %{with_vdso_install}
 # These arches install vdso/ directories.
-%define vdso_arches %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x aarch64
+%define vdso_arches %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x aarch64 ppc64le
 %endif
 
 # Overrides for generic default options
@@ -252,7 +252,7 @@ Summary: The Linux kernel
 %endif
 
 # sparse blows up on ppc64 and sparc64
-%ifarch ppc64 ppc ppc64p7
+%ifarch ppc64 ppc ppc64p7 ppc64le
 %define with_sparse 0
 %endif
 
@@ -282,6 +282,17 @@ Summary: The Linux kernel
 %define make_target vmlinux
 %define kernel_image vmlinux
 %define kernel_image_elf 1
+%endif
+
+%ifarch ppc64le
+%define asmarch powerpc
+%define hdrarch powerpc
+%define all_arch_configs kernel-%{version}-ppc64le.config
+%define image_install_path boot
+%define make_target vmlinux
+%define kernel_image vmlinux
+%define kernel_image_elf 1
+%define with_tools 0
 %endif
 
 %ifarch s390x
@@ -365,7 +376,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm} aarch64
+%define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm} aarch64 ppc64le
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -406,7 +417,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64
+ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 
 %kernel_reqprovconf
@@ -473,6 +484,7 @@ Source51: config-powerpc32-generic
 Source52: config-powerpc32-smp
 Source53: config-powerpc64
 Source54: config-powerpc64p7
+Source55: config-powerpc64le
 
 Source70: config-s390x
 
@@ -636,6 +648,9 @@ Patch25034: bug-1071998.patch
 
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
+
+#Fixes module loading on ppc64le
+Patch25036: ppc64le_module_fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1292,6 +1307,9 @@ ApplyPatch bug-1071998.patch
 
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
+
+# Fixes module loading on ppc64le
+ApplyPatch ppc64le_module_fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2073,6 +2091,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add ppc64le support from Brent Baude (rhbz 1073102)
 - Fix depmod error message from hci_vhci module (rhbz 1051748)
 - Fix bogus WARN in iwlwifi (rhbz 1071998)
 
