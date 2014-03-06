@@ -634,6 +634,9 @@ Patch25026: keyring-fix.patch
 #rhbz 1071998
 Patch25034: bug-1071998.patch
 
+#rhbz 1051748
+Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1286,6 +1289,9 @@ ApplyPatch keyring-fix.patch
 
 #rhbz 1071998
 ApplyPatch bug-1071998.patch
+
+#rhbz 1051748
+ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2067,6 +2073,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix depmod error message from hci_vhci module (rhbz 1051748)
 - Fix bogus WARN in iwlwifi (rhbz 1071998)
 
 * Wed Mar 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc5.git2.1
