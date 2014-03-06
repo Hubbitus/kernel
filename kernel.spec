@@ -791,6 +791,9 @@ Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 #rhbz 1071998
 Patch25034: bug-1071998.patch
 
+#rhbz 1051748
+Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1537,6 +1540,9 @@ ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
 #rhbz 1071998
 ApplyPatch bug-1071998.patch
+
+#rhbz 1051748
+ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2350,6 +2356,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix depmod error message from hci_vhci module (rhbz 1051748)
 - Fix bogus WARN in iwlwifi (rhbz 1071998)
 
 * Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
