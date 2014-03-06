@@ -631,6 +631,9 @@ Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
 
+#rhbz 1071998
+Patch25034: bug-1071998.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1280,6 +1283,9 @@ ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
+
+#rhbz 1071998
+ApplyPatch bug-1071998.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2060,6 +2066,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix bogus WARN in iwlwifi (rhbz 1071998)
+
 * Wed Mar 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc5.git2.1
 - Linux v3.14-rc5-185-gc3bebc7
 
