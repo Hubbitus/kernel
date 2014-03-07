@@ -797,6 +797,10 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 #rhbz 1003602
 Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
 
+#rhbz 1073180
+Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
+Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1549,6 +1553,10 @@ ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 #rhbz 1003602
 ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
+
+#rhbz 1073180
+ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
+ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2361,6 +2369,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert two xhci fixes that break USB mass storage (rhbz 1073180)
+
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix stale EC events on Samsung systems (rhbz 1003602)
 - Fix depmod error message from hci_vhci module (rhbz 1051748)
