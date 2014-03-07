@@ -652,6 +652,9 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
 
+#rhbz 1003602
+Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1310,6 +1313,9 @@ ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
+
+#rhbz 1003602
+ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2091,6 +2097,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix stale EC events on Samsung systems (rhbz 1003602)
 - Add ppc64le support from Brent Baude (rhbz 1073102)
 - Fix depmod error message from hci_vhci module (rhbz 1051748)
 - Fix bogus WARN in iwlwifi (rhbz 1071998)
