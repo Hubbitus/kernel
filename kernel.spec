@@ -801,6 +801,9 @@ Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
 Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
 Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
+#rhbz 1065663
+Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1557,6 +1560,9 @@ ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
 #rhbz 1073180
 ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
 ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
+
+#rhbz 1065663
+ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2370,6 +2376,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Mar 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix iwldvm WARN (rhbz 1065663)
 - Revert two xhci fixes that break USB mass storage (rhbz 1073180)
 
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
