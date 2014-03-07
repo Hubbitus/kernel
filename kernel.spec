@@ -794,6 +794,9 @@ Patch25034: bug-1071998.patch
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
+#rhbz 1003602
+Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1543,6 +1546,9 @@ ApplyPatch bug-1071998.patch
 
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
+
+#rhbz 1003602
+ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2356,6 +2362,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix stale EC events on Samsung systems (rhbz 1003602)
 - Fix depmod error message from hci_vhci module (rhbz 1051748)
 - Fix bogus WARN in iwlwifi (rhbz 1071998)
 
