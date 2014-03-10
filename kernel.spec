@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -631,17 +631,11 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 #CVE-2014-0069 rhbz 1064253 1062578
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-Patch25026: keyring-fix.patch
 
 #rhbz 1071998
 Patch25034: bug-1071998.patch
@@ -651,13 +645,6 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
-
-#rhbz 1003602
-Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1297,17 +1284,11 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 #CVE-2014-0069 rhbz 1064253 1062578
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-ApplyPatch keyring-fix.patch
 
 #rhbz 1071998
 ApplyPatch bug-1071998.patch
@@ -1317,13 +1298,6 @@ ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
-
-#rhbz 1003602
-ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2104,6 +2078,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git0.1
+- Linux v3.14-rc6
+- Disable debugging options.
+
 * Fri Mar 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Revert two xhci fixes that break USB mass storage (rhbz 1073180)
 
