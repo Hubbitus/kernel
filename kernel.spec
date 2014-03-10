@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 202
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -712,9 +712,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 993744
 Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
-#rhbz 1011362
-Patch25148: alx-Reset-phy-speed-after-resume.patch
-
 # Hubbitus
 # 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
 Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
@@ -779,6 +776,30 @@ Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
 #rhbz 1056170
 Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
+
+#CVE-2014-0102 rhbz 1071396
+Patch25026: keyring-fix.patch
+
+#CVE-2014-0049 rhbz 1062368 1071837
+Patch25027: kvm-x86-fix-emulator-buffer-overflow.patch
+
+#rhbz 1065087
+Patch25028: tty-Fix-low_latency-BUG.patch
+
+#rhbz 1066064
+Patch25029: audit-don-t-generate-loginuid-log-when-audit-disable.patch
+
+#CVE-2014-0101 rhbz 1072029 1070705
+Patch25030: net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
+
+#CVE-2014-0100 rhbz 1072026 1070618
+Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
+
+#rhbz 1027465
+Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
+
+#rhbz 1013466
+Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1448,9 +1469,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 993744
 ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
 
-#rhbz 1011362
-ApplyPatch alx-Reset-phy-speed-after-resume.patch
-
 #+Hu
 ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
 ApplyPatch 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
@@ -1514,6 +1532,29 @@ ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 #rhbz 1056170
 ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
 
+#CVE-2014-0102 rhbz 1071396
+ApplyPatch keyring-fix.patch
+
+#CVE-2014-0049 rhbz 1062368 1071837
+ApplyPatch kvm-x86-fix-emulator-buffer-overflow.patch
+
+#rhbz 1065087
+ApplyPatch tty-Fix-low_latency-BUG.patch
+
+#rhbz 1066064
+ApplyPatch audit-don-t-generate-loginuid-log-when-audit-disable.patch
+
+#CVE-2014-0101 rhbz 1072029 1070705
+ApplyPatch net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
+
+#CVE-2014-0100 rhbz 1072026 1070618
+ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
+
+#rhbz 1027465
+ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
+
+#rhbz 1013466
+ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2326,6 +2367,28 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 5 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.5-202.hu.1
+- 3.13.5-202.hu.1
+
+* Tue Mar 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix MAC-before-DAC check for mmap_zero (rhbz 1013466)
+- Fix hidp crash with apple bluetooth trackpads (rhbz 1027465)
+
+* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-202
+- CVE-2014-0100 net: inet frag race condition use-after-free (rhbz 1072026 1070618)
+- CVE-2014-0101 sctp: null ptr deref when processing auth cookie_echo chunk (rhbz 1070209 1070705)
+- Fix overly verbose audit logs (rhbz 1066064)
+
+* Mon Mar 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.13.5-201
+- CVE-2014-0049 kvm: mmio_fragments out-of-bounds access (rhbz 1062368 1071837)
+- Fix atomic sched BUG in tty low_latency (rhbz 1065087)
+
+* Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0102 keyctl_link can be used to cause an oops (rhbz 1071396)
+
+* Fri Feb 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop alx phy reset patch that is already in 3.13
+
 * Thu Feb 27 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.5-200.hu.1
 - 3.13.5-200.hu.1
 
