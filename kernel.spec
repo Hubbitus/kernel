@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 202
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -762,26 +762,16 @@ Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.pa
 Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
 #CVE-2014-0069 rhbz 1064253 1062584
-Patch25200: cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
-#rhbz 1054408
-Patch25203: cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
-
 #rhbz 994438
 Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
-#rhbz 1056170
-Patch25025: usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
-
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
-
-#CVE-2014-0049 rhbz 1062368 1071837
-Patch25027: kvm-x86-fix-emulator-buffer-overflow.patch
 
 #rhbz 1065087
 Patch25028: tty-Fix-low_latency-BUG.patch
@@ -800,6 +790,22 @@ Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
 #rhbz 1013466
 Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1071998
+Patch25034: bug-1071998.patch
+
+#rhbz 1051748
+Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
+
+#rhbz 1003602
+Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
+
+#rhbz 1073180
+Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
+Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
+
+#rhbz 1065663
+Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1517,26 +1523,16 @@ ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.pat
 ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
 
 #CVE-2014-0069 rhbz 1064253 1062584
-ApplyPatch cifs-ensure-that-uncached-writes-handle-unmapped-areas-correctly.patch
 ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
-#rhbz 1054408
-ApplyPatch cpufreq-powernow-k8-Initialize-per-cpu-data-structures-properly.patch
-
 #rhbz 994438
 ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 
-#rhbz 1056170
-ApplyPatch usb-ehci-fix-deadlock-when-threadirqs-option-is-used.patch
-
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
-
-#CVE-2014-0049 rhbz 1062368 1071837
-ApplyPatch kvm-x86-fix-emulator-buffer-overflow.patch
 
 #rhbz 1065087
 ApplyPatch tty-Fix-low_latency-BUG.patch
@@ -1555,6 +1551,22 @@ ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1071998
+ApplyPatch bug-1071998.patch
+
+#rhbz 1051748
+ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
+
+#rhbz 1003602
+ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
+
+#rhbz 1073180
+ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
+ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
+
+#rhbz 1065663
+ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2367,6 +2379,18 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.6-200
+- Linux v3.13.6
+
+* Fri Mar 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix iwldvm WARN (rhbz 1065663)
+- Revert two xhci fixes that break USB mass storage (rhbz 1073180)
+
+* Thu Mar 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix stale EC events on Samsung systems (rhbz 1003602)
+- Fix depmod error message from hci_vhci module (rhbz 1051748)
+- Fix bogus WARN in iwlwifi (rhbz 1071998)
+
 * Wed Mar 5 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.5-202.hu.1
 - 3.13.5-202.hu.1
 
