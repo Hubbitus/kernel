@@ -794,6 +794,9 @@ Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 #rhbz 1065663
 Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
+#CVE-2014-2309 rhbz 1074471 1075064
+Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1543,6 +1546,9 @@ ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 #rhbz 1065663
 ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
+
+#CVE-2014-2309 rhbz 1074471 1075064
+ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2355,6 +2361,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Mar 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2309 ipv6: crash due to router advertisment flooding (rhbz 1074471 1075064)
+
 * Fri Mar 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.6-200
 - Linux v3.13.6
 
