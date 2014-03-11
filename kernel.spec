@@ -646,6 +646,9 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
 
+#CVE-2014-2309 rhbz 1074471 1075064
+Patch25037: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1298,6 +1301,9 @@ ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
+
+#CVE-2014-2309 rhbz 1074471 1075064
+ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2079,6 +2085,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Mar 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git1.1
+- CVE-2014-2309 ipv6: crash due to router advertisment flooding (rhbz 1074471 1075064)
 - Linux v3.14-rc6-17-g8712a00
 - Reenable debugging options.
 
