@@ -797,6 +797,9 @@ Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 #CVE-2014-2309 rhbz 1074471 1075064
 Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
+#rhbz 1046495
+Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1549,6 +1552,9 @@ ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
 #CVE-2014-2309 rhbz 1074471 1075064
 ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
+#rhbz 1046495
+ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2361,6 +2367,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Mar 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix locking issue in iwldvm (rhbz 1046495)
+
 * Tue Mar 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2309 ipv6: crash due to router advertisment flooding (rhbz 1074471 1075064)
 
