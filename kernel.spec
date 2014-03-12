@@ -2084,6 +2084,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Mar 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add some general missing ARM drivers (mostly sound)
+- ARM config tweaks and cleanups
+- Update i.MX6 dtb
+
 * Tue Mar 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git1.1
 - CVE-2014-2309 ipv6: crash due to router advertisment flooding (rhbz 1074471 1075064)
 - Linux v3.14-rc6-17-g8712a00
