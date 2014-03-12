@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -630,12 +630,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#CVE-2014-0069 rhbz 1064253 1062578
-Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1071998
 Patch25034: bug-1071998.patch
@@ -1286,12 +1280,6 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#CVE-2014-0069 rhbz 1064253 1062578
-ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
 
 #rhbz 1071998
 ApplyPatch bug-1071998.patch
@@ -2084,6 +2072,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Mar 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git2.1
+- Linux v3.14-rc6-26-g33807f4
+
 * Wed Mar 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add some general missing ARM drivers (mostly sound)
 - ARM config tweaks and cleanups
