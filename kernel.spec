@@ -643,6 +643,9 @@ Patch25036: ppc64le_module_fix.patch
 #CVE-2014-2309 rhbz 1074471 1075064
 Patch25037: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
+#rhbz 1046495
+Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1292,6 +1295,9 @@ ApplyPatch ppc64le_module_fix.patch
 
 #CVE-2014-2309 rhbz 1074471 1075064
 ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
+#rhbz 1046495
+ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2073,6 +2079,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Mar 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git2.1
+- Fix locking issue in iwldvm (rhbz 1046495)
 - Linux v3.14-rc6-26-g33807f4
 
 * Wed Mar 12 2014 Peter Robinson <pbrobinson@fedoraproject.org>
