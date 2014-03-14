@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -631,17 +631,11 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1071998
-Patch25034: bug-1071998.patch
-
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
-
-#CVE-2014-2309 rhbz 1074471 1075064
-Patch25037: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
@@ -1284,17 +1278,11 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1071998
-ApplyPatch bug-1071998.patch
-
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
-
-#CVE-2014-2309 rhbz 1074471 1075064
-ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
@@ -2078,6 +2066,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git4.1
+- Linux v3.14-rc6-133-gc60f7d5
+
 * Thu Mar 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git3.1
 - Linux v3.14-rc6-41-gac9dc67
 
