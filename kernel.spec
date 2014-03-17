@@ -618,6 +618,8 @@ Patch21021: arm-tegra-paz00-panel-dts.patch
 # http://www.spinics.net/lists/devicetree/msg08276.html
 Patch21030: arm-imx6-utilite.patch
 
+# ARM sunxi (AllWinner)
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -2066,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 17 2014 Peter Robinson <pbrobinson@fedoraproject.org> 
+- Build in Palmas regulator on ARM to fix ext MMC boot on OMAP5
+
 * Fri Mar 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc6.git4.1
 - Linux v3.14-rc6-133-gc60f7d5
 
