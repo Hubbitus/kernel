@@ -800,6 +800,9 @@ Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
+#CVE-2014-2523 rhbz 1077343 1077350
+Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1555,6 +1558,9 @@ ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
+
+#CVE-2014-2523 rhbz 1077343 1077350
+ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2367,6 +2373,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2523 netfilter: nf_conntrack_dccp: incorrect skb_header_pointer API usages (rhbz 1077343 1077350)
+
 * Wed Mar 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix locking issue in iwldvm (rhbz 1046495)
 
