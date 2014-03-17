@@ -247,7 +247,7 @@ Summary: The Linux kernel
 %endif
 
 # bootwrapper is only on ppc
-%ifnarch ppc ppc64 ppc64p7
+%ifnarch ppc ppc64 ppc64p7 ppc64le
 %define with_bootwrapper 0
 %endif
 
@@ -2068,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add bootwrapper for ppc64le
+
 * Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc7.git0.1
 - Linux v3.14-rc7
 - Disable debugging options.
