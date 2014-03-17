@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2068,6 +2068,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc7.git0.1
+- Linux v3.14-rc7
+- Disable debugging options.
+
 * Mon Mar 17 2014 Peter Robinson <pbrobinson@fedoraproject.org> 
 - Build in Palmas regulator on ARM to fix ext MMC boot on OMAP5
 
