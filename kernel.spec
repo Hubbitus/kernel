@@ -2068,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Mar 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable TEGRA_FBDEV (rhbz 1073960)
+
 * Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add bootwrapper for ppc64le
 
