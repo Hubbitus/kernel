@@ -806,6 +806,9 @@ Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 #rhbz 1078894
 Patch25046: mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
 
+#CVE-2014-0131 rhbz 1074589 1079006
+Patch25048: skbuff-zero-copy.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1567,6 +1570,9 @@ ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 
 #rhbz 1078894
 ApplyPatch mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
+
+#CVE-2014-0131 rhbz 1074589 1079006
+ApplyPatch skbuff-zero-copy.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2380,6 +2386,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Mar 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0131: skbuff: use-after-free during segmentation with zerocopy (rhbz 1074589 1079006)
 - Fix readahead semantics on pipes and sockets (rhbz 1078894)
 
 * Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
