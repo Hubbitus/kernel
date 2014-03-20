@@ -803,6 +803,9 @@ Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 #CVE-2014-2523 rhbz 1077343 1077350
 Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 
+#rhbz 1078894
+Patch25046: mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1561,6 +1564,9 @@ ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 #CVE-2014-2523 rhbz 1077343 1077350
 ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
+
+#rhbz 1078894
+ApplyPatch mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2373,6 +2379,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Mar 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix readahead semantics on pipes and sockets (rhbz 1078894)
+
 * Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2523 netfilter: nf_conntrack_dccp: incorrect skb_header_pointer API usages (rhbz 1077343 1077350)
 
