@@ -2068,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Mar 23 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update some generic ARM config options
+
 * Fri Mar 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc7.git2.1
 - Linux v3.14-rc7-59-g08edb33
 
