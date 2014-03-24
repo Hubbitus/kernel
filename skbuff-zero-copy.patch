@@ -444,6 +444,19 @@ index dc4f768..869c7af 100644
  			*nskb_frag = *frag;
  			__skb_frag_ref(nskb_frag);
  			size = skb_frag_size(nskb_frag);
+@@ -3081,10 +3081,7 @@ perform_csum_check:
+ 	return segs;
+
+ err:
+-	while ((skb = segs)) {
+-		segs = skb->next;
+-		kfree_skb(skb);
+-	}
++	kfree_skb_list(segs);
+ 	return ERR_PTR(err);
+ }
+ EXPORT_SYMBOL_GPL(skb_segment);
+
 -- 
 1.8.5.3
 
