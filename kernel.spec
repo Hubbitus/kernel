@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -709,9 +709,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 # Fix 15sec NFS mount delay
 Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
@@ -763,12 +760,6 @@ Patch25026: keyring-fix.patch
 #rhbz 1065087
 Patch25028: tty-Fix-low_latency-BUG.patch
 
-#rhbz 1066064
-Patch25029: audit-don-t-generate-loginuid-log-when-audit-disable.patch
-
-#CVE-2014-0101 rhbz 1072029 1070705
-Patch25030: net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
-
 #CVE-2014-0100 rhbz 1072026 1070618
 Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
@@ -778,18 +769,8 @@ Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 #rhbz 1013466
 Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1071998
-Patch25034: bug-1071998.patch
-
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
-
-#rhbz 1003602
-Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 #rhbz 1065663
 Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
@@ -802,9 +783,6 @@ Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 #CVE-2014-2523 rhbz 1077343 1077350
 Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
-#rhbz 1078894
-Patch25046: mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
 
 #CVE-2014-0131 rhbz 1074589 1079006
 Patch25048: skbuff-zero-copy.patch
@@ -1474,9 +1452,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 # Fix 15sec NFS mount delay
 ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
 ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
@@ -1528,12 +1503,6 @@ ApplyPatch keyring-fix.patch
 #rhbz 1065087
 ApplyPatch tty-Fix-low_latency-BUG.patch
 
-#rhbz 1066064
-ApplyPatch audit-don-t-generate-loginuid-log-when-audit-disable.patch
-
-#CVE-2014-0101 rhbz 1072029 1070705
-ApplyPatch net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
-
 #CVE-2014-0100 rhbz 1072026 1070618
 ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
@@ -1543,18 +1512,8 @@ ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1071998
-ApplyPatch bug-1071998.patch
-
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
-
-#rhbz 1003602
-ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
 
 #rhbz 1065663
 ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
@@ -1567,9 +1526,6 @@ ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 #CVE-2014-2523 rhbz 1077343 1077350
 ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
-#rhbz 1078894
-ApplyPatch mm-readahead.c-fix-do_readahead-for-no-readpage-s.patch
 
 #CVE-2014-0131 rhbz 1074589 1079006
 ApplyPatch skbuff-zero-copy.patch
@@ -2385,6 +2341,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 24 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.7-200
+- Linux v3.13.7
+
 * Thu Mar 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-0131: skbuff: use-after-free during segmentation with zerocopy (rhbz 1074589 1079006)
 - Fix readahead semantics on pipes and sockets (rhbz 1078894)
