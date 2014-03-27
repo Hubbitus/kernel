@@ -2068,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 27 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Switch to CONFIG_TRANSPARENT_HUGEPAGE_MADVISE instead of always on
+
 * Tue Mar 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc8.git0.1
 - Linux v3.14-rc8
 - Disable debugging options.
