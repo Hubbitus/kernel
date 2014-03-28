@@ -796,6 +796,8 @@ Patch25050: net-vhost-validate-vhost_get_vq_desc-return-value.patch
 #CVE-2014-0077 rhbz 1064440 1081504
 Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
 
+#CVE-2014-2580 rhbz 1080084 1080086
+Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1548,6 +1550,9 @@ ApplyPatch net-vhost-validate-vhost_get_vq_desc-return-value.patch
 
 #CVE-2014-0077 rhbz 1064440 1081504
 ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
+
+#CVE-2014-2580 rhbz 1080084 1080086
+ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2361,6 +2366,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
 - CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
 - CVE-2014-0055 vhost-net: insufficent error handling in get_rx_bufs (rhbz 1062577 1081503)
 - CVE-2014-2568 net: potential info leak when ubuf backed skbs are zero copied (rhbz 1079012 1079013)
