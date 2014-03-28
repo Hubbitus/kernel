@@ -2068,6 +2068,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 28 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Tegra 114/124 SoCs
+- Re-enable OMAP cpufreq
+- Re-enable CPSW PTP option
+
 * Thu Mar 27 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Switch to CONFIG_TRANSPARENT_HUGEPAGE_MADVISE instead of always on
 
