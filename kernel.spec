@@ -790,6 +790,9 @@ Patch25048: skbuff-zero-copy.patch
 #CVE-2014-2568 rhbz 1079012 1079013
 Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
 
+#CVE-2014-0055 rhbz 1062577 1081503
+Patch25050: net-vhost-validate-vhost_get_vq_desc-return-value.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1535,6 +1538,9 @@ ApplyPatch skbuff-zero-copy.patch
 
 #CVE-2014-2568 rhbz 1079012 1079013
 ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+
+#CVE-2014-0055 rhbz 1062577 1081503
+ApplyPatch net-vhost-validate-vhost_get_vq_desc-return-value.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2348,6 +2354,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0055 vhost-net: insufficent error handling in get_rx_bufs (rhbz 1062577 1081503)
 - CVE-2014-2568 net: potential info leak when ubuf backed skbs are zero copied (rhbz 1079012 1079013)
 
 * Mon Mar 24 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.7-200
