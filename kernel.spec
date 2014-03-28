@@ -2092,13 +2092,13 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc8.git1.1
 - CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
 - CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
 - CVE-2014-0055 vhost-net: insufficent error handling in get_rx_bufs (rhbz 1062577 1081503)
 - CVE-2014-2568 net: potential info leak when ubuf backed skbs are zero copied (rhbz 1079012 1079013)
 
-* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc8.git1.1
+* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.14-rc8-12-g75c5a52
 - Reenable debugging options.
 
