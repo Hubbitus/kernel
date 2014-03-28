@@ -787,6 +787,9 @@ Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 #CVE-2014-0131 rhbz 1074589 1079006
 Patch25048: skbuff-zero-copy.patch
 
+#CVE-2014-2568 rhbz 1079012 1079013
+Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1529,6 +1532,9 @@ ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
 
 #CVE-2014-0131 rhbz 1074589 1079006
 ApplyPatch skbuff-zero-copy.patch
+
+#CVE-2014-2568 rhbz 1079012 1079013
+ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2341,6 +2347,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2568 net: potential info leak when ubuf backed skbs are zero copied (rhbz 1079012 1079013)
+
 * Mon Mar 24 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.7-200
 - Linux v3.13.7
 
