@@ -2379,6 +2379,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 10 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.6-200.hu.1
+- 3.13.6-200.hu.1
+
 * Fri Mar 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.6-200
 - Linux v3.13.6
 
