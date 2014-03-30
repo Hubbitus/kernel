@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -709,9 +709,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-Patch25128: dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 # Hubbitus
 # 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
 Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
@@ -776,12 +773,6 @@ Patch25026: keyring-fix.patch
 #rhbz 1065087
 Patch25028: tty-Fix-low_latency-BUG.patch
 
-#rhbz 1066064
-Patch25029: audit-don-t-generate-loginuid-log-when-audit-disable.patch
-
-#CVE-2014-0101 rhbz 1072029 1070705
-Patch25030: net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
-
 #CVE-2014-0100 rhbz 1072026 1070618
 Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
@@ -791,21 +782,35 @@ Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 #rhbz 1013466
 Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1071998
-Patch25034: bug-1071998.patch
-
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1003602
-Patch25037: ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-Patch25038: Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-Patch25039: Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
-
 #rhbz 1065663
 Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
+
+#CVE-2014-2309 rhbz 1074471 1075064
+Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
+#rhbz 1046495
+Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
+
+#CVE-2014-2523 rhbz 1077343 1077350
+Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
+
+#CVE-2014-0131 rhbz 1074589 1079006
+Patch25048: skbuff-zero-copy.patch
+
+#CVE-2014-2568 rhbz 1079012 1079013
+Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+
+#CVE-2014-0055 rhbz 1062577 1081503
+Patch25050: net-vhost-validate-vhost_get_vq_desc-return-value.patch
+
+#CVE-2014-0077 rhbz 1064440 1081504
+Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
+
+#CVE-2014-2580 rhbz 1080084 1080086
+Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1472,9 +1477,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 993744
-ApplyPatch dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch
-
 #+Hu
 ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
 ApplyPatch 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
@@ -1537,12 +1539,6 @@ ApplyPatch keyring-fix.patch
 #rhbz 1065087
 ApplyPatch tty-Fix-low_latency-BUG.patch
 
-#rhbz 1066064
-ApplyPatch audit-don-t-generate-loginuid-log-when-audit-disable.patch
-
-#CVE-2014-0101 rhbz 1072029 1070705
-ApplyPatch net-net-sctp-fix-sctp_sf_do_5_1D_ce-to-verify-if-we-peer-is-AUTH-capable.patch
-
 #CVE-2014-0100 rhbz 1072026 1070618
 ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
 
@@ -1552,21 +1548,35 @@ ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1071998
-ApplyPatch bug-1071998.patch
-
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1003602
-ApplyPatch ACPI-EC-Clear-stale-EC-events-on-Samsung-systems.patch
-
-#rhbz 1073180
-ApplyPatch Revert-USBNET-ax88179_178a-enable-tso-if-usb-host-supports-sg-dma.patch
-ApplyPatch Revert-xhci-1.0-Limit-arbitrarily-aligned-scatter-gather.patch
-
 #rhbz 1065663
 ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
+
+#CVE-2014-2309 rhbz 1074471 1075064
+ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
+
+#rhbz 1046495
+ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
+
+#CVE-2014-2523 rhbz 1077343 1077350
+ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
+
+#CVE-2014-0131 rhbz 1074589 1079006
+ApplyPatch skbuff-zero-copy.patch
+
+#CVE-2014-2568 rhbz 1079012 1079013
+ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+
+#CVE-2014-0055 rhbz 1062577 1081503
+ApplyPatch net-vhost-validate-vhost_get_vq_desc-return-value.patch
+
+#CVE-2014-0077 rhbz 1064440 1081504
+ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
+
+#CVE-2014-2580 rhbz 1080084 1080086
+ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2379,6 +2389,28 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
+- CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
+- CVE-2014-0055 vhost-net: insufficent error handling in get_rx_bufs (rhbz 1062577 1081503)
+- CVE-2014-2568 net: potential info leak when ubuf backed skbs are zero copied (rhbz 1079012 1079013)
+
+* Mon Mar 24 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.7-200
+- Linux v3.13.7
+
+* Thu Mar 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0131: skbuff: use-after-free during segmentation with zerocopy (rhbz 1074589 1079006)
+- Fix readahead semantics on pipes and sockets (rhbz 1078894)
+
+* Mon Mar 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2523 netfilter: nf_conntrack_dccp: incorrect skb_header_pointer API usages (rhbz 1077343 1077350)
+
+* Wed Mar 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix locking issue in iwldvm (rhbz 1046495)
+
+* Tue Mar 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2309 ipv6: crash due to router advertisment flooding (rhbz 1074471 1075064)
+
 * Mon Mar 10 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.6-200.hu.1
 - 3.13.6-200.hu.1
 
