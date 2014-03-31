@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 13
+%define base_sublevel 14
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -59,9 +59,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -642,21 +642,9 @@ Patch25036: ppc64le_module_fix.patch
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2568 rhbz 1079012 1079013
-Patch25049: core-nfqueue-openvswitch-Orphan-frags-in-skb_zerocopy-and-handle-errors.patch
-
-#CVE-2014-0055 rhbz 1062577 1081503
-Patch25050: net-vhost-validate-vhost_get_vq_desc-return-value.patch
-
-#CVE-2014-0077 rhbz 1064440 1081504
-Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
-
 #CVE-2014-2580 rhbz 1080084 1080086
 Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
-#https://bugs.freedesktop.org/show_bug.cgi?id=76341
-#included in the input tree for-linux branch, will go upstream for 3.15
-Patch25053: input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1304,20 +1292,8 @@ ApplyPatch ppc64le_module_fix.patch
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2568 rhbz 1079012 1079013
-ApplyPatch core-nfqueue-openvswitch-Orphan-frags-in-skb_zerocopy-and-handle-errors.patch
-
-#CVE-2014-0055 rhbz 1062577 1081503
-ApplyPatch net-vhost-validate-vhost_get_vq_desc-return-value.patch
-
-#CVE-2014-0077 rhbz 1064440 1081504
-ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
-
 #CVE-2014-2580 rhbz 1080084 1080086
 ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
-
-#https://bugs.freedesktop.org/show_bug.cgi?id=76341
-ApplyPatch input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2098,6 +2074,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-1
+- Linux v3.14
+- Disable debugging options.
+
 * Mon Mar 31 2014 Hans de Goede <hdegoede@redhat.com>
 - Fix clicks getting lost with cypress_ps2 touchpads with recent
   xorg-x11-drv-synaptics versions (bfdo#76341)
