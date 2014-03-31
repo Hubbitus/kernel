@@ -654,6 +654,9 @@ Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
 #CVE-2014-2580 rhbz 1080084 1080086
 Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
+#https://bugs.freedesktop.org/show_bug.cgi?id=76341
+#included in the input tree for-linux branch, will go upstream for 3.15
+Patch25053: input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1312,6 +1315,9 @@ ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+
+#https://bugs.freedesktop.org/show_bug.cgi?id=76341
+ApplyPatch input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2092,6 +2098,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 31 2014 Hans de Goede <hdegoede@redhat.com>
+- Fix clicks getting lost with cypress_ps2 touchpads with recent
+  xorg-x11-drv-synaptics versions (bfdo#76341)
+
 * Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc8.git1.1
 - CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
 - CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
