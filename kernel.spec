@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 9
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -385,29 +385,6 @@ Summary: The Linux kernel
 %define kernel_prereq  fileutils, systemd >= 203-2
 %define initrd_prereq  dracut >= 027
 
-#
-# This macro does requires, provides, conflicts, obsoletes for a kernel package.
-#	%%kernel_reqprovconf <subpackage>
-# It uses any kernel_<subpackage>_conflicts and kernel_<subpackage>_obsoletes
-# macros defined above.
-#
-%define kernel_reqprovconf \
-Provides: kernel = %{rpmversion}-%{pkg_release}\
-Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:+%{1}}\
-Provides: kernel-drm-nouveau = 16\
-Provides: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires(pre): %{kernel_prereq}\
-Requires(pre): %{initrd_prereq}\
-Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
-Requires(preun): systemd >= 200\
-%{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
-%{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
-%{expand:%%{?kernel%{?1:_%{1}}_provides:Provides: %%{kernel%{?1:_%{1}}_provides}}}\
-# We can't let RPM do the dependencies automatic because it'll then pick up\
-# a correct but undesirable perl dependency from the module headers which\
-# isn't required for the kernel proper to function\
-AutoReqProv: no\
-%{nil}
 
 Name: kernel%{?variant}
 Group: System Environment/Kernel
@@ -419,8 +396,9 @@ Release: %{pkg_release}
 # SET %%nobuildarches (ABOVE) INSTEAD
 ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
+Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
+Requires: kernel-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}
 
-%kernel_reqprovconf
 
 #
 # List the packages used during the kernel build
@@ -464,6 +442,15 @@ Source15: merge.pl
 Source16: mod-extra.list
 Source17: mod-extra.sh
 Source18: mod-sign.sh
+Source90: filter-x86_64.sh
+Source91: filter-armv7hl.sh
+Source92: filter-i686.sh
+Source93: filter-aarch64.sh
+Source94: filter-ppc.sh
+Source95: filter-ppc64.sh
+Source96: filter-ppc64le.sh
+Source97: filter-s390x.sh
+Source99: filter-modules.sh
 %define modsign_cmd %{SOURCE18}
 
 Source19: Makefile.release
@@ -652,10 +639,31 @@ Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
 
 %description
-The kernel package contains the Linux kernel (vmlinuz), the core of any
-Linux operating system.  The kernel handles the basic functions
-of the operating system: memory allocation, process allocation, device
-input and output, etc.
+The kernel meta package
+
+#
+# This macro does requires, provides, conflicts, obsoletes for a kernel package.
+#	%%kernel_reqprovconf <subpackage>
+# It uses any kernel_<subpackage>_conflicts and kernel_<subpackage>_obsoletes
+# macros defined above.
+#
+%define kernel_reqprovconf \
+Provides: kernel = %{rpmversion}-%{pkg_release}\
+Provides: kernel-%{_target_cpu} = %{rpmversion}-%{pkg_release}%{?1:+%{1}}\
+Provides: kernel-drm-nouveau = 16\
+Provides: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires(pre): %{kernel_prereq}\
+Requires(pre): %{initrd_prereq}\
+Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
+Requires(preun): systemd >= 200\
+%{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
+%{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
+%{expand:%%{?kernel%{?1:_%{1}}_provides:Provides: %%{kernel%{?1:_%{1}}_provides}}}\
+# We can't let RPM do the dependencies automatic because it'll then pick up\
+# a correct but undesirable perl dependency from the module headers which\
+# isn't required for the kernel proper to function\
+AutoReqProv: no\
+%{nil}
 
 %package headers
 Summary: Header files for the Linux kernel for use by glibc
@@ -837,9 +845,29 @@ Provides: kernel%{?1:-%{1}}-modules-extra = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel-drivers-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
+%{nil}
+
+#
+# This macro creates a kernel-<subpackage>-drivers package.
+#	%%kernel_drivers_package <subpackage> <pretty-name>
+#
+%define kernel_drivers_package() \
+%package %{?1:%{1}-}drivers\
+Summary: kernel modules to match the %{?2:%{2}-}core kernel\
+Group: System Environment/Kernel\
+Provides: kernel%{?1:-%{1}}-drivers-%{_target_cpu} = %{version}-%{release}\
+Provides: kernel-drivers-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-drivers = %{version}-%{release}%{?1:+%{1}}\
+Provides: installonlypkg(kernel-module)\
+Provides: kernel-drivers-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
+AutoReqProv: no\
+%description -n kernel%{?variant}%{?1:-%{1}}-drivers\
+This package provides commonly used kernel modules for the %{?2:%{2}-}core kernel package.\
 %{nil}
 
 #
@@ -848,42 +876,34 @@ This package provides less commonly used kernel modules for the %{?2:%{2} }kerne
 #	%%kernel_variant_package [-n <pretty-name>] <subpackage>
 #
 %define kernel_variant_package(n:) \
-%package %1\
+%package %{?1:%{1}-}core\
 Summary: %{variant_summary}\
 Group: System Environment/Kernel\
-%kernel_reqprovconf\
-%{expand:%%kernel_devel_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{?1:+%{1}}\
+%{expand:%%kernel_reqprovconf}\
+%{expand:%%kernel_devel_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
+%{expand:%%kernel_drivers_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %if %{with_extra}\
-%{expand:%%kernel_modules_extra_package %1 %{!?-n:%1}%{?-n:%{-n*}}}\
+%{expand:%%kernel_modules_extra_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %endif\
-%{expand:%%kernel_debuginfo_package %1}\
+%{expand:%%kernel_debuginfo_package %{?1:%{1}}}\
 %{nil}
-
-
-# First the auxiliary packages of the main kernel package.
-%kernel_devel_package
-%if %{with_extra}
-%kernel_modules_extra_package
-%endif
-%kernel_debuginfo_package
-
 
 # Now, each variant package.
 
 %define variant_summary The Linux kernel compiled for SMP machines
 %kernel_variant_package -n SMP smp
-%description smp
+%description smp-core
 This package includes a SMP version of the Linux kernel. It is
 required only on machines with two or more CPUs as well as machines with
 hyperthreading technology.
 
 Install the kernel-smp package if your machine uses two or more CPUs.
 
-
 %ifnarch armv7hl
 %define variant_summary The Linux kernel compiled for PAE capable machines
 %kernel_variant_package %{pae}
-%description %{pae}
+%description %{pae}-core
 This package includes a version of the Linux kernel with support for up to
 64GB of high memory. It requires a CPU with Physical Address Extensions (PAE).
 The non-PAE kernel can only address up to 4GB of memory.
@@ -891,7 +911,7 @@ Install the kernel-PAE package if your machine has more than 4GB of memory.
 %else
 %define variant_summary The Linux kernel compiled for Cortex-A15
 %kernel_variant_package %{pae}
-%description %{pae}
+%description %{pae}-core
 This package includes a version of the Linux kernel with support for
 Cortex-A15 devices with LPAE and HW virtualisation support
 %endif
@@ -900,7 +920,7 @@ Cortex-A15 devices with LPAE and HW virtualisation support
 %define variant_summary The Linux kernel compiled with extra debugging enabled for PAE capable machines
 %kernel_variant_package %{pae}debug
 Obsoletes: kernel-PAE-debug
-%description %{pae}debug
+%description %{pae}debug-core
 This package includes a version of the Linux kernel with support for up to
 64GB of high memory. It requires a CPU with Physical Address Extensions (PAE).
 The non-PAE kernel can only address up to 4GB of memory.
@@ -913,7 +933,7 @@ on kernel bugs, as some of these options impact performance noticably.
 
 %define variant_summary The Linux kernel compiled with extra debugging enabled
 %kernel_variant_package debug
-%description debug
+%description debug-core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
 of the operating system:  memory allocation, process allocation, device
@@ -922,6 +942,16 @@ input and output, etc.
 This variant of the kernel has numerous debugging options enabled.
 It should only be installed when trying to gather additional information
 on kernel bugs, as some of these options impact performance noticably.
+
+# And finally the main -core package
+
+%define variant_summary The Linux kernel
+%kernel_variant_package 
+%description core
+The kernel package contains the Linux kernel (vmlinuz), the core of any
+Linux operating system.  The kernel handles the basic functions
+of the operating system: memory allocation, process allocation, device
+input and output, etc.
 
 
 %prep
@@ -1598,6 +1628,55 @@ BuildKernel() {
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
 %endif
 
+    #
+    # Generate the kernel-core and kernel-drivers files lists
+    #
+
+    # Copy the System.map file for depmod to use, and create a backup of the
+    # full module tree so we can restore it after we're done filtering
+    cp System.map $RPM_BUILD_ROOT/.
+    pushd $RPM_BUILD_ROOT
+    mkdir restore
+    cp -r lib/modules/$KernelVer/* restore/.
+
+    # don't include anything going into k-m-e in the file lists
+    rm -rf lib/modules/$KernelVer/extra
+
+    # Find all the module files and filter them out into the core and drivers
+    # lists.  This actually removes anything going into -drivers from the dir.
+    find lib/modules/$KernelVer/kernel -name *.ko | sort -n > modules.list
+	cp $RPM_SOURCE_DIR/filter-*.sh .
+    %{SOURCE99} modules.list %{_target_cpu}
+	rm filter-*.sh
+
+    # Run depmod on the resulting module tree and make sure it isn't broken
+    depmod -b . -aeF ./System.map $KernelVer
+    # remove files that will be auto generated by depmod at rpm -i time
+    pushd $RPM_BUILD_ROOT/lib/modules/$KernelVer/
+        rm -f modules.{alias*,builtin.bin,dep*,*map,symbols*,devname,softdep}
+    popd
+
+    # Go back and find all of the various directories in the tree.  We use this
+    # for the dir lists in kernel-core
+    find lib/modules/$KernelVer/kernel -type d | sort -n > module-dirs.list
+
+    # Cleanup
+    rm System.map
+    cp -r restore/* lib/modules/$KernelVer/.
+    rm -rf restore
+    popd
+
+    # Make sure the files lists start with absolute paths or rpmbuild fails.
+    # Also add in the dir entries
+    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/k-d.list > ../kernel${Flavour:+-${Flavour}}-drivers.list
+    sed -e 's/^lib*/%dir \/lib/' $RPM_BUILD_ROOT/module-dirs.list > ../kernel${Flavour:+-${Flavour}}-core.list
+    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/modules.list >> ../kernel${Flavour:+-${Flavour}}-core.list
+
+    # Cleanup
+    rm -f $RPM_BUILD_ROOT/k-d.list
+    rm -f $RPM_BUILD_ROOT/modules.list
+    rm -f $RPM_BUILD_ROOT/module-dirs.list
+
 %if %{signmodules}
     # Save the signing keys so we can sign the modules in __modsign_install_post
     cp signing_key.priv signing_key.priv.sign${Flav}
@@ -1866,10 +1945,27 @@ fi\
 
 #
 # This macro defines a %%post script for a kernel*-modules-extra package.
+# It also defines a %%postun script that does the same thing.
 #	%%kernel_modules_extra_post [<subpackage>]
 #
 %define kernel_modules_extra_post() \
 %{expand:%%post %{?1:%{1}-}modules-extra}\
+/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
+%{nil}\
+%{expand:%%postun %{?1:%{1}-}modules-extra}\
+/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
+%{nil}
+
+#
+# This macro defines a %%post script for a kernel*-drivers package.
+# It also defines a %%postun script that does the same thing.
+#	%%kernel_drivers_post [<subpackage>]
+#
+%define kernel_drivers_post() \
+%{expand:%%post %{?1:%{1}-}drivers}\
+/sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
+%{nil}\
+%{expand:%%postun %{?1:%{1}-}drivers}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}
 
@@ -1878,7 +1974,7 @@ fi\
 # More text can follow to go at the end of this variant's %%post.
 #
 %define kernel_variant_posttrans() \
-%{expand:%%posttrans %{?1}}\
+%{expand:%%posttrans %{?1:%{1}-}core}\
 /bin/kernel-install add %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
 %{nil}
 
@@ -1889,11 +1985,12 @@ fi\
 #
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
+%{expand:%%kernel_drivers_post %{?-v*}}\
 %if %{with_extra}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
 %endif\
 %{expand:%%kernel_variant_posttrans %{?-v*}}\
-%{expand:%%post %{?-v*}}\
+%{expand:%%post %{?-v*:%{-v*}-}core}\
 %{-r:\
 if [ `uname -i` == "x86_64" -o `uname -i` == "i386" ] &&\
    [ -f /etc/sysconfig/kernel ]; then\
@@ -1906,7 +2003,7 @@ fi}\
 #	%%kernel_variant_preun <subpackage>
 #
 %define kernel_variant_preun() \
-%{expand:%%preun %{?1}}\
+%{expand:%%preun %{?1:%{1}-}core}\
 /bin/kernel-install remove %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
 %{nil}
 
@@ -2007,6 +2104,10 @@ fi
 %endif
 %endif # with_perf
 
+# empty meta-package
+%files
+%defattr(-,root,root)
+
 # This is %%{image_install_path} on an arch where that includes ELF files,
 # or empty otherwise.
 %define elf_image_install_path %{?kernel_image_elf:%{image_install_path}}
@@ -2018,7 +2119,7 @@ fi
 #
 %define kernel_variant_files(k:) \
 %if %{1}\
-%{expand:%%files %{?2}}\
+%{expand:%%files -f kernel-%{?2:%{2}-}core.list %{?2:%{2}-}core}\
 %defattr(-,root,root)\
 /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
 /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
@@ -2027,9 +2128,10 @@ fi
 %endif\
 %attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
 /boot/config-%{KVERREL}%{?2:+%{2}}\
+%ghost /boot/initramfs-%{KVERREL}%{?2:+%{2}}.img\
 %dir /lib/modules\
 %dir /lib/modules/%{KVERREL}%{?2:+%{2}}\
-/lib/modules/%{KVERREL}%{?2:+%{2}}/kernel\
+%dir /lib/modules/%{KVERREL}%{?2:+%{2}}/kernel\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/build\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/source\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/updates\
@@ -2038,7 +2140,8 @@ fi
 /etc/ld.so.conf.d/kernel-%{KVERREL}%{?2:+%{2}}.conf\
 %endif\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/modules.*\
-%ghost /boot/initramfs-%{KVERREL}%{?2:+%{2}}.img\
+%{expand:%%files -f kernel-%{?2:%{2}-}drivers.list %{?2:%{2}-}drivers}\
+%defattr(-,root,root)\
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
 /usr/src/kernels/%{KVERREL}%{?2:+%{2}}\
@@ -2077,6 +2180,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Apr 29 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Introduce kernel-core/kernel-drivers split for F21 Feature work
+
 * Tue Apr 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git1.1
 - Linux v3.15-rc3-41-g2aafe1a4d451
 - Reenable debugging options.
