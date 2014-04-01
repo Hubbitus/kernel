@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -663,8 +663,6 @@ Patch1826: drm-i915-hush-check-crtc-state.patch
 # NFSv4
 
 # patches headed upstream
-Patch10000: fs-proc-devtree-remove_proc_entry.patch
-
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch14000: hibernate-freeze-filesystems.patch
@@ -718,25 +716,8 @@ Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
-
-#rhbz 1003167 1046238
-Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-Patch25182: 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 950630
-Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
 #rhbz 1045755
 Patch25195: cgroup-fixes.patch
@@ -750,9 +731,6 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 994438
-Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
@@ -1443,8 +1421,6 @@ ApplyPatch drm-i915-hush-check-crtc-state.patch
 # Radeon DRM
 
 # Patches headed upstream
-ApplyPatch fs-proc-devtree-remove_proc_entry.patch
-
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 # FIXME: REBASE
@@ -1477,25 +1453,8 @@ ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
-
-#rhbz 1003167 1046238
-ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-ApplyPatch 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 950630
-ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
 
 #rhbz 1045755
 ApplyPatch cgroup-fixes.patch
@@ -1509,9 +1468,6 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 994438
-ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
@@ -2372,6 +2328,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Mar 31 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.8-200
+- Linux v3.13.8
+
 * Mon Mar 31 2014 Hans de Goede <hdegoede@redhat.com>
 - Fix clicks getting lost with cypress_ps2 touchpads with recent
   xorg-x11-drv-synaptics versions (bfdo#76341)
