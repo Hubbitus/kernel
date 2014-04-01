@@ -645,6 +645,9 @@ Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 #CVE-2014-2580 rhbz 1080084 1080086
 Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
+#CVE-2014-2678 rhbz 1083274 1083280
+Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1294,6 +1297,9 @@ ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+
+#CVE-2014-2678 rhbz 1083274 1083280
+ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2075,6 +2081,9 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git2.1
+- CVE-2014-2678 net: rds: deref of NULL dev in rds_iw_laddr_check (rhbz 1083274 1083280)
+
+* Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org> 
 - Linux v3.14-751-g683b6c6f82a6
 
 * Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git1.1
