@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -652,6 +652,7 @@ Patch25055: net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 Patch25056: net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
 Patch25057: net-qlcnic-include-irq.h-for-irq-definitions.patch
 Patch25058: arm64-Fix-duplicated-Kconfig-entries-again.patch
+Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1310,6 +1311,7 @@ ApplyPatch net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-qlcnic-include-irq.h-for-irq-definitions.patch
 ApplyPatch arm64-Fix-duplicated-Kconfig-entries-again.patch
+ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2090,6 +2092,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git5.1
+- Linux v3.14-4555-gb33ce4429938
+
 * Wed Apr 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git4.1
 - Linux v3.14-4227-g3e75c6de1ac3
 
