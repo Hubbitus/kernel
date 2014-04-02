@@ -1,7 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
 
-From 8c5bcdba1c1ff54913679e435e90f6084b15e8bf Mon Sep 17 00:00:00 2001
+From b0466e5c5483957f8ca30b8f1bcf60bbad9d40aa Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH 01/14] Add secure_modules() call
@@ -63,7 +63,7 @@ index 8dc7f5e80dd8..62f9b72bf85e 100644
 1.8.5.3
 
 
-From 07a3bcd38cc1056dd6c58ba58316296c4df38fb0 Mon Sep 17 00:00:00 2001
+From 3df1daaa8cd3c8450fd8fda62ff4836eddbf0f09 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
 Subject: [PATCH 02/14] PCI: Lock down BAR access when module security is
@@ -83,7 +83,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  3 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 276ef9c18802..acd1d61247c8 100644
+index 4e0acefb7565..01b56d13d021 100644
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
 @@ -29,6 +29,7 @@
@@ -94,7 +94,7 @@ index 276ef9c18802..acd1d61247c8 100644
  #include "pci.h"
  
  static int sysfs_initialized;	/* = 0 */
-@@ -663,6 +664,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
+@@ -652,6 +653,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
  	loff_t init_off = off;
  	u8 *data = (u8*) buf;
  
@@ -104,7 +104,7 @@ index 276ef9c18802..acd1d61247c8 100644
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -969,6 +973,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+@@ -958,6 +962,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
  	resource_size_t start, end;
  	int i;
  
@@ -114,7 +114,7 @@ index 276ef9c18802..acd1d61247c8 100644
  	for (i = 0; i < PCI_ROM_RESOURCE; i++)
  		if (res == &pdev->resource[i])
  			break;
-@@ -1076,6 +1083,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
+@@ -1065,6 +1072,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
  		      struct bin_attribute *attr, char *buf,
  		      loff_t off, size_t count)
  {
@@ -182,7 +182,7 @@ index 24750a1b39b6..fa57896b97dd 100644
 1.8.5.3
 
 
-From ec91151858b2610fab98eaee045718f83b95b182 Mon Sep 17 00:00:00 2001
+From c14a3599cdf71ccd6ea47e8b404412b8e7a5c1b3 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
 Subject: [PATCH 03/14] x86: Lock down IO port access when module security is
@@ -230,7 +230,7 @@ index 4ddaf66ea35f..00b440307419 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 92c5937f80c3..9d67b702bee5 100644
+index 917403fe10da..cdf839f9defe 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -27,6 +27,7 @@
@@ -241,7 +241,7 @@ index 92c5937f80c3..9d67b702bee5 100644
  
  #include <asm/uaccess.h>
  
-@@ -562,6 +563,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
+@@ -568,6 +569,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
  	unsigned long i = *ppos;
  	const char __user *tmp = buf;
  
@@ -255,7 +255,7 @@ index 92c5937f80c3..9d67b702bee5 100644
 1.8.5.3
 
 
-From 6a1ba9b8e21747505e3242edec5eb32b34151197 Mon Sep 17 00:00:00 2001
+From ccbc02eee179074b13acc2d7dfd17835726a579a Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
 Subject: [PATCH 04/14] ACPI: Limit access to custom_method
@@ -287,7 +287,7 @@ index c68e72414a67..4277938af700 100644
 1.8.5.3
 
 
-From 3b4277dc7a3dfefe3e27405e497eed0f90359141 Mon Sep 17 00:00:00 2001
+From b40f05f5ec470bc59f41ca7ce66ea09614db60ea Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:46:50 -0500
 Subject: [PATCH 05/14] asus-wmi: Restrict debugfs interface when module
@@ -342,7 +342,7 @@ index c5e082fb82fa..03c57fc8de8a 100644
 1.8.5.3
 
 
-From a04a8ae989b90585a242eb19a8567e70419be27b Mon Sep 17 00:00:00 2001
+From bfa6f400f5e0f98772f3c77b60d8ac3d39b080a8 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
 Subject: [PATCH 06/14] Restrict /dev/mem and /dev/kmem when module loading is
@@ -358,12 +358,12 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 9d67b702bee5..9116f10eec5e 100644
+index cdf839f9defe..c63cf93b00eb 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
-@@ -158,6 +158,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
- 	unsigned long copied;
- 	void *ptr;
+@@ -164,6 +164,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
+ 	if (p != *ppos)
+ 		return -EFBIG;
  
 +	if (secure_modules())
 +		return -EPERM;
@@ -371,7 +371,7 @@ index 9d67b702bee5..9116f10eec5e 100644
  	if (!valid_phys_addr_range(p, count))
  		return -EFAULT;
  
-@@ -496,6 +499,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+@@ -502,6 +505,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
  	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
  	int err = 0;
  
@@ -385,7 +385,7 @@ index 9d67b702bee5..9116f10eec5e 100644
 1.8.5.3
 
 
-From 9aac939b874fc53c4021baf88914292448dcb0f6 Mon Sep 17 00:00:00 2001
+From e399403d8b74cbbb23ead4e43b70b4d82ee00402 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
 Subject: [PATCH 07/14] acpi: Ignore acpi_rsdp kernel parameter when module
@@ -401,7 +401,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index fc1aa7909690..ee9f123db960 100644
+index 27f84af4e337..bd3ac0947890 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -44,6 +44,7 @@
@@ -425,7 +425,7 @@ index fc1aa7909690..ee9f123db960 100644
 1.8.5.3
 
 
-From 7105897db69bf40f7a860d962d6364f44b184a99 Mon Sep 17 00:00:00 2001
+From 686268dea5fa802409d99f964005bc57d62f6b04 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH 08/14] kexec: Disable at runtime if the kernel enforces module
@@ -470,7 +470,7 @@ index 45601cf41bee..d5819bb45bec 100644
 1.8.5.3
 
 
-From 396802aea251e2b6d73b8af6107bf5b15319c5d9 Mon Sep 17 00:00:00 2001
+From 4a1068eb94b99cab1d31a8a87eea9aafb39bcea0 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Tue, 3 Sep 2013 11:23:29 -0400
 Subject: [PATCH 09/14] uswsusp: Disable when module loading is restricted
@@ -510,7 +510,7 @@ index 98d357584cd6..efe99dee9510 100644
 1.8.5.3
 
 
-From a35665548d4a0a2e56692f6d8e1a85097f8a1d78 Mon Sep 17 00:00:00 2001
+From 569d0384d6846dae76910d5104666f11597a6a78 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
 Subject: [PATCH 10/14] x86: Restrict MSR access when module loading is
@@ -555,7 +555,7 @@ index 05266b5aae22..e2bd647f676e 100644
 1.8.5.3
 
 
-From e6666519c5267410c85d8271c69a421eb735f58e Mon Sep 17 00:00:00 2001
+From bca29272512c8646bf2feaf304a0eceb05c0d0c0 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH 11/14] Add option to automatically enforce module signatures
@@ -591,10 +591,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8453fe1342ea..ba517988f087 100644
+index 26237934ac87..e27b78bcca34 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1599,6 +1599,16 @@ config EFI_MIXED
+@@ -1597,6 +1597,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -742,7 +742,7 @@ index 62f9b72bf85e..dcfb07ae5e4e 100644
 1.8.5.3
 
 
-From 00f0cb47385ccf3b3dab4d94a1a286c9d2327cf3 Mon Sep 17 00:00:00 2001
+From 67ff850d16232e30c39109d29510d2a4aef34de9 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH 12/14] efi: Disable secure boot if shim is in insecure mode
@@ -801,7 +801,7 @@ index b00745ff398a..bf42cc5f083d 100644
 1.8.5.3
 
 
-From e058a830573fcf283ae17b412d10313140f489a4 Mon Sep 17 00:00:00 2001
+From 53645ba848224ee81978b17c5e5328dca798466f Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
 Subject: [PATCH 13/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
@@ -815,10 +815,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index ba517988f087..34144e88208e 100644
+index e27b78bcca34..dfd068b32cdc 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1600,7 +1600,8 @@ config EFI_MIXED
+@@ -1598,7 +1598,8 @@ config EFI_MIXED
  	   If unsure, say N.
  
  config EFI_SECURE_BOOT_SIG_ENFORCE
@@ -832,7 +832,7 @@ index ba517988f087..34144e88208e 100644
 1.8.5.3
 
 
-From a523b1823cbde3933269ccf10c147f7f1961a7cc Mon Sep 17 00:00:00 2001
+From e5b7eaf1b5d04ec739464b6e2df21c666d060c69 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:33:03 -0400
 Subject: [PATCH 14/14] efi: Add EFI_SECURE_BOOT bit
@@ -847,7 +847,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index aa227f68687c..9991a533f3e1 100644
+index aa227f68687c..c7cf7919b3c4 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1145,7 +1145,9 @@ void __init setup_arch(char **cmdline_p)
