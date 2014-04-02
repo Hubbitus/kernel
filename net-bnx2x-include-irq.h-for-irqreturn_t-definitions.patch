@@ -1,0 +1,38 @@
+From b6580f8eea4993bc5cbd903c705db0155919fbad Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Wed, 2 Apr 2014 10:08:03 -0400
+Subject: [PATCH] net: bnx2x: include irq.h for irqreturn_t definitions
+
+The bnx2x driver fails to build on ARM with:
+
+In file included from drivers/net/ethernet/broadcom/bnx2x/bnx2x_link.c:28:0:
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h:243:1: error: unknown type name 'irqreturn_t'
+ irqreturn_t bnx2x_msix_sp_int(int irq, void *dev_instance);
+ ^
+drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h:251:1: error: unknown type name 'irqreturn_t'
+ irqreturn_t bnx2x_interrupt(int irq, void *dev_instance);
+ ^
+
+Nothing in bnx2x_link.c or bnx2x_cmn.h is explicitly including the irq
+definitions, so we add an include of linux/irq.h to pick them up.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+index a89a40f88c25..384025605948 100644
+--- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
++++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.h
+@@ -21,6 +21,7 @@
+ #include <linux/pci.h>
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
++#include <linux/irq.h>
+ 
+ #include "bnx2x.h"
+ #include "bnx2x_sriov.h"
+-- 
+1.8.5.3
+

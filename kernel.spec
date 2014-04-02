@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -647,6 +647,11 @@ Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 #CVE-2014-2678 rhbz 1083274 1083280
 Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+
+Patch25055: net-enic-include-irq.h-for-irqreturn_t-definitions.patch
+Patch25056: net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
+Patch25057: net-qlcnic-include-irq.h-for-irq-definitions.patch
+Patch25058: arm64-Fix-duplicated-Kconfig-entries-again.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1300,6 +1305,11 @@ ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
 
 #CVE-2014-2678 rhbz 1083274 1083280
 ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+
+ApplyPatch net-enic-include-irq.h-for-irqreturn_t-definitions.patch
+ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
+ApplyPatch net-qlcnic-include-irq.h-for-irq-definitions.patch
+ApplyPatch arm64-Fix-duplicated-Kconfig-entries-again.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2080,6 +2090,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git4.1
+- Linux v3.14-4227-g3e75c6de1ac3
+
 * Wed Apr 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git3.1
 - Linux v3.14-3893-gc12e69c6aaf7
 

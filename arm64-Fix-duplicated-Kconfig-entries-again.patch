@@ -1,0 +1,34 @@
+From a5574be3731095703675ad08b6f5e9697b361ffe Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Wed, 2 Apr 2014 10:14:43 -0400
+Subject: [PATCH] arm64: Fix duplicated Kconfig entries again
+
+Commit 74397174989e5f70 attempted to clean up the power management options
+for arm64, but when things were merged it didn't fully take effect.  Fix
+it again.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ arch/arm64/Kconfig | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 07aa3556952c..8033b9b8a2df 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -321,12 +321,6 @@ menu "CPU Power Management"
+ 
+ source "drivers/cpuidle/Kconfig"
+ 
+-source "drivers/cpufreq/Kconfig"
+-
+-endmenu
+-
+-menu "Power management options"
+-
+ source "kernel/power/Kconfig"
+ 
+ source "drivers/cpufreq/Kconfig"
+-- 
+1.8.5.3
+
