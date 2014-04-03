@@ -639,6 +639,7 @@ Patch25036: ppc64le_module_fix.patch
 Patch25055: net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 Patch25056: net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
 Patch25057: net-qlcnic-include-irq.h-for-irq-definitions.patch
+Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 
 # END OF PATCH DEFINITIONS
@@ -1285,6 +1286,7 @@ ApplyPatch ppc64le_module_fix.patch
 ApplyPatch net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-qlcnic-include-irq.h-for-irq-definitions.patch
+ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 
 # END OF PATCH APPLICATIONS
