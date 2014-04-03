@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -433,7 +433,7 @@ BuildRequires: net-tools, hostname, bc
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel >= 0.158 zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
 %endif
 %if %{with_tools}
@@ -633,20 +633,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1051748
-Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
-
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
-
-#rhbz 1046495
-Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-2580 rhbz 1080084 1080086
-Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
-
-#CVE-2014-2678 rhbz 1083274 1083280
-Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 
 Patch25055: net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 Patch25056: net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
@@ -1291,20 +1279,8 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1051748
-ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
-
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
-
-#rhbz 1046495
-ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-2580 rhbz 1080084 1080086
-ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
-
-#CVE-2014-2678 rhbz 1083274 1083280
-ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 
 ApplyPatch net-enic-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
@@ -2090,6 +2066,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git8.1
+- Linux v3.14-7247-gcd6362befe4c
+
 * Wed Apr 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git7.1
 - Linux v3.14-5146-g0f1b1e6d73cb
 
