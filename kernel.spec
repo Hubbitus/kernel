@@ -2316,7 +2316,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Thu Arp 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
+* Thu Apr 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
 - Linux v3.13.9
 
 * Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
