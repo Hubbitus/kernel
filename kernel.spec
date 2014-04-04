@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -719,9 +719,6 @@ Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
 
-#rhbz 1045755
-Patch25195: cgroup-fixes.patch
-
 #rhbz 1064430 1056711
 Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
@@ -759,9 +756,6 @@ Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2523 rhbz 1077343 1077350
-Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
 #CVE-2014-0131 rhbz 1074589 1079006
 Patch25048: skbuff-zero-copy.patch
 
@@ -776,10 +770,6 @@ Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
-
-#https://bugs.freedesktop.org/show_bug.cgi?id=76341
-#will go upstream for 3.15, and will be backported to stable releases
-Patch25053: input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 
 #CVE-2014-2678 rhbz 1083274 1083280
 Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
@@ -1460,9 +1450,6 @@ ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
 
-#rhbz 1045755
-ApplyPatch cgroup-fixes.patch
-
 #rhbz 1064430 1056711
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
 ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
@@ -1500,9 +1487,6 @@ ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2523 rhbz 1077343 1077350
-ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
 #CVE-2014-0131 rhbz 1074589 1079006
 ApplyPatch skbuff-zero-copy.patch
 
@@ -1517,9 +1501,6 @@ ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
-
-#https://bugs.freedesktop.org/show_bug.cgi?id=76341
-ApplyPatch input-cypress_ps2-Don-t-report-the-cypress-PS-2-trac.patch
 
 #CVE-2014-2678 rhbz 1083274 1083280
 ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
@@ -2335,6 +2316,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Arp 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
+- Linux v3.13.9
+
 * Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2678 net: rds: deref of NULL dev in rds_iw_laddr_check (rhbz 1083274 1083280)
 
