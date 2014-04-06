@@ -2389,6 +2389,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Mar 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.7-200.hu.1
+- 3.13.7-200.hu.1
+
 * Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
 - CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
