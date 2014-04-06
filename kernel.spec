@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -663,8 +663,6 @@ Patch1826: drm-i915-hush-check-crtc-state.patch
 # NFSv4
 
 # patches headed upstream
-Patch10000: fs-proc-devtree-remove_proc_entry.patch
-
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
 Patch14000: hibernate-freeze-filesystems.patch
@@ -731,28 +729,8 @@ Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-Patch25171: elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-Patch25179: KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-Patch25180: KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
-
-#rhbz 1003167 1046238
-Patch25181: 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-Patch25182: 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-Patch25183: 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
 #rhbz 953211
 Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 950630
-Patch25187: xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
-
-#rhbz 1045755
-Patch25195: cgroup-fixes.patch
 
 #rhbz 1064430 1056711
 Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
@@ -763,9 +741,6 @@ Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 994438
-Patch25024: e100-Fix-disabling-already-disabled-device-warning.patch
 
 #CVE-2014-0102 rhbz 1071396
 Patch25026: keyring-fix.patch
@@ -794,9 +769,6 @@ Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2523 rhbz 1077343 1077350
-Patch25045: netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
 #CVE-2014-0131 rhbz 1074589 1079006
 Patch25048: skbuff-zero-copy.patch
 
@@ -811,6 +783,10 @@ Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+
+#CVE-2014-2678 rhbz 1083274 1083280
+Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1452,8 +1428,6 @@ ApplyPatch drm-i915-hush-check-crtc-state.patch
 # Radeon DRM
 
 # Patches headed upstream
-ApplyPatch fs-proc-devtree-remove_proc_entry.patch
-
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
 # FIXME: REBASE
@@ -1497,28 +1471,8 @@ ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
 ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
 ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
 
-#rhbz 1030802
-ApplyPatch elantech-Properly-differentiate-between-clickpads-an.patch
-
-#rhbz 924916
-ApplyPatch KVM-MMU-handle-invalid-root_hpa-at-__direct_map.patch
-
-#rhbz 1047892
-ApplyPatch KVM-VMX-fix-use-after-free-of-vmx-loaded_vmcs.patch
-
-#rhbz 1003167 1046238
-ApplyPatch 0001-Input-wacom-make-sure-touch_max-is-set-for-touch-dev.patch
-ApplyPatch 0002-Input-wacom-add-support-for-three-new-Intuos-devices.patch
-ApplyPatch 0003-Input-wacom-add-reporting-of-SW_MUTE_DEVICE-events.patch
-
 #rhbz 953211
 ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 950630
-ApplyPatch xhci-fix-resume-issues-on-renesas-chips-in-samsung-laptops.patch
-
-#rhbz 1045755
-ApplyPatch cgroup-fixes.patch
 
 #rhbz 1064430 1056711
 ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
@@ -1529,9 +1483,6 @@ ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
 
 #rhbz 1068862
 ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#rhbz 994438
-ApplyPatch e100-Fix-disabling-already-disabled-device-warning.patch
 
 #CVE-2014-0102 rhbz 1071396
 ApplyPatch keyring-fix.patch
@@ -1560,9 +1511,6 @@ ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2523 rhbz 1077343 1077350
-ApplyPatch netfilter-nf_conntrack_dccp-fix-skb_header_pointer-A.patch
-
 #CVE-2014-0131 rhbz 1074589 1079006
 ApplyPatch skbuff-zero-copy.patch
 
@@ -1577,6 +1525,9 @@ ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
 
 #CVE-2014-2580 rhbz 1080084 1080086
 ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+
+#CVE-2014-2678 rhbz 1083274 1083280
+ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2389,6 +2340,19 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
+- Linux v3.13.9
+
+* Tue Apr 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2678 net: rds: deref of NULL dev in rds_iw_laddr_check (rhbz 1083274 1083280)
+
+* Mon Mar 31 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.8-200
+- Linux v3.13.8
+
+* Mon Mar 31 2014 Hans de Goede <hdegoede@redhat.com>
+- Fix clicks getting lost with cypress_ps2 touchpads with recent
+  xorg-x11-drv-synaptics versions (bfdo#76341)
+
 * Sun Mar 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.7-200.hu.1
 - 3.13.7-200.hu.1
 
