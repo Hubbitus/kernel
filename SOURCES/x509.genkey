@@ -1,5 +1,5 @@
 [ req ]
-default_bits = 4096
+default_bits = 3072
 distinguished_name = req_distinguished_name
 prompt = no
 x509_extensions = myexts
