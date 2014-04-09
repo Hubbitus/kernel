@@ -777,6 +777,9 @@ Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 #rhbz 1074235
 Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
+#rhbz 1084829
+Patch25056: selinux-correctly-label-proc-inodes-in-use-before-th.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1509,6 +1512,9 @@ ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
 
 #rhbz 1074235
 ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
+
+#rhbz 1084829
+ApplyPatch selinux-correctly-label-proc-inodes-in-use-before-th.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2322,6 +2328,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix SELinux lables on /proc files (rhbz 1084829)
 - Add patch to fix S3 in KVM guests (rhbz 1074235)
 
 * Thu Apr 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
