@@ -780,6 +780,9 @@ Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 #rhbz 1084829
 Patch25056: selinux-correctly-label-proc-inodes-in-use-before-th.patch
 
+#CVE-2014-0155 rhbz 1081589 1085016
+Patch25057: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1515,6 +1518,9 @@ ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
 #rhbz 1084829
 ApplyPatch selinux-correctly-label-proc-inodes-in-use-before-th.patch
+
+#CVE-2014-0155 rhbz 1081589 1085016
+ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2328,6 +2334,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0155 KVM: BUG caused by invalid guest ioapic redirect table (rhbz 1081589 1085016)
 - Add patch to fix SELinux lables on /proc files (rhbz 1084829)
 - Add patch to fix S3 in KVM guests (rhbz 1074235)
 
