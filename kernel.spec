@@ -642,6 +642,9 @@ Patch25057: net-qlcnic-include-irq.h-for-irq-definitions.patch
 Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 
+#CVE-2014-0155 rhbz 1081589 1085016
+Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1288,6 +1291,9 @@ ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
 ApplyPatch net-qlcnic-include-irq.h-for-irq-definitions.patch
 ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
+
+#CVE-2014-0155 rhbz 1081589 1085016
+ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2068,6 +2074,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0155 KVM: BUG caused by invalid guest ioapic redirect table (rhbz 1081589 1085016)
+
 * Thu Apr 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git9.1
 - Linux v3.14-7333-g59ecc26004e7
 
