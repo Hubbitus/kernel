@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -610,13 +610,7 @@ Patch21010: arm-omap-load-tfp410.patch
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
-# Add panel support for tegra paz00
-# Backported from linux-next scheduled for 3.15
-Patch21021: arm-tegra-paz00-panel-dts.patch
-
 # ARM i.MX6
-# http://www.spinics.net/lists/devicetree/msg08276.html
-Patch21030: arm-imx6-utilite.patch
 
 # ARM sunxi (AllWinner)
 
@@ -636,11 +630,9 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #Fixes module loading on ppc64le
 Patch25036: ppc64le_module_fix.patch
 
-Patch25055: net-enic-include-irq.h-for-irqreturn_t-definitions.patch
-Patch25056: net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
-Patch25057: net-qlcnic-include-irq.h-for-irq-definitions.patch
 Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
+Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
 Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
@@ -1176,8 +1168,6 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-paz00-panel-dts.patch
-ApplyPatch arm-imx6-utilite.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1286,11 +1276,9 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 # Fixes module loading on ppc64le
 ApplyPatch ppc64le_module_fix.patch
 
-ApplyPatch net-enic-include-irq.h-for-irqreturn_t-definitions.patch
-ApplyPatch net-bnx2x-include-irq.h-for-irqreturn_t-definitions.patch
-ApplyPatch net-qlcnic-include-irq.h-for-irq-definitions.patch
 ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
+ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
 ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
@@ -2074,6 +2062,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git10.1
+- Linux v3.14-12042-g69cd9eba3886
+
 * Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-0155 KVM: BUG caused by invalid guest ioapic redirect table (rhbz 1081589 1085016)
 
