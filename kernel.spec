@@ -637,6 +637,9 @@ Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 #CVE-2014-0155 rhbz 1081589 1085016
 Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
+#rhbz 1048314
+Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1282,6 +1285,9 @@ ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
 ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
+
+#rhbz 1048314
+ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2062,6 +2068,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backported HID RMI driver for Haswell Dell XPS machines from Benjamin Tissoires (rhbz 1048314)
+
 * Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git10.1
 - Linux v3.14-12042-g69cd9eba3886
 
