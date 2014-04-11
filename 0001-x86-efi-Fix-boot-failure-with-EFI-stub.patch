@@ -1,0 +1,43 @@
+From 396f1a08db212138418b38f784e4bbe516d2fdb2 Mon Sep 17 00:00:00 2001
+From: Matt Fleming <matt.fleming@intel.com>
+Date: Thu, 10 Apr 2014 13:30:13 +0100
+Subject: [PATCH 1/3] x86/efi: Fix boot failure with EFI stub
+
+commit 54b52d872680 ("x86/efi: Build our own EFI services pointer
+table") introduced a regression because the 64-bit file_size()
+implementation passed a pointer to a 32-bit data object, instead of a
+pointer to a 64-bit object.
+
+Because the firmware treats the object as 64-bits regardless it was
+reading random values from the stack for the upper 32-bits.
+
+This resulted in people being unable to boot their machines, after
+seeing the following error messages,
+
+    Failed to get file info size
+    Failed to alloc highmem for files
+
+Reported-by: Dzmitry Sledneu <dzmitry.sledneu@gmail.com>
+Reported-by: Koen Kooi <koen@dominion.thruhere.net>
+Tested-by: Koen Kooi <koen@dominion.thruhere.net>
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+---
+ arch/x86/boot/compressed/eboot.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index 1e6146137f8e..280165524ee4 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -112,7 +112,7 @@ __file_size64(void *__fh, efi_char16_t *filename_16,
+ 	efi_file_info_t *info;
+ 	efi_status_t status;
+ 	efi_guid_t info_guid = EFI_FILE_INFO_ID;
+-	u32 info_sz;
++	u64 info_sz;
+ 
+ 	status = efi_early->call((unsigned long)fh->open, fh, &h, filename_16,
+ 				 EFI_FILE_MODE_READ, (u64)0);
+-- 
+1.9.0
+
