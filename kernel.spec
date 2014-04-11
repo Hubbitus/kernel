@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -626,9 +626,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#Fixes module loading on ppc64le
-Patch25036: ppc64le_module_fix.patch
 
 Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
@@ -1275,9 +1272,6 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-# Fixes module loading on ppc64le
-ApplyPatch ppc64le_module_fix.patch
 
 ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
@@ -2068,6 +2062,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git11.1
+- Linux v3.14-12376-g4ba85265790b
+
 * Thu Apr 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Backported HID RMI driver for Haswell Dell XPS machines from Benjamin Tissoires (rhbz 1048314)
 
