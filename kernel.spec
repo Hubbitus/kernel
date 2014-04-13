@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -628,7 +628,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
-Patch25059: btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
@@ -636,11 +635,6 @@ Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
-#rhbz 1085349
-Patch25063: 0001-x86-efi-Fix-boot-failure-with-EFI-stub.patch
-Patch25064: 0002-x86-efi-Correct-EFI-boot-stub-use-of-code32_start.patch
-Patch25065: 0003-efi-Pass-correct-file-handle-to-efi_file_-read-close.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1279,7 +1273,6 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
-ApplyPatch btrfs-fix-lockdep-warning-with-reclaim-lock-inversion.patch
 ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
@@ -1287,11 +1280,6 @@ ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
-#rhbz 1085349
-ApplyPatch 0001-x86-efi-Fix-boot-failure-with-EFI-stub.patch
-ApplyPatch 0002-x86-efi-Correct-EFI-boot-stub-use-of-code32_start.patch
-ApplyPatch 0003-efi-Pass-correct-file-handle-to-efi_file_-read-close.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2072,6 +2060,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Apr 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git13.1
+- Linux v3.14-12812-g321d03c86732
+
 * Fri Apr 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git12.1
 - Linux v3.14-12380-g9e897e13bd46
 - Add queued urgent efi fixes (rhbz 1085349)
