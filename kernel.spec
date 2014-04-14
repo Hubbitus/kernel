@@ -639,6 +639,9 @@ Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
+#rhbz 1085582 1085697
+Patch25063: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1286,6 +1289,9 @@ ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
+
+#rhbz 1085582 1085697
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2066,6 +2072,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Apr 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Add min/max quirks for various new Thinkpad touchpads (rhbz 1085582 1085697)
+
 * Mon Apr 14 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config changes and cleanups for 3.15 merge window
 
