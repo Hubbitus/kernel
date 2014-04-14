@@ -789,6 +789,9 @@ Patch25058: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
+#rhbz 1085582 1085697
+Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1533,6 +1536,9 @@ ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
+
+#rhbz 1085582 1085697
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2345,6 +2351,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Add min/max quirks for various new Thinkpad touchpads (rhbz 1085582 1085697)
+
 * Mon Apr 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2851 net ipv4 ping refcount issue in ping_init_sock (rhbz 1086730 1087420)
 
