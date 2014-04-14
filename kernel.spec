@@ -2066,6 +2066,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Apr 14 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config changes and cleanups for 3.15 merge window
+
 * Mon Apr 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-2851 net ipv4 ping refcount issue in ping_init_sock (rhbz 1086730 1087420)
 
