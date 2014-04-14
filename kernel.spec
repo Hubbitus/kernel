@@ -636,6 +636,9 @@ Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 #rhbz 1048314
 Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
+#CVE-2014-2851 rhbz 1086730 1087420
+Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1280,6 +1283,9 @@ ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
+#CVE-2014-2851 rhbz 1086730 1087420
+ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2060,6 +2066,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Apr 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2851 net ipv4 ping refcount issue in ping_init_sock (rhbz 1086730 1087420)
+
 * Sun Apr 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc0.git13.1
 - Linux v3.14-12812-g321d03c86732
 
