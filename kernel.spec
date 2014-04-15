@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -629,9 +629,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-Patch25060: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
@@ -1280,9 +1277,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
 ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
@@ -2072,6 +2066,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Apr 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git1.1
+- Linux v3.15-rc1-12-g55101e2d6ce1
+- Reenable debugging options.
+
 * Mon Apr 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git0.1
 - Linux v3.15-rc1
 - Disable debugging options.
