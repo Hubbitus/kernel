@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -627,17 +627,14 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-Patch25058: net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
-Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
-
 #rhbz 1048314
-Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
-#CVE-2014-2851 rhbz 1086730 1087420
-Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
+Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #rhbz 1085582 1085697
-Patch25063: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+Patch25049: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
+Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
+Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1275,17 +1272,14 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-ApplyPatch net-cpts-Add-includes-for-ETH_HLEN-and-VLAN_HLEN-def.patch
-ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
-
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
-#CVE-2014-2851 rhbz 1086730 1087420
-ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
-
 #rhbz 1085582 1085697
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
+ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
+ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2066,6 +2060,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git2.1
+- Linux v3.15-rc1-49-g10ec34fcb100
+
 * Tue Apr 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git1.1
 - Linux v3.15-rc1-12-g55101e2d6ce1
 - Reenable debugging options.

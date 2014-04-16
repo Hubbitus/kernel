@@ -1,0 +1,35 @@
+Bugzilla: N/A (Eric Paris reported via IRC)
+Upstream-status: Sent for 3.15
+
+From: Vincent Donnefort <vdonnefort@gmail.com>
+
+This patch fixes kernel NULL pointer BUG introduced by the following commit:
+b667cf488aa9476b0ab64acd91f2a96f188cfd21
+gpio: ich: Add support for multiple register addresses.
+
+Signed-off-by: Vincent Donnefort <vdonnefort@gmail.com>
+
+diff --git a/drivers/gpio/gpio-ich.c b/drivers/gpio/gpio-ich.c
+index e73c675..7030422 100644
+--- a/drivers/gpio/gpio-ich.c
++++ b/drivers/gpio/gpio-ich.c
+@@ -305,6 +305,8 @@ static struct ichx_desc ich6_desc = {
+ 
+ 	.ngpio = 50,
+ 	.have_blink = true,
++	.regs = ichx_regs,
++	.reglen = ichx_reglen,
+ };
+ 
+ /* Intel 3100 */
+@@ -324,6 +326,8 @@ static struct ichx_desc i3100_desc = {
+ 	.uses_gpe0 = true,
+ 
+ 	.ngpio = 50,
++	.regs = ichx_regs,
++	.reglen = ichx_reglen,
+ };
+ 
+ /* ICH7 and ICH8-based */
+-- 
+1.8.3.2
