@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.2
+%define buildid .hu.1
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 10
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -765,9 +765,6 @@ Patch25026: keyring-fix.patch
 #rhbz 1065087
 Patch25028: tty-Fix-low_latency-BUG.patch
 
-#CVE-2014-0100 rhbz 1072026 1070618
-Patch25031: net-fix-for-a-race-condition-in-the-inet-frag-code.patch
-
 #rhbz 1027465
 Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
@@ -780,30 +777,26 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 #rhbz 1065663
 Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
-#CVE-2014-2309 rhbz 1074471 1075064
-Patch25041: ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
-
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-0131 rhbz 1074589 1079006
-Patch25048: skbuff-zero-copy.patch
 
 #CVE-2014-2568 rhbz 1079012 1079013
 Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
 
-#CVE-2014-0055 rhbz 1062577 1081503
-Patch25050: net-vhost-validate-vhost_get_vq_desc-return-value.patch
+#rhbz 1074235
+Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
-#CVE-2014-0077 rhbz 1064440 1081504
-Patch25051: net-vhost-fix-total-length-when-packets-are-too-short.patch
+#CVE-2014-0155 rhbz 1081589 1085016
+Patch25057: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
-#CVE-2014-2580 rhbz 1080084 1080086
-Patch25052: net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+#rhbz 1048314
+Patch25058: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
-#CVE-2014-2678 rhbz 1083274 1083280
-Patch25054: rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+#CVE-2014-2851 rhbz 1086730 1087420
+Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
+#rhbz 1085582 1085697
+Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1512,9 +1505,6 @@ ApplyPatch keyring-fix.patch
 #rhbz 1065087
 ApplyPatch tty-Fix-low_latency-BUG.patch
 
-#CVE-2014-0100 rhbz 1072026 1070618
-ApplyPatch net-fix-for-a-race-condition-in-the-inet-frag-code.patch
-
 #rhbz 1027465
 ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
 
@@ -1527,29 +1517,26 @@ ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 #rhbz 1065663
 ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
-#CVE-2014-2309 rhbz 1074471 1075064
-ApplyPatch ipv6-dont-set-DST_NOCOUNT-for-remotely-added-routes.patch
-
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-0131 rhbz 1074589 1079006
-ApplyPatch skbuff-zero-copy.patch
 
 #CVE-2014-2568 rhbz 1079012 1079013
 ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
 
-#CVE-2014-0055 rhbz 1062577 1081503
-ApplyPatch net-vhost-validate-vhost_get_vq_desc-return-value.patch
+#rhbz 1074235
+ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
-#CVE-2014-0077 rhbz 1064440 1081504
-ApplyPatch net-vhost-fix-total-length-when-packets-are-too-short.patch
+#CVE-2014-0155 rhbz 1081589 1085016
+ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
-#CVE-2014-2580 rhbz 1080084 1080086
-ApplyPatch net-xen-netback-disable-rogue-vif-in-kthread-context.patch
+#rhbz 1048314
+ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
-#CVE-2014-2678 rhbz 1083274 1083280
-ApplyPatch rds-prevent-dereference-of-a-NULL-device-in-rds_iw_laddr_check.patch
+#CVE-2014-2851 rhbz 1086730 1087420
+ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
+
+#rhbz 1085582 1085697
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2362,6 +2349,26 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 16 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.10-200.hu.1
+ - 3.13.10-200.hu.1
+
+* Mon Apr 14 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.10-200
+- Linux v3.13.10
+
+* Mon Apr 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Add min/max quirks for various new Thinkpad touchpads (rhbz 1085582 1085697)
+
+* Mon Apr 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-2851 net ipv4 ping refcount issue in ping_init_sock (rhbz 1086730 1087420)
+
+* Thu Apr 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backported HID RMI driver for Haswell Dell XPS machines from Benjamin Tissoires (rhbz 1048314)
+
+* Wed Apr 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0155 KVM: BUG caused by invalid guest ioapic redirect table (rhbz 1081589 1085016)
+- Add patch to fix SELinux lables on /proc files (rhbz 1084829)
+- Add patch to fix S3 in KVM guests (rhbz 1074235)
+
 * Tue Apr 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.9-200.hu.2
 - Follow to Arch kernel https://aur.archlinux.org/packages/linux-uksm-ck/ add BFS (Brain Fuck Scheduler) for low latency operational (http://ck.kolivas.org/patches/bfs/bfs-faq.txt). Add patches:
 	o http://ck.kolivas.org/crap/kvm-fix.patch
