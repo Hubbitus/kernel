@@ -1,0 +1,15 @@
+--- a/mm/uksm.c	2014-04-07 12:46:33.000000000 +0400
++++ b/mm/uksm.c	2014-04-07 12:51:48.037581124 +0400
+@@ -1604,7 +1604,11 @@
+ static struct page *page_trans_compound_anon(struct page *page)
+ {
+ 	if (PageTransCompound(page)) {
+-		struct page *head = compound_trans_head(page);
++		/*benatto: old compound_trans_head
++		* was merged into standard
++		* compound_head function on linux/mm.h
++		*/
++		struct page *head = compound_head(page);
+ 		/*
+ 		 * head may actually be splitted and freed from under
+ 		 * us but it's ok here.

@@ -1,0 +1,17 @@
+---
+ virt/kvm/kvm_main.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux-3.13-ck1/virt/kvm/kvm_main.c
+===================================================================
+--- linux-3.13-ck1.orig/virt/kvm/kvm_main.c	2014-03-03 19:01:41.305138711 +1100
++++ linux-3.13-ck1/virt/kvm/kvm_main.c	2014-03-09 10:10:28.772021471 +1100
+@@ -1714,7 +1714,7 @@ void kvm_resched(struct kvm_vcpu *vcpu)
+ {
+ 	if (!need_resched())
+ 		return;
+-	cond_resched();
++	schedule();
+ }
+ EXPORT_SYMBOL_GPL(kvm_resched);
+ 

@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.1
+%define buildid .hu.2
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -709,15 +709,32 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 # Hubbitus
 # 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
-Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
-Patch30002: 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
-Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r1-for-3.13.0.patch
+Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch
+Patch30002: 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch
+Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch
 
 Patch30004: uksm-0.1.2.2-for-v3.13.patch
 
-Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
+#? Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
 
-Patch30006: pksm-v0.2-for-linux3.6.0.patch
+Patch30006: BFS-kvm-fix.patch
+Patch30007: BFS-3.13-sched-bfs-446.patch
+Patch30008: BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
+#Hu My patch to resolve compile problem:
+#+ make -s ARCH=x86_64 V=1 -j3 bzImage
+#In file included from include/linux/srcu.h:33:0,
+#                 from include/linux/notifier.h:15,
+#                 from include/linux/memory_hotplug.h:6,
+#                 from include/linux/mmzone.h:800,
+#                 from include/linux/gfp.h:4,
+#                 from include/linux/slab.h:14,
+#                 from kernel/sched/stats.c:2:
+#kernel/sched/stats.c: In function 'show_schedstat':
+#kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
+#          lockdep_is_held(&sched_domains_mutex))
+Patch30009: BFS-3.13-compile-fix-hu.patch
+
+Patch30010: UKSM-BFS-3.13.9-working-together.patch
 # end Hubbitus patches
 
 # Fix 15sec NFS mount delay
@@ -1452,13 +1469,18 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #+Hu
-ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r1-3.13.patch
-ApplyPatch 0002-block-introduce-the-BFQ-v7r1-I-O-sched-for-3.13.patch
-ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r1-for-3.13.0.patch
+ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch
+ApplyPatch 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch
+ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch
 
 ApplyPatch uksm-0.1.2.2-for-v3.13.patch --fuzz=2
-#? ApplyPatch pksm-v0.2-for-linux3.6.0.patch --fuzz=2
 
+ApplyPatch BFS-kvm-fix.patch
+ApplyPatch BFS-3.13-sched-bfs-446.patch
+ApplyPatch BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
+ApplyPatch BFS-3.13-compile-fix-hu.patch
+
+ApplyPatch UKSM-BFS-3.13.9-working-together.patch
 #? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
 #/Hu
 
@@ -2340,6 +2362,20 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Apr 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.9-200.hu.2
+- Follow to Arch kernel https://aur.archlinux.org/packages/linux-uksm-ck/ add BFS (Brain Fuck Scheduler) for low latency operational (http://ck.kolivas.org/patches/bfs/bfs-faq.txt). Add patches:
+	o http://ck.kolivas.org/crap/kvm-fix.patch
+	o http://ck.kolivas.org/patches/bfs/3.0/3.13/3.13-sched-bfs-446.patch
+	o http://repo-ck.com/source/gcc_patch/enable_additional_cpu_optimizations_for_gcc.patch.gz
+
+* Sun Apr 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.9-200.hu.1
+- 3.13.9-200.hu.1
+- Update BFQ patches:
+	o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r2/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch
+	o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r2/0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch
+	o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.13.0-v7r2/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch
+- Add patch UKSM-BFS-3.13.9-working-together.patch from comments https://aur.archlinux.org/packages/linux-uksm-ck/?setlang=it
+
 * Thu Apr 03 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.9-200
 - Linux v3.13.9
 

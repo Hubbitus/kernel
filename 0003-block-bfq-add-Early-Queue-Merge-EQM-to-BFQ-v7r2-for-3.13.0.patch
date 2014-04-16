@@ -1,7 +1,7 @@
-From 39b1dba58b2562ba0d93a33a4f9af662d3c790c5 Mon Sep 17 00:00:00 2001
+From 5355f59b028ef8e766612f13faa539a4fd494320 Mon Sep 17 00:00:00 2001
 From: Mauro Andreolini <mauro.andreolini@unimore.it>
-Date: Thu, 23 Jan 2014 16:54:44 +0100
-Subject: [PATCH 3/3] block, bfq: add Early Queue Merge (EQM) to BFQ-v7r1 for
+Date: Fri, 14 Feb 2014 12:52:49 +0100
+Subject: [PATCH 3/3] block, bfq: add Early Queue Merge (EQM) to BFQ-v7r2 for
  3.13.0
 
 A set of processes may happen  to  perform interleaved reads, i.e., requests
@@ -12,14 +12,14 @@ may read variable-size chunks at  variable distances. The latter case occurs
 for  example with  KVM, which  splits the  I/O generated  by the  guest into
 multiple chunks,  and lets these chunks  be served by a  pool of cooperating
 processes,  iteratively  assigning  the  next  chunk of  I/O  to  the first
-available  process. CFQ  uses actual  queue merging  for the  first type  of
+available  process. CFQ  uses actual  queue merging  for the  first type of
 rocesses, whereas it  uses preemption to get a sequential  read pattern out
 of the read requests  performed by the second type of  processes. In the end
 it uses  two different  mechanisms to  achieve the  same goal: boosting the
 throughput with interleaved I/O.
 
 This patch introduces  Early Queue Merge (EQM), a unified mechanism to get a
-sequential  read pattern  with both  types of  processes. The  main idea  is
+sequential  read pattern  with both  types of  processes. The  main idea is
 checking newly arrived requests against the next request of the active queue
 both in case of actual request insert and in case of request merge. By doing
 so, both the types of processes can be handled by just merging their queues.
@@ -36,11 +36,11 @@ Reviewed-by: Paolo Valente <paolo.valente@unimore.it>
 ---
  block/bfq-iosched.c | 657 ++++++++++++++++++++++++++++++++++++----------------
  block/bfq-sched.c   |  28 ---
- block/bfq.h         |  16 ++
- 3 files changed, 474 insertions(+), 227 deletions(-)
+ block/bfq.h         |  20 +-
+ 3 files changed, 476 insertions(+), 229 deletions(-)
 
 diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index eb760de..06ee844 100644
+index f5f71e4..d3626df 100644
 --- a/block/bfq-iosched.c
 +++ b/block/bfq-iosched.c
 @@ -445,6 +445,46 @@ static inline unsigned int bfq_wrais_duration(struct bfq_data *bfqd)
@@ -514,9 +514,9 @@ index eb760de..06ee844 100644
 +		if (new_bfqq != NULL) {
 +			bfq_merge_bfqqs(bfqd, bic, bfqq, new_bfqq);
 +			/*
-+			 * If we get here, the bio will be queued in the shared queue,
-+			 * i.e., new_bfqq, so use new_bfqq to decide whether bio and
-+			 * rq can be merged.
++			 * If we get here, the bio will be queued in the shared
++			 * queue, i.e., new_bfqq, so use new_bfqq to decide
++			 * whether bio and rq can be merged.
 +			 */
 +			bfqq = new_bfqq;
 +		}
@@ -838,7 +838,7 @@ index eb760de..06ee844 100644
  	rq_set_fifo_time(rq, jiffies + bfqd->bfq_fifo_expire[rq_is_sync(rq)]);
  	list_add_tail(&rq->queuelist, &bfqq->fifo);
  
-@@ -2659,18 +2916,6 @@ static void bfq_put_request(struct request *rq)
+@@ -2663,18 +2920,6 @@ static void bfq_put_request(struct request *rq)
  	}
  }
  
@@ -857,7 +857,7 @@ index eb760de..06ee844 100644
  /*
   * Returns NULL if a new bfqq should be allocated, or the old bfqq if this
   * was the last process referring to said bfqq.
-@@ -2679,6 +2924,9 @@ static struct bfq_queue *
+@@ -2683,6 +2928,9 @@ static struct bfq_queue *
  bfq_split_bfqq(struct bfq_io_cq *bic, struct bfq_queue *bfqq)
  {
  	bfq_log_bfqq(bfqq->bfqd, bfqq, "splitting queue");
@@ -867,7 +867,7 @@ index eb760de..06ee844 100644
  	if (bfqq_process_refs(bfqq) == 1) {
  		bfqq->pid = current->pid;
  		bfq_clear_bfqq_coop(bfqq);
-@@ -2707,6 +2955,7 @@ static int bfq_set_request(struct request_queue *q, struct request *rq,
+@@ -2711,6 +2959,7 @@ static int bfq_set_request(struct request_queue *q, struct request *rq,
  	struct bfq_queue *bfqq;
  	struct bfq_group *bfqg;
  	unsigned long flags;
@@ -875,7 +875,7 @@ index eb760de..06ee844 100644
  
  	might_sleep_if(gfp_mask & __GFP_WAIT);
  
-@@ -2725,24 +2974,14 @@ new_queue:
+@@ -2729,24 +2978,14 @@ new_queue:
  		bfqq = bfq_get_queue(bfqd, bfqg, is_sync, bic, gfp_mask);
  		bic_set_bfqq(bic, bfqq, is_sync);
  	} else {
@@ -902,7 +902,7 @@ index eb760de..06ee844 100644
  	}
  
  	bfqq->allocated[rw]++;
-@@ -2753,6 +2992,26 @@ new_queue:
+@@ -2757,6 +2996,26 @@ new_queue:
  	rq->elv.priv[0] = bic;
  	rq->elv.priv[1] = bfqq;
  
@@ -969,19 +969,19 @@ index 999b475..e54ea33 100644
  {
  	if (bfqd->in_service_bic != NULL) {
 diff --git a/block/bfq.h b/block/bfq.h
-index f9b5881..0bfad40 100644
+index a274b18..47f07d9 100644
 --- a/block/bfq.h
 +++ b/block/bfq.h
-@@ -192,6 +192,8 @@ struct bfq_group;
+@@ -200,6 +200,8 @@ struct bfq_group;
   *                      idle to backlogged
   * @service_from_backlogged: cumulative service received from the @bfq_queue
   *                           since the last transition from idle to backlogged
 + * @bic: pointer to the bfq_io_cq owning the bfq_queue, set to %NULL if the
 + *	 queue is shared
   *
-  * A bfq_queue is a leaf request queue; it can be associated to an io_context
-  * or more (if it is an async one).  @cgroup holds a reference to the
-@@ -235,6 +237,7 @@ struct bfq_queue {
+  * A bfq_queue is a leaf request queue; it can be associated with an io_context
+  * or more, if it is async or shared between cooperating processes. @cgroup
+@@ -243,6 +245,7 @@ struct bfq_queue {
  	sector_t last_request_pos;
  
  	pid_t pid;
@@ -989,7 +989,7 @@ index f9b5881..0bfad40 100644
  
  	/* weight-raising fields */
  	unsigned long raising_cur_max_time;
-@@ -264,12 +267,23 @@ struct bfq_ttime {
+@@ -272,12 +275,23 @@ struct bfq_ttime {
   * @icq: associated io_cq structure
   * @bfqq: array of two process queues, the sync and the async
   * @ttime: associated @bfq_ttime struct
@@ -1013,15 +1013,19 @@ index f9b5881..0bfad40 100644
  };
  
  /**
-@@ -411,6 +425,7 @@ enum bfqq_state_flags {
+@@ -418,8 +432,9 @@ enum bfqq_state_flags {
+ 	BFQ_BFQQ_FLAG_sync,		/* synchronous queue */
  	BFQ_BFQQ_FLAG_budget_new,	/* no completion with this budget */
  	BFQ_BFQQ_FLAG_coop,		/* bfqq is shared */
- 	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be splitted */
+-	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be splitted */
+-	BFQ_BFQQ_FLAG_softrt_update,	/* needs softrt-next-start update */
++	BFQ_BFQQ_FLAG_split_coop,	/* shared bfqq will be split */
 +	BFQ_BFQQ_FLAG_just_split,	/* queue has just been split */
- 	BFQ_BFQQ_FLAG_softrt_update,	/* needs softrt-next-start update */
++	BFQ_BFQQ_FLAG_softrt_update,	/* may need softrt-next-start update */
  };
  
-@@ -438,6 +453,7 @@ BFQ_BFQQ_FNS(sync);
+ #define BFQ_BFQQ_FNS(name)						\
+@@ -446,6 +461,7 @@ BFQ_BFQQ_FNS(sync);
  BFQ_BFQQ_FNS(budget_new);
  BFQ_BFQQ_FNS(coop);
  BFQ_BFQQ_FNS(split_coop);
@@ -1030,5 +1034,5 @@ index f9b5881..0bfad40 100644
  #undef BFQ_BFQQ_FNS
  
 -- 
-1.8.5.2
+1.8.5.3
 
