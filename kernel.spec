@@ -2303,6 +2303,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
+- Update min/max quirk patch to add a quirk for the ThinkPad L540 (rhbz1088588)
+
 * Mon Apr 14 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.13.10-200
 - Linux v3.13.10
 

@@ -1,8 +1,8 @@
-From 1d9820da2ba6e2794a283d709caf710d0a546b3c Mon Sep 17 00:00:00 2001
+From 555b84220a7c84c2faa1964d19733d867d7bf61f Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Thu, 10 Apr 2014 11:36:14 +0200
-Subject: [PATCH] synaptics: Add min/max quirk for ThinkPad T431s, L440, S1
- Yoga and X1
+Subject: [PATCH v3] synaptics: Add min/max quirk for ThinkPad T431s, L440,
+ L540, S1 Yoga and X1
 
 We expect that all the Haswell series will need such quirks, sigh.
 
@@ -14,20 +14,24 @@ The X1 Carbon 3rd generation name says 2nd while it is a 3rd generation.
 The X1 and T431s share a PnPID with the T540p, but the reported ranges are
 closer to those of the T440s.
 
-HdG: Squashed 4 quirk patches into one. T431s + L440 are written by me,
+HdG: Squashed 5 quirk patches into one. T431s + L440 + L540 are written by me,
 S1 Yoga and X1 are written by Benjamin Tissoires.
 
+Hdg: Standardized S1 Yoga and X1 values, Yoga uses the same touchpad as the
+X240, X1 uses the same touchpad as the T440.
+
+Cc: stable@vger.kernel.org
 Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/input/mouse/synaptics.c | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/input/mouse/synaptics.c | 42 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 42 insertions(+)
 
 diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
-index b9d2259..521a8e7 100644
+index a8b57d7..7c9f509 100644
 --- a/drivers/input/mouse/synaptics.c
 +++ b/drivers/input/mouse/synaptics.c
-@@ -1557,6 +1557,14 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
+@@ -1566,6 +1566,14 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
  		.driver_data = (int []){1232, 5710, 1156, 4696},
  	},
  	{
@@ -42,7 +46,7 @@ index b9d2259..521a8e7 100644
  		/* Lenovo ThinkPad T440s */
  		.matches = {
  			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-@@ -1565,6 +1573,14 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
+@@ -1574,6 +1582,14 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
  		.driver_data = (int []){1024, 5112, 2024, 4832},
  	},
  	{
@@ -57,10 +61,18 @@ index b9d2259..521a8e7 100644
  		/* Lenovo ThinkPad T540p */
  		.matches = {
  			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-@@ -1572,6 +1588,24 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
+@@ -1581,6 +1597,32 @@ static const struct dmi_system_id min_max_dmi_table[] __initconst = {
  		},
  		.driver_data = (int []){1024, 5056, 2058, 4832},
  	},
++	{
++		/* Lenovo ThinkPad L540 */
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad L540"),
++		},
++		.driver_data = (int []){1024, 5112, 2024, 4832},
++	},
 +	{
 +		/* Lenovo Yoga S1 */
 +		.matches = {
@@ -68,7 +80,7 @@ index b9d2259..521a8e7 100644
 +			DMI_EXACT_MATCH(DMI_PRODUCT_VERSION,
 +					"ThinkPad S1 Yoga"),
 +		},
-+		.driver_data = (int []){1232, 5711, 1159, 4700},
++		.driver_data = (int []){1232, 5710, 1156, 4696},
 +	},
 +	{
 +		/* Lenovo ThinkPad X1 Carbon Haswell (3rd generation) */
@@ -77,7 +89,7 @@ index b9d2259..521a8e7 100644
 +			DMI_MATCH(DMI_PRODUCT_VERSION,
 +					"ThinkPad X1 Carbon 2nd"),
 +		},
-+		.driver_data = (int []){1131, 5113, 2021, 4831},
++		.driver_data = (int []){1024, 5112, 2024, 4832},
 +	},
  #endif
  	{ }
