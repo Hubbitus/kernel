@@ -2058,6 +2058,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
+- Update min/max quirk patch to add a quirk for the ThinkPad L540 (rhbz1088588)
+
 * Thu Apr 17 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop OMAP DRM hack to load encoder module now it fully supports DT (YAY!)
 
