@@ -605,7 +605,6 @@ Patch21001: arm-lpae-ax88796.patch
 Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 
 # ARM omap
-Patch21010: arm-omap-load-tfp410.patch
 
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
@@ -1165,7 +1164,6 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
-ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 
 #
@@ -2060,6 +2058,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 17 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop OMAP DRM hack to load encoder module now it fully supports DT (YAY!)
+
 * Wed Apr 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git2.1
 - Linux v3.15-rc1-49-g10ec34fcb100
 
