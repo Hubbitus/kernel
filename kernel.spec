@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2058,6 +2058,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc1.git3.1
+- Linux v3.15-rc1-113-g6ca2a88ad820
+- Build perf with unwind support via libdw (rhbz 1025603)
+
 * Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
 - Update min/max quirk patch to add a quirk for the ThinkPad L540 (rhbz1088588)
 
