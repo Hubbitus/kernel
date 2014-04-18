@@ -635,6 +635,9 @@ Patch25049: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
+#rhbz 1025603
+Patch25063: disable-libdw-unwind-on-non-x86.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1278,6 +1281,9 @@ ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
+
+#rhbz 1025603
+ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 # END OF PATCH APPLICATIONS
 
