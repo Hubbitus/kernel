@@ -715,9 +715,6 @@ Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 #CVE-2014-0155 rhbz 1081589 1085016
 Patch25036: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
-#rhbz 1048314
-Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
 #rhbz 1074235
 Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
@@ -726,6 +723,15 @@ Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
 #rhbz 1085582 1085697
 Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
+#rhbz 1074710
+Patch25061: mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
+
+#rhbz 1048314
+Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
+#rhbz 1071914
+Patch25063: USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1409,6 +1415,12 @@ ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
 #rhbz 1085582 1085697
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
+#rhbz 1074710
+ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
+
+#rhbz 1071914
+ApplyPatch USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1909,7 +1921,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-bin
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -1917,7 +1929,7 @@ rm -f %{buildroot}%{_bindir}/trace
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
 
 # perf man pages (note: implicit rpm magic compresses them later)
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-man || %{doc_build_fail}
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT try-install-man || %{doc_build_fail}
 %endif
 
 %if %{with_tools}
@@ -2220,7 +2232,12 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Apr 21 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.1-200
+* Mon Apr 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.1-200
+- Fix Brainboxes Express Cards (rhbz 1071914)
+- Fix build issues with CONFIG_DEBUG_VM set (rhbz 1074710)
+- Fix perf build failures
+
+* Mon Apr 21 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.14.1
 
 * Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
