@@ -1,20 +1,23 @@
-From 71aac34ed679daa0bf772051eb40412b5bd95da3 Mon Sep 17 00:00:00 2001
+Bugzilla: N/A
+Upstream-status: Fedora mustard
+
+From 29c1f71a2d0845a71ea2ebd2fb33542373dc52dd Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
 Date: Fri, 30 Aug 2013 09:28:51 -0400
 Subject: [PATCH] Add sysrq option to disable secure boot mode
 
 ---
- arch/x86/kernel/setup.c     | 35 +++++++++++++++++++++++++++++++++++
+ arch/x86/kernel/setup.c     | 36 ++++++++++++++++++++++++++++++++++++
  drivers/input/misc/uinput.c |  1 +
  drivers/tty/sysrq.c         | 19 +++++++++++++------
  include/linux/input.h       |  5 +++++
  include/linux/sysrq.h       |  8 +++++++-
  kernel/debug/kdb/kdb_main.c |  2 +-
  kernel/module.c             |  4 ++--
- 7 files changed, 64 insertions(+), 10 deletions(-)
+ 7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 08dc16e..6971f8e 100644
+index c773add..92c480c 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -29,11 +32,10 @@ index 08dc16e..6971f8e 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1253,3 +1258,33 @@ void __init i386_reserve_resources(void)
- }
+@@ -1275,6 +1280,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
-+
+ 
 +#ifdef CONFIG_MAGIC_SYSRQ
 +#ifdef CONFIG_MODULE_SIG
 +extern bool sig_enforce;
@@ -63,8 +65,13 @@ index 08dc16e..6971f8e 100644
 +}
 +late_initcall(secure_boot_sysrq);
 +#endif /*CONFIG_MAGIC_SYSRQ*/
++
++
+ static struct notifier_block kernel_offset_notifier = {
+ 	.notifier_call = dump_kernel_offset
+ };
 diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
-index a0a4bba..3327cc3 100644
+index 7728359..a3e8ba8 100644
 --- a/drivers/input/misc/uinput.c
 +++ b/drivers/input/misc/uinput.c
 @@ -351,6 +351,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
@@ -76,10 +83,10 @@ index a0a4bba..3327cc3 100644
  	input_set_drvdata(udev->dev, udev);
  
 diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index d5cc3ac..05b33f5 100644
+index ce396ec..aee594a 100644
 --- a/drivers/tty/sysrq.c
 +++ b/drivers/tty/sysrq.c
-@@ -461,6 +461,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+@@ -462,6 +462,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
  	&sysrq_showstate_blocked_op,	/* w */
  	/* x: May be registered on ppc/powerpc for xmon */
  	/* x: May be registered on sparc64 for global PMU dump */
@@ -87,7 +94,7 @@ index d5cc3ac..05b33f5 100644
  	NULL,				/* x */
  	/* y: May be registered on sparc64 for global register dump */
  	NULL,				/* y */
-@@ -504,7 +505,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
+@@ -505,7 +506,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
                  sysrq_key_table[i] = op_p;
  }
  
@@ -96,7 +103,7 @@ index d5cc3ac..05b33f5 100644
  {
  	struct sysrq_key_op *op_p;
  	int orig_log_level;
-@@ -524,11 +525,15 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -525,11 +526,15 @@ void __handle_sysrq(int key, bool check_mask)
  
          op_p = __sysrq_get_key_op(key);
          if (op_p) {
@@ -113,7 +120,7 @@ index d5cc3ac..05b33f5 100644
  			printk("%s\n", op_p->action_msg);
  			console_loglevel = orig_log_level;
  			op_p->handler(key);
-@@ -559,7 +564,7 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -560,7 +565,7 @@ void __handle_sysrq(int key, bool check_mask)
  void handle_sysrq(int key)
  {
  	if (sysrq_on())
@@ -122,7 +129,7 @@ index d5cc3ac..05b33f5 100644
  }
  EXPORT_SYMBOL(handle_sysrq);
  
-@@ -639,7 +644,7 @@ static void sysrq_do_reset(unsigned long _state)
+@@ -640,7 +645,7 @@ static void sysrq_do_reset(unsigned long _state)
  static void sysrq_handle_reset_request(struct sysrq_state *state)
  {
  	if (state->reset_requested)
@@ -131,7 +138,7 @@ index d5cc3ac..05b33f5 100644
  
  	if (sysrq_reset_downtime_ms)
  		mod_timer(&state->keyreset_timer,
-@@ -756,8 +761,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
+@@ -791,8 +796,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
  
  	default:
  		if (sysrq->active && value && value != 2) {
@@ -143,7 +150,7 @@ index d5cc3ac..05b33f5 100644
  		}
  		break;
  	}
-@@ -1038,7 +1045,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+@@ -1080,7 +1087,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
  
  		if (get_user(c, buf))
  			return -EFAULT;
@@ -183,10 +190,10 @@ index 82ce323..9e534f2 100644
   * Verify that we are in sync with input_device_id mod_devicetable.h #defines
   */
 diff --git a/include/linux/sysrq.h b/include/linux/sysrq.h
-index 7faf933..87ae634 100644
+index 387fa7d..4b07e30 100644
 --- a/include/linux/sysrq.h
 +++ b/include/linux/sysrq.h
-@@ -31,6 +31,8 @@
+@@ -28,6 +28,8 @@
  #define SYSRQ_ENABLE_BOOT	0x0080
  #define SYSRQ_ENABLE_RTNICE	0x0100
  
@@ -195,7 +202,7 @@ index 7faf933..87ae634 100644
  struct sysrq_key_op {
  	void (*handler)(int);
  	char *help_msg;
-@@ -45,8 +47,12 @@ struct sysrq_key_op {
+@@ -42,8 +44,12 @@ struct sysrq_key_op {
   * are available -- else NULL's).
   */
  
@@ -210,10 +217,10 @@ index 7faf933..87ae634 100644
  int unregister_sysrq_key(int key, struct sysrq_key_op *op);
  struct sysrq_key_op *__sysrq_get_key_op(int key);
 diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 00eb8f7..54fbbcc 100644
+index 0b097c8..18b400d 100644
 --- a/kernel/debug/kdb/kdb_main.c
 +++ b/kernel/debug/kdb/kdb_main.c
-@@ -1921,7 +1921,7 @@ static int kdb_sr(int argc, const char **argv)
+@@ -1924,7 +1924,7 @@ static int kdb_sr(int argc, const char **argv)
  	if (argc != 1)
  		return KDB_ARGCOUNT;
  	kdb_trap_printk++;
@@ -223,7 +230,7 @@ index 00eb8f7..54fbbcc 100644
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index bc7c987..5e4e2c2 100644
+index 92b73b1..a44fb2a 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -109,9 +109,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
@@ -239,5 +246,5 @@ index bc7c987..5e4e2c2 100644
  static int param_set_bool_enable_only(const char *val,
  				      const struct kernel_param *kp)
 -- 
-1.8.3.1
+1.8.4.2
 

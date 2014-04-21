@@ -1,0 +1,99 @@
+From fb4a8356eb67514b10618d1e9e4059ced14c05f2 Mon Sep 17 00:00:00 2001
+From: Marc Dietrich <marvin24@gmx.de>
+Date: Sat, 21 Dec 2013 21:38:13 +0100
+Subject: [PATCH] ARM: tegra: paz00: Add LVDS support to device tree
+
+Add backlight and panel nodes for the PAZ00 TFT LCD panel.
+
+Signed-off-by: Marc Dietrich <marvin24@gmx.de>
+---
+ arch/arm/boot/dts/tegra20-paz00.dts |   46 ++++++++++++++++++++++++++++++++++-
+ 1 files changed, 45 insertions(+), 1 deletions(-)
+
+diff --git a/arch/arm/boot/dts/tegra20-paz00.dts b/arch/arm/boot/dts/tegra20-paz00.dts
+index c7cd8e6..9a39a80 100644
+--- a/arch/arm/boot/dts/tegra20-paz00.dts
++++ b/arch/arm/boot/dts/tegra20-paz00.dts
+@@ -17,6 +17,14 @@
+ 	};
+ 
+ 	host1x@50000000 {
++		dc@54200000 {
++			rgb {
++				status = "okay";
++
++				nvidia,panel = <&panel>;
++			};
++		};
++
+ 		hdmi@54280000 {
+ 			status = "okay";
+ 
+@@ -257,7 +265,11 @@
+ 		status = "okay";
+ 	};
+ 
+-	i2c@7000c000 {
++	pwm: pwm@7000a000 {
++		status = "okay";
++	};
++
++	lvds_ddc: i2c@7000c000 {
+ 		status = "okay";
+ 		clock-frequency = <400000>;
+ 
+@@ -475,6 +487,18 @@
+ 		non-removable;
+ 	};
+ 
++	backlight: backlight {
++		compatible = "pwm-backlight";
++
++		enable-gpios = <&gpio TEGRA_GPIO(U, 4) GPIO_ACTIVE_HIGH>;
++		pwms = <&pwm 0 5000000>;
++
++		brightness-levels = <0 16 32 48 64 80 96 112 128 144 160 176 192 208 224 240 255>;
++		default-brightness-level = <10>;
++
++		backlight-boot-off;
++	};
++
+ 	clocks {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -509,6 +533,16 @@
+ 		};
+ 	};
+ 
++	panel: panel {
++		compatible = "samsung,ltn101nt05", "simple-panel";
++
++		ddc-i2c-bus = <&lvds_ddc>;
++		power-supply = <&vdd_pnl_reg>;
++		enable-gpios = <&gpio TEGRA_GPIO(M, 6) GPIO_ACTIVE_HIGH>;
++
++		backlight = <&backlight>;
++	};
++
+ 	regulators {
+ 		compatible = "simple-bus";
+ 		#address-cells = <1>;
+@@ -522,6 +556,16 @@
+ 			regulator-max-microvolt = <5000000>;
+ 			regulator-always-on;
+ 		};
++
++		vdd_pnl_reg: regulator@1 {
++			compatible = "regulator-fixed";
++			reg = <1>;
++			regulator-name = "+3VS,vdd_pnl";
++			regulator-min-microvolt = <3300000>;
++			regulator-max-microvolt = <3300000>;
++			gpio = <&gpio TEGRA_GPIO(A, 4) GPIO_ACTIVE_HIGH>;
++			enable-active-high;
++		};
+ 	};
+ 
+ 	sound {
+-- 
+1.7.1

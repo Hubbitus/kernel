@@ -68,13 +68,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 13
+%define base_sublevel 14
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 10
+%define stable_update 1
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -685,14 +685,13 @@ Patch21010: arm-omap-load-tfp410.patch
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
+# Add panel support for tegra paz00
+# Backported from linux-next scheduled for 3.15
+Patch21021: arm-tegra-paz00-panel-dts.patch
+
 # ARM i.MX6
 # http://www.spinics.net/lists/devicetree/msg08276.html
 Patch21025: arm-imx6-utilite.patch
-
-# am33xx (BeagleBone)
-# https://github.com/beagleboard/kernel
-# Pulled primarily from the above git repo and should be landing upstream
-Patch21031: arm-am33xx-bblack.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -707,60 +706,20 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-# Fix 15sec NFS mount delay
-Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
-Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-#rhbz 953211
-Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1064430 1056711
-Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#CVE-2014-0069 rhbz 1064253 1062584
-Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-Patch25026: keyring-fix.patch
-
-#rhbz 1065087
-Patch25028: tty-Fix-low_latency-BUG.patch
-
-#rhbz 1027465
-Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
-
-#rhbz 1013466
-Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
-
-#rhbz 1065663
-Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
 
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2568 rhbz 1079012 1079013
-Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+#CVE-2014-0155 rhbz 1081589 1085016
+Patch25036: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
+
+#rhbz 1048314
+Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #rhbz 1074235
 Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-Patch25057: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
-
-#rhbz 1048314
-Patch25058: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
@@ -1321,9 +1280,9 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-paz00-panel-dts.patch
 ApplyPatch arm-imx6-utilite.patch
 
-ApplyPatch arm-am33xx-bblack.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1388,8 +1347,6 @@ ApplyPatch crash-driver.patch
 
 # crypto/
 
-# keys
-
 # secure boot
 ApplyPatch secure-modules.patch
 ApplyPatch modsign-uefi.patch
@@ -1431,60 +1388,20 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-# Fix 15sec NFS mount delay
-ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
-ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-#rhbz 953211
-ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1064430 1056711
-ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#CVE-2014-0069 rhbz 1064253 1062584
-ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-ApplyPatch keyring-fix.patch
-
-#rhbz 1065087
-ApplyPatch tty-Fix-low_latency-BUG.patch
-
-#rhbz 1027465
-ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
-
-#rhbz 1013466
-ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1065663
-ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
-
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-2568 rhbz 1079012 1079013
-ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
-
-#rhbz 1074235
-ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
 ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
+#rhbz 1074235
+ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
@@ -2303,6 +2220,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 21 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.1-200
+- Linux v3.14.1
+
 * Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
 - Update min/max quirk patch to add a quirk for the ThinkPad L540 (rhbz1088588)
 
