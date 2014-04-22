@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -629,7 +629,6 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 1085582 1085697
 Patch25049: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
-Patch25061: gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 #rhbz 1025603
@@ -1284,7 +1283,6 @@ ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1085582 1085697
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
-ApplyPatch gpio-ACPI-Dont-crash-on-NULL-chip-dev.patch
 ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 #rhbz 1025603
@@ -2069,6 +2067,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc2.git1.1
+- Linux v3.15-rc2-42-g4d0fa8a0f012
+- Reenable debugging options.
+
 * Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix Synaptics touchscreens and HID rmi driver (rhbz 1089583)
 
