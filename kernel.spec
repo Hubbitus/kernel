@@ -626,9 +626,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1048314
-Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
 #rhbz 1085582 1085697
 Patch25049: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
@@ -637,6 +634,12 @@ Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
+
+#rhbz 1048314
+Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
+#rhbz 1089583
+Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1275,6 +1278,8 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+#rhbz 1089583
+ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
 #rhbz 1085582 1085697
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
@@ -2064,6 +2069,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix Synaptics touchscreens and HID rmi driver (rhbz 1089583)
+
 * Mon Apr 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc2.git0.1
 - Linux v3.15-rc2
 - Disable debugging options.
