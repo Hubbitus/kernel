@@ -736,6 +736,9 @@ Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
+#rhbz 1013466
+Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1426,6 +1429,9 @@ ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
 
 #rhbz 1071914
 ApplyPatch USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
+
+#rhbz 1013466
+ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2238,6 +2244,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix SELinux wine issue again (rhbz 1013466)
+
 * Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix Synaptics touchscreens and HID rmi driver (rhbz 1089583)
 
