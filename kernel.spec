@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -625,9 +625,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
-#rhbz 1085582 1085697
-Patch25049: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
@@ -1279,9 +1276,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
-
-#rhbz 1085582 1085697
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
@@ -2067,6 +2061,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc2.git2.1
+- Linux v3.15-rc2-69-g1aae31c8306e
+
 * Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc2.git1.1
 - Linux v3.15-rc2-42-g4d0fa8a0f012
 - Reenable debugging options.
