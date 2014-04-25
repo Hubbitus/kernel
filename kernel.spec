@@ -612,6 +612,7 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 # ARM i.MX6
 
 # ARM sunxi (AllWinner)
+Patch21025: 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1167,6 +1168,7 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2061,6 +2063,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
+- Add a patch to add support for the mmc controller on sunxi ARM SoCs
+
 * Thu Apr 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc2.git3.1
 - Linux v3.15-rc2-107-g76429f1dedbc
 
