@@ -638,6 +638,9 @@ Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
+#rhbz 1089689
+Patch25065: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1283,6 +1286,9 @@ ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
+
+#rhbz 1089689
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2063,6 +2069,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
+- Add synaptics min-max quirk for ThinkPad Edge E431 (rhbz#1089689)
+
 * Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
 - Add a patch to add support for the mmc controller on sunxi ARM SoCs
 
