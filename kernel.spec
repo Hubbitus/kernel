@@ -641,6 +641,9 @@ Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1089689
 Patch25065: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
+#rhbz 1090746
+Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1289,6 +1292,9 @@ ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 1089689
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
+
+#rhbz 1090746
+ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2069,6 +2075,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ACPI issue preventing boot on AMI firmware (rhbz 1090746)
+
 * Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
 - Add synaptics min-max quirk for ThinkPad Edge E431 (rhbz#1089689)
 
