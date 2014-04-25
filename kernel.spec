@@ -745,6 +745,9 @@ Patch25066: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 #rhbz 1090746
 Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
+#rhbz 696821
+Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1443,6 +1446,9 @@ ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 #rhbz 1090746
 ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
+
+#rhbz 696821
+ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2256,6 +2262,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Apr 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Will Woods to fix fanotify EOVERFLOW issue (rhbz 696821)
 - Fix ACPI issue preventing boot on AMI firmware (rhbz 1090746)
 
 * Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
