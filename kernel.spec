@@ -601,8 +601,6 @@ Patch15000: nowatchdog-on-virt.patch
 # ARM
 
 # lpae
-Patch21001: arm-lpae-ax88796.patch
-Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 
 # ARM omap
 
@@ -1174,8 +1172,6 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #
 # ARM
 #
-ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
@@ -2081,6 +2077,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 25 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop obsolete ARM LPAE patches
+
 * Fri Apr 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Will Woods to fix fanotify EOVERFLOW issue (rhbz 696821)
 - Fix ACPI issue preventing boot on AMI firmware (rhbz 1090746)
