@@ -739,6 +739,8 @@ Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1013466
 Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
+#rhbz 1089689
+Patch25066: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1432,6 +1434,9 @@ ApplyPatch USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
 
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1089689
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2244,6 +2249,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
+- Add synaptics min-max quirk for ThinkPad Edge E431 (rhbz#1089689)
+
 * Wed Apr 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix SELinux wine issue again (rhbz 1013466)
 
