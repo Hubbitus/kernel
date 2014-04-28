@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -2261,6 +2261,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.2-200
+- Linux v3.14.2 (rhbz 1067071 1091722 906568)
+
 * Fri Apr 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Will Woods to fix fanotify EOVERFLOW issue (rhbz 696821)
 - Fix ACPI issue preventing boot on AMI firmware (rhbz 1090746)
