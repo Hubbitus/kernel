@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -664,6 +664,16 @@ Requires(preun): systemd >= 200\
 # isn't required for the kernel proper to function\
 AutoReqProv: no\
 %{nil}
+
+%if %{debugbuildsenabled}
+%package debug
+Summary: A debug version of the Linux kernel
+Group: System Environment/Kernel
+Requires: kernel-debug-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
+Requires: kernel-debug-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}
+%description debug
+The kernel debug meta package
+%endif
 
 %package headers
 Summary: Header files for the Linux kernel for use by glibc
@@ -2115,6 +2125,11 @@ fi
 %files
 %defattr(-,root,root)
 
+%if %{debugbuildsenabled}
+%files debug
+%defattr(-,root,root)
+%endif
+
 # This is %%{image_install_path} on an arch where that includes ELF files,
 # or empty otherwise.
 %define elf_image_install_path %{?kernel_image_elf:%{image_install_path}}
@@ -2187,6 +2202,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add kernel-debug metapackage when debugbuildsenabled is set
+
 * Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git2.1
 - Linux v3.15-rc3-62-ged8c37e158cb
 - Drop noarch from ExclusiveArch.  Nothing is built as noarch
