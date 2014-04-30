@@ -748,6 +748,9 @@ Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patc
 #rhbz 696821
 Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 
+#CVE-2014-XXXX rhbz 1093076 1093084
+Patch25069: mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1449,6 +1452,9 @@ ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
 #rhbz 696821
 ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
+
+#CVE-2014-XXXX rhbz 1093076 1093084
+ApplyPatch mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2261,6 +2267,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-XXXX: mm: fix locking DoS issue (rhbz 1093084 1093076)
+
 * Mon Apr 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.2-200
 - Linux v3.14.2 (rhbz 1067071 1091722 906568)
 
