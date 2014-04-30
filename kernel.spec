@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 10
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -394,7 +394,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: noarch %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
+ExclusiveArch: %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
 Requires: kernel-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}
@@ -2187,6 +2187,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git2.1
+- Linux v3.15-rc3-62-ged8c37e158cb
+- Drop noarch from ExclusiveArch.  Nothing is built as noarch
+
 * Tue Apr 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git1.10
 - Make depmod call fatal if it errors or warns
 
