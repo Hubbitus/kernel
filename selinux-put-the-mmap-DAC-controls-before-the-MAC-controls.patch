@@ -1,5 +1,5 @@
 Bugzilla: 1013466
-Upstream-status: queued for 3.14/3.15? http://marc.info/?l=selinux&m=139351174702148&w=2
+Upstream-status: 3.15 (commit 98883bfd9d603a2760f6d53eccfaa3ae2c053e72)
 
 It turns out that doing the SELinux MAC checks for mmap() before the
 DAC checks was causing users and the SELinux policy folks headaches

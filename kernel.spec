@@ -68,13 +68,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 13
+%define base_sublevel 14
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 10
+%define stable_update 2
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -685,14 +685,13 @@ Patch21010: arm-omap-load-tfp410.patch
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
+# Add panel support for tegra paz00
+# Backported from linux-next scheduled for 3.15
+Patch21021: arm-tegra-paz00-panel-dts.patch
+
 # ARM i.MX6
 # http://www.spinics.net/lists/devicetree/msg08276.html
 Patch21025: arm-imx6-utilite.patch
-
-# am33xx (BeagleBone)
-# https://github.com/beagleboard/kernel
-# Pulled primarily from the above git repo and should be landing upstream
-Patch21031: arm-am33xx-bblack.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -735,68 +734,49 @@ Patch30008: BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
 Patch30009: BFS-3.13-compile-fix-hu.patch
 
 Patch30010: UKSM-BFS-3.13.9-working-together.patch
-# end Hubbitus patches
-
-# Fix 15sec NFS mount delay
-Patch25152: sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-Patch25153: sunrpc-replace-gssd_running-with-more-reliable-check.patch
-Patch25154: nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-Patch25166: sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-Patch25167: rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-Patch25168: rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-#rhbz 953211
-Patch25184: Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1064430 1056711
-Patch25196: ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-Patch25197: ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#CVE-2014-0069 rhbz 1064253 1062584
-Patch25201: cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-Patch25002: cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-Patch25026: keyring-fix.patch
-
-#rhbz 1065087
-Patch25028: tty-Fix-low_latency-BUG.patch
-
-#rhbz 1027465
-Patch25032: HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
-
-#rhbz 1013466
-Patch25033: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+#/ end Hubbitus patches
 
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1065663
-Patch25040: iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
-
 #rhbz 1046495
 Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
 
-#CVE-2014-2568 rhbz 1079012 1079013
-Patch25049: nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
+#CVE-2014-0155 rhbz 1081589 1085016
+Patch25036: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1074235
 Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-Patch25057: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
-
-#rhbz 1048314
-Patch25058: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
 #rhbz 1085582 1085697
 Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
+#rhbz 1074710
+Patch25061: mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
+
+#rhbz 1071914
+Patch25063: USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
+
+#rhbz 1048314
+Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+
+#rhbz 1089583
+Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
+
+#rhbz 1013466
+Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1089689
+Patch25066: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
+
+#rhbz 1090746
+Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
+
+#rhbz 696821
+Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1351,9 +1331,9 @@ ApplyPatch arm-lpae-ax88796.patch
 ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-tegra-paz00-panel-dts.patch
 ApplyPatch arm-imx6-utilite.patch
 
-ApplyPatch arm-am33xx-bblack.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1418,8 +1398,6 @@ ApplyPatch crash-driver.patch
 
 # crypto/
 
-# keys
-
 # secure boot
 ApplyPatch secure-modules.patch
 ApplyPatch modsign-uefi.patch
@@ -1477,66 +1455,46 @@ ApplyPatch UKSM-BFS-3.13.9-working-together.patch
 #? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
 #/Hu
 
-# Fix 15sec NFS mount delay
-ApplyPatch sunrpc-create-a-new-dummy-pipe-for-gssd-to-hold-open.patch
-ApplyPatch sunrpc-replace-gssd_running-with-more-reliable-check.patch
-ApplyPatch nfs-check-gssd-running-before-krb5i-auth.patch
-#rhbz 1037793
-ApplyPatch rpc_pipe-remove-the-clntXX-dir-if-creating-the-pipe-fails.patch
-ApplyPatch sunrpc-add-an-info-file-for-the-dummy-gssd-pipe.patch
-ApplyPatch rpc_pipe-fix-cleanup-of-dummy-gssd-directory-when-notification-fails.patch
-
-#rhbz 953211
-ApplyPatch Input-ALPS-add-support-for-Dolphin-devices.patch
-
-#rhbz 1064430 1056711
-ApplyPatch ipv6-introduce-IFA_F_NOPREFIXROUTE-and-IFA_F_MANAGETEMPADDR-flags.patch
-ApplyPatch ipv6-addrconf-revert-if_inet6ifa_flag-format.patch
-
-#CVE-2014-0069 rhbz 1064253 1062584
-ApplyPatch cifs-sanity-check-length-of-data-to-send-before-sending.patch
-
-#rhbz 1068862
-ApplyPatch cifs-mask-off-top-byte-in-get_rfc1002_length.patch
-
-#CVE-2014-0102 rhbz 1071396
-ApplyPatch keyring-fix.patch
-
-#rhbz 1065087
-ApplyPatch tty-Fix-low_latency-BUG.patch
-
-#rhbz 1027465
-ApplyPatch HID-Bluetooth-hidp-make-sure-input-buffers-are-big-e.patch
-
-#rhbz 1013466
-ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1065663
-ApplyPatch iwlwifi-dvm-clear-IWL_STA_UCODE_INPROGRESS-when-asso.patch
-
 #rhbz 1046495
 ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-2568 rhbz 1079012 1079013
-ApplyPatch nfqueue-Orphan-frags-in-nfqnl_zcopy-and-handle-error.patch
-
-#rhbz 1074235
-ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
 #CVE-2014-0155 rhbz 1081589 1085016
 ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
+#rhbz 1089583
+ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
+
+#rhbz 1074235
+ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 
 #CVE-2014-2851 rhbz 1086730 1087420
 ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
 
 #rhbz 1085582 1085697
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
+
+#rhbz 1074710
+ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
+
+#rhbz 1071914
+ApplyPatch USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
+
+#rhbz 1013466
+ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
+
+#rhbz 1089689
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
+
+#rhbz 1090746
+ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
+
+#rhbz 696821
+ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2038,7 +1996,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-bin
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -2046,7 +2004,7 @@ rm -f %{buildroot}%{_bindir}/trace
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT install-python_ext
 
 # perf man pages (note: implicit rpm magic compresses them later)
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-man || %{doc_build_fail}
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT try-install-man || %{doc_build_fail}
 %endif
 
 %if %{with_tools}
@@ -2349,6 +2307,33 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Apr 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.2-200
+- Linux v3.14.2 (rhbz 1067071 1091722 906568)
+
+* Fri Apr 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Will Woods to fix fanotify EOVERFLOW issue (rhbz 696821)
+- Fix ACPI issue preventing boot on AMI firmware (rhbz 1090746)
+
+* Fri Apr 25 2014 Hans de Goede <hdegoede@redhat.com>
+- Add synaptics min-max quirk for ThinkPad Edge E431 (rhbz#1089689)
+
+* Wed Apr 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix SELinux wine issue again (rhbz 1013466)
+
+* Tue Apr 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix Synaptics touchscreens and HID rmi driver (rhbz 1089583)
+
+* Mon Apr 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.1-200
+- Fix Brainboxes Express Cards (rhbz 1071914)
+- Fix build issues with CONFIG_DEBUG_VM set (rhbz 1074710)
+- Fix perf build failures
+
+* Mon Apr 21 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.14.1
+
+* Thu Apr 17 2014 Hans de Goede <hdegoede@redhat.com>
+- Update min/max quirk patch to add a quirk for the ThinkPad L540 (rhbz1088588)
+
 * Wed Apr 16 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.10-200.hu.1
  - 3.13.10-200.hu.1
 
