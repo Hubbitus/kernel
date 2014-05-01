@@ -632,6 +632,9 @@ Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patc
 #rhbz 696821
 Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 
+#rhbz 983342 1093120
+Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1337,6 +1340,9 @@ ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
 #rhbz 696821
 ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
+
+#rhbz 983342 1093120
+ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2202,6 +2208,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_backlight quirk for 4 laptops (rhbz 983342 1093120)
+
 * Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git3.1
 - Linux v3.15-rc3-82-g8aa9e85adac6
 
