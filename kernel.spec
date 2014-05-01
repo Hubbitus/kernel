@@ -754,6 +754,9 @@ Patch25069: mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 #rhbz 983342 1093120
 Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
+#rhbz 1060327
+Patch25071: drm-fix-qxl-mode-flags-backport.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1461,6 +1464,9 @@ ApplyPatch mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
+#rhbz 1060327
+ApplyPatch drm-fix-qxl-mode-flags-backport.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2273,6 +2279,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add backported drm qxl fix (rhbz 1060327)
+
 * Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
 - Sync min/max quirk patch with upstream to add a quirk for the ThinkPad L540
   (rhbz 1088588)
