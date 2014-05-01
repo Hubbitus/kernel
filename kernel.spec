@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -668,16 +668,6 @@ Requires(preun): systemd >= 200\
 AutoReqProv: no\
 %{nil}
 
-%if %{debugbuildsenabled}
-%package debug
-Summary: A debug version of the Linux kernel
-Group: System Environment/Kernel
-Requires: kernel-debug-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
-Requires: kernel-debug-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}
-%description debug
-The kernel debug meta package
-%endif
-
 %package headers
 Summary: Header files for the Linux kernel for use by glibc
 Group: Development/System
@@ -884,6 +874,20 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 %{nil}
 
 #
+# this macro creates a kernel-<subpackage> meta package.
+#	%%kernel_meta_package <subpackage>
+#
+%define kernel_meta_package() \
+%package %{1}\
+summary: kernel meta-package for the %{1} kernel\
+group: system environment/kernel\
+Requires: kernel-%{1}-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}+%{1}\
+Requires: kernel-%{1}-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}+%{1}\
+%description %{1}\
+The meta-package for the %{1} kernel\
+%{nil}
+
+#
 # This macro creates a kernel-<subpackage> and its -devel and -debuginfo too.
 #	%%define variant_summary The Linux kernel compiled for <configuration>
 #	%%kernel_variant_package [-n <pretty-name>] <subpackage>
@@ -894,6 +898,9 @@ Summary: %{variant_summary}\
 Group: System Environment/Kernel\
 Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{?1:+%{1}}\
 %{expand:%%kernel_reqprovconf}\
+%if %{?1:1} %{!?1:0} \
+%{expand:%%kernel_meta_package %{?1:%{1}}}\
+%endif\
 %{expand:%%kernel_devel_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %{expand:%%kernel_drivers_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %if %{with_extra}\
@@ -2131,11 +2138,6 @@ fi
 %files
 %defattr(-,root,root)
 
-%if %{debugbuildsenabled}
-%files debug
-%defattr(-,root,root)
-%endif
-
 # This is %%{image_install_path} on an arch where that includes ELF files,
 # or empty otherwise.
 %define elf_image_install_path %{?kernel_image_elf:%{image_install_path}}
@@ -2184,6 +2186,10 @@ fi
 %defattr(-,root,root)\
 %endif\
 %endif\
+%if %{?2:1} %{!?2:0}\
+%{expand:%%files %{2}}\
+%defattr(-,root,root)\
+%endif\
 %endif\
 %{nil}
 
@@ -2208,6 +2214,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add kernel metapackages for all flavors, not just debug
+
 * Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
 - Add use_native_backlight quirk for 4 laptops (rhbz 983342 1093120)
 
