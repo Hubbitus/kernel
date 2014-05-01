@@ -751,6 +751,9 @@ Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 #CVE-2014-3122 rhbz 1093076 1093084
 Patch25069: mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 
+#rhbz 983342 1093120
+Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1455,6 +1458,9 @@ ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
 
 #CVE-2014-3122 rhbz 1093076 1093084
 ApplyPatch mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
+
+#rhbz 983342 1093120
+ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2267,6 +2273,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_backlight quirk for 4 laptops (rhbz 983342 1093120)
+
 * Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3122: mm: fix locking DoS issue (rhbz 1093084 1093076)
 
