@@ -721,7 +721,7 @@ Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
-#rhbz 1085582 1085697
+#rhbz 1085582 1085697 1088588
 Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 #rhbz 1074710
@@ -2273,6 +2273,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Sync min/max quirk patch with upstream to add a quirk for the ThinkPad L540
+  (rhbz 1088588)
+
 * Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
 - Add use_native_backlight quirk for 4 laptops (rhbz 983342 1093120)
 
