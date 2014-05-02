@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -397,7 +397,7 @@ Release: %{pkg_release}
 ExclusiveArch: %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
-Requires: kernel-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}
+Requires: kernel-%{?variant:%{variant}-}modules-uname-r = %{KVERREL}%{?variant}
 
 
 #
@@ -848,28 +848,28 @@ Provides: kernel%{?1:-%{1}}-modules-extra = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires: kernel-drivers-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
 %{nil}
 
 #
-# This macro creates a kernel-<subpackage>-drivers package.
-#	%%kernel_drivers_package <subpackage> <pretty-name>
+# This macro creates a kernel-<subpackage>-modules package.
+#	%%kernel_modules_package <subpackage> <pretty-name>
 #
-%define kernel_drivers_package() \
-%package %{?1:%{1}-}drivers\
+%define kernel_modules_package() \
+%package %{?1:%{1}-}modules\
 Summary: kernel modules to match the %{?2:%{2}-}core kernel\
 Group: System Environment/Kernel\
-Provides: kernel%{?1:-%{1}}-drivers-%{_target_cpu} = %{version}-%{release}\
-Provides: kernel-drivers-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
-Provides: kernel-drivers = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel%{?1:-%{1}}-modules-%{_target_cpu} = %{version}-%{release}\
+Provides: kernel-modules-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
+Provides: kernel-modules = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel-drivers-uname-r = %{KVERREL}%{?1:+%{1}}\
+Provides: kernel-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
-%description -n kernel%{?variant}%{?1:-%{1}}-drivers\
+%description -n kernel%{?variant}%{?1:-%{1}}-modules\
 This package provides commonly used kernel modules for the %{?2:%{2}-}core kernel package.\
 %{nil}
 
@@ -882,7 +882,7 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 summary: kernel meta-package for the %{1} kernel\
 group: system environment/kernel\
 Requires: kernel-%{1}-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}+%{1}\
-Requires: kernel-%{1}-%{?variant:%{variant}-}drivers-uname-r = %{KVERREL}%{?variant}+%{1}\
+Requires: kernel-%{1}-%{?variant:%{variant}-}modules-uname-r = %{KVERREL}%{?variant}+%{1}\
 %description %{1}\
 The meta-package for the %{1} kernel\
 %{nil}
@@ -902,7 +902,7 @@ Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{?1:+%{1}}\
 %{expand:%%kernel_meta_package %{?1:%{1}}}\
 %endif\
 %{expand:%%kernel_devel_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
-%{expand:%%kernel_drivers_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
+%{expand:%%kernel_modules_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %if %{with_extra}\
 %{expand:%%kernel_modules_extra_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %endif\
@@ -1652,7 +1652,7 @@ BuildKernel() {
 %endif
 
     #
-    # Generate the kernel-core and kernel-drivers files lists
+    # Generate the kernel-core and kernel-modules files lists
     #
 
     # Copy the System.map file for depmod to use, and create a backup of the
@@ -1665,8 +1665,8 @@ BuildKernel() {
     # don't include anything going into k-m-e in the file lists
     rm -rf lib/modules/$KernelVer/extra
 
-    # Find all the module files and filter them out into the core and drivers
-    # lists.  This actually removes anything going into -drivers from the dir.
+    # Find all the module files and filter them out into the core and modules
+    # lists.  This actually removes anything going into -modules from the dir.
     find lib/modules/$KernelVer/kernel -name *.ko | sort -n > modules.list
 	cp $RPM_SOURCE_DIR/filter-*.sh .
     %{SOURCE99} modules.list %{_target_cpu}
@@ -1698,7 +1698,7 @@ BuildKernel() {
 
     # Make sure the files lists start with absolute paths or rpmbuild fails.
     # Also add in the dir entries
-    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/k-d.list > ../kernel${Flavour:+-${Flavour}}-drivers.list
+    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/k-d.list > ../kernel${Flavour:+-${Flavour}}-modules.list
     sed -e 's/^lib*/%dir \/lib/' $RPM_BUILD_ROOT/module-dirs.list > ../kernel${Flavour:+-${Flavour}}-core.list
     sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/modules.list >> ../kernel${Flavour:+-${Flavour}}-core.list
 
@@ -1987,15 +1987,15 @@ fi\
 %{nil}
 
 #
-# This macro defines a %%post script for a kernel*-drivers package.
+# This macro defines a %%post script for a kernel*-modules package.
 # It also defines a %%postun script that does the same thing.
-#	%%kernel_drivers_post [<subpackage>]
+#	%%kernel_modules_post [<subpackage>]
 #
-%define kernel_drivers_post() \
-%{expand:%%post %{?1:%{1}-}drivers}\
+%define kernel_modules_post() \
+%{expand:%%post %{?1:%{1}-}modules}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}\
-%{expand:%%postun %{?1:%{1}-}drivers}\
+%{expand:%%postun %{?1:%{1}-}modules}\
 /sbin/depmod -a %{KVERREL}%{?1:+%{1}}\
 %{nil}
 
@@ -2015,7 +2015,7 @@ fi\
 #
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
-%{expand:%%kernel_drivers_post %{?-v*}}\
+%{expand:%%kernel_modules_post %{?-v*}}\
 %if %{with_extra}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
 %endif\
@@ -2170,7 +2170,7 @@ fi
 /etc/ld.so.conf.d/kernel-%{KVERREL}%{?2:+%{2}}.conf\
 %endif\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/modules.*\
-%{expand:%%files -f kernel-%{?2:%{2}-}drivers.list %{?2:%{2}-}drivers}\
+%{expand:%%files -f kernel-%{?2:%{2}-}modules.list %{?2:%{2}-}modules}\
 %defattr(-,root,root)\
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
@@ -2215,6 +2215,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Rename kernel-drivers to kernel-modules
 - Add kernel metapackages for all flavors, not just debug
 
 * Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>

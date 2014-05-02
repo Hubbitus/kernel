@@ -2,15 +2,15 @@
 #
 # Called as filter-modules.sh list-of-modules Arch
 
-# This script filters the modules into the kernel-core and kernel-drivers
+# This script filters the modules into the kernel-core and kernel-modules
 # subpackages.  We list out subsystems/subdirs to prune from the installed
 # module directory.  What is left is put into the kernel-core package.  What is
-# pruned is contained in the kernel-drivers package.
+# pruned is contained in the kernel-modules package.
 #
 # This file contains the default subsys/subdirs to prune from all architectures.
 # If an architecture needs to differ, we source a per-arch filter-<arch>.sh file
 # that contains the set of override lists to be used instead.  If a module or
-# subsys should be in kernel-drivers on all arches, please change the defaults
+# subsys should be in kernel-modules on all arches, please change the defaults
 # listed here.
 
 # Set the default dirs/modules to filter out
