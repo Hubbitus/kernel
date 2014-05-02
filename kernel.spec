@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2214,6 +2214,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git4.1
+- Linux v3.15-rc3-121-gb7270cce7db7
+
 * Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Rename kernel-drivers to kernel-modules
 - Add kernel metapackages for all flavors, not just debug
