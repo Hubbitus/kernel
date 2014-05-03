@@ -99,9 +99,6 @@ debug:
 
 	@perl -pi -e 's/# CONFIG_MAXSMP is not set/CONFIG_MAXSMP=y/' config-x86-generic
 
-	@# Try out UAS in rawhide builds.
-	@perl -pi -e 's/# CONFIG_USB_UAS is not set/CONFIG_USB_UAS=m/' config-generic
-
 	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
 	@rpmdev-bumpspec -c "Reenable debugging options." kernel.spec
 

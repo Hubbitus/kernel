@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -866,7 +866,7 @@ Provides: kernel%{?1:-%{1}}-modules-%{_target_cpu} = %{version}-%{release}\
 Provides: kernel-modules-%{_target_cpu} = %{version}-%{release}%{?1:+%{1}}\
 Provides: kernel-modules = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
-Provides: kernel-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Provides: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules\
@@ -2214,6 +2214,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix up Provides on kernel-module variant packages
+- Enable CONFIG_USB_UAS unconditionally per Hans
+
 * Fri May 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git4.1
 - Linux v3.15-rc3-121-gb7270cce7db7
 
