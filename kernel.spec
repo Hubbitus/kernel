@@ -623,6 +623,9 @@ Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
+#rhbz 1090161
+Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
+
 #rhbz 1089689
 Patch25065: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
@@ -1333,6 +1336,8 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
+#rhbz 1090161
+ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
 ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
@@ -2214,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix HID rmi driver from Benjamin Tissoires (rhbz 1090161)
+
 * Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix up Provides on kernel-module variant packages
 - Enable CONFIG_USB_UAS unconditionally per Hans
