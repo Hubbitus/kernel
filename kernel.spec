@@ -736,6 +736,9 @@ Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
+#rhbz 1090161
+Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
+
 #rhbz 1013466
 Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
@@ -1431,6 +1434,8 @@ ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
+#rhbz 1090161
+ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
 #rhbz 1074235
 ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
@@ -2279,6 +2284,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix HID rmi driver from Benjamin Tissoires (rhbz 1090161)
+
 * Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add backported drm qxl fix (rhbz 1060327)
 
