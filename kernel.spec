@@ -760,6 +760,9 @@ Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 #rhbz 1060327
 Patch25071: drm-fix-qxl-mode-flags-backport.patch
 
+#rhbz 1093931
+Patch25073: net-Start-with-correct-mac_len-in-skb_network_protoc.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1472,6 +1475,9 @@ ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 #rhbz 1060327
 ApplyPatch drm-fix-qxl-mode-flags-backport.patch
+
+#rhbz 1093931
+ApplyPatch net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2285,6 +2291,7 @@ fi
 #                 ||     ||
 %changelog
 * Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix TUN performance regression (rhbz 1093931)
 - Add patch to fix HID rmi driver from Benjamin Tissoires (rhbz 1090161)
 
 * Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
