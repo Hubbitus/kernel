@@ -2219,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May  3 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable OMAP-3 boards (use DT) and some minor omap3 config updates
+
 * Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc3.git5.1
 - Linux v3.15-rc3-159-g6c6ca9c2a5b9
 
