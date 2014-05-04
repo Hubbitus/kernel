@@ -2219,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun May  4 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- General minor ARM cleanups
+
 * Sun May 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix k-m-e requires on k-m-uname-r provides
 - ONE MORE TIME WITH FEELING
