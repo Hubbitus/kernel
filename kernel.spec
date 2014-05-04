@@ -851,7 +851,7 @@ Provides: kernel%{?1:-%{1}}-modules-extra = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-Requires: kernel-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
+Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
 AutoReqProv: no\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
@@ -2219,6 +2219,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun May 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix k-m-e requires on k-m-uname-r provides
+- ONE MORE TIME WITH FEELING
+
 * Sat May  3 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable OMAP-3 boards (use DT) and some minor omap3 config updates
 
