@@ -638,6 +638,9 @@ Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
+#rhbz 1089545
+Patch25070: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1355,6 +1358,9 @@ ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
+#rhbz 1089545
+ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2219,6 +2225,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May  5 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_brightness quirk for the ThinkPad T530 (rhbz 1089545)
+
 * Sun May  4 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - General minor ARM cleanups
 
