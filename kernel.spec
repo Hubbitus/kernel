@@ -772,6 +772,16 @@ Patch25075: locks-allow-__break_lease-to-sleep-even-when-break_t.patch
 #CVE-2014-0196 rhbz 1094232 1094240
 Patch25076: n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
 
+#misc input fixes
+Patch25077: 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
+Patch25078: 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
+
+#rhbz 861573
+Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+
+#rhbz 1067181
+Patch25080: 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1496,6 +1506,16 @@ ApplyPatch locks-allow-__break_lease-to-sleep-even-when-break_t.patch
 
 #CVE-2014-0196 rhbz 1094232 1094240
 ApplyPatch n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
+
+#misc input fixes
+ApplyPatch 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
+ApplyPatch 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
+
+#rhbz 861573
+ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+
+#rhbz 1067181
+ApplyPatch 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2308,6 +2328,13 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 06 2014 Hans de Goede <hdegoede@redhat.com>
+- Add a patch to fix the Synaptics Touch Pad V 103S found on some keyboard
+  docks for win8 tablets
+- Add a patch to fix the elantech touchpad on Gigabyte U2442 laptops
+- Add a patch to fix backlight control on the Samsung NC210/NC110 (rhbz#861573)
+- Add a patch to fix backlight & wifi on the Asus EEE PC 1015PX (rhbz#1067181)
+
 * Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-0196 pty race leading to memory corruption (rhbz 1094232 1094240)
 - Add patch to fix smdb soft-lockup (rhbz 1082586)
