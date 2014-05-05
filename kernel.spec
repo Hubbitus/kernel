@@ -2225,6 +2225,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May  5 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix some USB on ARM LPAE kernels
+
 * Mon May 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc4.git0.1
 - Linux v3.15-rc4
 - Disable debugging options.
