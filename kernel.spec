@@ -763,6 +763,9 @@ Patch25071: drm-fix-qxl-mode-flags-backport.patch
 #rhbz 1093931
 Patch25073: net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 
+#rhbz 1089545
+Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1478,6 +1481,9 @@ ApplyPatch drm-fix-qxl-mode-flags-backport.patch
 
 #rhbz 1093931
 ApplyPatch net-Start-with-correct-mac_len-in-skb_network_protoc.patch
+
+#rhbz 1089545
+ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon May 05 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_brightness quirk for the ThinkPad T530 (rhbz 1089545)
+
 * Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix TUN performance regression (rhbz 1093931)
 - Add patch to fix HID rmi driver from Benjamin Tissoires (rhbz 1090161)
