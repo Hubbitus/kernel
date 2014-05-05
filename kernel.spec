@@ -1590,6 +1590,10 @@ BuildKernel() {
     if [ -d arch/%{asmarch}/include ]; then
       cp -a --parents arch/%{asmarch}/include $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
     fi
+%ifarch aarch64
+    # arch/arm64/include/asm/xen references arch/arm
+    cp -a --parents arch/arm/include/asm/xen $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
+%endif
     # include the machine specific headers for ARM variants, if available.
 %ifarch %{arm}
     if [ -d arch/%{asmarch}/mach-${Flavour}/include ]; then
@@ -2225,6 +2229,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May 05 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Install arch/arm/include/asm/xen headers on aarch64, since the headers in
+  arch/arm64/include/asm/xen reference them.
+
 * Mon May 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc4.git0.1
 - Linux v3.15-rc4
 - Disable debugging options.
