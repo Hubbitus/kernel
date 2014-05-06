@@ -12,8 +12,14 @@ Summary: The Linux kernel
 # architectures are added.
 %ifarch %{ix86} x86_64
 %global signmodules 1
+%global zipmodules 1
 %else
 %global signmodules 0
+%global zipmodules 0
+%endif
+
+%if %{zipmodules}
+%global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
 # % define buildid .local
@@ -1703,9 +1709,9 @@ BuildKernel() {
 
     # Make sure the files lists start with absolute paths or rpmbuild fails.
     # Also add in the dir entries
-    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/k-d.list > ../kernel${Flavour:+-${Flavour}}-modules.list
-    sed -e 's/^lib*/%dir \/lib/' $RPM_BUILD_ROOT/module-dirs.list > ../kernel${Flavour:+-${Flavour}}-core.list
-    sed -e 's/^lib*/\/lib/' $RPM_BUILD_ROOT/modules.list >> ../kernel${Flavour:+-${Flavour}}-core.list
+    sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/k-d.list > ../kernel${Flavour:+-${Flavour}}-modules.list
+    sed -e 's/^lib*/%dir \/lib/' %{?zipsed} $RPM_BUILD_ROOT/module-dirs.list > ../kernel${Flavour:+-${Flavour}}-core.list
+    sed -e 's/^lib*/\/lib/' %{?zipsed} $RPM_BUILD_ROOT/modules.list >> ../kernel${Flavour:+-${Flavour}}-core.list
 
     # Cleanup
     rm -f $RPM_BUILD_ROOT/k-d.list
@@ -1825,6 +1831,9 @@ popd
     if [ "%{with_up}" -ne "0" ]; then \
       %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
+  fi \
+  if [ "%{zipmodules}" -eq "1" ]; then \
+    find $RPM_BUILD_ROOT/lib/modules/ -type f -name '*.ko' | xargs xz; \
   fi \
 %{nil}
 
