@@ -766,6 +766,9 @@ Patch25073: net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 #rhbz 1089545
 Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
+#rhbz 1082586
+Patch25075: locks-allow-__break_lease-to-sleep-even-when-break_t.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1484,6 +1487,9 @@ ApplyPatch net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 
 #rhbz 1089545
 ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
+#rhbz 1082586
+ApplyPatch locks-allow-__break_lease-to-sleep-even-when-break_t.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix smdb soft-lockup (rhbz 1082586)
+
 * Mon May 05 2014 Hans de Goede <hdegoede@redhat.com>
 - Add use_native_brightness quirk for the ThinkPad T530 (rhbz 1089545)
 
