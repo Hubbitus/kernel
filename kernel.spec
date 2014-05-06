@@ -779,6 +779,14 @@ Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 #rhbz 1067181
 Patch25080: 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
+#CVE-2014-0181 rhbz 1094270 1094265
+Patch25081: net-Fix-ns_capable-check-in-sock_diag_put_filterinfo.patch
+Patch25082: 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
+Patch25083: 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
+Patch25084: 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
+Patch25085: 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
+Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1510,6 +1518,15 @@ ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
 #rhbz 1067181
 ApplyPatch 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
+
+#CVE-2014-0181 rhbz 1094270 1094265
+ApplyPatch net-Fix-ns_capable-check-in-sock_diag_put_filterinfo.patch
+ApplyPatch 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
+ApplyPatch 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
+ApplyPatch 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
+ApplyPatch 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
+ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
+
 
 # END OF PATCH APPLICATIONS
 
@@ -2322,7 +2339,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.3-200
+* Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org> 3.14.3-200
+- CVE-2014-0181 insufficient netlink permission checks (rhbz 1094270 1094265)
+
+* Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> 
 - Linux v3.14.3
 
 * Tue May 06 2014 Hans de Goede <hdegoede@redhat.com>
