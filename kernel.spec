@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -751,7 +751,7 @@ Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
 
-#rhbz 1085582 1085697
+#rhbz 1085582 1085697 1088588
 Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 #rhbz 1074710
@@ -766,6 +766,9 @@ Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
+#rhbz 1090161
+Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
+
 #rhbz 1013466
 Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
@@ -777,6 +780,34 @@ Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patc
 
 #rhbz 696821
 Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
+
+#rhbz 983342 1093120
+Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
+#rhbz 1060327
+Patch25071: drm-fix-qxl-mode-flags-backport.patch
+
+#rhbz 1093931
+Patch25073: net-Start-with-correct-mac_len-in-skb_network_protoc.patch
+
+#rhbz 1089545
+Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
+#rhbz 1082586
+Patch25075: locks-allow-__break_lease-to-sleep-even-when-break_t.patch
+
+#CVE-2014-0196 rhbz 1094232 1094240
+Patch25076: n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
+
+#misc input fixes
+Patch25077: 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
+Patch25078: 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
+
+#rhbz 861573
+Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+
+#rhbz 1067181
+Patch25080: 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1468,6 +1499,8 @@ ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
 ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
+#rhbz 1090161
+ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
 #rhbz 1074235
 ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
@@ -1495,6 +1528,34 @@ ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
 #rhbz 696821
 ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
+
+#rhbz 983342 1093120
+ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+
+#rhbz 1060327
+ApplyPatch drm-fix-qxl-mode-flags-backport.patch
+
+#rhbz 1093931
+ApplyPatch net-Start-with-correct-mac_len-in-skb_network_protoc.patch
+
+#rhbz 1089545
+ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
+#rhbz 1082586
+ApplyPatch locks-allow-__break_lease-to-sleep-even-when-break_t.patch
+
+#CVE-2014-0196 rhbz 1094232 1094240
+ApplyPatch n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
+
+#misc input fixes
+ApplyPatch 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
+ApplyPatch 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
+
+#rhbz 861573
+ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+
+#rhbz 1067181
+ApplyPatch 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2307,6 +2368,40 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.3-200
+- Linux v3.14.3
+
+* Tue May 06 2014 Hans de Goede <hdegoede@redhat.com>
+- Add a patch to fix the Synaptics Touch Pad V 103S found on some keyboard
+  docks for win8 tablets
+- Add a patch to fix the elantech touchpad on Gigabyte U2442 laptops
+- Add a patch to fix backlight control on the Samsung NC210/NC110 (rhbz#861573)
+- Add a patch to fix backlight & wifi on the Asus EEE PC 1015PX (rhbz#1067181)
+
+* Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0196 pty race leading to memory corruption (rhbz 1094232 1094240)
+- Add patch to fix smdb soft-lockup (rhbz 1082586)
+
+* Mon May 05 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_brightness quirk for the ThinkPad T530 (rhbz 1089545)
+
+* Sat May 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix TUN performance regression (rhbz 1093931)
+- Add patch to fix HID rmi driver from Benjamin Tissoires (rhbz 1090161)
+
+* Thu May 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add backported drm qxl fix (rhbz 1060327)
+
+* Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Sync min/max quirk patch with upstream to add a quirk for the ThinkPad L540
+  (rhbz 1088588)
+
+* Thu May  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_backlight quirk for 4 laptops (rhbz 983342 1093120)
+
+* Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3122: mm: fix locking DoS issue (rhbz 1093084 1093076)
+
 * Mon Apr 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.2-200
 - Linux v3.14.2 (rhbz 1067071 1091722 906568)
 

@@ -1,0 +1,119 @@
+Bugzilla: 1060327
+Upstream-status: Queued for 3.16
+
+diff -up linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_crtc_helper.c.dma linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_crtc_helper.c
+--- linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_crtc_helper.c.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_crtc_helper.c	2014-05-01 10:27:07.410210002 +1000
+@@ -120,8 +120,8 @@ static void drm_mode_validate_flag(struc
+  * RETURNS:
+  * Number of modes found on @connector.
+  */
+-int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
+-					    uint32_t maxX, uint32_t maxY)
++static int drm_helper_probe_single_connector_modes_merge_bits(struct drm_connector *connector,
++					    uint32_t maxX, uint32_t maxY, bool merge_type_bits)
+ {
+ 	struct drm_device *dev = connector->dev;
+ 	struct drm_display_mode *mode;
+@@ -173,7 +173,7 @@ int drm_helper_probe_single_connector_mo
+ 	if (count == 0)
+ 		goto prune;
+ 
+-	drm_mode_connector_list_update(connector);
++	drm_mode_connector_list_update(connector, merge_type_bits);
+ 
+ 	if (maxX && maxY)
+ 		drm_mode_validate_size(dev, &connector->modes, maxX,
+@@ -213,8 +213,21 @@ prune:
+ 
+ 	return count;
+ }
++
++int drm_helper_probe_single_connector_modes(struct drm_connector *connector,
++					    uint32_t maxX, uint32_t maxY)
++{
++	return drm_helper_probe_single_connector_modes_merge_bits(connector, maxX, maxY, true);
++}
+ EXPORT_SYMBOL(drm_helper_probe_single_connector_modes);
+ 
++int drm_helper_probe_single_connector_modes_nomerge(struct drm_connector *connector,
++						    uint32_t maxX, uint32_t maxY)
++{
++	return drm_helper_probe_single_connector_modes_merge_bits(connector, maxX, maxY, false);
++}
++EXPORT_SYMBOL(drm_helper_probe_single_connector_modes_nomerge);
++
+ /**
+  * drm_helper_encoder_in_use - check if a given encoder is in use
+  * @encoder: encoder to check
+diff -up linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_modes.c.dma linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_modes.c
+--- linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_modes.c.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/drivers/gpu/drm/drm_modes.c	2014-05-01 10:27:59.015207267 +1000
+@@ -1025,7 +1025,7 @@ EXPORT_SYMBOL(drm_mode_sort);
+  * list and only adds different modes. All modes unverified after this point
+  * will be removed by the prune invalid modes.
+  */
+-void drm_mode_connector_list_update(struct drm_connector *connector)
++void drm_mode_connector_list_update(struct drm_connector *connector, bool merge_type_bits)
+ {
+ 	struct drm_display_mode *mode;
+ 	struct drm_display_mode *pmode, *pt;
+@@ -1041,7 +1041,10 @@ void drm_mode_connector_list_update(stru
+ 				/* if equal delete the probed mode */
+ 				mode->status = pmode->status;
+ 				/* Merge type bits together */
+-				mode->type |= pmode->type;
++				if (merge_type_bits)
++					mode->type |= pmode->type;
++				else
++					mode->type = pmode->type;
+ 				list_del(&pmode->head);
+ 				drm_mode_destroy(connector->dev, pmode);
+ 				break;
+diff -up linux-3.14.2-200.fc20.i686/drivers/gpu/drm/qxl/qxl_display.c.dma linux-3.14.2-200.fc20.i686/drivers/gpu/drm/qxl/qxl_display.c
+--- linux-3.14.2-200.fc20.i686/drivers/gpu/drm/qxl/qxl_display.c.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/drivers/gpu/drm/qxl/qxl_display.c	2014-05-01 10:27:07.411210001 +1000
+@@ -841,7 +841,7 @@ static const struct drm_connector_funcs
+ 	.save = qxl_conn_save,
+ 	.restore = qxl_conn_restore,
+ 	.detect = qxl_conn_detect,
+-	.fill_modes = drm_helper_probe_single_connector_modes,
++	.fill_modes = drm_helper_probe_single_connector_modes_nomerge,
+ 	.set_property = qxl_conn_set_property,
+ 	.destroy = qxl_conn_destroy,
+ };
+diff -up linux-3.14.2-200.fc20.i686/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c.dma linux-3.14.2-200.fc20.i686/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c
+--- linux-3.14.2-200.fc20.i686/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/drivers/gpu/drm/vmwgfx/vmwgfx_kms.c	2014-05-01 10:27:07.411210001 +1000
+@@ -2003,7 +2003,7 @@ int vmw_du_connector_fill_modes(struct d
+ 	if (du->pref_mode)
+ 		list_move(&du->pref_mode->head, &connector->probed_modes);
+ 
+-	drm_mode_connector_list_update(connector);
++	drm_mode_connector_list_update(connector, true);
+ 
+ 	return 1;
+ }
+diff -up linux-3.14.2-200.fc20.i686/include/drm/drm_crtc.h.dma linux-3.14.2-200.fc20.i686/include/drm/drm_crtc.h
+--- linux-3.14.2-200.fc20.i686/include/drm/drm_crtc.h.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/include/drm/drm_crtc.h	2014-05-01 10:27:07.412210001 +1000
+@@ -1033,7 +1033,7 @@ extern int drm_mode_hsync(const struct d
+ extern int drm_mode_vrefresh(const struct drm_display_mode *mode);
+ extern void drm_mode_set_crtcinfo(struct drm_display_mode *p,
+ 				  int adjust_flags);
+-extern void drm_mode_connector_list_update(struct drm_connector *connector);
++extern void drm_mode_connector_list_update(struct drm_connector *connector, bool merge_type_bits);
+ extern int drm_mode_connector_update_edid_property(struct drm_connector *connector,
+ 						struct edid *edid);
+ extern int drm_object_property_set_value(struct drm_mode_object *obj,
+diff -up linux-3.14.2-200.fc20.i686/include/drm/drm_crtc_helper.h.dma linux-3.14.2-200.fc20.i686/include/drm/drm_crtc_helper.h
+--- linux-3.14.2-200.fc20.i686/include/drm/drm_crtc_helper.h.dma	2014-03-31 13:40:15.000000000 +1000
++++ linux-3.14.2-200.fc20.i686/include/drm/drm_crtc_helper.h	2014-05-01 10:27:07.412210001 +1000
+@@ -126,6 +126,7 @@ struct drm_connector_helper_funcs {
+ };
+ 
+ extern int drm_helper_probe_single_connector_modes(struct drm_connector *connector, uint32_t maxX, uint32_t maxY);
++extern int drm_helper_probe_single_connector_modes_nomerge(struct drm_connector *connector, uint32_t maxX, uint32_t maxY);
+ extern void drm_helper_disable_unused_functions(struct drm_device *dev);
+ extern int drm_crtc_helper_set_config(struct drm_mode_set *set);
+ extern bool drm_crtc_helper_set_mode(struct drm_crtc *crtc,

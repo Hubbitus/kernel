@@ -1,0 +1,39 @@
+From f46debb4f324d6ab66782de6ad3b884fbf223ec4 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 1 May 2014 14:20:06 +0200
+Subject: [PATCH 3/4] samsung-laptop: Add broken-acpi-video quirk for
+ NC210/NC110
+
+Reported (and tested) here:
+https://bugzilla.redhat.com/show_bug.cgi?id=861573
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/platform/x86/samsung-laptop.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
+index d1f03005..98f61f6 100644
+--- a/drivers/platform/x86/samsung-laptop.c
++++ b/drivers/platform/x86/samsung-laptop.c
+@@ -1534,6 +1534,16 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
+ 		},
+ 	 .driver_data = &samsung_broken_acpi_video,
+ 	},
++	{
++	 .callback = samsung_dmi_matched,
++	 .ident = "NC210",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "SAMSUNG ELECTRONICS CO., LTD."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "NC210/NC110"),
++		DMI_MATCH(DMI_BOARD_NAME, "NC210/NC110"),
++		},
++	 .driver_data = &samsung_broken_acpi_video,
++	},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(dmi, samsung_dmi_table);
+-- 
+1.9.0
+

@@ -1,0 +1,100 @@
+From 5d5ef0e96f03a975feb67f70d57e55cd502885fe Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Wed, 30 Apr 2014 15:24:19 +0200
+Subject: [PATCH] acpi-video: Add 4 new models to the use_native_backlight dmi
+ list
+
+Acer Aspire V5-171
+https://bugzilla.redhat.com/show_bug.cgi?id=983342
+
+Acer Aspire V5-471G
+Lenovo Yoga 2 11
+Reported-and-tested-by: Vincent Gerris <vgerris@gmail.com>
+
+HP EliteBook 8470p
+https://bugzilla.redhat.com/show_bug.cgi?id=1093120
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+Backport to 3.14, Conflicts: drivers/acpi/video.c, 3.14 is missing the
+Thinkpad Helix entry from master add that while at it.
+---
+ drivers/acpi/video.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
+
+diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
+index b6ba88e..083c89f 100644
+--- a/drivers/acpi/video.c
++++ b/drivers/acpi/video.c
+@@ -491,6 +491,22 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 	},
+ 	{
+ 	 .callback = video_set_use_native_backlight,
++	 .ident = "Lenovo Yoga 2 11",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo Yoga 2 11"),
++		},
++	},
++	{
++	.callback = video_set_use_native_backlight,
++	.ident = "Thinkpad Helix",
++	.matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad Helix"),
++		},
++	},
++	{
++	 .callback = video_set_use_native_backlight,
+ 	 .ident = "Dell Inspiron 7520",
+ 	 .matches = {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+@@ -507,6 +523,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 	},
+ 	{
+ 	 .callback = video_set_use_native_backlight,
++	 .ident = "Acer Aspire V5-171",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "V5-171"),
++		},
++	},
++	{
++	 .callback = video_set_use_native_backlight,
+ 	 .ident = "Acer Aspire V5-431",
+ 	 .matches = {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+@@ -514,6 +538,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 		},
+ 	},
+ 	{
++	 .callback = video_set_use_native_backlight,
++	 .ident = "Acer Aspire V5-471G",
++	 .matches = {
++		DMI_MATCH(DMI_BOARD_VENDOR, "Acer"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "Aspire V5-471G"),
++		},
++	},
++	{
+ 	.callback = video_set_use_native_backlight,
+ 	.ident = "HP ProBook 4340s",
+ 	.matches = {
+@@ -565,6 +597,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 	},
+ 	{
+ 	.callback = video_set_use_native_backlight,
++	.ident = "HP EliteBook 8470p",
++	.matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
++		DMI_MATCH(DMI_PRODUCT_NAME, "HP EliteBook 8470p"),
++		},
++	},
++	{
++	.callback = video_set_use_native_backlight,
+ 	.ident = "HP EliteBook 8780w",
+ 	.matches = {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+-- 
+1.9.0
+
