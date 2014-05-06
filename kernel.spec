@@ -769,6 +769,9 @@ Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 #rhbz 1082586
 Patch25075: locks-allow-__break_lease-to-sleep-even-when-break_t.patch
 
+#CVE-2014-0196 rhbz 1094232 1094240
+Patch25076: n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1490,6 +1493,9 @@ ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
 #rhbz 1082586
 ApplyPatch locks-allow-__break_lease-to-sleep-even-when-break_t.patch
+
+#CVE-2014-0196 rhbz 1094232 1094240
+ApplyPatch n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2303,6 +2309,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0196 pty race leading to memory corruption (rhbz 1094232 1094240)
 - Add patch to fix smdb soft-lockup (rhbz 1082586)
 
 * Mon May 05 2014 Hans de Goede <hdegoede@redhat.com>
