@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -750,9 +750,6 @@ Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patc
 
 #rhbz 696821
 Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
-
-#CVE-2014-3122 rhbz 1093076 1093084
-Patch25069: mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 
 #rhbz 983342 1093120
 Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
@@ -1485,9 +1482,6 @@ ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
 #rhbz 696821
 ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
-
-#CVE-2014-3122 rhbz 1093076 1093084
-ApplyPatch mm-try_to_unmap_cluster-should-lock_page-before-mloc.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
@@ -2328,6 +2322,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.3-200
+- Linux v3.14.3
+
 * Tue May 06 2014 Hans de Goede <hdegoede@redhat.com>
 - Add a patch to fix the Synaptics Touch Pad V 103S found on some keyboard
   docks for win8 tablets
