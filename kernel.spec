@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.1
+%define buildid .pf1.hu.1
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -293,7 +293,7 @@ Summary: The Linux kernel
 # Overrides for generic default options
 
 # only ppc needs a separate smp kernel
-%ifnarch ppc 
+%ifnarch ppc
 %define with_smp 0
 %endif
 
@@ -707,18 +707,8 @@ Patch22000: weird-root-dentry-name-debug.patch
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 # Hubbitus
-# 3 BFQ: http://algo.ing.unimo.it/people/paolo/disk_sched/sources.php
-Patch30001: 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch
-Patch30002: 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch
-Patch30003: 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch
-
-Patch30004: uksm-0.1.2.2-for-v3.13.patch
-
-#? Patch30005: tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2
-
-Patch30006: BFS-kvm-fix.patch
-Patch30007: BFS-3.13-sched-bfs-446.patch
-Patch30008: BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
+# https://pf.natalenko.name/sources/3.14/patch-3.14-pf2.xz
+Patch30001: patch-3.14-pf2.xz
 #Hu My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -731,9 +721,7 @@ Patch30008: BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch30009: BFS-3.13-compile-fix-hu.patch
-
-Patch30010: UKSM-BFS-3.13.9-working-together.patch
+Patch30002: BFS-3.13-compile-fix-hu.patch
 #/ end Hubbitus patches
 
 #rhbz 1051748
@@ -1471,19 +1459,8 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #+Hu
-ApplyPatch 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch
-ApplyPatch 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch
-ApplyPatch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch
-
-ApplyPatch uksm-0.1.2.2-for-v3.13.patch --fuzz=2
-
-ApplyPatch BFS-kvm-fix.patch
-ApplyPatch BFS-3.13-sched-bfs-446.patch
-ApplyPatch BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz
+ApplyPatch patch-3.14-pf1.xz --fuzz=2
 ApplyPatch BFS-3.13-compile-fix-hu.patch
-
-ApplyPatch UKSM-BFS-3.13.9-working-together.patch
-#? ApplyPatch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 --fuzz=2
 #/Hu
 
 #rhbz 1051748
@@ -1498,6 +1475,7 @@ ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
+
 ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
@@ -1571,7 +1549,7 @@ touch .scmversion
 # only deal with configs if we are going to build for the arch
 %ifnarch %nobuildarches
 
-mkdir configs
+mkdir -p configs
 
 %if !%{debugbuildsenabled}
 rm -f kernel-%{version}-*debug.config
@@ -2368,6 +2346,19 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf2.hu.1
+- 3.14.3-200.pf2.hu.1
+- Drop BFS-kvm-fix.patch
+- Step to use -pf patcheset ( https://pf.natalenko.name/forum/index.php?topic=257.0, https://pf.natalenko.name/forum/index.php?topic=258.0
+	http://pf.natalenko.name/sources/3.14/ ) which superseed -ck (with BFS),
+	BFQ, UKSM, TuxOnIce and some other - https://pf.natalenko.name/sources/3.14/patch-3.14-pf2.xz.
+	Patch slightly modified to do not touch NAME in Makefile.
+- Readd BFS-3.13-compile-fix-hu.patch
+- Adjust FTRACE settings by answer for me to try resolve TuxOnIce problem finding ftrace: https://pf.natalenko.name/forum/index.php?topic=257.0
+- Adjust Ulatencyd settings from https://wiki.archlinux.org/index.php/Ulatencyd
+
+Tgit rm 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch uksm-0.1.2.2-for-v3.13.patch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 BFS-kvm-fix.patch BFS-3.13-sched-bfs-446.patch BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz UKSM-BFS-3.13.9-working-together.patch
+
 * Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.14.3-200
 - Linux v3.14.3
 
@@ -2401,6 +2392,7 @@ fi
 
 * Wed Apr 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3122: mm: fix locking DoS issue (rhbz 1093084 1093076)
+
 
 * Mon Apr 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.2-200
 - Linux v3.14.2 (rhbz 1067071 1091722 906568)
@@ -2632,7 +2624,7 @@ fi
 
 * Sat Jan 18 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.12.8-300.hu.1
 - 3.12.8-300.hu.1
-#? - Try experimental PKSM patch ( https://pksm.googlecode.com/files/pksm-v0.2-for-linux3.6.0.patch ) instead of UKSM
+- Try experimental PKSM patch ( https://pksm.googlecode.com/files/pksm-v0.2-for-linux3.6.0.patch ) instead of UKSM
 
 * Wed Jan 15 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.12.8-300
 - Linux v3.12.8
