@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Move isofs to kernel-core
+
 * Fri May 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc4.git4.1
 - Linux v3.15-rc4-320-gafcf0a2d9289
 

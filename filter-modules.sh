@@ -26,7 +26,7 @@ ttydrvs="ipwireless"
 
 usbdrvs="atm wusbcore"
 
-fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus isofs jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs udf ufs"
+fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs udf ufs"
 
 netprots="appletalk atm ax25 batman-adv bluetooth dccp dsa ieee802154 irda l2tp mac80211 mac802154 netrom nfc rds rfkill rose sctp wireless"
 
