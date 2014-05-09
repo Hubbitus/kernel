@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 8
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -671,7 +671,8 @@ Requires(preun): systemd >= 200\
 # We can't let RPM do the dependencies automatic because it'll then pick up\
 # a correct but undesirable perl dependency from the module headers which\
 # isn't required for the kernel proper to function\
-AutoReqProv: no\
+AutoReq: no\
+AutoProv: yes\
 %{nil}
 
 %package headers
@@ -855,7 +856,8 @@ Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-extra-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
-AutoReqProv: no\
+AutoReq: no\
+AutoProv: yes\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
 %{nil}
@@ -874,7 +876,8 @@ Provides: kernel-modules = %{version}-%{release}%{?1:+%{1}}\
 Provides: installonlypkg(kernel-module)\
 Provides: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?1:+%{1}}\
-AutoReqProv: no\
+AutoReq: no\
+AutoProv: yes\
 %description -n kernel%{?variant}%{?1:-%{1}}-modules\
 This package provides commonly used kernel modules for the %{?2:%{2}-}core kernel package.\
 %{nil}
@@ -2228,6 +2231,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed May 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git2.8
+- Enable autoprov for kernel module Provides (rhbz 1058331)
+- Enable xz compressed modules (from Kyle McMartin)
+
 * Tue May 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Don't try and merge local config changes on arches we aren't building
 
