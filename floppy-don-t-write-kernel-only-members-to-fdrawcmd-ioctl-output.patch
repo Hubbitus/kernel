@@ -1,0 +1,38 @@
+Bugzilla: 1096195
+Upstream-status: 3.15 and queued for stable
+
+From 2145e15e0557a01b9195d1c7199a1b92cb9be81f Mon Sep 17 00:00:00 2001
+From: Matthew Daley <mattd@bugfuzz.com>
+Date: Mon, 28 Apr 2014 19:05:21 +1200
+Subject: floppy: don't write kernel-only members to FDRAWCMD ioctl output
+
+From: Matthew Daley <mattd@bugfuzz.com>
+
+commit 2145e15e0557a01b9195d1c7199a1b92cb9be81f upstream.
+
+Do not leak kernel-only floppy_raw_cmd structure members to userspace.
+This includes the linked-list pointer and the pointer to the allocated
+DMA space.
+
+Signed-off-by: Matthew Daley <mattd@bugfuzz.com>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/block/floppy.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+--- a/drivers/block/floppy.c
++++ b/drivers/block/floppy.c
+@@ -3053,7 +3053,10 @@ static int raw_cmd_copyout(int cmd, void
+ 	int ret;
+ 
+ 	while (ptr) {
+-		ret = copy_to_user(param, ptr, sizeof(*ptr));
++		struct floppy_raw_cmd cmd = *ptr;
++		cmd.next = NULL;
++		cmd.kernel_data = NULL;
++		ret = copy_to_user(param, &cmd, sizeof(cmd));
+ 		if (ret)
+ 			return -EFAULT;
+ 		param += sizeof(struct floppy_raw_cmd);

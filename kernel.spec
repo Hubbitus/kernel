@@ -790,6 +790,10 @@ Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-m
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
 
+#CVE-2014-1738 CVE-2014-1737 rhbz 1094299 1096195
+Patch25088: floppy-ignore-kernel-only-members-in-fdrawcmd-ioctl-input.patch
+Patch25089: floppy-don-t-write-kernel-only-members-to-fdrawcmd-ioctl-output.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1532,6 +1536,10 @@ ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-me
 
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
+
+#CVE-2014-1738 CVE-2014-1737 rhbz 1094299 1096195
+ApplyPatch floppy-ignore-kernel-only-members-in-fdrawcmd-ioctl-input.patch
+ApplyPatch floppy-don-t-write-kernel-only-members-to-fdrawcmd-ioctl-output.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2344,6 +2352,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 09 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-1738 CVE-2014-1737 floppy: priv esclation (rhbz 1094299 1096195)
+
 * Thu May 08 2014 Neil Horman <nhorman@redhat.com>
 - Fix dma unmap error in jme driver (rhbz 1082266)
 
