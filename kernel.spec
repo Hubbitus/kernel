@@ -61,7 +61,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -625,9 +625,6 @@ Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 
 #rhbz 1090161
 Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
-
-#rhbz 1089689
-Patch25065: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 #rhbz 1090746
 Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
@@ -1343,9 +1340,6 @@ ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
 
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
-
-#rhbz 1089689
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 #rhbz 1090746
 ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
@@ -2223,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc4.git4.1
+- Linux v3.15-rc4-320-gafcf0a2d9289
+
 * Thu May 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc4.git3.1
 - Linux v3.15-rc4-298-g9f1eb57dc706
 
