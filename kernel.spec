@@ -2217,6 +2217,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May 10 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Marvell Dove support
+- Minor ARM cleanups
+
 * Sat May 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git0.1
 - Linux v3.15-rc5
 - Disable debugging options.
