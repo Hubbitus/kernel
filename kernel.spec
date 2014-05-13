@@ -34,7 +34,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -1194,12 +1194,14 @@ make -f %{SOURCE19} config-release
 make -f %{SOURCE20} VERSION=%{version} configs
 
 # Merge in any user-provided local config option changes
+%ifnarch %nobuildarches
 for i in %{all_arch_configs}
 do
   mv $i $i.tmp
   ./merge.pl %{SOURCE1000} $i.tmp > $i
   rm $i.tmp
 done
+%endif
 
 ApplyPatch makefile-after_link.patch
 
@@ -2217,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue May 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Don't try and merge local config changes on arches we aren't building
+
 * Tue May 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git2.1
 - Linux v3.15-rc5-77-g14186fea0cb0
 
