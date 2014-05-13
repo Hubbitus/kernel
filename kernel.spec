@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -709,20 +709,8 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1046495
-Patch25044: iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-Patch25036: KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
-
-#rhbz 1074235
-Patch25055: lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
-
 #CVE-2014-2851 rhbz 1086730 1087420
 Patch25059: net-ipv4-current-group_info-should-be-put-after-using.patch
-
-#rhbz 1085582 1085697 1088588
-Patch25060: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 #rhbz 1074710
 Patch25061: mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
@@ -742,9 +730,6 @@ Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 #rhbz 1013466
 Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1089689
-Patch25066: 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
-
 #rhbz 1090746
 Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
 
@@ -762,12 +747,6 @@ Patch25073: net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 
 #rhbz 1089545
 Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
-
-#rhbz 1082586
-Patch25075: locks-allow-__break_lease-to-sleep-even-when-break_t.patch
-
-#CVE-2014-0196 rhbz 1094232 1094240
-Patch25076: n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
 
 #misc input fixes
 Patch25077: 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
@@ -789,10 +768,6 @@ Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-m
 
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
-
-#CVE-2014-1738 CVE-2014-1737 rhbz 1094299 1096195
-Patch25088: floppy-ignore-kernel-only-members-in-fdrawcmd-ioctl-input.patch
-Patch25089: floppy-don-t-write-kernel-only-members-to-fdrawcmd-ioctl-output.patch
 
 # CVE-2014-3144 CVE-2014-3145 rhbz 1096775, 1096784
 Patch25090: filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
@@ -1461,12 +1436,6 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
-#rhbz 1046495
-ApplyPatch iwlwifi-dvm-take-mutex-when-sending-SYNC-BT-config-command.patch
-
-#CVE-2014-0155 rhbz 1081589 1085016
-ApplyPatch KVM-ioapic-fix-assignment-of-ioapic-rtc_status-pending_eoi.patch
-
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
@@ -1474,14 +1443,8 @@ ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
-#rhbz 1074235
-ApplyPatch lib-percpu_counter.c-fix-bad-percpu-counter-state-du.patch
-
 #CVE-2014-2851 rhbz 1086730 1087420
 ApplyPatch net-ipv4-current-group_info-should-be-put-after-using.patch
-
-#rhbz 1085582 1085697
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-T431s-L440-.patch
 
 #rhbz 1074710
 ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
@@ -1491,9 +1454,6 @@ ApplyPatch USB-serial-ftdi_sio-add-id-for-Brainboxes-serial-car.patch
 
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
-#rhbz 1089689
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-ThinkPad-Edge-E431.patch
 
 #rhbz 1090746
 ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
@@ -1512,12 +1472,6 @@ ApplyPatch net-Start-with-correct-mac_len-in-skb_network_protoc.patch
 
 #rhbz 1089545
 ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
-
-#rhbz 1082586
-ApplyPatch locks-allow-__break_lease-to-sleep-even-when-break_t.patch
-
-#CVE-2014-0196 rhbz 1094232 1094240
-ApplyPatch n_tty-Fix-n_tty_write-crash-when-echoing-in-raw-mode.patch
 
 #misc input fixes
 ApplyPatch 0001-hid-quirks-Add-NO_INIT_REPORTS-quirk-for-Synaptics-T.patch
@@ -1539,10 +1493,6 @@ ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-me
 
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
-
-#CVE-2014-1738 CVE-2014-1737 rhbz 1094299 1096195
-ApplyPatch floppy-ignore-kernel-only-members-in-fdrawcmd-ioctl-input.patch
-ApplyPatch floppy-don-t-write-kernel-only-members-to-fdrawcmd-ioctl-output.patch
 
 # CVE-2014-3144 CVE-2014-3145 rhbz 1096775, 1096784
 ApplyPatch filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
@@ -2358,6 +2308,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 13 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.14.4
+
 * Mon May 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3144/CVE-2014-3145 filter: prevent nla from peeking beyond eom (rhbz 1096775, 1096784)
 
