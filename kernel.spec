@@ -772,6 +772,9 @@ Patch25087: jme-fix-dma-unmap-error.patch
 # CVE-2014-3144 CVE-2014-3145 rhbz 1096775, 1096784
 Patch25090: filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
 
+#rhbz 1096436
+Patch25091: 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1496,6 +1499,9 @@ ApplyPatch jme-fix-dma-unmap-error.patch
 
 # CVE-2014-3144 CVE-2014-3145 rhbz 1096775, 1096784
 ApplyPatch filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
+
+#rhbz 1096436
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2308,6 +2314,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed May 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Add synaptics min/max quirk patch for the ThinkPad W540 (rhbz 1096436)
+
 * Tue May 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.4-200
 - Linux v3.14.4
 
