@@ -1,0 +1,11 @@
+--- a/kernel/power/tuxonice_atomic_copy.c	2014-05-08 15:47:08.867317138 +0400
++++ b/kernel/power/tuxonice_atomic_copy.c	2014-05-08 15:48:36.951897961 +0400
+@@ -31,6 +31,8 @@
+ 
+ unsigned long extra_pd1_pages_used;
+ 
++int function_trace_stop;
++
+ /**
+  * free_pbe_list - free page backup entries used by the atomic copy code.
+  * @list:	List to free.

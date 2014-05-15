@@ -1,6 +1,6 @@
 clog
-*.xz
-*.bz2
-*.rpm
+#*.xz
+#*.bz2
+#*.rpm
 *.orig
 kernel-[23].*/

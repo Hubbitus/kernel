@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .pf1.hu.1
+%define buildid .hu.4.tuxonice
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -706,10 +706,23 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-# Hubbitus
-# https://pf.natalenko.name/sources/3.14/patch-3.14-pf2.xz
-Patch30001: patch-3.14-pf2.xz
-#Hu My patch to resolve compile problem:
+# Hubbitus patches
+# UKSM
+Patch30001: http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
+
+# BFS
+Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
+
+# BFQ
+Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
+Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
+Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.14.2-2014-04-28.patch.bz2
+
+# My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
 #                 from include/linux/notifier.h:15,
@@ -721,8 +734,10 @@ Patch30001: patch-3.14-pf2.xz
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch30002: BFS-3.13-compile-fix-hu.patch
-#/ end Hubbitus patches
+Patch30007: BFS-3.13-compile-fix-hu.patch
+# My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
+Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#/end Hubbitus patches
 
 #rhbz 1051748
 Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
@@ -1123,15 +1138,17 @@ fi 2>/dev/null
 patch_command='patch -p1 -F1 -s'
 ApplyPatch()
 {
-  local patch=$1
+#Hu basename to allo use URLs in patches
+  local patch=$( basename $1 )
+  local patchURL=$1
   shift
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
 %if !%{using_upstream_branch}
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-3." ] ; then
-      echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
+      echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
@@ -1458,10 +1475,25 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#+Hu
-ApplyPatch patch-3.14-pf1.xz --fuzz=2
-ApplyPatch BFS-3.13-compile-fix-hu.patch
-#/Hu
+#+Hubbitus patches
+#? ApplyPatch patch-3.14-pf1.xz --fuzz=2
+
+#? ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
+
+# BFS
+#? ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
+#? ApplyPatch BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.14.2-2014-04-28.patch.bz2 --fuzz=2
+ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#/Hubbitus patches
 
 #rhbz 1051748
 ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
@@ -1664,7 +1696,11 @@ BuildKernel() {
 
     make -s ARCH=$Arch oldnoconfig >/dev/null
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
+#Hu: KBUILD_MODPOST_WARN=1 allow build modules with unknown symbols
+#Hu    %{make} -s KBUILD_MODPOST_WARN=1 ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
+# Verbose modules build variant
+#    %{make} ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
 %ifarch %{arm} aarch64
     %{make} -s ARCH=$Arch V=1 dtbs
@@ -2346,7 +2382,19 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf2.hu.1
+* Tue May 13 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.4.tuxonice_only
+- Try build only with TuxOnIce patch (it seams some components may conflict according to https://pf.natalenko.name/forum/index.php?topic=258).
+
+* Thu May 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.3
+- Add Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch with hope it fix problem with tuxonice module
+
+* Wed May 7 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf1.hu.2
+- Failed attempt build 3.14.3-200.pf1.hu.1 with pf patchset. Forum: https://pf.natalenko.name/forum/index.php?topic=257.0 . Will try maintain upstream patches separately (this kernel.spec commited in git for further tries).
+- Tweak scripts to allow use URLs in patches.
+- Adjust FTRACE settings by answer for me to try resolve TuxOnIce problem finding ftrace: https://pf.natalenko.name/forum/index.php?topic=257.0
+- Adjust Ulatencyd settings from https://wiki.archlinux.org/index.php/Ulatencyd
+
+* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf1.hu.1
 - 3.14.3-200.pf2.hu.1
 - Drop BFS-kvm-fix.patch
 - Step to use -pf patcheset ( https://pf.natalenko.name/forum/index.php?topic=257.0, https://pf.natalenko.name/forum/index.php?topic=258.0
