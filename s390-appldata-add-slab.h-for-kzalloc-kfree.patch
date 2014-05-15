@@ -1,0 +1,28 @@
+From 1eb5e8b7449ff017c2f358d97bd2fcd4eb87cc53 Mon Sep 17 00:00:00 2001
+From: Jeff Mahoney <jeffm@suse.com>
+Date: Sun, 27 Apr 2014 17:35:43 -0400
+Subject: s390/appldata: add slab.h for kzalloc/kfree
+
+This fixes:
+arch/s390/appldata/appldata_mem.c:135:2: error: implicit declaration of function 'kzalloc' [-Werror=implicit-function-declaration]
+arch/s390/appldata/appldata_mem.c:141:3: error: implicit declaration of function 'kfree' [-Werror=implicit-function-declaration]
+
+Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+Signed-off-by: Heiko Carstens <heiko.carstens@de.ibm.com>
+Signed-off-by: Martin Schwidefsky <schwidefsky@de.ibm.com>
+
+diff --git a/arch/s390/appldata/appldata_mem.c b/arch/s390/appldata/appldata_mem.c
+index 42be537..edcf2a7 100644
+--- a/arch/s390/appldata/appldata_mem.c
++++ b/arch/s390/appldata/appldata_mem.c
+@@ -13,6 +13,7 @@
+ #include <linux/kernel_stat.h>
+ #include <linux/pagemap.h>
+ #include <linux/swap.h>
++#include <linux/slab.h>
+ #include <asm/io.h>
+ 
+ #include "appldata.h"
+-- 
+cgit v0.10.1
+

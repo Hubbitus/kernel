@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 8
+%global baserelease 9
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -640,6 +640,9 @@ Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 #rhbz 1089545
 Patch25070: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
+Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1360,6 +1363,8 @@ ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 #rhbz 1089545
 ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
+
+ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2231,6 +2236,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git2.9
+- Fix build fail on s390x
+
 * Wed May 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git2.8
 - Enable autoprov for kernel module Provides (rhbz 1058331)
 - Enable xz compressed modules (from Kyle McMartin)
