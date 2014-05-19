@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 9
+%global baserelease 10
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -402,8 +402,10 @@ Release: %{pkg_release}
 # SET %%nobuildarches (ABOVE) INSTEAD
 ExclusiveArch: %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
+%ifnarch %{nobuildarches}
 Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
 Requires: kernel-%{?variant:%{variant}-}modules-uname-r = %{KVERREL}%{?variant}
+%endif
 
 
 #
@@ -2236,6 +2238,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May 19 2014 Dan Horák <dan@danny.cz>
+- kernel metapackage shouldn't depend on subpackages we don't build
+
 * Thu May 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git2.9
 - Fix build fail on s390x
 
