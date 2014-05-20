@@ -775,6 +775,9 @@ Patch25090: filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
 #rhbz 1096436
 Patch25091: 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
 
+#rhbz 1051668
+Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1502,6 +1505,9 @@ ApplyPatch filter-prevent-nla-extensions-to-peek-beyond-the-end.patch
 
 #rhbz 1096436
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
+
+#rhbz 1051668
+ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2314,6 +2320,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue May 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to add new elantech touchpad support (rhbz 1051668)
+
 * Wed May 14 2014 Hans de Goede <hdegoede@redhat.com>
 - Add synaptics min/max quirk patch for the ThinkPad W540 (rhbz 1096436)
 

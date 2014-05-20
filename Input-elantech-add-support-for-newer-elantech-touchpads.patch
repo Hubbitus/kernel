@@ -1,0 +1,32 @@
+Bugzilla: 1051668
+Upstream-status: 3.15
+
+From ae4bedf0679d99f0a9b80a7ea9b8dd205de05d06 Mon Sep 17 00:00:00 2001
+From: Jordan Rife <jrife0@gmail.com>
+Date: Tue, 22 Apr 2014 17:44:51 -0700
+Subject: Input: elantech - add support for newer elantech touchpads
+
+Newer elantech touchpads are not recognized by the current driver, since it
+fails to detect their firmware version number. This prevents more advanced
+touchpad features from being usable such as two-finger scrolling. This
+patch allows newer touchpads to be detected and be fully functional. Tested
+on Sony Vaio SVF13N17PXB.
+
+Signed-off-by: Jordan Rife <jrife0@gmail.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+diff --git a/drivers/input/mouse/elantech.c b/drivers/input/mouse/elantech.c
+index ef1cf52..088d354 100644
+--- a/drivers/input/mouse/elantech.c
++++ b/drivers/input/mouse/elantech.c
+@@ -1353,6 +1353,7 @@ static int elantech_set_properties(struct elantech_data *etd)
+ 		case 6:
+ 		case 7:
+ 		case 8:
++		case 9:
+ 			etd->hw_version = 4;
+ 			break;
+ 		default:
+-- 
+cgit v0.10.1
+
