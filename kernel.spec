@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -620,8 +620,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-Patch25062: gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
-
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
@@ -634,14 +632,8 @@ Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
-#rhbz 1090746
-Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
-
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-#rhbz 1089545
-Patch25070: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
 Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
@@ -1352,19 +1344,11 @@ ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
-ApplyPatch gpio-ich-set-regs-and-reglen-for-i3100-and-ich6-chipset.patch
-
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 1090746
-ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
-
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-#rhbz 1089545
-ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
 
 ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
@@ -2238,6 +2222,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed May 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git4.1
+- Linux v3.15-rc5-270-gfba69f042ad9
+
 * Tue May 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc5.git3.1
 - Linux v3.15-rc5-157-g60b5f90d0fac
 
