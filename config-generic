@@ -4962,7 +4962,10 @@ CONFIG_RTL8192E=m
 # CONFIG_R8188EU is not set
 # CONFIG_R8821AE is not set
 # CONFIG_RTL8192U is not set
-# CONFIG_R8723AU is not set
+CONFIG_R8723AU=m # Jes Sorensen maintains this (rhbz 1100162)
+# CONFIG_8723AU_AP_MODE is not set
+# CONFIG_8723AU_P2P is not set
+# CONFIG_8723AU_BT_COEXIST is not set
 # CONFIG_FB_SM7XX is not set
 # CONFIG_SPECTRA is not set
 # CONFIG_EASYCAP is not set
