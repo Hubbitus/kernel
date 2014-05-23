@@ -676,11 +676,10 @@ Patch15000: nowatchdog-on-virt.patch
 # ARM
 
 # lpae
-Patch21001: arm-lpae-ax88796.patch
-Patch21004: arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 
 # ARM omap
 Patch21010: arm-omap-load-tfp410.patch
+Patch21011: arm-beagle.patch
 
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
@@ -1327,13 +1326,11 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #
 # ARM
 #
-ApplyPatch arm-lpae-ax88796.patch
-ApplyPatch arm-sound-soc-samsung-dma-avoid-another-64bit-division.patch
 ApplyPatch arm-omap-load-tfp410.patch
+ApplyPatch arm-beagle.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-tegra-paz00-panel-dts.patch
 ApplyPatch arm-imx6-utilite.patch
-
 
 #
 # bugfixes to drivers and filesystems
@@ -2320,6 +2317,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri May 23 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Re-add rebased Beagle patch set for 3.14 (RHBZ 1094768)
+- Drop some no longer needed ARM patches
+
 * Tue May 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport patch to add new elantech touchpad support (rhbz 1051668)
 
