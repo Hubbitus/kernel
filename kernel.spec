@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2222,6 +2222,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed May 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git2.1
+- Linux v3.15-rc7-53-g4efdedca9326
+
 * Wed May 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git1.1
 - Linux v3.15-rc7-40-gcd79bde29f00
 - Reenable debugging options.
