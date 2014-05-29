@@ -638,6 +638,9 @@ Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 
+# CVE-2014-3917 rhbz 1102571 1102715
+Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1351,6 +1354,9 @@ ApplyPatch disable-libdw-unwind-on-non-x86.patch
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
 ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
+
+# CVE-2014-3917 rhbz 1102571 1102715
+ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2222,6 +2228,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 29 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3917 DoS with syscall auditing (rhbz 1102571 1102715)
+
 * Wed May 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git2.1
 - Linux v3.15-rc7-53-g4efdedca9326
 
