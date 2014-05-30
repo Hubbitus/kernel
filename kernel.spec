@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2228,6 +2228,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git3.1
+- Linux v3.15-rc7-79-gfe45736f4134
+- Disable CARL9170 on ppc64le
+
 * Thu May 29 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3917 DoS with syscall auditing (rhbz 1102571 1102715)
 
