@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2228,6 +2228,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git4.1
+- Linux v3.15-rc7-102-g1487385edb55
+
 * Fri May 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git3.1
 - Linux v3.15-rc7-79-gfe45736f4134
 - Disable CARL9170 on ppc64le
