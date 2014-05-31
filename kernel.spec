@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -640,6 +640,8 @@ Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
+
+Patch25094: dentry-d_lockref-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1357,6 +1359,8 @@ ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 # CVE-2014-3917 rhbz 1102571 1102715
 ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
+
+ApplyPatch dentry-d_lockref-fix.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2228,6 +2232,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat May 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git4.2
+- Add patch to fix dentry lockdep splat
+
 * Sat May 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc7.git4.1
 - Linux v3.15-rc7-102-g1487385edb55
 

@@ -1,0 +1,17 @@
+---
+ fs/dcache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/dcache.c b/fs/dcache.c
+index bce851dc03ef..be2bea834bf4 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -553,7 +553,7 @@ again:
+ 	}
+ 	rcu_read_unlock();
+ 	if (parent != dentry)
+-		spin_lock(&dentry->d_lock);
++		spin_lock_nested(&dentry->d_lock, DENTRY_D_LOCK_NESTED);
+ 	else
+ 		parent = NULL;
+ 	return parent;
