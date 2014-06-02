@@ -2228,6 +2228,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun  2 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM MMC config updates
+
 * Mon Jun 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git0.1
 - Linux v3.15-rc8
 - Disable debugging options.
