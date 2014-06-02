@@ -283,9 +283,9 @@ index 0ff5407..ba76e57 100644
 +	  are used by the module signature checking to reject loading of modules
 +	  signed with a blacklisted key.
 +
- menuconfig MODULES
- 	bool "Enable loadable module support"
- 	option modules
+ config PROFILING
+	bool "Profiling support"
+	help
 diff --git a/kernel/module_signing.c b/kernel/module_signing.c
 index 0b6b870..0a29b40 100644
 --- a/kernel/module_signing.c
