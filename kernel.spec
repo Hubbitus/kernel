@@ -641,6 +641,8 @@ Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
+Patch26000: perf-lib64.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -723,7 +725,7 @@ This package provides debug information for the perf package.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|XXX' -o perf-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/perf(\.debug)?|.*%%{_libexecdir}/perf-core/.*|.*%%{_libdir}/traceevent/plugins/.*|XXX' -o perf-debuginfo.list}
 
 %package -n python-perf
 Summary: Python bindings for apps which will manipulate perf events
@@ -1358,6 +1360,8 @@ ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 # CVE-2014-3917 rhbz 1102571 1102715
 ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
+ApplyPatch perf-lib64.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1893,7 +1897,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT install-bin
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT MULTILIBDIR=%{_lib} install-bin install-traceevent-plugins
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -2092,6 +2096,8 @@ fi
 %files -n perf
 %defattr(-,root,root)
 %{_bindir}/perf
+%dir %{_libdir}/traceevent/plugins
+%{_libdir}/traceevent/plugins/*
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
@@ -2229,6 +2235,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git1.1
+- Add patch to install libtraceevent plugins from Kyle McMartin
 - Linux v3.15-rc8-53-gcae61ba37b4c
 - Reenable debugging options.
 
