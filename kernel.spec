@@ -643,6 +643,9 @@ Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 Patch26000: perf-lib64.patch
 
+# Patch series from Hans for various backlight and platform driver fixes
+Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1361,6 +1364,9 @@ ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 ApplyPatch perf-lib64.patch
+
+# Patch series from Hans for various backlight and platform driver fixes
+ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 
 # END OF PATCH APPLICATIONS
 
