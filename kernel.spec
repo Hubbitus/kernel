@@ -653,7 +653,10 @@ Patch26006: acpi-video-Don-t-register-acpi_video_resume-notifier.patch
 Patch26007: acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
 Patch26008: acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
 Patch26009: acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
-
+Patch26010: nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
+Patch26011: backlight-Add-backlight-device-un-registration-notif.patch
+Patch26012: acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
+Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1383,6 +1386,10 @@ ApplyPatch acpi-video-Don-t-register-acpi_video_resume-notifier.patch
 ApplyPatch acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
 ApplyPatch acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
 ApplyPatch acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
+ApplyPatch nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
+ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
+ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
+ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 
 # END OF PATCH APPLICATIONS
 

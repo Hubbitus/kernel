@@ -1,0 +1,45 @@
+Bugzilla: 1093171
+Upstream-status: Queued for 3.16
+
+From 7ac976d0109433d1ad0812f4f6889a904d9a0c40 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Mon, 2 Jun 2014 17:41:10 +0200
+Subject: [PATCH 13/14] acpi-video: Add use native backlight quirk for the
+ ThinkPad W530
+
+Like all of the other *30 ThinkPad models, the W530 has a broken acpi-video
+backlight control. Note in order for this to actually fix things on the
+ThinkPad W530 the commit titled:
+"nouveau: Don't check acpi_video_backlight_support() before registering backlight"
+is also needed.
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1093171
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/acpi/video.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
+index ab7cd65ce21e..dcb0ef4c22f6 100644
+--- a/drivers/acpi/video.c
++++ b/drivers/acpi/video.c
+@@ -468,6 +468,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 	},
+ 	{
+ 	 .callback = video_set_use_native_backlight,
++	 .ident = "ThinkPad W530",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad W530"),
++		},
++	},
++	{
++	 .callback = video_set_use_native_backlight,
+ 	 .ident = "ThinkPad X230",
+ 	 .matches = {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+-- 
+1.9.0
+
