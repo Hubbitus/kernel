@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -458,6 +458,7 @@ Source94: filter-ppc.sh
 Source95: filter-ppc64.sh
 Source96: filter-ppc64le.sh
 Source97: filter-s390x.sh
+Source98: filter-ppc64p7.sh
 Source99: filter-modules.sh
 %define modsign_cmd %{SOURCE18}
 
@@ -2266,6 +2267,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add filter-ppc64p7.sh because ppc64p7 is an entirely separate RPM arch
+
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git1.2
 - Fixes from Hans de Goede for backlight and platform drivers on various
   machines.  (rhbz 1025690 1012674 1093171 1097436 861573)
