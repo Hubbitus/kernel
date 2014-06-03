@@ -768,6 +768,9 @@ Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
+#rhbz 1099857
+Patch25095: team-fix-mtu-setting.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1487,6 +1490,9 @@ ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
 # CVE-2014-3917 rhbz 1102571 1102715
 ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
+
+#rhbz 1099857
+ApplyPatch team-fix-mtu-setting.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2306,7 @@ fi
 #                 ||     ||
 %changelog
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add fix for team MTU settings from Jiri Pirko (rhbz 1099857)
 - Backport fix for issues with Quagga introduced by CVE fixes (rhbz 1097684)
 
 * Mon Jun 02 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.5-200
