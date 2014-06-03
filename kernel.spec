@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2266,6 +2266,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git1.2
+- Fixes from Hans de Goede for backlight and platform drivers on various
+  machines.  (rhbz 1025690 1012674 1093171 1097436 861573)
+
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git1.1
 - Add patch to install libtraceevent plugins from Kyle McMartin
 - Linux v3.15-rc8-53-gcae61ba37b4c
