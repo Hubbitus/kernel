@@ -657,6 +657,8 @@ Patch26010: nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
 Patch26011: backlight-Add-backlight-device-un-registration-notif.patch
 Patch26012: acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
+Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1390,6 +1392,7 @@ ApplyPatch nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
 ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
 ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
+ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 # END OF PATCH APPLICATIONS
 
