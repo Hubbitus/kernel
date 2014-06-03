@@ -647,6 +647,8 @@ Patch26000: perf-lib64.patch
 Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
+Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1371,6 +1373,8 @@ ApplyPatch perf-lib64.patch
 ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
+ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 
 # END OF PATCH APPLICATIONS
 
