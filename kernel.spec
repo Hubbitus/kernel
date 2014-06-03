@@ -646,6 +646,7 @@ Patch26000: perf-lib64.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1369,6 +1370,7 @@ ApplyPatch perf-lib64.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 
 # END OF PATCH APPLICATIONS
 
