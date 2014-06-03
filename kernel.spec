@@ -649,6 +649,10 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
+Patch26006: acpi-video-Don-t-register-acpi_video_resume-notifier.patch
+Patch26007: acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
+Patch26008: acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
+Patch26009: acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1375,6 +1379,10 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
+ApplyPatch acpi-video-Don-t-register-acpi_video_resume-notifier.patch
+ApplyPatch acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
+ApplyPatch acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
+ApplyPatch acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
 
 # END OF PATCH APPLICATIONS
 
