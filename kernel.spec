@@ -753,6 +753,8 @@ Patch25083: 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-pac
 Patch25084: 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
 Patch25085: 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
 Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
+#rhbz 1094265 1097684
+Patch25094: netlink-Only-check-file-credentials-for-implicit-des.patch
 
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
@@ -1471,6 +1473,8 @@ ApplyPatch 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-pack
 ApplyPatch 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
 ApplyPatch 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
 ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
+#rhbz 1094265 1097684
+ApplyPatch netlink-Only-check-file-credentials-for-implicit-des.patch
 
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
@@ -2295,6 +2299,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport fix for issues with Quagga introduced by CVE fixes (rhbz 1097684)
+
 * Mon Jun 02 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.5-200
 - Linux v3.14.5
 
