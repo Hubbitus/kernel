@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2267,6 +2267,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jun 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git2.1
+- Linux v3.15-rc8-58-gd2cfd3105094
+
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add filter-ppc64p7.sh because ppc64p7 is an entirely separate RPM arch
 
