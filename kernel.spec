@@ -774,6 +774,14 @@ Patch25095: team-fix-mtu-setting.patch
 # CVE-2014-3940 rhbz 1104097 1105042
 Patch25096: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
+# CVE-2014-3153 rhbz 1103626 1105609
+Patch25097: futex-add-another-early-deadlock-detection-check.patch
+Patch25098: futex-prevent-attaching-to-kernel-threads.patch
+Patch25099: futex-prevent-requeue-pi-on-same-futex.patch-futex-forbid-uaddr-uaddr2-in-futex_requeue-...-requeue_pi-1.patch
+Patch25100: futex-validate-atomic-acquisition-in-futex_lock_pi_atomic.patch
+Patch25101: futex-always-cleanup-owner-tid-in-unlock_pi.patch
+Patch25102: futex-make-lookup_pi_state-more-robust.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1499,6 +1507,14 @@ ApplyPatch team-fix-mtu-setting.patch
 
 # CVE-2014-3940 rhbz 1104097 1105042
 ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
+
+# CVE-2014-3153 rhbz 1103626 1105609
+ApplyPatch futex-add-another-early-deadlock-detection-check.patch
+ApplyPatch futex-prevent-attaching-to-kernel-threads.patch
+ApplyPatch futex-prevent-requeue-pi-on-same-futex.patch-futex-forbid-uaddr-uaddr2-in-futex_requeue-...-requeue_pi-1.patch
+ApplyPatch futex-validate-atomic-acquisition-in-futex_lock_pi_atomic.patch
+ApplyPatch futex-always-cleanup-owner-tid-in-unlock_pi.patch
+ApplyPatch futex-make-lookup_pi_state-more-robust.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2312,6 +2328,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Jun 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3153 futex: pi futexes requeue issue (rhbz 1103626 1105609)
 - CVE-2014-3940 missing check during hugepage migration (rhbz 1104097 1105042)
 
 * Tue Jun 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
