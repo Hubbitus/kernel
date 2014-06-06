@@ -642,6 +642,9 @@ Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
+# CVE-2014-3940 rhbz 1104097 1105042
+Patch25094: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
+
 Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
@@ -1394,6 +1397,10 @@ ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
 ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+
+# CVE-2014-3940 rhbz 1104097 1105042
+ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2268,6 +2275,7 @@ fi
 #                                    ||     ||
 %changelog
 * Fri Jun 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git4.1
+- CVE-2014-3940 missing check during hugepage migration (rhbz 1104097 1105042)
 - Linux v3.15-rc8-81-g951e273060d1
 
 * Thu Jun 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git3.1
