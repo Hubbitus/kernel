@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -723,9 +723,6 @@ Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 #rhbz 1013466
 Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1090746
-Patch25067: ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
-
 #rhbz 696821
 Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
 
@@ -735,17 +732,8 @@ Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 #rhbz 1060327
 Patch25071: drm-fix-qxl-mode-flags-backport.patch
 
-#rhbz 1089545
-Patch25074: 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
-
-#misc input fixes
-Patch25078: 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
-
 #rhbz 861573
 Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1067181
-Patch25080: 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
 #CVE-2014-0181 rhbz 1094270 1094265
 Patch25082: 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
@@ -759,9 +747,6 @@ Patch25094: netlink-Only-check-file-credentials-for-implicit-des.patch
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
 
-#rhbz 1096436
-Patch25091: 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
-
 #rhbz 1051668
 Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
@@ -773,14 +758,6 @@ Patch25095: team-fix-mtu-setting.patch
 
 # CVE-2014-3940 rhbz 1104097 1105042
 Patch25096: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
-
-# CVE-2014-3153 rhbz 1103626 1105609
-Patch25097: futex-add-another-early-deadlock-detection-check.patch
-Patch25098: futex-prevent-attaching-to-kernel-threads.patch
-Patch25099: futex-prevent-requeue-pi-on-same-futex.patch-futex-forbid-uaddr-uaddr2-in-futex_requeue-...-requeue_pi-1.patch
-Patch25100: futex-validate-atomic-acquisition-in-futex_lock_pi_atomic.patch
-Patch25101: futex-always-cleanup-owner-tid-in-unlock_pi.patch
-Patch25102: futex-make-lookup_pi_state-more-robust.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1457,9 +1434,6 @@ ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
 #rhbz 1013466
 ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
 
-#rhbz 1090746
-ApplyPatch ACPICA-Tables-Fix-bad-pointer-issue-in-acpi_tb_parse_root_table.patch
-
 #rhbz 696821
 ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
 
@@ -1469,17 +1443,8 @@ ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 #rhbz 1060327
 ApplyPatch drm-fix-qxl-mode-flags-backport.patch
 
-#rhbz 1089545
-ApplyPatch 0001-acpi-video-Add-use_native_backlight-quirks-for-Think.patch
-
-#misc input fixes
-ApplyPatch 0002-elantech-Fix-elantech-on-Gigabyte-U2442.patch
-
 #rhbz 861573
 ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1067181
-ApplyPatch 0004-acpi-blacklist-Add-dmi_enable_osi_linux-quirk-for-As.patch
 
 #CVE-2014-0181 rhbz 1094270 1094265
 ApplyPatch 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
@@ -1493,9 +1458,6 @@ ApplyPatch netlink-Only-check-file-credentials-for-implicit-des.patch
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
 
-#rhbz 1096436
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-the-ThinkPad-W540.patch
-
 #rhbz 1051668
 ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
@@ -1507,14 +1469,6 @@ ApplyPatch team-fix-mtu-setting.patch
 
 # CVE-2014-3940 rhbz 1104097 1105042
 ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
-
-# CVE-2014-3153 rhbz 1103626 1105609
-ApplyPatch futex-add-another-early-deadlock-detection-check.patch
-ApplyPatch futex-prevent-attaching-to-kernel-threads.patch
-ApplyPatch futex-prevent-requeue-pi-on-same-futex.patch-futex-forbid-uaddr-uaddr2-in-futex_requeue-...-requeue_pi-1.patch
-ApplyPatch futex-validate-atomic-acquisition-in-futex_lock_pi_atomic.patch
-ApplyPatch futex-always-cleanup-owner-tid-in-unlock_pi.patch
-ApplyPatch futex-make-lookup_pi_state-more-robust.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2327,6 +2281,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jun 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.6-200
+- Linux v3.14.6
+
 * Fri Jun 06 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3153 futex: pi futexes requeue issue (rhbz 1103626 1105609)
 - CVE-2014-3940 missing check during hugepage migration (rhbz 1104097 1105042)
