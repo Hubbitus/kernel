@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 121.el7
+%define pkgrelease 123.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -1464,6 +1464,17 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Mon May 05 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-123.el7]
+- [mm] rmap: try_to_unmap_cluster() should lock_page() before mlocking (Larry Woodman) [1078349] {CVE-2014-3122}
+- [mm] huge_memory: Fix cpuset cgroups so all pages for a task remain on correct node (Larry Woodman) [1076613]
+- [mm] mprotect: fix oops in change_pmd_range called from task_numa_work (Rik van Riel) [1085050]
+
+* Thu May 01 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-122.el7]
+- [security] device_cgroup: check if exception removal is allowed (Aristeu Rozanski) [1086057]
+- [security] device_cgroup: rework device access check and rule checking (Aristeu Rozanski) [1086057]
+- [fs] autofs: fix lockref lookup (Ian Kent) [1083815]
+- [mei] me: do not load the driver if the FW doesn't support MEI interface (Prarit Bhargava) [1082789]
+
 * Tue Apr 08 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-121.el7]
 - [virt] vhost/net: fix total length when packets are too short ("Michael S. Tsirkin") [1064446] {CVE-2014-0077}
 - [virt] vhost/net: validate vhost_get_vq_desc return value ("Michael S. Tsirkin") [1070940] {CVE-2014-0055}
