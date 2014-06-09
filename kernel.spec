@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.4.tuxonice
+%define buildid .hu.1.bfq.bfs.uksm.tuxonice
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -1474,16 +1474,17 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #+Hubbitus patches
 #? ApplyPatch patch-3.14-pf1.xz --fuzz=2
 
-#? ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
+# UKSM
+ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
 
 # BFS
-#? ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
-#? ApplyPatch BFS-3.13-compile-fix-hu.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
+ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
 
 # TuxOnIce
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
@@ -2374,6 +2375,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu May 15 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.4-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.4-200.hu.1.bfq.bfs.uksm.tuxonice
+
 * Wed May 14 2014 Hans de Goede <hdegoede@redhat.com>
 - Add synaptics min/max quirk patch for the ThinkPad W540 (rhbz 1096436)
 
@@ -2389,16 +2393,13 @@ fi
 * Thu May 08 2014 Neil Horman <nhorman@redhat.com>
 - Fix dma unmap error in jme driver (rhbz 1082266)
 
-* Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org> 3.14.3-200
-- CVE-2014-0181 insufficient netlink permission checks (rhbz 1094270 1094265)
-
-* Tue May 13 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.4.tuxonice_only
+* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.4.tuxonice_only
 - Try build only with TuxOnIce patch (it seams some components may conflict according to https://pf.natalenko.name/forum/index.php?topic=258).
 
-* Thu May 8 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.3
+* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.hu.3
 - Add Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch with hope it fix problem with tuxonice module
 
-* Wed May 7 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf1.hu.2
+* Tue May 6 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.3-200.pf1.hu.2
 - Failed attempt build 3.14.3-200.pf1.hu.1 with pf patchset. Forum: https://pf.natalenko.name/forum/index.php?topic=257.0 . Will try maintain upstream patches separately (this kernel.spec commited in git for further tries).
 - Tweak scripts to allow use URLs in patches.
 - Adjust FTRACE settings by answer for me to try resolve TuxOnIce problem finding ftrace: https://pf.natalenko.name/forum/index.php?topic=257.0
@@ -2416,6 +2417,9 @@ fi
 - Adjust Ulatencyd settings from https://wiki.archlinux.org/index.php/Ulatencyd
 
 Tgit rm 0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r2-3.13.patch 0002-block-introduce-the-BFQ-v7r2-I-O-sched-for-3.13.patch 0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r2-for-3.13.0.patch uksm-0.1.2.2-for-v3.13.patch tuxonice-for-linux-3.11.9-2013-11-22.patch.bz2 BFS-kvm-fix.patch BFS-3.13-sched-bfs-446.patch BFS-enable_additional_cpu_optimizations_for_gcc.patch.gz UKSM-BFS-3.13.9-working-together.patch
+
+* Tue May 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.3-200
+- CVE-2014-0181 insufficient netlink permission checks (rhbz 1094270 1094265)
 
 * Tue May 06 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.14.3
