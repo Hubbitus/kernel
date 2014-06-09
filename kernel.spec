@@ -2274,6 +2274,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun  9 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable USB_EHCI_HCD_ORION to fix USB on Marvell (fix boot for some devices)
+
 * Fri Jun 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-0.rc8.git4.1
 - CVE-2014-3940 missing check during hugepage migration (rhbz 1104097 1105042)
 - Linux v3.15-rc8-81-g951e273060d1
