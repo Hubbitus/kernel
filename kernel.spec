@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -46,7 +46,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 14
+%define base_sublevel 15
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -641,9 +641,6 @@ Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
-
-# CVE-2014-3940 rhbz 1104097 1105042
-Patch25094: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
 Patch26000: perf-lib64.patch
 
@@ -1397,10 +1394,6 @@ ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
 ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-
-# CVE-2014-3940 rhbz 1104097 1105042
-ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2274,6 +2267,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-1
+- Linux v3.15
+- Disable debugging options.
+
 * Mon Jun  9 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable USB_EHCI_HCD_ORION to fix USB on Marvell (fix boot for some devices)
 
