@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.el7
+%define pkgrelease 123.1.2.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -1464,6 +1464,9 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Wed Jun 4 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.1.2.el7]
+- [tty] n_tty: Fix n_tty_write crash when echoing in raw mode (Aristeu Rozanski) [1094241 1094242] {CVE-2014-0196}
+
 * Mon May 05 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-123.el7]
 - [mm] rmap: try_to_unmap_cluster() should lock_page() before mlocking (Larry Woodman) [1078349] {CVE-2014-3122}
 - [mm] huge_memory: Fix cpuset cgroups so all pages for a task remain on correct node (Larry Woodman) [1076613]
