@@ -2342,6 +2342,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 9 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.6-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.6-200.hu.1.bfq.bfs.uksm.tuxonice
+
 * Sat Jun 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.6-200
 - Linux v3.14.6
 
