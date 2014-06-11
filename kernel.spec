@@ -766,6 +766,9 @@ Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 #rhbz 1099761
 Patch25099: NFS-populate-net-in-mount-data-when-remounting.patch
 
+#rhbz 1106856
+Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1483,6 +1486,9 @@ ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
 #rhbz 1099761
 ApplyPatch NFS-populate-net-in-mount-data-when-remounting.patch
+
+#rhbz 1106856
+ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix fstrim on dm-thin volume data (rhbz 1106856)
 - Fix NFS NULL pointer deref with ipv6 (rhbz 1099761)
 - Fix promisc mode on certain e1000e cards (rhbz 1064516)
 - Fix i915 backlight issue on gen4 (rhbz 1094066)
