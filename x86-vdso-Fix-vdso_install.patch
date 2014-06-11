@@ -1,0 +1,111 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.6.212 with SMTP id d20csp275722oaa;
+        Wed, 11 Jun 2014 09:20:25 -0700 (PDT)
+X-Received: by 10.69.19.225 with SMTP id gx1mr6471089pbd.34.1402503625308;
+        Wed, 11 Jun 2014 09:20:25 -0700 (PDT)
+Return-Path: <luto@amacapital.net>
+Received: from bastion.fedoraproject.org (bastion02.fedoraproject.org. [209.132.181.3])
+        by mx.google.com with ESMTP id ql2si38457915pbb.240.2014.06.11.09.20.24
+        for <jwboyer@gmail.com>;
+        Wed, 11 Jun 2014 09:20:25 -0700 (PDT)
+Received-SPF: softfail (google.com: domain of transitioning luto@amacapital.net does not designate 209.132.181.3 as permitted sender) client-ip=209.132.181.3;
+Authentication-Results: mx.google.com;
+       spf=softfail (google.com: domain of transitioning luto@amacapital.net does not designate 209.132.181.3 as permitted sender) smtp.mail=luto@amacapital.net
+Received: by bastion02.phx2.fedoraproject.org (Postfix)
+	id ABE9740A20; Wed, 11 Jun 2014 16:20:24 +0000 (UTC)
+Delivered-To: jwboyer@fedoraproject.org
+Received: from mx1.redhat.com (ext-mx14.extmail.prod.ext.phx2.redhat.com [10.5.110.19])
+	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id 9199C40A1F
+	for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 16:20:24 +0000 (UTC)
+Received: from mail-pd0-f182.google.com (mail-pd0-f182.google.com [209.85.192.182])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s5BGKMOu006187
+	for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 12:20:22 -0400
+Received: by mail-pd0-f182.google.com with SMTP id y13so1508044pdi.41
+        for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 09:20:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:in-reply-to:references;
+        bh=fvSn8VazUxkz9ExMYKy6+VgDXUnYm2e2axImee41iYo=;
+        b=doKgULGvb83kqKC2GoYr96Mlccfs3qcAuUmxMaHHgsoaLVoIpjQHWAR5Ljlf1urgNH
+         5dpvJa3vFGXcfv0Vqz/23JTrdN80HDpaTWO/nqYRXsgAL8pv/eeqQSbcDCEmN7u+cxjE
+         oQN4uemKozS3d+oz85NkvcKfaNo9TClMYfVfUfmyTw/ozP5mwB3r7W1ETQtzX9JVvlTy
+         SMn54//MfdI8OLFUHIDCkm/wRcZWVTByQGV0KWNw0e6M4e5b9K1QdMrc6JRggwjb83Ac
+         Jcmkw8T0QAUEMcPJb9RG4FlSWnpWNibDkLv5JQQXBjkkJWr15hyDSAfSsA+oZZRtTIpA
+         nBeg==
+X-Gm-Message-State: ALoCoQkMXf8ZMZ5uLDoOV8k+pACZwfbQeckbP3vuvgRzInhcXkweeCIrAi3AC/TDzSbLfaNVjprH
+X-Received: by 10.69.31.97 with SMTP id kl1mr6531199pbd.162.1402503622428;
+        Wed, 11 Jun 2014 09:20:22 -0700 (PDT)
+Received: from localhost (50-76-60-73-ip-static.hfc.comcastbusiness.net. [50.76.60.73])
+        by mx.google.com with ESMTPSA id ga1sm75742069pbb.82.2014.06.11.09.20.21
+        for <multiple recipients>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 11 Jun 2014 09:20:21 -0700 (PDT)
+From: Andy Lutomirski <luto@amacapital.net>
+To: "H. Peter Anvin" <hpa@zytor.com>, Josh Boyer <jwboyer@fedoraproject.org>
+Cc: Michal Marek <mmarek@suse.cz>, linux-kbuild@vger.kernel.org,
+        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@amacapital.net>
+Subject: [PATCH 2/2] x86,vdso: Fix vdso_install
+Date: Wed, 11 Jun 2014 09:20:07 -0700
+Message-Id: <fe51e9f5c338d33b1a8b20813441538df5e17add.1402503408.git.luto@amacapital.net>
+X-Mailer: git-send-email 1.9.3
+In-Reply-To: <cover.1402503408.git.luto@amacapital.net>
+References: <5398749B.4090209@zytor.com>
+ <cover.1402503408.git.luto@amacapital.net>
+In-Reply-To: <cover.1402503408.git.luto@amacapital.net>
+References: <cover.1402503408.git.luto@amacapital.net>
+X-RedHat-Spam-Score: -2.01  (BAYES_00,DCC_REPUT_13_19,RCVD_IN_DNSWL_NONE,SPF_PASS,URIBL_BLOCKED)
+X-Scanned-By: MIMEDefang 2.68 on 10.5.110.19
+
+Rather than monkeying with barely-comprehensible static pattern
+rules, just use an explicit loop.
+
+Signed-off-by: Andy Lutomirski <luto@amacapital.net>
+---
+ arch/x86/vdso/Makefile | 20 +++++++-------------
+ 1 file changed, 7 insertions(+), 13 deletions(-)
+
+diff --git a/arch/x86/vdso/Makefile b/arch/x86/vdso/Makefile
+index 9769df0..b1c70cc 100644
+--- a/arch/x86/vdso/Makefile
++++ b/arch/x86/vdso/Makefile
+@@ -9,11 +9,6 @@ VDSOX32-$(CONFIG_X86_X32_ABI)	:= y
+ VDSO32-$(CONFIG_X86_32)		:= y
+ VDSO32-$(CONFIG_COMPAT)		:= y
+ 
+-vdso-install-$(VDSO64-y)	+= vdso.so
+-vdso-install-$(VDSOX32-y)	+= vdsox32.so
+-vdso-install-$(VDSO32-y)	+= $(vdso32-images)
+-
+-
+ # files to link into the vdso
+ vobjs-y := vdso-note.o vclock_gettime.o vgetcpu.o
+ 
+@@ -176,15 +171,14 @@ VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=sysv) \
+ GCOV_PROFILE := n
+ 
+ #
+-# Install the unstripped copy of vdso*.so listed in $(vdso-install-y).
++# Install the unstripped copies of vdso*.so listed in $(vdso-install-y).
+ #
+-quiet_cmd_vdso_install = INSTALL $@
+-      cmd_vdso_install = cp $(obj)/$@.dbg $(MODLIB)/vdso/$@
+-$(vdso-install-y): %.so: $(obj)/%.so.dbg FORCE
+-	@mkdir -p $(MODLIB)/vdso
+-	$(call cmd,vdso_install)
++quiet_cmd_vdso_install = INSTALL $(sofile)
++      cmd_vdso_install = cp $(obj)/$(sofile).dbg $(MODLIB)/vdso/$(sofile)
+ 
+-PHONY += vdso_install $(vdso-install-y)
+-vdso_install: $(vdso-install-y)
++PHONY += vdso_install
++vdso_install: $(vdso_img_sodbg:%=$(obj)/%) FORCE
++	@mkdir -p $(MODLIB)/vdso
++	@$(foreach sofile,$(vdso_img_sodbg:%.dbg=%),$(call recipe-cmd,vdso_install);)
+ 
+ clean-files := vdso32-syscall* vdso32-sysenter* vdso32-int80*
+-- 
+1.9.3
+

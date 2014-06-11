@@ -1,7 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard
 
-From ffe1ee94d526900ce1e5191cdd38934477dd209a Mon Sep 17 00:00:00 2001
+From ab0f460f8349c7ccb400b2dc8937c0682c8a0f47 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH] hibernate: Disable in a signed modules environment
@@ -19,7 +19,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.com>
  3 files changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index b26f5f1..e65228b 100644
+index df88d55dc436..5c5834d7708b 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
 @@ -28,6 +28,8 @@
@@ -31,7 +31,7 @@ index b26f5f1..e65228b 100644
  
  #include "power.h"
  
-@@ -632,6 +634,10 @@ int hibernate(void)
+@@ -639,6 +641,10 @@ int hibernate(void)
  {
  	int error;
  
@@ -42,7 +42,7 @@ index b26f5f1..e65228b 100644
  	lock_system_sleep();
  	/* The snapshot device should not be opened while we're running */
  	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
-@@ -723,7 +729,7 @@ static int software_resume(void)
+@@ -731,7 +737,7 @@ static int software_resume(void)
  	/*
  	 * If the user said "noresume".. bail out early.
  	 */
@@ -51,7 +51,7 @@ index b26f5f1..e65228b 100644
  		return 0;
  
  	/*
-@@ -889,6 +895,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -897,6 +903,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
  	int i;
  	char *start = buf;
  
@@ -63,7 +63,7 @@ index b26f5f1..e65228b 100644
  	for (i = HIBERNATION_FIRST; i <= HIBERNATION_MAX; i++) {
  		if (!hibernation_modes[i])
  			continue;
-@@ -923,6 +934,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -931,6 +942,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
  	char *p;
  	int mode = HIBERNATION_INVALID;
  
@@ -74,7 +74,7 @@ index b26f5f1..e65228b 100644
  	len = p ? p - buf : n;
  
 diff --git a/kernel/power/main.c b/kernel/power/main.c
-index 1d1bf63..300f300 100644
+index 573410d6647e..f5201093adc4 100644
 --- a/kernel/power/main.c
 +++ b/kernel/power/main.c
 @@ -15,6 +15,7 @@
@@ -86,7 +86,7 @@ index 1d1bf63..300f300 100644
  #include "power.h"
  
 @@ -301,7 +302,11 @@ static ssize_t state_show(struct kobject *kobj, struct kobj_attribute *attr,
- 	}
+ 
  #endif
  #ifdef CONFIG_HIBERNATION
 -	s += sprintf(s, "%s\n", "disk");
@@ -99,7 +99,7 @@ index 1d1bf63..300f300 100644
  	if (s != buf)
  		/* convert the last space to a newline */
 diff --git a/kernel/power/user.c b/kernel/power/user.c
-index 15cb72f..fa85ed5 100644
+index efe99dee9510..5f5d1026f1e2 100644
 --- a/kernel/power/user.c
 +++ b/kernel/power/user.c
 @@ -25,6 +25,7 @@
@@ -111,5 +111,5 @@ index 15cb72f..fa85ed5 100644
  #include <asm/uaccess.h>
  
 -- 
-1.8.3.1
+1.9.3
 

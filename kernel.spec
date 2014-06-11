@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -542,8 +542,6 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
-Patch390: defaults-acpi-video.patch
-
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
 
@@ -606,7 +604,6 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 # ARM i.MX6
 
 # ARM sunxi (AllWinner)
-Patch21025: 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -624,20 +621,8 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 1048314
-Patch25048: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
-#rhbz 1089583
-Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
-
-#rhbz 1090161
-Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
-
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
-
 
 # CVE-2014-3917 rhbz 1102571 1102715
 Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
@@ -650,15 +635,11 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-Patch26006: acpi-video-Don-t-register-acpi_video_resume-notifier.patch
-Patch26007: acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
-Patch26008: acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
-Patch26009: acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
-Patch26010: nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
-Patch26011: backlight-Add-backlight-device-un-registration-notif.patch
-Patch26012: acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+Patch26015: kbuild-Add-recipe-cmd-an-at-less-cmd-variant.patch
+Patch26016: x86-vdso-Fix-vdso_install.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1253,7 +1234,6 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # ARM
 #
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1274,7 +1254,6 @@ ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 # WMI
 
 # ACPI
-ApplyPatch defaults-acpi-video.patch
 
 #
 # PCI
@@ -1359,20 +1338,11 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 
 ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
-#rhbz 1048314
-ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-#rhbz 1089583
-ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
-#rhbz 1090161
-ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
-
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
 # CVE-2014-3917 rhbz 1102571 1102715
 ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
@@ -1385,15 +1355,11 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-ApplyPatch acpi-video-Don-t-register-acpi_video_resume-notifier.patch
-ApplyPatch acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
-ApplyPatch acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
-ApplyPatch acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
-ApplyPatch nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
-ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
-ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+ApplyPatch kbuild-Add-recipe-cmd-an-at-less-cmd-variant.patch
+ApplyPatch x86-vdso-Fix-vdso_install.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2267,6 +2233,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git1.1
+- Linux v3.15-7218-g3f17ea6dea8b
+- Reenable debugging options.
+
 * Mon Jun 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.0-1
 - Linux v3.15
 - Disable debugging options.

@@ -27,6 +27,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_FAULT_INJECTION_DEBUG_FS=y/# CONFIG_FAULT_INJECTION_DEBUG_FS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_FAULT_INJECTION_STACKTRACE_FILTER=y/# CONFIG_FAULT_INJECTION_STACKTRACE_FILTER is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_SG=y/# CONFIG_DEBUG_SG is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_DEBUG_PI_LIST=y/# CONFIG_DEBUG_PI_LIST is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_WRITECOUNT=y/# CONFIG_DEBUG_WRITECOUNT is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS=y/# CONFIG_DEBUG_OBJECTS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_OBJECTS_FREE=y/# CONFIG_DEBUG_OBJECTS_FREE is not set/' config-nodebug
