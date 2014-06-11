@@ -763,6 +763,9 @@ Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.pa
 Patch25097: e1000e-Fix-SHRA-register-access-for-82579.patch
 Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
+#rhbz 1099761
+Patch25099: NFS-populate-net-in-mount-data-when-remounting.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1477,6 +1480,9 @@ ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.pat
 #rhbz 1064516
 ApplyPatch e1000e-Fix-SHRA-register-access-for-82579.patch
 ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
+
+#rhbz 1099761
+ApplyPatch NFS-populate-net-in-mount-data-when-remounting.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2296,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFS NULL pointer deref with ipv6 (rhbz 1099761)
 - Fix promisc mode on certain e1000e cards (rhbz 1064516)
 - Fix i915 backlight issue on gen4 (rhbz 1094066)
 - Linux v3.14.7
