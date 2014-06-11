@@ -1,0 +1,113 @@
+Bugzilla: 1094066
+Upstream-status: Sent for 3.16 and CC'd to stable
+
+Return-Path: intel-gfx-bounces@lists.freedesktop.org
+Received: from zmta02.collab.prod.int.phx2.redhat.com (LHLO
+ zmta02.collab.prod.int.phx2.redhat.com) (10.5.81.9) by
+ zmail15.collab.prod.int.phx2.redhat.com with LMTP; Mon, 9 Jun 2014 11:25:31
+ -0400 (EDT)
+Received: from int-mx13.intmail.prod.int.phx2.redhat.com (int-mx13.intmail.prod.int.phx2.redhat.com [10.5.11.26])
+	by zmta02.collab.prod.int.phx2.redhat.com (Postfix) with ESMTP id 096281200BD;
+	Mon,  9 Jun 2014 11:25:31 -0400 (EDT)
+Received: from mx1.redhat.com (ext-mx15.extmail.prod.ext.phx2.redhat.com [10.5.110.20])
+	by int-mx13.intmail.prod.int.phx2.redhat.com (8.14.4/8.14.4) with ESMTP id s59FPUv0027350;
+	Mon, 9 Jun 2014 11:25:30 -0400
+Received: from gabe.freedesktop.org (gabe.freedesktop.org [131.252.210.177])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s59FPTet021179;
+	Mon, 9 Jun 2014 11:25:29 -0400
+Received: from gabe.freedesktop.org (localhost [127.0.0.1])
+	by gabe.freedesktop.org (Postfix) with ESMTP id 7B8736E587;
+	Mon,  9 Jun 2014 08:25:28 -0700 (PDT)
+X-Original-To: intel-gfx@lists.freedesktop.org
+Delivered-To: intel-gfx@lists.freedesktop.org
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by gabe.freedesktop.org (Postfix) with ESMTP id D28006E587
+ for <intel-gfx@lists.freedesktop.org>; Mon,  9 Jun 2014 08:25:27 -0700 (PDT)
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+ by fmsmga102.fm.intel.com with ESMTP; 09 Jun 2014 08:24:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="4.98,1002,1392192000"; d="scan'208";a="552705861"
+Received: from jnikula-mobl1.fi.intel.com (HELO localhost) ([10.237.72.185])
+ by fmsmga002.fm.intel.com with ESMTP; 09 Jun 2014 08:24:35 -0700
+From: Jani Nikula <jani.nikula@intel.com>
+To: intel-gfx@lists.freedesktop.org
+Date: Mon,  9 Jun 2014 18:24:34 +0300
+Message-Id: <1402327474-27930-1-git-send-email-jani.nikula@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Cc: jani.nikula@intel.com, Marc Milgram <mmilgram@redhat.com>,
+        Stable <stable@vger.kernel.org>, mcy@lm7.fr
+Subject: [Intel-gfx] [PATCH] drm/i915: set backlight duty cycle after
+	backlight enable for gen4
+X-BeenThere: intel-gfx@lists.freedesktop.org
+X-Mailman-Version: 2.1.15
+Precedence: list
+List-Id: Intel graphics driver community testing & development
+ <intel-gfx.lists.freedesktop.org>
+List-Unsubscribe: <http://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <http://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <http://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+X-RedHat-Spam-Score: -5.25  (BAYES_00,DCC_REPUT_00_12,RCVD_IN_DNSWL_MED,RP_MATCHES_RCVD,URIBL_BLOCKED)
+X-Scanned-By: MIMEDefang 2.68 on 10.5.11.26
+X-Scanned-By: MIMEDefang 2.68 on 10.5.110.20
+
+For reasons I can't claim to fully understand gen4 seems to require
+backlight duty cycle setting after the backlight has been enabled, or
+else black screen follows. I don't have documentation for the correct
+sequence on gen4 either. Confirmed on Dell Latitude D630 and MacBook4,1.
+
+This fixes a regression introduced by
+commit b35684b8fa94e04f55fd38bf672b737741d2f9e2
+Author: Jani Nikula <jani.nikula@intel.com>
+Date:   Thu Nov 14 12:13:41 2013 +0200
+
+    drm/i915: do full backlight setup at enable time
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=75791
+Reported-and-tested-by: mcy@lm7.fr
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=79423
+Reported-and-tested-by: Marc Milgram <mmilgram@redhat.com>
+Cc: Stable <stable@vger.kernel.org> # 3.14+
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+---
+ drivers/gpu/drm/i915/intel_panel.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_panel.c b/drivers/gpu/drm/i915/intel_panel.c
+index 5e6c888b4928..38a98570d10c 100644
+--- a/drivers/gpu/drm/i915/intel_panel.c
++++ b/drivers/gpu/drm/i915/intel_panel.c
+@@ -798,9 +798,6 @@ static void i965_enable_backlight(struct intel_connector *connector)
+ 	ctl = freq << 16;
+ 	I915_WRITE(BLC_PWM_CTL, ctl);
+ 
+-	/* XXX: combine this into above write? */
+-	intel_panel_actually_set_backlight(connector, panel->backlight.level);
+-
+ 	ctl2 = BLM_PIPE(pipe);
+ 	if (panel->backlight.combination_mode)
+ 		ctl2 |= BLM_COMBINATION_MODE;
+@@ -809,6 +806,8 @@ static void i965_enable_backlight(struct intel_connector *connector)
+ 	I915_WRITE(BLC_PWM_CTL2, ctl2);
+ 	POSTING_READ(BLC_PWM_CTL2);
+ 	I915_WRITE(BLC_PWM_CTL2, ctl2 | BLM_PWM_ENABLE);
++
++	intel_panel_actually_set_backlight(connector, panel->backlight.level);
+ }
+ 
+ static void vlv_enable_backlight(struct intel_connector *connector)
+-- 
+1.9.1
+
+_______________________________________________
+Intel-gfx mailing list
+Intel-gfx@lists.freedesktop.org
+http://lists.freedesktop.org/mailman/listinfo/intel-gfx

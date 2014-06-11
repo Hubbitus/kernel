@@ -756,6 +756,9 @@ Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 #rhbz 1099857
 Patch25095: team-fix-mtu-setting.patch
 
+#rhbz 1094066
+Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1463,6 +1466,9 @@ ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 #rhbz 1099857
 ApplyPatch team-fix-mtu-setting.patch
+
+#rhbz 1094066
+ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2276,6 +2282,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix i915 backlight issue on gen4 (rhbz 1094066)
 - Linux v3.14.7
 
 * Sat Jun 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.6-200
