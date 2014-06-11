@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -755,9 +755,6 @@ Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 #rhbz 1099857
 Patch25095: team-fix-mtu-setting.patch
-
-# CVE-2014-3940 rhbz 1104097 1105042
-Patch25096: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1466,9 +1463,6 @@ ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 #rhbz 1099857
 ApplyPatch team-fix-mtu-setting.patch
-
-# CVE-2014-3940 rhbz 1104097 1105042
-ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2281,6 +2275,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Linux v3.14.7
+
 * Sat Jun 07 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.6-200
 - Linux v3.14.6
 
