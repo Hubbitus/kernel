@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -638,7 +638,6 @@ Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-Patch26015: kbuild-Add-recipe-cmd-an-at-less-cmd-variant.patch
 Patch26016: x86-vdso-Fix-vdso_install.patch
 
 # END OF PATCH DEFINITIONS
@@ -1358,7 +1357,6 @@ ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-ApplyPatch kbuild-Add-recipe-cmd-an-at-less-cmd-variant.patch
 ApplyPatch x86-vdso-Fix-vdso_install.patch
 
 # END OF PATCH APPLICATIONS
@@ -2233,6 +2231,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git3.1
+- Linux v3.15-7378-g14208b0ec569
+
 * Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git2.1
 - Linux v3.15-7283-gda85d191f58a
 
