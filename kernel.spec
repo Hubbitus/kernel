@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -623,9 +623,6 @@ Patch25063: disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-# CVE-2014-3917 rhbz 1102571 1102715
-Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 Patch26000: perf-lib64.patch
 
@@ -1342,9 +1339,6 @@ ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
-# CVE-2014-3917 rhbz 1102571 1102715
-ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
 
 ApplyPatch perf-lib64.patch
 
@@ -2231,6 +2225,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git4.1
+- Linux v3.15-7926-gd53b47c08d8f
+
 * Thu Jun 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git3.1
 - Linux v3.15-7378-g14208b0ec569
 

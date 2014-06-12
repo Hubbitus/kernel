@@ -1,72 +1,79 @@
                                                                                                                                                                                                                                                                
 Delivered-To: jwboyer@gmail.com
-Received: by 10.76.6.212 with SMTP id d20csp286438oaa;
-        Wed, 11 Jun 2014 12:25:34 -0700 (PDT)
-X-Received: by 10.66.66.135 with SMTP id f7mr16103670pat.22.1402514734508;
-        Wed, 11 Jun 2014 12:25:34 -0700 (PDT)
+Received: by 10.76.6.212 with SMTP id d20csp344695oaa;
+        Thu, 12 Jun 2014 08:28:19 -0700 (PDT)
+X-Received: by 10.52.117.16 with SMTP id ka16mr607162vdb.72.1402586899259;
+        Thu, 12 Jun 2014 08:28:19 -0700 (PDT)
 Return-Path: <luto@amacapital.net>
 Received: from bastion.fedoraproject.org (bastion02.fedoraproject.org. [209.132.181.3])
-        by mx.google.com with ESMTP id px17si7599032pab.171.2014.06.11.12.25.34
+        by mx.google.com with ESMTP id av9si41982084pbd.28.2014.06.12.08.28.18
         for <jwboyer@gmail.com>;
-        Wed, 11 Jun 2014 12:25:34 -0700 (PDT)
+        Thu, 12 Jun 2014 08:28:19 -0700 (PDT)
 Received-SPF: softfail (google.com: domain of transitioning luto@amacapital.net does not designate 209.132.181.3 as permitted sender) client-ip=209.132.181.3;
 Authentication-Results: mx.google.com;
        spf=softfail (google.com: domain of transitioning luto@amacapital.net does not designate 209.132.181.3 as permitted sender) smtp.mail=luto@amacapital.net
 Received: by bastion02.phx2.fedoraproject.org (Postfix)
-	id E8FA440A1B; Wed, 11 Jun 2014 19:25:33 +0000 (UTC)
+	id 99AB440A0C; Thu, 12 Jun 2014 15:28:18 +0000 (UTC)
 Delivered-To: jwboyer@fedoraproject.org
 Received: from mx1.redhat.com (ext-mx11.extmail.prod.ext.phx2.redhat.com [10.5.110.16])
-	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id C7A2B409CE
-	for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 19:25:33 +0000 (UTC)
-Received: from mail-pb0-f41.google.com (mail-pb0-f41.google.com [209.85.160.41])
-	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s5BJPWY6031412
-	for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 15:25:32 -0400
-Received: by mail-pb0-f41.google.com with SMTP id ma3so134149pbc.14
-        for <jwboyer@fedoraproject.org>; Wed, 11 Jun 2014 12:25:32 -0700 (PDT)
+	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id 004DA409E2
+	for <jwboyer@fedoraproject.org>; Thu, 12 Jun 2014 15:28:17 +0000 (UTC)
+Received: from mail-pb0-f53.google.com (mail-pb0-f53.google.com [209.85.160.53])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id s5CFSGU5021153
+	for <jwboyer@fedoraproject.org>; Thu, 12 Jun 2014 11:28:17 -0400
+Received: by mail-pb0-f53.google.com with SMTP id uo5so852395pbc.40
+        for <jwboyer@fedoraproject.org>; Thu, 12 Jun 2014 08:28:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20130820;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=3SQxyOCkOEd7ZqBxGm7GVdRdWte9s/+lnDgnWxAd/KE=;
-        b=aDS8HAiLCK/Rp4I/5iUikYimi8LKsU7iI7K+lCuBGaFVgUY6pa4zykb8A2q/aJWuZY
-         UDJbBhP0gnZ+xlKkVrRVa9iCwYAJHHf/Ipdidjs0lwFVTlSZuyxXR61vFdRhgN2HFtl9
-         AHx95u6UKn2KLoVxtRU6ZiYMMpVacmmQlHh6iZcMsVq2C52qTBchO6r0rGMmeP0f69QZ
-         h86teTPCUlRQXQCUH9pvTEtmamygxGmf9VBYom8qD3KYuAlQkOGRTo7fwiRjgTHCXk92
-         veKA7umfd4rqs9iIIi2qnh4NTonxfWG7lfJVW+j2Ep+gHfCm1hyuM5CVS8fybRvf2gv0
-         gKNA==
-X-Gm-Message-State: ALoCoQnKVS9+ljO89CTRxFu6zQ1VI6ucPd7i9b7bFnfJZAyZDVXkacL2IJbXQ11P4CBXW2DOSlaH
-X-Received: by 10.68.201.10 with SMTP id jw10mr7480616pbc.25.1402514732325;
-        Wed, 11 Jun 2014 12:25:32 -0700 (PDT)
+        bh=ddu2G5u9JbFRc8+rX1oe08XVbsdCMg9zOAD5WpZAUW8=;
+        b=fGKwrcdoPNjePGLV+Bc6LhnQhGwD8n1Ebib3P/R3WpBb0z4cnDERuW3gKfaytc6cOl
+         xBP26iybb80BEyJFw7gJMDn7KATuyqTu5xc+XjsEJBnPAKxAQlupq97raiC6R10h0jeD
+         XL4370OCs5p+GkiEBaH9PkNdbNB2f75RzBRvKwwgLCVQrQcY1KNDGsorxhkMEPLMCv6I
+         tQM89Z4qlMI50Bu8lF6cPudAK2/SYHYfjVWPwZIbMRkbZamv0tcmTQZ860anhZJOq9wk
+         1aRKO8ZU8sBfNeWsteXUGFYLo9hAqWzbpljGUjX0FGaq7ldT1jG34j5aZmemnsxRHY5U
+         1jLA==
+X-Gm-Message-State: ALoCoQnnT5XR2WzJyaDMk0ZtGPJbGJ+HGV9+e3BVpsAuSBaM7+evtF8bDD3h0gOE+kHqnZF6uXgV
+X-Received: by 10.66.242.171 with SMTP id wr11mr21567507pac.111.1402586896547;
+        Thu, 12 Jun 2014 08:28:16 -0700 (PDT)
 Received: from localhost (50-76-60-73-ip-static.hfc.comcastbusiness.net. [50.76.60.73])
-        by mx.google.com with ESMTPSA id id10sm76404116pbc.35.2014.06.11.12.25.30
+        by mx.google.com with ESMTPSA id ir10sm80996154pbc.59.2014.06.12.08.28.15
         for <multiple recipients>
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Jun 2014 12:25:31 -0700 (PDT)
+        Thu, 12 Jun 2014 08:28:15 -0700 (PDT)
 From: Andy Lutomirski <luto@amacapital.net>
 To: "H. Peter Anvin" <hpa@zytor.com>, Josh Boyer <jwboyer@fedoraproject.org>
 Cc: Michal Marek <mmarek@suse.cz>, linux-kbuild@vger.kernel.org,
         "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Subject: [PATCH v2] x86,vdso: Fix vdso_install
-Date: Wed, 11 Jun 2014 12:25:29 -0700
-Message-Id: <5d5e221e59be20a3a7ceb99452e74e233383e7b4.1402514715.git.luto@amacapital.net>
+        <sam@ravnborg.org>, Andy Lutomirski <luto@amacapital.net>
+Subject: [PATCH v3] x86,vdso: Fix vdso_install
+Date: Thu, 12 Jun 2014 08:28:10 -0700
+Message-Id: <b10299edd8ba98d17e07dafcd895b8ecf4d99eff.1402586707.git.luto@amacapital.net>
 X-Mailer: git-send-email 1.9.3
-In-Reply-To: <sam@ravnborg.org>
-References: <sam@ravnborg.org>
+In-Reply-To: <CA+5PVA5rP4cF14-ckD4K4MgBNtfHB+xPg3whEL26JkxegE7qpg@mail.gmail.com>
+References: <CA+5PVA5rP4cF14-ckD4K4MgBNtfHB+xPg3whEL26JkxegE7qpg@mail.gmail.com>
 X-RedHat-Spam-Score: -2.7  (BAYES_00,DCC_REPUT_13_19,RCVD_IN_DNSWL_LOW,SPF_PASS,URIBL_BLOCKED)
 X-Scanned-By: MIMEDefang 2.68 on 10.5.110.16
 
 The filenames are different now.  Inspired by a patch from
 Sam Ravnborg.
 
+Acked-by: Sam Ravnborg <sam@ravnborg.org>
 Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
 Signed-off-by: Andy Lutomirski <luto@amacapital.net>
 ---
+
+I kept Sam's ack from v2, since v3 has only a trivial change.
+
+Changes from v1: Remove core kbuild change
+Changes from v2: Name the result .so files again, not .so.dbg
+
  arch/x86/vdso/Makefile | 22 +++++++++++-----------
  1 file changed, 11 insertions(+), 11 deletions(-)
 
 diff --git a/arch/x86/vdso/Makefile b/arch/x86/vdso/Makefile
-index 9769df0..e3683d6 100644
+index 9769df0..845b45e 100644
 --- a/arch/x86/vdso/Makefile
 +++ b/arch/x86/vdso/Makefile
 @@ -9,11 +9,6 @@ VDSOX32-$(CONFIG_X86_X32_ABI)	:= y
@@ -94,12 +101,12 @@ index 9769df0..e3683d6 100644
 +quiet_cmd_vdso_install = INSTALL $(@:install_%=%)
 +      cmd_vdso_install = cp $< $(MODLIB)/vdso/$(@:install_%=%)
 +
-+vdso_img_insttargets := $(vdso_img_sodbg:%=install_%)
++vdso_img_insttargets := $(vdso_img_sodbg:%.dbg=install_%)
 +
 +$(MODLIB)/vdso: FORCE
  	@mkdir -p $(MODLIB)/vdso
 +
-+$(vdso_img_insttargets): install_%: $(obj)/% $(MODLIB)/vdso FORCE
++$(vdso_img_insttargets): install_%: $(obj)/%.dbg $(MODLIB)/vdso FORCE
  	$(call cmd,vdso_install)
  
 -PHONY += vdso_install $(vdso-install-y)
