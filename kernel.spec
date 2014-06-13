@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -627,9 +627,7 @@ Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
-Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
@@ -1343,9 +1341,7 @@ ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 ApplyPatch perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
-ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
@@ -2225,6 +2221,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jun 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git7.1
+- Linux v3.15-8556-gdfb945473ae8
+
 * Fri Jun 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git6.1
 - Linux v3.15-8351-g9ee4d7a65383
 
