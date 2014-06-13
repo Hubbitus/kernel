@@ -591,6 +591,8 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch15000: nowatchdog-on-virt.patch
 
 # ARM64
+# https://lkml.org/lkml/2014/6/11/534
+Patch21000: aarch64-xgene-reset.patch
 
 # ARM
 
@@ -1223,6 +1225,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
+ApplyPatch aarch64-xgene-reset.patch
 
 #
 # ARM
@@ -2221,6 +2224,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jun 13 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix build failure on aarch64
+
 * Fri Jun 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git10.1
 - Linux v3.15-9837-g682b7c1c8ea8
 
