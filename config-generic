@@ -278,6 +278,7 @@ CONFIG_MTD_CFI_I2=y
 # CONFIG_MTD_PHRAM is not set
 # CONFIG_MTD_MTDRAM is not set
 # CONFIG_MTD_BLOCK2MTD is not set
+# CONFIG_MTD_SPI_NOR is not set
 
 #
 # Disk-On-Chip Device Drivers
