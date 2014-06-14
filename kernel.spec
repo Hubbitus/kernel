@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2224,6 +2224,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jun 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git11.1
+- Linux v3.15-9930-g0e04c641b199
+- Enable CONFIG_RCU_NOCB_CPU(_ALL) (rbhz 1109113)
+
 * Fri Jun 13 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix build failure on aarch64
 

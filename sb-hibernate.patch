@@ -1,7 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard
 
-From ab0f460f8349c7ccb400b2dc8937c0682c8a0f47 Mon Sep 17 00:00:00 2001
+From 9cdffb6980a2c573844b4b87f907da24d68fb916 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 14:02:09 -0400
 Subject: [PATCH] hibernate: Disable in a signed modules environment
@@ -19,19 +19,19 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.com>
  3 files changed, 22 insertions(+), 2 deletions(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index df88d55dc436..5c5834d7708b 100644
+index 49e0a20fd010..777eff68e8ef 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
-@@ -28,6 +28,8 @@
- #include <linux/syscore_ops.h>
+@@ -29,6 +29,8 @@
  #include <linux/ctype.h>
  #include <linux/genhd.h>
-+#include <linux/efi.h>
+ #include <trace/events/power.h>
 +#include <linux/module.h>
++#include <linux/efi.h>
  
  #include "power.h"
  
-@@ -639,6 +641,10 @@ int hibernate(void)
+@@ -642,6 +644,10 @@ int hibernate(void)
  {
  	int error;
  
@@ -42,7 +42,7 @@ index df88d55dc436..5c5834d7708b 100644
  	lock_system_sleep();
  	/* The snapshot device should not be opened while we're running */
  	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
-@@ -731,7 +737,7 @@ static int software_resume(void)
+@@ -734,7 +740,7 @@ static int software_resume(void)
  	/*
  	 * If the user said "noresume".. bail out early.
  	 */
@@ -51,7 +51,7 @@ index df88d55dc436..5c5834d7708b 100644
  		return 0;
  
  	/*
-@@ -897,6 +903,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -900,6 +906,11 @@ static ssize_t disk_show(struct kobject *kobj, struct kobj_attribute *attr,
  	int i;
  	char *start = buf;
  
@@ -63,7 +63,7 @@ index df88d55dc436..5c5834d7708b 100644
  	for (i = HIBERNATION_FIRST; i <= HIBERNATION_MAX; i++) {
  		if (!hibernation_modes[i])
  			continue;
-@@ -931,6 +942,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
+@@ -934,6 +945,9 @@ static ssize_t disk_store(struct kobject *kobj, struct kobj_attribute *attr,
  	char *p;
  	int mode = HIBERNATION_INVALID;
  
