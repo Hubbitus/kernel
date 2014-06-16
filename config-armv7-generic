@@ -128,8 +128,7 @@ CONFIG_IP_PNP=y
 CONFIG_IP_PNP_DHCP=y
 CONFIG_IP_PNP_BOOTP=y
 
-# CONFIG_PCI_HOST_GENERIC is not set
-# CONFIG_BRCMSTB_GISB_ARB is not set
+CONFIG_PCI_HOST_GENERIC=y
 
 # Root as NFS, different from mainline
 CONFIG_ROOT_NFS=y
@@ -187,7 +186,7 @@ CONFIG_SPI_SUN6I=m
 CONFIG_MMC_SUNXI=m
 CONFIG_GPIO_PCA953X=m
 CONFIG_POWER_RESET_SUN6I=y
-# CONFIG_TOUCHSCREEN_SUN4I is not set
+CONFIG_TOUCHSCREEN_SUN4I=m
 
 CONFIG_REGMAP=y
 CONFIG_REGMAP_I2C=m
@@ -664,7 +663,6 @@ CONFIG_BPF_JIT=y
 # CONFIG_EZX_PCAP is not set
 
 # Needs work/investigation
-# CONFIG_ARM_CHARLCD is not set
 # CONFIG_MTD_AFS_PARTS is not set
 # CONFIG_IP_PNP_RARP is not set
 # CONFIG_DEPRECATED_PARAM_STRUCT is not set
@@ -680,6 +678,7 @@ CONFIG_BPF_JIT=y
 # CONFIG_SPI_FSL_DSPI is not set
 # CONFIG_FB_XILINX is not set
 # CONFIG_USB_S3C_HSOTG is not set
+# CONFIG_BRCMSTB_GISB_ARB is not set
 
 # these modules all fail with missing __bad_udelay
 # http://www.spinics.net/lists/arm/msg15615.html provides some background

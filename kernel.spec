@@ -2224,6 +2224,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 16 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config updates for 3.16
+
 * Sat Jun 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc0.git11.1
 - Linux v3.15-9930-g0e04c641b199
 - Enable CONFIG_RCU_NOCB_CPU(_ALL) (rbhz 1109113)

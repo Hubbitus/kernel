@@ -67,28 +67,6 @@ CONFIG_SPARSEMEM_VMEMMAP=y
 CONFIG_VIRTUALIZATION=y
 CONFIG_VM_EVENT_COUNTERS=y
 
-# not arm64
-# CONFIG_GPIO_ADNP is not set
-# CONFIG_GPIO_MCP23S08 is not set
-# CONFIG_MDIO_BUS_MUX_GPIO is not set
-# CONFIG_MDIO_BUS_MUX_MMIOREG is not set
-
-
-# busted build for various reasons
-#  uses pci_* for some reason to allocate DMA buffers
-# CONFIG_DVB_B2C2_FLEXCOP_USB is not set
-#  weird include chain resulting in missing u64 type
-# CONFIG_USB_SPEEDTOUCH is not set
-#  dma issues in headers
-# CONFIG_PARPORT_PC is not set
-# CONFIG_VGA_CONSOLE is not set
-CONFIG_POWER_RESET_XGENE=y
-CONFIG_COMMON_CLK_XGENE=y
-
-CONFIG_AHCI_XGENE=m
-CONFIG_PHY_XGENE=m
-CONFIG_RTC_DRV_XGENE=m
-
 CONFIG_EFI=y
 CONFIG_EFI_VARS=y
 CONFIG_EFIVAR_FS=y
@@ -104,5 +82,25 @@ CONFIG_CRYPTO_AES_ARM64_CE_CCM=m
 CONFIG_CRYPTO_AES_ARM64_CE_BLK=m
 CONFIG_CRYPTO_AES_ARM64_NEON_BLK=m
 
-# CONFIG_ARM_BIG_LITTLE_CPUFREQ is not set
-# CONFIG_GENERIC_CPUFREQ_CPU0 is not set
+# APM Xgene
+CONFIG_POWER_RESET_XGENE=y
+CONFIG_COMMON_CLK_XGENE=y
+
+CONFIG_AHCI_XGENE=m
+CONFIG_PHY_XGENE=m
+CONFIG_RTC_DRV_XGENE=m
+
+# not arm64
+# CONFIG_GPIO_ADNP is not set
+# CONFIG_GPIO_MCP23S08 is not set
+# CONFIG_MDIO_BUS_MUX_GPIO is not set
+# CONFIG_MDIO_BUS_MUX_MMIOREG is not set
+
+# busted build for various reasons
+#  uses pci_* for some reason to allocate DMA buffers
+# CONFIG_DVB_B2C2_FLEXCOP_USB is not set
+#  weird include chain resulting in missing u64 type
+# CONFIG_USB_SPEEDTOUCH is not set
+#  dma issues in headers
+# CONFIG_PARPORT_PC is not set
+# CONFIG_VGA_CONSOLE is not set
