@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -750,9 +750,6 @@ Patch25087: jme-fix-dma-unmap-error.patch
 #rhbz 1051668
 Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
-# CVE-2014-3917 rhbz 1102571 1102715
-Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
-
 #rhbz 1099857
 Patch25095: team-fix-mtu-setting.patch
 
@@ -771,9 +768,6 @@ Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksiz
 
 #rhbz 1103528
 Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
-
-#CVE-2014-4014 rhbz 1107966 1109836
-Patch25102: fs-userns-Change-inode_capable-to-capable_wrt_inode_.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1477,9 +1471,6 @@ ApplyPatch jme-fix-dma-unmap-error.patch
 #rhbz 1051668
 ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
-# CVE-2014-3917 rhbz 1102571 1102715
-ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
-
 #rhbz 1099857
 ApplyPatch team-fix-mtu-setting.patch
 
@@ -1498,9 +1489,6 @@ ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize
 
 #rhbz 1103528
 ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
-
-#CVE-2014-4014 rhbz 1107966 1109836
-ApplyPatch fs-userns-Change-inode_capable-to-capable_wrt_inode_.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2313,6 +2301,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
+- Linux v3.14.8
+
 * Mon Jun 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-4014 possible priv escalation in userns (rhbz 1107966 1109836)
 
