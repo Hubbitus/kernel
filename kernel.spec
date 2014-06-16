@@ -2220,6 +2220,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 16 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Qualcomm SoCs on ARM
+
 * Mon Jun 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git0.1
 - Linux v3.16-rc1
 - Disable debugging options.
