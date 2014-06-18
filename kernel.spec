@@ -2220,6 +2220,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 17 2014 Dennis Gilmore <dennis@ausil.us>
+- when ipuv3 moved out of staging the config was renamed
+- adjust the config to suit
+
 * Tue Jun 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git1.1
 - Linux v3.16-rc1-2-gebe06187bf2a
 - Reenable debugging options.
