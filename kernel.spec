@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -591,8 +591,6 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch15000: nowatchdog-on-virt.patch
 
 # ARM64
-# https://lkml.org/lkml/2014/6/11/534
-Patch21000: aarch64-xgene-reset.patch
 
 # ARM
 
@@ -1223,7 +1221,6 @@ ApplyOptionalPatch upstream-reverts.patch -R
 ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
-ApplyPatch aarch64-xgene-reset.patch
 
 #
 # ARM
@@ -2220,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git3.1
+- Linux v3.16-rc1-112-g894e552cfaa3
+
 * Thu Jun 19 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add missing bits for NVIDIA Jetson TK1 (thanks Stephen Warren)
 
