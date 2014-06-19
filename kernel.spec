@@ -2220,6 +2220,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 19 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add missing bits for NVIDIA Jetson TK1 (thanks Stephen Warren)
+
 * Wed Jun 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git2.1
 - Linux v3.16-rc1-17-ge99cfa2d0634
 
