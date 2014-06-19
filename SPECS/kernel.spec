@@ -366,6 +366,10 @@ Source72: kernel-%{version}-s390x-kdump.config
 Source2000: cpupower.service
 Source2001: cpupower.config
 
+# branding patches
+Patch1001: debrand-single-cpu.patch
+Patch1002: debrand-rh_taint.patch
+
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
 
@@ -666,6 +670,11 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
+
+# CentOS Branding Modification
+ApplyOptionalPatch debrand-rh_taint.patch
+ApplyOptionalPatch debrand-single-cpu.patch
+# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
