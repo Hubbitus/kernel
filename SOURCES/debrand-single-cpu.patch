@@ -1,0 +1,25 @@
+From 66185f5c6f881847776702e3a7956c504400f4f2 Mon Sep 17 00:00:00 2001
+From: Jim Perrin <jperrin@centos.org>
+Date: Thu, 19 Jun 2014 09:53:13 -0500
+Subject: [PATCH] branding patch for single-cpu systems
+
+---
+ arch/x86/kernel/setup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index b289118..9d25982 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -846,7 +846,7 @@ static void rh_check_supported(void)
+ 	if (((boot_cpu_data.x86_max_cores * smp_num_siblings) == 1) &&
+ 	    !x86_hyper && !cpu_has_hypervisor && !is_kdump_kernel()) {
+ 		pr_crit("Detected single cpu native boot.\n");
+-		pr_crit("Important:  In Red Hat Enterprise Linux 7, single threaded, single CPU 64-bit physical systems are unsupported by Red Hat. Please contact your Red Hat support representative for a list of certified and supported systems.");
++		pr_crit("Important:  In CentOS 7, single threaded, single CPU 64-bit physical systems are unsupported. Please see http://wiki.centos.org/FAQ for more information");
+ 	}
+ 
+ 	/* The RHEL7 kernel does not support this hardware.  The kernel will
+-- 
+1.8.3.1
+
