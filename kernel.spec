@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -564,7 +564,7 @@ Patch800: crash-driver.patch
 # secure boot
 Patch1000: secure-modules.patch
 Patch1001: modsign-uefi.patch
-Patch1002: sb-hibernate.patch
+# atch1002: sb-hibernate.patch
 Patch1003: sysrq-secure-boot.patch
 
 # virt + ksm patches
@@ -1292,7 +1292,7 @@ ApplyPatch crash-driver.patch
 # secure boot
 ApplyPatch secure-modules.patch
 ApplyPatch modsign-uefi.patch
-ApplyPatch sb-hibernate.patch
+# pplyPatch sb-hibernate.patch
 ApplyPatch sysrq-secure-boot.patch
 
 # Assorted Virt Fixes
@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git4.1
+- Linux v3.16-rc1-215-g3c8fb5044583
+
 * Thu Jun 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git3.1
 - Linux v3.16-rc1-112-g894e552cfaa3
 
