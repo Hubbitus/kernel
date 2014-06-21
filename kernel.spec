@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -768,6 +768,10 @@ Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksiz
 
 #rhbz 1103528
 Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
+
+Patch25102: intel_pstate-Fix-setting-VID.patch
+Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
+Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1489,6 +1493,10 @@ ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize
 
 #rhbz 1103528
 ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
+
+ApplyPatch intel_pstate-Fix-setting-VID.patch
+ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
+ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2309,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Bring in intel_pstate regression fixes for BayTrail
+
 * Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
 - Linux v3.14.8
 

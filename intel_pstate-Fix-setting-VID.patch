@@ -1,0 +1,133 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.6.212 with SMTP id d20csp423274oaa;
+        Fri, 20 Jun 2014 07:30:34 -0700 (PDT)
+X-Received: by 10.66.141.165 with SMTP id rp5mr5252763pab.90.1403274633343;
+        Fri, 20 Jun 2014 07:30:33 -0700 (PDT)
+Return-Path: <stable-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id xz4si10079103pac.71.2014.06.20.07.29.38
+        for <multiple recipients>;
+        Fri, 20 Jun 2014 07:30:33 -0700 (PDT)
+Received-SPF: none (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=neutral (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) smtp.mail=stable-owner@vger.kernel.org;
+       dkim=neutral (body hash did not verify) header.i=@;
+       dmarc=fail (p=NONE dis=NONE) header.from=gmail.com
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1752826AbaFTO2N (ORCPT <rfc822;tuffkidtt@gmail.com> + 73 others);
+	Fri, 20 Jun 2014 10:28:13 -0400
+Received: from mail-pb0-f42.google.com ([209.85.160.42]:38213 "EHLO
+	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752069AbaFTO2M (ORCPT
+	<rfc822;stable@vger.kernel.org>); Fri, 20 Jun 2014 10:28:12 -0400
+Received: by mail-pb0-f42.google.com with SMTP id ma3so3196581pbc.29
+        for <multiple recipients>; Fri, 20 Jun 2014 07:28:11 -0700 (PDT)
+DKIM-Signature:	v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=9oo+zXKxjbr7v1snerKTk1H7F9TqWZtlTUz/dYa9Mtc=;
+        b=dYHB8IsNt7nWot8Da4/spNLtKjWeMlpQv+LpR+c7Y8DUuJe1lcMqt6NeLHZcOBUv2Y
+         Y6Bw8IIE3DYaVUFzakB2oBRCHaQJwqERAb0+y8zVt4lkxRh6AOjeR6coDk9oE8sDQmkN
+         zZzv3mR6rd2sE6CkRFwkJUJgHRd5DgluDU96k7OKLEzJpuq+6BrvwPto8TU6ZMkmQiqj
+         pRP0ics6FdaE7GtFE6XmEjGYSnsAFzUn8ycgFPjZU39PhkhTDottomejlUEEs8NORxn3
+         eYxzh48Ae/P9JTgydBpMpUkpsb+86akHDWoTWG3z6D6mwCzFl9dNmUL43j/ONVjf6pPh
+         wopw==
+X-Received: by 10.66.122.70 with SMTP id lq6mr5211252pab.51.1403274491745;
+        Fri, 20 Jun 2014 07:28:11 -0700 (PDT)
+Received: from echolake.localdomain (static-50-43-41-81.bvtn.or.frontiernet.net. [50.43.41.81])
+        by mx.google.com with ESMTPSA id vx10sm44287848pac.17.2014.06.20.07.28.09
+        for <multiple recipients>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 Jun 2014 07:28:10 -0700 (PDT)
+From:	dirk.brandewie@gmail.com
+X-Google-Original-From:	dirk.j.brandewie@intel.com
+To:	linux-pm@vger.kernel.org
+Cc:	rjw@rjwysocki.net, dirk.brandewie@gmail.com,
+	stable@vger.kernel.org, Dirk Brandewie <dirk.j.brandewie@intel.com>
+Subject: [PATCH 1/3] intel_pstate: Fix setting VID
+Date:	Fri, 20 Jun 2014 07:27:58 -0700
+Message-Id: <1403274480-10593-2-git-send-email-dirk.j.brandewie@intel.com>
+X-Mailer: git-send-email 1.9.0
+In-Reply-To: <1403274480-10593-1-git-send-email-dirk.j.brandewie@intel.com>
+References: <1403274480-10593-1-git-send-email-dirk.j.brandewie@intel.com>
+Sender:	stable-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <stable.vger.kernel.org>
+X-Mailing-List:	stable@vger.kernel.org
+
+From: Dirk Brandewie <dirk.j.brandewie@intel.com>
+
+Commit 21855ff5 intel_pstate: Set turbo VID for BayTrail introduced
+setting the turbo VID which is required to prevent a machine check on
+some Baytrail SKUs under heavy graphics based workloads.  The
+docmumentation update that brought the requirement to light also
+changed the bit mask used for enumerating P state and VID values from
+0x7f to 0x3f.
+
+This change returns the mask value to 0x7f.
+
+Tested with the Intel NUC DN2820FYK,
+BIOS version FYBYT10H.86A.0034.2014.0513.1413 with v3.16-rc1 and
+v3.14.8 kernel versions.
+
+Reported-by: Rune Reterson <rune@megahurts.dk>
+Reported-by: Eric Eickmeyer <erich@ericheickmeyer.com>
+Tested-by: Rune Reterson <rune@megahurts.dk>
+Tested-by: Eric Eickmeyer <erich@ericheickmeyer.com>
+
+References: https://bugzilla.kernel.org/show_bug.cgi?id=77951
+
+Cc: Cc: Stable <stable@vger.kernel.org>  [3.13+]
+Signed-off-by: Dirk Brandewie <dirk.j.brandewie@intel.com>
+---
+ drivers/cpufreq/intel_pstate.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+index 924bb2d..74376d6 100644
+--- a/drivers/cpufreq/intel_pstate.c
++++ b/drivers/cpufreq/intel_pstate.c
+@@ -357,21 +357,21 @@ static int byt_get_min_pstate(void)
+ {
+ 	u64 value;
+ 	rdmsrl(BYT_RATIOS, value);
+-	return (value >> 8) & 0x3F;
++	return (value >> 8) & 0x7F;
+ }
+ 
+ static int byt_get_max_pstate(void)
+ {
+ 	u64 value;
+ 	rdmsrl(BYT_RATIOS, value);
+-	return (value >> 16) & 0x3F;
++	return (value >> 16) & 0x7F;
+ }
+ 
+ static int byt_get_turbo_pstate(void)
+ {
+ 	u64 value;
+ 	rdmsrl(BYT_TURBO_RATIOS, value);
+-	return value & 0x3F;
++	return value & 0x7F;
+ }
+ 
+ static void byt_set_pstate(struct cpudata *cpudata, int pstate)
+@@ -405,8 +405,8 @@ static void byt_get_vid(struct cpudata *cpudata)
+ 
+ 
+ 	rdmsrl(BYT_VIDS, value);
+-	cpudata->vid.min = int_tofp((value >> 8) & 0x3f);
+-	cpudata->vid.max = int_tofp((value >> 16) & 0x3f);
++	cpudata->vid.min = int_tofp((value >> 8) & 0x7f);
++	cpudata->vid.max = int_tofp((value >> 16) & 0x7f);
+ 	cpudata->vid.ratio = div_fp(
+ 		cpudata->vid.max - cpudata->vid.min,
+ 		int_tofp(cpudata->pstate.max_pstate -
+-- 
+1.9.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe stable" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
