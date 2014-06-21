@@ -1,0 +1,39 @@
+Bugzilla: 1099761
+Upstream-status: 3.16 and CC'd for stable
+
+From a914722f333b3359d2f4f12919380a334176bb89 Mon Sep 17 00:00:00 2001
+From: Mateusz Guzik <mguzik@redhat.com>
+Date: Tue, 10 Jun 2014 12:44:12 +0200
+Subject: [PATCH] NFS: populate ->net in mount data when remounting
+
+Otherwise the kernel oopses when remounting with IPv6 server because
+net is dereferenced in dev_get_by_name.
+
+Use net ns of current thread so that dev_get_by_name does not operate on
+foreign ns. Changing the address is prohibited anyway so this should not
+affect anything.
+
+Signed-off-by: Mateusz Guzik <mguzik@redhat.com>
+Cc: linux-nfs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org # 3.4+
+Signed-off-by: Trond Myklebust <trond.myklebust@primarydata.com>
+---
+ fs/nfs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/nfs/super.c b/fs/nfs/super.c
+index 1a6d7ac9d9d2..084af1060d79 100644
+--- a/fs/nfs/super.c
++++ b/fs/nfs/super.c
+@@ -2260,6 +2260,7 @@ nfs_remount(struct super_block *sb, int *flags, char *raw_data)
+ 	data->nfs_server.addrlen = nfss->nfs_client->cl_addrlen;
+ 	data->version = nfsvers;
+ 	data->minorversion = nfss->nfs_client->cl_minorversion;
++	data->net = current->nsproxy->net_ns;
+ 	memcpy(&data->nfs_server.address, &nfss->nfs_client->cl_addr,
+ 		data->nfs_server.addrlen);
+ 
+-- 
+1.9.3
+

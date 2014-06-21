@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -783,14 +783,24 @@ Patch25087: jme-fix-dma-unmap-error.patch
 #rhbz 1051668
 Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
-# CVE-2014-3917 rhbz 1102571 1102715
-Patch25093: auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
-
 #rhbz 1099857
 Patch25095: team-fix-mtu-setting.patch
 
-# CVE-2014-3940 rhbz 1104097 1105042
-Patch25096: mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
+#rhbz 1094066
+Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
+
+#rhbz 1064516
+Patch25097: e1000e-Fix-SHRA-register-access-for-82579.patch
+Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
+
+#rhbz 1099761
+Patch25099: NFS-populate-net-in-mount-data-when-remounting.patch
+
+#rhbz 1106856
+Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
+
+#rhbz 1103528
+Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1518,14 +1528,24 @@ ApplyPatch jme-fix-dma-unmap-error.patch
 #rhbz 1051668
 ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
 
-# CVE-2014-3917 rhbz 1102571 1102715
-ApplyPatch auditsc-audit_krule-mask-accesses-need-bounds-checking.patch
-
 #rhbz 1099857
 ApplyPatch team-fix-mtu-setting.patch
 
-# CVE-2014-3940 rhbz 1104097 1105042
-ApplyPatch mm-add-pte_present-check-on-existing-hugetlb_entry-callbacks.patch
+#rhbz 1094066
+ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
+
+#rhbz 1064516
+ApplyPatch e1000e-Fix-SHRA-register-access-for-82579.patch
+ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
+
+#rhbz 1099761
+ApplyPatch NFS-populate-net-in-mount-data-when-remounting.patch
+
+#rhbz 1106856
+ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
+
+#rhbz 1103528
+ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2342,6 +2362,20 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
+- Linux v3.14.8
+
+* Mon Jun 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4014 possible priv escalation in userns (rhbz 1107966 1109836)
+
+* Wed Jun 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.7-200
+- Fix elantech right click on Dell vostro 5470 (rhbz 1103528)
+- Fix fstrim on dm-thin volume data (rhbz 1106856)
+- Fix NFS NULL pointer deref with ipv6 (rhbz 1099761)
+- Fix promisc mode on certain e1000e cards (rhbz 1064516)
+- Fix i915 backlight issue on gen4 (rhbz 1094066)
+- Linux v3.14.7
+
 * Mon Jun 9 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.6-200.hu.1.bfq.bfs.uksm.tuxonice
 - 3.14.6-200.hu.1.bfq.bfs.uksm.tuxonice
 

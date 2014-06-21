@@ -4,3 +4,4 @@ clog
 #*.rpm
 *.orig
 kernel-[23].*/
+perf-man-*.tar.gz
