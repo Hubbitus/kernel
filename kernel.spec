@@ -2225,6 +2225,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Jun 22 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Exynos now it's finally multi platform capable
+- Minor ARM config cleanups
+
 * Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Bring in intel_pstate regression fixes for BayTrail
 
