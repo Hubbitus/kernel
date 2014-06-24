@@ -1474,6 +1474,7 @@ fi
 %changelog
 * Tue Jun 24 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.el7.centos]
 - Patch in CentOS SecureBoot certs
+- Add in debranding patches 
 
 * Mon May 05 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-123.el7]
 - [mm] rmap: try_to_unmap_cluster() should lock_page() before mlocking (Larry Woodman) [1078349] {CVE-2014-3122}
