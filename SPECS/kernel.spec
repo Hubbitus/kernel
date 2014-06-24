@@ -338,8 +338,7 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: securebootca.cer
-Source14: secureboot.cer
+Source13: centos.cer
 Source15: rheldup3.x509
 Source16: rhelkpatch1.x509
 
@@ -828,7 +827,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1473,6 +1472,10 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Tue Jun 24 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.1.2.el7.centos]
+- Patch in CentOS SecureBoot certs
+- Add in debranding patches
+
 * Wed Jun 4 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.1.2.el7]
 - [tty] n_tty: Fix n_tty_write crash when echoing in raw mode (Aristeu Rozanski) [1094241 1094242] {CVE-2014-0196}
 
