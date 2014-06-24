@@ -773,6 +773,9 @@ Patch25102: intel_pstate-Fix-setting-VID.patch
 Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
+#CVE-2014-4508 rhbz 1111590 1112073
+Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1497,6 +1500,9 @@ ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
 ApplyPatch intel_pstate-Fix-setting-VID.patch
 ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
+
+#CVE-2014-4508 rhbz 1111590 1112073
+ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2309,8 +2315,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4508 BUG in x86_32 syscall auditing (rhbz 1111590 1112073)
+
 * Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
-- Bring in intel_pstate regression fixes for BayTrail
+- Bring in intel_pstate regression fixes for BayTrail (rhbz 1111920)
 
 * Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
 - Linux v3.14.8
