@@ -640,6 +640,9 @@ Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.pa
 #rhbz 1110968
 Patch25105: x86_32-signal-Fix-vdso-rt_sigreturn.patch
 
+#CVE-2014-4508 rhbz 1111590 1112073
+Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1358,6 +1361,9 @@ ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.pat
 
 #rhbz 1110968
 ApplyPatch x86_32-signal-Fix-vdso-rt_sigreturn.patch
+
+#CVE-2014-4508 rhbz 1111590 1112073
+ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2231,6 +2237,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4508 BUG in x86_32 syscall auditing (rhbz 1111590 1112073)
+
 * Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git0.1
 - Linux v3.16-rc2
 - Disable debugging options.
@@ -2241,7 +2250,7 @@ fi
 - ARM config cleanups
 
 * Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
-- Bring in intel_pstate regression fixes for BayTrail
+- Bring in intel_pstate regression fixes for BayTrail (rhbz 1111920)
 
 * Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc1.git4.1
 - Linux v3.16-rc1-215-g3c8fb5044583
