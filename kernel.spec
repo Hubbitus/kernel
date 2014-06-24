@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -128,7 +128,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2237,6 +2237,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git1.1
+- Linux v3.16-rc2-35-g8b8f5d971584
+- Reenable debugging options.
+
 * Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-4508 BUG in x86_32 syscall auditing (rhbz 1111590 1112073)
 
