@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.1.2.el7
+%define pkgrelease 123.4.2.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,7 +338,8 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
+Source13: securebootca.cer
+Source14: secureboot.cer
 Source15: rheldup3.x509
 Source16: rhelkpatch1.x509
 
@@ -365,10 +366,6 @@ Source72: kernel-%{version}-s390x-kdump.config
 # Sources for kernel-tools
 Source2000: cpupower.service
 Source2001: cpupower.config
-
-# branding patches
-Patch1001: debrand-single-cpu.patch
-Patch1002: debrand-rh_taint.patch
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
@@ -671,11 +668,6 @@ cd linux-%{KVRA}
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
 
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-# End of CentOS Modification
-
 ApplyOptionalPatch linux-kernel-test.patch
 
 # Any further pre-build tree manipulations happen here.
@@ -827,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13} -n redhatsecureboot301
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -868,6 +860,7 @@ BuildKernel() {
     # dirs for additional modules per module-init-tools, kbuild/modules.txt
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/extra
     mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/updates
+    mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer/weak-updates
     # first copy everything
     cp --parents `find  -type f -name "Makefile*" -o -name "Kconfig*"` $RPM_BUILD_ROOT/lib/modules/$KernelVer/build
     cp Module.symvers $RPM_BUILD_ROOT/lib/modules/$KernelVer/build
@@ -1271,6 +1264,10 @@ fi\
 %{expand:%%posttrans %{?1}}\
 %{_sbindir}/new-kernel-pkg --package kernel%{?-v:-%{-v*}} --mkinitrd --dracut --depmod --update %{KVRA}%{?-v:.%{-v*}} || exit $?\
 %{_sbindir}/new-kernel-pkg --package kernel%{?1:-%{1}} --rpmposttrans %{KVRA}%{?1:.%{1}} || exit $?\
+if [ -x %{_sbindir}/weak-modules ]\
+then\
+    %{_sbindir}/weak-modules --add-kernel %{KVRA}%{?1:.%{1}} || exit $?\
+fi\
 %{nil}
 
 #
@@ -1299,6 +1296,10 @@ fi}\
 %define kernel_variant_preun() \
 %{expand:%%preun %{?1}}\
 %{_sbindir}/new-kernel-pkg --rminitrd --rmmoddep --remove %{KVRA}%{?1:.%{1}} || exit $?\
+if [ -x %{_sbindir}/weak-modules ]\
+then\
+    %{_sbindir}/weak-modules --remove-kernel %{KVRA}%{?1:.%{1}} || exit $?\
+fi\
 %{nil}
 
 %kernel_variant_preun
@@ -1449,6 +1450,7 @@ fi
 /lib/modules/%{KVRA}%{?2:.%{2}}/source\
 /lib/modules/%{KVRA}%{?2:.%{2}}/extra\
 /lib/modules/%{KVRA}%{?2:.%{2}}/updates\
+/lib/modules/%{KVRA}%{?2:.%{2}}/weak-updates\
 %ifarch %{vdso_arches}\
 /lib/modules/%{KVRA}%{?2:.%{2}}/vdso\
 /etc/ld.so.conf.d/kernel-%{KVRA}%{?2:.%{2}}.conf\
@@ -1472,11 +1474,61 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Tue Jun 24 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.1.2.el7.centos]
-- Patch in CentOS SecureBoot certs
-- Add in debranding patches
+* Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.2.el7]
+- [fs] aio: fix plug memory disclosure and fix reqs_active accounting backport (Jeff Moyer) [1094604 1094605] {CVE-2014-0206}
+- [fs] aio: plug memory disclosure and fix reqs_active accounting (Mateusz Guzik) [1094604 1094605] {CVE-2014-0206}
 
-* Wed Jun 4 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.1.2.el7]
+* Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.1.el7]
+- [kernel] futex: Make lookup_pi_state more robust (Larry Woodman) [1104519 1104520] {CVE-2014-3153}
+- [kernel] futex: Always cleanup owner tid in unlock_pi (Larry Woodman) [1104519 1104520] {CVE-2014-3153}
+- [kernel] futex: Validate atomic acquisition in futex_lock_pi_atomic() (Larry Woodman) [1104519 1104520] {CVE-2014-3153}
+- [kernel] futex: prevent requeue pi on same futex (Larry Woodman) [1104519 1104520] {CVE-2014-3153}
+- [ethernet] qlcnic: Fix ethtool statistics length calculation (Michal Schmidt) [1104972 1099634]
+- Revert: [kernel] cputime: Default implementation of nsecs -> cputime conversion (Frederic Weisbecker) [1090974 1047732]
+- Revert: [kernel] cputime: Bring cputime -> nsecs conversion (Frederic Weisbecker) [1090974 1047732]
+- Revert: [kernel] cputime: Fix jiffies based cputime assumption on steal accounting (Frederic Weisbecker) [1090974 1047732]
+
+* Tue Jun 03 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.3.1.el7]
+- [kernel] mutexes: Give more informative mutex warning in the !lock->owner case (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] mutex: replace CONFIG_HAVE_ARCH_MUTEX_CPU_RELAX with simple ifdef (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutexes: Introduce cancelable MCS lock for adaptive spinning (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutexes: Modify the way optimistic spinners are queued (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutexes: Return false if task need_resched() in mutex_can_spin_on_owner() (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] Restructure the MCS lock defines and locking & Move mcs_spinlock.h into kernel/locking/ (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [misc] arch: Introduce smp_load_acquire(), smp_store_release() (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutex: Fix debug_mutexes (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutex: Fix debug checks (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+- [kernel] locking/mutexes: Unlock the mutex without the wait_lock (Larry Woodman) [1103629 1087655] [1103630 1087919] [1103631 1087922]
+
+* Mon Jun 02 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.2.1.el7]
+- [net] filter: prevent nla extensions to peek beyond the end of the message (Jiri Benc) [1096780 1096781] {CVE-2014-3144 CVE-2014-3145}
+- [block] floppy: don't write kernel-only members to FDRAWCMD ioctl output (Denys Vlasenko) [1094316 1094318] {CVE-2014-1737 CVE-2014-1738}
+- [block] floppy: ignore kernel-only members in FDRAWCMD ioctl input (Denys Vlasenko) [1094316 1094318] {CVE-2014-1737 CVE-2014-1738}
+- [net] core, nfqueue, openvswitch: Orphan frags in skb_zerocopy and handle errors (Jiri Pirko) [1091345 1079014] {CVE-2014-2568}
+- [net] ipv4: current group_info should be put after using (Jiri Benc) [1087415 1087416] {CVE-2014-2851}
+- [fs] dcache: make prepend_name() work correctly when called with negative *buflen (Mikulas Patocka) [1099048 1092746]
+- [fs] dcache: __dentry_path() fixes (Mikulas Patocka) [1099048 1092746]
+- [fs] dcache: prepend_path() needs to reinitialize dentry/vfsmount/mnt on restarts (Mikulas Patocka) [1099048 1092746]
+- [target] tcm_fc: Fix use-after-free of ft_tpg (Andy Grover) [1088110 1071340]
+- [s390] af_iucv: wrong mapping of sent and confirmed skbs (Hendrik Brueckner) [1103064 1098513]
+- [s390] kernel: avoid page table walk on user space access (Hendrik Brueckner) [1103062 1097687]
+- [s390] crypto: fix aes, des ctr mode concurrency finding (Hendrik Brueckner) [1103060 1097686]
+- [net] openvswitch: fix a possible deadlock and lockdep warning (Flavio Leitner) [1103318 1094867]
+- [mm] filemap: update find_get_pages_tag() to deal with shadow entries (Johannes Weiner) [1103065 1091795]
+- [mm] page-writeback: fix divide by zero in pos_ratio_polynom (Rik van Riel) [1103067 1091784]
+- [mm] page-writeback: add strictlimit feature (Rik van Riel) [1103067 1091784]
+- [fs] xfs: log vector rounding leaks log space (Brian Foster) [1103059 1091136]
+- [fs] xfs: truncate_setsize should be outside transactions (Brian Foster) [1103059 1091136]
+- [fs] gfs2: Fix uninitialized VFS inode in gfs2_create_inode (Abhijith Das) [1097407 1087995]
+- [kernel] futex: Fix pthread_cond_broadcast() to wake up all threads (Larry Woodman) [1103066 1084757]
+- [net] ip: generate unique IP identificator if local fragmentation is allowed (Jiri Pirko) [1090490 1076106]
+- [kernel] cputime: Fix jiffies based cputime assumption on steal accounting (Frederic Weisbecker) [1090974 1047732]
+- [kernel] cputime: Bring cputime -> nsecs conversion (Frederic Weisbecker) [1090974 1047732]
+- [kernel] cputime: Default implementation of nsecs -> cputime conversion (Frederic Weisbecker) [1090974 1047732]
+- [x86] irq, pic: Probe for legacy PIC and set legacy_pic appropriately (Vivek Goyal) [1094973 1037957]
+- [virt] hyperv/vmbus: Negotiate version 3.0 when running on ws2012r2 hosts (Vivek Goyal) [1094973 1037957]
+
+* Tue May 27 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.1.1.el7]
 - [tty] n_tty: Fix n_tty_write crash when echoing in raw mode (Aristeu Rozanski) [1094241 1094242] {CVE-2014-0196}
 
 * Mon May 05 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-123.el7]
