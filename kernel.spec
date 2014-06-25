@@ -780,6 +780,8 @@ Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 Patch25107: aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
 Patch25108: aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
 
+Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1511,6 +1513,8 @@ ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 #CVE-2014-0206 rhbz 1094602 1112975
 ApplyPatch aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
 ApplyPatch aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
+
+ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2324,6 +2328,7 @@ fi
 #                 ||     ||
 %changelog
 * Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert commit that breaks Wacom Intuos4 from Benjamin Tissoires
 - CVE-2014-0206 aio: insufficient head sanitization in aio_read_events_ring (rhbz 1094602 1112975)
 
 * Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
