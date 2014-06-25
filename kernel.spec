@@ -643,6 +643,8 @@ Patch25105: x86_32-signal-Fix-vdso-rt_sigreturn.patch
 #CVE-2014-4508 rhbz 1111590 1112073
 Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
+Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1364,6 +1366,8 @@ ApplyPatch x86_32-signal-Fix-vdso-rt_sigreturn.patch
 
 #CVE-2014-4508 rhbz 1111590 1112073
 ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
+ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2237,6 +2241,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert commit that breaks Wacom Intuos4 from Benjamin Tissoires
+
 * Tue Jun 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git1.1
 - Linux v3.16-rc2-35-g8b8f5d971584
 - Reenable debugging options.
