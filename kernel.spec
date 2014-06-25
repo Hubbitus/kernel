@@ -776,6 +776,10 @@ Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.pa
 #CVE-2014-4508 rhbz 1111590 1112073
 Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
+#CVE-2014-0206 rhbz 1094602 1112975
+Patch25107: aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
+Patch25108: aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1503,6 +1507,10 @@ ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.pat
 
 #CVE-2014-4508 rhbz 1111590 1112073
 ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
+#CVE-2014-0206 rhbz 1094602 1112975
+ApplyPatch aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
+ApplyPatch aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2315,6 +2323,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-0206 aio: insufficient head sanitization in aio_read_events_ring (rhbz 1094602 1112975)
+
 * Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-4508 BUG in x86_32 syscall auditing (rhbz 1111590 1112073)
 
