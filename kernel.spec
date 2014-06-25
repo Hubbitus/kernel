@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2241,6 +2241,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git2.1
+- Linux v3.16-rc2-69-gd91d66e88ea9
+
 * Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Revert commit that breaks Wacom Intuos4 from Benjamin Tissoires
 
