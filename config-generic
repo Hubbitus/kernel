@@ -4991,7 +4991,8 @@ CONFIG_RTL8192E=m
 # CONFIG_VIDEO_CX25821 is not set
 # CONFIG_R8187SE is not set
 # CONFIG_R8188EU is not set
-# CONFIG_R8192EE is not set
+# Larry Finger maintains (rhbz 1113422)
+CONFIG_R8192EE=m
 # CONFIG_R8821AE is not set
 # CONFIG_RTL8192U is not set
 CONFIG_R8723AU=m # Jes Sorensen maintains this (rhbz 1100162)

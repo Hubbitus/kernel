@@ -2257,6 +2257,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 26 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable rtl8192ee (rhbz 1113422)
+
 * Thu Jun 26 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.16.0-0.rc2.git3.2
 - Add kernel-arm64.patch, which contains AArch64 support destined for upstream.
   ssh://git.fedorahosted.org/git/kernel-arm64.git is Mark Salter's source tree
