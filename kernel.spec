@@ -8,6 +8,8 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
+%global aarch64patches 1
+
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
 %ifarch %{ix86} x86_64
@@ -40,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -364,7 +366,11 @@ Summary: The Linux kernel
 # Which is a BadThing(tm).
 
 # We only build kernel-headers on the following...
+%if 0%{?aarch64patches}
 %define nobuildarches i386 s390
+%else
+%define nobuildarches i386 s390 aarch64
+%endif
 
 %ifarch %nobuildarches
 %define with_up 0
@@ -644,6 +650,9 @@ Patch25105: x86_32-signal-Fix-vdso-rt_sigreturn.patch
 Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
+Patch30000: kernel-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1368,6 +1377,13 @@ ApplyPatch x86_32-signal-Fix-vdso-rt_sigreturn.patch
 ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+%if 0%{?aarch64patches}
+ApplyPatch kernel-arm64.patch
+%ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
+ApplyPatch kernel-arm64.patch -R
+%endif
+%endif
 
 # END OF PATCH APPLICATIONS
 
@@ -2241,6 +2257,15 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 26 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.16.0-0.rc2.git3.2
+- Add kernel-arm64.patch, which contains AArch64 support destined for upstream.
+  ssh://git.fedorahosted.org/git/kernel-arm64.git is Mark Salter's source tree
+  integrating these patches on the devel branch. I've added a twiddle to the
+  top of the spec file to disable the aarch64 patchset, and also set aarch64
+  to nobuildarches, so we still get kernel-headers, but no one accidentally
+  installs a non-booting kernel if the patchset causes rejects during a
+  rebase.
+
 * Thu Jun 26 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Trimmed changelog, see fedpkg git for earlier history.
 

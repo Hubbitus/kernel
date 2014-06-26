@@ -5246,3 +5246,6 @@ CONFIG_FMC_CHARDEV=m
 # CONFIG_CRYPTO_KEY_TYPE is not set
 # CONFIG_PGP_LIBRARY is not set
 # CONFIG_PGP_PRELOAD is not set
+
+# CONFIG_RTC_DRV_EFI is not set
+# CONFIG_NET_XGENE is not set
