@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -735,23 +735,11 @@ Patch25071: drm-fix-qxl-mode-flags-backport.patch
 #rhbz 861573
 Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#CVE-2014-0181 rhbz 1094270 1094265
-Patch25082: 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
-Patch25083: 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
-Patch25084: 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
-Patch25085: 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
-Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
-#rhbz 1094265 1097684
-Patch25094: netlink-Only-check-file-credentials-for-implicit-des.patch
-
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
 
 #rhbz 1051668
 Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1099857
-Patch25095: team-fix-mtu-setting.patch
 
 #rhbz 1094066
 Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
@@ -1469,23 +1457,11 @@ ApplyPatch drm-fix-qxl-mode-flags-backport.patch
 #rhbz 861573
 ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#CVE-2014-0181 rhbz 1094270 1094265
-ApplyPatch 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
-ApplyPatch 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
-ApplyPatch 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
-ApplyPatch 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
-ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
-#rhbz 1094265 1097684
-ApplyPatch netlink-Only-check-file-credentials-for-implicit-des.patch
-
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
 
 #rhbz 1051668
 ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1099857
-ApplyPatch team-fix-mtu-setting.patch
 
 #rhbz 1094066
 ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
@@ -2327,6 +2303,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jun 26 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.9-200
+- Linux v3.14.9
+
 * Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Revert commit that breaks Wacom Intuos4 from Benjamin Tissoires
 - CVE-2014-0206 aio: insufficient head sanitization in aio_read_events_ring (rhbz 1094602 1112975)
