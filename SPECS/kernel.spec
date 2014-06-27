@@ -338,8 +338,7 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: securebootca.cer
-Source14: secureboot.cer
+Source13: centos.cer
 Source15: rheldup3.x509
 Source16: rhelkpatch1.x509
 
@@ -819,7 +818,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}-n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1474,6 +1473,9 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Tue Jun 27 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.4.2.el7.centos]
+- Patch in CentOS SecureBoot certs
+
 * Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.2.el7]
 - [fs] aio: fix plug memory disclosure and fix reqs_active accounting backport (Jeff Moyer) [1094604 1094605] {CVE-2014-0206}
 - [fs] aio: plug memory disclosure and fix reqs_active accounting (Mateusz Guzik) [1094604 1094605] {CVE-2014-0206}
