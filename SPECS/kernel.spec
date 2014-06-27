@@ -340,7 +340,7 @@ Source11: x509.genkey
 Source12: extra_certificates
 Source13: centos.cer
 Source15: centos-ldup.cer
-Source16: centos-kdump.cer
+Source16: centos-kpatch.cer
 
 Source18: check-kabi
 
