@@ -524,11 +524,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
+Summary: The CentOS Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the Red Hat Enterprise
+The kABI package contains information pertaining to the CentOS
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -1486,6 +1486,7 @@ fi
 - Patch in CentOS SecureBoot certs
 - Add in debranding changes
 - Add in CentOS kdump and driver update certs
+- Modifications to remove Red Hat from spec file
 
 * Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.2.el7]
 - [fs] aio: fix plug memory disclosure and fix reqs_active accounting backport (Jeff Moyer) [1094604 1094605] {CVE-2014-0206}
