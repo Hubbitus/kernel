@@ -339,8 +339,8 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 Source13: centos.cer
-Source15: rheldup3.x509
-Source16: rhelkpatch1.x509
+Source15: centos-ldup.cer
+Source16: centos-kdump.cer
 
 Source18: check-kabi
 
@@ -1484,6 +1484,8 @@ fi
 %changelog
 * Tue Jun 27 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.4.2.el7.centos]
 - Patch in CentOS SecureBoot certs
+- Add in debranding changes
+- Add in CentOS kdump and driver update certs
 
 * Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.2.el7]
 - [fs] aio: fix plug memory disclosure and fix reqs_active accounting backport (Jeff Moyer) [1094604 1094605] {CVE-2014-0206}
