@@ -1,3 +1,6 @@
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1021036
+Upstream-status: Send upstream for 3.17
+
 From 0ad19912cb324f0a356a212433ec0b2a31f61acc Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Fri, 20 Jun 2014 10:29:16 +0200
