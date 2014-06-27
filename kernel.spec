@@ -770,6 +770,10 @@ Patch25108: aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
+#rhbz 1021036
+Patch25110: 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+Patch25111: 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1491,6 +1495,10 @@ ApplyPatch aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
 ApplyPatch aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+#rhbz 1021036
+ApplyPatch 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+ApplyPatch 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2303,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
+- Add patch to fix wifi on lenove yoga 2 series (rhbz#1021036)
+
 * Thu Jun 26 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.9-200
 - Linux v3.14.9
 
