@@ -339,8 +339,8 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 Source13: centos.cer
-Source15: rheldup3.x509
-Source16: rhelkpatch1.x509
+Source15: centos-ldup.cer
+Source16: centos-kpatch.cer
 
 Source18: check-kabi
 
@@ -1475,6 +1475,7 @@ fi
 * Tue Jun 24 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.el7.centos]
 - Patch in CentOS SecureBoot certs
 - Add in debranding patches 
+- Add in CentOS driver and kpatch certs
 
 * Mon May 05 2014 Jarod Wilson <jarod@redhat.com> [3.10.0-123.el7]
 - [mm] rmap: try_to_unmap_cluster() should lock_page() before mlocking (Larry Woodman) [1078349] {CVE-2014-3122}
