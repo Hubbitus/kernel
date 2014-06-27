@@ -339,8 +339,8 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 Source13: centos.cer
-Source15: rheldup3.x509
-Source16: rhelkpatch1.x509
+Source15: centos-ldup.cer
+Source16: centos-kpatch.cer
 
 Source18: check-kabi
 
@@ -1475,6 +1475,7 @@ fi
 * Tue Jun 24 2014 Karanbir Singh <kbsingh@centos.org> [3.10.0-123.1.2.el7.centos]
 - Patch in CentOS SecureBoot certs
 - Add in debranding patches
+- Add in CentOS driver update and kpatch certs
 
 * Wed Jun 4 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.1.2.el7]
 - [tty] n_tty: Fix n_tty_write crash when echoing in raw mode (Aristeu Rozanski) [1094241 1094242] {CVE-2014-0196}
