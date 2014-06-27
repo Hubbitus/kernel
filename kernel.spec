@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2263,6 +2263,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jun 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git4.1
+- Linux v3.16-rc2-222-g3493860c76eb
+
 * Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
 - Add patch to fix wifi on lenove yoga 2 series (rhbz#1021036)
 
