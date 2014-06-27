@@ -651,6 +651,9 @@ Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
+#rhbz 1021036, submitted upstream
+Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1377,6 +1380,9 @@ ApplyPatch x86_32-signal-Fix-vdso-rt_sigreturn.patch
 ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+#rhbz 1021036, submitted upstream
+ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2257,6 +2263,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
+- Add patch to fix wifi on lenove yoga 2 series (rhbz#1021036)
+
 * Thu Jun 26 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable rtl8192ee (rhbz 1113422)
 
