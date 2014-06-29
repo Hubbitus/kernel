@@ -2362,6 +2362,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Jun 21 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
+
 * Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
 - Linux v3.14.8
 
