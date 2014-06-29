@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -768,23 +768,11 @@ Patch25071: drm-fix-qxl-mode-flags-backport.patch
 #rhbz 861573
 Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#CVE-2014-0181 rhbz 1094270 1094265
-Patch25082: 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
-Patch25083: 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
-Patch25084: 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
-Patch25085: 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
-Patch25086: 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
-#rhbz 1094265 1097684
-Patch25094: netlink-Only-check-file-credentials-for-implicit-des.patch
-
 #rhbz 1082266
 Patch25087: jme-fix-dma-unmap-error.patch
 
 #rhbz 1051668
 Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1099857
-Patch25095: team-fix-mtu-setting.patch
 
 #rhbz 1094066
 Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
@@ -801,6 +789,23 @@ Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksiz
 
 #rhbz 1103528
 Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
+
+Patch25102: intel_pstate-Fix-setting-VID.patch
+Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
+Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
+
+#CVE-2014-4508 rhbz 1111590 1112073
+Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
+#CVE-2014-0206 rhbz 1094602 1112975
+Patch25107: aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
+Patch25108: aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
+
+Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+#rhbz 1021036
+Patch25110: 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+Patch25111: 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1513,23 +1518,11 @@ ApplyPatch drm-fix-qxl-mode-flags-backport.patch
 #rhbz 861573
 ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#CVE-2014-0181 rhbz 1094270 1094265
-ApplyPatch 1-5-netlink-Rename-netlink_capable-netlink_allowed.patch
-ApplyPatch 2-5-net-Move-the-permission-check-in-sock_diag_put_filterinfo-to-packet_diag_dump.patch
-ApplyPatch 3-5-net-Add-variants-of-capable-for-use-on-on-sockets.patch
-ApplyPatch 4-5-net-Add-variants-of-capable-for-use-on-netlink-messages.patch
-ApplyPatch 5-5-net-Use-netlink_ns_capable-to-verify-the-permisions-of-netlink-messages.patch
-#rhbz 1094265 1097684
-ApplyPatch netlink-Only-check-file-credentials-for-implicit-des.patch
-
 #rhbz 1082266
 ApplyPatch jme-fix-dma-unmap-error.patch
 
 #rhbz 1051668
 ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1099857
-ApplyPatch team-fix-mtu-setting.patch
 
 #rhbz 1094066
 ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
@@ -1546,6 +1539,23 @@ ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize
 
 #rhbz 1103528
 ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
+
+ApplyPatch intel_pstate-Fix-setting-VID.patch
+ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
+ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
+
+#CVE-2014-4508 rhbz 1111590 1112073
+ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
+
+#CVE-2014-0206 rhbz 1094602 1112975
+ApplyPatch aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
+ApplyPatch aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
+
+ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
+
+#rhbz 1021036
+ApplyPatch 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+ApplyPatch 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2362,8 +2372,24 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
+- Add patch to fix wifi on lenove yoga 2 series (rhbz#1021036)
+
+* Thu Jun 26 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.9-200
+- Linux v3.14.9
+
+* Wed Jun 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert commit that breaks Wacom Intuos4 from Benjamin Tissoires
+- CVE-2014-0206 aio: insufficient head sanitization in aio_read_events_ring (rhbz 1094602 1112975)
+
+* Mon Jun 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4508 BUG in x86_32 syscall auditing (rhbz 1111590 1112073)
+
 * Sat Jun 21 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
 - 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
+
+* Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Bring in intel_pstate regression fixes for BayTrail (rhbz 1111920)
 
 * Mon Jun 16 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.14.8-200
 - Linux v3.14.8

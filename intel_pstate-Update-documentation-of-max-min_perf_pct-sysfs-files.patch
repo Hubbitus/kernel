@@ -1,0 +1,97 @@
+                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.6.212 with SMTP id d20csp423275oaa;
+        Fri, 20 Jun 2014 07:30:34 -0700 (PDT)
+X-Received: by 10.68.190.98 with SMTP id gp2mr5272210pbc.88.1403274634321;
+        Fri, 20 Jun 2014 07:30:34 -0700 (PDT)
+Return-Path: <stable-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id hp1si10074557pad.83.2014.06.20.07.29.43
+        for <multiple recipients>;
+        Fri, 20 Jun 2014 07:30:34 -0700 (PDT)
+Received-SPF: none (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=neutral (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) smtp.mail=stable-owner@vger.kernel.org;
+       dkim=neutral (body hash did not verify) header.i=@;
+       dmarc=fail (p=NONE dis=NONE) header.from=gmail.com
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1752837AbaFTO2Q (ORCPT <rfc822;tuffkidtt@gmail.com> + 73 others);
+	Fri, 20 Jun 2014 10:28:16 -0400
+Received: from mail-pa0-f44.google.com ([209.85.220.44]:49238 "EHLO
+	mail-pa0-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752834AbaFTO2P (ORCPT
+	<rfc822;stable@vger.kernel.org>); Fri, 20 Jun 2014 10:28:15 -0400
+Received: by mail-pa0-f44.google.com with SMTP id rd3so3177765pab.17
+        for <multiple recipients>; Fri, 20 Jun 2014 07:28:15 -0700 (PDT)
+DKIM-Signature:	v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=rsR1AnYOOFONegcKUuZzrIkP/Fwwpd8RySrcXDcatYE=;
+        b=H8hEI3Sg3lQRMr4ADxJtNpRGhyOTkP+gFC3du64xhLqVHicLrvtD06Wz7Vv0AowO52
+         JpoocTnE8lUQvSMqev+LIh83DoFZxvYqrWqv0815LcZATxquRCPfNw8py9uTm3o0ABIy
+         PhXPM7UO278Ov67fqu63akRwHfrgtd22iXkHcn68ZqbTvdfo/jJlMcgRVoysP8XNPoIV
+         FZ4uVsHsjcx77zgA6A8t22vG5eozHRabvcvyxAp8eC/GwSjlWRFN7ETD28w4muvZcbFm
+         PFDieDk7detiTEqFyXncStI0i81Ezun+IyWnPnI1EOqPXKLoFaUiyxmw6Z7iOWLs0166
+         NLoA==
+X-Received: by 10.68.193.100 with SMTP id hn4mr5166204pbc.50.1403274495186;
+        Fri, 20 Jun 2014 07:28:15 -0700 (PDT)
+Received: from echolake.localdomain (static-50-43-41-81.bvtn.or.frontiernet.net. [50.43.41.81])
+        by mx.google.com with ESMTPSA id vx10sm44287848pac.17.2014.06.20.07.28.13
+        for <multiple recipients>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 20 Jun 2014 07:28:13 -0700 (PDT)
+From:	dirk.brandewie@gmail.com
+X-Google-Original-From:	dirk.j.brandewie@intel.com
+To:	linux-pm@vger.kernel.org
+Cc:	rjw@rjwysocki.net, dirk.brandewie@gmail.com,
+	stable@vger.kernel.org, Dirk Brandewie <dirk.j.brandewie@intel.com>
+Subject: [PATCH 3/3] intel_pstate: Update documentation of {max,min}_perf_pct sysfs files
+Date:	Fri, 20 Jun 2014 07:28:00 -0700
+Message-Id: <1403274480-10593-4-git-send-email-dirk.j.brandewie@intel.com>
+X-Mailer: git-send-email 1.9.0
+In-Reply-To: <1403274480-10593-1-git-send-email-dirk.j.brandewie@intel.com>
+References: <1403274480-10593-1-git-send-email-dirk.j.brandewie@intel.com>
+Sender:	stable-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <stable.vger.kernel.org>
+X-Mailing-List:	stable@vger.kernel.org
+
+From: Dirk Brandewie <dirk.j.brandewie@intel.com>
+
+Update documentation to make the interpretation of the values clearer
+
+References: https://bugzilla.kernel.org/show_bug.cgi?id=64251
+
+Cc: Stable <stable@vger.kernel.org>  [3.13+]
+Signed-off-by: Dirk Brandewie <dirk.j.brandewie@intel.com>
+---
+ Documentation/cpu-freq/intel-pstate.txt | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/cpu-freq/intel-pstate.txt b/Documentation/cpu-freq/intel-pstate.txt
+index e742d21..a69ffe1 100644
+--- a/Documentation/cpu-freq/intel-pstate.txt
++++ b/Documentation/cpu-freq/intel-pstate.txt
+@@ -15,10 +15,13 @@ New sysfs files for controlling P state selection have been added to
+ /sys/devices/system/cpu/intel_pstate/
+ 
+       max_perf_pct: limits the maximum P state that will be requested by
+-      the driver stated as a percentage of the available performance.
++      the driver stated as a percentage of the available performance. The
++      available (P states) performance may be reduced by the no_turbo
++      setting described below.
+ 
+       min_perf_pct: limits the minimum P state that will be  requested by
+-      the driver stated as a percentage of the available performance.
++      the driver stated as a percentage of the max (non-turbo)
++      performance level.
+ 
+       no_turbo: limits the driver to selecting P states below the turbo
+       frequency range.
+-- 
+1.9.0
+
+--
+To unsubscribe from this list: send the line "unsubscribe stable" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html

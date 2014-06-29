@@ -1,0 +1,130 @@
+Bugzilla: 1112073
+Upstream-status: Sent for 3.16 and CC'd to stable                                                                                                                                                                                                                                                               
+Delivered-To: jwboyer@gmail.com
+Received: by 10.76.6.212 with SMTP id d20csp139586oaa;
+        Mon, 23 Jun 2014 14:28:15 -0700 (PDT)
+X-Received: by 10.68.222.196 with SMTP id qo4mr32453892pbc.14.1403558895116;
+        Mon, 23 Jun 2014 14:28:15 -0700 (PDT)
+Return-Path: <stable-owner@vger.kernel.org>
+Received: from vger.kernel.org (vger.kernel.org. [209.132.180.67])
+        by mx.google.com with ESMTP id bm3si23587434pad.232.2014.06.23.14.27.47
+        for <multiple recipients>;
+        Mon, 23 Jun 2014 14:28:15 -0700 (PDT)
+Received-SPF: none (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) client-ip=209.132.180.67;
+Authentication-Results: mx.google.com;
+       spf=neutral (google.com: stable-owner@vger.kernel.org does not designate permitted sender hosts) smtp.mail=stable-owner@vger.kernel.org
+Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
+	id S1752475AbaFWVWX (ORCPT <rfc822;tuffkidtt@gmail.com> + 73 others);
+	Mon, 23 Jun 2014 17:22:23 -0400
+Received: from mail-pb0-f42.google.com ([209.85.160.42]:39692 "EHLO
+	mail-pb0-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+	with ESMTP id S1752518AbaFWVWW (ORCPT
+	<rfc822;stable@vger.kernel.org>); Mon, 23 Jun 2014 17:22:22 -0400
+Received: by mail-pb0-f42.google.com with SMTP id ma3so6319797pbc.15
+        for <stable@vger.kernel.org>; Mon, 23 Jun 2014 14:22:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-type:content-transfer-encoding;
+        bh=7AW5eK5e3OhAcFYPrsffKoD56CbJdqfg9BcyF1JKfUE=;
+        b=iLlWTJCuH9FlKTif4N6XtFZNvj8a/fbsjuP4kWWD/gmHHGEOWI6bh2Jm8X3vcN6GtV
+         f7rqFO0SAMf197e66uME3pq8NzYFad4eRgJpBGON93P22+cPbqrsT9FZjMZqn2bJkEw4
+         EDZZy2MFqm3Kx2m/5g76NLDV1tgafEnwbgL1vg6IxlbPi6J8inkXwKP3FdMoTcfRBO6p
+         dIcI1cV7VDNf6zKaMj+XS/ZiSxqpArhwvZ6xnXRmLfgD+x/JsxEcg2pX03BXHTKO9QNm
+         nixe+cuug0X0E5idHuiLJzV0Wf6IhYsvVz/FvjY16pggduecA2NgNU2e7txqb+IcTBZ/
+         jBbA==
+X-Gm-Message-State: ALoCoQlblcwmTrVjpekrIOzidDrxwB18p5Rfd5SObiPQifpOQZmSFUKrxzV0kxCjcW/wVwxOzAG7
+X-Received: by 10.68.197.8 with SMTP id iq8mr32930210pbc.124.1403558541680;
+        Mon, 23 Jun 2014 14:22:21 -0700 (PDT)
+Received: from localhost (50-76-60-73-ip-static.hfc.comcastbusiness.net. [50.76.60.73])
+        by mx.google.com with ESMTPSA id fl6sm99195659pab.43.2014.06.23.14.22.19
+        for <multiple recipients>
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Jun 2014 14:22:20 -0700 (PDT)
+From:	Andy Lutomirski <luto@amacapital.net>
+Cc:	"H. Peter Anvin" <hpa@zytor.com>,
+	Richard Weinberger <richard@nod.at>, X86 ML <x86@kernel.org>,
+	Eric Paris <eparis@redhat.com>,
+	Linux Kernel <linux-kernel@vger.kernel.org>,
+	security@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+	Borislav Petkov <bp@alien8.de>,
+	=?UTF-8?q?Toralf=20F=C3=B6rster?= <toralf.foerster@gmx.de>,
+	Andy Lutomirski <luto@amacapital.net>, stable@vger.kernel.org,
+	Roland McGrath <roland@redhat.com>
+Subject: [PATCH] x86_32,entry: Do syscall exit work on badsys (CVE-2014-4508)
+Date:	Mon, 23 Jun 2014 14:22:15 -0700
+Message-Id: <e09c499eade6fc321266dd6b54da7beb28d6991c.1403558229.git.luto@amacapital.net>
+X-Mailer: git-send-email 1.9.3
+In-Reply-To: <CA+5PVA70nFS8JZkL0-Q-1HjFHT5NA04275_M4WstjQMrpT+hrQ@mail.gmail.com>
+References: <CA+5PVA70nFS8JZkL0-Q-1HjFHT5NA04275_M4WstjQMrpT+hrQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+To:	unlisted-recipients:; (no To-header on input)
+Sender:	stable-owner@vger.kernel.org
+Precedence: bulk
+List-ID: <stable.vger.kernel.org>
+X-Mailing-List:	stable@vger.kernel.org
+
+The bad syscall nr paths are their own incomprehensible route
+through the entry control flow.  Rearrange them to work just like
+syscalls that return -ENOSYS.
+
+This fixes an OOPS in the audit code when fast-path auditing is
+enabled and sysenter gets a bad syscall nr (CVE-2014-4508).
+
+This has probably been broken since Linux 2.6.27:
+af0575bba0 i386 syscall audit fast-path
+
+Cc: stable@vger.kernel.org
+Cc: Roland McGrath <roland@redhat.com>
+Reported-by: Toralf Förster <toralf.foerster@gmx.de>
+Signed-off-by: Andy Lutomirski <luto@amacapital.net>
+---
+
+I realize that the syscall audit fast path and badsys code, on 32-bit
+x86 no less, is possibly one of the least fun things in the kernel to
+review, but this is still a real security bug and should get fixed :(
+
+So I'm cc-ing a bunch of people and maybe someone will review it.
+
+ arch/x86/kernel/entry_32.S | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/entry_32.S b/arch/x86/kernel/entry_32.S
+index a2a4f46..f4258a5 100644
+--- a/arch/x86/kernel/entry_32.S
++++ b/arch/x86/kernel/entry_32.S
+@@ -431,9 +431,10 @@ sysenter_past_esp:
+ 	jnz sysenter_audit
+ sysenter_do_call:
+ 	cmpl $(NR_syscalls), %eax
+-	jae syscall_badsys
++	jae sysenter_badsys
+ 	call *sys_call_table(,%eax,4)
+ 	movl %eax,PT_EAX(%esp)
++sysenter_after_call:
+ 	LOCKDEP_SYS_EXIT
+ 	DISABLE_INTERRUPTS(CLBR_ANY)
+ 	TRACE_IRQS_OFF
+@@ -688,7 +689,12 @@ END(syscall_fault)
+ 
+ syscall_badsys:
+ 	movl $-ENOSYS,PT_EAX(%esp)
+-	jmp resume_userspace
++	jmp syscall_exit
++END(syscall_badsys)
++
++sysenter_badsys:
++	movl $-ENOSYS,PT_EAX(%esp)
++	jmp sysenter_after_call
+ END(syscall_badsys)
+ 	CFI_ENDPROC
+ /*
+-- 
+1.9.3
+
+--
+To unsubscribe from this list: send the line "unsubscribe stable" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
