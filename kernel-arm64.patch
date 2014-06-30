@@ -1,7 +1,4 @@
-git clone ssh://git.fedorahosted.org/git/kernel-arm64.git
-git diff -p master...origin/devel >kernel-arm64.patch
-
-commit 0555d24c0fb9ce825a0eb16f1b8b4a73f5014408
+commit 983932f4feeb38a09ae12e49875479db22cd3312
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Jun 24 23:16:45 2014 -0400
 
@@ -18,7 +15,7 @@ Date:   Tue Jun 24 23:16:45 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ab1e5ae69aa0c7461a305c1f161229f8a22aff2b
+commit 46c0ee11217eb143c70e947064e5cc9413f8dd79
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Jun 23 00:34:17 2014 -0400
 
@@ -35,7 +32,7 @@ Date:   Mon Jun 23 00:34:17 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit e1651b99e0dc0f1e92dbe9ef34ff33496dce94b2
+commit 5500ed01dcd1c606cfcde8183429b81131fe320f
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:43 2014 +0100
 
@@ -48,7 +45,7 @@ Date:   Thu Jun 19 10:19:43 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit a0806e54bfb522e50530e356abe1108e108a1430
+commit e9ad9cfb26b54f286032b0b5b7226b089ba2a1ae
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:42 2014 +0100
 
@@ -60,7 +57,7 @@ Date:   Thu Jun 19 10:19:42 2014 +0100
     Acked-by: Catalin Marinas <catalin.marinas@arm.com>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 813813c877235d7a4499546913e360ca958e57a7
+commit 8eeec56af2a9b33b1d6e9bfbbd2cbfefe3251a95
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:41 2014 +0100
 
@@ -76,7 +73,7 @@ Date:   Thu Jun 19 10:19:41 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 298ecc28f3f58453e56c2e5b6891679480fe32f9
+commit 7454825239cf45a68e3f4762a2e8bc7d48cc9dcf
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:40 2014 +0100
 
@@ -91,7 +88,7 @@ Date:   Thu Jun 19 10:19:40 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 701b0fd0ac4c260fbe364248710bf37bdffde360
+commit 3683c401f6baf5f423d84fb79463a71a9bb83193
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:39 2014 +0100
 
@@ -108,7 +105,7 @@ Date:   Thu Jun 19 10:19:39 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 54f2e57b90ce894bb7312968344faf16624e7546
+commit db14591a1ee58c7b5184e5133b6d3d01bd800f32
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:38 2014 +0100
 
@@ -124,7 +121,7 @@ Date:   Thu Jun 19 10:19:38 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 758dbee6188c8313ca4787e7f49d3959666229de
+commit a2059979751390473cfdb4e4a8b1215f4329234c
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:37 2014 +0100
 
@@ -138,7 +135,7 @@ Date:   Thu Jun 19 10:19:37 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 1b35a44bd60fb52bd919705b98d3ab5f5f2e0e7a
+commit 997913f5ee0b3edb9d63015b984876ce88dcacc1
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:36 2014 +0100
 
@@ -151,7 +148,7 @@ Date:   Thu Jun 19 10:19:36 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 33b5df2e6295cec0a2666b0e6f5d55778bdebd1e
+commit 64aa80c7c6133b18442c0e648c833fdbafc71c13
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:35 2014 +0100
 
@@ -163,7 +160,7 @@ Date:   Thu Jun 19 10:19:35 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit b5113a5f316d899b8fde3ac8025715bb15582347
+commit a3541bd1a3edeae13f4dc6cb1236d1fa6b1ff999
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:34 2014 +0100
 
@@ -179,7 +176,7 @@ Date:   Thu Jun 19 10:19:34 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit f32f60e78a61c7f1878e8576a944820db713d6bf
+commit e4a2b077cd5cfb1898fe1df98daa6f0bfaf574e4
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:33 2014 +0100
 
@@ -192,7 +189,7 @@ Date:   Thu Jun 19 10:19:33 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 1c377524d163ce244e0567db0987b501307750bb
+commit 2ec7fc615658e4c75437b7e702130733d0e59bbd
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:32 2014 +0100
 
@@ -206,7 +203,7 @@ Date:   Thu Jun 19 10:19:32 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit cf16a437bb41f188a24142bef17ccc96f54ee29a
+commit 75fbfe0b0d0645f99612ab4c65ede696291d0fb3
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:31 2014 +0100
 
@@ -218,7 +215,7 @@ Date:   Thu Jun 19 10:19:31 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 8e35c914d0fee0ed9334336590f72df618c42d44
+commit 58922f2fe73a8c27f502289f89f39a60f0be9e63
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:30 2014 +0100
 
@@ -231,7 +228,7 @@ Date:   Thu Jun 19 10:19:30 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 5e74572029116124aba6e057aba2f7106b651661
+commit 62b5e49b44aa033d4489108a84310d1ac074ec11
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:29 2014 +0100
 
@@ -244,7 +241,7 @@ Date:   Thu Jun 19 10:19:29 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 840d3614b64ad26e0f510bd2ef78bf427d91f778
+commit dad9fe9a8274b6fed74a348b09a131f96560f47a
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:28 2014 +0100
 
@@ -257,7 +254,7 @@ Date:   Thu Jun 19 10:19:28 2014 +0100
     Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 07a7980c0ca48f940b97a7be30db7700317813de
+commit 97e409937d206ca0c97a8e143f3cb9736d6e8ac7
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:27 2014 +0100
 
@@ -269,7 +266,7 @@ Date:   Thu Jun 19 10:19:27 2014 +0100
     Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit fb16d46188b56559112b10eb9d4cc10ff2d85c12
+commit fdd6a7889226f60469933ae5bf50c168ba2ceb27
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:26 2014 +0100
 
@@ -285,7 +282,7 @@ Date:   Thu Jun 19 10:19:26 2014 +0100
     Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 06fca8017fe75cffdae40a9de3b1a864b649a308
+commit 4ab4528bd42f832c10a9a07f77c8d96749fca0db
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:25 2014 +0100
 
@@ -318,7 +315,7 @@ Date:   Thu Jun 19 10:19:25 2014 +0100
     Acked-by: Catalin Marinas <catalin.marinas@arm.com>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit 9e8004797a703dbcfd57b240119b350727887c43
+commit 76a9db9c074d536b3a310246aaca6c949c6e1b43
 Author: Marc Zyngier <marc.zyngier@arm.com>
 Date:   Thu Jun 19 10:19:24 2014 +0100
 
@@ -334,7 +331,7 @@ Date:   Thu Jun 19 10:19:24 2014 +0100
     Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
     Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
 
-commit b4e6d74b54b13bb69b5d31a44ce1ae0118e7b9c7
+commit 24ee5c9fa14106f699027a80ef5bece8a02d3640
 Author: Mark Salter <msalter@redhat.com>
 Date:   Thu Jun 12 15:10:22 2014 -0400
 
@@ -348,7 +345,7 @@ Date:   Thu Jun 12 15:10:22 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 7362bb3ff47a277d57e2547b463dac40c51ee09b
+commit f0cb397f038b00d6a3d3aafaa56815e8615b7152
 Author: Don Dutile <ddutile@redhat.com>
 Date:   Tue Mar 25 20:22:26 2014 -0400
 
@@ -364,7 +361,7 @@ Date:   Tue Mar 25 20:22:26 2014 -0400
     
     Signed-off-by: Donald Dutile <ddutile@redhat.com>
 
-commit fa07a775e9c349106913e3931ad8c79a629d52a6
+commit 7fabb73d32c81cedc5c7ad11a3f3e6c96cd79f50
 Author: Mark Salter <msalter@redhat.com>
 Date:   Sun Jun 15 09:06:55 2014 -0400
 
@@ -376,7 +373,7 @@ Date:   Sun Jun 15 09:06:55 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 039c600b601646a609356c379f9180499bc1fc06
+commit a3d5ec7e0cad00c3b89abae91813910470d209b1
 Author: Kyle McMartin <kmcmarti@redhat.com>
 Date:   Tue May 13 22:25:26 2014 -0400
 
@@ -446,7 +443,7 @@ Date:   Tue May 13 22:25:26 2014 -0400
     Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
     Signed-off-by: Donald Dutile <ddutile@redhat.com>
 
-commit 36988493876f40bfcde0f3ed20c7386792297d6e
+commit 83c13f2718624a69568121628bd7b51c67a14dea
 Author: Mark Salter <msalter@redhat.com>
 Date:   Fri Jun 13 00:37:11 2014 -0400
 
@@ -536,7 +533,7 @@ Date:   Fri Jun 13 00:37:11 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 6443ca61dca1a50a86bb3a1678799a9227a83335
+commit 88ccd0e487a20575b4c9610c4df095af47f15d32
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Jun 24 09:50:28 2014 -0400
 
@@ -548,9 +545,9 @@ Date:   Tue Jun 24 09:50:28 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 06191eb6c796a0678be663ce77e3abeb18b0b3f7
+commit b99cd7b41a68bdf74034044e53992cb6d60cd5c5
 Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Thu Jun 19 14:40:25 2014 +0100
+Date:   Fri Jun 13 12:39:55 2014 +0100
 
     x86/reboot: Add EFI reboot quirk for ACPI Hardware Reduced flag
     
@@ -566,9 +563,9 @@ Date:   Thu Jun 19 14:40:25 2014 +0100
     Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
     Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 
-commit f9fbfac6e78f4772e9ea83fe98b9d65a04b66d7b
+commit b0a9441c25fc622d21ea838670292886db5e4774
 Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Thu Jun 19 14:40:24 2014 +0100
+Date:   Fri Jun 13 12:35:21 2014 +0100
 
     efi/reboot: Allow powering off machines using EFI
     
@@ -594,9 +591,9 @@ Date:   Thu Jun 19 14:40:24 2014 +0100
     Cc: Mark Salter <msalter@redhat.com>
     Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 
-commit 3ab8d8d210f5e819438e197bc95d44aeb216a772
+commit 178be6962ce99a8f97c857acb72382568fad5a09
 Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Thu Jun 19 14:40:23 2014 +0100
+Date:   Fri Jun 13 12:22:22 2014 +0100
 
     efi/reboot: Add generic wrapper around EfiResetSystem()
     
@@ -611,9 +608,24 @@ Date:   Thu Jun 19 14:40:23 2014 +0100
     Cc: Mark Salter <msalter@redhat.com>
     Signed-off-by: Matt Fleming <matt.fleming@intel.com>
 
-commit 42218bfddcbe38f0b92674723ebd9de2fb7e8c4e
+commit 741309a7ffef94dbd1c4c92f2d29efefb2f7d3ea
+Author: Saurabh Tangri <saurabh.tangri@intel.com>
+Date:   Mon Jun 2 05:18:35 2014 -0700
+
+    x86/efi: Move all workarounds to a separate file quirks.c
+    
+    Currently, it's difficult to find all the workarounds that are
+    applied when running on EFI, because they're littered throughout
+    various code paths. This change moves all of them into a separate
+    file with the hope that it will be come the single location for all
+    our well documented quirks.
+    
+    Signed-off-by: Saurabh Tangri <saurabh.tangri@intel.com>
+    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+commit 83a31f42054546344d10493a6edbd8ce1914c36b
 Author: Michal Nazarewicz <mina86@mina86.com>
-Date:   Mon Jun 23 21:40:47 2014 +0200
+Date:   Thu Jun 26 10:42:17 2014 +1000
 
     mm: page_alloc: fix CMA area initialisation when pageblock > MAX_ORDER
     
@@ -643,29 +655,34 @@ Date:   Mon Jun 23 21:40:47 2014 +0200
       [<fffffe0000bf0a50>] kernel_init_freeable+0x204/0x2a8
       [<fffffe00007520a0>] kernel_init+0xc/0xd4
     
-    This happens because init_cma_reserved_pageblock() calls
-    __free_one_page() with pageblock_order as page order but it is bigger
-    han MAX_ORDER.  This in turn causes accesses past zone->free_list[].
+    This happens because init_cma_reserved_pageblock() calls __free_one_page()
+    with pageblock_order as page order but it is bigger than MAX_ORDER.  This
+    in turn causes accesses past zone->free_list[].
     
     Fix the problem by changing init_cma_reserved_pageblock() such that it
-    splits pageblock into individual MAX_ORDER pages if pageblock is
-    bigger than a MAX_ORDER page.
+    splits pageblock into individual MAX_ORDER pages if pageblock is bigger
+    than a MAX_ORDER page.
     
     In cases where !CONFIG_HUGETLB_PAGE_SIZE_VARIABLE, which is all
     architectures expect for ia64, powerpc and tile at the moment, the
     “pageblock_order > MAX_ORDER” condition will be optimised out since
-    both sides of the operator are constants.  In cases where pageblock
-    size is variable, the performance degradation should not be
-    significant anyway since init_cma_reserved_pageblock() is called
-    only at boot time at most MAX_CMA_AREAS times which by default is
-    eight.
+    both sides of the operator are constants.  In cases where pageblock size
+    is variable, the performance degradation should not be significant anyway
+    since init_cma_reserved_pageblock() is called only at boot time at most
+    MAX_CMA_AREAS times which by default is eight.
     
-    Cc: stable@vger.kernel.org
     Signed-off-by: Michal Nazarewicz <mina86@mina86.com>
     Reported-by: Mark Salter <msalter@redhat.com>
+    Tested-by: Mark Salter <msalter@redhat.com>
     Tested-by: Christopher Covington <cov@codeaurora.org>
+    Cc: Mel Gorman <mgorman@suse.de>
+    Cc: David Rientjes <rientjes@google.com>
+    Cc: Marek Szyprowski <m.szyprowski@samsung.com>
+    Cc: Catalin Marinas <catalin.marinas@arm.com>
+    Cc: <stable@vger.kernel.org>	[3.5+]
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 
-commit 7e20b29ffff9de89d22779bcf8891b2a6bf3ab63
+commit 026545c8ed8737f6686036326a80498ae14d7fe5
 Author: Suman Tripathi <stripathi@apm.com>
 Date:   Thu Jun 19 06:51:32 2014 -0400
 
@@ -685,7 +702,7 @@ Date:   Thu Jun 19 06:51:32 2014 -0400
     Signed-off-by: Loc Ho <lho@apm.com>
     Signed-off-by: Suman Tripathi <stripathi@apm.com>
 
-commit 2494fae7825c244a6f173241c52e8ab7a38006e6
+commit 7750926fa769afc57a2d9ea4491e83b3d3e1e562
 Author: Suman Tripathi <stripathi@apm.com>
 Date:   Thu Jun 19 06:50:08 2014 -0400
 
@@ -696,7 +713,7 @@ Date:   Thu Jun 19 06:50:08 2014 -0400
     Signed-off-by: Loc Ho <lho@apm.com>
     Signed-off-by: Suman Tripathi <stripathi@apm.com>
 
-commit 3b3bef5b10473f9986de45022ae8cc528bfc8464
+commit 1952edc2d9e0236efaf573e11ed194052b893fd6
 Author: Iyappan Subramanian <isubramanian@apm.com>
 Date:   Fri Jun 20 16:18:16 2014 -0700
 
@@ -708,7 +725,7 @@ Date:   Fri Jun 20 16:18:16 2014 -0700
     Signed-off-by: Ravi Patel <rapatel@apm.com>
     Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
 
-commit b4ef14e44cda920313a6fa63382b82e2bd1964e1
+commit c5f8a2ce5b5ae15e8c68147463a19859a70c7a5b
 Author: Iyappan Subramanian <isubramanian@apm.com>
 Date:   Fri Jun 20 16:18:15 2014 -0700
 
@@ -720,7 +737,7 @@ Date:   Fri Jun 20 16:18:15 2014 -0700
     Signed-off-by: Ravi Patel <rapatel@apm.com>
     Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
 
-commit 1173f314654d6edb5072d4f47908520cf7fcc9c4
+commit ea7b7777362958223ca018cea22dba4074df102c
 Author: Iyappan Subramanian <isubramanian@apm.com>
 Date:   Fri Jun 20 16:18:14 2014 -0700
 
@@ -732,7 +749,7 @@ Date:   Fri Jun 20 16:18:14 2014 -0700
     Signed-off-by: Ravi Patel <rapatel@apm.com>
     Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
 
-commit 0931546a1d4a3e89072fcb9f3a3755adf49fb99c
+commit f2d2384a3d914cdd6cae7afdf3d6394c157d22b2
 Author: Iyappan Subramanian <isubramanian@apm.com>
 Date:   Fri Jun 20 16:18:13 2014 -0700
 
@@ -926,7 +943,7 @@ index 0000000..3e2a295
 +        status = "ok";
 +};
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 3cc94ff..45a142e 100644
+index 702ca10..5ce8e87 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -700,6 +700,14 @@ S:	Maintained
@@ -2177,10 +2194,19 @@ index 71c52bc..a149c67 100644
  {
  	efi_gettimeofday(ts);
 diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-index 1eb5f64..da50c586a 100644
+index 1eb5f64..5d71d0e 100644
 --- a/arch/x86/include/asm/efi.h
 +++ b/arch/x86/include/asm/efi.h
-@@ -156,6 +156,8 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
+@@ -104,6 +104,8 @@ extern void __init runtime_code_page_mkexec(void);
+ extern void __init efi_runtime_mkexec(void);
+ extern void __init efi_dump_pagetable(void);
+ extern void __init efi_apply_memmap_quirks(void);
++extern int __init efi_reuse_config(u64 tables, int nr_tables);
++extern void efi_delete_dummy_variable(void);
+ 
+ struct efi_setup_data {
+ 	u64 fw_vendor;
+@@ -156,6 +158,8 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
  	return EFI_SUCCESS;
  }
  #endif /* CONFIG_EFI_MIXED */
@@ -2189,7 +2215,7 @@ index 1eb5f64..da50c586a 100644
  #else
  /*
   * IF EFI is not configured, have the EFI calls return -ENOSYS.
-@@ -168,6 +170,10 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
+@@ -168,6 +172,10 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
  #define efi_call5(_f, _a1, _a2, _a3, _a4, _a5)		(-ENOSYS)
  #define efi_call6(_f, _a1, _a2, _a3, _a4, _a5, _a6)	(-ENOSYS)
  static inline void parse_efi_setup(u64 phys_addr, u32 data_len) {}
@@ -2253,6 +2279,613 @@ index 52b1157..17962e6 100644
  			reboot_type = BOOT_BIOS;
  			break;
  
+diff --git a/arch/x86/platform/efi/Makefile b/arch/x86/platform/efi/Makefile
+index d51045a..2846aaa 100644
+--- a/arch/x86/platform/efi/Makefile
++++ b/arch/x86/platform/efi/Makefile
+@@ -1,4 +1,4 @@
+-obj-$(CONFIG_EFI) 		+= efi.o efi_$(BITS).o efi_stub_$(BITS).o
++obj-$(CONFIG_EFI) 		+= quirks.o efi.o efi_$(BITS).o efi_stub_$(BITS).o
+ obj-$(CONFIG_ACPI_BGRT) += efi-bgrt.o
+ obj-$(CONFIG_EARLY_PRINTK_EFI)	+= early_printk.o
+ obj-$(CONFIG_EFI_MIXED)		+= efi_thunk_$(BITS).o
+diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+index 87fc96b..f852443 100644
+--- a/arch/x86/platform/efi/efi.c
++++ b/arch/x86/platform/efi/efi.c
+@@ -56,13 +56,6 @@
+ 
+ #define EFI_DEBUG
+ 
+-#define EFI_MIN_RESERVE 5120
+-
+-#define EFI_DUMMY_GUID \
+-	EFI_GUID(0x4424ac57, 0xbe4b, 0x47dd, 0x9e, 0x97, 0xed, 0x50, 0xf0, 0x9f, 0x92, 0xa9)
+-
+-static efi_char16_t efi_dummy_name[6] = { 'D', 'U', 'M', 'M', 'Y', 0 };
+-
+ struct efi_memory_map memmap;
+ 
+ static struct efi efi_phys __initdata;
+@@ -95,15 +88,6 @@ static int __init setup_add_efi_memmap(char *arg)
+ }
+ early_param("add_efi_memmap", setup_add_efi_memmap);
+ 
+-static bool efi_no_storage_paranoia;
+-
+-static int __init setup_storage_paranoia(char *arg)
+-{
+-	efi_no_storage_paranoia = true;
+-	return 0;
+-}
+-early_param("efi_no_storage_paranoia", setup_storage_paranoia);
+-
+ static efi_status_t virt_efi_get_time(efi_time_t *tm, efi_time_cap_t *tc)
+ {
+ 	unsigned long flags;
+@@ -392,37 +376,6 @@ static void __init print_efi_memmap(void)
+ #endif  /*  EFI_DEBUG  */
+ }
+ 
+-void __init efi_reserve_boot_services(void)
+-{
+-	void *p;
+-
+-	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
+-		efi_memory_desc_t *md = p;
+-		u64 start = md->phys_addr;
+-		u64 size = md->num_pages << EFI_PAGE_SHIFT;
+-
+-		if (md->type != EFI_BOOT_SERVICES_CODE &&
+-		    md->type != EFI_BOOT_SERVICES_DATA)
+-			continue;
+-		/* Only reserve where possible:
+-		 * - Not within any already allocated areas
+-		 * - Not over any memory area (really needed, if above?)
+-		 * - Not within any part of the kernel
+-		 * - Not the bios reserved area
+-		*/
+-		if ((start + size > __pa_symbol(_text)
+-				&& start <= __pa_symbol(_end)) ||
+-			!e820_all_mapped(start, start+size, E820_RAM) ||
+-			memblock_is_region_reserved(start, size)) {
+-			/* Could not reserve, skip it */
+-			md->num_pages = 0;
+-			memblock_dbg("Could not reserve boot range [0x%010llx-0x%010llx]\n",
+-				     start, start+size-1);
+-		} else
+-			memblock_reserve(start, size);
+-	}
+-}
+-
+ void __init efi_unmap_memmap(void)
+ {
+ 	clear_bit(EFI_MEMMAP, &efi.flags);
+@@ -432,29 +385,6 @@ void __init efi_unmap_memmap(void)
+ 	}
+ }
+ 
+-void __init efi_free_boot_services(void)
+-{
+-	void *p;
+-
+-	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
+-		efi_memory_desc_t *md = p;
+-		unsigned long long start = md->phys_addr;
+-		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
+-
+-		if (md->type != EFI_BOOT_SERVICES_CODE &&
+-		    md->type != EFI_BOOT_SERVICES_DATA)
+-			continue;
+-
+-		/* Could not reserve boot area */
+-		if (!size)
+-			continue;
+-
+-		free_bootmem_late(start, size);
+-	}
+-
+-	efi_unmap_memmap();
+-}
+-
+ static int __init efi_systab_init(void *phys)
+ {
+ 	if (efi_enabled(EFI_64BIT)) {
+@@ -649,62 +579,6 @@ static int __init efi_memmap_init(void)
+ 	return 0;
+ }
+ 
+-/*
+- * A number of config table entries get remapped to virtual addresses
+- * after entering EFI virtual mode. However, the kexec kernel requires
+- * their physical addresses therefore we pass them via setup_data and
+- * correct those entries to their respective physical addresses here.
+- *
+- * Currently only handles smbios which is necessary for some firmware
+- * implementation.
+- */
+-static int __init efi_reuse_config(u64 tables, int nr_tables)
+-{
+-	int i, sz, ret = 0;
+-	void *p, *tablep;
+-	struct efi_setup_data *data;
+-
+-	if (!efi_setup)
+-		return 0;
+-
+-	if (!efi_enabled(EFI_64BIT))
+-		return 0;
+-
+-	data = early_memremap(efi_setup, sizeof(*data));
+-	if (!data) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-
+-	if (!data->smbios)
+-		goto out_memremap;
+-
+-	sz = sizeof(efi_config_table_64_t);
+-
+-	p = tablep = early_memremap(tables, nr_tables * sz);
+-	if (!p) {
+-		pr_err("Could not map Configuration table!\n");
+-		ret = -ENOMEM;
+-		goto out_memremap;
+-	}
+-
+-	for (i = 0; i < efi.systab->nr_tables; i++) {
+-		efi_guid_t guid;
+-
+-		guid = ((efi_config_table_64_t *)p)->guid;
+-
+-		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
+-			((efi_config_table_64_t *)p)->table = data->smbios;
+-		p += sz;
+-	}
+-	early_iounmap(tablep, nr_tables * sz);
+-
+-out_memremap:
+-	early_iounmap(data, sizeof(*data));
+-out:
+-	return ret;
+-}
+-
+ void __init efi_init(void)
+ {
+ 	efi_char16_t *c16;
+@@ -1057,11 +931,7 @@ static void __init kexec_enter_virtual_mode(void)
+ 		runtime_code_page_mkexec();
+ 
+ 	/* clean DUMMY object */
+-	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
+-			 EFI_VARIABLE_NON_VOLATILE |
+-			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
+-			 EFI_VARIABLE_RUNTIME_ACCESS,
+-			 0, NULL);
++	efi_delete_dummy_variable();
+ #endif
+ }
+ 
+@@ -1179,11 +1049,7 @@ static void __init __efi_enter_virtual_mode(void)
+ 	free_pages((unsigned long)new_memmap, pg_shift);
+ 
+ 	/* clean DUMMY object */
+-	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
+-			 EFI_VARIABLE_NON_VOLATILE |
+-			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
+-			 EFI_VARIABLE_RUNTIME_ACCESS,
+-			 0, NULL);
++	efi_delete_dummy_variable();
+ }
+ 
+ void __init efi_enter_virtual_mode(void)
+@@ -1230,86 +1096,6 @@ u64 efi_mem_attributes(unsigned long phys_addr)
+ 	return 0;
+ }
+ 
+-/*
+- * Some firmware implementations refuse to boot if there's insufficient space
+- * in the variable store. Ensure that we never use more than a safe limit.
+- *
+- * Return EFI_SUCCESS if it is safe to write 'size' bytes to the variable
+- * store.
+- */
+-efi_status_t efi_query_variable_store(u32 attributes, unsigned long size)
+-{
+-	efi_status_t status;
+-	u64 storage_size, remaining_size, max_size;
+-
+-	if (!(attributes & EFI_VARIABLE_NON_VOLATILE))
+-		return 0;
+-
+-	status = efi.query_variable_info(attributes, &storage_size,
+-					 &remaining_size, &max_size);
+-	if (status != EFI_SUCCESS)
+-		return status;
+-
+-	/*
+-	 * We account for that by refusing the write if permitting it would
+-	 * reduce the available space to under 5KB. This figure was provided by
+-	 * Samsung, so should be safe.
+-	 */
+-	if ((remaining_size - size < EFI_MIN_RESERVE) &&
+-		!efi_no_storage_paranoia) {
+-
+-		/*
+-		 * Triggering garbage collection may require that the firmware
+-		 * generate a real EFI_OUT_OF_RESOURCES error. We can force
+-		 * that by attempting to use more space than is available.
+-		 */
+-		unsigned long dummy_size = remaining_size + 1024;
+-		void *dummy = kzalloc(dummy_size, GFP_ATOMIC);
+-
+-		if (!dummy)
+-			return EFI_OUT_OF_RESOURCES;
+-
+-		status = efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
+-					  EFI_VARIABLE_NON_VOLATILE |
+-					  EFI_VARIABLE_BOOTSERVICE_ACCESS |
+-					  EFI_VARIABLE_RUNTIME_ACCESS,
+-					  dummy_size, dummy);
+-
+-		if (status == EFI_SUCCESS) {
+-			/*
+-			 * This should have failed, so if it didn't make sure
+-			 * that we delete it...
+-			 */
+-			efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
+-					 EFI_VARIABLE_NON_VOLATILE |
+-					 EFI_VARIABLE_BOOTSERVICE_ACCESS |
+-					 EFI_VARIABLE_RUNTIME_ACCESS,
+-					 0, dummy);
+-		}
+-
+-		kfree(dummy);
+-
+-		/*
+-		 * The runtime code may now have triggered a garbage collection
+-		 * run, so check the variable info again
+-		 */
+-		status = efi.query_variable_info(attributes, &storage_size,
+-						 &remaining_size, &max_size);
+-
+-		if (status != EFI_SUCCESS)
+-			return status;
+-
+-		/*
+-		 * There still isn't enough room, so return an error
+-		 */
+-		if (remaining_size - size < EFI_MIN_RESERVE)
+-			return EFI_OUT_OF_RESOURCES;
+-	}
+-
+-	return EFI_SUCCESS;
+-}
+-EXPORT_SYMBOL_GPL(efi_query_variable_store);
+-
+ static int __init parse_efi_cmdline(char *str)
+ {
+ 	if (*str == '=')
+@@ -1321,22 +1107,3 @@ static int __init parse_efi_cmdline(char *str)
+ 	return 0;
+ }
+ early_param("efi", parse_efi_cmdline);
+-
+-void __init efi_apply_memmap_quirks(void)
+-{
+-	/*
+-	 * Once setup is done earlier, unmap the EFI memory map on mismatched
+-	 * firmware/kernel architectures since there is no support for runtime
+-	 * services.
+-	 */
+-	if (!efi_runtime_supported()) {
+-		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
+-		efi_unmap_memmap();
+-	}
+-
+-	/*
+-	 * UV doesn't support the new EFI pagetable mapping yet.
+-	 */
+-	if (is_uv_system())
+-		set_bit(EFI_OLD_MEMMAP, &efi.flags);
+-}
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+new file mode 100644
+index 0000000..1b9c4c3
+--- /dev/null
++++ b/arch/x86/platform/efi/quirks.c
+@@ -0,0 +1,290 @@
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/time.h>
++#include <linux/types.h>
++#include <linux/efi.h>
++#include <linux/slab.h>
++#include <linux/memblock.h>
++#include <linux/bootmem.h>
++#include <linux/acpi.h>
++#include <asm/efi.h>
++#include <asm/uv/uv.h>
++
++#define EFI_MIN_RESERVE 5120
++
++#define EFI_DUMMY_GUID \
++	EFI_GUID(0x4424ac57, 0xbe4b, 0x47dd, 0x9e, 0x97, 0xed, 0x50, 0xf0, 0x9f, 0x92, 0xa9)
++
++static efi_char16_t efi_dummy_name[6] = { 'D', 'U', 'M', 'M', 'Y', 0 };
++
++static bool efi_no_storage_paranoia;
++
++/*
++ * Some firmware implementations refuse to boot if there's insufficient
++ * space in the variable store. The implementation of garbage collection
++ * in some FW versions causes stale (deleted) variables to take up space
++ * longer than intended and space is only freed once the store becomes
++ * almost completely full.
++ *
++ * Enabling this option disables the space checks in
++ * efi_query_variable_store() and forces garbage collection.
++ *
++ * Only enable this option if deleting EFI variables does not free up
++ * space in your variable store, e.g. if despite deleting variables
++ * you're unable to create new ones.
++ */
++static int __init setup_storage_paranoia(char *arg)
++{
++	efi_no_storage_paranoia = true;
++	return 0;
++}
++early_param("efi_no_storage_paranoia", setup_storage_paranoia);
++
++/*
++ * Deleting the dummy variable which kicks off garbage collection
++*/
++void efi_delete_dummy_variable(void)
++{
++	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
++			 EFI_VARIABLE_NON_VOLATILE |
++			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
++			 EFI_VARIABLE_RUNTIME_ACCESS,
++			 0, NULL);
++}
++
++/*
++ * Some firmware implementations refuse to boot if there's insufficient space
++ * in the variable store. Ensure that we never use more than a safe limit.
++ *
++ * Return EFI_SUCCESS if it is safe to write 'size' bytes to the variable
++ * store.
++ */
++efi_status_t efi_query_variable_store(u32 attributes, unsigned long size)
++{
++	efi_status_t status;
++	u64 storage_size, remaining_size, max_size;
++
++	if (!(attributes & EFI_VARIABLE_NON_VOLATILE))
++		return 0;
++
++	status = efi.query_variable_info(attributes, &storage_size,
++					 &remaining_size, &max_size);
++	if (status != EFI_SUCCESS)
++		return status;
++
++	/*
++	 * We account for that by refusing the write if permitting it would
++	 * reduce the available space to under 5KB. This figure was provided by
++	 * Samsung, so should be safe.
++	 */
++	if ((remaining_size - size < EFI_MIN_RESERVE) &&
++		!efi_no_storage_paranoia) {
++
++		/*
++		 * Triggering garbage collection may require that the firmware
++		 * generate a real EFI_OUT_OF_RESOURCES error. We can force
++		 * that by attempting to use more space than is available.
++		 */
++		unsigned long dummy_size = remaining_size + 1024;
++		void *dummy = kzalloc(dummy_size, GFP_ATOMIC);
++
++		if (!dummy)
++			return EFI_OUT_OF_RESOURCES;
++
++		status = efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
++					  EFI_VARIABLE_NON_VOLATILE |
++					  EFI_VARIABLE_BOOTSERVICE_ACCESS |
++					  EFI_VARIABLE_RUNTIME_ACCESS,
++					  dummy_size, dummy);
++
++		if (status == EFI_SUCCESS) {
++			/*
++			 * This should have failed, so if it didn't make sure
++			 * that we delete it...
++			 */
++			efi_delete_dummy_variable();
++		}
++
++		kfree(dummy);
++
++		/*
++		 * The runtime code may now have triggered a garbage collection
++		 * run, so check the variable info again
++		 */
++		status = efi.query_variable_info(attributes, &storage_size,
++						 &remaining_size, &max_size);
++
++		if (status != EFI_SUCCESS)
++			return status;
++
++		/*
++		 * There still isn't enough room, so return an error
++		 */
++		if (remaining_size - size < EFI_MIN_RESERVE)
++			return EFI_OUT_OF_RESOURCES;
++	}
++
++	return EFI_SUCCESS;
++}
++EXPORT_SYMBOL_GPL(efi_query_variable_store);
++
++/*
++ * The UEFI specification makes it clear that the operating system is free to do
++ * whatever it wants with boot services code after ExitBootServices() has been
++ * called. Ignoring this recommendation a significant bunch of EFI implementations 
++ * continue calling into boot services code (SetVirtualAddressMap). In order to 
++ * work around such buggy implementations we reserve boot services region during 
++ * EFI init and make sure it stays executable. Then, after SetVirtualAddressMap(), it
++* is discarded.
++*/
++void __init efi_reserve_boot_services(void)
++{
++	void *p;
++
++	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
++		efi_memory_desc_t *md = p;
++		u64 start = md->phys_addr;
++		u64 size = md->num_pages << EFI_PAGE_SHIFT;
++
++		if (md->type != EFI_BOOT_SERVICES_CODE &&
++		    md->type != EFI_BOOT_SERVICES_DATA)
++			continue;
++		/* Only reserve where possible:
++		 * - Not within any already allocated areas
++		 * - Not over any memory area (really needed, if above?)
++		 * - Not within any part of the kernel
++		 * - Not the bios reserved area
++		*/
++		if ((start + size > __pa_symbol(_text)
++				&& start <= __pa_symbol(_end)) ||
++			!e820_all_mapped(start, start+size, E820_RAM) ||
++			memblock_is_region_reserved(start, size)) {
++			/* Could not reserve, skip it */
++			md->num_pages = 0;
++			memblock_dbg("Could not reserve boot range [0x%010llx-0x%010llx]\n",
++				     start, start+size-1);
++		} else
++			memblock_reserve(start, size);
++	}
++}
++
++void __init efi_free_boot_services(void)
++{
++	void *p;
++
++	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
++		efi_memory_desc_t *md = p;
++		unsigned long long start = md->phys_addr;
++		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
++
++		if (md->type != EFI_BOOT_SERVICES_CODE &&
++		    md->type != EFI_BOOT_SERVICES_DATA)
++			continue;
++
++		/* Could not reserve boot area */
++		if (!size)
++			continue;
++
++		free_bootmem_late(start, size);
++	}
++
++	efi_unmap_memmap();
++}
++
++/*
++ * A number of config table entries get remapped to virtual addresses
++ * after entering EFI virtual mode. However, the kexec kernel requires
++ * their physical addresses therefore we pass them via setup_data and
++ * correct those entries to their respective physical addresses here.
++ *
++ * Currently only handles smbios which is necessary for some firmware
++ * implementation.
++ */
++int __init efi_reuse_config(u64 tables, int nr_tables)
++{
++	int i, sz, ret = 0;
++	void *p, *tablep;
++	struct efi_setup_data *data;
++
++	if (!efi_setup)
++		return 0;
++
++	if (!efi_enabled(EFI_64BIT))
++		return 0;
++
++	data = early_memremap(efi_setup, sizeof(*data));
++	if (!data) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	if (!data->smbios)
++		goto out_memremap;
++
++	sz = sizeof(efi_config_table_64_t);
++
++	p = tablep = early_memremap(tables, nr_tables * sz);
++	if (!p) {
++		pr_err("Could not map Configuration table!\n");
++		ret = -ENOMEM;
++		goto out_memremap;
++	}
++
++	for (i = 0; i < efi.systab->nr_tables; i++) {
++		efi_guid_t guid;
++
++		guid = ((efi_config_table_64_t *)p)->guid;
++
++		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
++			((efi_config_table_64_t *)p)->table = data->smbios;
++		p += sz;
++	}
++	early_iounmap(tablep, nr_tables * sz);
++
++out_memremap:
++	early_iounmap(data, sizeof(*data));
++out:
++	return ret;
++}
++
++void __init efi_apply_memmap_quirks(void)
++{
++	/*
++	 * Once setup is done earlier, unmap the EFI memory map on mismatched
++	 * firmware/kernel architectures since there is no support for runtime
++	 * services.
++	 */
++	if (!efi_runtime_supported()) {
++		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
++		efi_unmap_memmap();
++	}
++
++	/*
++	 * UV doesn't support the new EFI pagetable mapping yet.
++	 */
++	if (is_uv_system())
++		set_bit(EFI_OLD_MEMMAP, &efi.flags);
++}
++
++/*
++ * For most modern platforms the preferred method of powering off is via
++ * ACPI. However, there are some that are known to require the use of
++ * EFI runtime services and for which ACPI does not work at all.
++ *
++ * Using EFI is a last resort, to be used only if no other option
++ * exists.
++ */
++bool efi_reboot_required(void)
++{
++	if (!acpi_gbl_reduced_hardware)
++		return false;
++
++	efi_reboot_quirk_mode = EFI_RESET_WARM;
++	return true;
++}
++
++bool efi_poweroff_required(void)
++{
++	return !!acpi_gbl_reduced_hardware;
++}
 diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
 index 05882e4..1db67a7 100644
 --- a/drivers/ata/ahci.h

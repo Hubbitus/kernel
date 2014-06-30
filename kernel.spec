@@ -2251,6 +2251,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 30 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch, update from git.
+
 * Mon Jun 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc3.git0.1.1
 - Linux v3.16-rc3
 - Enable USB rtsx drivers (rhbz 1114229)
