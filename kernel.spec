@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -642,12 +642,6 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 Patch25102: intel_pstate-Fix-setting-VID.patch
 Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
-#rhbz 1110968
-Patch25105: x86_32-signal-Fix-vdso-rt_sigreturn.patch
-
-#CVE-2014-4508 rhbz 1111590 1112073
-Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -1372,12 +1366,6 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 ApplyPatch intel_pstate-Fix-setting-VID.patch
 ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
-#rhbz 1110968
-ApplyPatch x86_32-signal-Fix-vdso-rt_sigreturn.patch
-
-#CVE-2014-4508 rhbz 1111590 1112073
-ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -2263,6 +2251,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc3.git0.1.1
+- Linux v3.16-rc3
+- Enable USB rtsx drivers (rhbz 1114229)
+- Disable debugging options.
+
 * Fri Jun 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git4.1
 - Linux v3.16-rc2-222-g3493860c76eb
 
