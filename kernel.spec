@@ -761,6 +761,9 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
+#rhbz 1015989
+Patch25111: netfilter-nf_nat-fix-oops-on-netns-removal.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1480,6 +1483,9 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1015989
+ApplyPatch netfilter-nf_nat-fix-oops-on-netns-removal.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2292,7 +2298,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Jun 30 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.15.2-200
+* Mon Jun 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.2-200
+- Backport netfilter panic fix (rhbz 1015989)
+
+* Mon Jun 30 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v3.15.2
 
 * Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
