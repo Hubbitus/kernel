@@ -1,6 +1,9 @@
 CONFIG_64BIT=y
 CONFIG_ARM64=y
 
+CONFIG_SCHED_MC=y
+CONFIG_SCHED_SMT=y
+
 # CONFIG_CPU_BIG_ENDIAN is not set
 
 # arm64 only SoCs
@@ -70,6 +73,7 @@ CONFIG_VM_EVENT_COUNTERS=y
 # CONFIG_MDIO_BUS_MUX_GPIO is not set
 # CONFIG_MDIO_BUS_MUX_MMIOREG is not set
 
+
 # busted build for various reasons
 #  uses pci_* for some reason to allocate DMA buffers
 # CONFIG_DVB_B2C2_FLEXCOP_USB is not set
@@ -80,3 +84,6 @@ CONFIG_VM_EVENT_COUNTERS=y
 # CONFIG_VGA_CONSOLE is not set
 CONFIG_POWER_RESET_XGENE=y
 CONFIG_COMMON_CLK_XGENE=y
+
+CONFIG_AHCI_XGENE=m
+CONFIG_PHY_XGENE=m

@@ -1,0 +1,2201 @@
+From 528a5cd576861f90f51398c707c602a79623492d Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 5 Sep 2013 19:52:41 -0300
+Subject: [PATCH] ARM: sunxi: Add driver for SD/MMC hosts found on Allwinner
+ sunxi SoCs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The Allwinner sunxi mmc host uses dma in bus-master mode using a built-in
+designware idmac controller, which is identical to the one found in the mmc-dw
+hosts. However the rest of the host is not identical to mmc-dw, it deals with
+sending stop commands in hardware which makes it significantly different
+from the mmc-dw devices.
+
+Signed-off-by: David LanzendÃ¶rfer <david.lanzendoerfer@o2s.ch>
+Signed-off-by: Emilio LÃ³pez <emilio@elopez.com.ar>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ .../devicetree/bindings/mmc/sunxi-mmc.txt          |   43 +
+ arch/arm/boot/dts/Makefile                         |    1 +
+ arch/arm/boot/dts/sun4i-a10-a1000.dts              |    9 +
+ arch/arm/boot/dts/sun4i-a10-cubieboard.dts         |    9 +
+ arch/arm/boot/dts/sun4i-a10-hackberry.dts          |    9 +
+ arch/arm/boot/dts/sun4i-a10-inet97fv2.dts          |    9 +
+ arch/arm/boot/dts/sun4i-a10-mini-xplus.dts         |    9 +
+ arch/arm/boot/dts/sun4i-a10-olinuxino-lime.dts     |    9 +
+ arch/arm/boot/dts/sun4i-a10-pcduino.dts            |    9 +
+ arch/arm/boot/dts/sun4i-a10.dtsi                   |   50 +
+ arch/arm/boot/dts/sun5i-a10s-olinuxino-micro.dts   |   32 +
+ arch/arm/boot/dts/sun5i-a10s.dtsi                  |   41 +
+ arch/arm/boot/dts/sun5i-a13-olinuxino-micro.dts    |   16 +
+ arch/arm/boot/dts/sun5i-a13-olinuxino.dts          |   16 +
+ arch/arm/boot/dts/sun5i-a13.dtsi                   |   25 +
+ arch/arm/boot/dts/sun6i-a31-m9.dts                 |   46 +
+ arch/arm/boot/dts/sun6i-a31.dtsi                   |   91 ++
+ arch/arm/boot/dts/sun7i-a20-cubieboard2.dts        |    9 +
+ arch/arm/boot/dts/sun7i-a20-cubietruck.dts         |   40 +
+ arch/arm/boot/dts/sun7i-a20-olinuxino-micro.dts    |   25 +
+ arch/arm/boot/dts/sun7i-a20.dtsi                   |   57 +
+ drivers/clk/sunxi/clk-factors.c                    |   36 +
+ drivers/clk/sunxi/clk-sunxi.c                      |   36 +
+ drivers/mmc/host/Kconfig                           |    7 +
+ drivers/mmc/host/Makefile                          |    2 +
+ drivers/mmc/host/sunxi-mmc.c                       | 1125 ++++++++++++++++++++
+ include/linux/clk/sunxi.h                          |   22 +
+ 27 files changed, 1783 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mmc/sunxi-mmc.txt
+ create mode 100644 arch/arm/boot/dts/sun6i-a31-m9.dts
+ create mode 100644 drivers/mmc/host/sunxi-mmc.c
+ create mode 100644 include/linux/clk/sunxi.h
+
+diff --git a/Documentation/devicetree/bindings/mmc/sunxi-mmc.txt b/Documentation/devicetree/bindings/mmc/sunxi-mmc.txt
+new file mode 100644
+index 0000000..f0c06e7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mmc/sunxi-mmc.txt
+@@ -0,0 +1,43 @@
++* Allwinner sunxi MMC controller
++
++The highspeed MMC host controller on Allwinner SoCs provides an interface
++for MMC, SD and SDIO types of memory cards.
++
++Supported maximum speeds are the ones of the eMMC standard 4.5 as well
++as the speed of SD standard 3.0.
++Absolute maximum transfer rate is 200MB/s
++
++Required properties:
++ - compatible : "allwinner,sun4i-a10-mmc" or "allwinner,sun5i-a13-mmc"
++ - reg : mmc controller base registers
++ - clocks : a list with 2 phandle + clock specifier pairs
++ - clock-names : must contain "ahb" and "mod"
++ - interrupts : mmc controller interrupt
++
++Optional properties:
++ - resets : phandle + reset specifier pair
++ - reset-names : must contain "ahb"
++ - for cd, bus-width and additional generic mmc parameters
++   please refer to mmc.txt within this directory
++
++Examples:
++	- Within .dtsi:
++	mmc0: mmc@01c0f000 {
++		compatible = "allwinner,sun5i-a13-mmc";
++		reg = <0x01c0f000 0x1000>;
++		clocks = <&ahb_gates 8>, <&mmc0_clk>;
++		clock-names = "ahb", "mod";
++		interrupts = <0 32 4>;
++		status = "disabled";
++	};
++
++	- Within dts:
++	mmc0: mmc@01c0f000 {
++		pinctrl-names = "default", "default";
++		pinctrl-0 = <&mmc0_pins_a>;
++		pinctrl-1 = <&mmc0_cd_pin_reference_design>;
++		bus-width = <4>;
++		cd-gpios = <&pio 7 1 0>; /* PH1 */
++		cd-inverted;
++		status = "okay";
++	};
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 35c146f..1cd137d 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -351,6 +351,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += \
+ 	sun5i-a13-olinuxino.dtb \
+ 	sun5i-a13-olinuxino-micro.dtb \
+ 	sun6i-a31-colombus.dtb \
++	sun6i-a31-m9.dtb \
+ 	sun7i-a20-cubieboard2.dtb \
+ 	sun7i-a20-cubietruck.dtb \
+ 	sun7i-a20-olinuxino-micro.dtb
+diff --git a/arch/arm/boot/dts/sun4i-a10-a1000.dts b/arch/arm/boot/dts/sun4i-a10-a1000.dts
+index fa746aea..3056db5 100644
+--- a/arch/arm/boot/dts/sun4i-a10-a1000.dts
++++ b/arch/arm/boot/dts/sun4i-a10-a1000.dts
+@@ -36,6 +36,15 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-cubieboard.dts b/arch/arm/boot/dts/sun4i-a10-cubieboard.dts
+index 4684cbe..ad9321b 100644
+--- a/arch/arm/boot/dts/sun4i-a10-cubieboard.dts
++++ b/arch/arm/boot/dts/sun4i-a10-cubieboard.dts
+@@ -34,6 +34,15 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-hackberry.dts b/arch/arm/boot/dts/sun4i-a10-hackberry.dts
+index d7c17e4..62defd5 100644
+--- a/arch/arm/boot/dts/sun4i-a10-hackberry.dts
++++ b/arch/arm/boot/dts/sun4i-a10-hackberry.dts
+@@ -36,6 +36,15 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-inet97fv2.dts b/arch/arm/boot/dts/sun4i-a10-inet97fv2.dts
+index fe9272e..d1a9e34 100644
+--- a/arch/arm/boot/dts/sun4i-a10-inet97fv2.dts
++++ b/arch/arm/boot/dts/sun4i-a10-inet97fv2.dts
+@@ -24,6 +24,15 @@
+ 	};
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		uart0: serial@01c28000 {
+ 			pinctrl-names = "default";
+ 			pinctrl-0 = <&uart0_pins_a>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-mini-xplus.dts b/arch/arm/boot/dts/sun4i-a10-mini-xplus.dts
+index dd84a9e..07a598f 100644
+--- a/arch/arm/boot/dts/sun4i-a10-mini-xplus.dts
++++ b/arch/arm/boot/dts/sun4i-a10-mini-xplus.dts
+@@ -20,6 +20,15 @@
+ 	compatible = "pineriver,mini-xplus", "allwinner,sun4i-a10";
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-olinuxino-lime.dts b/arch/arm/boot/dts/sun4i-a10-olinuxino-lime.dts
+index 66cf0c7..8d5d321 100644
+--- a/arch/arm/boot/dts/sun4i-a10-olinuxino-lime.dts
++++ b/arch/arm/boot/dts/sun4i-a10-olinuxino-lime.dts
+@@ -33,6 +33,15 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10-pcduino.dts b/arch/arm/boot/dts/sun4i-a10-pcduino.dts
+index 255b47e..ce02086 100644
+--- a/arch/arm/boot/dts/sun4i-a10-pcduino.dts
++++ b/arch/arm/boot/dts/sun4i-a10-pcduino.dts
+@@ -34,6 +34,15 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun4i-a10.dtsi b/arch/arm/boot/dts/sun4i-a10.dtsi
+index 9174724..29fd4f5 100644
+--- a/arch/arm/boot/dts/sun4i-a10.dtsi
++++ b/arch/arm/boot/dts/sun4i-a10.dtsi
+@@ -377,6 +377,42 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			compatible = "allwinner,sun4i-a10-mmc";
++			reg = <0x01c0f000 0x1000>;
++			clocks = <&ahb_gates 8>, <&mmc0_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <32>;
++			status = "disabled";
++		};
++
++		mmc1: mmc@01c10000 {
++			compatible = "allwinner,sun4i-a10-mmc";
++			reg = <0x01c10000 0x1000>;
++			clocks = <&ahb_gates 9>, <&mmc1_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <33>;
++			status = "disabled";
++		};
++
++		mmc2: mmc@01c11000 {
++			compatible = "allwinner,sun4i-a10-mmc";
++			reg = <0x01c11000 0x1000>;
++			clocks = <&ahb_gates 10>, <&mmc2_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <34>;
++			status = "disabled";
++		};
++
++		mmc3: mmc@01c12000 {
++			compatible = "allwinner,sun4i-a10-mmc";
++			reg = <0x01c12000 0x1000>;
++			clocks = <&ahb_gates 11>, <&mmc3_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <35>;
++			status = "disabled";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			#phy-cells = <1>;
+ 			compatible = "allwinner,sun4i-a10-usb-phy";
+@@ -529,6 +565,20 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
++
++			mmc0_pins_a: mmc0@0 {
++				allwinner,pins = "PF0","PF1","PF2","PF3","PF4","PF5";
++				allwinner,function = "mmc0";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
++
++			mmc0_cd_pin_a: mmc0_cd_pin@0 {
++				allwinner,pins = "PH1";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
+ 		};
+ 
+ 		timer@01c20c00 {
+diff --git a/arch/arm/boot/dts/sun5i-a10s-olinuxino-micro.dts b/arch/arm/boot/dts/sun5i-a10s-olinuxino-micro.dts
+index 23611b7..de91308 100644
+--- a/arch/arm/boot/dts/sun5i-a10s-olinuxino-micro.dts
++++ b/arch/arm/boot/dts/sun5i-a10s-olinuxino-micro.dts
+@@ -35,6 +35,24 @@
+ 			};
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_olinuxino_micro>;
++			bus-width = <4>;
++			cd-gpios = <&pio 6 1 0>; /* PG1 */
++			cd-inverted;
++			status = "okay";
++		};
++
++		mmc1: mmc@01c10000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc1_pins_a>, <&mmc1_cd_pin_olinuxino_micro>;
++			bus-width = <4>;
++			cd-gpios = <&pio 6 13 0>; /* PG13 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			status = "okay";
+@@ -49,6 +67,20 @@
+ 		};
+ 
+ 		pinctrl@01c20800 {
++			mmc0_cd_pin_olinuxino_micro: mmc0_cd_pin@0 {
++				allwinner,pins = "PG1";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
++			mmc1_cd_pin_olinuxino_micro: mmc1_cd_pin@0 {
++				allwinner,pins = "PG13";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
+ 			led_pins_olinuxino: led_pins@0 {
+ 				allwinner,pins = "PE3";
+ 				allwinner,function = "gpio_out";
+diff --git a/arch/arm/boot/dts/sun5i-a10s.dtsi b/arch/arm/boot/dts/sun5i-a10s.dtsi
+index 79989ed..fb345c2 100644
+--- a/arch/arm/boot/dts/sun5i-a10s.dtsi
++++ b/arch/arm/boot/dts/sun5i-a10s.dtsi
+@@ -338,6 +338,33 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c0f000 0x1000>;
++			clocks = <&ahb_gates 8>, <&mmc0_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <32>;
++			status = "disabled";
++		};
++
++		mmc1: mmc@01c10000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c10000 0x1000>;
++			clocks = <&ahb_gates 9>, <&mmc1_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <33>;
++			status = "disabled";
++		};
++
++		mmc2: mmc@01c11000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c11000 0x1000>;
++			clocks = <&ahb_gates 10>, <&mmc2_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <34>;
++			status = "disabled";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			#phy-cells = <1>;
+ 			compatible = "allwinner,sun5i-a13-usb-phy";
+@@ -451,6 +478,20 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
++
++			mmc0_pins_a: mmc0@0 {
++				allwinner,pins = "PF0","PF1","PF2","PF3","PF4","PF5";
++				allwinner,function = "mmc0";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
++
++			mmc1_pins_a: mmc1@0 {
++				allwinner,pins = "PG3","PG4","PG5","PG6","PG7","PG8";
++				allwinner,function = "mmc1";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
+ 		};
+ 
+ 		timer@01c20c00 {
+diff --git a/arch/arm/boot/dts/sun5i-a13-olinuxino-micro.dts b/arch/arm/boot/dts/sun5i-a13-olinuxino-micro.dts
+index 11169d5..8515f19 100644
+--- a/arch/arm/boot/dts/sun5i-a13-olinuxino-micro.dts
++++ b/arch/arm/boot/dts/sun5i-a13-olinuxino-micro.dts
+@@ -21,6 +21,15 @@
+ 	compatible = "olimex,a13-olinuxino-micro", "allwinner,sun5i-a13";
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_olinuxinom>;
++			bus-width = <4>;
++			cd-gpios = <&pio 6 0 0>; /* PG0 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			status = "okay";
+@@ -35,6 +44,13 @@
+ 		};
+ 
+ 		pinctrl@01c20800 {
++			mmc0_cd_pin_olinuxinom: mmc0_cd_pin@0 {
++				allwinner,pins = "PG0";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
+ 			led_pins_olinuxinom: led_pins@0 {
+ 				allwinner,pins = "PG9";
+ 				allwinner,function = "gpio_out";
+diff --git a/arch/arm/boot/dts/sun5i-a13-olinuxino.dts b/arch/arm/boot/dts/sun5i-a13-olinuxino.dts
+index 7a9187b..51a9438 100644
+--- a/arch/arm/boot/dts/sun5i-a13-olinuxino.dts
++++ b/arch/arm/boot/dts/sun5i-a13-olinuxino.dts
+@@ -20,6 +20,15 @@
+ 	compatible = "olimex,a13-olinuxino", "allwinner,sun5i-a13";
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_olinuxino>;
++			bus-width = <4>;
++			cd-gpios = <&pio 6 0 0>; /* PG0 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			status = "okay";
+@@ -34,6 +43,13 @@
+ 		};
+ 
+ 		pinctrl@01c20800 {
++			mmc0_cd_pin_olinuxino: mmc0_cd_pin@0 {
++				allwinner,pins = "PG0";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
+ 			led_pins_olinuxino: led_pins@0 {
+ 				allwinner,pins = "PG9";
+ 				allwinner,function = "gpio_out";
+diff --git a/arch/arm/boot/dts/sun5i-a13.dtsi b/arch/arm/boot/dts/sun5i-a13.dtsi
+index f01c315..48ffa51 100644
+--- a/arch/arm/boot/dts/sun5i-a13.dtsi
++++ b/arch/arm/boot/dts/sun5i-a13.dtsi
+@@ -320,6 +320,24 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c0f000 0x1000>;
++			clocks = <&ahb_gates 8>, <&mmc0_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <32>;
++			status = "disabled";
++		};
++
++		mmc2: mmc@01c11000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c11000 0x1000>;
++			clocks = <&ahb_gates 10>, <&mmc2_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <34>;
++			status = "disabled";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			#phy-cells = <1>;
+ 			compatible = "allwinner,sun5i-a13-usb-phy";
+@@ -415,6 +433,13 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
++
++			mmc0_pins_a: mmc0@0 {
++				allwinner,pins = "PF0","PF1","PF2","PF3","PF4","PF5";
++				allwinner,function = "mmc0";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
+ 		};
+ 
+ 		timer@01c20c00 {
+diff --git a/arch/arm/boot/dts/sun6i-a31-m9.dts b/arch/arm/boot/dts/sun6i-a31-m9.dts
+new file mode 100644
+index 0000000..a188721
+--- /dev/null
++++ b/arch/arm/boot/dts/sun6i-a31-m9.dts
+@@ -0,0 +1,46 @@
++/*
++ * Copyright 2014 Hans de Goede <hdegoede@redhat.com>
++ *
++ * The code contained herein is licensed under the GNU General Public
++ * License. You may obtain a copy of the GNU General Public License
++ * Version 2 or later at the following locations:
++ *
++ * http://www.opensource.org/licenses/gpl-license.html
++ * http://www.gnu.org/copyleft/gpl.html
++ */
++
++/dts-v1/;
++/include/ "sun6i-a31.dtsi"
++
++/ {
++	model = "Mele M9 / A1000G Quad top set box";
++	compatible = "mele,m9", "allwinner,sun6i-a31";
++
++	chosen {
++		bootargs = "earlyprintk console=ttyS0,115200";
++	};
++
++	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_m9>;
++			cd-gpios = <&pio 7 22 0>; /* PH22 */
++			status = "okay";
++		};
++
++		pio: pinctrl@01c20800 {
++			mmc0_cd_pin_m9: mmc0_cd_pin@0 {
++				allwinner,pins = "PH22";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++		};
++
++		uart0: serial@01c28000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart0_pins_a>;
++			status = "okay";
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/sun6i-a31.dtsi b/arch/arm/boot/dts/sun6i-a31.dtsi
+index d45efa7..0939fc1 100644
+--- a/arch/arm/boot/dts/sun6i-a31.dtsi
++++ b/arch/arm/boot/dts/sun6i-a31.dtsi
+@@ -198,6 +198,38 @@
+ 					"apb2_uart4", "apb2_uart5";
+ 		};
+ 
++		mmc0_clk: clk@01c20088 {
++			#clock-cells = <0>;
++			compatible = "allwinner,sun4i-a10-mod0-clk";
++			reg = <0x01c20088 0x4>;
++			clocks = <&osc24M>, <&pll6>;
++			clock-output-names = "mmc0";
++		};
++
++		mmc1_clk: clk@01c2008c {
++			#clock-cells = <0>;
++			compatible = "allwinner,sun4i-a10-mod0-clk";
++			reg = <0x01c2008c 0x4>;
++			clocks = <&osc24M>, <&pll6>;
++			clock-output-names = "mmc1";
++		};
++
++		mmc2_clk: clk@01c20090 {
++			#clock-cells = <0>;
++			compatible = "allwinner,sun4i-a10-mod0-clk";
++			reg = <0x01c20090 0x4>;
++			clocks = <&osc24M>, <&pll6>;
++			clock-output-names = "mmc2";
++		};
++
++		mmc3_clk: clk@01c20094 {
++			#clock-cells = <0>;
++			compatible = "allwinner,sun4i-a10-mod0-clk";
++			reg = <0x01c20094 0x4>;
++			clocks = <&osc24M>, <&pll6>;
++			clock-output-names = "mmc3";
++		};
++
+ 		spi0_clk: clk@01c200a0 {
+ 			#clock-cells = <0>;
+ 			compatible = "allwinner,sun4i-a10-mod0-clk";
+@@ -237,6 +269,58 @@
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		mmc0: mmc@01c0f000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c0f000 0x1000>;
++			clocks = <&ahb1_gates 8>, <&mmc0_clk>;
++			clock-names = "ahb", "mod";
++			resets = <&ahb1_rst 8>;
++			reset-names = "ahb";
++			interrupts = <0 60 4>;
++			bus-width = <4>;
++			cd-inverted;
++			status = "disabled";
++		};
++
++		mmc1: mmc@01c10000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c10000 0x1000>;
++			clocks = <&ahb1_gates 9>, <&mmc1_clk>;
++			clock-names = "ahb", "mod";
++			resets = <&ahb1_rst 9>;
++			reset-names = "reset";
++			interrupts = <0 61 4>;
++			bus-width = <4>;
++			cd-inverted;
++			status = "disabled";
++		};
++
++		mmc2: mmc@01c11000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c11000 0x1000>;
++			clocks = <&ahb1_gates 10>, <&mmc2_clk>;
++			clock-names = "ahb", "mod";
++			resets = <&ahb1_rst 10>;
++			reset-names = "reset";
++			interrupts = <0 62 4>;
++			bus-width = <4>;
++			cd-inverted;
++			status = "disabled";
++		};
++
++		mmc3: mmc@01c12000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c12000 0x1000>;
++			clocks = <&ahb1_gates 11>, <&mmc3_clk>;
++			clock-names = "ahb", "mod";
++			resets = <&ahb1_rst 11>;
++			reset-names = "reset";
++			interrupts = <0 63 4>;
++			bus-width = <4>;
++			cd-inverted;
++			status = "disabled";
++		};
++
+ 		nmi_intc: interrupt-controller@01f00c0c {
+ 			compatible = "allwinner,sun6i-a31-sc-nmi";
+ 			interrupt-controller;
+@@ -286,6 +370,13 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
++
++			mmc0_pins_a: mmc0@0 {
++				allwinner,pins = "PF0","PF1","PF2","PF3","PF4","PF5";
++				allwinner,function = "mmc0";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
+ 		};
+ 
+ 		ahb1_rst: reset@01c202c0 {
+diff --git a/arch/arm/boot/dts/sun7i-a20-cubieboard2.dts b/arch/arm/boot/dts/sun7i-a20-cubieboard2.dts
+index 68de89f..b41aa99 100644
+--- a/arch/arm/boot/dts/sun7i-a20-cubieboard2.dts
++++ b/arch/arm/boot/dts/sun7i-a20-cubieboard2.dts
+@@ -20,6 +20,15 @@
+ 	compatible = "cubietech,cubieboard2", "allwinner,sun7i-a20";
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+diff --git a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
+index cb25d3c..270bac0 100644
+--- a/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
++++ b/arch/arm/boot/dts/sun7i-a20-cubietruck.dts
+@@ -20,6 +20,23 @@
+ 	compatible = "cubietech,cubietruck", "allwinner,sun7i-a20";
+ 
+ 	soc@01c00000 {
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
++		mmc3: mmc@01c12000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc3_pins_a>;
++			vmmc-supply = <&reg_vmmc3>;
++			non-removable;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+@@ -48,6 +65,18 @@
+ 		};
+ 
+ 		pinctrl@01c20800 {
++			mmc3_pins_a: mmc3@0 {
++				/* AP6210 requires pull-up */
++				allwinner,pull = <1>;
++			};
++
++			vmmc3_pin_cubietruck: vmmc3_pin@0 {
++				allwinner,pins = "PH9";
++				allwinner,function = "gpio_out";
++				allwinner,drive = <0>;
++				allwinner,pull = <0>;
++			};
++
+ 			ahci_pwr_pin_cubietruck: ahci_pwr_pin@1 {
+ 				allwinner,pins = "PH12";
+ 				allwinner,function = "gpio_out";
+@@ -139,4 +168,15 @@
+ 	reg_usb2_vbus: usb2-vbus {
+ 		status = "okay";
+ 	};
++
++	reg_vmmc3: vmmc3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&vmmc3_pin_cubietruck>;
++		regulator-name = "vmmc3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		enable-active-high;
++		gpio = <&pio 7 9 0>;
++	};
+ };
+diff --git a/arch/arm/boot/dts/sun7i-a20-olinuxino-micro.dts b/arch/arm/boot/dts/sun7i-a20-olinuxino-micro.dts
+index eeadf76..f989554 100644
+--- a/arch/arm/boot/dts/sun7i-a20-olinuxino-micro.dts
++++ b/arch/arm/boot/dts/sun7i-a20-olinuxino-micro.dts
+@@ -31,6 +31,24 @@
+ 			status = "okay";
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin_a>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 1 0>; /* PH1 */
++			cd-inverted;
++			status = "okay";
++		};
++
++		mmc3: mmc@01c12000 {
++			pinctrl-names = "default";
++			pinctrl-0 = <&mmc3_pins_a>, <&mmc3_cd_pin_olinuxinom>;
++			bus-width = <4>;
++			cd-gpios = <&pio 7 11 0>; /* PH11 */
++			cd-inverted;
++			status = "okay";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			usb1_vbus-supply = <&reg_usb1_vbus>;
+ 			usb2_vbus-supply = <&reg_usb2_vbus>;
+@@ -65,6 +83,13 @@
+ 		};
+ 
+ 		pinctrl@01c20800 {
++			mmc3_cd_pin_olinuxinom: mmc3_cd_pin@0 {
++				allwinner,pins = "PH11";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
+ 			led_pins_olinuxino: led_pins@0 {
+ 				allwinner,pins = "PH2";
+ 				allwinner,function = "gpio_out";
+diff --git a/arch/arm/boot/dts/sun7i-a20.dtsi b/arch/arm/boot/dts/sun7i-a20.dtsi
+index 32efc10..99e8336 100644
+--- a/arch/arm/boot/dts/sun7i-a20.dtsi
++++ b/arch/arm/boot/dts/sun7i-a20.dtsi
+@@ -447,6 +447,42 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		mmc0: mmc@01c0f000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c0f000 0x1000>;
++			clocks = <&ahb_gates 8>, <&mmc0_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <0 32 4>;
++			status = "disabled";
++		};
++
++		mmc1: mmc@01c10000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c10000 0x1000>;
++			clocks = <&ahb_gates 9>, <&mmc1_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <0 33 4>;
++			status = "disabled";
++		};
++
++		mmc2: mmc@01c11000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c11000 0x1000>;
++			clocks = <&ahb_gates 10>, <&mmc2_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <0 34 4>;
++			status = "disabled";
++		};
++
++		mmc3: mmc@01c12000 {
++			compatible = "allwinner,sun5i-a13-mmc";
++			reg = <0x01c12000 0x1000>;
++			clocks = <&ahb_gates 11>, <&mmc3_clk>;
++			clock-names = "ahb", "mod";
++			interrupts = <0 35 4>;
++			status = "disabled";
++		};
++
+ 		usbphy: phy@01c13400 {
+ 			#phy-cells = <1>;
+ 			compatible = "allwinner,sun7i-a20-usb-phy";
+@@ -653,6 +689,27 @@
+ 				allwinner,drive = <0>;
+ 				allwinner,pull = <0>;
+ 			};
++
++			mmc0_pins_a: mmc0@0 {
++				allwinner,pins = "PF0","PF1","PF2","PF3","PF4","PF5";
++				allwinner,function = "mmc0";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
++
++			mmc0_cd_pin_a: mmc0_cd_pin@0 {
++				allwinner,pins = "PH1";
++				allwinner,function = "gpio_in";
++				allwinner,drive = <0>;
++				allwinner,pull = <1>;
++			};
++
++			mmc3_pins_a: mmc3@0 {
++				allwinner,pins = "PI4","PI5","PI6","PI7","PI8","PI9";
++				allwinner,function = "mmc3";
++				allwinner,drive = <2>;
++				allwinner,pull = <0>;
++			};
+ 		};
+ 
+ 		timer@01c20c00 {
+diff --git a/drivers/clk/sunxi/clk-factors.c b/drivers/clk/sunxi/clk-factors.c
+index 9e23264..3806d97 100644
+--- a/drivers/clk/sunxi/clk-factors.c
++++ b/drivers/clk/sunxi/clk-factors.c
+@@ -77,6 +77,41 @@ static long clk_factors_round_rate(struct clk_hw *hw, unsigned long rate,
+ 	return rate;
+ }
+ 
++static long clk_factors_determine_rate(struct clk_hw *hw, unsigned long rate,
++				       unsigned long *best_parent_rate,
++				       struct clk **best_parent_p)
++{
++	struct clk *clk = hw->clk, *parent, *best_parent = NULL;
++	int i, num_parents;
++	unsigned long parent_rate, best = 0, child_rate, best_child_rate = 0;
++
++	/* find the parent that can help provide the fastest rate <= rate */
++	num_parents = __clk_get_num_parents(clk);
++	for (i = 0; i < num_parents; i++) {
++		parent = clk_get_parent_by_index(clk, i);
++		if (!parent)
++			continue;
++		if (__clk_get_flags(clk) & CLK_SET_RATE_PARENT)
++			parent_rate = __clk_round_rate(parent, rate);
++		else
++			parent_rate = __clk_get_rate(parent);
++
++		child_rate = clk_factors_round_rate(hw, rate, &parent_rate);
++
++		if (child_rate <= rate && child_rate > best_child_rate) {
++			best_parent = parent;
++			best = parent_rate;
++			best_child_rate = child_rate;
++		}
++	}
++
++	if (best_parent)
++		*best_parent_p = best_parent;
++	*best_parent_rate = best;
++
++	return best_child_rate;
++}
++
+ static int clk_factors_set_rate(struct clk_hw *hw, unsigned long rate,
+ 				unsigned long parent_rate)
+ {
+@@ -113,6 +148,7 @@ static int clk_factors_set_rate(struct clk_hw *hw, unsigned long rate,
+ }
+ 
+ const struct clk_ops clk_factors_ops = {
++	.determine_rate = clk_factors_determine_rate,
+ 	.recalc_rate = clk_factors_recalc_rate,
+ 	.round_rate = clk_factors_round_rate,
+ 	.set_rate = clk_factors_set_rate,
+diff --git a/drivers/clk/sunxi/clk-sunxi.c b/drivers/clk/sunxi/clk-sunxi.c
+index bd7dc73..59f9040 100644
+--- a/drivers/clk/sunxi/clk-sunxi.c
++++ b/drivers/clk/sunxi/clk-sunxi.c
+@@ -507,6 +507,42 @@ CLK_OF_DECLARE(sun7i_a20_gmac, "allwinner,sun7i-a20-gmac-clk",
+ 
+ 
+ /**
++ * clk_sunxi_mmc_phase_control() - configures MMC clock phase control
++ */
++
++void clk_sunxi_mmc_phase_control(struct clk_hw *hw, u8 sample, u8 output)
++{
++	#define to_clk_composite(_hw) container_of(_hw, struct clk_composite, hw)
++	#define to_clk_factors(_hw) container_of(_hw, struct clk_factors, hw)
++
++	struct clk_composite *composite = to_clk_composite(hw);
++	struct clk_hw *rate_hw = composite->rate_hw;
++	struct clk_factors *factors = to_clk_factors(rate_hw);
++	unsigned long flags = 0;
++	u32 reg;
++
++	if (factors->lock)
++		spin_lock_irqsave(factors->lock, flags);
++
++	reg = readl(factors->reg);
++
++	/* set sample clock phase control */
++	reg &= ~(0x7 << 20);
++	reg |= ((sample & 0x7) << 20);
++
++	/* set output clock phase control */
++	reg &= ~(0x7 << 8);
++	reg |= ((output & 0x7) << 8);
++
++	writel(reg, factors->reg);
++
++	if (factors->lock)
++		spin_unlock_irqrestore(factors->lock, flags);
++}
++EXPORT_SYMBOL(clk_sunxi_mmc_phase_control);
++
++
++/**
+  * sunxi_factors_clk_setup() - Setup function for factor clocks
+  */
+ 
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 8aaf8c1..d50ac1c 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -694,3 +694,10 @@ config MMC_REALTEK_PCI
+ 	help
+ 	  Say Y here to include driver code to support SD/MMC card interface
+ 	  of Realtek PCI-E card reader
++
++config MMC_SUNXI
++	tristate "Allwinner sunxi SD/MMC Host Controller support"
++	depends on ARCH_SUNXI
++	help
++	  This selects support for the SD/MMC Host Controller on
++	  Allwinner sunxi SoCs.
+diff --git a/drivers/mmc/host/Makefile b/drivers/mmc/host/Makefile
+index 0c8aa5e..c706c0f 100644
+--- a/drivers/mmc/host/Makefile
++++ b/drivers/mmc/host/Makefile
+@@ -53,6 +53,8 @@ obj-$(CONFIG_MMC_WMT)		+= wmt-sdmmc.o
+ 
+ obj-$(CONFIG_MMC_REALTEK_PCI)	+= rtsx_pci_sdmmc.o
+ 
++obj-$(CONFIG_MMC_SUNXI)		+= sunxi-mmc.o
++
+ obj-$(CONFIG_MMC_SDHCI_PLTFM)		+= sdhci-pltfm.o
+ obj-$(CONFIG_MMC_SDHCI_CNS3XXX)		+= sdhci-cns3xxx.o
+ obj-$(CONFIG_MMC_SDHCI_ESDHC_IMX)	+= sdhci-esdhc-imx.o
+diff --git a/drivers/mmc/host/sunxi-mmc.c b/drivers/mmc/host/sunxi-mmc.c
+new file mode 100644
+index 0000000..f1de52c
+--- /dev/null
++++ b/drivers/mmc/host/sunxi-mmc.c
+@@ -0,0 +1,1125 @@
++/*
++ * Driver for sunxi SD/MMC host controllers
++ * (C) Copyright 2007-2011 Reuuimlla Technology Co., Ltd.
++ * (C) Copyright 2007-2011 Aaron Maoye <leafy.myeh@reuuimllatech.com>
++ * (C) Copyright 2013-2014 O2S GmbH <www.o2s.ch>
++ * (C) Copyright 2013-2014 David Lanzendörfer <david.lanzendoerfer@o2s.ch>
++ * (C) Copyright 2013-2014 Hans de Goede <hdegoede@redhat.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License as
++ * published by the Free Software Foundation; either version 2 of
++ * the License, or (at your option) any later version.
++ */
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/io.h>
++#include <linux/device.h>
++#include <linux/interrupt.h>
++#include <linux/delay.h>
++#include <linux/err.h>
++
++#include <linux/clk.h>
++#include <linux/clk-private.h>
++#include <linux/clk/sunxi.h>
++
++#include <linux/gpio.h>
++#include <linux/platform_device.h>
++#include <linux/spinlock.h>
++#include <linux/scatterlist.h>
++#include <linux/dma-mapping.h>
++#include <linux/slab.h>
++#include <linux/regulator/consumer.h>
++#include <linux/reset.h>
++
++#include <linux/of_address.h>
++#include <linux/of_gpio.h>
++#include <linux/of_platform.h>
++
++#include <linux/mmc/host.h>
++#include <linux/mmc/sd.h>
++#include <linux/mmc/sdio.h>
++#include <linux/mmc/mmc.h>
++#include <linux/mmc/core.h>
++#include <linux/mmc/card.h>
++#include <linux/mmc/slot-gpio.h>
++
++/* register offset definitions */
++#define SDXC_REG_GCTRL	(0x00) /* SMC Global Control Register */
++#define SDXC_REG_CLKCR	(0x04) /* SMC Clock Control Register */
++#define SDXC_REG_TMOUT	(0x08) /* SMC Time Out Register */
++#define SDXC_REG_WIDTH	(0x0C) /* SMC Bus Width Register */
++#define SDXC_REG_BLKSZ	(0x10) /* SMC Block Size Register */
++#define SDXC_REG_BCNTR	(0x14) /* SMC Byte Count Register */
++#define SDXC_REG_CMDR	(0x18) /* SMC Command Register */
++#define SDXC_REG_CARG	(0x1C) /* SMC Argument Register */
++#define SDXC_REG_RESP0	(0x20) /* SMC Response Register 0 */
++#define SDXC_REG_RESP1	(0x24) /* SMC Response Register 1 */
++#define SDXC_REG_RESP2	(0x28) /* SMC Response Register 2 */
++#define SDXC_REG_RESP3	(0x2C) /* SMC Response Register 3 */
++#define SDXC_REG_IMASK	(0x30) /* SMC Interrupt Mask Register */
++#define SDXC_REG_MISTA	(0x34) /* SMC Masked Interrupt Status Register */
++#define SDXC_REG_RINTR	(0x38) /* SMC Raw Interrupt Status Register */
++#define SDXC_REG_STAS	(0x3C) /* SMC Status Register */
++#define SDXC_REG_FTRGL	(0x40) /* SMC FIFO Threshold Watermark Registe */
++#define SDXC_REG_FUNS	(0x44) /* SMC Function Select Register */
++#define SDXC_REG_CBCR	(0x48) /* SMC CIU Byte Count Register */
++#define SDXC_REG_BBCR	(0x4C) /* SMC BIU Byte Count Register */
++#define SDXC_REG_DBGC	(0x50) /* SMC Debug Enable Register */
++#define SDXC_REG_HWRST	(0x78) /* SMC Card Hardware Reset for Register */
++#define SDXC_REG_DMAC	(0x80) /* SMC IDMAC Control Register */
++#define SDXC_REG_DLBA	(0x84) /* SMC IDMAC Descriptor List Base Addre */
++#define SDXC_REG_IDST	(0x88) /* SMC IDMAC Status Register */
++#define SDXC_REG_IDIE	(0x8C) /* SMC IDMAC Interrupt Enable Register */
++#define SDXC_REG_CHDA	(0x90)
++#define SDXC_REG_CBDA	(0x94)
++
++#define mci_readl(host, reg) \
++	readl((host)->reg_base + SDXC_##reg)
++#define mci_writel(host, reg, value) \
++	writel((value), (host)->reg_base + SDXC_##reg)
++
++/* global control register bits */
++#define SDXC_SOFT_RESET			BIT(0)
++#define SDXC_FIFO_RESET			BIT(1)
++#define SDXC_DMA_RESET			BIT(2)
++#define SDXC_INTERRUPT_ENABLE_BIT	BIT(4)
++#define SDXC_DMA_ENABLE_BIT		BIT(5)
++#define SDXC_DEBOUNCE_ENABLE_BIT	BIT(8)
++#define SDXC_POSEDGE_LATCH_DATA		BIT(9)
++#define SDXC_DDR_MODE			BIT(10)
++#define SDXC_MEMORY_ACCESS_DONE		BIT(29)
++#define SDXC_ACCESS_DONE_DIRECT		BIT(30)
++#define SDXC_ACCESS_BY_AHB		BIT(31)
++#define SDXC_ACCESS_BY_DMA		(0 << 31)
++#define SDXC_HARDWARE_RESET \
++	(SDXC_SOFT_RESET | SDXC_FIFO_RESET | SDXC_DMA_RESET)
++
++/* clock control bits */
++#define SDXC_CARD_CLOCK_ON		BIT(16)
++#define SDXC_LOW_POWER_ON		BIT(17)
++
++/* bus width */
++#define SDXC_WIDTH1			0
++#define SDXC_WIDTH4			1
++#define SDXC_WIDTH8			2
++
++/* smc command bits */
++#define SDXC_RESP_EXPIRE		BIT(6)
++#define SDXC_LONG_RESPONSE		BIT(7)
++#define SDXC_CHECK_RESPONSE_CRC		BIT(8)
++#define SDXC_DATA_EXPIRE		BIT(9)
++#define SDXC_WRITE			BIT(10)
++#define SDXC_SEQUENCE_MODE		BIT(11)
++#define SDXC_SEND_AUTO_STOP		BIT(12)
++#define SDXC_WAIT_PRE_OVER		BIT(13)
++#define SDXC_STOP_ABORT_CMD		BIT(14)
++#define SDXC_SEND_INIT_SEQUENCE		BIT(15)
++#define SDXC_UPCLK_ONLY			BIT(21)
++#define SDXC_READ_CEATA_DEV		BIT(22)
++#define SDXC_CCS_EXPIRE			BIT(23)
++#define SDXC_ENABLE_BIT_BOOT		BIT(24)
++#define SDXC_ALT_BOOT_OPTIONS		BIT(25)
++#define SDXC_BOOT_ACK_EXPIRE		BIT(26)
++#define SDXC_BOOT_ABORT			BIT(27)
++#define SDXC_VOLTAGE_SWITCH	        BIT(28)
++#define SDXC_USE_HOLD_REGISTER	        BIT(29)
++#define SDXC_START			BIT(31)
++
++/* interrupt bits */
++#define SDXC_RESP_ERROR			BIT(1)
++#define SDXC_COMMAND_DONE		BIT(2)
++#define SDXC_DATA_OVER			BIT(3)
++#define SDXC_TX_DATA_REQUEST		BIT(4)
++#define SDXC_RX_DATA_REQUEST		BIT(5)
++#define SDXC_RESP_CRC_ERROR		BIT(6)
++#define SDXC_DATA_CRC_ERROR		BIT(7)
++#define SDXC_RESP_TIMEOUT		BIT(8)
++#define SDXC_DATA_TIMEOUT		BIT(9)
++#define SDXC_VOLTAGE_CHANGE_DONE	BIT(10)
++#define SDXC_FIFO_RUN_ERROR		BIT(11)
++#define SDXC_HARD_WARE_LOCKED		BIT(12)
++#define SDXC_START_BIT_ERROR		BIT(13)
++#define SDXC_AUTO_COMMAND_DONE		BIT(14)
++#define SDXC_END_BIT_ERROR		BIT(15)
++#define SDXC_SDIO_INTERRUPT		BIT(16)
++#define SDXC_CARD_INSERT		BIT(30)
++#define SDXC_CARD_REMOVE		BIT(31)
++#define SDXC_INTERRUPT_ERROR_BIT \
++	(SDXC_RESP_ERROR | SDXC_RESP_CRC_ERROR | SDXC_DATA_CRC_ERROR | \
++	 SDXC_RESP_TIMEOUT | SDXC_DATA_TIMEOUT | SDXC_FIFO_RUN_ERROR | \
++	 SDXC_HARD_WARE_LOCKED | SDXC_START_BIT_ERROR | SDXC_END_BIT_ERROR)
++#define SDXC_INTERRUPT_DONE_BIT \
++	(SDXC_AUTO_COMMAND_DONE | SDXC_DATA_OVER | \
++	 SDXC_COMMAND_DONE | SDXC_VOLTAGE_CHANGE_DONE)
++
++/* status */
++#define SDXC_RXWL_FLAG			BIT(0)
++#define SDXC_TXWL_FLAG			BIT(1)
++#define SDXC_FIFO_EMPTY			BIT(2)
++#define SDXC_FIFO_FULL			BIT(3)
++#define SDXC_CARD_PRESENT		BIT(8)
++#define SDXC_CARD_DATA_BUSY		BIT(9)
++#define SDXC_DATA_FSM_BUSY		BIT(10)
++#define SDXC_DMA_REQUEST		BIT(31)
++#define SDXC_FIFO_SIZE			16
++
++/* Function select */
++#define SDXC_CEATA_ON			(0xceaa << 16)
++#define SDXC_SEND_IRQ_RESPONSE		BIT(0)
++#define SDXC_SDIO_READ_WAIT		BIT(1)
++#define SDXC_ABORT_READ_DATA		BIT(2)
++#define SDXC_SEND_CCSD			BIT(8)
++#define SDXC_SEND_AUTO_STOPCCSD		BIT(9)
++#define SDXC_CEATA_DEV_IRQ_ENABLE	BIT(10)
++
++/* IDMA controller bus mod bit field */
++#define SDXC_IDMAC_SOFT_RESET		BIT(0)
++#define SDXC_IDMAC_FIX_BURST		BIT(1)
++#define SDXC_IDMAC_IDMA_ON		BIT(7)
++#define SDXC_IDMAC_REFETCH_DES		BIT(31)
++
++/* IDMA status bit field */
++#define SDXC_IDMAC_TRANSMIT_INTERRUPT		BIT(0)
++#define SDXC_IDMAC_RECEIVE_INTERRUPT		BIT(1)
++#define SDXC_IDMAC_FATAL_BUS_ERROR		BIT(2)
++#define SDXC_IDMAC_DESTINATION_INVALID		BIT(4)
++#define SDXC_IDMAC_CARD_ERROR_SUM		BIT(5)
++#define SDXC_IDMAC_NORMAL_INTERRUPT_SUM		BIT(8)
++#define SDXC_IDMAC_ABNORMAL_INTERRUPT_SUM	BIT(9)
++#define SDXC_IDMAC_HOST_ABORT_INTERRUPT		BIT(10)
++#define SDXC_IDMAC_IDLE				(0 << 13)
++#define SDXC_IDMAC_SUSPEND			(1 << 13)
++#define SDXC_IDMAC_DESC_READ			(2 << 13)
++#define SDXC_IDMAC_DESC_CHECK			(3 << 13)
++#define SDXC_IDMAC_READ_REQUEST_WAIT		(4 << 13)
++#define SDXC_IDMAC_WRITE_REQUEST_WAIT		(5 << 13)
++#define SDXC_IDMAC_READ				(6 << 13)
++#define SDXC_IDMAC_WRITE			(7 << 13)
++#define SDXC_IDMAC_DESC_CLOSE			(8 << 13)
++
++/*
++* If the idma-des-size-bits of property is ie 13, bufsize bits are:
++*  Bits  0-12: buf1 size
++*  Bits 13-25: buf2 size
++*  Bits 26-31: not used
++* Since we only ever set buf1 size, we can simply store it directly.
++*/
++#define SDXC_IDMAC_DES0_DIC	BIT(1)  /* disable interrupt on completion */
++#define SDXC_IDMAC_DES0_LD	BIT(2)  /* last descriptor */
++#define SDXC_IDMAC_DES0_FD	BIT(3)  /* first descriptor */
++#define SDXC_IDMAC_DES0_CH	BIT(4)  /* chain mode */
++#define SDXC_IDMAC_DES0_ER	BIT(5)  /* end of ring */
++#define SDXC_IDMAC_DES0_CES	BIT(30) /* card error summary */
++#define SDXC_IDMAC_DES0_OWN	BIT(31) /* 1-idma owns it, 0-host owns it */
++
++struct sunxi_idma_des {
++	u32	config;
++	u32	buf_size;
++	u32	buf_addr_ptr1;
++	u32	buf_addr_ptr2;
++};
++
++struct sunxi_mmc_host {
++	struct mmc_host	*mmc;
++	struct regulator *vmmc;
++	struct reset_control *reset;
++
++	/* IO mapping base */
++	void __iomem	*reg_base;
++
++	spinlock_t	lock;
++	struct tasklet_struct manual_stop_tasklet;
++
++	/* clock management */
++	struct clk	*clk_ahb;
++	struct clk	*clk_mod;
++
++	/* ios information */
++	u32		clk_mod_rate;
++	u32		bus_width;
++	u32		idma_des_size_bits;
++	u32		ddr;
++	u32		voltage_switching;
++
++	/* irq */
++	int		irq;
++	u32		int_sum;
++	u32		sdio_imask;
++
++	/* flags */
++	bool		wait_dma;
++
++	dma_addr_t	sg_dma;
++	void		*sg_cpu;
++
++	struct mmc_request *mrq;
++	struct mmc_request *manual_stop_mrq;
++	u32		ferror;
++};
++
++static int sunxi_mmc_init_host(struct mmc_host *mmc)
++{
++	u32 rval;
++	struct sunxi_mmc_host *smc_host = mmc_priv(mmc);
++	int ret;
++
++	ret =  clk_prepare_enable(smc_host->clk_ahb);
++	if (ret) {
++		dev_err(mmc_dev(smc_host->mmc), "AHB clk err %d\n", ret);
++		return ret;
++	}
++
++	ret =  clk_prepare_enable(smc_host->clk_mod);
++	if (ret) {
++		dev_err(mmc_dev(smc_host->mmc), "MOD clk err %d\n", ret);
++		clk_disable_unprepare(smc_host->clk_ahb);
++		return ret;
++	}
++
++	if (smc_host->reset) {
++		ret = reset_control_deassert(smc_host->reset);
++		if (ret) {
++			dev_err(mmc_dev(smc_host->mmc), "reset err %d\n", ret);
++			clk_disable_unprepare(smc_host->clk_ahb);
++			clk_disable_unprepare(smc_host->clk_mod);
++			return ret;
++		}
++	}
++
++	/* reset controller */
++	rval = mci_readl(smc_host, REG_GCTRL);
++	rval |= SDXC_HARDWARE_RESET;
++	mci_writel(smc_host, REG_GCTRL, rval);
++
++	mci_writel(smc_host, REG_FTRGL, 0x20070008);
++	mci_writel(smc_host, REG_TMOUT, 0xffffffff);
++	mci_writel(smc_host, REG_IMASK, smc_host->sdio_imask);
++	mci_writel(smc_host, REG_RINTR, 0xffffffff);
++	mci_writel(smc_host, REG_DBGC, 0xdeb);
++	mci_writel(smc_host, REG_FUNS, SDXC_CEATA_ON);
++	mci_writel(smc_host, REG_DLBA, smc_host->sg_dma);
++
++	rval = mci_readl(smc_host, REG_GCTRL);
++	rval |= SDXC_INTERRUPT_ENABLE_BIT;
++	rval &= ~SDXC_ACCESS_DONE_DIRECT;
++	mci_writel(smc_host, REG_GCTRL, rval);
++
++	return 0;
++}
++
++static void sunxi_mmc_exit_host(struct sunxi_mmc_host *smc_host)
++{
++	mci_writel(smc_host, REG_GCTRL, SDXC_HARDWARE_RESET);
++
++	if (smc_host->reset)
++		reset_control_assert(smc_host->reset);
++
++	clk_disable_unprepare(smc_host->clk_ahb);
++	clk_disable_unprepare(smc_host->clk_mod);
++}
++
++/* /\* UHS-I Operation Modes */
++/*  * DS		25MHz	12.5MB/s	3.3V */
++/*  * HS		50MHz	25MB/s		3.3V */
++/*  * SDR12	25MHz	12.5MB/s	1.8V */
++/*  * SDR25	50MHz	25MB/s		1.8V */
++/*  * SDR50	100MHz	50MB/s		1.8V */
++/*  * SDR104	208MHz	104MB/s		1.8V */
++/*  * DDR50	50MHz	50MB/s		1.8V */
++/*  * MMC Operation Modes */
++/*  * DS		26MHz	26MB/s		3/1.8/1.2V */
++/*  * HS		52MHz	52MB/s		3/1.8/1.2V */
++/*  * HSDDR	52MHz	104MB/s		3/1.8/1.2V */
++/*  * HS200	200MHz	200MB/s		1.8/1.2V */
++/*  * */
++/*  * Spec. Timing */
++/*  * SD3.0 */
++/*  * Fcclk    Tcclk   Fsclk   Tsclk   Tis     Tih     odly  RTis     RTih */
++/*  * 400K     2.5us   24M     41ns    5ns     5ns     1     2209ns   41ns */
++/*  * 25M      40ns    600M    1.67ns  5ns     5ns     3     14.99ns  5.01ns */
++/*  * 50M      20ns    600M    1.67ns  6ns     2ns     3     14.99ns  5.01ns */
++/*  * 50MDDR   20ns    600M    1.67ns  6ns     0.8ns   2     6.67ns   3.33ns */
++/*  * 104M     9.6ns   600M    1.67ns  3ns     0.8ns   1     7.93ns   1.67ns */
++/*  * 208M     4.8ns   600M    1.67ns  1.4ns   0.8ns   1     3.33ns   1.67ns */
++
++/*  * 25M      40ns    300M    3.33ns  5ns     5ns     2     13.34ns   6.66ns */
++/*  * 50M      20ns    300M    3.33ns  6ns     2ns     2     13.34ns   6.66ns */
++/*  * 50MDDR   20ns    300M    3.33ns  6ns     0.8ns   1     6.67ns    3.33ns */
++/*  * 104M     9.6ns   300M    3.33ns  3ns     0.8ns   0     7.93ns    1.67ns */
++/*  * 208M     4.8ns   300M    3.33ns  1.4ns   0.8ns   0     3.13ns    1.67ns */
++
++/*  * eMMC4.5 */
++/*  * 400K     2.5us   24M     41ns    3ns     3ns     1     2209ns    41ns */
++/*  * 25M      40ns    600M    1.67ns  3ns     3ns     3     14.99ns   5.01ns */
++/*  * 50M      20ns    600M    1.67ns  3ns     3ns     3     14.99ns   5.01ns */
++/*  * 50MDDR   20ns    600M    1.67ns  2.5ns   2.5ns   2     6.67ns    3.33ns */
++/*  * 200M     5ns     600M    1.67ns  1.4ns   0.8ns   1     3.33ns    1.67ns */
++/*  *\/ */
++
++static void sunxi_mmc_init_idma_des(struct sunxi_mmc_host *host,
++				    struct mmc_data *data)
++{
++	struct sunxi_idma_des *pdes = (struct sunxi_idma_des *)host->sg_cpu;
++	struct sunxi_idma_des *pdes_pa = (struct sunxi_idma_des *)host->sg_dma;
++	int i, max_len = (1 << host->idma_des_size_bits);
++
++	for (i = 0; i < data->sg_len; i++) {
++		pdes[i].config = SDXC_IDMAC_DES0_CH | SDXC_IDMAC_DES0_OWN |
++				 SDXC_IDMAC_DES0_DIC;
++
++		if (data->sg[i].length == max_len)
++			pdes[i].buf_size = 0; /* 0 == max_len */
++		else
++			pdes[i].buf_size = data->sg[i].length;
++
++		pdes[i].buf_addr_ptr1 = sg_dma_address(&data->sg[i]);
++		pdes[i].buf_addr_ptr2 = (u32)&pdes_pa[i + 1];
++	}
++
++	pdes[0].config |= SDXC_IDMAC_DES0_FD;
++	pdes[i - 1].config = SDXC_IDMAC_DES0_OWN | SDXC_IDMAC_DES0_LD;
++
++	/*
++	 * Avoid the io-store starting the idmac hitting io-mem before the
++	 * descriptors hit the main-mem.
++	 */
++	wmb();
++}
++
++static enum dma_data_direction sunxi_mmc_get_dma_dir(struct mmc_data *data)
++{
++	if (data->flags & MMC_DATA_WRITE)
++		return DMA_TO_DEVICE;
++	else
++		return DMA_FROM_DEVICE;
++}
++
++static int sunxi_mmc_map_dma(struct sunxi_mmc_host *smc_host,
++			     struct mmc_data *data)
++{
++	u32 i, dma_len;
++	struct scatterlist *sg;
++
++	dma_len = dma_map_sg(mmc_dev(smc_host->mmc), data->sg, data->sg_len,
++			     sunxi_mmc_get_dma_dir(data));
++	if (dma_len == 0) {
++		dev_err(mmc_dev(smc_host->mmc), "dma_map_sg failed\n");
++		return -ENOMEM;
++	}
++
++	for_each_sg(data->sg, sg, data->sg_len, i) {
++		if (sg->offset & 3 || sg->length & 3) {
++			dev_err(mmc_dev(smc_host->mmc),
++				"unaligned scatterlist: os %x length %d\n",
++				sg->offset, sg->length);
++			return -EINVAL;
++		}
++	}
++
++	return 0;
++}
++
++static void sunxi_mmc_start_dma(struct sunxi_mmc_host *smc_host,
++				struct mmc_data *data)
++{
++	u32 rval;
++
++	sunxi_mmc_init_idma_des(smc_host, data);
++
++	rval = mci_readl(smc_host, REG_GCTRL);
++	rval |= SDXC_DMA_ENABLE_BIT;
++	mci_writel(smc_host, REG_GCTRL, rval);
++	rval |= SDXC_DMA_RESET;
++	mci_writel(smc_host, REG_GCTRL, rval);
++
++	mci_writel(smc_host, REG_DMAC, SDXC_IDMAC_SOFT_RESET);
++
++	if (!(data->flags & MMC_DATA_WRITE))
++		mci_writel(smc_host, REG_IDIE, SDXC_IDMAC_RECEIVE_INTERRUPT);
++
++	mci_writel(smc_host, REG_DMAC,
++		   SDXC_IDMAC_FIX_BURST | SDXC_IDMAC_IDMA_ON);
++}
++
++static void sunxi_mmc_send_manual_stop(struct sunxi_mmc_host *host,
++				       struct mmc_request *req)
++{
++	u32 cmd_val = SDXC_START | SDXC_RESP_EXPIRE | SDXC_STOP_ABORT_CMD
++			| SDXC_CHECK_RESPONSE_CRC | MMC_STOP_TRANSMISSION;
++	u32 ri = 0;
++	unsigned long expire = jiffies + msecs_to_jiffies(1000);
++
++	mci_writel(host, REG_CARG, 0);
++	mci_writel(host, REG_CMDR, cmd_val);
++
++	do {
++		ri = mci_readl(host, REG_RINTR);
++	} while (!(ri & (SDXC_COMMAND_DONE | SDXC_INTERRUPT_ERROR_BIT)) &&
++		 time_before(jiffies, expire));
++
++	if (ri & SDXC_INTERRUPT_ERROR_BIT) {
++		dev_err(mmc_dev(host->mmc), "send stop command failed\n");
++		if (req->stop)
++			req->stop->resp[0] = -ETIMEDOUT;
++	} else {
++		if (req->stop)
++			req->stop->resp[0] = mci_readl(host, REG_RESP0);
++	}
++
++	mci_writel(host, REG_RINTR, 0xffff);
++}
++
++static void sunxi_mmc_dump_errinfo(struct sunxi_mmc_host *smc_host)
++{
++	struct mmc_command *cmd = smc_host->mrq->cmd;
++	struct mmc_data *data = smc_host->mrq->data;
++
++	/* For some cmds timeout is normal with sd/mmc cards */
++	if ((smc_host->int_sum & SDXC_INTERRUPT_ERROR_BIT) ==
++		SDXC_RESP_TIMEOUT && (cmd->opcode == SD_IO_SEND_OP_COND ||
++				      cmd->opcode == SD_IO_RW_DIRECT))
++		return;
++
++	dev_err(mmc_dev(smc_host->mmc),
++		"smc %d err, cmd %d,%s%s%s%s%s%s%s%s%s%s !!\n",
++		smc_host->mmc->index, cmd->opcode,
++		data ? (data->flags & MMC_DATA_WRITE ? " WR" : " RD") : "",
++		smc_host->int_sum & SDXC_RESP_ERROR     ? " RE"     : "",
++		smc_host->int_sum & SDXC_RESP_CRC_ERROR  ? " RCE"    : "",
++		smc_host->int_sum & SDXC_DATA_CRC_ERROR  ? " DCE"    : "",
++		smc_host->int_sum & SDXC_RESP_TIMEOUT ? " RTO"    : "",
++		smc_host->int_sum & SDXC_DATA_TIMEOUT ? " DTO"    : "",
++		smc_host->int_sum & SDXC_FIFO_RUN_ERROR  ? " FE"     : "",
++		smc_host->int_sum & SDXC_HARD_WARE_LOCKED ? " HL"     : "",
++		smc_host->int_sum & SDXC_START_BIT_ERROR ? " SBE"    : "",
++		smc_host->int_sum & SDXC_END_BIT_ERROR   ? " EBE"    : ""
++		);
++}
++
++/* Called in interrupt context! */
++static int sunxi_mmc_finalize_request(struct sunxi_mmc_host *host)
++{
++	struct mmc_request *mrq = host->mrq;
++
++	mci_writel(host, REG_IMASK, host->sdio_imask);
++	mci_writel(host, REG_IDIE, 0);
++
++	if (host->int_sum & SDXC_INTERRUPT_ERROR_BIT) {
++		sunxi_mmc_dump_errinfo(host);
++		mrq->cmd->error = -ETIMEDOUT;
++
++		if (mrq->data)
++			mrq->data->error = -ETIMEDOUT;
++
++		if (mrq->stop)
++			mrq->stop->error = -ETIMEDOUT;
++	} else {
++		if (mrq->cmd->flags & MMC_RSP_136) {
++			mrq->cmd->resp[0] = mci_readl(host, REG_RESP3);
++			mrq->cmd->resp[1] = mci_readl(host, REG_RESP2);
++			mrq->cmd->resp[2] = mci_readl(host, REG_RESP1);
++			mrq->cmd->resp[3] = mci_readl(host, REG_RESP0);
++		} else {
++			mrq->cmd->resp[0] = mci_readl(host, REG_RESP0);
++		}
++
++		if (mrq->data)
++			mrq->data->bytes_xfered =
++				mrq->data->blocks * mrq->data->blksz;
++	}
++
++	if (mrq->data) {
++		struct mmc_data *data = mrq->data;
++		u32 rval;
++
++		mci_writel(host, REG_IDST, 0x337);
++		mci_writel(host, REG_DMAC, 0);
++		rval = mci_readl(host, REG_GCTRL);
++		rval |= SDXC_DMA_RESET;
++		mci_writel(host, REG_GCTRL, rval);
++		rval &= ~SDXC_DMA_ENABLE_BIT;
++		mci_writel(host, REG_GCTRL, rval);
++		rval |= SDXC_FIFO_RESET;
++		mci_writel(host, REG_GCTRL, rval);
++		dma_unmap_sg(mmc_dev(host->mmc), data->sg, data->sg_len,
++				     sunxi_mmc_get_dma_dir(data));
++	}
++
++	mci_writel(host, REG_RINTR, 0xffff);
++
++	dev_dbg(mmc_dev(host->mmc), "req done, resp %08x %08x %08x %08x\n",
++		mrq->cmd->resp[0], mrq->cmd->resp[1],
++		mrq->cmd->resp[2], mrq->cmd->resp[3]);
++
++	host->mrq = NULL;
++	host->int_sum = 0;
++	host->wait_dma = false;
++
++	if (mrq->data && mrq->data->error) {
++		host->manual_stop_mrq = mrq;
++		tasklet_schedule(&host->manual_stop_tasklet);
++		return -EBUSY;
++	}
++
++	return 0;
++}
++
++static irqreturn_t sunxi_mmc_irq(int irq, void *dev_id)
++{
++	struct sunxi_mmc_host *host = dev_id;
++	struct mmc_request *mrq;
++	bool finalize = false;
++	bool complete = false;
++	bool sdio_int = false;
++	u32 msk_int;
++	u32 idma_int;
++
++	spin_lock(&host->lock);
++
++	idma_int  = mci_readl(host, REG_IDST);
++	msk_int   = mci_readl(host, REG_MISTA);
++
++	dev_dbg(mmc_dev(host->mmc), "irq: rq %p mi %08x idi %08x\n",
++		host->mrq, msk_int, idma_int);
++
++	mrq = host->mrq;
++	if (mrq) {
++		if (idma_int & SDXC_IDMAC_RECEIVE_INTERRUPT)
++			host->wait_dma = false;
++
++		host->int_sum |= msk_int;
++
++		/* Wait for COMMAND_DONE on RESPONSE_TIMEOUT before finalize */
++		if ((host->int_sum & SDXC_RESP_TIMEOUT) &&
++				!(host->int_sum & SDXC_COMMAND_DONE))
++			mci_writel(host, REG_IMASK,
++				   host->sdio_imask | SDXC_COMMAND_DONE);
++		/* Don't wait for dma on error */
++		else if (host->int_sum & SDXC_INTERRUPT_ERROR_BIT)
++			finalize = true;
++		else if ((host->int_sum & SDXC_INTERRUPT_DONE_BIT) &&
++				!host->wait_dma)
++			finalize = true;
++	}
++
++	if (msk_int & SDXC_SDIO_INTERRUPT)
++		sdio_int = true;
++
++	mci_writel(host, REG_RINTR, msk_int);
++	mci_writel(host, REG_IDST, idma_int);
++
++	if (finalize) {
++		if (sunxi_mmc_finalize_request(host) == 0)
++			complete = true;
++	}
++
++	spin_unlock(&host->lock);
++
++	if (complete)
++		mmc_request_done(host->mmc, mrq);
++
++	if (sdio_int)
++		mmc_signal_sdio_irq(host->mmc);
++
++	return IRQ_HANDLED;
++}
++
++static void sunxi_mmc_manual_stop_tasklet(unsigned long data)
++{
++	struct sunxi_mmc_host *host = (struct sunxi_mmc_host *) data;
++	struct mmc_request *mrq;
++	unsigned long iflags;
++
++	spin_lock_irqsave(&host->lock, iflags);
++	mrq = host->manual_stop_mrq;
++	spin_unlock_irqrestore(&host->lock, iflags);
++
++	if (!mrq) {
++		dev_err(mmc_dev(host->mmc), "no request for manual stop\n");
++		return;
++	}
++
++	dev_err(mmc_dev(host->mmc), "data error, sending stop command\n");
++	sunxi_mmc_send_manual_stop(host, mrq);
++
++	spin_lock_irqsave(&host->lock, iflags);
++	host->manual_stop_mrq = NULL;
++	spin_unlock_irqrestore(&host->lock, iflags);
++
++	mmc_request_done(host->mmc, mrq);
++}
++
++static void sunxi_mmc_oclk_onoff(struct sunxi_mmc_host *host, u32 oclk_en)
++{
++	unsigned long expire = jiffies + msecs_to_jiffies(2000);
++	u32 rval;
++
++	rval = mci_readl(host, REG_CLKCR);
++	rval &= ~(SDXC_CARD_CLOCK_ON | SDXC_LOW_POWER_ON);
++
++	if (oclk_en)
++		rval |= SDXC_CARD_CLOCK_ON;
++
++	mci_writel(host, REG_CLKCR, rval);
++
++	rval = SDXC_START | SDXC_UPCLK_ONLY | SDXC_WAIT_PRE_OVER;
++	if (host->voltage_switching)
++		rval |= SDXC_VOLTAGE_SWITCH;
++	mci_writel(host, REG_CMDR, rval);
++
++	do {
++		rval = mci_readl(host, REG_CMDR);
++	} while (time_before(jiffies, expire) && (rval & SDXC_START));
++
++	if (rval & SDXC_START) {
++		dev_err(mmc_dev(host->mmc), "fatal err update clk timeout\n");
++		host->ferror = 1;
++	}
++}
++
++static void sunxi_mmc_clk_set_rate(struct sunxi_mmc_host *smc_host,
++				   unsigned int rate)
++{
++	u32 newrate, oclk_dly, rval, sclk_dly, src_clk;
++	struct clk_hw *hw = __clk_get_hw(smc_host->clk_mod);
++
++	newrate = clk_round_rate(smc_host->clk_mod, rate);
++	if (smc_host->clk_mod_rate == newrate) {
++		dev_dbg(mmc_dev(smc_host->mmc), "clk already %d, rounded %d\n",
++			rate, newrate);
++		return;
++	}
++
++	dev_dbg(mmc_dev(smc_host->mmc), "setting clk to %d, rounded %d\n",
++		rate, newrate);
++
++	/* setting clock rate */
++	clk_set_rate(smc_host->clk_mod, newrate);
++	smc_host->clk_mod_rate = clk_get_rate(smc_host->clk_mod);
++	dev_dbg(mmc_dev(smc_host->mmc), "clk is now %d\n",
++		smc_host->clk_mod_rate);
++
++	sunxi_mmc_oclk_onoff(smc_host, 0);
++	/* clear internal divider */
++	rval = mci_readl(smc_host, REG_CLKCR);
++	rval &= ~0xff;
++	mci_writel(smc_host, REG_CLKCR, rval);
++
++	/* determine delays */
++	if (rate <= 400000) {
++		oclk_dly = 0;
++		sclk_dly = 7;
++	} else if (rate <= 25000000) {
++		oclk_dly = 0;
++		sclk_dly = 5;
++	} else if (rate <= 50000000) {
++		if (smc_host->ddr) {
++			oclk_dly = 2;
++			sclk_dly = 4;
++		} else {
++			oclk_dly = 3;
++			sclk_dly = 5;
++		}
++	} else {
++		/* rate > 50000000 */
++		oclk_dly = 2;
++		sclk_dly = 4;
++	}
++
++	src_clk = clk_get_rate(clk_get_parent(smc_host->clk_mod));
++	if (src_clk >= 300000000 && src_clk <= 400000000) {
++		if (oclk_dly)
++			oclk_dly--;
++		if (sclk_dly)
++			sclk_dly--;
++	}
++
++	clk_sunxi_mmc_phase_control(hw, sclk_dly, oclk_dly);
++	sunxi_mmc_oclk_onoff(smc_host, 1);
++
++	/* oclk_onoff sets various irq status bits, clear these */
++	mci_writel(smc_host, REG_RINTR,
++		   mci_readl(smc_host, REG_RINTR) & ~SDXC_SDIO_INTERRUPT);
++}
++
++static void sunxi_mmc_set_ios(struct mmc_host *mmc, struct mmc_ios *ios)
++{
++	struct sunxi_mmc_host *host = mmc_priv(mmc);
++	u32 rval;
++	s32 err;
++
++	/* Set the power state */
++	switch (ios->power_mode) {
++	case MMC_POWER_ON:
++		break;
++
++	case MMC_POWER_UP:
++		if (!IS_ERR(host->vmmc)) {
++			mmc_regulator_set_ocr(host->mmc, host->vmmc, ios->vdd);
++			udelay(200);
++		}
++
++		err = sunxi_mmc_init_host(mmc);
++		if (err) {
++			host->ferror = 1;
++			return;
++		}
++
++		enable_irq(host->irq);
++
++		dev_dbg(mmc_dev(host->mmc), "power on!\n");
++		host->ferror = 0;
++		break;
++
++	case MMC_POWER_OFF:
++		dev_dbg(mmc_dev(host->mmc), "power off!\n");
++		disable_irq(host->irq);
++		sunxi_mmc_exit_host(host);
++		if (!IS_ERR(host->vmmc))
++			mmc_regulator_set_ocr(host->mmc, host->vmmc, 0);
++
++		host->ferror = 0;
++		break;
++	}
++
++	/* set bus width */
++	switch (ios->bus_width) {
++	case MMC_BUS_WIDTH_1:
++		mci_writel(host, REG_WIDTH, SDXC_WIDTH1);
++		host->bus_width = 1;
++		break;
++	case MMC_BUS_WIDTH_4:
++		mci_writel(host, REG_WIDTH, SDXC_WIDTH4);
++		host->bus_width = 4;
++		break;
++	case MMC_BUS_WIDTH_8:
++		mci_writel(host, REG_WIDTH, SDXC_WIDTH8);
++		host->bus_width = 8;
++		break;
++	}
++
++	/* set ddr mode */
++	rval = mci_readl(host, REG_GCTRL);
++	if (ios->timing == MMC_TIMING_UHS_DDR50) {
++		rval |= SDXC_DDR_MODE;
++		host->ddr = 1;
++	} else {
++		rval &= ~SDXC_DDR_MODE;
++		host->ddr = 0;
++	}
++	mci_writel(host, REG_GCTRL, rval);
++
++	/* set up clock */
++	if (ios->clock && ios->power_mode) {
++		dev_dbg(mmc_dev(host->mmc), "ios->clock: %d\n", ios->clock);
++		sunxi_mmc_clk_set_rate(host, ios->clock);
++		usleep_range(50000, 55000);
++	}
++}
++
++static void sunxi_mmc_enable_sdio_irq(struct mmc_host *mmc, int enable)
++{
++	struct sunxi_mmc_host *smc_host = mmc_priv(mmc);
++	unsigned long flags;
++	u32 imask;
++
++	spin_lock_irqsave(&smc_host->lock, flags);
++
++	imask = mci_readl(smc_host, REG_IMASK);
++	if (enable) {
++		smc_host->sdio_imask = SDXC_SDIO_INTERRUPT;
++		imask |= SDXC_SDIO_INTERRUPT;
++	} else {
++		smc_host->sdio_imask = 0;
++		imask &= ~SDXC_SDIO_INTERRUPT;
++	}
++	mci_writel(smc_host, REG_IMASK, imask);
++	spin_unlock_irqrestore(&smc_host->lock, flags);
++}
++
++static void sunxi_mmc_hw_reset(struct mmc_host *mmc)
++{
++	struct sunxi_mmc_host *smc_host = mmc_priv(mmc);
++	mci_writel(smc_host, REG_HWRST, 0);
++	udelay(10);
++	mci_writel(smc_host, REG_HWRST, 1);
++	udelay(300);
++}
++
++static void sunxi_mmc_request(struct mmc_host *mmc, struct mmc_request *mrq)
++{
++	struct sunxi_mmc_host *host = mmc_priv(mmc);
++	struct mmc_command *cmd = mrq->cmd;
++	struct mmc_data *data = mrq->data;
++	unsigned long iflags;
++	u32 imask = SDXC_INTERRUPT_ERROR_BIT;
++	u32 cmd_val = SDXC_START | (cmd->opcode & 0x3f);
++	int ret;
++
++	if (!mmc_gpio_get_cd(mmc) || host->ferror) {
++		dev_dbg(mmc_dev(host->mmc), "no medium present\n");
++		mrq->cmd->error = -ENOMEDIUM;
++		mmc_request_done(mmc, mrq);
++		return;
++	}
++
++	if (data) {
++		ret = sunxi_mmc_map_dma(host, data);
++		if (ret < 0) {
++			dev_err(mmc_dev(host->mmc), "map DMA failed\n");
++			cmd->error = ret;
++			cmd->data->error = ret;
++			mmc_request_done(host->mmc, mrq);
++			return;
++		}
++	}
++
++	if (cmd->opcode == MMC_GO_IDLE_STATE) {
++		cmd_val |= SDXC_SEND_INIT_SEQUENCE;
++		imask |= SDXC_COMMAND_DONE;
++	}
++
++	if (cmd->opcode == SD_SWITCH_VOLTAGE) {
++		cmd_val |= SDXC_VOLTAGE_SWITCH;
++		imask |= SDXC_VOLTAGE_CHANGE_DONE;
++		host->voltage_switching = 1;
++		sunxi_mmc_oclk_onoff(host, 1);
++	}
++
++	if (cmd->flags & MMC_RSP_PRESENT) {
++		cmd_val |= SDXC_RESP_EXPIRE;
++		if (cmd->flags & MMC_RSP_136)
++			cmd_val |= SDXC_LONG_RESPONSE;
++		if (cmd->flags & MMC_RSP_CRC)
++			cmd_val |= SDXC_CHECK_RESPONSE_CRC;
++
++		if ((cmd->flags & MMC_CMD_MASK) == MMC_CMD_ADTC) {
++			cmd_val |= SDXC_DATA_EXPIRE | SDXC_WAIT_PRE_OVER;
++			if (cmd->data->flags & MMC_DATA_STREAM) {
++				imask |= SDXC_AUTO_COMMAND_DONE;
++				cmd_val |= SDXC_SEQUENCE_MODE |
++					   SDXC_SEND_AUTO_STOP;
++			}
++
++			if (cmd->data->stop) {
++				imask |= SDXC_AUTO_COMMAND_DONE;
++				cmd_val |= SDXC_SEND_AUTO_STOP;
++			} else {
++				imask |= SDXC_DATA_OVER;
++			}
++
++			if (cmd->data->flags & MMC_DATA_WRITE)
++				cmd_val |= SDXC_WRITE;
++			else
++				host->wait_dma = true;
++		} else {
++			imask |= SDXC_COMMAND_DONE;
++		}
++	} else {
++		imask |= SDXC_COMMAND_DONE;
++	}
++
++	dev_dbg(mmc_dev(host->mmc), "cmd %d(%08x) arg %x ie 0x%08x len %d\n",
++		cmd_val & 0x3f, cmd_val, cmd->arg, imask,
++		mrq->data ? mrq->data->blksz * mrq->data->blocks : 0);
++
++	spin_lock_irqsave(&host->lock, iflags);
++
++	if (host->mrq || host->manual_stop_mrq) {
++		spin_unlock_irqrestore(&host->lock, iflags);
++
++		if (data)
++			dma_unmap_sg(mmc_dev(host->mmc), data->sg,
++				data->sg_len, sunxi_mmc_get_dma_dir(data));
++
++		dev_err(mmc_dev(host->mmc), "request already pending\n");
++		mrq->cmd->error = -EBUSY;
++		mmc_request_done(host->mmc, mrq);
++		return;
++	}
++
++	if (data) {
++		mci_writel(host, REG_BLKSZ, data->blksz);
++		mci_writel(host, REG_BCNTR, data->blksz * data->blocks);
++		sunxi_mmc_start_dma(host, data);
++	}
++
++	host->mrq = mrq;
++	mci_writel(host, REG_IMASK, host->sdio_imask | imask);
++	mci_writel(host, REG_CARG, cmd->arg);
++	mci_writel(host, REG_CMDR, cmd_val);
++
++	spin_unlock_irqrestore(&host->lock, iflags);
++}
++
++static const struct of_device_id sunxi_mmc_of_match[] = {
++	{ .compatible = "allwinner,sun4i-a10-mmc", },
++	{ .compatible = "allwinner,sun5i-a13-mmc", },
++	{ /* sentinel */ }
++};
++MODULE_DEVICE_TABLE(of, sunxi_mmc_of_match);
++
++static struct mmc_host_ops sunxi_mmc_ops = {
++	.request	 = sunxi_mmc_request,
++	.set_ios	 = sunxi_mmc_set_ios,
++	.get_ro		 = mmc_gpio_get_ro,
++	.get_cd		 = mmc_gpio_get_cd,
++	.enable_sdio_irq = sunxi_mmc_enable_sdio_irq,
++	.hw_reset	 = sunxi_mmc_hw_reset,
++};
++
++static int sunxi_mmc_resource_request(struct sunxi_mmc_host *host,
++				      struct platform_device *pdev)
++{
++	struct device_node *np = pdev->dev.of_node;
++	int ret;
++
++	if (of_device_is_compatible(np, "allwinner,sun4i-a10-mmc"))
++		host->idma_des_size_bits = 13;
++	else
++		host->idma_des_size_bits = 16;
++
++	host->vmmc = devm_regulator_get_optional(&pdev->dev, "vmmc");
++	if (IS_ERR(host->vmmc) && PTR_ERR(host->vmmc) == -EPROBE_DEFER)
++		return -EPROBE_DEFER;
++
++	host->reg_base = devm_ioremap_resource(&pdev->dev,
++			      platform_get_resource(pdev, IORESOURCE_MEM, 0));
++	if (IS_ERR(host->reg_base))
++		return PTR_ERR(host->reg_base);
++
++	host->clk_ahb = devm_clk_get(&pdev->dev, "ahb");
++	if (IS_ERR(host->clk_ahb)) {
++		dev_err(&pdev->dev, "Could not get ahb clock\n");
++		return PTR_ERR(host->clk_ahb);
++	}
++
++	host->clk_mod = devm_clk_get(&pdev->dev, "mod");
++	if (IS_ERR(host->clk_mod)) {
++		dev_err(&pdev->dev, "Could not get mod clock\n");
++		return PTR_ERR(host->clk_mod);
++	}
++
++	host->reset = devm_reset_control_get(&pdev->dev, "ahb");
++	if (IS_ERR(host->reset))
++		host->reset = NULL; /* Having a reset controller is optional */
++
++	/*
++	 * Sometimes the controller asserts the irq on boot for some reason,
++	 * and since it is not clocked there is no way to clear it. So make
++	 * sure the controller is in a sane state before enabling irqs.
++	 */
++	ret = sunxi_mmc_init_host(host->mmc);
++	if (ret)
++		return ret;
++
++	host->irq = platform_get_irq(pdev, 0);
++	ret = devm_request_irq(&pdev->dev, host->irq, sunxi_mmc_irq, 0,
++			       "sunxi-mmc", host);
++	if (ret == 0)
++		disable_irq(host->irq);
++
++	/* And disable the controller again */
++	sunxi_mmc_exit_host(host);
++
++	return ret;
++}
++
++static int sunxi_mmc_probe(struct platform_device *pdev)
++{
++	struct sunxi_mmc_host *host;
++	struct mmc_host *mmc;
++	int ret;
++
++	mmc = mmc_alloc_host(sizeof(struct sunxi_mmc_host), &pdev->dev);
++	if (!mmc) {
++		dev_err(&pdev->dev, "mmc alloc host failed\n");
++		return -ENOMEM;
++	}
++
++	host = mmc_priv(mmc);
++	host->mmc = mmc;
++	spin_lock_init(&host->lock);
++	tasklet_init(&host->manual_stop_tasklet,
++		     sunxi_mmc_manual_stop_tasklet, (unsigned long)host);
++
++	ret = sunxi_mmc_resource_request(host, pdev);
++	if (ret)
++		goto error_free_host;
++
++	host->sg_cpu = dma_alloc_coherent(&pdev->dev, PAGE_SIZE,
++					  &host->sg_dma, GFP_KERNEL);
++	if (!host->sg_cpu) {
++		dev_err(&pdev->dev, "Failed to allocate DMA descriptor mem\n");
++		ret = -ENOMEM;
++		goto error_free_host;
++	}
++
++	mmc->ops		= &sunxi_mmc_ops;
++	mmc->max_blk_count	= 8192;
++	mmc->max_blk_size	= 4096;
++	mmc->max_segs		= PAGE_SIZE / sizeof(struct sunxi_idma_des);
++	mmc->max_seg_size	= (1 << host->idma_des_size_bits);
++	mmc->max_req_size	= mmc->max_seg_size * mmc->max_segs;
++	/* 400kHz ~ 50MHz */
++	mmc->f_min		=   400000;
++	mmc->f_max		= 50000000;
++	/* available voltages */
++	if (!IS_ERR(host->vmmc))
++		mmc->ocr_avail = mmc_regulator_get_ocrmask(host->vmmc);
++	else
++		mmc->ocr_avail = MMC_VDD_32_33 | MMC_VDD_33_34;
++
++	mmc->caps |= MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED;
++	mmc->caps2 |= MMC_CAP2_NO_PRESCAN_POWERUP;
++
++	ret = mmc_of_parse(mmc);
++	if (ret)
++		goto error_free_dma;
++
++	ret = mmc_add_host(mmc);
++	if (ret)
++		goto error_free_dma;
++
++	dev_info(&pdev->dev, "base:0x%p irq:%u\n", host->reg_base, host->irq);
++	platform_set_drvdata(pdev, mmc);
++	return 0;
++
++error_free_dma:
++	dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
++error_free_host:
++	mmc_free_host(mmc);
++	return ret;
++}
++
++static int sunxi_mmc_remove(struct platform_device *pdev)
++{
++	struct mmc_host	*mmc = platform_get_drvdata(pdev);
++	struct sunxi_mmc_host *host = mmc_priv(mmc);
++
++	mmc_remove_host(mmc);
++	sunxi_mmc_exit_host(host);
++	tasklet_disable(&host->manual_stop_tasklet);
++	dma_free_coherent(&pdev->dev, PAGE_SIZE, host->sg_cpu, host->sg_dma);
++	mmc_free_host(mmc);
++
++	return 0;
++}
++
++static struct platform_driver sunxi_mmc_driver = {
++	.driver = {
++		.name	= "sunxi-mmc",
++		.owner	= THIS_MODULE,
++		.of_match_table = of_match_ptr(sunxi_mmc_of_match),
++	},
++	.probe		= sunxi_mmc_probe,
++	.remove		= sunxi_mmc_remove,
++};
++module_platform_driver(sunxi_mmc_driver);
++
++MODULE_DESCRIPTION("Allwinner's SD/MMC Card Controller Driver");
++MODULE_LICENSE("GPL v2");
++MODULE_AUTHOR("David Lanzendörfer <david.lanzendoerfer@o2s.ch>");
++MODULE_ALIAS("platform:sunxi-mmc");
+diff --git a/include/linux/clk/sunxi.h b/include/linux/clk/sunxi.h
+new file mode 100644
+index 0000000..1ef5c89
+--- /dev/null
++++ b/include/linux/clk/sunxi.h
+@@ -0,0 +1,22 @@
++/*
++ * Copyright 2013 - Hans de Goede <hdegoede@redhat.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#ifndef __LINUX_CLK_SUNXI_H_
++#define __LINUX_CLK_SUNXI_H_
++
++#include <linux/clk.h>
++
++void clk_sunxi_mmc_phase_control(struct clk_hw *hw, u8 sample, u8 output);
++
++#endif
+-- 
+1.9.0
+
