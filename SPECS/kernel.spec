@@ -339,8 +339,8 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 Source13: centos.cer
-Source15: centos-ldup.cer
-Source16: centos-kpatch.cer
+Source15: centos-ldup.x509
+Source16: centos-kpatch.x509
 
 Source18: check-kabi
 
