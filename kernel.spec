@@ -760,6 +760,9 @@ Patch25111: netfilter-nf_nat-fix-oops-on-netns-removal.patch
 #rhbz 1114768
 Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 
+# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
+Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1478,6 +1481,9 @@ ApplyPatch netfilter-nf_nat-fix-oops-on-netns-removal.patch
 
 #rhbz 1114768
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+
+# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
+ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,8 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Tue Jul  1 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+* Tue Jul  1 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.3-200
 - Linux v3.15.3
+- drm/i915: Fix backlight regression caused by misconfigured VBT
 
 * Tue Jul  1 2014 Hans de Goede <hdegoede@redhat.com>
 - Add min/max quirk for the ThinkPad Edge E531 touchpad (rhbz#1114768)
