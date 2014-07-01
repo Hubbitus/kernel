@@ -598,18 +598,8 @@ Patch15000: nowatchdog-on-virt.patch
 
 # ARM64
 
-# ARM
-
-# lpae
-
-# ARM omap
-
-# ARM tegra
+# ARMv7
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
-
-# ARM i.MX6
-
-# ARM sunxi (AllWinner)
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -2251,6 +2241,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jul  1 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 cleanup
+
 * Mon Jun 30 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch, update from git.
 
