@@ -764,6 +764,9 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1015989
 Patch25111: netfilter-nf_nat-fix-oops-on-netns-removal.patch
 
+#rhbz 1114768
+Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1486,6 +1489,9 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1015989
 ApplyPatch netfilter-nf_nat-fix-oops-on-netns-removal.patch
+
+#rhbz 1114768
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2298,6 +2304,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Add min/max quirk for the ThinkPad Edge E531 touchpad (rhbz#1114768)
+
 * Mon Jun 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.2-200
 - Backport netfilter panic fix (rhbz 1015989)
 
