@@ -2241,6 +2241,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 02 2014 Kyle McMartin <kyle@fedoraproject.org>
+- arm64: build-in ahci, ethernet, and rtc drivers.
+
 * Tue Jul 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc3.git1.1
 - Linux v3.16-rc3-6-g16874b2cb867
 - Reenable debugging options.
