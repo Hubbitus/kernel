@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -637,9 +637,6 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#rhbz 1113805
-Patch25111: kernfs-kernfs_notify-must-be-usable-from-non-sleepable-contexts.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1364,9 +1361,6 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#rhbz 1113805
-ApplyPatch kernfs-kernfs_notify-must-be-usable-from-non-sleepable-contexts.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2247,6 +2241,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jul 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc3.git3.1
+- Linux v3.16-rc3-149-g034a0f6b7db7
+
 * Wed Jul 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc3.git2.1
 - Linux v3.16-rc3-62-gd92a333a65a1
 - Add patch to fix virt_blk oops (rhbz 1113805)
