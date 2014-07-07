@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -736,14 +736,8 @@ Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.pa
 #rhbz 1064516
 Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-#rhbz 1099761
-Patch25099: NFS-populate-net-in-mount-data-when-remounting.patch
-
 #rhbz 1106856
 Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
-
-#rhbz 1103528
-Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 Patch25102: intel_pstate-Fix-setting-VID.patch
 Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
@@ -1458,14 +1452,8 @@ ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.pat
 #rhbz 1064516
 ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-#rhbz 1099761
-ApplyPatch NFS-populate-net-in-mount-data-when-remounting.patch
-
 #rhbz 1106856
 ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
-
-#rhbz 1103528
-ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 ApplyPatch intel_pstate-Fix-setting-VID.patch
 ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
@@ -2296,6 +2284,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul  7 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.4-200
+- Linux v3.15.4
+- Fixes CVE-2014-4715 (rhbz 1115767 1116362)
+- Fixes CVE-2014-4699 (rhbz 1115927 1116477)
+
 * Tue Jul  1 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.3-200
 - Linux v3.15.3
 - drm/i915: Fix backlight regression caused by misconfigured VBT
