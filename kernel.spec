@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -1554,6 +1554,7 @@ BuildKernel() {
     fi
     %{__install} -D -m 444 ldconfig-kernel.conf \
         $RPM_BUILD_ROOT/etc/ld.so.conf.d/kernel-$KernelVer.conf
+    rm -rf $RPM_BUILD_ROOT/lib/modules/$KernelVer/vdso/.build-id
 %endif
 
     # And save the headers/makefiles etc for building modules against
@@ -2241,6 +2242,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc4.git2.1
+- Linux v3.16-rc4-28-g163e40743f73
+- Fix bogus vdso .build-id links (rhbz 1117563)
+
 * Tue Jul 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc4.git1.1
 - Linux v3.16-rc4-20-g448bfad8a185
 - Reenable debugging options.
