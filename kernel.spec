@@ -600,6 +600,8 @@ Patch15000: nowatchdog-on-virt.patch
 
 # ARMv7
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
+Patch21021: arm-beagle.patch
+Patch21022: arm-imx6-utilite.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1234,6 +1236,8 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # ARM
 #
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
+ApplyPatch arm-beagle.patch
+ApplyPatch arm-imx6-utilite.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2242,6 +2246,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jul 10 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Rebase Utilute and BeagleBone patches
+- Minaor ARM updates
+
 * Wed Jul 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc4.git2.1
 - Linux v3.16-rc4-28-g163e40743f73
 - Fix bogus vdso .build-id links (rhbz 1117563)
