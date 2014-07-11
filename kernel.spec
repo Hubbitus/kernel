@@ -2284,6 +2284,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ISL12057 RTC for ARM (NetGear ReadyNAS)
+
 * Mon Jul  7 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.4-200
 - Linux v3.15.4
 - Fixes CVE-2014-4715 (rhbz 1115767 1116362)
