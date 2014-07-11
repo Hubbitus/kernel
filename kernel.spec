@@ -631,10 +631,6 @@ Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-Patch25102: intel_pstate-Fix-setting-VID.patch
-Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
@@ -1356,10 +1352,6 @@ ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-ApplyPatch intel_pstate-Fix-setting-VID.patch
-ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
