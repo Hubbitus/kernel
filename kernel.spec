@@ -2249,6 +2249,7 @@ fi
 * Thu Jul 10 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Rebase Utilute and BeagleBone patches
 - Minor ARM updates
+- Enable ISL12057 RTC for ARM (NetGear ReadyNAS)
 
 * Wed Jul 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc4.git2.1
 - Linux v3.16-rc4-28-g163e40743f73
