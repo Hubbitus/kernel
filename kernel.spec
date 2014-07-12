@@ -2175,6 +2175,8 @@ fi
 %if %{1}\
 %{expand:%%files -f kernel-%{?2:%{2}-}core.list %{?2:%{2}-}core}\
 %defattr(-,root,root)\
+%{!?_licensedir:%global license %%doc}\
+%license linux-%{KVERREL}/COPYING\
 /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
 /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
 %ifarch %{arm} aarch64\
@@ -2238,6 +2240,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jul 12 2014 Tom Callaway <spot@fedoraproject.org>
+- Fix license handling (I hope)
+
 * Fri Jul 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc4.git3.1
 - Linux v3.16-rc4-120-g85d90faed31e
 
