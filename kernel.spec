@@ -757,6 +757,9 @@ Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 # https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
 Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
 
+#rhbz 1117008
+Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1472,6 +1475,9 @@ ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 
 # https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
 ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
+
+#rhbz 1117008
+ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2284,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix i915 regression with external monitors (rhbz 1117008)
+
 * Fri Jul 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable ISL12057 RTC for ARM (NetGear ReadyNAS)
 
