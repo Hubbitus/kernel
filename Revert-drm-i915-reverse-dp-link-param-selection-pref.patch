@@ -1,0 +1,43 @@
+Bugzilla: 1117008
+Upstream-status: Sent to intel-gfx
+
+From b22370f0cf68e49ddcb3dd7033aba5ff6454dfcc Mon Sep 17 00:00:00 2001
+From: Dave Airlie <airlied@redhat.com>
+Date: Mon, 14 Jul 2014 10:54:20 +1000
+Subject: [PATCH] Revert "drm/i915: reverse dp link param selection, prefer
+ fast over wide again"
+
+This reverts commit 38aecea0ccbb909d635619cba22f1891e589b434.
+
+This breaks Haswell Thinkpad + Lenovo dock in SST mode with a HDMI monitor attached.
+
+Before this we can 1920x1200 mode, after this we only ever get 1024x768, and
+a lot of deferring.
+
+This didn't revert clean, but this should be fine.
+
+bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1117008
+Cc: stable@vger.kernel.org # v3.15
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+---
+ drivers/gpu/drm/i915/intel_dp.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
+index 2a00cb8..61963d3 100644
+--- a/drivers/gpu/drm/i915/intel_dp.c
++++ b/drivers/gpu/drm/i915/intel_dp.c
+@@ -833,8 +833,8 @@ intel_dp_compute_config(struct intel_encoder *encoder,
+ 		mode_rate = intel_dp_link_required(adjusted_mode->crtc_clock,
+ 						   bpp);
+ 
+-		for (lane_count = min_lane_count; lane_count <= max_lane_count; lane_count <<= 1) {
+-			for (clock = min_clock; clock <= max_clock; clock++) {
++		for (clock = min_clock; clock <= max_clock; clock++) {
++			for (lane_count = min_lane_count; lane_count <= max_lane_count; lane_count <<= 1) {
+ 				link_clock = drm_dp_bw_code_to_link_rate(bws[clock]);
+ 				link_avail = intel_dp_max_data_rate(link_clock,
+ 								    lane_count);
+-- 
+1.9.3
+

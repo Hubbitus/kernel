@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -635,6 +635,9 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1117008
+Patch25111: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1357,6 +1360,9 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1117008
+ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2240,6 +2246,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git0.1
+- Linux v3.16-rc5
+- Fix i915 regression with external monitors (rhbz 1117008)
+- Disable debugging options.
+
 * Sat Jul 12 2014 Tom Callaway <spot@fedoraproject.org>
 - Fix license handling (I hope)
 
