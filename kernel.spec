@@ -2372,6 +2372,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Jun 29 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
+
 * Fri Jun 27 2014 Hans de Goede <hdegoede@redhat.com>
 - Add patch to fix wifi on lenove yoga 2 series (rhbz#1021036)
 
