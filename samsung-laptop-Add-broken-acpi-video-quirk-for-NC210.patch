@@ -1,20 +1,22 @@
-From f46debb4f324d6ab66782de6ad3b884fbf223ec4 Mon Sep 17 00:00:00 2001
+Bugzilla: 861573
+Upstream-status: Waiting for feedback from reporter
+
+From 2fa2078cdd4198b49c02cb03087158d398476463 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 1 May 2014 14:20:06 +0200
-Subject: [PATCH 3/4] samsung-laptop: Add broken-acpi-video quirk for
+Date: Mon, 2 Jun 2014 17:40:59 +0200
+Subject: [PATCH 02/14] samsung-laptop: Add broken-acpi-video quirk for
  NC210/NC110
 
 Reported (and tested) here:
 https://bugzilla.redhat.com/show_bug.cgi?id=861573
 
-Cc: stable@vger.kernel.org
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
  drivers/platform/x86/samsung-laptop.c | 10 ++++++++++
  1 file changed, 10 insertions(+)
 
 diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index d1f03005..98f61f6 100644
+index d1f030053176..98f61f677627 100644
 --- a/drivers/platform/x86/samsung-laptop.c
 +++ b/drivers/platform/x86/samsung-laptop.c
 @@ -1534,6 +1534,16 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {

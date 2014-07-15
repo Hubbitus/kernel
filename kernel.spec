@@ -68,13 +68,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 14
+%define base_sublevel 15
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 5
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -655,7 +655,6 @@ Patch1003: sysrq-secure-boot.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1826: drm-i915-hush-check-crtc-state.patch
-
 # Quiet boot fixes
 
 # fs fixes
@@ -675,22 +674,15 @@ Patch15000: nowatchdog-on-virt.patch
 
 # ARM
 
-# lpae
-
-# ARM omap
-Patch21010: arm-omap-load-tfp410.patch
-Patch21011: arm-beagle.patch
-
 # ARM tegra
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 
-# Add panel support for tegra paz00
-# Backported from linux-next scheduled for 3.15
-Patch21021: arm-tegra-paz00-panel-dts.patch
-
 # ARM i.MX6
-# http://www.spinics.net/lists/devicetree/msg08276.html
-Patch21025: arm-imx6-utilite.patch
+Patch21021: arm-beagle.patch
+Patch21022: arm-imx6-utilite.patch
+
+# ARM sunxi (AllWinner)
+Patch21025: 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -744,6 +736,9 @@ Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
 #rhbz 1074710
 Patch25061: mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
 
+#rhbz 1025603
+Patch25063: disable-libdw-unwind-on-non-x86.patch
+
 #rhbz 1048314
 Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 
@@ -753,59 +748,47 @@ Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
-#rhbz 1013466
-Patch25065: selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
-#rhbz 696821
-Patch25068: fanotify-fix-EOVERFLOW-on-64-bit.patch
-
 #rhbz 983342 1093120
-Patch25070: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-#rhbz 1060327
-Patch25071: drm-fix-qxl-mode-flags-backport.patch
+Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
-#rhbz 861573
-Patch25079: 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1082266
-Patch25087: jme-fix-dma-unmap-error.patch
-
-#rhbz 1051668
-Patch25092: Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1094066
-Patch25096: drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
+# Patch series from Hans for various backlight and platform driver fixes
+Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
+Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
+Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
+Patch26006: acpi-video-Don-t-register-acpi_video_resume-notifier.patch
+Patch26007: acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
+Patch26008: acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
+Patch26009: acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
+Patch26010: nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
+Patch26011: backlight-Add-backlight-device-un-registration-notif.patch
+Patch26012: acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
+Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
+Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1064516
-Patch25097: e1000e-Fix-SHRA-register-access-for-82579.patch
 Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
-
-#rhbz 1099761
-Patch25099: NFS-populate-net-in-mount-data-when-remounting.patch
-
-#rhbz 1106856
-Patch25100: dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
-
-#rhbz 1103528
-Patch25101: elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 Patch25102: intel_pstate-Fix-setting-VID.patch
 Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
-#CVE-2014-4508 rhbz 1111590 1112073
-Patch25106: x86_32-entry-Do-syscall-exit-work-on-badsys.patch
-
-#CVE-2014-0206 rhbz 1094602 1112975
-Patch25107: aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
-Patch25108: aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
-
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
-#rhbz 1021036
-Patch25110: 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
-Patch25111: 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+#rhbz 1021036, submitted upstream
+Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1114768
+Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+
+# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
+Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
+
+#rhbz 1117008
+Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1358,11 +1341,10 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #
 # ARM
 #
-ApplyPatch arm-omap-load-tfp410.patch
-ApplyPatch arm-beagle.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-tegra-paz00-panel-dts.patch
+ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
 ApplyPatch arm-imx6-utilite.patch
+ApplyPatch arm-beagle.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1500,62 +1482,50 @@ ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
 #rhbz 1090161
 ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
 
-#rhbz 1074710
-ApplyPatch mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
-
-#rhbz 1013466
-ApplyPatch selinux-put-the-mmap-DAC-controls-before-the-MAC-controls.patch
-
-#rhbz 696821
-ApplyPatch fanotify-fix-EOVERFLOW-on-64-bit.patch
+#rhbz 1025603
+ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-#rhbz 1060327
-ApplyPatch drm-fix-qxl-mode-flags-backport.patch
+ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
 
-#rhbz 861573
-ApplyPatch 0003-samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1082266
-ApplyPatch jme-fix-dma-unmap-error.patch
-
-#rhbz 1051668
-ApplyPatch Input-elantech-add-support-for-newer-elantech-touchpads.patch
-
-#rhbz 1094066
-ApplyPatch drm-i915-set-backlight-duty-cycle-after-backlight-enable-for-gen4.patch
+# Patch series from Hans for various backlight and platform driver fixes
+ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
+ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
+ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
+ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
+ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
+ApplyPatch acpi-video-Don-t-register-acpi_video_resume-notifier.patch
+ApplyPatch acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
+ApplyPatch acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
+ApplyPatch acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
+ApplyPatch nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
+ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
+ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
+ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
+ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1064516
-ApplyPatch e1000e-Fix-SHRA-register-access-for-82579.patch
 ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
-
-#rhbz 1099761
-ApplyPatch NFS-populate-net-in-mount-data-when-remounting.patch
-
-#rhbz 1106856
-ApplyPatch dm-thin-update-discard_granularity-to-reflect-the-thin-pool-blocksize.patch
-
-#rhbz 1103528
-ApplyPatch elantech-Deal-with-clickpads-reporting-right-button-.patch
 
 ApplyPatch intel_pstate-Fix-setting-VID.patch
 ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
 ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
 
-#CVE-2014-4508 rhbz 1111590 1112073
-ApplyPatch x86_32-entry-Do-syscall-exit-work-on-badsys.patch
-
-#CVE-2014-0206 rhbz 1094602 1112975
-ApplyPatch aio-fix-kernel-memory-disclosure-in-io_getevents-int.patch
-ApplyPatch aio-fix-aio-request-leak-when-events-are-reaped-by-u.patch
-
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
-#rhbz 1021036
-ApplyPatch 0001-ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
-ApplyPatch 0002-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+#rhbz 1021036, submitted upstream
+ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1114768
+ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+
+# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
+ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
+
+#rhbz 1117008
+ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2372,6 +2342,31 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.5-200
+- Linux v3.15.5
+- Fix i915 regression with external monitors (rhbz 1117008)
+
+* Fri Jul 11 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ISL12057 RTC for ARM (NetGear ReadyNAS)
+
+* Mon Jul  7 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.4-200
+- Linux v3.15.4
+- Fixes CVE-2014-4715 (rhbz 1115767 1116362)
+- Fixes CVE-2014-4699 (rhbz 1115927 1116477)
+
+* Tue Jul  1 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.3-200
+- Linux v3.15.3
+- drm/i915: Fix backlight regression caused by misconfigured VBT
+
+* Tue Jul  1 2014 Hans de Goede <hdegoede@redhat.com>
+- Add min/max quirk for the ThinkPad Edge E531 touchpad (rhbz#1114768)
+
+* Mon Jun 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.2-200
+- Backport netfilter panic fix (rhbz 1015989)
+
+* Mon Jun 30 2014 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v3.15.2
+
 * Sun Jun 29 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
 - 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
 
