@@ -2246,6 +2246,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable hermes prism driver (rhbz 1120393)
+
 * Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git1.1
 - Linux v3.16-rc5-130-g2da294474093
 - Reenable debugging options.
