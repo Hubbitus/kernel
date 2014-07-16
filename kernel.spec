@@ -2272,6 +2272,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable hermes prism driver (rhbz 1120393)
+
 * Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.5-200
 - Linux v3.15.5
 - Fix i915 regression with external monitors (rhbz 1117008)
