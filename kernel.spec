@@ -751,6 +751,9 @@ Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
 #rhbz 1117008
 Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
+#CVE-2014-4943 rhbz 1119458 1120542
+Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1460,6 +1463,9 @@ ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
 
 #rhbz 1117008
 ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+
+#CVE-2014-4943 rhbz 1119458 1120542
+ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2272,6 +2278,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4943 pppol2tp level handling (rhbz 1119458 1120542)
+
 * Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable hermes prism driver (rhbz 1120393)
 
