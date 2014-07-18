@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -733,10 +733,6 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 #rhbz 1064516
 Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-Patch25102: intel_pstate-Fix-setting-VID.patch
-Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
@@ -744,9 +740,6 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1114768
 Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
-
-# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
-Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
 
 #rhbz 1117008
 Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
@@ -1446,10 +1439,6 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 #rhbz 1064516
 ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-ApplyPatch intel_pstate-Fix-setting-VID.patch
-ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
@@ -1457,9 +1446,6 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1114768
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
-
-# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
-ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
 
 #rhbz 1117008
 ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
@@ -2278,7 +2264,8 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.6-200
+- Linux v3.15.6
 - CVE-2014-4943 pppol2tp level handling (rhbz 1119458 1120542)
 
 * Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
