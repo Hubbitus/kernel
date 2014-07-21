@@ -2246,6 +2246,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jul 21 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 config update
+
 * Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git2.1
 - Linux v3.16-rc5-143-gb6603fe574af
 
