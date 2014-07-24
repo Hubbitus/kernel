@@ -753,6 +753,9 @@ Patch25116: Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 #CVE-2014-3534 rhbz 1114089 1122612
 Patch25117: s390-ptrace-fix-PSW-mask-check.patch
 
+#rhbz 1117942
+Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1465,6 +1468,9 @@ ApplyPatch Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 
 #CVE-2014-3534 rhbz 1114089 1122612
 ApplyPatch s390-ptrace-fix-PSW-mask-check.patch
+
+#rhbz 1117942
+ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2278,6 +2284,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix regression in sched_setparam (rhbz 1117942)
 - CVE-2014-3534 s390: ptrace: insufficient sanitization with psw mask (rhbz 1114089 1122612)
 - Fix ath3k bluetooth regression (rhbz 1121785)
 
