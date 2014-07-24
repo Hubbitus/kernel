@@ -636,6 +636,9 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
+#rhbz 1117942
+Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1357,6 +1360,9 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+#rhbz 1117942
+ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2240,6 +2246,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix regression in sched_setparam (rhbz 1117942)
+
 * Tue Jul 22 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.0-0.rc6.git1.1
 - Linux v3.16-rc6-75-g15ba223
 - Reenable debugging options.
