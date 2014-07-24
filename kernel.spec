@@ -750,6 +750,9 @@ Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 #rhbz 1121785
 Patch25116: Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 
+#CVE-2014-3534 rhbz 1114089 1122612
+Patch25117: s390-ptrace-fix-PSW-mask-check.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1459,6 +1462,9 @@ ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
 #rhbz 1121785
 ApplyPatch Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
+
+#CVE-2014-3534 rhbz 1114089 1122612
+ApplyPatch s390-ptrace-fix-PSW-mask-check.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2272,6 +2278,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3534 s390: ptrace: insufficient sanitization with psw mask (rhbz 1114089 1122612)
 - Fix ath3k bluetooth regression (rhbz 1121785)
 
 * Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.6-200
