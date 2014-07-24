@@ -2254,6 +2254,7 @@ fi
 %changelog
 * Thu Jul 24 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: update from upstream git.
+- arm64: update config-arm64 to include PCI support.
 
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
