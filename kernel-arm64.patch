@@ -1,701 +1,18 @@
-commit 983932f4feeb38a09ae12e49875479db22cd3312
-Author: Mark Salter <msalter@redhat.com>
-Date:   Tue Jun 24 23:16:45 2014 -0400
-
-    perf: fix arm64 build error
-    
-    I'm seeing the following build error on arm64:
-    
-      In file included from util/event.c:3:0:
-      util/event.h:95:17: error: 'PERF_REGS_MAX' undeclared here (not in a function)
-        u64 cache_regs[PERF_REGS_MAX];
-                     ^
-    
-    This patch adds a PEFF_REGS_MAX definition for arm64.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 46c0ee11217eb143c70e947064e5cc9413f8dd79
-Author: Mark Salter <msalter@redhat.com>
-Date:   Mon Jun 23 00:34:17 2014 -0400
-
-    arm64: fix CONFIG_ZONE_DMA on systems with no 32-bit addressable DRAM
-    
-    Commit 2d5a5612bc (arm64: Limit the CMA buffer to 32-bit if ZONE_DMA)
-    forces the CMA buffer to be 32-bit addressable if CONFIG_ZONE_DMA is
-    defined. This breaks CMA on platforms with no 32-bit addressable DRAM.
-    This patch checks to make sure there is 32-bit addressable DRAM before
-    setting the 32-bit limit. If there is none, no limit is placed on the
-    CMA buffer. This allows a single kernel (with CONFIG_ZONE_DMA defined)
-    to support platforms requiring the 32-bit limit and platforms with no
-    32-bit limit.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 5500ed01dcd1c606cfcde8183429b81131fe320f
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:43 2014 +0100
-
-    arm64: KVM: vgic: add GICv3 world switch
-    
-    Introduce the GICv3 world switch code and helper functions, enabling
-    GICv2 emulation on GICv3 hardware.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit e9ad9cfb26b54f286032b0b5b7226b089ba2a1ae
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:42 2014 +0100
-
-    KVM: ARM: vgic: add the GICv3 backend
-    
-    Introduce the support code for emulating a GICv2 on top of GICv3
-    hardware.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 8eeec56af2a9b33b1d6e9bfbbd2cbfefe3251a95
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:41 2014 +0100
-
-    arm64: KVM: move HCR_EL2.{IMO, FMO} manipulation into the vgic switch code
-    
-    GICv3 requires the IMO and FMO bits to be tightly coupled with some
-    of the interrupt controller's register switch.
-    
-    In order to have similar code paths, move the manipulation of these
-    bits to the GICv2 switch code.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 7454825239cf45a68e3f4762a2e8bc7d48cc9dcf
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:40 2014 +0100
-
-    arm64: KVM: split GICv2 world switch from hyp code
-    
-    Move the GICv2 world switch code into its own file, and add the
-    necessary indirection to the arm64 switch code.
-    
-    Also introduce a new type field to the vgic_params structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 3683c401f6baf5f423d84fb79463a71a9bb83193
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:39 2014 +0100
-
-    arm64: KVM: remove __kvm_hyp_code_{start, end} from hyp.S
-    
-    We already have __hyp_text_{start,end} to express the boundaries
-    of the HYP text section, and __kvm_hyp_code_{start,end} are getting
-    in the way of a more modular world switch code.
-    
-    Just turn __kvm_hyp_code_{start,end} into #defines mapping the
-    linker-emited symbols.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit db14591a1ee58c7b5184e5133b6d3d01bd800f32
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:38 2014 +0100
-
-    KVM: ARM: vgic: revisit implementation of irqchip_in_kernel
-    
-    So far, irqchip_in_kernel() was implemented by testing the value of
-    vctrl_base, which worked fine with GICv2.
-    
-    With GICv3, this field is useless, as we're using system registers
-    instead of a emmory mapped interface. To solve this, add a boolean
-    flag indicating if the we're using a vgic or not.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit a2059979751390473cfdb4e4a8b1215f4329234c
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:37 2014 +0100
-
-    KVM: ARM: vgic: split GICv2 backend from the main vgic code
-    
-    Brutally hack the innocent vgic code, and move the GICv2 specific code
-    to its own file, using vgic_ops and vgic_params as a way to pass
-    information between the two blocks.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 997913f5ee0b3edb9d63015b984876ce88dcacc1
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:36 2014 +0100
-
-    KVM: ARM: introduce vgic_params structure
-    
-    Move all the data specific to a given GIC implementation into its own
-    little structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 64aa80c7c6133b18442c0e648c833fdbafc71c13
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:35 2014 +0100
-
-    KVM: ARM: vgic: introduce vgic_enable
-    
-    Move the code dealing with enabling the VGIC on to vgic_ops.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit a3541bd1a3edeae13f4dc6cb1236d1fa6b1ff999
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:34 2014 +0100
-
-    KVM: ARM: vgic: abstract VMCR access
-    
-    Instead of directly messing with with the GICH_VMCR bits for the CPU
-    interface save/restore code, add accessors that encode/decode the
-    entire set of registers exposed by VMCR.
-    
-    Not the most efficient thing, but given that this code is only used
-    by the save/restore code, performance is far from being critical.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit e4a2b077cd5cfb1898fe1df98daa6f0bfaf574e4
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:33 2014 +0100
-
-    KVM: ARM: vgic: move underflow handling to vgic_ops
-    
-    Move the code dealing with LR underflow handling to its own functions,
-    and make them accessible through vgic_ops.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 2ec7fc615658e4c75437b7e702130733d0e59bbd
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:32 2014 +0100
-
-    KVM: ARM: vgic: abstract MISR decoding
-    
-    Instead of directly dealing with the GICH_MISR bits, move the code to
-    its own function and use a couple of public flags to represent the
-    actual state.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 75fbfe0b0d0645f99612ab4c65ede696291d0fb3
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:31 2014 +0100
-
-    KVM: ARM: vgic: abstract EISR bitmap access
-    
-    Move the GICH_EISR access to its own function.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 58922f2fe73a8c27f502289f89f39a60f0be9e63
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:30 2014 +0100
-
-    KVM: ARM: vgic: abstract access to the ELRSR bitmap
-    
-    Move the GICH_ELRSR access to its own functions, and add them to
-    the vgic_ops structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 62b5e49b44aa033d4489108a84310d1ac074ec11
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:29 2014 +0100
-
-    KVM: ARM: vgic: introduce vgic_ops and LR manipulation primitives
-    
-    In order to split the various register manipulation from the main vgic
-    code, introduce a vgic_ops structure, and start by abstracting the
-    LR manipulation code with a couple of accessors.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit dad9fe9a8274b6fed74a348b09a131f96560f47a
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:28 2014 +0100
-
-    KVM: arm/arm64: vgic: move GICv2 registers to their own structure
-    
-    In order to make way for the GICv3 registers, move the v2-specific
-    registers to their own structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 97e409937d206ca0c97a8e143f3cb9736d6e8ac7
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:27 2014 +0100
-
-    arm64: boot protocol documentation update for GICv3
-    
-    Linux has some requirements that must be satisfied in order to boot
-    on a system built with a GICv3.
-    
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit fdd6a7889226f60469933ae5bf50c168ba2ceb27
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:26 2014 +0100
-
-    arm64: GICv3 device tree binding documentation
-    
-    Add the necessary documentation to support GICv3.
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Cc: Jason Cooper <jason@lakedaemon.net>
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Acked-by: Rob Herring <robh@kernel.org>
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 4ab4528bd42f832c10a9a07f77c8d96749fca0db
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:25 2014 +0100
-
-    arm64: initial support for GICv3
-    
-    The Generic Interrupt Controller (version 3) offers services that are
-    similar to GICv2, with a number of additional features:
-    - Affinity routing based on the CPU MPIDR (ARE)
-    - System register for the CPU interfaces (SRE)
-    - Support for more that 8 CPUs
-    - Locality-specific Peripheral Interrupts (LPIs)
-    - Interrupt Translation Services (ITS)
-    
-    This patch adds preliminary support for GICv3 with ARE and SRE,
-    non-secure mode only. It relies on higher exception levels to grant ARE
-    and SRE access.
-    
-    Support for LPI and ITS will be added at a later time.
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Jason Cooper <jason@lakedaemon.net>
-    Reviewed-by: Zi Shen Lim <zlim@broadcom.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Reviewed-by: Tirumalesh Chalamarla <tchalamarla@cavium.com>
-    Reviewed-by: Yun Wu <wuyun.wu@huawei.com>
-    Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
-    Tested-by: Tirumalesh Chalamarla<tchalamarla@cavium.com>
-    Tested-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
-    Acked-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 76a9db9c074d536b3a310246aaca6c949c6e1b43
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Thu Jun 19 10:19:24 2014 +0100
-
-    ARM: GIC: move some bits of GICv2 to a library-type file
-    
-    A few GICv2 low-level function are actually very useful to GICv3,
-    and it makes some sense to share them across the two drivers.
-    They end-up in their own file, with an additional parameter used
-    to ensure an optional synchronization (unused on GICv2).
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Jason Cooper <jason@lakedaemon.net>
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 24ee5c9fa14106f699027a80ef5bece8a02d3640
-Author: Mark Salter <msalter@redhat.com>
-Date:   Thu Jun 12 15:10:22 2014 -0400
-
-    rtc: ia64: allow other architectures to use EFI RTC
-    
-    Currently, the rtc-efi driver is restricted to ia64 only.
-    Newer architectures with EFI support may want to also use
-    that driver. This patch moves the platform device setup
-    from ia64 into drivers/rtc and allow any architecture with
-    CONFIG_EFI=y to use the rtc-efi driver.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit f0cb397f038b00d6a3d3aafaa56815e8615b7152
-Author: Don Dutile <ddutile@redhat.com>
-Date:   Tue Mar 25 20:22:26 2014 -0400
-
-    pmu: Adding support for Xgene PMUs
-    
-    Message-id: <1395778948-47814-2-git-send-email-ddutile@redhat.com>
-    Patchwork-id: 78602
-    O-Subject: [PATCH 1/3] pmu: Adding support for Xgene PMUs
-    Bugzilla: 1079110
-    
-    Backport of these two posted (but not upstream) patches.
-    Combined into single patch due to gic-patch dependency.
-    
-    Signed-off-by: Donald Dutile <ddutile@redhat.com>
-
-commit 7fabb73d32c81cedc5c7ad11a3f3e6c96cd79f50
-Author: Mark Salter <msalter@redhat.com>
-Date:   Sun Jun 15 09:06:55 2014 -0400
-
-    arm64: fix up APM Mustang devicetree
-    
-    These are changes needed when loading device tree blob built with
-    kernel. i.e. with grub. These are not needed when using devicetree
-    from Tianocore which will be fixed up at tianocore runtime.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit a3d5ec7e0cad00c3b89abae91813910470d209b1
-Author: Kyle McMartin <kmcmarti@redhat.com>
-Date:   Tue May 13 22:25:26 2014 -0400
-
-    arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
-    
-    Message-id: <20140513222526.GC26038@redacted.bos.redhat.com>
-    Patchwork-id: 79789
-    O-Subject: [ACADIA PATCH] arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
-    Bugzilla: 1085528
-    
-    BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1085528
-    Upstream: submitted soon
-    
-    [Sadly this isn't (yet) sufficient... but it fixes at least one issue
-     here... cat /proc/$$/personality shows READ_IMPLIES_EXEC before. I'll
-     try to figure the rest out tomorrow.]
-    
-    Currently, we're accidentally ending up with executable stacks on
-    AArch64 when the ABI says we shouldn't be, and relying on glibc to fix
-    things up for us when we're loaded. However, SELinux will deny us
-    mucking with the stack, and hit us with execmem AVCs.
-    
-    The reason this is happening is somewhat complex:
-    
-    fs/binfmt_elf.c:load_elf_binary()
-     - initializes executable_stack = EXSTACK_DEFAULT implying the
-       architecture should make up its mind.
-     - does a pile of loading goo
-     - runs through the program headers, looking for PT_GNU_STACK
-       and setting (or unsetting) executable_stack if it finds it.
-    
-       This is our first problem, we won't generate these unless an
-       executable stack is explicitly requested.
-    
-     - more ELF loading goo
-     - sets whether we're a compat task or not (TIF_32BIT) based on compat.h
-     - for compat reasons (pre-GNU_STACK) checks if the READ_IMPLIES_EXEC
-       flag should be set for ancient toolchains
-    
-       Here's our second problem, we test if read_implies_exec based on
-       stk != EXSTACK_DISABLE_X, which is true since stk == EXSTACK_DEFAULT.
-    
-       So we set current->personality |= READ_IMPLIES_EXEC like a broken
-       legacy toolchain would want.
-    
-     - Now we call setup_arg_pages to set up the stack...
-    
-    fs/exec.c:setup_arg_pages()
-     - lots of magic happens here
-     - vm_flags gets initialized to VM_STACK_FLAGS
-    
-       Here's our third problem, VM_STACK_FLAGS on arm64 is
-       VM_DEFAULT_DATA_FLAG which tests READ_IMPLIES_EXEC and sets VM_EXEC
-       if it's true. So we end up with an executable stack mapping, since we
-       don't have executable_stack set (it's still EXSTACK_DEFAULT at this
-       point) to unset it anywhere.
-    
-    Bang. execstack AVC when the program starts running.
-    
-    The easiest way I can see to fix this is to test if we're a legacy task
-    and fix it up there. But that's not as simple as it sounds, because
-    the 32-bit ABI depends on what revision of the CPU we've enabled (not
-    that it matters since we're ARMv8...) Regardless, in the compat case,
-    set READ_IMPLIES_EXEC if we've found a GNU_STACK header which explicitly
-    requested it as in arch/arm/kernel/elf.c:arm_elf_read_implies_exec().
-    
-    Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
-    Signed-off-by: Donald Dutile <ddutile@redhat.com>
-
-commit 83c13f2718624a69568121628bd7b51c67a14dea
-Author: Mark Salter <msalter@redhat.com>
-Date:   Fri Jun 13 00:37:11 2014 -0400
-
-    arm64: fix soft lockup due to large tlb flush range
-    
-    Under certain loads, this soft lockup has been observed:
-    
-       BUG: soft lockup - CPU#2 stuck for 22s! [ip6tables:1016]
-       Modules linked in: ip6t_rpfilter ip6t_REJECT cfg80211 rfkill xt_conntrack ebtable_nat ebtable_broute bridge stp llc ebtable_filter ebtables ip6table_nat nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 ip6table_mangle ip6table_security ip6table_raw ip6table_filter ip6_tables iptable_nat nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack iptable_mangle iptable_security iptable_raw vfat fat efivarfs xfs libcrc32c
-    
-       CPU: 2 PID: 1016 Comm: ip6tables Not tainted 3.13.0-0.rc7.30.sa2.aarch64 #1
-       task: fffffe03e81d1400 ti: fffffe03f01f8000 task.ti: fffffe03f01f8000
-       PC is at __cpu_flush_kern_tlb_range+0xc/0x40
-       LR is at __purge_vmap_area_lazy+0x28c/0x3ac
-       pc : [<fffffe000009c5cc>] lr : [<fffffe0000182710>] pstate: 80000145
-       sp : fffffe03f01fbb70
-       x29: fffffe03f01fbb70 x28: fffffe03f01f8000
-       x27: fffffe0000b19000 x26: 00000000000000d0
-       x25: 000000000000001c x24: fffffe03f01fbc50
-       x23: fffffe03f01fbc58 x22: fffffe03f01fbc10
-       x21: fffffe0000b2a3f8 x20: 0000000000000802
-       x19: fffffe0000b2a3c8 x18: 000003fffdf52710
-       x17: 000003ff9d8bb910 x16: fffffe000050fbfc
-       x15: 0000000000005735 x14: 000003ff9d7e1a5c
-       x13: 0000000000000000 x12: 000003ff9d7e1a5c
-       x11: 0000000000000007 x10: fffffe0000c09af0
-       x9 : fffffe0000ad1000 x8 : 000000000000005c
-       x7 : fffffe03e8624000 x6 : 0000000000000000
-       x5 : 0000000000000000 x4 : 0000000000000000
-       x3 : fffffe0000c09cc8 x2 : 0000000000000000
-       x1 : 000fffffdfffca80 x0 : 000fffffcd742150
-    
-    The __cpu_flush_kern_tlb_range() function looks like:
-    
-      ENTRY(__cpu_flush_kern_tlb_range)
-    	dsb	sy
-    	lsr	x0, x0, #12
-    	lsr	x1, x1, #12
-      1:	tlbi	vaae1is, x0
-    	add	x0, x0, #1
-    	cmp	x0, x1
-    	b.lo	1b
-    	dsb	sy
-    	isb
-    	ret
-      ENDPROC(__cpu_flush_kern_tlb_range)
-    
-    The above soft lockup shows the PC at tlbi insn with:
-    
-      x0 = 0x000fffffcd742150
-      x1 = 0x000fffffdfffca80
-    
-    So __cpu_flush_kern_tlb_range has 0x128ba930 tlbi flushes left
-    after it has already been looping for 23 seconds!.
-    
-    Looking up one frame at __purge_vmap_area_lazy(), there is:
-    
-    	...
-    	list_for_each_entry_rcu(va, &vmap_area_list, list) {
-    		if (va->flags & VM_LAZY_FREE) {
-    			if (va->va_start < *start)
-    				*start = va->va_start;
-    			if (va->va_end > *end)
-    				*end = va->va_end;
-    			nr += (va->va_end - va->va_start) >> PAGE_SHIFT;
-    			list_add_tail(&va->purge_list, &valist);
-    			va->flags |= VM_LAZY_FREEING;
-    			va->flags &= ~VM_LAZY_FREE;
-    		}
-    	}
-    	...
-    	if (nr || force_flush)
-    		flush_tlb_kernel_range(*start, *end);
-    
-    So if two areas are being freed, the range passed to
-    flush_tlb_kernel_range() may be as large as the vmalloc
-    space. For arm64, this is ~240GB for 4k pagesize and ~2TB
-    for 64kpage size.
-    
-    This patch works around this problem by adding a loop limit.
-    If the range is larger than the limit, use flush_tlb_all()
-    rather than flushing based on individual pages. The limit
-    chosen is arbitrary and would be better if based on the
-    actual size of the tlb. I looked through the ARM ARM but
-    didn't see any easy way to get the actual tlb size, so for
-    now the arbitrary limit is better than the soft lockup.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 88ccd0e487a20575b4c9610c4df095af47f15d32
-Author: Mark Salter <msalter@redhat.com>
-Date:   Tue Jun 24 09:50:28 2014 -0400
-
-    arm64: use EFI as last resort for reboot and poweroff
-    
-    Wire in support for EFI reboot and poweroff functions. We use these
-    only if no other mechanism has been registered with arm_pm_reboot
-    and/or pm_power_off respectively.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit b99cd7b41a68bdf74034044e53992cb6d60cd5c5
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:39:55 2014 +0100
-
-    x86/reboot: Add EFI reboot quirk for ACPI Hardware Reduced flag
-    
-    It appears that the BayTrail-T class of hardware requires EFI in order
-    to powerdown and reboot and no other reliable method exists.
-    
-    This quirk is generally applicable to all hardware that has the ACPI
-    Hardware Reduced bit set, since usually ACPI would be the preferred
-    method.
-    
-    Cc: Len Brown <len.brown@intel.com>
-    Cc: Mark Salter <msalter@redhat.com>
-    Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit b0a9441c25fc622d21ea838670292886db5e4774
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:35:21 2014 +0100
-
-    efi/reboot: Allow powering off machines using EFI
-    
-    Not only can EfiResetSystem() be used to reboot, it can also be used to
-    power down machines.
-    
-    By and large, this functionality doesn't work very well across the range
-    of EFI machines in the wild, so it should definitely only be used as a
-    last resort. In an ideal world, this wouldn't be needed at all.
-    
-    Unfortunately, we're starting to see machines where EFI is the *only*
-    reliable way to power down, and nothing else, not PCI, not ACPI, works.
-    
-    efi_poweroff_required() should be implemented on a per-architecture
-    basis, since exactly when we should be using EFI runtime services is a
-    platform-specific decision. There's no analogue for reboot because each
-    architecture handles reboot very differently - the x86 code in
-    particular is pretty complex.
-    
-    Patches to enable this for specific classes of hardware will be
-    submitted separately.
-    
-    Cc: Mark Salter <msalter@redhat.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit 178be6962ce99a8f97c857acb72382568fad5a09
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:22:22 2014 +0100
-
-    efi/reboot: Add generic wrapper around EfiResetSystem()
-    
-    Implement efi_reboot(), which is really just a wrapper around the
-    EfiResetSystem() EFI runtime service, but it does at least allow us to
-    funnel all callers through a single location.
-    
-    It also simplifies the callsites since users no longer need to check to
-    see whether EFI_RUNTIME_SERVICES are enabled.
-    
-    Cc: Tony Luck <tony.luck@intel.com>
-    Cc: Mark Salter <msalter@redhat.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit 741309a7ffef94dbd1c4c92f2d29efefb2f7d3ea
-Author: Saurabh Tangri <saurabh.tangri@intel.com>
-Date:   Mon Jun 2 05:18:35 2014 -0700
-
-    x86/efi: Move all workarounds to a separate file quirks.c
-    
-    Currently, it's difficult to find all the workarounds that are
-    applied when running on EFI, because they're littered throughout
-    various code paths. This change moves all of them into a separate
-    file with the hope that it will be come the single location for all
-    our well documented quirks.
-    
-    Signed-off-by: Saurabh Tangri <saurabh.tangri@intel.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit 7750926fa769afc57a2d9ea4491e83b3d3e1e562
-Author: Suman Tripathi <stripathi@apm.com>
-Date:   Thu Jun 19 06:50:08 2014 -0400
-
-    libahci: Implement the function ahci_restart_engine to restart the port dma engine.
-    
-    This patch adds an function to restart the port dma engine.
-    
-    Signed-off-by: Loc Ho <lho@apm.com>
-    Signed-off-by: Suman Tripathi <stripathi@apm.com>
-
-commit 1952edc2d9e0236efaf573e11ed194052b893fd6
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Fri Jun 20 16:18:16 2014 -0700
-
-    drivers: net: Add APM X-Gene SoC ethernet driver support.
-    
-    This patch adds network driver for APM X-Gene SoC ethernet.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit c5f8a2ce5b5ae15e8c68147463a19859a70c7a5b
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Fri Jun 20 16:18:15 2014 -0700
-
-    dts: Add bindings for APM X-Gene SoC ethernet driver
-    
-    This patch adds bindings for APM X-Gene SoC ethernet driver.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit ea7b7777362958223ca018cea22dba4074df102c
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Fri Jun 20 16:18:14 2014 -0700
-
-    Documentation: dts: Add bindings for APM X-Gene SoC ethernet driver
-    
-    This patch adds documentation for APM X-Gene SoC ethernet DTS binding.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit f2d2384a3d914cdd6cae7afdf3d6394c157d22b2
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Fri Jun 20 16:18:13 2014 -0700
-
-    MAINTAINERS: Add entry for APM X-Gene SoC ethernet driver
-    
-    This patch adds a MAINTAINERS entry for APM X-Gene SoC
-    ethernet driver.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
 diff --git a/Documentation/arm64/booting.txt b/Documentation/arm64/booting.txt
-index 37fc4f6..e28ccec 100644
+index 37fc4f6..da1d4bf 100644
 --- a/Documentation/arm64/booting.txt
 +++ b/Documentation/arm64/booting.txt
-@@ -141,6 +141,12 @@ Before jumping into the kernel, the following conditions must be met:
+@@ -141,6 +141,14 @@ Before jumping into the kernel, the following conditions must be met:
    the kernel image will be entered must be initialised by software at a
    higher exception level to prevent execution in an UNKNOWN state.
  
-+  For systems with a GICv3 interrupt controller, it is expected that:
-+  - If EL3 is present, it must program ICC_SRE_EL3.Enable (bit 3) to
-+    0b1 and ICC_SRE_EL3.SRE (bit 0) to 0b1.
-+  - If the kernel is entered at EL1, EL2 must set ICC_SRE_EL2.Enable
-+    (bit 3) to 0b1 and ICC_SRE_EL2.SRE (bit 0) to 0b1.
++  For systems with a GICv3 interrupt controller:
++  - If EL3 is present:
++    ICC_SRE_EL3.Enable (bit 3) must be initialiased to 0b1.
++    ICC_SRE_EL3.SRE (bit 0) must be initialised to 0b1.
++  - If the kernel is entered at EL1:
++    ICC.SRE_EL2.Enable (bit 3) must be initialised to 0b1
++    ICC_SRE_EL2.SRE (bit 0) must be initialised to 0b1.
 +
  The requirements described above for CPU mode, caches, MMUs, architected
  timers, coherency and system registers apply to all CPUs.  All CPUs must
@@ -863,11 +180,69 @@ index 0000000..3e2a295
 +&menet {
 +        status = "ok";
 +};
+diff --git a/Documentation/devicetree/bindings/pci/xgene-pci.txt b/Documentation/devicetree/bindings/pci/xgene-pci.txt
+new file mode 100644
+index 0000000..e19fdb8
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/xgene-pci.txt
+@@ -0,0 +1,52 @@
++* AppliedMicro X-Gene PCIe interface
++
++Required properties:
++- device_type: set to "pci"
++- compatible: should contain "apm,xgene-pcie" to identify the core.
++- reg: A list of physical base address and length for each set of controller
++       registers. Must contain an entry for each entry in the reg-names
++       property.
++- reg-names: Must include the following entries:
++  "csr": controller configuration registers.
++  "cfg": pcie configuration space registers.
++- #address-cells: set to <3>
++- #size-cells: set to <2>
++- ranges: ranges for the outbound memory, I/O regions.
++- dma-ranges: ranges for the inbound memory regions.
++- #interrupt-cells: set to <1>
++- interrupt-map-mask and interrupt-map: standard PCI properties
++	to define the mapping of the PCIe interface to interrupt
++	numbers.
++- clocks: from common clock binding: handle to pci clock.
++
++Optional properties:
++- status: Either "ok" or "disabled".
++
++Example:
++
++SoC specific DT Entry:
++	pcie0: pcie@1f2b0000 {
++		status = "disabled";
++		device_type = "pci";
++		compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++		#interrupt-cells = <1>;
++		#size-cells = <2>;
++		#address-cells = <3>;
++		reg = < 0x00 0x1f2b0000 0x0 0x00010000   /* Controller registers */
++			0xe0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++		reg-names = "csr", "cfg";
++		ranges = <0x01000000 0x00 0x00000000 0xe0 0x00000000 0x00 0x00010000   /* io */
++			  0x02000000 0x00 0x10000000 0xe0 0x10000000 0x00 0x80000000>; /* mem */
++		dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++		interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++		interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc2 0x1
++				 0x0 0x0 0x0 0x2 &gic 0x0 0xc3 0x1
++				 0x0 0x0 0x0 0x3 &gic 0x0 0xc4 0x1
++				 0x0 0x0 0x0 0x4 &gic 0x0 0xc5 0x1>;
++		clocks = <&pcie0clk 0>;
++	};
++
++Board specific DT Entry:
++	&pcie0 {
++		status = "ok";
++	};
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 702ca10..5ce8e87 100644
+index 61a8f48..78946ce 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -700,6 +700,14 @@ S:	Maintained
+@@ -699,6 +699,14 @@ S:	Maintained
  F:	drivers/net/appletalk/
  F:	net/appletalk/
  
@@ -882,6 +257,20 @@ index 702ca10..5ce8e87 100644
  APTINA CAMERA SENSOR PLL
  M:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
  L:	linux-media@vger.kernel.org
+@@ -6851,6 +6859,13 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/pci/host-generic-pci.txt
+ F:	drivers/pci/host/pci-host-generic.c
+ 
++PCI DRIVER FOR APPLIEDMICRO XGENE
++M:	Tanmay Inamdar <tinamdar@apm.com>
++L:	linux-pci@vger.kernel.org
++L:	linux-arm-kernel@lists.infradead.org
++S:	Maintained
++F:	drivers/pci/host/pci-xgene.c
++
+ PCMCIA SUBSYSTEM
+ P:	Linux PCMCIA Team
+ L:	linux-pcmcia@lists.infradead.org
 diff --git a/arch/arm/include/asm/kvm_host.h b/arch/arm/include/asm/kvm_host.h
 index 193ceaf..d6d5227 100644
 --- a/arch/arm/include/asm/kvm_host.h
@@ -992,10 +381,10 @@ index 76af9302..e4eaf30 100644
  1:	ldr	r6, [r3], #4
  	str	r6, [r2], #4
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index a474de34..7fc6e2e 100644
+index 839f48c..23871dd 100644
 --- a/arch/arm64/Kconfig
 +++ b/arch/arm64/Kconfig
-@@ -10,6 +10,7 @@ config ARM64
+@@ -11,6 +11,7 @@ config ARM64
  	select ARM_AMBA
  	select ARM_ARCH_TIMER
  	select ARM_GIC
@@ -1003,11 +392,44 @@ index a474de34..7fc6e2e 100644
  	select BUILDTIME_EXTABLE_SORT
  	select CLONE_BACKWARDS
  	select COMMON_CLK
+@@ -76,7 +77,7 @@ config MMU
+ 	def_bool y
+ 
+ config NO_IOPORT_MAP
+-	def_bool y
++	def_bool y if !PCI
+ 
+ config STACKTRACE_SUPPORT
+ 	def_bool y
+@@ -151,6 +152,23 @@ menu "Bus support"
+ config ARM_AMBA
+ 	bool
+ 
++config PCI
++	bool "PCI support"
++	help
++	  This feature enables support for PCIe bus system. If you say Y
++	  here, the kernel will include drivers and infrastructure code
++	  to support PCIe bus devices.
++
++config PCI_DOMAINS
++	def_bool PCI
++
++config PCI_SYSCALL
++	def_bool PCI
++
++source "drivers/pci/Kconfig"
++source "drivers/pci/pcie/Kconfig"
++source "drivers/pci/hotplug/Kconfig"
++
+ endmenu
+ 
+ menu "Kernel Features"
 diff --git a/arch/arm64/boot/dts/apm-mustang.dts b/arch/arm64/boot/dts/apm-mustang.dts
-index 6541962..b2f5622 100644
+index 6541962..0cb67fc 100644
 --- a/arch/arm64/boot/dts/apm-mustang.dts
 +++ b/arch/arm64/boot/dts/apm-mustang.dts
-@@ -28,3 +28,7 @@
+@@ -28,3 +28,15 @@
  &serial0 {
  	status = "ok";
  };
@@ -1015,8 +437,16 @@ index 6541962..b2f5622 100644
 +&menet {
 +	status = "ok";
 +};
++
++&pcie0clk {
++	status = "ok";
++};
++
++&pcie0 {
++	status = "ok";
++};
 diff --git a/arch/arm64/boot/dts/apm-storm.dtsi b/arch/arm64/boot/dts/apm-storm.dtsi
-index 40aa96c..846ee3a 100644
+index 40aa96c..fb2ee54 100644
 --- a/arch/arm64/boot/dts/apm-storm.dtsi
 +++ b/arch/arm64/boot/dts/apm-storm.dtsi
 @@ -24,56 +24,56 @@
@@ -1113,7 +543,169 @@ index 40aa96c..846ee3a 100644
  			};
  
  			sataphy1clk: sataphy1clk@1f21c000 {
-@@ -278,7 +282,7 @@
+@@ -270,6 +274,161 @@
+ 				enable-mask = <0x2>;
+ 				clock-output-names = "rtcclk";
+ 			};
++
++			pcie0clk: pcie0clk@1f2bc000 {
++				status = "disabled";
++				compatible = "apm,xgene-device-clock";
++				#clock-cells = <1>;
++				clocks = <&socplldiv2 0>;
++				reg = <0x0 0x1f2bc000 0x0 0x1000>;
++				reg-names = "csr-reg";
++				clock-output-names = "pcie0clk";
++			};
++
++			pcie1clk: pcie1clk@1f2cc000 {
++				status = "disabled";
++				compatible = "apm,xgene-device-clock";
++				#clock-cells = <1>;
++				clocks = <&socplldiv2 0>;
++				reg = <0x0 0x1f2cc000 0x0 0x1000>;
++				reg-names = "csr-reg";
++				clock-output-names = "pcie1clk";
++			};
++
++			pcie2clk: pcie2clk@1f2dc000 {
++				status = "disabled";
++				compatible = "apm,xgene-device-clock";
++				#clock-cells = <1>;
++				clocks = <&socplldiv2 0>;
++				reg = <0x0 0x1f2dc000 0x0 0x1000>;
++				reg-names = "csr-reg";
++				clock-output-names = "pcie2clk";
++			};
++
++			pcie3clk: pcie3clk@1f50c000 {
++				status = "disabled";
++				compatible = "apm,xgene-device-clock";
++				#clock-cells = <1>;
++				clocks = <&socplldiv2 0>;
++				reg = <0x0 0x1f50c000 0x0 0x1000>;
++				reg-names = "csr-reg";
++				clock-output-names = "pcie3clk";
++			};
++
++			pcie4clk: pcie4clk@1f51c000 {
++				status = "disabled";
++				compatible = "apm,xgene-device-clock";
++				#clock-cells = <1>;
++				clocks = <&socplldiv2 0>;
++				reg = <0x0 0x1f51c000 0x0 0x1000>;
++				reg-names = "csr-reg";
++				clock-output-names = "pcie4clk";
++			};
++		};
++
++		pcie0: pcie@1f2b0000 {
++			status = "disabled";
++			device_type = "pci";
++			compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++			#interrupt-cells = <1>;
++			#size-cells = <2>;
++			#address-cells = <3>;
++			reg = < 0x00 0x1f2b0000 0x0 0x00010000   /* Controller registers */
++				0xe0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			reg-names = "csr", "cfg";
++			ranges = <0x01000000 0x00 0x00000000 0xe0 0x00000000 0x00 0x00010000   /* io */
++				  0x02000000 0x00 0x10000000 0xe0 0x10000000 0x00 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc2 0x1
++					 0x0 0x0 0x0 0x2 &gic 0x0 0xc3 0x1
++					 0x0 0x0 0x0 0x3 &gic 0x0 0xc4 0x1
++					 0x0 0x0 0x0 0x4 &gic 0x0 0xc5 0x1>;
++			clocks = <&pcie0clk 0>;
++		};
++
++		pcie1: pcie@1f2c0000 {
++			status = "disabled";
++			device_type = "pci";
++			compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++			#interrupt-cells = <1>;
++			#size-cells = <2>;
++			#address-cells = <3>;
++			reg = < 0x00 0x1f2c0000 0x0 0x00010000   /* Controller registers */
++				0xd0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			reg-names = "csr", "cfg";
++			ranges = <0x01000000 0x0 0x00000000 0xd0 0x00000000 0x00 0x00010000   /* io  */
++				  0x02000000 0x0 0x10000000 0xd0 0x10000000 0x00 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc8 0x1
++					 0x0 0x0 0x0 0x2 &gic 0x0 0xc9 0x1
++					 0x0 0x0 0x0 0x3 &gic 0x0 0xca 0x1
++					 0x0 0x0 0x0 0x4 &gic 0x0 0xcb 0x1>;
++			clocks = <&pcie1clk 0>;
++		};
++
++		pcie2: pcie@1f2d0000 {
++			status = "disabled";
++			device_type = "pci";
++			compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++			#interrupt-cells = <1>;
++			#size-cells = <2>;
++			#address-cells = <3>;
++			reg =  < 0x00 0x1f2d0000 0x0 0x00010000   /* Controller registers */
++				 0x90 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			reg-names = "csr", "cfg";
++			ranges = <0x01000000 0x0 0x00000000 0x90 0x00000000 0x0 0x00010000   /* io  */
++				  0x02000000 0x0 0x10000000 0x90 0x10000000 0x0 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xce 0x1
++					 0x0 0x0 0x0 0x2 &gic 0x0 0xcf 0x1
++					 0x0 0x0 0x0 0x3 &gic 0x0 0xd0 0x1
++					 0x0 0x0 0x0 0x4 &gic 0x0 0xd1 0x1>;
++			clocks = <&pcie2clk 0>;
++		};
++
++		pcie3: pcie@1f500000 {
++			status = "disabled";
++			device_type = "pci";
++			compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++			#interrupt-cells = <1>;
++			#size-cells = <2>;
++			#address-cells = <3>;
++			reg = < 0x00 0x1f500000 0x0 0x00010000   /* Controller registers */
++				0xa0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			reg-names = "csr", "cfg";
++			ranges = <0x01000000 0x0 0x00000000 0xa0 0x00000000 0x0 0x00010000  /* io */
++				  0x02000000 0x0 0x10000000 0xa0 0x10000000 0x0 0x80000000>; /* mem  */
++			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xd4 0x1
++					 0x0 0x0 0x0 0x2 &gic 0x0 0xd5 0x1
++					 0x0 0x0 0x0 0x3 &gic 0x0 0xd6 0x1
++					 0x0 0x0 0x0 0x4 &gic 0x0 0xd7 0x1>;
++			clocks = <&pcie3clk 0>;
++		};
++
++		pcie4: pcie@1f510000 {
++			status = "disabled";
++			device_type = "pci";
++			compatible = "apm,xgene-storm-pcie", "apm,xgene-pcie";
++			#interrupt-cells = <1>;
++			#size-cells = <2>;
++			#address-cells = <3>;
++			reg = < 0x00 0x1f510000 0x0 0x00010000   /* Controller registers */
++				0xc0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			reg-names = "csr", "cfg";
++			ranges = <0x01000000 0x0 0x00000000 0xc0 0x00000000 0x0 0x00010000   /* io  */
++				  0x02000000 0x0 0x10000000 0xc0 0x10000000 0x0 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
++			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xda 0x1
++					 0x0 0x0 0x0 0x2 &gic 0x0 0xdb 0x1
++					 0x0 0x0 0x0 0x3 &gic 0x0 0xdc 0x1
++					 0x0 0x0 0x0 0x4 &gic 0x0 0xdd 0x1>;
++			clocks = <&pcie4clk 0>;
+ 		};
+ 
+ 		serial0: serial@1c020000 {
+@@ -278,7 +437,7 @@
  			compatible = "ns16550a";
  			reg = <0 0x1c020000 0x0 0x1000>;
  			reg-shift = <2>;
@@ -1122,7 +714,7 @@ index 40aa96c..846ee3a 100644
  			interrupt-parent = <&gic>;
  			interrupts = <0x0 0x4c 0x4>;
  		};
-@@ -397,5 +401,30 @@
+@@ -397,5 +556,30 @@
  			#clock-cells = <1>;
  			clocks = <&rtcclk 0>;
  		};
@@ -1153,6 +745,18 @@ index 40aa96c..846ee3a 100644
 +		};
  	};
  };
+diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
+index 0b3fcf8..07cb417 100644
+--- a/arch/arm64/include/asm/Kbuild
++++ b/arch/arm64/include/asm/Kbuild
+@@ -29,6 +29,7 @@ generic-y += mman.h
+ generic-y += msgbuf.h
+ generic-y += mutex.h
+ generic-y += pci.h
++generic-y += pci-bridge.h
+ generic-y += poll.h
+ generic-y += preempt.h
+ generic-y += resource.h
 diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
 index 01d3aab..8186df6 100644
 --- a/arch/arm64/include/asm/elf.h
@@ -1167,6 +771,20 @@ index 01d3aab..8186df6 100644
  
  #define CORE_DUMP_USE_REGSET
  #define ELF_EXEC_PAGESIZE	PAGE_SIZE
+diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
+index e0ecdcf..dc34039 100644
+--- a/arch/arm64/include/asm/io.h
++++ b/arch/arm64/include/asm/io.h
+@@ -121,7 +121,8 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
+ /*
+  *  I/O port access primitives.
+  */
+-#define IO_SPACE_LIMIT		0xffff
++#define arch_has_dev_port()	(1)
++#define IO_SPACE_LIMIT		0x1ffffff
+ #define PCI_IOBASE		((void __iomem *)(MODULES_VADDR - SZ_32M))
+ 
+ static inline u8 inb(unsigned long addr)
 diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
 index 3d69030..cc83520 100644
 --- a/arch/arm64/include/asm/kvm_arm.h
@@ -1258,6 +876,61 @@ index 92242ce..4ae9213 100644
 +}
 +
  #endif /* __ARM64_KVM_HOST_H__ */
+diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
+new file mode 100644
+index 0000000..3f7856e
+--- /dev/null
++++ b/arch/arm64/include/asm/pci.h
+@@ -0,0 +1,49 @@
++#ifndef __ASM_PCI_H
++#define __ASM_PCI_H
++#ifdef __KERNEL__
++
++#include <linux/types.h>
++#include <linux/slab.h>
++#include <linux/dma-mapping.h>
++
++#include <asm/io.h>
++#include <asm-generic/pci-bridge.h>
++#include <asm-generic/pci-dma-compat.h>
++
++#define PCIBIOS_MIN_IO		0x1000
++#define PCIBIOS_MIN_MEM		0
++
++struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus);
++
++/*
++ * Set to 1 if the kernel should re-assign all PCI bus numbers
++ */
++#define pcibios_assign_all_busses() \
++	(pci_has_flag(PCI_REASSIGN_ALL_BUS))
++
++/*
++ * PCI address space differs from physical memory address space
++ */
++#define PCI_DMA_BUS_IS_PHYS	(0)
++
++extern int isa_dma_bridge_buggy;
++
++#ifdef CONFIG_PCI
++static inline int pci_domain_nr(struct pci_bus *bus)
++{
++	struct pci_host_bridge *bridge = find_pci_host_bridge(bus);
++
++	if (bridge)
++		return bridge->domain_nr;
++
++	return 0;
++}
++
++static inline int pci_proc_domain(struct pci_bus *bus)
++{
++	return 1;
++}
++#endif  /* CONFIG_PCI */
++
++#endif  /* __KERNEL__ */
++#endif  /* __ASM_PCI_H */
 diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
 index b9349c4..e0f37ef 100644
 --- a/arch/arm64/include/asm/tlbflush.h
@@ -1323,6 +996,18 @@ index 215ad46..7a5df52 100644
  #endif /* __ASSEMBLY__ */
  
  #endif /* ! __ASM__VIRT_H */
+diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+index cdaedad..36b117a 100644
+--- a/arch/arm64/kernel/Makefile
++++ b/arch/arm64/kernel/Makefile
+@@ -29,6 +29,7 @@ arm64-obj-$(CONFIG_ARM64_CPU_SUSPEND)	+= sleep.o suspend.o
+ arm64-obj-$(CONFIG_JUMP_LABEL)		+= jump_label.o
+ arm64-obj-$(CONFIG_KGDB)		+= kgdb.o
+ arm64-obj-$(CONFIG_EFI)			+= efi.o efi-stub.o efi-entry.o
++arm64-obj-$(CONFIG_PCI)			+= pci.o
+ 
+ obj-y					+= $(arm64-obj-y) vdso/
+ obj-m					+= $(arm64-obj-m)
 diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
 index 646f888..e74654c 100644
 --- a/arch/arm64/kernel/asm-offsets.c
@@ -1379,7 +1064,7 @@ index 14db1f6..453b7f8 100644
 +	return pm_power_off == NULL;
 +}
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index a96d3a6..871b4ee 100644
+index a2c1195..d1f7b96 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
 @@ -22,6 +22,7 @@
@@ -1390,7 +1075,7 @@ index a96d3a6..871b4ee 100644
  
  #include <asm/assembler.h>
  #include <asm/ptrace.h>
-@@ -296,6 +297,23 @@ CPU_LE(	bic	x0, x0, #(3 << 24)	)	// Clear the EE and E0E bits for EL1
+@@ -295,6 +296,23 @@ CPU_LE(	bic	x0, x0, #(3 << 24)	)	// Clear the EE and E0E bits for EL1
  	msr	cnthctl_el2, x0
  	msr	cntvoff_el2, xzr		// Clear virtual offset
  
@@ -1402,10 +1087,10 @@ index a96d3a6..871b4ee 100644
 +	b.ne	3f
 +
 +	mrs	x0, ICC_SRE_EL2
-+	orr	x0, x0, #1			// Set ICC_SRE_EL2.SRE==1
-+	orr	x0, x0, #(1 << 3)		// Set ICC_SRE_EL2.Enable==1
++	orr	x0, x0, #ICC_SRE_EL2_SRE	// Set ICC_SRE_EL2.SRE==1
++	orr	x0, x0, #ICC_SRE_EL2_ENABLE	// Set ICC_SRE_EL2.Enable==1
 +	msr	ICC_SRE_EL2, x0
-+	isb					// Make sure SRE is now 1
++	isb					// Make sure SRE is now set
 +	msr	ICH_HCR_EL2, xzr		// Reset ICC_HCR_EL2 to defaults
 +
 +3:
@@ -1426,6 +1111,50 @@ index 0959611..a272f33 100644
  
  #include <asm/assembler.h>
  #include <asm/ptrace.h>
+diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+new file mode 100644
+index 0000000..955d6d1
+--- /dev/null
++++ b/arch/arm64/kernel/pci.c
+@@ -0,0 +1,38 @@
++/*
++ * Code borrowed from powerpc/kernel/pci-common.c
++ *
++ * Copyright (C) 2003 Anton Blanchard <anton@au.ibm.com>, IBM
++ * Copyright (C) 2014 ARM Ltd.
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/init.h>
++#include <linux/io.h>
++#include <linux/kernel.h>
++#include <linux/mm.h>
++#include <linux/of_pci.h>
++#include <linux/of_platform.h>
++#include <linux/slab.h>
++
++#include <asm/pci-bridge.h>
++
++/*
++ * Called after each bus is probed, but before its children are examined
++ */
++void pcibios_fixup_bus(struct pci_bus *bus)
++{
++	/* nothing to do, expected to be removed in the future */
++}
++
++/*
++ * We don't have to worry about legacy ISA devices, so nothing to do here
++ */
++resource_size_t pcibios_align_resource(void *data, const struct resource *res,
++				resource_size_t size, resource_size_t align)
++{
++	return res->start;
++}
 diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
 index 43b7c34..ec5cbbe 100644
 --- a/arch/arm64/kernel/process.c
@@ -1782,10 +1511,10 @@ index 0000000..ae21177
 +	.popsection
 diff --git a/arch/arm64/kvm/vgic-v3-switch.S b/arch/arm64/kvm/vgic-v3-switch.S
 new file mode 100644
-index 0000000..4ede9d8
+index 0000000..21e68f6
 --- /dev/null
 +++ b/arch/arm64/kvm/vgic-v3-switch.S
-@@ -0,0 +1,266 @@
+@@ -0,0 +1,267 @@
 +/*
 + * Copyright (C) 2012,2013 - ARM Ltd
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -2025,8 +1754,9 @@ index 0000000..4ede9d8
 +	msr	ICH_LR1_EL2,   x6
 +	msr	ICH_LR0_EL2,   x5
 +
-+	// Ensure that the above will be visible via the memory-mapped
-+	// view of the CPU interface (GICV).
++	// Ensure that the above will have reached the
++	// (re)distributors. This ensure the guest will read
++	// the correct values from the memory-mapped interface.
 +	isb
 +	dsb	sy
 +
@@ -2053,25 +1783,44 @@ index 0000000..4ede9d8
 +
 +	.popsection
 diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-index f43db8a..05d6079 100644
+index f43db8a..e90c542 100644
 --- a/arch/arm64/mm/init.c
 +++ b/arch/arm64/mm/init.c
-@@ -145,8 +145,17 @@ void __init arm64_memblock_init(void)
- 	early_init_fdt_scan_reserved_mem();
+@@ -60,6 +60,17 @@ static int __init early_initrd(char *p)
+ early_param("initrd", early_initrd);
+ #endif
+ 
++/*
++ * Return the maximum physical address for ZONE_DMA (DMA_BIT_MASK(32)). It
++ * currently assumes that for memory starting above 4G, 32-bit devices will
++ * use a DMA offset.
++ */
++static phys_addr_t max_zone_dma_phys(void)
++{
++	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, 32);
++	return min(offset + (1ULL << 32), memblock_end_of_DRAM());
++}
++
+ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+ {
+ 	struct memblock_region *reg;
+@@ -70,9 +81,7 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
  
  	/* 4GB maximum for 32-bit only capable devices */
--	if (IS_ENABLED(CONFIG_ZONE_DMA))
-+	if (IS_ENABLED(CONFIG_ZONE_DMA)) {
- 		dma_phys_limit = dma_to_phys(NULL, DMA_BIT_MASK(32)) + 1;
-+		/*
-+		 * If platform doesn't have DRAM within the dma_phys_limit,
-+		 * remove the limit altogether. This allows one kernel (with
-+		 * CONFIG_ZONE_DMA defined) to support platforms with 32-bit
-+		 * only devices and platforms with no 32-bit DRAM.
-+		 */
-+		if (dma_phys_limit <= memblock_start_of_DRAM())
-+			dma_phys_limit = 0;
-+	}
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA)) {
+-		unsigned long max_dma_phys =
+-			(unsigned long)(dma_to_phys(NULL, DMA_BIT_MASK(32)) + 1);
+-		max_dma = max(min, min(max, max_dma_phys >> PAGE_SHIFT));
++		max_dma = PFN_DOWN(max_zone_dma_phys());
+ 		zone_size[ZONE_DMA] = max_dma - min;
+ 	}
+ 	zone_size[ZONE_NORMAL] = max - max_dma;
+@@ -146,7 +155,7 @@ void __init arm64_memblock_init(void)
+ 
+ 	/* 4GB maximum for 32-bit only capable devices */
+ 	if (IS_ENABLED(CONFIG_ZONE_DMA))
+-		dma_phys_limit = dma_to_phys(NULL, DMA_BIT_MASK(32)) + 1;
++		dma_phys_limit = max_zone_dma_phys();
  	dma_contiguous_reserve(dma_phys_limit);
  
  	memblock_allow_resize();
@@ -2807,59 +2556,20 @@ index 0000000..1b9c4c3
 +{
 +	return !!acpi_gbl_reduced_hardware;
 +}
-diff --git a/drivers/ata/ahci.h b/drivers/ata/ahci.h
-index 5513296e5e2e..89b8646b912b 100644
---- a/drivers/ata/ahci.h
-+++ b/drivers/ata/ahci.h
-@@ -375,6 +375,8 @@ unsigned int ahci_qc_issue(struct ata_queued_cmd *qc);
- int ahci_stop_engine(struct ata_port *ap);
- void ahci_start_fis_rx(struct ata_port *ap);
- void ahci_start_engine(struct ata_port *ap);
-+int ahci_restart_engine(struct ata_port *ap);
-+void ahci_sw_activity(struct ata_link *link);
- int ahci_check_ready(struct ata_link *link);
- int ahci_kick_engine(struct ata_port *ap);
- int ahci_port_resume(struct ata_port *ap);
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 40ea583..3ec5dc7 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -747,6 +747,18 @@ static int ahci_set_lpm(struct ata_link *link, enum ata_lpm_policy policy,
- 	return 0;
- }
+diff --git a/drivers/ata/ahci_xgene.c b/drivers/ata/ahci_xgene.c
+index ee3a365..f9431b4 100644
+--- a/drivers/ata/ahci_xgene.c
++++ b/drivers/ata/ahci_xgene.c
+@@ -131,7 +131,8 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
+ 	struct xgene_ahci_context *ctx = hpriv->plat_data;
+ 	int rc = 0;
  
-+int ahci_restart_engine(struct ata_port *ap)
-+{
-+	struct ahci_host_priv *hpriv = ap->host->private_data;
-+
-+	ahci_stop_engine(ap);
-+	ahci_start_fis_rx(ap);
-+	hpriv->start_engine(ap);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(ahci_restart_engine);
-+
- #ifdef CONFIG_PM
- static void ahci_power_down(struct ata_port *ap)
- {
-@@ -886,7 +898,7 @@ int ahci_reset_controller(struct ata_host *host)
- }
- EXPORT_SYMBOL_GPL(ahci_reset_controller);
+-	if (unlikely(ctx->last_cmd[ap->port_no] == ATA_CMD_ID_ATA))
++	if (unlikely(ctx->last_cmd[ap->port_no] == ATA_CMD_ID_ATA ||
++		     ctx->last_cmd[ap->port_no] == ATA_CMD_SMART))
+ 		xgene_ahci_restart_engine(ap);
  
--static void ahci_sw_activity(struct ata_link *link)
-+void ahci_sw_activity(struct ata_link *link)
- {
- 	struct ata_port *ap = link->ap;
- 	struct ahci_port_priv *pp = ap->private_data;
-@@ -899,6 +911,7 @@ static void ahci_sw_activity(struct ata_link *link)
- 	if (!timer_pending(&emp->timer))
- 		mod_timer(&emp->timer, jiffies + msecs_to_jiffies(10));
- }
-+EXPORT_SYMBOL_GPL(ahci_sw_activity);
- 
- static void ahci_sw_activity_blink(unsigned long arg)
- {
+ 	rc = ahci_qc_issue(qc);
 diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
 index 9553496..c135154 100644
 --- a/drivers/firmware/efi/Makefile
@@ -3122,10 +2832,10 @@ index 0000000..b41f024
 +#endif /* _IRQ_GIC_COMMON_H */
 diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
 new file mode 100644
-index 0000000..c3dd8ad
+index 0000000..81519ba
 --- /dev/null
 +++ b/drivers/irqchip/irq-gic-v3.c
-@@ -0,0 +1,690 @@
+@@ -0,0 +1,692 @@
 +/*
 + * Copyright (C) 2013, 2014 ARM Limited, All Rights Reserved.
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -3177,6 +2887,7 @@ index 0000000..c3dd8ad
 +#define gic_data_rdist_rd_base()	(*gic_data_rdist())
 +#define gic_data_rdist_sgi_base()	(gic_data_rdist_rd_base() + SZ_64K)
 +
++/* Our default, arbitrary priority value. Linux only uses one anyway. */
 +#define DEFAULT_PMR_VALUE	0xf0
 +
 +static inline unsigned int gic_irq(struct irq_data *d)
@@ -3307,7 +3018,7 @@ index 0000000..c3dd8ad
 +}
 +
 +/*
-+ * Routines to acknowledge, disable and enable interrupts
++ * Routines to disable, enable, EOI and route interrupts
 + */
 +static void gic_poke_irq(struct irq_data *d, u32 offset)
 +{
@@ -3388,7 +3099,7 @@ index 0000000..c3dd8ad
 +	aff = (MPIDR_AFFINITY_LEVEL(mpidr, 3) << 32 |
 +	       MPIDR_AFFINITY_LEVEL(mpidr, 2) << 16 |
 +	       MPIDR_AFFINITY_LEVEL(mpidr, 1) << 8  |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 0)) & ~GICD_IROUTER_SPI_MODE_ANY;
++	       MPIDR_AFFINITY_LEVEL(mpidr, 0));
 +
 +	return aff;
 +}
@@ -3419,7 +3130,7 @@ index 0000000..c3dd8ad
 +#endif
 +			continue;
 +		}
-+	} while (irqnr != 0x3ff);
++	} while (irqnr != ICC_IAR1_EL1_SPURIOUS);
 +}
 +
 +static void __init gic_dist_init(void)
@@ -3468,7 +3179,8 @@ index 0000000..c3dd8ad
 +		u32 reg;
 +
 +		reg = readl_relaxed(ptr + GICR_PIDR2) & GIC_PIDR2_ARCH_MASK;
-+		if (reg != 0x30 && reg != 0x40) { /* We're in trouble... */
++		if (reg != GIC_PIDR2_ARCH_GICv3 &&
++		    reg != GIC_PIDR2_ARCH_GICv4) { /* We're in trouble... */
 +			pr_warn("No redistributor present @%p\n", ptr);
 +			break;
 +		}
@@ -3740,7 +3452,7 @@ index 0000000..c3dd8ad
 +	}
 +
 +	reg = readl_relaxed(dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
-+	if (reg != 0x30 && reg != 0x40) {
++	if (reg != GIC_PIDR2_ARCH_GICv3 && reg != GIC_PIDR2_ARCH_GICv4) {
 +		pr_err("%s: no distributor detected, giving up\n",
 +			node->full_name);
 +		err = -ENODEV;
@@ -3817,10 +3529,10 @@ index 0000000..c3dd8ad
 +
 +IRQCHIP_DECLARE(gic_v3, "arm,gic-v3", gic_of_init);
 diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 7e11c9d..5a75b97 100644
+index 7c131cf..1ddfdde 100644
 --- a/drivers/irqchip/irq-gic.c
 +++ b/drivers/irqchip/irq-gic.c
-@@ -46,6 +46,7 @@
+@@ -47,6 +47,7 @@
  #include <asm/exception.h>
  #include <asm/smp_plat.h>
  
@@ -3828,7 +3540,7 @@ index 7e11c9d..5a75b97 100644
  #include "irqchip.h"
  
  union gic_base {
-@@ -188,12 +189,6 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
+@@ -189,12 +190,6 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
  {
  	void __iomem *base = gic_dist_base(d);
  	unsigned int gicirq = gic_irq(d);
@@ -3841,7 +3553,7 @@ index 7e11c9d..5a75b97 100644
  
  	/* Interrupt configuration for SGIs can't be changed */
  	if (gicirq < 16)
-@@ -207,25 +202,7 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
+@@ -208,25 +203,7 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
  	if (gic_arch_extn.irq_set_type)
  		gic_arch_extn.irq_set_type(d, type);
  
@@ -3868,7 +3580,7 @@ index 7e11c9d..5a75b97 100644
  
  	raw_spin_unlock(&irq_controller_lock);
  
-@@ -387,12 +364,6 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
+@@ -388,12 +365,6 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
  	writel_relaxed(0, base + GIC_DIST_CTRL);
  
  	/*
@@ -3881,7 +3593,7 @@ index 7e11c9d..5a75b97 100644
  	 * Set all global interrupts to this CPU only.
  	 */
  	cpumask = gic_get_cpumask(gic);
-@@ -401,18 +372,7 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
+@@ -402,18 +373,7 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
  	for (i = 32; i < gic_irqs; i += 4)
  		writel_relaxed(cpumask, base + GIC_DIST_TARGET + i * 4 / 4);
  
@@ -3901,7 +3613,7 @@ index 7e11c9d..5a75b97 100644
  
  	writel_relaxed(1, base + GIC_DIST_CTRL);
  }
-@@ -422,6 +382,7 @@ static void gic_cpu_init(struct gic_chip_data *gic)
+@@ -423,6 +383,7 @@ static void gic_cpu_init(struct gic_chip_data *gic)
  	void __iomem *dist_base = gic_data_dist_base(gic);
  	void __iomem *base = gic_data_cpu_base(gic);
  	unsigned int cpu_mask, cpu = smp_processor_id();
@@ -3909,7 +3621,7 @@ index 7e11c9d..5a75b97 100644
  	int i;
  
  	/*
-@@ -439,27 +400,32 @@ static void gic_cpu_init(struct gic_chip_data *gic)
+@@ -440,27 +401,32 @@ static void gic_cpu_init(struct gic_chip_data *gic)
  		if (i != cpu)
  			gic_cpu_map[i] &= ~cpu_mask;
  
@@ -3956,7 +3668,7 @@ index 7e11c9d..5a75b97 100644
  }
  
  #ifdef CONFIG_CPU_PM
-@@ -570,6 +536,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
+@@ -571,6 +537,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
  {
  	int i;
  	u32 *ptr;
@@ -3964,7 +3676,7 @@ index 7e11c9d..5a75b97 100644
  	void __iomem *dist_base;
  	void __iomem *cpu_base;
  
-@@ -594,7 +561,15 @@ static void gic_cpu_restore(unsigned int gic_nr)
+@@ -595,7 +562,15 @@ static void gic_cpu_restore(unsigned int gic_nr)
  		writel_relaxed(0xa0a0a0a0, dist_base + GIC_DIST_PRI + i * 4);
  
  	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
@@ -4183,10 +3895,10 @@ index 0000000..63f2aa5
 +}
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
 new file mode 100644
-index 0000000..6c4a484
+index 0000000..e52af60
 --- /dev/null
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-@@ -0,0 +1,848 @@
+@@ -0,0 +1,747 @@
 +/* Applied Micro X-Gene SoC Ethernet Driver
 + *
 + * Copyright (c) 2014, Applied Micro Circuits Corporation
@@ -4210,76 +3922,6 @@ index 0000000..6c4a484
 +
 +#include "xgene_enet_main.h"
 +#include "xgene_enet_hw.h"
-+
-+u64 xgene_prepare_eth_work_msg(u8 l4hlen, u8 l3hlen, u8 ethhdr,
-+			       u8 csum_enable, u8 proto)
-+{
-+	u64 hopinfo;
-+
-+	hopinfo = (l4hlen & TCPHDR_MASK) |
-+		  ((l3hlen << IPHDR_POS) & IPHDR_MASK) |
-+		  (ethhdr << ETHHDR_POS) |
-+		  ((csum_enable << EC_POS) & EC_MASK) |
-+		  ((proto << IS_POS) & IS_MASK) |
-+		  INSERT_CRC |
-+		  TYPE_ETH_WORK_MESSAGE;
-+
-+	return hopinfo;
-+}
-+
-+/* Tx descriptor raw write */
-+void xgene_set_tx_desc(struct xgene_enet_desc_ring *ring,
-+		       struct xgene_enet_raw_desc *raw_desc)
-+{
-+	raw_desc->m0 = ring->desc.userinfo;
-+	raw_desc->m1 = (ring->desc.dataaddr & DATAADDR_MASK) |
-+		       (((u64)ring->desc.bufdatalen << BUFDATALEN_POS) &
-+		       BUFDATALEN_MASK) | COHERENT_MASK;
-+	raw_desc->m3 = (((u64)ring->desc.henqnum << HENQNUM_POS) &
-+		       HENQNUM_MASK) |
-+		       ring->desc.hopinfo_lsb;
-+}
-+
-+/* descriptor raw read */
-+void xgene_get_desc(struct xgene_enet_desc_ring *ring,
-+		    struct xgene_enet_raw_desc *raw_desc)
-+{
-+	struct xgene_enet_desc *desc = &ring->desc;
-+
-+	desc->dataaddr = raw_desc->m1 & DATAADDR_MASK;
-+	desc->bufdatalen = (raw_desc->m1 & BUFDATALEN_MASK) >> BUFDATALEN_POS;
-+	desc->userinfo = raw_desc->m0 & USERINFO_MASK;
-+	desc->fpqnum = (raw_desc->m0 & FPQNUM_MASK) >> FPQNUM_POS;
-+	desc->status = (raw_desc->m0 & LERR_MASK) >> LERR_POS;
-+}
-+
-+/* Bufpool descriptor raw write common fields */
-+void xgene_set_init_bufpool_desc(struct xgene_enet_desc_ring *ring,
-+				 struct xgene_enet_raw_desc16 *raw_desc)
-+{
-+	raw_desc->m0 = (ring->desc.userinfo) |
-+		       (((u64)ring->desc.fpqnum << FPQNUM_POS) & FPQNUM_MASK) |
-+		       STASHING_MASK;
-+}
-+
-+/* Bufpool descriptor raw write */
-+void xgene_set_refill_bufpool_desc(struct xgene_enet_desc_ring *ring,
-+				   struct xgene_enet_raw_desc16 *raw_desc)
-+{
-+	raw_desc->m1 = (ring->desc.dataaddr & DATAADDR_MASK) |
-+		       (((u64)ring->desc.bufdatalen << BUFDATALEN_POS) &
-+		       BUFDATALEN_MASK) |
-+		       COHERENT_MASK;
-+}
-+
-+/* Bufpool descriptor raw read */
-+void xgene_get_bufpool_desc(struct xgene_enet_desc_ring *ring,
-+			    struct xgene_enet_raw_desc16 *raw_desc)
-+{
-+	struct xgene_enet_desc *desc = &ring->desc;
-+
-+	desc->userinfo = raw_desc->m0 & USERINFO_MASK;
-+}
 +
 +static void xgene_enet_ring_init(struct xgene_enet_desc_ring *ring)
 +{
@@ -4482,7 +4124,7 @@ index 0000000..6c4a484
 +static void xgene_enet_wr_csr(struct xgene_enet_pdata *pdata,
 +			      u32 offset, u32 val)
 +{
-+	void *addr = pdata->eth_csr_addr + offset;
++	void __iomem *addr = pdata->eth_csr_addr + offset;
 +
 +	iowrite32(val, addr);
 +}
@@ -4490,7 +4132,7 @@ index 0000000..6c4a484
 +static void xgene_enet_wr_ring_if(struct xgene_enet_pdata *pdata,
 +				  u32 offset, u32 val)
 +{
-+	void *addr = pdata->eth_ring_if_addr + offset;
++	void __iomem *addr = pdata->eth_ring_if_addr + offset;
 +
 +	iowrite32(val, addr);
 +}
@@ -4498,7 +4140,7 @@ index 0000000..6c4a484
 +static void xgene_enet_wr_diag_csr(struct xgene_enet_pdata *pdata,
 +				   u32 offset, u32 val)
 +{
-+	void *addr = pdata->eth_diag_csr_addr + offset;
++	void __iomem *addr = pdata->eth_diag_csr_addr + offset;
 +
 +	iowrite32(val, addr);
 +}
@@ -4506,13 +4148,14 @@ index 0000000..6c4a484
 +static void xgene_enet_wr_mcx_csr(struct xgene_enet_pdata *pdata,
 +				  u32 offset, u32 val)
 +{
-+	void *addr = pdata->mcx_mac_csr_addr + offset;
++	void __iomem *addr = pdata->mcx_mac_csr_addr + offset;
 +
 +	iowrite32(val, addr);
 +}
 +
-+static bool xgene_enet_wr_indirect(void *addr, void *wr, void *cmd,
-+				   void *cmd_done, u32 wr_addr, u32 wr_data)
++static bool xgene_enet_wr_indirect(void __iomem *addr, void __iomem *wr,
++				   void __iomem *cmd, void __iomem *cmd_done,
++				   u32 wr_addr, u32 wr_data)
 +{
 +	u32 done;
 +	u8 wait = 10;
@@ -4536,7 +4179,7 @@ index 0000000..6c4a484
 +static void xgene_enet_wr_mcx_mac(struct xgene_enet_pdata *pdata,
 +				  u32 wr_addr, u32 wr_data)
 +{
-+	void *addr, *wr, *cmd, *cmd_done;
++	void __iomem *addr, *wr, *cmd, *cmd_done;
 +	bool ret;
 +
 +	addr = pdata->mcx_mac_addr + MAC_ADDR_REG_OFFSET;
@@ -4553,7 +4196,7 @@ index 0000000..6c4a484
 +static void xgene_enet_rd_csr(struct xgene_enet_pdata *pdata,
 +			      u32 offset, u32 *val)
 +{
-+	void *addr = pdata->eth_csr_addr + offset;
++	void __iomem *addr = pdata->eth_csr_addr + offset;
 +
 +	*val = ioread32(addr);
 +}
@@ -4561,7 +4204,7 @@ index 0000000..6c4a484
 +static void xgene_enet_rd_diag_csr(struct xgene_enet_pdata *pdata,
 +				   u32 offset, u32 *val)
 +{
-+	void *addr = pdata->eth_diag_csr_addr + offset;
++	void __iomem *addr = pdata->eth_diag_csr_addr + offset;
 +
 +	*val = ioread32(addr);
 +}
@@ -4569,13 +4212,14 @@ index 0000000..6c4a484
 +static void xgene_enet_rd_mcx_csr(struct xgene_enet_pdata *pdata,
 +				  u32 offset, u32 *val)
 +{
-+	void *addr = pdata->mcx_mac_csr_addr + offset;
++	void __iomem *addr = pdata->mcx_mac_csr_addr + offset;
 +
 +	*val = ioread32(addr);
 +}
 +
-+static bool xgene_enet_rd_indirect(void *addr, void *rd, void *cmd,
-+				   void *cmd_done, u32 rd_addr, u32 *rd_data)
++static bool xgene_enet_rd_indirect(void __iomem *addr, void __iomem *rd,
++				   void __iomem *cmd, void __iomem *cmd_done,
++				   u32 rd_addr, u32 *rd_data)
 +{
 +	u32 done;
 +	u8 wait = 10;
@@ -4599,7 +4243,7 @@ index 0000000..6c4a484
 +static void xgene_enet_rd_mcx_mac(struct xgene_enet_pdata *pdata,
 +				  u32 rd_addr, u32 *rd_data)
 +{
-+	void *addr, *rd, *cmd, *cmd_done;
++	void __iomem *addr, *rd, *cmd, *cmd_done;
 +	bool ret;
 +
 +	addr = pdata->mcx_mac_addr + MAC_ADDR_REG_OFFSET;
@@ -4698,21 +4342,6 @@ index 0000000..6c4a484
 +	}
 +
 +	return 0;
-+}
-+
-+static void xgene_gmac_phy_enable_scan_cycle(struct xgene_enet_pdata *pdata)
-+{
-+	u32 val;
-+
-+	xgene_enet_rd_mcx_mac(pdata, MII_MGMT_COMMAND_ADDR, &val);
-+	SCAN_CYCLE_MASK_SET(&val, 1);
-+	xgene_enet_wr_mcx_mac(pdata, MII_MGMT_COMMAND_ADDR, val);
-+
-+	/* Program phy address start scan from 0 and register at address 0x1 */
-+	xgene_enet_rd_mcx_mac(pdata, MII_MGMT_ADDRESS_ADDR, &val);
-+	PHY_ADDR_SET(&val, pdata->phy_dev->addr);
-+	REG_ADDR_SET(&val, MII_BMSR);
-+	xgene_enet_wr_mcx_mac(pdata, MII_MGMT_ADDRESS_ADDR, val);
 +}
 +
 +void xgene_gmac_reset(struct xgene_enet_pdata *pdata)
@@ -4906,32 +4535,21 @@ index 0000000..6c4a484
 +{
 +	struct xgene_enet_pdata *pdata = netdev_priv(ndev);
 +	struct phy_device *phydev = pdata->phy_dev;
-+	bool status_change = false;
-+
-+	if (phydev->link && pdata->phy_speed != phydev->speed) {
-+		xgene_gmac_init(pdata, phydev->speed);
-+		pdata->phy_speed = phydev->speed;
-+		status_change = true;
-+	}
-+
-+	if (pdata->phy_link != phydev->link) {
-+		if (!phydev->link)
-+			pdata->phy_speed = 0;
-+		pdata->phy_link = phydev->link;
-+		status_change = true;
-+	}
-+
-+	if (!status_change)
-+		return;
 +
 +	if (phydev->link) {
-+		xgene_gmac_rx_enable(pdata);
-+		xgene_gmac_tx_enable(pdata);
++		if (pdata->phy_speed != phydev->speed) {
++			xgene_gmac_init(pdata, phydev->speed);
++			xgene_gmac_rx_enable(pdata);
++			xgene_gmac_tx_enable(pdata);
++			pdata->phy_speed = phydev->speed;
++			phy_print_status(phydev);
++		}
 +	} else {
 +		xgene_gmac_rx_disable(pdata);
 +		xgene_gmac_tx_disable(pdata);
++		pdata->phy_speed = SPEED_UNKNOWN;
++		phy_print_status(phydev);
 +	}
-+	phy_print_status(phydev);
 +}
 +
 +static int xgene_enet_phy_connect(struct net_device *ndev)
@@ -4954,8 +4572,11 @@ index 0000000..6c4a484
 +		return  -ENODEV;
 +	}
 +
-+	pdata->phy_link = 0;
-+	pdata->phy_speed = 0;
++	pdata->phy_speed = SPEED_UNKNOWN;
++	phy_dev->supported &= ~SUPPORTED_10baseT_Half &
++			      ~SUPPORTED_100baseT_Half &
++			      ~SUPPORTED_1000baseT_Half;
++	phy_dev->advertising = phy_dev->supported;
 +	pdata->phy_dev = phy_dev;
 +
 +	return 0;
@@ -4992,13 +4613,6 @@ index 0000000..6c4a484
 +	snprintf(mdio_bus->id, MII_BUS_ID_SIZE, "%s-%s", "xgene-mii",
 +		 ndev->name);
 +
-+	mdio_bus->irq = devm_kcalloc(dev, PHY_MAX_ADDR, sizeof(int),
-+				     GFP_KERNEL);
-+	if (!mdio_bus->irq) {
-+		ret = -ENOMEM;
-+		goto err;
-+	}
-+
 +	mdio_bus->priv = pdata;
 +	mdio_bus->parent = &ndev->dev;
 +
@@ -5012,13 +4626,10 @@ index 0000000..6c4a484
 +	ret = xgene_enet_phy_connect(ndev);
 +	if (ret)
 +		goto err;
-+	xgene_gmac_phy_enable_scan_cycle(pdata);
 +
 +	return ret;
 +
 +err:
-+	if (mdio_bus->irq)
-+		devm_kfree(dev, mdio_bus->irq);
 +	mdiobus_free(mdio_bus);
 +
 +	return ret;
@@ -5037,10 +4648,10 @@ index 0000000..6c4a484
 +}
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.h b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.h
 new file mode 100644
-index 0000000..934baca
+index 0000000..2041313
 --- /dev/null
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.h
-@@ -0,0 +1,394 @@
+@@ -0,0 +1,375 @@
 +/* Applied Micro X-Gene SoC Ethernet Driver
 + *
 + * Copyright (c) 2014, Applied Micro Circuits Corporation
@@ -5208,7 +4819,6 @@ index 0000000..934baca
 +#define INTERFACE_CONTROL_ADDR			0x38
 +#define STATION_ADDR0_ADDR			0x40
 +#define STATION_ADDR1_ADDR			0x44
-+#define SCAN_CYCLE_MASK_SET(dst, src)		xgene_set_bits(dst, val, 0, 1)
 +#define PHY_ADDR_SET(dst, val)			xgene_set_bits(dst, val, 8, 5)
 +#define REG_ADDR_SET(dst, val)			xgene_set_bits(dst, val, 0, 5)
 +#define ENET_INTERFACE_MODE2_SET(dst, val)	xgene_set_bits(dst, val, 8, 2)
@@ -5227,7 +4837,6 @@ index 0000000..934baca
 +#define TUND_ADDR			0x4a
 +
 +#define TSO_IPPROTO_TCP			1
-+#define TSO_IPPROTO_UDP			0
 +#define	FULL_DUPLEX			2
 +
 +#define USERINFO_POS			0
@@ -5270,17 +4879,6 @@ index 0000000..934baca
 +#define IS_MASK			BIT(IS_POS)
 +#define INSERT_CRC		BIT_ULL(IC_POS)
 +#define TYPE_ETH_WORK_MESSAGE	BIT_ULL(44)
-+
-+struct xgene_enet_desc {
-+	dma_addr_t dataaddr;
-+	u16 bufdatalen;
-+	u32 userinfo;
-+	u64 hopinfo_lsb;
-+	u16 henqnum;
-+	u16 fpqnum;
-+	u8 stash;
-+	u8 status;
-+};
 +
 +struct xgene_enet_raw_desc {
 +	u64 m0;
@@ -5406,14 +5004,8 @@ index 0000000..934baca
 +		       struct xgene_enet_raw_desc *raw_desc);
 +void xgene_get_desc(struct xgene_enet_desc_ring *ring,
 +		    struct xgene_enet_raw_desc *raw_desc);
-+void xgene_set_init_bufpool_desc(struct xgene_enet_desc_ring *ring,
-+				 struct xgene_enet_raw_desc16 *raw_desc);
-+void xgene_set_refill_bufpool_desc(struct xgene_enet_desc_ring *ring,
-+				   struct xgene_enet_raw_desc16 *raw_desc);
 +void xgene_get_bufpool_desc(struct xgene_enet_desc_ring *ring,
 +			    struct xgene_enet_raw_desc16 *raw_desc);
-+u64 xgene_prepare_eth_work_msg(u8 l4hlen, u8 l3hlen, u8 ethhdr,
-+			       u8 csum_enable, u8 proto);
 +void xgene_enet_parse_error(struct xgene_enet_desc_ring *ring,
 +			    struct xgene_enet_pdata *pdata,
 +			    enum xgene_enet_err_code status);
@@ -5437,10 +5029,10 @@ index 0000000..934baca
 +#endif /* __XGENE_ENET_HW_H__ */
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
 new file mode 100644
-index 0000000..09881a0
+index 0000000..756523a
 --- /dev/null
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-@@ -0,0 +1,939 @@
+@@ -0,0 +1,962 @@
 +/* Applied Micro X-Gene SoC Ethernet Driver
 + *
 + * Copyright (c) 2014, Applied Micro Circuits Corporation
@@ -5473,22 +5065,16 @@ index 0000000..09881a0
 +	for (i = 0; i < buf_pool->slots; i++) {
 +		raw_desc = &buf_pool->raw_desc16[i];
 +
-+		buf_pool->desc.userinfo = i;
-+		buf_pool->desc.fpqnum = buf_pool->dst_ring_num;
-+		buf_pool->desc.stash = 1;
-+
-+		xgene_set_init_bufpool_desc(buf_pool, raw_desc);
-+
 +		/* Hardware expects descriptor in little endian format */
-+		xgene_enet_cpu_to_le64(raw_desc, 4);
++		raw_desc->m0 = cpu_to_le64(i |
++			       (((u64)buf_pool->dst_ring_num << FPQNUM_POS) &
++			       FPQNUM_MASK) | STASHING_MASK);
 +	}
 +}
 +
 +static struct device *ndev_to_dev(struct net_device *ndev)
 +{
-+	struct xgene_enet_pdata *pdata = netdev_priv(ndev);
-+
-+	return &pdata->pdev->dev;
++	return ndev->dev.parent;
 +}
 +
 +static int xgene_enet_refill_bufpool(struct xgene_enet_desc_ring *buf_pool,
@@ -5524,12 +5110,9 @@ index 0000000..09881a0
 +			return -EINVAL;
 +		}
 +
-+		buf_pool->desc.dataaddr = dma_addr;
-+		buf_pool->desc.bufdatalen = bufdatalen;
-+
-+		xgene_set_refill_bufpool_desc(buf_pool, raw_desc);
-+
-+		xgene_enet_desc16_to_le64(raw_desc);
++		raw_desc->m1 = cpu_to_le64((dma_addr & DATAADDR_MASK) |
++			       (((u64)bufdatalen << BUFDATALEN_POS) &
++			       BUFDATALEN_MASK) | COHERENT_MASK);
 +		tail = (tail + 1) & slots;
 +	}
 +
@@ -5578,10 +5161,7 @@ index 0000000..09881a0
 +		raw_desc = &buf_pool->raw_desc16[tail];
 +
 +		/* Hardware stores descriptor in little endian format */
-+		xgene_enet_le64_to_desc16(raw_desc);
-+
-+		xgene_get_bufpool_desc(buf_pool, raw_desc);
-+		userinfo = buf_pool->desc.userinfo;
++		userinfo = le64_to_cpu(raw_desc->m0) & USERINFO_MASK;
 +		dev_kfree_skb_any(buf_pool->rx_skb[userinfo]);
 +	}
 +
@@ -5589,7 +5169,7 @@ index 0000000..09881a0
 +	buf_pool->tail = tail;
 +}
 +
-+irqreturn_t xgene_enet_rx_irq(const int irq, void *data)
++static irqreturn_t xgene_enet_rx_irq(const int irq, void *data)
 +{
 +	struct xgene_enet_desc_ring *rx_ring = data;
 +
@@ -5601,25 +5181,28 @@ index 0000000..09881a0
 +	return IRQ_HANDLED;
 +}
 +
-+static int xgene_enet_tx_completion(struct xgene_enet_desc_ring *cp_ring)
++static int xgene_enet_tx_completion(struct xgene_enet_desc_ring *cp_ring,
++				    struct xgene_enet_raw_desc *raw_desc)
 +{
-+	struct xgene_enet_desc *desc;
 +	struct sk_buff *skb;
 +	struct device *dev;
 +	u16 skb_index;
++	u8 status;
 +	int ret = 0;
 +
-+	desc = &cp_ring->desc;
-+	skb_index = desc->userinfo;
++	skb_index = raw_desc->m0 & USERINFO_MASK;
 +	skb = cp_ring->cp_skb[skb_index];
 +
 +	dev = ndev_to_dev(cp_ring->ndev);
-+	dma_unmap_single(dev, desc->dataaddr, desc->bufdatalen, DMA_TO_DEVICE);
++	dma_unmap_single(dev, raw_desc->m1 & DATAADDR_MASK,
++			 (raw_desc->m1 & BUFDATALEN_MASK) >> BUFDATALEN_POS,
++			 DMA_TO_DEVICE);
 +
 +	/* Checking for error */
-+	if (unlikely(desc->status > 2)) {
++	status = (raw_desc->m0 & LERR_MASK) >> LERR_POS;
++	if (unlikely(status > 2)) {
 +		xgene_enet_parse_error(cp_ring, netdev_priv(cp_ring->ndev),
-+				       desc->status);
++				       status);
 +		ret = -1;
 +	}
 +
@@ -5650,23 +5233,27 @@ index 0000000..09881a0
 +		goto out;
 +
 +	iph = ip_hdr(skb);
-+	if (unlikely(iph->frag_off & htons(IP_MF | IP_OFFSET)))
++	if (unlikely(ip_is_fragment(iph)))
 +		goto out;
 +
 +	if (likely(iph->protocol == IPPROTO_TCP)) {
-+		l4hlen = tcp_hdrlen(skb) / 4;
++		l4hlen = tcp_hdrlen(skb) >> 2;
 +		csum_enable = 1;
 +		proto = TSO_IPPROTO_TCP;
 +	} else if (iph->protocol == IPPROTO_UDP) {
 +		l4hlen = UDP_HDR_SIZE;
 +		csum_enable = 1;
-+		proto = TSO_IPPROTO_UDP;
 +	}
 +out:
 +	l3hlen = ip_hdrlen(skb) >> 2;
 +	ethhdr = xgene_enet_hdr_len(skb->data);
-+	hopinfo = xgene_prepare_eth_work_msg(l4hlen, l3hlen, ethhdr,
-+					     csum_enable, proto);
++	hopinfo = (l4hlen & TCPHDR_MASK) |
++		  ((l3hlen << IPHDR_POS) & IPHDR_MASK) |
++		  (ethhdr << ETHHDR_POS) |
++		  (csum_enable << EC_POS) |
++		  (proto << IS_POS) |
++		  INSERT_CRC |
++		  TYPE_ETH_WORK_MESSAGE;
 +
 +	return hopinfo;
 +}
@@ -5689,18 +5276,15 @@ index 0000000..09881a0
 +		return -EINVAL;
 +	}
 +
-+	tx_ring->desc.dataaddr = dma_addr;
-+	tx_ring->desc.bufdatalen = skb->len;
-+	tx_ring->desc.henqnum = tx_ring->dst_ring_num;
-+	tx_ring->desc.userinfo = tail;
-+
-+	hopinfo = xgene_enet_work_msg(skb);
-+	tx_ring->desc.hopinfo_lsb = hopinfo;
-+
-+	xgene_set_tx_desc(tx_ring, raw_desc);
-+
 +	/* Hardware expects descriptor in little endian format */
-+	xgene_enet_cpu_to_le64(raw_desc, 4);
++	raw_desc->m0 = cpu_to_le64(tail);
++	raw_desc->m1 = cpu_to_le64((dma_addr & DATAADDR_MASK) |
++		       (((u64)skb->len << BUFDATALEN_POS) & BUFDATALEN_MASK) |
++		       COHERENT_MASK);
++	hopinfo = xgene_enet_work_msg(skb);
++	raw_desc->m3 = cpu_to_le64(
++		       (((u64)tx_ring->dst_ring_num << HENQNUM_POS) &
++		       HENQNUM_MASK) | hopinfo);
 +	tx_ring->cp_ring->cp_skb[tail] = skb;
 +
 +	return 0;
@@ -5737,17 +5321,18 @@ index 0000000..09881a0
 +	return NETDEV_TX_OK;
 +}
 +
-+void xgene_enet_skip_csum(struct sk_buff *skb)
++static void xgene_enet_skip_csum(struct sk_buff *skb)
 +{
 +	struct iphdr *iph = ip_hdr(skb);
 +
-+	if (!(iph->frag_off & htons(IP_MF | IP_OFFSET)) ||
++	if (!ip_is_fragment(iph) ||
 +	    (iph->protocol != IPPROTO_TCP && iph->protocol != IPPROTO_UDP)) {
 +		skb->ip_summed = CHECKSUM_UNNECESSARY;
 +	}
 +}
 +
-+static int xgene_enet_rx_frame(struct xgene_enet_desc_ring *rx_ring)
++static int xgene_enet_rx_frame(struct xgene_enet_desc_ring *rx_ring,
++			       struct xgene_enet_raw_desc *raw_desc)
 +{
 +	struct net_device *ndev;
 +	struct xgene_enet_pdata *pdata;
@@ -5755,7 +5340,7 @@ index 0000000..09881a0
 +	struct xgene_enet_desc_ring *buf_pool;
 +	u32 datalen, skb_index;
 +	struct sk_buff *skb;
-+	struct xgene_enet_desc *desc;
++	u8 status;
 +	int ret = 0;
 +
 +	ndev = rx_ring->ndev;
@@ -5763,25 +5348,24 @@ index 0000000..09881a0
 +	dev = ndev_to_dev(rx_ring->ndev);
 +	buf_pool = rx_ring->buf_pool;
 +
-+	desc = &rx_ring->desc;
-+	dma_unmap_single(dev, desc->dataaddr, XGENE_ENET_MAX_MTU,
++	dma_unmap_single(dev, raw_desc->m1 & DATAADDR_MASK, XGENE_ENET_MAX_MTU,
 +			 DMA_FROM_DEVICE);
-+
-+	skb_index = desc->userinfo;
++	skb_index = raw_desc->m0 & USERINFO_MASK;
 +	skb = buf_pool->rx_skb[skb_index];
 +
 +	/* checking for error */
-+	if (unlikely(desc->status > 2)) {
++	status = (raw_desc->m0 & LERR_MASK) >> LERR_POS;
++	if (unlikely(status > 2)) {
 +		dev_kfree_skb_any(skb);
 +		xgene_enet_parse_error(rx_ring, netdev_priv(rx_ring->ndev),
-+				       desc->status);
++				       status);
 +		pdata->stats.rx_dropped++;
 +		ret = -1;
 +		goto out;
 +	}
 +
 +	/* strip off CRC as HW isn't doing this */
-+	datalen = desc->bufdatalen;
++	datalen = (raw_desc->m1 & BUFDATALEN_MASK) >> BUFDATALEN_POS;
 +	datalen -= 4;
 +	prefetch(skb->data - NET_IP_ALIGN);
 +	skb_put(skb, datalen);
@@ -5805,6 +5389,14 @@ index 0000000..09881a0
 +	return ret;
 +}
 +
++static bool is_rx_desc(struct xgene_enet_raw_desc *raw_desc)
++{
++	/* Hardware stores descriptor in little endian format */
++	raw_desc->m0 = le64_to_cpu(raw_desc->m0);
++	raw_desc->m1 = le64_to_cpu(raw_desc->m1);
++	return ((raw_desc->m0 & FPQNUM_MASK) >> FPQNUM_POS) ? true : false;
++}
++
 +static int xgene_enet_process_ring(struct xgene_enet_desc_ring *ring,
 +				   int budget)
 +{
@@ -5819,13 +5411,10 @@ index 0000000..09881a0
 +		if (unlikely(((u64 *)raw_desc)[EMPTY_SLOT_INDEX] == EMPTY_SLOT))
 +			break;
 +
-+		/* Hardware stores descriptor in little endian format */
-+		xgene_enet_le64_to_cpu(raw_desc, 4);
-+		xgene_get_desc(ring, raw_desc);
-+		if (ring->desc.fpqnum)
-+			ret = xgene_enet_rx_frame(ring);
++		if (is_rx_desc(raw_desc))
++			ret = xgene_enet_rx_frame(ring, raw_desc);
 +		else
-+			ret = xgene_enet_tx_completion(ring);
++			ret = xgene_enet_tx_completion(ring, raw_desc);
 +		((u64 *)raw_desc)[EMPTY_SLOT_INDEX] = EMPTY_SLOT;
 +
 +		head = (head + 1) & slots;
@@ -5874,7 +5463,7 @@ index 0000000..09881a0
 +static int xgene_enet_register_irq(struct net_device *ndev)
 +{
 +	struct xgene_enet_pdata *pdata = netdev_priv(ndev);
-+	struct device *dev = &pdata->pdev->dev;
++	struct device *dev = ndev_to_dev(ndev);
 +	int ret;
 +
 +	ret = devm_request_irq(dev, pdata->rx_ring->irq, xgene_enet_rx_irq,
@@ -5893,7 +5482,7 @@ index 0000000..09881a0
 +	struct device *dev;
 +
 +	pdata = netdev_priv(ndev);
-+	dev = &pdata->pdev->dev;
++	dev = ndev_to_dev(ndev);
 +	devm_free_irq(dev, pdata->rx_ring->irq, pdata->rx_ring);
 +}
 +
@@ -5943,16 +5532,14 @@ index 0000000..09881a0
 +	struct device *dev;
 +
 +	pdata = netdev_priv(ring->ndev);
-+	dev = &pdata->pdev->dev;
++	dev = ndev_to_dev(ring->ndev);
 +
 +	xgene_enet_clear_ring(ring);
 +	dma_free_coherent(dev, ring->size, ring->desc_addr, ring->dma);
-+	devm_kfree(dev, ring);
 +}
 +
 +static void xgene_enet_delete_desc_rings(struct xgene_enet_pdata *pdata)
 +{
-+	struct device *dev = &pdata->pdev->dev;
 +	struct xgene_enet_desc_ring *buf_pool;
 +
 +	if (pdata->tx_ring) {
@@ -5964,8 +5551,6 @@ index 0000000..09881a0
 +		buf_pool = pdata->rx_ring->buf_pool;
 +		xgene_enet_delete_bufpool(buf_pool);
 +		xgene_enet_delete_ring(buf_pool);
-+		devm_kfree(dev, buf_pool->rx_skb);
-+
 +		xgene_enet_delete_ring(pdata->rx_ring);
 +		pdata->rx_ring = NULL;
 +	}
@@ -6000,13 +5585,46 @@ index 0000000..09881a0
 +	return size;
 +}
 +
++static void xgene_enet_free_desc_ring(struct xgene_enet_desc_ring *ring)
++{
++	struct device *dev;
++
++	if (!ring)
++		return;
++
++	dev = ndev_to_dev(ring->ndev);
++
++	if (ring->desc_addr) {
++		xgene_enet_clear_ring(ring);
++		dma_free_coherent(dev, ring->size, ring->desc_addr, ring->dma);
++	}
++	devm_kfree(dev, ring);
++}
++
++static void xgene_enet_free_desc_rings(struct xgene_enet_pdata *pdata)
++{
++	struct device *dev = &pdata->pdev->dev;
++	struct xgene_enet_desc_ring *ring;
++
++	ring = pdata->tx_ring;
++	if (ring && ring->cp_ring && ring->cp_ring->cp_skb)
++		devm_kfree(dev, ring->cp_ring->cp_skb);
++	xgene_enet_free_desc_ring(ring);
++
++	ring = pdata->rx_ring;
++	if (ring && ring->buf_pool && ring->buf_pool->rx_skb)
++		devm_kfree(dev, ring->buf_pool->rx_skb);
++	xgene_enet_free_desc_ring(ring->buf_pool);
++	xgene_enet_free_desc_ring(ring);
++}
++
 +static struct xgene_enet_desc_ring *xgene_enet_create_desc_ring(
 +			struct net_device *ndev, u32 ring_num,
 +			enum xgene_enet_ring_cfgsize cfgsize, u32 ring_id)
 +{
 +	struct xgene_enet_desc_ring *ring;
 +	struct xgene_enet_pdata *pdata = netdev_priv(ndev);
-+	struct device *dev = &pdata->pdev->dev;
++	struct device *dev = ndev_to_dev(ndev);
 +	u32 size;
 +
 +	ring = devm_kzalloc(dev, sizeof(struct xgene_enet_desc_ring),
@@ -6022,8 +5640,10 @@ index 0000000..09881a0
 +	size = xgene_enet_get_ring_size(dev, cfgsize);
 +	ring->desc_addr = dma_zalloc_coherent(dev, size, &ring->dma,
 +					      GFP_KERNEL);
-+	if (!ring->desc_addr)
-+		goto err;
++	if (!ring->desc_addr) {
++		devm_kfree(dev, ring);
++		return NULL;
++	}
 +	ring->size = size;
 +
 +	ring->cmd_base = pdata->ring_cmd_addr + (ring->num << 6);
@@ -6034,11 +5654,6 @@ index 0000000..09881a0
 +		   ring->num, ring->size, ring->id, ring->slots);
 +
 +	return ring;
-+err:
-+	dma_free_coherent(dev, size, ring->desc_addr, ring->dma);
-+	devm_kfree(dev, ring);
-+
-+	return NULL;
 +}
 +
 +static u16 xgene_enet_get_ring_id(enum xgene_ring_owner owner, u8 bufnum)
@@ -6049,7 +5664,7 @@ index 0000000..09881a0
 +static int xgene_enet_create_desc_rings(struct net_device *ndev)
 +{
 +	struct xgene_enet_pdata *pdata = netdev_priv(ndev);
-+	struct device *dev = &pdata->pdev->dev;
++	struct device *dev = ndev_to_dev(ndev);
 +	struct xgene_enet_desc_ring *rx_ring, *tx_ring, *cp_ring;
 +	struct xgene_enet_desc_ring *buf_pool = NULL;
 +	u8 cpu_bufnum = 0, eth_bufnum = 0;
@@ -6061,8 +5676,8 @@ index 0000000..09881a0
 +	ring_id = xgene_enet_get_ring_id(RING_OWNER_CPU, cpu_bufnum++);
 +	rx_ring = xgene_enet_create_desc_ring(ndev, ring_num++,
 +					      RING_CFGSIZE_16KB, ring_id);
-+	if (IS_ERR_OR_NULL(rx_ring)) {
-+		ret = PTR_ERR(rx_ring);
++	if (!rx_ring) {
++		ret = -ENOMEM;
 +		goto err;
 +	}
 +
@@ -6070,8 +5685,8 @@ index 0000000..09881a0
 +	ring_id = xgene_enet_get_ring_id(RING_OWNER_ETH0, bp_bufnum++);
 +	buf_pool = xgene_enet_create_desc_ring(ndev, ring_num++,
 +					       RING_CFGSIZE_2KB, ring_id);
-+	if (IS_ERR_OR_NULL(buf_pool)) {
-+		ret = PTR_ERR(buf_pool);
++	if (!buf_pool) {
++		ret = -ENOMEM;
 +		goto err;
 +	}
 +
@@ -6093,8 +5708,8 @@ index 0000000..09881a0
 +	ring_id = xgene_enet_get_ring_id(RING_OWNER_ETH0, eth_bufnum++);
 +	tx_ring = xgene_enet_create_desc_ring(ndev, ring_num++,
 +					      RING_CFGSIZE_16KB, ring_id);
-+	if (IS_ERR_OR_NULL(tx_ring)) {
-+		ret = PTR_ERR(tx_ring);
++	if (!tx_ring) {
++		ret = -ENOMEM;
 +		goto err;
 +	}
 +	pdata->tx_ring = tx_ring;
@@ -6116,7 +5731,7 @@ index 0000000..09881a0
 +	return 0;
 +
 +err:
-+	xgene_enet_delete_desc_rings(pdata);
++	xgene_enet_free_desc_rings(pdata);
 +	return ret;
 +}
 +
@@ -6382,10 +5997,10 @@ index 0000000..09881a0
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.h b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
 new file mode 100644
-index 0000000..2d1bd85
+index 0000000..f4f7e4a
 --- /dev/null
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,107 @@
 +/* Applied Micro X-Gene SoC Ethernet Driver
 + *
 + * Copyright (c) 2014, Applied Micro Circuits Corporation
@@ -6449,7 +6064,6 @@ index 0000000..2d1bd85
 +	struct xgene_enet_desc_ring *cp_ring;
 +	struct xgene_enet_desc_ring *buf_pool;
 +	struct napi_struct napi;
-+	struct xgene_enet_desc desc;
 +	union {
 +		void *desc_addr;
 +		struct xgene_enet_raw_desc *raw_desc;
@@ -6462,7 +6076,6 @@ index 0000000..2d1bd85
 +	struct net_device *ndev;
 +	struct mii_bus *mdio_bus;
 +	struct phy_device *phy_dev;
-+	int phy_link;
 +	int phy_speed;
 +	struct clk *clk;
 +	struct platform_device *pdev;
@@ -6495,6 +6108,1287 @@ index 0000000..2d1bd85
 +void xgene_enet_set_ethtool_ops(struct net_device *netdev);
 +
 +#endif /* __XGENE_ENET_MAIN_H__ */
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index 5edfcb0..cbbaed2 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -5,6 +5,7 @@
+ #include <linux/module.h>
+ #include <linux/of_address.h>
+ #include <linux/pci_regs.h>
++#include <linux/slab.h>
+ #include <linux/string.h>
+ 
+ /* Max address size we deal with */
+@@ -601,12 +602,72 @@ const __be32 *of_get_address(struct device_node *dev, int index, u64 *size,
+ }
+ EXPORT_SYMBOL(of_get_address);
+ 
++struct io_range {
++	struct list_head list;
++	phys_addr_t start;
++	resource_size_t size;
++};
++
++static LIST_HEAD(io_range_list);
++
++/*
++ * Record the PCI IO range (expressed as CPU physical address + size).
++ * Return a negative value if an error has occured, zero otherwise
++ */
++int __weak pci_register_io_range(phys_addr_t addr, resource_size_t size)
++{
++#ifdef PCI_IOBASE
++	struct io_range *res;
++	resource_size_t allocated_size = 0;
++
++	/* check if the range hasn't been previously recorded */
++	list_for_each_entry(res, &io_range_list, list) {
++		if (addr >= res->start && addr + size <= res->start + size)
++			return 0;
++		allocated_size += res->size;
++	}
++
++	/* range not registed yet, check for available space */
++	if (allocated_size + size - 1 > IO_SPACE_LIMIT)
++		return -E2BIG;
++
++	/* add the range to the list */
++	res = kzalloc(sizeof(*res), GFP_KERNEL);
++	if (!res)
++		return -ENOMEM;
++
++	res->start = addr;
++	res->size = size;
++
++	list_add_tail(&res->list, &io_range_list);
++
++	return 0;
++#else
++	return -EINVAL;
++#endif
++}
++
+ unsigned long __weak pci_address_to_pio(phys_addr_t address)
+ {
++#ifdef PCI_IOBASE
++	struct io_range *res;
++	resource_size_t offset = 0;
++
++	list_for_each_entry(res, &io_range_list, list) {
++		if (address >= res->start &&
++			address < res->start + res->size) {
++			return res->start - address + offset;
++		}
++		offset += res->size;
++	}
++
++	return (unsigned long)-1;
++#else
+ 	if (address > IO_SPACE_LIMIT)
+ 		return (unsigned long)-1;
+ 
+ 	return (unsigned long) address;
++#endif
+ }
+ 
+ static int __of_address_to_resource(struct device_node *dev,
+@@ -811,3 +872,50 @@ bool of_dma_is_coherent(struct device_node *np)
+ 	return false;
+ }
+ EXPORT_SYMBOL_GPL(of_dma_is_coherent);
++
++/*
++ * of_pci_range_to_resource - Create a resource from an of_pci_range
++ * @range:	the PCI range that describes the resource
++ * @np:		device node where the range belongs to
++ * @res:	pointer to a valid resource that will be updated to
++ *              reflect the values contained in the range.
++ *
++ * Returns EINVAL if the range cannot be converted to resource.
++ *
++ * Note that if the range is an IO range, the resource will be converted
++ * using pci_address_to_pio() which can fail if it is called too early or
++ * if the range cannot be matched to any host bridge IO space (our case here).
++ * To guard against that we try to register the IO range first.
++ * If that fails we know that pci_address_to_pio() will do too.
++ */
++int of_pci_range_to_resource(struct of_pci_range *range,
++	struct device_node *np, struct resource *res)
++{
++	int err;
++	res->flags = range->flags;
++	res->parent = res->child = res->sibling = NULL;
++	res->name = np->full_name;
++
++	if (res->flags & IORESOURCE_IO) {
++		unsigned long port = -1;
++		err = pci_register_io_range(range->cpu_addr, range->size);
++		if (err)
++			goto invalid_range;
++		port = pci_address_to_pio(range->cpu_addr);
++		if (port == (unsigned long)-1) {
++			err = -EINVAL;
++			goto invalid_range;
++		}
++		res->start = port;
++	} else {
++		res->start = range->cpu_addr;
++	}
++	res->end = res->start + range->size - 1;
++	return 0;
++
++invalid_range:
++	res->start = (resource_size_t)OF_BAD_ADDR;
++	res->end = (resource_size_t)OF_BAD_ADDR;
++	return err;
++}
++
+diff --git a/drivers/of/of_pci.c b/drivers/of/of_pci.c
+index 8481996..e81402a 100644
+--- a/drivers/of/of_pci.c
++++ b/drivers/of/of_pci.c
+@@ -1,6 +1,7 @@
+ #include <linux/kernel.h>
+ #include <linux/export.h>
+ #include <linux/of.h>
++#include <linux/of_address.h>
+ #include <linux/of_pci.h>
+ 
+ static inline int __of_pci_pci_compare(struct device_node *node,
+@@ -89,6 +90,141 @@ int of_pci_parse_bus_range(struct device_node *node, struct resource *res)
+ }
+ EXPORT_SYMBOL_GPL(of_pci_parse_bus_range);
+ 
++/**
++ * pci_host_bridge_of_get_ranges - Parse PCI host bridge resources from DT
++ * @dev: device node of the host bridge having the range property
++ * @resources: list where the range of resources will be added after DT parsing
++ * @io_base: pointer to a variable that will contain the physical address for
++ * the start of the I/O range.
++ *
++ * It is the callers job to free the @resources list if an error is returned.
++ *
++ * This function will parse the "ranges" property of a PCI host bridge device
++ * node and setup the resource mapping based on its content. It is expected
++ * that the property conforms with the Power ePAPR document.
++ *
++ * Each architecture is then offered the chance of applying their own
++ * filtering of pci_host_bridge_windows based on their own restrictions by
++ * calling pcibios_fixup_bridge_ranges(). The filtered list of windows
++ * can then be used when creating a pci_host_bridge structure.
++ */
++static int pci_host_bridge_of_get_ranges(struct device_node *dev,
++		struct list_head *resources, resource_size_t *io_base)
++{
++	struct resource *res;
++	struct of_pci_range range;
++	struct of_pci_range_parser parser;
++	int err;
++
++	pr_info("PCI host bridge %s ranges:\n", dev->full_name);
++
++	/* Check for ranges property */
++	err = of_pci_range_parser_init(&parser, dev);
++	if (err)
++		return err;
++
++	pr_debug("Parsing ranges property...\n");
++	for_each_of_pci_range(&parser, &range) {
++		/* Read next ranges element */
++		pr_debug("pci_space: 0x%08x pci_addr:0x%016llx cpu_addr:0x%016llx size:0x%016llx\n",
++			range.pci_space, range.pci_addr, range.cpu_addr, range.size);
++
++		/*
++		 * If we failed translation or got a zero-sized region
++		 * then skip this range
++		 */
++		if (range.cpu_addr == OF_BAD_ADDR || range.size == 0)
++			continue;
++
++		res = kzalloc(sizeof(struct resource), GFP_KERNEL);
++		if (!res)
++			return -ENOMEM;
++
++		err = of_pci_range_to_resource(&range, dev, res);
++		if (err)
++			return err;
++
++		if (resource_type(res) == IORESOURCE_IO)
++			*io_base = range.cpu_addr;
++
++		pci_add_resource_offset(resources, res,
++				res->start - range.pci_addr);
++	}
++
++	/* Apply architecture specific fixups for the ranges */
++	return pcibios_fixup_bridge_ranges(resources);
++}
++
++static atomic_t domain_nr = ATOMIC_INIT(-1);
++
++/**
++ * of_create_pci_host_bridge - Create a PCI host bridge structure using
++ * information passed in the DT.
++ * @parent: device owning this host bridge
++ * @ops: pci_ops associated with the host controller
++ * @host_data: opaque data structure used by the host controller.
++ *
++ * returns a pointer to the newly created pci_host_bridge structure, or
++ * NULL if the call failed.
++ *
++ * This function will try to obtain the host bridge domain number by
++ * using of_alias_get_id() call with "pci-domain" as a stem. If that
++ * fails, a local allocator will be used that will put each host bridge
++ * in a new domain.
++ */
++struct pci_host_bridge *
++of_create_pci_host_bridge(struct device *parent, struct pci_ops *ops, void *host_data)
++{
++	int err, domain, busno;
++	struct resource *bus_range;
++	struct pci_bus *root_bus;
++	struct pci_host_bridge *bridge;
++	resource_size_t io_base = 0;
++	LIST_HEAD(res);
++
++	bus_range = kzalloc(sizeof(*bus_range), GFP_KERNEL);
++	if (!bus_range)
++		return ERR_PTR(-ENOMEM);
++
++	domain = of_alias_get_id(parent->of_node, "pci-domain");
++	if (domain == -ENODEV)
++		domain = atomic_inc_return(&domain_nr);
++
++	err = of_pci_parse_bus_range(parent->of_node, bus_range);
++	if (err) {
++		dev_info(parent, "No bus range for %s, using default [0-255]\n",
++			parent->of_node->full_name);
++		bus_range->start = 0;
++		bus_range->end = 255;
++		bus_range->flags = IORESOURCE_BUS;
++	}
++	busno = bus_range->start;
++	pci_add_resource(&res, bus_range);
++
++	/* now parse the rest of host bridge bus ranges */
++	err = pci_host_bridge_of_get_ranges(parent->of_node, &res, &io_base);
++	if (err)
++		goto err_create;
++
++	/* then create the root bus */
++	root_bus = pci_create_root_bus_in_domain(parent, domain, busno,
++						ops, host_data, &res);
++	if (IS_ERR(root_bus)) {
++		err = PTR_ERR(root_bus);
++		goto err_create;
++	}
++
++	bridge = to_pci_host_bridge(root_bus->bridge);
++	bridge->io_base = io_base;
++
++	return bridge;
++
++err_create:
++	pci_free_resource_list(&res);
++	return ERR_PTR(err);
++}
++EXPORT_SYMBOL_GPL(of_create_pci_host_bridge);
++
+ #ifdef CONFIG_PCI_MSI
+ 
+ static LIST_HEAD(of_pci_msi_chip_list);
+diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
+index 0e5f3c9..54ceafd 100644
+--- a/drivers/pci/host-bridge.c
++++ b/drivers/pci/host-bridge.c
+@@ -16,12 +16,13 @@ static struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
+ 	return bus;
+ }
+ 
+-static struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
++struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
+ {
+ 	struct pci_bus *root_bus = find_pci_root_bus(bus);
+ 
+ 	return to_pci_host_bridge(root_bus->bridge);
+ }
++EXPORT_SYMBOL_GPL(find_pci_host_bridge);
+ 
+ void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
+ 				 void (*release_fn)(struct pci_host_bridge *),
+@@ -82,3 +83,18 @@ void pcibios_bus_to_resource(struct pci_bus *bus, struct resource *res,
+ 	res->end = region->end + offset;
+ }
+ EXPORT_SYMBOL(pcibios_bus_to_resource);
++
++/**
++ * Simple version of the platform specific code for filtering the list
++ * of resources obtained from the ranges declaration in DT.
++ *
++ * Platforms can override this function in order to impose stronger
++ * constraints onto the list of resources that a host bridge can use.
++ * The filtered list will then be used to create a root bus and associate
++ * it with the host bridge.
++ *
++ */
++int __weak pcibios_fixup_bridge_ranges(struct list_head *resources)
++{
++	return 0;
++}
+diff --git a/drivers/pci/host/Kconfig b/drivers/pci/host/Kconfig
+index 21df477..3b988a2 100644
+--- a/drivers/pci/host/Kconfig
++++ b/drivers/pci/host/Kconfig
+@@ -46,4 +46,14 @@ config PCI_HOST_GENERIC
+ 	  Say Y here if you want to support a simple generic PCI host
+ 	  controller, such as the one emulated by kvmtool.
+ 
++config PCI_XGENE
++	bool "X-Gene PCIe controller"
++	depends on ARCH_XGENE
++	depends on OF
++	select PCIEPORTBUS
++	help
++	  Say Y here if you want internal PCI support on APM X-Gene SoC.
++	  There are 5 internal PCIe ports available. Each port is GEN3 capable
++	  and have varied lanes from x1 to x8.
++
+ endmenu
+diff --git a/drivers/pci/host/Makefile b/drivers/pci/host/Makefile
+index 611ba4b..0801606 100644
+--- a/drivers/pci/host/Makefile
++++ b/drivers/pci/host/Makefile
+@@ -6,3 +6,4 @@ obj-$(CONFIG_PCI_TEGRA) += pci-tegra.o
+ obj-$(CONFIG_PCI_RCAR_GEN2) += pci-rcar-gen2.o
+ obj-$(CONFIG_PCI_RCAR_GEN2_PCIE) += pcie-rcar.o
+ obj-$(CONFIG_PCI_HOST_GENERIC) += pci-host-generic.o
++obj-$(CONFIG_PCI_XGENE) += pci-xgene.o
+diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
+new file mode 100644
+index 0000000..7bf4ac7
+--- /dev/null
++++ b/drivers/pci/host/pci-xgene.c
+@@ -0,0 +1,725 @@
++/**
++ * APM X-Gene PCIe Driver
++ *
++ * Copyright (c) 2013 Applied Micro Circuits Corporation.
++ *
++ * Author: Tanmay Inamdar <tinamdar@apm.com>.
++ *
++ * This program is free software; you can redistribute  it and/or modify it
++ * under  the terms of  the GNU General  Public License as published by the
++ * Free Software Foundation;  either version 2 of the  License, or (at your
++ * option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++#include <linux/clk-private.h>
++#include <linux/delay.h>
++#include <linux/io.h>
++#include <linux/jiffies.h>
++#include <linux/memblock.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_irq.h>
++#include <linux/of_pci.h>
++#include <linux/pci.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++
++#define PCIECORE_LTSSM			0x4c
++#define PCIECORE_CTLANDSTATUS		0x50
++#define INTXSTATUSMASK			0x6c
++#define PIM1_1L				0x80
++#define IBAR2				0x98
++#define IR2MSK				0x9c
++#define PIM2_1L				0xa0
++#define IBAR3L				0xb4
++#define IR3MSKL				0xbc
++#define PIM3_1L				0xc4
++#define OMR1BARL			0x100
++#define OMR2BARL			0x118
++#define OMR3BARL			0x130
++#define CFGBARL				0x154
++#define CFGBARH				0x158
++#define CFGCTL				0x15c
++#define RTDID				0x160
++#define BRIDGE_CFG_0			0x2000
++#define BRIDGE_CFG_1			0x2004
++#define BRIDGE_CFG_4			0x2010
++#define BRIDGE_CFG_32			0x2030
++#define BRIDGE_CFG_14			0x2038
++#define BRIDGE_CTRL_1			0x2204
++#define BRIDGE_CTRL_2			0x2208
++#define BRIDGE_CTRL_5			0x2214
++#define BRIDGE_STATUS_0			0x2600
++#define MEM_RAM_SHUTDOWN                0xd070
++#define BLOCK_MEM_RDY                   0xd074
++
++#define DEVICE_PORT_TYPE_MASK		0x03c00000
++#define PM_FORCE_RP_MODE_MASK		0x00000400
++#define SWITCH_PORT_MODE_MASK		0x00000800
++#define CLASS_CODE_MASK			0xffffff00
++#define LINK_UP_MASK			0x00000100
++#define AER_OPTIONAL_ERROR_EN		0xffc00000
++#define XGENE_PCIE_DEV_CTRL		0x2f0f
++#define AXI_EP_CFG_ACCESS		0x10000
++#define ENABLE_ASPM			0x08000000
++#define XGENE_PORT_TYPE_RC		0x05000000
++#define BLOCK_MEM_RDY_VAL               0xFFFFFFFF
++#define EN_COHERENCY			0xF0000000
++#define EN_REG				0x00000001
++#define OB_LO_IO			0x00000002
++#define XGENE_PCIE_VENDORID		0xE008
++#define XGENE_PCIE_DEVICEID		0xE004
++#define XGENE_PCIE_ECC_TIMEOUT		10 /* ms */
++#define XGENE_LTSSM_DETECT_WAIT		20 /* ms */
++#define XGENE_LTSSM_L0_WAIT		4  /* ms */
++#define SZ_1T				(SZ_1G*1024ULL)
++#define PIPE_PHY_RATE_RD(src)		((0xc000 & (u32)(src)) >> 0xe)
++
++struct xgene_pcie_port {
++	struct device_node	*node;
++	struct device		*dev;
++	struct clk		*clk;
++	void __iomem		*csr_base;
++	void __iomem		*cfg_base;
++	u8			link_up;
++};
++
++static inline u32 pcie_bar_low_val(u32 addr, u32 flags)
++{
++	return (addr & PCI_BASE_ADDRESS_MEM_MASK) | flags;
++}
++
++/* PCIE Configuration Out/In */
++static inline void xgene_pcie_cfg_out32(void __iomem *addr, int offset, u32 val)
++{
++	writel(val, addr + offset);
++}
++
++static inline void xgene_pcie_cfg_out16(void __iomem *addr, int offset, u16 val)
++{
++	u32 val32 = readl(addr + (offset & ~0x3));
++
++	switch (offset & 0x3) {
++	case 2:
++		val32 &= ~0xFFFF0000;
++		val32 |= (u32)val << 16;
++		break;
++	case 0:
++	default:
++		val32 &= ~0xFFFF;
++		val32 |= val;
++		break;
++	}
++	writel(val32, addr + (offset & ~0x3));
++}
++
++static inline void xgene_pcie_cfg_out8(void __iomem *addr, int offset, u8 val)
++{
++	u32 val32 = readl(addr + (offset & ~0x3));
++
++	switch (offset & 0x3) {
++	case 0:
++		val32 &= ~0xFF;
++		val32 |= val;
++		break;
++	case 1:
++		val32 &= ~0xFF00;
++		val32 |= (u32)val << 8;
++		break;
++	case 2:
++		val32 &= ~0xFF0000;
++		val32 |= (u32)val << 16;
++		break;
++	case 3:
++	default:
++		val32 &= ~0xFF000000;
++		val32 |= (u32)val << 24;
++		break;
++	}
++	writel(val32, addr + (offset & ~0x3));
++}
++
++static inline void xgene_pcie_cfg_in32(void __iomem *addr, int offset, u32 *val)
++{
++	*val = readl(addr + offset);
++}
++
++static inline void
++xgene_pcie_cfg_in16(void __iomem *addr, int offset, u32 *val)
++{
++	*val = readl(addr + (offset & ~0x3));
++
++	switch (offset & 0x3) {
++	case 2:
++		*val >>= 16;
++		break;
++	}
++
++	*val &= 0xFFFF;
++}
++
++static inline void
++xgene_pcie_cfg_in8(void __iomem *addr, int offset, u32 *val)
++{
++	*val = readl(addr + (offset & ~0x3));
++
++	switch (offset & 0x3) {
++	case 3:
++		*val = *val >> 24;
++		break;
++	case 2:
++		*val = *val >> 16;
++		break;
++	case 1:
++		*val = *val >> 8;
++		break;
++	}
++	*val &= 0xFF;
++}
++
++/* When the address bit [17:16] is 2'b01, the Configuration access will be
++ * treated as Type 1 and it will be forwarded to external PCIe device.
++ */
++static void __iomem *xgene_pcie_get_cfg_base(struct pci_bus *bus)
++{
++	struct xgene_pcie_port *port = bus->sysdata;
++
++	if (bus->number >= (bus->primary + 1))
++		return port->cfg_base + AXI_EP_CFG_ACCESS;
++
++	return port->cfg_base;
++}
++
++/* For Configuration request, RTDID register is used as Bus Number,
++ * Device Number and Function number of the header fields.
++ */
++static void xgene_pcie_set_rtdid_reg(struct pci_bus *bus, uint devfn)
++{
++	struct xgene_pcie_port *port = bus->sysdata;
++	unsigned int b, d, f;
++	u32 rtdid_val = 0;
++
++	b = bus->number;
++	d = PCI_SLOT(devfn);
++	f = PCI_FUNC(devfn);
++
++	if (!pci_is_root_bus(bus))
++		rtdid_val = (b << 8) | (d << 3) | f;
++
++	writel(rtdid_val, port->csr_base + RTDID);
++	/* read the register back to ensure flush */
++	readl(port->csr_base + RTDID);
++}
++
++static int xgene_pcie_read_config(struct pci_bus *bus, unsigned int devfn,
++				  int offset, int len, u32 *val)
++{
++	struct xgene_pcie_port *port = bus->sysdata;
++	void __iomem *addr;
++
++	if ((pci_is_root_bus(bus) && devfn != 0) || !port->link_up)
++		return PCIBIOS_DEVICE_NOT_FOUND;
++
++	xgene_pcie_set_rtdid_reg(bus, devfn);
++	addr = xgene_pcie_get_cfg_base(bus);
++	switch (len) {
++	case 1:
++		xgene_pcie_cfg_in8(addr, offset, val);
++		break;
++	case 2:
++		xgene_pcie_cfg_in16(addr, offset, val);
++		break;
++	default:
++		xgene_pcie_cfg_in32(addr, offset, val);
++		break;
++	}
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static int xgene_pcie_write_config(struct pci_bus *bus, unsigned int devfn,
++				   int offset, int len, u32 val)
++{
++	struct xgene_pcie_port *port = bus->sysdata;
++	void __iomem *addr;
++
++	if ((pci_is_root_bus(bus) && devfn != 0) || !port->link_up)
++		return PCIBIOS_DEVICE_NOT_FOUND;
++
++	xgene_pcie_set_rtdid_reg(bus, devfn);
++	addr = xgene_pcie_get_cfg_base(bus);
++	switch (len) {
++	case 1:
++		xgene_pcie_cfg_out8(addr, offset, (u8)val);
++		break;
++	case 2:
++		xgene_pcie_cfg_out16(addr, offset, (u16)val);
++		break;
++	default:
++		xgene_pcie_cfg_out32(addr, offset, val);
++		break;
++	}
++	return PCIBIOS_SUCCESSFUL;
++}
++
++static struct pci_ops xgene_pcie_ops = {
++	.read = xgene_pcie_read_config,
++	.write = xgene_pcie_write_config
++};
++
++static void xgene_pcie_program_core(void __iomem *csr_base)
++{
++	u32 val;
++
++	val = readl(csr_base + BRIDGE_CFG_0);
++	val |= AER_OPTIONAL_ERROR_EN;
++	writel(val, csr_base + BRIDGE_CFG_0);
++	writel(0x0, csr_base + INTXSTATUSMASK);
++	val = readl(csr_base + BRIDGE_CTRL_1);
++	val = (val & ~0xffff) | XGENE_PCIE_DEV_CTRL;
++	writel(val, csr_base + BRIDGE_CTRL_1);
++}
++
++static u64 xgene_pcie_set_ib_mask(void __iomem *csr_base, u32 addr,
++				  u32 flags, u64 size)
++{
++	u64 mask = (~(size - 1) & PCI_BASE_ADDRESS_MEM_MASK) | flags;
++	u32 val32 = 0;
++	u32 val;
++
++	val32 = readl(csr_base + addr);
++	val = (val32 & 0x0000ffff) | (lower_32_bits(mask) << 16);
++	writel(val, csr_base + addr);
++
++	val32 = readl(csr_base + addr + 0x04);
++	val = (val32 & 0xffff0000) | (lower_32_bits(mask) >> 16);
++	writel(val, csr_base + addr + 0x04);
++
++	val32 = readl(csr_base + addr + 0x04);
++	val = (val32 & 0x0000ffff) | (upper_32_bits(mask) << 16);
++	writel(val, csr_base + addr + 0x04);
++
++	val32 = readl(csr_base + addr + 0x08);
++	val = (val32 & 0xffff0000) | (upper_32_bits(mask) >> 16);
++	writel(val, csr_base + addr + 0x08);
++
++	return mask;
++}
++
++static void xgene_pcie_poll_linkup(struct xgene_pcie_port *port,
++				   u32 *lanes, u32 *speed)
++{
++	void __iomem *csr_base = port->csr_base;
++	ulong timeout;
++	u32 val32;
++
++	/*
++	 * A component enters the LTSSM Detect state within
++	 * 20ms of the end of fundamental core reset.
++	 */
++	msleep(XGENE_LTSSM_DETECT_WAIT);
++	port->link_up = 0;
++	timeout = jiffies + msecs_to_jiffies(XGENE_LTSSM_L0_WAIT);
++	while (time_before(jiffies, timeout)) {
++		val32 = readl(csr_base + PCIECORE_CTLANDSTATUS);
++		if (val32 & LINK_UP_MASK) {
++			port->link_up = 1;
++			*speed = PIPE_PHY_RATE_RD(val32);
++			val32 = readl(csr_base + BRIDGE_STATUS_0);
++			*lanes = val32 >> 26;
++			break;
++		}
++		msleep(1);
++	}
++}
++
++static void xgene_pcie_setup_root_complex(struct xgene_pcie_port *port)
++{
++	void __iomem *csr_base = port->csr_base;
++	u32 val;
++
++	val = (XGENE_PCIE_DEVICEID << 16) | XGENE_PCIE_VENDORID;
++	writel(val, csr_base + BRIDGE_CFG_0);
++
++	val = readl(csr_base + BRIDGE_CFG_1);
++	val &= ~CLASS_CODE_MASK;
++	val |= PCI_CLASS_BRIDGE_PCI << 16;
++	writel(val, csr_base + BRIDGE_CFG_1);
++
++	val = readl(csr_base + BRIDGE_CFG_14);
++	val |= SWITCH_PORT_MODE_MASK;
++	val &= ~PM_FORCE_RP_MODE_MASK;
++	writel(val, csr_base + BRIDGE_CFG_14);
++
++	val = readl(csr_base + BRIDGE_CTRL_5);
++	val &= ~DEVICE_PORT_TYPE_MASK;
++	val |= XGENE_PORT_TYPE_RC;
++	writel(val, csr_base + BRIDGE_CTRL_5);
++
++	val = readl(csr_base + BRIDGE_CTRL_2);
++	val |= ENABLE_ASPM;
++	writel(val, csr_base + BRIDGE_CTRL_2);
++
++	val = readl(csr_base + BRIDGE_CFG_32);
++	writel(val | (1 << 19), csr_base + BRIDGE_CFG_32);
++}
++
++/* Return 0 on success */
++static int xgene_pcie_init_ecc(struct xgene_pcie_port *port)
++{
++	void __iomem *csr_base = port->csr_base;
++	ulong timeout;
++	u32 val;
++
++	val = readl(csr_base + MEM_RAM_SHUTDOWN);
++	if (!val)
++		return 0;
++	writel(0x0, csr_base + MEM_RAM_SHUTDOWN);
++	timeout = jiffies + msecs_to_jiffies(XGENE_PCIE_ECC_TIMEOUT);
++	while (time_before(jiffies, timeout)) {
++		val = readl(csr_base + BLOCK_MEM_RDY);
++		if (val == BLOCK_MEM_RDY_VAL)
++			return 0;
++		msleep(1);
++	}
++
++	return 1;
++}
++
++static int xgene_pcie_init_port(struct xgene_pcie_port *port)
++{
++	int rc;
++
++	port->clk = clk_get(port->dev, NULL);
++	if (IS_ERR(port->clk)) {
++		dev_err(port->dev, "clock not available\n");
++		return -ENODEV;
++	}
++
++	rc = clk_prepare_enable(port->clk);
++	if (rc) {
++		dev_err(port->dev, "clock enable failed\n");
++		return rc;
++	}
++
++	rc = xgene_pcie_init_ecc(port);
++	if (rc) {
++		dev_err(port->dev, "memory init failed\n");
++		return rc;
++	}
++
++	return 0;
++}
++
++static void xgene_pcie_fixup_bridge(struct pci_dev *dev)
++{
++	int i;
++
++	/* Hide the PCI host BARs from the kernel as their content doesn't
++	 * fit well in the resource management
++	 */
++	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
++		dev->resource[i].start = dev->resource[i].end = 0;
++		dev->resource[i].flags = 0;
++	}
++	dev_info(&dev->dev, "Hiding X-Gene pci host bridge resources %s\n",
++		 pci_name(dev));
++}
++DECLARE_PCI_FIXUP_HEADER(XGENE_PCIE_VENDORID, XGENE_PCIE_DEVICEID,
++			 xgene_pcie_fixup_bridge);
++
++static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
++			      struct platform_device *pdev, u64 *cfg_addr)
++{
++	struct resource *res;
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "csr");
++	port->csr_base = devm_ioremap_resource(port->dev, res);
++	if (IS_ERR(port->csr_base))
++		return PTR_ERR(port->csr_base);
++
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "cfg");
++	port->cfg_base = devm_ioremap_resource(port->dev, res);
++	if (IS_ERR(port->cfg_base))
++		return PTR_ERR(port->cfg_base);
++	*cfg_addr = res->start;
++
++	return 0;
++}
++
++static void xgene_pcie_setup_ob_reg(struct xgene_pcie_port *port,
++				    struct resource *res, u32 offset, u64 addr)
++{
++	void __iomem *base = port->csr_base + offset;
++	resource_size_t size = resource_size(res);
++	u64 restype = resource_type(res);
++	u64 cpu_addr, pci_addr;
++	u64 mask = 0;
++	u32 min_size;
++	u32 flag = EN_REG;
++
++	if (restype == IORESOURCE_MEM) {
++		cpu_addr = res->start;
++		pci_addr = addr;
++		min_size = SZ_128M;
++	} else {
++		cpu_addr = addr;
++		pci_addr = res->start;
++		min_size = 128;
++		flag |= OB_LO_IO;
++	}
++	if (size >= min_size)
++		mask = ~(size - 1) | flag;
++	else
++		dev_warn(port->dev, "res size 0x%llx less than minimum 0x%x\n",
++			 (u64)size, min_size);
++	writel(lower_32_bits(cpu_addr), base);
++	writel(upper_32_bits(cpu_addr), base + 0x04);
++	writel(lower_32_bits(mask), base + 0x08);
++	writel(upper_32_bits(mask), base + 0x0c);
++	writel(lower_32_bits(pci_addr), base + 0x10);
++	writel(upper_32_bits(pci_addr), base + 0x14);
++}
++
++static void xgene_pcie_setup_cfg_reg(void __iomem *csr_base, u64 addr)
++{
++	writel(lower_32_bits(addr), csr_base + CFGBARL);
++	writel(upper_32_bits(addr), csr_base + CFGBARH);
++	writel(EN_REG, csr_base + CFGCTL);
++}
++
++static int xgene_pcie_map_ranges(struct xgene_pcie_port *port,
++				 struct pci_host_bridge *bridge,
++				 u64 cfg_addr)
++{
++	struct device *dev = port->dev;
++	struct pci_host_bridge_window *window;
++	int ret;
++
++	list_for_each_entry(window, &bridge->windows, list) {
++		struct resource *res = window->res;
++		u64 restype = resource_type(res);
++		dev_dbg(port->dev, "0x%08lx 0x%016llx...0x%016llx\n",
++			res->flags, res->start, res->end);
++
++		switch (restype) {
++		case IORESOURCE_IO:
++			xgene_pcie_setup_ob_reg(port, res, OMR2BARL,
++						bridge->io_base);
++			ret = pci_remap_iospace(res, bridge->io_base);
++			if (ret < 0)
++				return ret;
++			break;
++		case IORESOURCE_MEM:
++			xgene_pcie_setup_ob_reg(port, res, OMR3BARL,
++						res->start - window->offset);
++			break;
++		case IORESOURCE_BUS:
++			break;
++		default:
++			dev_err(dev, "invalid io resource!");
++			return -EINVAL;
++		}
++	}
++	xgene_pcie_setup_cfg_reg(port->csr_base, cfg_addr);
++	return 0;
++}
++
++static void xgene_pcie_setup_pims(void *addr, u64 pim, u64 size)
++{
++	writel(lower_32_bits(pim), addr);
++	writel(upper_32_bits(pim) | EN_COHERENCY, addr + 0x04);
++	writel(lower_32_bits(size), addr + 0x10);
++	writel(upper_32_bits(size), addr + 0x14);
++}
++
++/*
++ * X-Gene PCIe support maximum 3 inbound memory regions
++ * This function helps to select a region based on size of region
++ */
++static int xgene_pcie_select_ib_reg(u8 *ib_reg_mask, u64 size)
++{
++	if ((size > 4) && (size < SZ_16M) && !(*ib_reg_mask & (1 << 1))) {
++		*ib_reg_mask |= (1 << 1);
++		return 1;
++	}
++
++	if ((size > SZ_1K) && (size < SZ_1T) && !(*ib_reg_mask & (1 << 0))) {
++		*ib_reg_mask |= (1 << 0);
++		return 0;
++	}
++
++	if ((size > SZ_1M) && (size < SZ_1T) && !(*ib_reg_mask & (1 << 2))) {
++		*ib_reg_mask |= (1 << 2);
++		return 2;
++	}
++	return -EINVAL;
++}
++
++static void xgene_pcie_setup_ib_reg(struct xgene_pcie_port *port,
++				    struct of_pci_range *range, u8 *ib_reg_mask)
++{
++	void __iomem *csr_base = port->csr_base;
++	void __iomem *cfg_base = port->cfg_base;
++	void *bar_addr;
++	void *pim_addr;
++	u64 restype = range->flags & IORESOURCE_TYPE_BITS;
++	u64 cpu_addr = range->cpu_addr;
++	u64 pci_addr = range->pci_addr;
++	u64 size = range->size;
++	u64 mask = ~(size - 1) | EN_REG;
++	u32 flags = PCI_BASE_ADDRESS_MEM_TYPE_64;
++	u32 bar_low;
++	int region;
++
++	region = xgene_pcie_select_ib_reg(ib_reg_mask, range->size);
++	if (region < 0) {
++		dev_warn(port->dev, "invalid pcie dma-range config\n");
++		return;
++	}
++
++	if (restype == PCI_BASE_ADDRESS_MEM_PREFETCH)
++		flags |= PCI_BASE_ADDRESS_MEM_PREFETCH;
++
++	bar_low = pcie_bar_low_val((u32)cpu_addr, flags);
++	switch (region) {
++	case 0:
++		xgene_pcie_set_ib_mask(csr_base, BRIDGE_CFG_4, flags, size);
++		bar_addr = cfg_base + PCI_BASE_ADDRESS_0;
++		writel(bar_low, bar_addr);
++		writel(upper_32_bits(cpu_addr), bar_addr + 0x4);
++		pim_addr = csr_base + PIM1_1L;
++		break;
++	case 1:
++		bar_addr = csr_base + IBAR2;
++		writel(bar_low, bar_addr);
++		writel(lower_32_bits(mask), csr_base + IR2MSK);
++		pim_addr = csr_base + PIM2_1L;
++		break;
++	case 2:
++		bar_addr = csr_base + IBAR3L;
++		writel(bar_low, bar_addr);
++		writel(upper_32_bits(cpu_addr), bar_addr + 0x4);
++		writel(lower_32_bits(mask), csr_base + IR3MSKL);
++		writel(upper_32_bits(mask), csr_base + IR3MSKL + 0x4);
++		pim_addr = csr_base + PIM3_1L;
++		break;
++	}
++
++	xgene_pcie_setup_pims(pim_addr, pci_addr, size);
++}
++
++static int pci_dma_range_parser_init(struct of_pci_range_parser *parser,
++				     struct device_node *node)
++{
++	const int na = 3, ns = 2;
++	int rlen;
++
++	parser->node = node;
++	parser->pna = of_n_addr_cells(node);
++	parser->np = parser->pna + na + ns;
++
++	parser->range = of_get_property(node, "dma-ranges", &rlen);
++	if (!parser->range)
++		return -ENOENT;
++
++	parser->end = parser->range + rlen / sizeof(__be32);
++	return 0;
++}
++
++static int xgene_pcie_parse_map_dma_ranges(struct xgene_pcie_port *port)
++{
++	struct device_node *np = port->node;
++	struct of_pci_range range;
++	struct of_pci_range_parser parser;
++	struct device *dev = port->dev;
++	u8 ib_reg_mask = 0;
++
++	if (pci_dma_range_parser_init(&parser, np)) {
++		dev_err(dev, "missing dma-ranges property\n");
++		return -EINVAL;
++	}
++
++	/* Get the dma-ranges from DT */
++	for_each_of_pci_range(&parser, &range) {
++		u64 end = range.cpu_addr + range.size - 1;
++		dev_dbg(port->dev, "0x%08x 0x%016llx..0x%016llx -> 0x%016llx\n",
++			range.flags, range.cpu_addr, end, range.pci_addr);
++		xgene_pcie_setup_ib_reg(port, &range, &ib_reg_mask);
++	}
++	return 0;
++}
++
++static int xgene_pcie_probe_bridge(struct platform_device *pdev)
++{
++	struct device_node *np = of_node_get(pdev->dev.of_node);
++	struct xgene_pcie_port *port;
++	struct pci_host_bridge *bridge;
++	resource_size_t lastbus;
++	u32 lanes = 0, speed = 0;
++	u64 cfg_addr = 0;
++	int ret;
++
++	port = devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
++	if (!port)
++		return -ENOMEM;
++	port->node = np;
++	port->dev = &pdev->dev;
++
++	ret = xgene_pcie_map_reg(port, pdev, &cfg_addr);
++	if (ret)
++		return ret;
++
++	ret = xgene_pcie_init_port(port);
++	if (ret)
++		return ret;
++	xgene_pcie_program_core(port->csr_base);
++	xgene_pcie_setup_root_complex(port);
++
++	bridge = of_create_pci_host_bridge(&pdev->dev, &xgene_pcie_ops, port);
++	if (IS_ERR_OR_NULL(bridge))
++		return PTR_ERR(bridge);
++
++	ret = xgene_pcie_map_ranges(port, bridge, cfg_addr);
++	if (ret)
++		return ret;
++
++	ret = xgene_pcie_parse_map_dma_ranges(port);
++	if (ret)
++		return ret;
++
++	xgene_pcie_poll_linkup(port, &lanes, &speed);
++	if (!port->link_up)
++		dev_info(port->dev, "(rc) link down\n");
++	else
++		dev_info(port->dev, "(rc) x%d gen-%d link up\n",
++				lanes, speed + 1);
++	platform_set_drvdata(pdev, port);
++	lastbus = pci_rescan_bus(bridge->bus);
++	pci_bus_update_busn_res_end(bridge->bus, lastbus);
++	return 0;
++}
++
++static const struct of_device_id xgene_pcie_match_table[] = {
++	{.compatible = "apm,xgene-pcie",},
++	{},
++};
++
++static struct platform_driver xgene_pcie_driver = {
++	.driver = {
++		   .name = "xgene-pcie",
++		   .owner = THIS_MODULE,
++		   .of_match_table = of_match_ptr(xgene_pcie_match_table),
++	},
++	.probe = xgene_pcie_probe_bridge,
++};
++module_platform_driver(xgene_pcie_driver);
++
++MODULE_AUTHOR("Tanmay Inamdar <tinamdar@apm.com>");
++MODULE_DESCRIPTION("APM X-Gene PCIe driver");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 1c8592b..b81dc68 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -17,6 +17,7 @@
+ #include <linux/spinlock.h>
+ #include <linux/string.h>
+ #include <linux/log2.h>
++#include <linux/of_pci.h>
+ #include <linux/pci-aspm.h>
+ #include <linux/pm_wakeup.h>
+ #include <linux/interrupt.h>
+@@ -1453,6 +1454,9 @@ EXPORT_SYMBOL(pcim_pin_device);
+  */
+ int __weak pcibios_add_device(struct pci_dev *dev)
+ {
++#ifdef CONFIG_OF
++	dev->irq = of_irq_parse_and_map_pci(dev, 0, 0);
++#endif
+ 	return 0;
+ }
+ 
+@@ -2704,6 +2708,39 @@ int pci_request_regions_exclusive(struct pci_dev *pdev, const char *res_name)
+ }
+ EXPORT_SYMBOL(pci_request_regions_exclusive);
+ 
++/**
++ *	pci_remap_iospace - Remap the memory mapped I/O space
++ *	@res: Resource describing the I/O space
++ *	@phys_addr: physical address where the range will be mapped.
++ *
++ *	Remap the memory mapped I/O space described by the @res
++ *	into the CPU physical address space. Only architectures
++ *	that have memory mapped IO defined (and hence PCI_IOBASE)
++ *	should call this function.
++ */
++int __weak pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
++{
++	int err = -ENODEV;
++
++#ifdef PCI_IOBASE
++	if (!(res->flags & IORESOURCE_IO))
++		return -EINVAL;
++
++	if (res->end > IO_SPACE_LIMIT)
++		return -EINVAL;
++
++	err = ioremap_page_range(res->start + (unsigned long)PCI_IOBASE,
++				res->end + 1 + (unsigned long)PCI_IOBASE,
++				phys_addr, __pgprot(PROT_DEVICE_nGnRE));
++#else
++	/* this architecture does not have memory mapped I/O space,
++	   so this function should never be called */
++	WARN_ON(1);
++#endif
++
++	return err;
++}
++
+ static void __pci_set_master(struct pci_dev *dev, bool enable)
+ {
+ 	u16 old_cmd, cmd;
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index e3cf8a2..abf5e82 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -515,7 +515,7 @@ static void pci_release_host_bridge_dev(struct device *dev)
+ 	kfree(bridge);
+ }
+ 
+-static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
++static struct pci_host_bridge *pci_alloc_host_bridge(void)
+ {
+ 	struct pci_host_bridge *bridge;
+ 
+@@ -524,7 +524,6 @@ static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
+ 		return NULL;
+ 
+ 	INIT_LIST_HEAD(&bridge->windows);
+-	bridge->bus = b;
+ 	return bridge;
+ }
+ 
+@@ -1749,8 +1748,9 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
+ {
+ }
+ 
+-struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+-		struct pci_ops *ops, void *sysdata, struct list_head *resources)
++struct pci_bus *pci_create_root_bus_in_domain(struct device *parent,
++		int domain, int bus, struct pci_ops *ops, void *sysdata,
++		struct list_head *resources)
+ {
+ 	int error;
+ 	struct pci_host_bridge *bridge;
+@@ -1761,37 +1761,41 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+ 	char bus_addr[64];
+ 	char *fmt;
+ 
++	bridge = pci_alloc_host_bridge();
++	if (!bridge)
++		return ERR_PTR(-ENOMEM);
++
++	bridge->dev.parent = parent;
++	bridge->dev.release = pci_release_host_bridge_dev;
++	bridge->domain_nr = domain;
++
+ 	b = pci_alloc_bus();
+-	if (!b)
+-		return NULL;
++	if (!b) {
++		error = -ENOMEM;
++		goto err_out;
++	}
+ 
+ 	b->sysdata = sysdata;
+ 	b->ops = ops;
+ 	b->number = b->busn_res.start = bus;
+-	b2 = pci_find_bus(pci_domain_nr(b), bus);
++	b2 = pci_find_bus(bridge->domain_nr, bus);
+ 	if (b2) {
+ 		/* If we already got to this bus through a different bridge, ignore it */
+ 		dev_dbg(&b2->dev, "bus already known\n");
+-		goto err_out;
++		error = -EEXIST;
++		goto err_bus_out;
+ 	}
+ 
+-	bridge = pci_alloc_host_bridge(b);
+-	if (!bridge)
+-		goto err_out;
+-
+-	bridge->dev.parent = parent;
+-	bridge->dev.release = pci_release_host_bridge_dev;
+-	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
++	bridge->bus = b;
++	dev_set_name(&bridge->dev, "pci%04x:%02x", bridge->domain_nr, bus);
+ 	error = pcibios_root_bridge_prepare(bridge);
+-	if (error) {
+-		kfree(bridge);
++	if (error)
+ 		goto err_out;
+-	}
+ 
+ 	error = device_register(&bridge->dev);
+ 	if (error) {
+ 		put_device(&bridge->dev);
+-		goto err_out;
++		goto err_bus_out;
+ 	}
+ 	b->bridge = get_device(&bridge->dev);
+ 	device_enable_async_suspend(b->bridge);
+@@ -1802,7 +1806,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+ 
+ 	b->dev.class = &pcibus_class;
+ 	b->dev.parent = b->bridge;
+-	dev_set_name(&b->dev, "%04x:%02x", pci_domain_nr(b), bus);
++	dev_set_name(&b->dev, "%04x:%02x", bridge->domain_nr, bus);
+ 	error = device_register(&b->dev);
+ 	if (error)
+ 		goto class_dev_reg_err;
+@@ -1848,9 +1852,31 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+ class_dev_reg_err:
+ 	put_device(&bridge->dev);
+ 	device_unregister(&bridge->dev);
++err_bus_out:
++	kfree(b);
+ err_out:
++	kfree(bridge);
++	return ERR_PTR(error);
++}
++
++struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
++		struct pci_ops *ops, void *sysdata, struct list_head *resources)
++{
++	int domain_nr;
++	struct pci_bus *b = pci_alloc_bus();
++	if (!b)
++		return NULL;
++
++	b->sysdata = sysdata;
++	domain_nr = pci_domain_nr(b);
+ 	kfree(b);
+-	return NULL;
++
++	b = pci_create_root_bus_in_domain(parent, domain_nr, bus,
++				ops, sysdata, resources);
++	if (IS_ERR(b))
++		return NULL;
++
++	return b;
+ }
+ 
+ int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
 diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
 index 0754f5c..4478a59 100644
 --- a/drivers/rtc/Kconfig
@@ -6559,6 +7453,19 @@ index 0000000..1a7f890
 +	return 0;
 +}
 +module_init(rtc_init);
+diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
+index 975e1cc..2e2161b 100644
+--- a/include/asm-generic/io.h
++++ b/include/asm-generic/io.h
+@@ -331,7 +331,7 @@ static inline void iounmap(void __iomem *addr)
+ #ifndef CONFIG_GENERIC_IOMAP
+ static inline void __iomem *ioport_map(unsigned long port, unsigned int nr)
+ {
+-	return (void __iomem *) port;
++	return (void __iomem *)(PCI_IOBASE + (port & IO_SPACE_LIMIT));
+ }
+ 
+ static inline void ioport_unmap(void __iomem *p)
 diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
 index f27000f..35b0c12 100644
 --- a/include/kvm/arm_vgic.h
@@ -6774,10 +7681,10 @@ index 41bbf8b..b3fac7c 100644
  /*
 diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
 new file mode 100644
-index 0000000..9eac712
+index 0000000..30cb755
 --- /dev/null
 +++ b/include/linux/irqchip/arm-gic-v3.h
-@@ -0,0 +1,193 @@
+@@ -0,0 +1,198 @@
 +/*
 + * Copyright (C) 2013, 2014 ARM Limited, All Rights Reserved.
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -6831,6 +7738,8 @@ index 0000000..9eac712
 +#define GICD_IROUTER_SPI_MODE_ANY	(1U << 31)
 +
 +#define GIC_PIDR2_ARCH_MASK		0xf0
++#define GIC_PIDR2_ARCH_GICv3		0x30
++#define GIC_PIDR2_ARCH_GICv4		0x40
 +
 +/*
 + * Re-Distributor registers, offsets from RD_base
@@ -6911,8 +7820,11 @@ index 0000000..9eac712
 +#define ICC_SRE_EL1			S3_0_C12_C12_5
 +#define ICC_GRPEN1_EL1			S3_0_C12_C12_7
 +
++#define ICC_IAR1_EL1_SPURIOUS		0x3ff
++
 +#define ICC_SRE_EL2			S3_4_C12_C9_5
 +
++#define ICC_SRE_EL2_SRE			(1 << 0)
 +#define ICC_SRE_EL2_ENABLE		(1 << 3)
 +
 +/*
@@ -6971,6 +7883,115 @@ index 0000000..9eac712
 +#endif
 +
 +#endif
+diff --git a/include/linux/of_address.h b/include/linux/of_address.h
+index c13b878..33c0420 100644
+--- a/include/linux/of_address.h
++++ b/include/linux/of_address.h
+@@ -23,17 +23,8 @@ struct of_pci_range {
+ #define for_each_of_pci_range(parser, range) \
+ 	for (; of_pci_range_parser_one(parser, range);)
+ 
+-static inline void of_pci_range_to_resource(struct of_pci_range *range,
+-					    struct device_node *np,
+-					    struct resource *res)
+-{
+-	res->flags = range->flags;
+-	res->start = range->cpu_addr;
+-	res->end = range->cpu_addr + range->size - 1;
+-	res->parent = res->child = res->sibling = NULL;
+-	res->name = np->full_name;
+-}
+-
++extern int of_pci_range_to_resource(struct of_pci_range *range,
++		struct device_node *np, struct resource *res);
+ /* Translate a DMA address from device space to CPU space */
+ extern u64 of_translate_dma_address(struct device_node *dev,
+ 				    const __be32 *in_addr);
+@@ -55,6 +46,7 @@ extern void __iomem *of_iomap(struct device_node *device, int index);
+ extern const __be32 *of_get_address(struct device_node *dev, int index,
+ 			   u64 *size, unsigned int *flags);
+ 
++extern int pci_register_io_range(phys_addr_t addr, resource_size_t size);
+ extern unsigned long pci_address_to_pio(phys_addr_t addr);
+ 
+ extern int of_pci_range_parser_init(struct of_pci_range_parser *parser,
+diff --git a/include/linux/of_pci.h b/include/linux/of_pci.h
+index dde3a4a..71e36d0 100644
+--- a/include/linux/of_pci.h
++++ b/include/linux/of_pci.h
+@@ -15,6 +15,9 @@ struct device_node *of_pci_find_child_device(struct device_node *parent,
+ int of_pci_get_devfn(struct device_node *np);
+ int of_irq_parse_and_map_pci(const struct pci_dev *dev, u8 slot, u8 pin);
+ int of_pci_parse_bus_range(struct device_node *node, struct resource *res);
++struct pci_host_bridge *of_create_pci_host_bridge(struct device *parent,
++					struct pci_ops *ops, void *host_data);
++
+ #else
+ static inline int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *out_irq)
+ {
+@@ -43,6 +46,13 @@ of_pci_parse_bus_range(struct device_node *node, struct resource *res)
+ {
+ 	return -EINVAL;
+ }
++
++static inline struct pci_host_bridge *
++of_create_pci_host_bridge(struct device *parent, struct pci_ops *ops,
++			void *host_data)
++{
++	return NULL;
++}
+ #endif
+ 
+ #if defined(CONFIG_OF) && defined(CONFIG_PCI_MSI)
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 466bcd1..65fb1fc 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -401,6 +401,8 @@ struct pci_host_bridge_window {
+ struct pci_host_bridge {
+ 	struct device dev;
+ 	struct pci_bus *bus;		/* root bus */
++	int domain_nr;
++	resource_size_t io_base;	/* physical address for the start of I/O area */
+ 	struct list_head windows;	/* pci_host_bridge_windows */
+ 	void (*release_fn)(struct pci_host_bridge *);
+ 	void *release_data;
+@@ -769,6 +771,9 @@ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops, void *sysdata);
+ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+ 				    struct pci_ops *ops, void *sysdata,
+ 				    struct list_head *resources);
++struct pci_bus *pci_create_root_bus_in_domain(struct device *parent,
++			int domain, int bus, struct pci_ops *ops,
++			void *sysdata, struct list_head *resources);
+ int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int busmax);
+ int pci_bus_update_busn_res_end(struct pci_bus *b, int busmax);
+ void pci_bus_release_busn_res(struct pci_bus *b);
+@@ -1095,6 +1100,9 @@ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
+ 						  resource_size_t),
+ 			void *alignf_data);
+ 
++
++int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr);
++
+ static inline dma_addr_t pci_bus_address(struct pci_dev *pdev, int bar)
+ {
+ 	struct pci_bus_region region;
+@@ -1805,8 +1813,15 @@ static inline void pci_set_of_node(struct pci_dev *dev) { }
+ static inline void pci_release_of_node(struct pci_dev *dev) { }
+ static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
+ static inline void pci_release_bus_of_node(struct pci_bus *bus) { }
++
+ #endif  /* CONFIG_OF */
+ 
++/* Used by architecture code to apply any quirks to the list of
++ * pci_host_bridge resource ranges before they are being used
++ * by of_create_pci_host_bridge()
++ */
++extern int pcibios_fixup_bridge_ranges(struct list_head *resources);
++
+ #ifdef CONFIG_EEH
+ static inline struct eeh_dev *pci_dev_to_eeh_dev(struct pci_dev *pdev)
+ {
 diff --git a/tools/perf/arch/arm64/include/perf_regs.h b/tools/perf/arch/arm64/include/perf_regs.h
 index e9441b9..1d3f39c 100644
 --- a/tools/perf/arch/arm64/include/perf_regs.h
@@ -6986,10 +8007,10 @@ index e9441b9..1d3f39c 100644
  
 diff --git a/virt/kvm/arm/vgic-v2.c b/virt/kvm/arm/vgic-v2.c
 new file mode 100644
-index 0000000..a55a9a4
+index 0000000..5fd2b75
 --- /dev/null
 +++ b/virt/kvm/arm/vgic-v2.c
-@@ -0,0 +1,236 @@
+@@ -0,0 +1,243 @@
 +/*
 + * Copyright (C) 2012,2013 ARM Limited, All Rights Reserved.
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -7044,9 +8065,6 @@ index 0000000..a55a9a4
 +	return lr_desc;
 +}
 +
-+/*
-+ * This also does some maintenance of ELRSR.
-+ */
 +static void vgic_v2_set_lr(struct kvm_vcpu *vcpu, int lr,
 +			   struct vgic_lr lr_desc)
 +{
@@ -7071,14 +8089,24 @@ index 0000000..a55a9a4
 +
 +static u64 vgic_v2_get_elrsr(const struct kvm_vcpu *vcpu)
 +{
-+	const u32 *elrsr = vcpu->arch.vgic_cpu.vgic_v2.vgic_elrsr;
-+	return *(u64 *)elrsr;
++	u64 val;
++
++	val  = vcpu->arch.vgic_cpu.vgic_v2.vgic_elrsr[1];
++	val <<= 32;
++	val |= vcpu->arch.vgic_cpu.vgic_v2.vgic_elrsr[0];
++
++	return val;
 +}
 +
 +static u64 vgic_v2_get_eisr(const struct kvm_vcpu *vcpu)
 +{
-+	const u32 *eisr = vcpu->arch.vgic_cpu.vgic_v2.vgic_eisr;
-+	return *(u64 *)eisr;
++	u64 val;
++
++	val  = vcpu->arch.vgic_cpu.vgic_v2.vgic_eisr[1];
++	val <<= 32;
++	val |= vcpu->arch.vgic_cpu.vgic_v2.vgic_eisr[0];
++
++	return val;
 +}
 +
 +static u32 vgic_v2_get_interrupt_status(const struct kvm_vcpu *vcpu)

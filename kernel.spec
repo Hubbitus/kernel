@@ -2252,6 +2252,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jul 24 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: update from upstream git.
+
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
 - Fix regression in sched_setparam (rhbz 1117942)
