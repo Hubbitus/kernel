@@ -639,6 +639,9 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
+#CVE-2014-5045 rhbz 1122472 1122482
+Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1363,6 +1366,9 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
+
+#CVE-2014-5045 rhbz 1122472 1122482
+ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2247,6 +2253,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
 - Fix regression in sched_setparam (rhbz 1117942)
 
 * Tue Jul 22 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.0-0.rc6.git1.1
