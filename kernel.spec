@@ -747,6 +747,10 @@ Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 #CVE-2014-4943 rhbz 1119458 1120542
 Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
+#rhbz 1121785
+Patch25116: Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1452,6 +1456,9 @@ ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
 
 #CVE-2014-4943 rhbz 1119458 1120542
 ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
+
+#rhbz 1121785
+ApplyPatch Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2264,6 +2271,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ath3k bluetooth regression (rhbz 1121785)
+
 * Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.6-200
 - Linux v3.15.6
 - CVE-2014-4943 pppol2tp level handling (rhbz 1119458 1120542)
