@@ -756,6 +756,9 @@ Patch25117: s390-ptrace-fix-PSW-mask-check.patch
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
+#CVE-2014-5045 rhbz 1122472 1122482
+Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1471,6 +1474,9 @@ ApplyPatch s390-ptrace-fix-PSW-mask-check.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
+
+#CVE-2014-5045 rhbz 1122472 1122482
+ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2284,6 +2290,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
 - Fix regression in sched_setparam (rhbz 1117942)
 - CVE-2014-3534 s390: ptrace: insufficient sanitization with psw mask (rhbz 1114089 1122612)
 - Fix ath3k bluetooth regression (rhbz 1121785)
