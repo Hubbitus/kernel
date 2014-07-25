@@ -764,6 +764,8 @@ Patch25120: shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
 Patch25121: shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
 Patch25122: shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 
+#rhbz 1060327
+Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1487,6 +1489,9 @@ ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
 ApplyPatch shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
 ApplyPatch shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
 ApplyPatch shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
+
+#rhbz 1060327
+ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2299,6 +2304,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Re-add patch fixing spice resize (rhbz 1060327)
+
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-4171 shmem: denial of service (rhbz 1111180 1118247)
 - CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
