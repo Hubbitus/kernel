@@ -338,10 +338,9 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: securebootca.cer
-Source14: secureboot.cer
-Source15: rheldup3.x509
-Source16: rhelkpatch1.x509
+Source13: centos.cer
+Source15: centos-ldup.x509
+Source16: centos-kpatch.x509
 
 Source18: check-kabi
 
@@ -366,6 +365,11 @@ Source72: kernel-%{version}-s390x-kdump.config
 # Sources for kernel-tools
 Source2000: cpupower.service
 Source2001: cpupower.config
+
+# branding patches
+Patch1001: debrand-single-cpu.patch
+Patch1002: debrand-rh_taint.patch
+Patch1003: debrand-rh-i686-cpu.patch
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
@@ -521,11 +525,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
+Summary: The CentOS Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the Red Hat Enterprise
+The kABI package contains information pertaining to the CentOS
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -667,6 +671,12 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
+
+# CentOS Branding Modification
+ApplyOptionalPatch debrand-rh_taint.patch
+ApplyOptionalPatch debrand-single-cpu.patch
+ApplyOptionalPatch debrand-rh-i686-cpu.patch
+# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -819,7 +829,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13} 
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1474,6 +1484,12 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Thu Jul 24 2014 Johnny Hughes <johnny@centos.org> [3.10.0-123.4.4.el7]
+- Add in CentOS SecureBoot certs
+- Add in debranding changes
+- Add in CentOS kdump and driver update certs
+- Modifications to remove Red Hat branding from spec file
+
 * Wed Jul 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.4.el7]
 - [net] l2tp_ppp: fail when socket option level is not SOL_PPPOL2TP (Petr  Matousek) [1119465 1119466] {CVE-2014-4943}
 
