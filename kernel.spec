@@ -759,6 +759,11 @@ Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 #CVE-2014-5045 rhbz 1122472 1122482
 Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
 
+#CVE-2014-4171 rhbz 1111180 1118247
+Patch25120: shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
+Patch25121: shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
+Patch25122: shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
+
 
 # END OF PATCH DEFINITIONS
 
@@ -1477,6 +1482,11 @@ ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #CVE-2014-5045 rhbz 1122472 1122482
 ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
+
+#CVE-2014-4171 rhbz 1111180 1118247
+ApplyPatch shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
+ApplyPatch shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
+ApplyPatch shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2300,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4171 shmem: denial of service (rhbz 1111180 1118247)
 - CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
 - Fix regression in sched_setparam (rhbz 1117942)
 - CVE-2014-3534 s390: ptrace: insufficient sanitization with psw mask (rhbz 1114089 1122612)
