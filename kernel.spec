@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2258,7 +2258,8 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc6.git2.1
+- Linux v3.16-rc6-118-g82e13c71bc65
 - Fix selinux sock_graft hook for AF_ALG address family (rhbz 1115120)
 
 * Thu Jul 24 2014 Kyle McMartin <kyle@fedoraproject.org>
