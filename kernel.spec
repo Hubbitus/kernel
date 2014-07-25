@@ -642,6 +642,9 @@ Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 #CVE-2014-5045 rhbz 1122472 1122482
 Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
 
+#rhbz 1115120
+Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1369,6 +1372,9 @@ ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #CVE-2014-5045 rhbz 1122472 1122482
 ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
+
+#rhbz 1115120
+ApplyPatch selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2252,6 +2258,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix selinux sock_graft hook for AF_ALG address family (rhbz 1115120)
+
 * Thu Jul 24 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: update from upstream git.
 - arm64: update config-arm64 to include PCI support.
