@@ -106,3 +106,8 @@ CONFIG_RTC_DRV_EFI=y
 #  dma issues in headers
 # CONFIG_PARPORT_PC is not set
 # CONFIG_VGA_CONSOLE is not set
+
+CONFIG_PCI_XGENE=y
+CONFIG_HOTPLUG_PCI=y
+# CONFIG_HOTPLUG_PCI_CPCI is not set
+# CONFIG_HOTPLUG_PCI_SHPC is not set

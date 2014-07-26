@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -131,7 +131,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -637,8 +637,14 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117008
-Patch25111: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+#rhbz 1117942
+Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
+
+#CVE-2014-5045 rhbz 1122472 1122482
+Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
+
+#rhbz 1115120
+Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1386,8 +1392,14 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117008
-ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+#rhbz 1117942
+ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
+
+#CVE-2014-5045 rhbz 1122472 1122482
+ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
+
+#rhbz 1115120
+ApplyPatch selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2277,15 +2289,48 @@ fi
 #
 # 
 #                        ___________________________________________________________
-#                       / This branch is for Fedora 21. You probably want to commit \
-#  _____ ____  _        \ to the F-20 branch instead, or in addition to this one.   /
-# |  ___|___ \/ |        -----------------------------------------------------------
-# | |_    __) | |             \   ^__^
-# |  _|  / __/| |              \  (@@)\_______
-# |_|   |_____|_|                 (__)\       )\/\
+#                       / This branch is for Fedora 22. You probably want to commit \
+#  _____ ____  ____     \ to the f21 branch instead, or in addition to this one.    /
+# |  ___|___ \|___ \     -----------------------------------------------------------
+# | |_    __) | __) |        \   ^__^
+# |  _|  / __/ / __/          \  (@@)\_______
+# |_|   |_____|_____|            (__)\       )\/\
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc6.git2.1
+- Linux v3.16-rc6-118-g82e13c71bc65
+- Fix selinux sock_graft hook for AF_ALG address family (rhbz 1115120)
+
+* Thu Jul 24 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: update from upstream git.
+- arm64: update config-arm64 to include PCI support.
+
+* Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
+- Fix regression in sched_setparam (rhbz 1117942)
+
+* Tue Jul 22 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.0-0.rc6.git1.1
+- Linux v3.16-rc6-75-g15ba223
+- Reenable debugging options.
+
+* Mon Jul 21 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.0-0.rc6.git0.1
+- Linux v3.16-rc6
+- Disable debugging options.
+
+* Mon Jul 21 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 config update
+
+* Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git2.1
+- Linux v3.16-rc5-143-gb6603fe574af
+
+* Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable hermes prism driver (rhbz 1120393)
+
+* Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git1.1
+- Linux v3.16-rc5-130-g2da294474093
+- Reenable debugging options.
+
 * Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc5.git0.1
 - Linux v3.16-rc5
 - Fix i915 regression with external monitors (rhbz 1117008)
