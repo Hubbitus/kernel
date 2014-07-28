@@ -602,6 +602,8 @@ Patch15000: nowatchdog-on-virt.patch
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
+# http://www.spinics.net/lists/linux-tegra/msg17948.html
+Patch21023: arm-tegra-drmdetection.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1243,6 +1245,7 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-beagle.patch
 ApplyPatch arm-imx6-utilite.patch
+ApplyPatch arm-tegra-drmdetection.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2258,6 +2261,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jul 28 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix loading of tegra drm using device tree
+
 * Sat Jul 26 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc6.git3.1
 - Linux v3.16-rc6-139-g9c5502189fa0
 
