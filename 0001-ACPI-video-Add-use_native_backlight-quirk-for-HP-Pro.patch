@@ -1,0 +1,45 @@
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1025690
+Upstream-status: Included in 3.16
+Note: Not needed for 3.16 and higher since use_native_backlight=1 is the
+default there, upstream is maintaining the quirk list for now in case it is
+decided to flip the default back.
+
+From 4cf465b579c20bee868464f5d664f8d2d96cd370 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Wed, 16 Jul 2014 13:28:34 +0200
+Subject: [PATCH] ACPI / video: Add use_native_backlight quirk for HP ProBook
+ 4540s
+
+As reported here:
+https://bugzilla.redhat.com/show_bug.cgi?id=1025690
+This is yet another model which needs this quirk.
+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1025690
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/acpi/video.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
+index 29649c1..350d52a 100644
+--- a/drivers/acpi/video.c
++++ b/drivers/acpi/video.c
+@@ -581,6 +581,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 	},
+ 	{
+ 	.callback = video_set_use_native_backlight,
++	.ident = "HP ProBook 4540s",
++	.matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
++		DMI_MATCH(DMI_PRODUCT_VERSION, "HP ProBook 4540s"),
++		},
++	},
++	{
++	.callback = video_set_use_native_backlight,
+ 	.ident = "HP ProBook 2013 models",
+ 	.matches = {
+ 		DMI_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
+-- 
+2.0.1
+

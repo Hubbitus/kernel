@@ -770,6 +770,15 @@ Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
 #CVE-2014-5077 rhbz 1122982 1123696
 Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
+#rhbz 1025690
+Patch25125: 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1123565
+Patch25126: 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+
+#rhbz 1121288
+Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1498,6 +1507,15 @@ ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
 
 #CVE-2014-5077 rhbz 1122982 1123696
 ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
+
+#rhbz 1025690
+ApplyPatch 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1123565
+ApplyPatch 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+
+#rhbz 1121288
+ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2310,6 +2328,11 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 28 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_backlight=1 quirk for HP ProBook 4540s (rhbz#1025690)
+- Add use_native_backlight=1 quirk for HP EliteBook 2014 series (rhbz#1123565)
+- Blacklist usb bulk streams on Etron EJ168 xhci controllers (rhbz#1121288)
+
 * Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
 
