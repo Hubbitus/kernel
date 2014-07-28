@@ -647,6 +647,9 @@ Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
+#CVE-2014-5077 rhbz 1122982 1123696
+Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1379,6 +1382,9 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
+
+#CVE-2014-5077 rhbz 1122982 1123696
+ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2255,6 +2261,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
+
 * Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git0.1
 - Linux v3.16-rc7
 - Disable debugging options.
