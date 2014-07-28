@@ -767,6 +767,9 @@ Patch25122: shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 #rhbz 1060327
 Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
 
+#CVE-2014-5077 rhbz 1122982 1123696
+Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1492,6 +1495,9 @@ ApplyPatch shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 
 #rhbz 1060327
 ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
+
+#CVE-2014-5077 rhbz 1122982 1123696
+ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2304,6 +2310,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
+
 * Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Re-add patch fixing spice resize (rhbz 1060327)
 
