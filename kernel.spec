@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -640,9 +640,6 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
-
-#CVE-2014-5045 rhbz 1122472 1122482
-Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
 
 #rhbz 1115120
 Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
@@ -1372,9 +1369,6 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
-
-#CVE-2014-5045 rhbz 1122472 1122482
-ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
 
 #rhbz 1115120
 ApplyPatch selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
@@ -2261,6 +2255,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git0.1
+- Linux v3.16-rc7
+- Disable debugging options.
+
 * Mon Jul 28 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix loading of tegra drm using device tree
 
