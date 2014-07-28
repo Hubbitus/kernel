@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -741,14 +741,8 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1114768
 Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 
-#rhbz 1117008
-Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
-
 #CVE-2014-4943 rhbz 1119458 1120542
 Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
-
-#rhbz 1121785
-Patch25116: Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 
 #CVE-2014-3534 rhbz 1114089 1122612
 Patch25117: s390-ptrace-fix-PSW-mask-check.patch
@@ -758,11 +752,6 @@ Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
 #CVE-2014-5045 rhbz 1122472 1122482
 Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
-
-#CVE-2014-4171 rhbz 1111180 1118247
-Patch25120: shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
-Patch25121: shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
-Patch25122: shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 
 #rhbz 1060327
 Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
@@ -1479,14 +1468,8 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1114768
 ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
 
-#rhbz 1117008
-ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
-
 #CVE-2014-4943 rhbz 1119458 1120542
 ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
-
-#rhbz 1121785
-ApplyPatch Revert-Bluetooth-Add-a-new-PID-VID-0cf3-e005-for-AR3.patch
 
 #CVE-2014-3534 rhbz 1114089 1122612
 ApplyPatch s390-ptrace-fix-PSW-mask-check.patch
@@ -1496,11 +1479,6 @@ ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #CVE-2014-5045 rhbz 1122472 1122482
 ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
-
-#CVE-2014-4171 rhbz 1111180 1118247
-ApplyPatch shmem-fix-faulting-into-a-hole-while-it-s-punched.patch
-ApplyPatch shmem-fix-faulting-into-a-hole-not-taking-i_mutex.patch
-ApplyPatch shmem-fix-splicing-from-a-hole-while-it-s-punched.patch
 
 #rhbz 1060327
 ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
@@ -2328,6 +2306,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Jul 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.7-200
+- Linux v3.15.7
+
 * Mon Jul 28 2014 Hans de Goede <hdegoede@redhat.com>
 - Add use_native_backlight=1 quirk for HP ProBook 4540s (rhbz#1025690)
 - Add use_native_backlight=1 quirk for HP EliteBook 2014 series (rhbz#1123565)
