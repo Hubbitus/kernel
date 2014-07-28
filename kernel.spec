@@ -555,6 +555,8 @@ Patch460: serial-460800.patch
 
 Patch470: die-floppy-die.patch
 
+Patch500: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
+
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
@@ -1276,6 +1278,8 @@ ApplyPatch arm-tegra-drmdetection.patch
 #
 
 # ACPI
+
+ApplyPatch Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 # ALSA
 
@@ -2262,6 +2266,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Make sure acpi brightness_switch is disabled (like forever in Fedora)
 - CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
 
 * Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git0.1
