@@ -2265,6 +2265,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jul 29 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: update from upstream git.
+
 * Tue Jul 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git1.1
 - Linux v3.16-rc7-7-g31dab719fa50
 - Reenable debugging options.
