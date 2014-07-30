@@ -1,3 +1,13 @@
+commit db044807ca763c21bae298388239be6177c6ccec
+Merge: 649c9e3 26bcd8b
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Wed Jul 30 14:31:24 2014 -0400
+
+    Merge branch 'master' into devel
+    
+    Conflicts:
+    	virt/kvm/arm/vgic.c
+
 commit 649c9e3a45e81852daf80c126a332297b75cb109
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Tue Jul 29 12:49:10 2014 +0200
@@ -9058,10 +9068,10 @@ index e9441b9..1d3f39c 100644
  
 diff --git a/virt/kvm/arm/vgic-v2.c b/virt/kvm/arm/vgic-v2.c
 new file mode 100644
-index 0000000..5fd2b75
+index 0000000..ff597d8
 --- /dev/null
 +++ b/virt/kvm/arm/vgic-v2.c
-@@ -0,0 +1,243 @@
+@@ -0,0 +1,259 @@
 +/*
 + * Copyright (C) 2012,2013 ARM Limited, All Rights Reserved.
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -9289,10 +9299,26 @@ index 0000000..5fd2b75
 +		ret = -ENXIO;
 +		goto out_unmap;
 +	}
++
++	if (!PAGE_ALIGNED(vcpu_res.start)) {
++		kvm_err("GICV physical address 0x%llx not page aligned\n",
++			(unsigned long long)vcpu_res.start);
++		ret = -ENXIO;
++		goto out_unmap;
++	}
++
++	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
++		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
++			(unsigned long long)resource_size(&vcpu_res),
++			PAGE_SIZE);
++		ret = -ENXIO;
++		goto out_unmap;
++	}
++
 +	vgic->vcpu_base = vcpu_res.start;
 +
 +	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
-+		 vctrl_res.start, vgic->maint_irq);
++		 vgic->vctrl_base, vgic->maint_irq);
 +
 +	vgic->type = VGIC_V2;
 +	*ops = &vgic_v2_ops;
@@ -9543,7 +9569,7 @@ index 0000000..f01d446
 +	return ret;
 +}
 diff --git a/virt/kvm/arm/vgic.c b/virt/kvm/arm/vgic.c
-index 56ff9be..795ab48 100644
+index 476d3bf..795ab48 100644
 --- a/virt/kvm/arm/vgic.c
 +++ b/virt/kvm/arm/vgic.c
 @@ -76,14 +76,6 @@
@@ -10005,7 +10031,7 @@ index 56ff9be..795ab48 100644
  	}
  
  	ret = __register_cpu_notifier(&vgic_cpu_nb);
-@@ -1502,49 +1567,15 @@ int kvm_vgic_hyp_init(void)
+@@ -1502,65 +1567,15 @@ int kvm_vgic_hyp_init(void)
  		goto out_free_irq;
  	}
  
@@ -10033,20 +10059,37 @@ index 56ff9be..795ab48 100644
 -		goto out_unmap;
 -	}
 -
--	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
--		 vctrl_res.start, vgic_maint_irq);
- 	on_each_cpu(vgic_init_maintenance_interrupt, NULL, 1);
- 
 -	if (of_address_to_resource(vgic_node, 3, &vcpu_res)) {
 -		kvm_err("Cannot obtain VCPU resource\n");
 -		ret = -ENXIO;
 -		goto out_unmap;
 -	}
+-
+-	if (!PAGE_ALIGNED(vcpu_res.start)) {
+-		kvm_err("GICV physical address 0x%llx not page aligned\n",
+-			(unsigned long long)vcpu_res.start);
+-		ret = -ENXIO;
+-		goto out_unmap;
+-	}
+-
+-	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
+-		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
+-			(unsigned long long)resource_size(&vcpu_res),
+-			PAGE_SIZE);
+-		ret = -ENXIO;
+-		goto out_unmap;
+-	}
+-
 -	vgic_vcpu_base = vcpu_res.start;
-+	/* Callback into for arch code for setup */
-+	vgic_arch_setup(vgic);
+-
+-	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
+-		 vctrl_res.start, vgic_maint_irq);
+ 	on_each_cpu(vgic_init_maintenance_interrupt, NULL, 1);
  
 -	goto out;
++	/* Callback into for arch code for setup */
++	vgic_arch_setup(vgic);
++
 +	return 0;
  
 -out_unmap:
@@ -10059,7 +10102,7 @@ index 56ff9be..795ab48 100644
  	return ret;
  }
  
-@@ -1577,7 +1608,7 @@ int kvm_vgic_init(struct kvm *kvm)
+@@ -1593,7 +1608,7 @@ int kvm_vgic_init(struct kvm *kvm)
  	}
  
  	ret = kvm_phys_addr_ioremap(kvm, kvm->arch.vgic.vgic_cpu_base,
@@ -10068,7 +10111,7 @@ index 56ff9be..795ab48 100644
  	if (ret) {
  		kvm_err("Unable to remap VGIC CPU to VCPU\n");
  		goto out;
-@@ -1623,7 +1654,8 @@ int kvm_vgic_create(struct kvm *kvm)
+@@ -1639,7 +1654,8 @@ int kvm_vgic_create(struct kvm *kvm)
  	}
  
  	spin_lock_init(&kvm->arch.vgic.lock);
@@ -10078,7 +10121,7 @@ index 56ff9be..795ab48 100644
  	kvm->arch.vgic.vgic_dist_base = VGIC_ADDR_UNDEF;
  	kvm->arch.vgic.vgic_cpu_base = VGIC_ADDR_UNDEF;
  
-@@ -1722,39 +1754,40 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
+@@ -1738,39 +1754,40 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
  static bool handle_cpu_mmio_misc(struct kvm_vcpu *vcpu,
  				 struct kvm_exit_mmio *mmio, phys_addr_t offset)
  {
