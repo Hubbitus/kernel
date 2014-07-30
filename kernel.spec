@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 0
+%global aarch64patches 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -2259,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 30 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: fix up merge conflict and re-enable
+
 * Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git2.1
 - Linux v3.16-rc7-64-g26bcd8b72563
 - Temporarily disable aarch64patches
