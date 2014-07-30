@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -648,9 +648,6 @@ Patch25120: crypto-properly-label-AF_ALG-socket.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-
-#CVE-2014-5077 rhbz 1122982 1123696
-Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1386,9 +1383,6 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
-
-#CVE-2014-5077 rhbz 1122982 1123696
-ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2265,6 +2259,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git2.1
+- Linux v3.16-rc7-64-g26bcd8b72563
+- Temporarily disable aarch64patches
+
 * Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Apply different patch from Milan Broz to fix LUKS partitions (rhbz 1115120)
 
