@@ -644,7 +644,7 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1115120
-Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
+Patch25120: crypto-properly-label-AF_ALG-socket.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1378,7 +1378,7 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1115120
-ApplyPatch selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
+ApplyPatch crypto-properly-label-AF_ALG-socket.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2265,6 +2265,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Apply different patch from Milan Broz to fix LUKS partitions (rhbz 1115120)
+
 * Tue Jul 29 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: update from upstream git.
 
