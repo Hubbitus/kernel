@@ -1,8 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
 
-
-From 3b083aa4b42c6f2e814742b24e1948aced3a5e3f Mon Sep 17 00:00:00 2001
+From 952dbcbea4cffb1a05773af3b5f41e8ed477c5fe Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH 01/14] Add secure_modules() call
@@ -64,7 +63,7 @@ index 81e727cf6df9..fc14f48915dd 100644
 1.9.3
 
 
-From 5c9708ebd7a52bf432745dc9b739c54666f2789d Mon Sep 17 00:00:00 2001
+From 3b451a12e60a47d152ecce1c02634c4d7320b024 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
 Subject: [PATCH 02/14] PCI: Lock down BAR access when module security is
@@ -183,7 +182,7 @@ index b91c4da68365..98f5637304d1 100644
 1.9.3
 
 
-From c5f35519151d28b1a3c3dee5cb67fd67befa7fb6 Mon Sep 17 00:00:00 2001
+From 42a620055ac873fb378ec69731c7a2200f6779cc Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
 Subject: [PATCH 03/14] x86: Lock down IO port access when module security is
@@ -256,7 +255,7 @@ index 917403fe10da..cdf839f9defe 100644
 1.9.3
 
 
-From 24b607adc80fdebbc3497efc4b997a62edc06280 Mon Sep 17 00:00:00 2001
+From 8019fb7c7b5f18b19f7c980987953680ee218c9f Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
 Subject: [PATCH 04/14] ACPI: Limit access to custom_method
@@ -288,7 +287,7 @@ index c68e72414a67..4277938af700 100644
 1.9.3
 
 
-From 215559c7708671e85ceb42f6e25445b9b27f6c38 Mon Sep 17 00:00:00 2001
+From bf84e9e1022b2d3d0c97ae48fb8b61e5336c50f8 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:46:50 -0500
 Subject: [PATCH 05/14] asus-wmi: Restrict debugfs interface when module
@@ -343,7 +342,7 @@ index 3c6ccedc82b6..960c46536c65 100644
 1.9.3
 
 
-From b709a5110b728b526063c6814413a8c0f0d01203 Mon Sep 17 00:00:00 2001
+From 9a56e8715d3b6dc84989997f34b6b5d407cabad2 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
 Subject: [PATCH 06/14] Restrict /dev/mem and /dev/kmem when module loading is
@@ -386,7 +385,7 @@ index cdf839f9defe..c63cf93b00eb 100644
 1.9.3
 
 
-From 2896018a1c991e19691ab203a9e9010e898587e7 Mon Sep 17 00:00:00 2001
+From 8d6faa19bbbaa4df411becda7e40c4ea0684c134 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
 Subject: [PATCH 07/14] acpi: Ignore acpi_rsdp kernel parameter when module
@@ -426,7 +425,7 @@ index bad25b070fe0..0606585e8b93 100644
 1.9.3
 
 
-From a9c7c2c5e39d3e687b3e90845a753673144a754b Mon Sep 17 00:00:00 2001
+From 1ff86ddea019f543f6668b56889f86811028f303 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH 08/14] kexec: Disable at runtime if the kernel enforces module
@@ -442,18 +441,18 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 6748688813d0..d4d88984bf45 100644
+index 4b8f0c925884..df14daa323a9 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
-@@ -33,6 +33,7 @@
- #include <linux/swap.h>
+@@ -34,6 +34,7 @@
  #include <linux/syscore_ops.h>
  #include <linux/compiler.h>
+ #include <linux/hugetlb.h>
 +#include <linux/module.h>
  
  #include <asm/page.h>
  #include <asm/uaccess.h>
-@@ -946,6 +947,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+@@ -947,6 +948,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
  		return -EPERM;
  
  	/*
@@ -471,7 +470,7 @@ index 6748688813d0..d4d88984bf45 100644
 1.9.3
 
 
-From 4ce6023b9f02d5397156976568b3aad88b2f5b95 Mon Sep 17 00:00:00 2001
+From 4d56368f1364b45c18067bab1d6abc5ce0f67183 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
 Subject: [PATCH 09/14] x86: Restrict MSR access when module loading is
@@ -516,7 +515,7 @@ index c9603ac80de5..8bef43fc3f40 100644
 1.9.3
 
 
-From c95290110f65724e58b7506281759c0bac59b9f5 Mon Sep 17 00:00:00 2001
+From aab8ba85241a85a0b2ed622edd7874c74cafa496 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH 10/14] Add option to automatically enforce module signatures
@@ -552,10 +551,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a8f749ef0fdc..35bfd8259993 100644
+index d24887b645dc..870aac9520b3 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1556,6 +1556,16 @@ config EFI_MIXED
+@@ -1557,6 +1557,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -703,7 +702,7 @@ index fc14f48915dd..2d68d276f3b6 100644
 1.9.3
 
 
-From f0baa6f34da3f151c059ca3043945837db0ca8d1 Mon Sep 17 00:00:00 2001
+From eae8a80ddc185b3f233e2620dbfc6454b6f0c3a6 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH 11/14] efi: Disable secure boot if shim is in insecure mode
@@ -762,7 +761,7 @@ index 85defaf5a27c..b4013a4ba005 100644
 1.9.3
 
 
-From 6bc90bfd4c13fd6cc4a536630807406c16395bf5 Mon Sep 17 00:00:00 2001
+From 9728a4f49b284b7354876e1d77174d5838306e21 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
 Subject: [PATCH 12/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
@@ -776,10 +775,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 35bfd8259993..746b1b63da8c 100644
+index 870aac9520b3..7aecd3f9f8ee 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1557,7 +1557,8 @@ config EFI_MIXED
+@@ -1558,7 +1558,8 @@ config EFI_MIXED
  	   If unsure, say N.
  
  config EFI_SECURE_BOOT_SIG_ENFORCE
@@ -793,7 +792,7 @@ index 35bfd8259993..746b1b63da8c 100644
 1.9.3
 
 
-From 292f6faa86f44fe261c8da58cc2c7f65aa0acad6 Mon Sep 17 00:00:00 2001
+From 4211b4919b8ccecc4f4cdc0a46ead7294478b687 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:33:03 -0400
 Subject: [PATCH 13/14] efi: Add EFI_SECURE_BOOT bit
@@ -837,7 +836,7 @@ index 41bbf8ba4ba8..e73f391fd3c8 100644
 1.9.3
 
 
-From 594e605ee9589150919aa113e3e01163168ad041 Mon Sep 17 00:00:00 2001
+From 18b50c6f0597b606cb03cbd8a9fdef7478cb2b21 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 20 Jun 2014 08:53:24 -0400
 Subject: [PATCH 14/14] hibernate: Disable in a signed modules environment
