@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2259,6 +2259,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jul 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git3.1
+- Linux v3.16-rc7-76-g3a1122d26c62
+
 * Wed Jul 30 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: fix up merge conflict and re-enable
 
