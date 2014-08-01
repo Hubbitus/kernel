@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -642,9 +642,6 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
-
-#rhbz 1115120
-Patch25120: crypto-properly-label-AF_ALG-socket.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1373,9 +1370,6 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
-
-#rhbz 1115120
-ApplyPatch crypto-properly-label-AF_ALG-socket.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2259,6 +2253,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git4.1
+- Linux v3.16-rc7-84-g6f0928036bcb
+
 * Thu Jul 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git3.1
 - Linux v3.16-rc7-76-g3a1122d26c62
 
