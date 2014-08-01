@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -738,20 +738,11 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1114768
-Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
-
 #CVE-2014-4943 rhbz 1119458 1120542
 Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
-#CVE-2014-3534 rhbz 1114089 1122612
-Patch25117: s390-ptrace-fix-PSW-mask-check.patch
-
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
-
-#CVE-2014-5045 rhbz 1122472 1122482
-Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
 
 #rhbz 1060327
 Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
@@ -1465,20 +1456,11 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1114768
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
-
 #CVE-2014-4943 rhbz 1119458 1120542
 ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
-#CVE-2014-3534 rhbz 1114089 1122612
-ApplyPatch s390-ptrace-fix-PSW-mask-check.patch
-
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
-
-#CVE-2014-5045 rhbz 1122472 1122482
-ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
 
 #rhbz 1060327
 ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
@@ -2306,6 +2288,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Jul 31 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.8-200
+- Linux v3.15.8
+
 * Mon Jul 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.7-200
 - Linux v3.15.7
 
