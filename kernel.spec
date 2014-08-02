@@ -759,6 +759,10 @@ Patch25126: 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
 #rhbz 1121288
 Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 
+#rhbz 1101386
+Patch25128: 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
+Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1476,6 +1480,10 @@ ApplyPatch 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
 
 #rhbz 1121288
 ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1101386
+ApplyPatch 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
+ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2288,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport two patches to fix T440s dock audio (rhbz 1101386)
+
 * Thu Jul 31 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.8-200
 - Linux v3.15.8
 
