@@ -31,6 +31,7 @@ CONFIG_TOI_EXPORTS=y
 CONFIG_TOI_ZRAM_SUPPORT=y
 CONFIG_PM_SLEEP=y
 CONFIG_PM_SLEEP_SMP=y
+CONFIG_TOI_INCREMENTAL=y
 
 # TuxOnIce - ftrace: Answer for me to try resolve TuxOnIce problem finding ftrace: https://pf.natalenko.name/forum/index.php?topic=257.0
 CONFIG_HAVE_KPROBES_ON_FTRACE=y

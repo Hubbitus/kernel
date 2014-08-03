@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.1.bfq.bfs.uksm.tuxonice
+%define buildid .hu.1.bfq.bfs.uksm
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -699,20 +699,10 @@ Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 # Hubbitus patches
 # UKSM
-Patch30001: http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
+Patch30001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
 
 # BFS
-Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
-
-# BFQ
-Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
-Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
-Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
-
-# TuxOnIce
-# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
-Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.14.2-2014-04-28.patch.bz2
-
+Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -726,15 +716,19 @@ Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-li
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
 Patch30007: BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.15.patch
+Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.15.patch
+Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.15.0.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+#? Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
+
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
-Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #/end Hubbitus patches
-
-#rhbz 1051748
-Patch25035: Bluetooth-allocate-static-minor-for-vhci.patch
-
-#rhbz 1074710
-Patch25061: mm-page_alloc.c-change-mm-debug-routines-back-to-EXP.patch
 
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
@@ -1454,25 +1448,22 @@ ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 #? ApplyPatch patch-3.14-pf1.xz --fuzz=2
 
 # UKSM
-ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.2/uksm-0.1.2.2-for-v3.14.patch
+ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.14/3.14-sched-bfs-447.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r3-3.14.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0002-block-introduce-the-BFQ-v7r3-I-O-sched-for-3.14.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.14.0-v7r3/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r3-for-3.14.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.15.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.15.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.15.0.patch
 
 # TuxOnIce
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
-ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.14.2-2014-04-28.patch.bz2 --fuzz=2
-ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#? ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2 --fuzz=2
+#? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #/Hubbitus patches
-
-#rhbz 1051748
-ApplyPatch Bluetooth-allocate-static-minor-for-vhci.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
@@ -2342,6 +2333,17 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Jul 15 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.5-200.hu.1.bfq.bfs.uksm
+- 3.15.5-200.hu.1.bfq.bfs.uksm.tuxonice
+- Update UKSM patch to: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
+- Update BFQ patches:
+	Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.15.patch
+	Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.15.patch
+	Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.15.0.patch
+- Update BFS patch: Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
+- Update tuxonice patch: Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
+- DISABLE tuxonice
+
 * Mon Jul 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.5-200
 - Linux v3.15.5
 - Fix i915 regression with external monitors (rhbz 1117008)
