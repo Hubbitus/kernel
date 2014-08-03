@@ -2253,6 +2253,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Aug  3 2014 Peter Robinson <pbrobinson@redhat.com>
+- Minor config updates for Armada and Sunxi ARM devices
+
 * Fri Aug 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git4.1
 - Linux v3.16-rc7-84-g6f0928036bcb
 
