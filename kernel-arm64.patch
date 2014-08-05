@@ -1,969 +1,8 @@
-commit db044807ca763c21bae298388239be6177c6ccec
-Merge: 649c9e3 26bcd8b
-Author: Kyle McMartin <kmcmarti@redhat.com>
-Date:   Wed Jul 30 14:31:24 2014 -0400
-
-    Merge branch 'master' into devel
-    
-    Conflicts:
-    	virt/kvm/arm/vgic.c
-
-commit 649c9e3a45e81852daf80c126a332297b75cb109
-Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Tue Jul 29 12:49:10 2014 +0200
-
-    arm64/efi: efistub: don't abort if base of DRAM is occupied
-    
-    If we cannot relocate the kernel Image to its preferred offset of base of DRAM
-    plus TEXT_OFFSET, instead relocate it to the lowest available 2 MB boundary plus
-    TEXT_OFFSET. We may lose a bit of memory at the low end, but we can still
-    proceed normally otherwise.
-    
-    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-
-commit 5102fd06b12467a0518537061805483a759bc856
-Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-Date:   Tue Jul 29 12:49:09 2014 +0200
-
-    arm64/efi: efistub: cover entire static mem footprint in PE/COFF .text
-    
-    The static memory footprint of a kernel Image at boot is larger than the
-    Image file itself. Things like .bss data and initial page tables are allocated
-    statically but populated dynamically so their content is not contained in the
-    Image file.
-    
-    However, if EFI (or GRUB) has loaded the Image at precisely the desired offset
-    of base of DRAM + TEXT_OFFSET, the Image will be booted in place, and we have
-    to make sure that the allocation done by the PE/COFF loader is large enough.
-    
-    Fix this by growing the PE/COFF .text section to cover the entire static
-    memory footprint. The part of the section that is not covered by the payload
-    will be zero initialised by the PE/COFF loader.
-    
-    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
-
-commit 3b4dfb00a401b7fecf01d3c89b154907167dff52
-Author: Mark Rutland <mark.rutland@arm.com>
-Date:   Tue Jul 29 12:49:08 2014 +0200
-
-    arm64: spin-table: handle unmapped cpu-release-addrs
-    
-    In certain cases the cpu-release-addr of a CPU may not fall in the
-    linear mapping (e.g. when the kernel is loaded above this address due to
-    the presence of other images in memory). This is problematic for the
-    spin-table code as it assumes that it can trivially convert a
-    cpu-release-addr to a valid VA in the linear map.
-    
-    This patch modifies the spin-table code to use a temporary cached
-    mapping to write to a given cpu-release-addr, enabling us to support
-    addresses regardless of whether they are covered by the linear mapping.
-    
-    Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-
-commit a49ad891b2e91338587dc5576c9da73b249a9d13
-Author: Mark Salter <msalter@redhat.com>
-Date:   Mon Jul 14 15:52:06 2014 -0400
-
-    pci/xgene: use pci_remap_iospace() instead of pci_ioremap_io()
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 1a958ec71db226d35ed51756b7164142bb0a60a3
-Author: Tanmay Inamdar <tinamdar@apm.com>
-Date:   Wed Mar 19 16:12:42 2014 -0700
-
-    MAINTAINERS: entry for APM X-Gene PCIe host driver
-    
-    Add entry for AppliedMicro X-Gene PCIe host driver.
-    
-    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 03dc92f35b8f8be898ca12e3dc7c15961f414907
-Author: Tanmay Inamdar <tinamdar@apm.com>
-Date:   Wed Mar 19 16:12:41 2014 -0700
-
-    dt-bindings: pci: xgene pcie device tree bindings
-    
-    This patch adds the bindings for X-Gene PCIe driver. The driver resides
-    under 'drivers/pci/host/pci-xgene.c' file.
-    
-    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 1f8d894f2066d9db2b251d512f6f6f772ae7147f
-Author: Tanmay Inamdar <tinamdar@apm.com>
-Date:   Wed Mar 19 16:12:40 2014 -0700
-
-    arm64: dts: APM X-Gene PCIe device tree nodes
-    
-    This patch adds the device tree nodes for APM X-Gene PCIe controller and
-    PCIe clock interface. Since X-Gene SOC supports maximum 5 ports, 5 dts
-    nodes are added.
-    
-    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit c0855fcf0cc9adcb1ba5e6b1318536c56244796d
-Author: Tanmay Inamdar <tinamdar@apm.com>
-Date:   Wed Mar 19 16:12:39 2014 -0700
-
-    pci: APM X-Gene PCIe controller driver
-    
-    This patch adds the AppliedMicro X-Gene SOC PCIe controller driver.
-    X-Gene PCIe controller supports maximum up to 8 lanes and GEN3 speed.
-    X-Gene SOC supports maximum 5 PCIe ports.
-    
-    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 1cc0c322237d3b58b08fe39e79e6c2e2f90a8c98
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:44:00 2014 +0100
-
-    arm64: Add architectural support for PCI
-    
-    Use the generic host bridge functions to provide support for
-    PCI Express on arm64.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-
-commit aba1eca911a87959eb4be515110f7a6b8692e9a4
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:34 2014 +0100
-
-    pci: Remap I/O bus resources into CPU space with pci_remap_iospace()
-    
-    Introduce a default implementation for remapping PCI bus I/O resources
-    onto the CPU address space. Architectures with special needs may
-    provide their own version, but most should be able to use this one.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-
-commit e1eacc3da10ca19eff1f88fb342a13586092b613
-Author: Liviu Dudau <liviu@dudau.co.uk>
-Date:   Tue Jul 1 21:50:50 2014 +0100
-
-    pci: Add support for creating a generic host_bridge from device tree
-    
-    Several platforms use a rather generic version of parsing
-    the device tree to find the host bridge ranges. Move the common code
-    into the generic PCI code and use it to create a pci_host_bridge
-    structure that can be used by arch code.
-    
-    Based on early attempts by Andrew Murray to unify the code.
-    Used powerpc and microblaze PCI code as starting point.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit aee55d507eb451223b51b52e6617b06b8e518ea6
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:32 2014 +0100
-
-    pci: of: Parse and map the IRQ when adding the PCI device.
-    
-    Enhance the default implementation of pcibios_add_device() to
-    parse and map the IRQ of the device if a DT binding is available.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-
-commit 0cf0470962f0498b598ff44e0c671407df54b22e
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:31 2014 +0100
-
-    pci: Introduce a domain number for pci_host_bridge.
-    
-    Make it easier to discover the domain number of a bus by storing
-    the number in pci_host_bridge for the root bus. Several architectures
-    have their own way of storing this information, so it makes sense
-    to try to unify the code. While at this, add a new function that
-    creates a root bus in a given domain and make pci_create_root_bus()
-    a wrapper around this function.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 1bc8fcf01469c202b4aea5f1d0a3a75c9302f3e2
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:30 2014 +0100
-
-    pci: Create pci_host_bridge before its associated bus in pci_create_root_bus.
-    
-    Before commit 7b5436635800 the pci_host_bridge was created before the root bus.
-    As that commit has added a needless dependency on the bus for pci_alloc_host_bridge()
-    the creation order has been changed for no good reason. Revert the order of
-    creation as we are going to depend on the pci_host_bridge structure to retrieve the
-    domain number of the root bus.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Acked-by: Grant Likely <grant.likely@linaro.org>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 55353327169dc08c1047d994e00b8a38630f5a8d
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:29 2014 +0100
-
-    pci: OF: Fix the conversion of IO ranges into IO resources.
-    
-    The ranges property for a host bridge controller in DT describes
-    the mapping between the PCI bus address and the CPU physical address.
-    The resources framework however expects that the IO resources start
-    at a pseudo "port" address 0 (zero) and have a maximum size of IO_SPACE_LIMIT.
-    The conversion from pci ranges to resources failed to take that into account.
-    
-    In the process move the function into drivers/of/address.c as it now
-    depends on pci_address_to_pio() code and make it return an error message.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 34079a20796d5c74e2984c37a99baef4871709a6
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:28 2014 +0100
-
-    pci: Introduce pci_register_io_range() helper function.
-    
-    Some architectures do not have a simple view of the PCI I/O space
-    and instead use a range of CPU addresses that map to bus addresses. For
-    some architectures these ranges will be expressed by OF bindings
-    in a device tree file.
-    
-    Introduce a pci_register_io_range() helper function with a generic
-    implementation that can be used by such architectures to keep track
-    of the I/O ranges described by the PCI bindings. If the PCI_IOBASE
-    macro is not defined that signals lack of support for PCI and we
-    return an error.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-
-commit a81abc095ab4b9b90e446ddbd59247e23df9d4ad
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:27 2014 +0100
-
-    pci: Export find_pci_host_bridge() function.
-    
-    This is a useful function and we should make it visible outside the
-    generic PCI code. Export it as a GPL symbol.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 78361698444e81bedbf30ec2b7aae1afd110d11f
-Author: Liviu Dudau <Liviu.Dudau@arm.com>
-Date:   Tue Jul 1 19:43:26 2014 +0100
-
-    Fix ioport_map() for !CONFIG_GENERIC_IOMAP cases.
-    
-    The inline version of ioport_map() that gets used when !CONFIG_GENERIC_IOMAP
-    is wrong. It returns a mapped (i.e. virtual) address that can start from
-    zero and completely ignores the PCI_IOBASE and IO_SPACE_LIMIT that most
-    architectures that use !CONFIG_GENERIC_MAP define.
-    
-    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
-    Acked-by: Arnd Bergmann <arnd@arndb.de>
-    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 5540bbe2eca72e37be2e6a1c18e2fc7e73f0eab6
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:50 2014 +0100
-
-    arm64: KVM: vgic: enable GICv2 emulation on top on GICv3 hardware
-    
-    Add the last missing bits that enable GICv2 emulation on top of
-    GICv3 hardware.
-    
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit f057aaf81a7df641bcaa992965a257e3260ad36e
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:49 2014 +0100
-
-    arm64: KVM: vgic: add GICv3 world switch
-    
-    Introduce the GICv3 world switch code used to save/restore the
-    GICv3 context.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 7f1b8a791bb375933fdc8420cd08f127d07dd259
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:48 2014 +0100
-
-    KVM: ARM: vgic: add the GICv3 backend
-    
-    Introduce the support code for emulating a GICv2 on top of GICv3
-    hardware.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 74428905c3b450eab53a21bee74236501629a443
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:47 2014 +0100
-
-    arm64: KVM: move HCR_EL2.{IMO, FMO} manipulation into the vgic switch code
-    
-    GICv3 requires the IMO and FMO bits to be tightly coupled with some
-    of the interrupt controller's register switch.
-    
-    In order to have similar code paths, move the manipulation of these
-    bits to the GICv2 switch code.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit b691c1f97f1fb5b29c3ae4cc836fdbefe61a11ff
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:46 2014 +0100
-
-    arm64: KVM: split GICv2 world switch from hyp code
-    
-    Move the GICv2 world switch code into its own file, and add the
-    necessary indirection to the arm64 switch code.
-    
-    Also introduce a new type field to the vgic_params structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit d3f4563f1bebed7f60f714bdab640e477a081c4b
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:45 2014 +0100
-
-    arm64: KVM: remove __kvm_hyp_code_{start, end} from hyp.S
-    
-    We already have __hyp_text_{start,end} to express the boundaries
-    of the HYP text section, and __kvm_hyp_code_{start,end} are getting
-    in the way of a more modular world switch code.
-    
-    Just turn __kvm_hyp_code_{start,end} into #defines mapping the
-    linker-emited symbols.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 8ede261e09ad25ab8229d5efb476d5b4f6dc6434
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:44 2014 +0100
-
-    KVM: ARM: vgic: revisit implementation of irqchip_in_kernel
-    
-    So far, irqchip_in_kernel() was implemented by testing the value of
-    vctrl_base, which worked fine with GICv2.
-    
-    With GICv3, this field is useless, as we're using system registers
-    instead of a emmory mapped interface. To solve this, add a boolean
-    flag indicating if the we're using a vgic or not.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit ff7faf70feb47e5f1cf1e0f0d02e0f2807da11f5
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:43 2014 +0100
-
-    KVM: ARM: vgic: split GICv2 backend from the main vgic code
-    
-    Brutally hack the innocent vgic code, and move the GICv2 specific code
-    to its own file, using vgic_ops and vgic_params as a way to pass
-    information between the two blocks.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 63480283c0e1dc92f506e5e5306be0ac9b239499
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:42 2014 +0100
-
-    KVM: ARM: introduce vgic_params structure
-    
-    Move all the data specific to a given GIC implementation into its own
-    little structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit dcb20f9b66d5615a3e7e492424fa7953c1fe9f01
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:41 2014 +0100
-
-    KVM: ARM: vgic: introduce vgic_enable
-    
-    Move the code dealing with enabling the VGIC on to vgic_ops.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 67e3bcf8dd823eec79c74bc993fa62fb08b1acea
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:40 2014 +0100
-
-    KVM: ARM: vgic: abstract VMCR access
-    
-    Instead of directly messing with with the GICH_VMCR bits for the CPU
-    interface save/restore code, add accessors that encode/decode the
-    entire set of registers exposed by VMCR.
-    
-    Not the most efficient thing, but given that this code is only used
-    by the save/restore code, performance is far from being critical.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 67caf34f138a4f2516a2afcd5657add2eaaf0ab4
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:39 2014 +0100
-
-    KVM: ARM: vgic: move underflow handling to vgic_ops
-    
-    Move the code dealing with LR underflow handling to its own functions,
-    and make them accessible through vgic_ops.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 30acb0a340d388135ae89bed7e248bad203ec876
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:38 2014 +0100
-
-    KVM: ARM: vgic: abstract MISR decoding
-    
-    Instead of directly dealing with the GICH_MISR bits, move the code to
-    its own function and use a couple of public flags to represent the
-    actual state.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 464cbe47011e07b654d161ab4d4bdd05b4d025b3
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:37 2014 +0100
-
-    KVM: ARM: vgic: abstract EISR bitmap access
-    
-    Move the GICH_EISR access to its own function.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 33930dc5f401e9fc2268c2f128853eb5275e7ab1
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:36 2014 +0100
-
-    KVM: ARM: vgic: abstract access to the ELRSR bitmap
-    
-    Move the GICH_ELRSR access to its own functions, and add them to
-    the vgic_ops structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 0dca962ccd5b96fb7174880c1bc25085dcc09927
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:35 2014 +0100
-
-    KVM: ARM: vgic: introduce vgic_ops and LR manipulation primitives
-    
-    In order to split the various register manipulation from the main vgic
-    code, introduce a vgic_ops structure, and start by abstracting the
-    LR manipulation code with a couple of accessors.
-    
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit e66aa6cbdaa25764c58ba8d21da8d1b7d75e7570
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:34 2014 +0100
-
-    KVM: arm/arm64: vgic: move GICv2 registers to their own structure
-    
-    In order to make way for the GICv3 registers, move the v2-specific
-    registers to their own structure.
-    
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit b04259737c6bb38592c02c93e939fd53909dad04
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:33 2014 +0100
-
-    arm64: boot protocol documentation update for GICv3
-    
-    Linux has some requirements that must be satisfied in order to boot
-    on a system built with a GICv3.
-    
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit a864693311bd4305214d966b7ca0e0015216c2c4
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:32 2014 +0100
-
-    arm64: GICv3 device tree binding documentation
-    
-    Add the necessary documentation to support GICv3.
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Mark Rutland <mark.rutland@arm.com>
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Acked-by: Rob Herring <robh@kernel.org>
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit af3035d3ddddb6e19bac9295f0c785bb2c8e718c
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:31 2014 +0100
-
-    irqchip: arm64: Initial support for GICv3
-    
-    The Generic Interrupt Controller (version 3) offers services that are
-    similar to GICv2, with a number of additional features:
-    - Affinity routing based on the CPU MPIDR (ARE)
-    - System register for the CPU interfaces (SRE)
-    - Support for more that 8 CPUs
-    - Locality-specific Peripheral Interrupts (LPIs)
-    - Interrupt Translation Services (ITS)
-    
-    This patch adds preliminary support for GICv3 with ARE and SRE,
-    non-secure mode only. It relies on higher exception levels to grant ARE
-    and SRE access.
-    
-    Support for LPI and ITS will be added at a later time.
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Jason Cooper <jason@lakedaemon.net>
-    Reviewed-by: Zi Shen Lim <zlim@broadcom.com>
-    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Reviewed-by: Tirumalesh Chalamarla <tchalamarla@cavium.com>
-    Reviewed-by: Yun Wu <wuyun.wu@huawei.com>
-    Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
-    Tested-by: Tirumalesh Chalamarla<tchalamarla@cavium.com>
-    Tested-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
-    Acked-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
-    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit c50b02761c3ad5d37ce8fffe7c0bf6b46d23109e
-Author: Marc Zyngier <marc.zyngier@arm.com>
-Date:   Mon Jun 30 16:01:30 2014 +0100
-
-    irqchip: ARM: GIC: Move some bits of GICv2 to a library-type file
-    
-    A few GICv2 low-level function are actually very useful to GICv3,
-    and it makes some sense to share them across the two drivers.
-    They end-up in their own file, with an additional parameter used
-    to ensure an optional synchronization (unused on GICv2).
-    
-    Cc: Thomas Gleixner <tglx@linutronix.de>
-    Cc: Jason Cooper <jason@lakedaemon.net>
-    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
-    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
-
-commit 6a6033cdcbf6022c2848e2181ed6d8b7545af02e
-Author: Mark Salter <msalter@redhat.com>
-Date:   Tue Jun 24 23:16:45 2014 -0400
-
-    perf: fix arm64 build error
-    
-    I'm seeing the following build error on arm64:
-    
-      In file included from util/event.c:3:0:
-      util/event.h:95:17: error: 'PERF_REGS_MAX' undeclared here (not in a function)
-        u64 cache_regs[PERF_REGS_MAX];
-                     ^
-    
-    This patch adds a PEFF_REGS_MAX definition for arm64.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 1de8987fa549d421576c1b61282c4041c8c78a5f
-Author: Mark Salter <msalter@redhat.com>
-Date:   Tue Jun 24 09:50:28 2014 -0400
-
-    arm64: use EFI as last resort for reboot and poweroff
-    
-    Wire in support for EFI reboot and poweroff functions. We use these
-    only if no other mechanism has been registered with arm_pm_reboot
-    and/or pm_power_off respectively.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 1c973051e86625be7ffb3db90d4a70b9ca4199c6
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:39:55 2014 +0100
-
-    x86/reboot: Add EFI reboot quirk for ACPI Hardware Reduced flag
-    
-    It appears that the BayTrail-T class of hardware requires EFI in order
-    to powerdown and reboot and no other reliable method exists.
-    
-    This quirk is generally applicable to all hardware that has the ACPI
-    Hardware Reduced bit set, since usually ACPI would be the preferred
-    method.
-    
-    Cc: Len Brown <len.brown@intel.com>
-    Cc: Mark Salter <msalter@redhat.com>
-    Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit 621b2a0f1df86bd2f147799303b94575f3acee95
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:35:21 2014 +0100
-
-    efi/reboot: Allow powering off machines using EFI
-    
-    Not only can EfiResetSystem() be used to reboot, it can also be used to
-    power down machines.
-    
-    By and large, this functionality doesn't work very well across the range
-    of EFI machines in the wild, so it should definitely only be used as a
-    last resort. In an ideal world, this wouldn't be needed at all.
-    
-    Unfortunately, we're starting to see machines where EFI is the *only*
-    reliable way to power down, and nothing else, not PCI, not ACPI, works.
-    
-    efi_poweroff_required() should be implemented on a per-architecture
-    basis, since exactly when we should be using EFI runtime services is a
-    platform-specific decision. There's no analogue for reboot because each
-    architecture handles reboot very differently - the x86 code in
-    particular is pretty complex.
-    
-    Patches to enable this for specific classes of hardware will be
-    submitted separately.
-    
-    Cc: Mark Salter <msalter@redhat.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit 6b2e219b20933cad5d5ba34f7af4efc5317c0fb9
-Author: Matt Fleming <matt.fleming@intel.com>
-Date:   Fri Jun 13 12:22:22 2014 +0100
-
-    efi/reboot: Add generic wrapper around EfiResetSystem()
-    
-    Implement efi_reboot(), which is really just a wrapper around the
-    EfiResetSystem() EFI runtime service, but it does at least allow us to
-    funnel all callers through a single location.
-    
-    It also simplifies the callsites since users no longer need to check to
-    see whether EFI_RUNTIME_SERVICES are enabled.
-    
-    Cc: Tony Luck <tony.luck@intel.com>
-    Cc: Mark Salter <msalter@redhat.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit d0d41b99122d97f81ad05868dff38ccf0a3ffd33
-Author: Saurabh Tangri <saurabh.tangri@intel.com>
-Date:   Mon Jun 2 05:18:35 2014 -0700
-
-    x86/efi: Move all workarounds to a separate file quirks.c
-    
-    Currently, it's difficult to find all the workarounds that are
-    applied when running on EFI, because they're littered throughout
-    various code paths. This change moves all of them into a separate
-    file with the hope that it will be come the single location for all
-    our well documented quirks.
-    
-    Signed-off-by: Saurabh Tangri <saurabh.tangri@intel.com>
-    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
-
-commit b5e3a1e8825abb0406ead0e85436df4df20ddcdb
-Author: Don Dutile <ddutile@redhat.com>
-Date:   Tue Mar 25 20:22:26 2014 -0400
-
-    pmu: Adding support for Xgene PMUs
-    
-    Message-id: <1395778948-47814-2-git-send-email-ddutile@redhat.com>
-    Patchwork-id: 78602
-    O-Subject: [PATCH 1/3] pmu: Adding support for Xgene PMUs
-    Bugzilla: 1079110
-    
-    Backport of these two posted (but not upstream) patches.
-    Combined into single patch due to gic-patch dependency.
-    
-    Signed-off-by: Donald Dutile <ddutile@redhat.com>
-
-commit 9f4c27693bb120a3134e3e7e8d452fb02d023e2b
-Author: Mark Salter <msalter@redhat.com>
-Date:   Sun Jun 15 09:06:55 2014 -0400
-
-    arm64: fix up APM Mustang devicetree
-    
-    These are changes needed when loading device tree blob built with
-    kernel. i.e. with grub. These are not needed when using devicetree
-    from Tianocore which will be fixed up at tianocore runtime.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 1f3a5b228be88be3f734d7a43db3b3f81e160443
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Mon Jul 14 15:18:05 2014 -0700
-
-    drivers: net: Add APM X-Gene SoC ethernet driver support.
-    
-    This patch adds network driver for APM X-Gene SoC ethernet.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit 54b3fe04c4a953eeb6907ffe9f57aae282f59457
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Mon Jul 14 15:18:04 2014 -0700
-
-    dts: Add bindings for APM X-Gene SoC ethernet driver
-    
-    This patch adds bindings for APM X-Gene SoC ethernet driver.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit 85125c4e1c1b1ef53d6cb77966efa89062540f43
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Mon Jul 14 15:18:03 2014 -0700
-
-    Documentation: dts: Add bindings for APM X-Gene SoC ethernet driver
-    
-    This patch adds documentation for APM X-Gene SoC ethernet DTS binding.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit fe8ec437eedc45384c23e1e12a09baa82d24fa16
-Author: Iyappan Subramanian <isubramanian@apm.com>
-Date:   Mon Jul 14 15:18:02 2014 -0700
-
-    MAINTAINERS: Add entry for APM X-Gene SoC ethernet driver
-    
-    This patch adds a MAINTAINERS entry for APM X-Gene SoC
-    ethernet driver.
-    
-    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
-    Signed-off-by: Ravi Patel <rapatel@apm.com>
-    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
-
-commit 237639e43c3d6587985a736f33264e129123d7a5
-Author: Mark Salter <msalter@redhat.com>
-Date:   Fri Jul 25 15:14:32 2014 -0400
-
-    arm/kvm: WIP fix for stage2 pgd memory leak
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 0794e2900e5e4be4b7aa0b389e6b0bf8b55c5cd7
-Author: Mark Salter <msalter@redhat.com>
-Date:   Thu Jul 17 13:34:50 2014 -0400
-
-    ahci_xgene: add errata workaround for ATA_CMD_SMART
-    
-    commit 2a0bdff6b958d1b2:
-    
-     ahci_xgene: fix the dma state machine lockup for the IDENTIFY DEVICE PIO mode command.
-    
-    added a workaround for X-Gene AHCI controller errata. This was done
-    for all ATA_CMD_ID_ATA commands. The errata also appears to affect
-    ATA_CMD_SMART commands as well. This was discovered when running
-    smartd or just smartctl -x. This patch adds a dma engine restart for
-    ATA_CMD_SMART commands which clears up the issues seen with smartd.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 7adf85b63608b8bea1148f2faa84f475252a9e43
-Author: Mark Salter <msalter@redhat.com>
-Date:   Fri Jul 25 15:32:05 2014 -0400
-
-    rtc: ia64: allow other architectures to use EFI RTC
-    
-    Currently, the rtc-efi driver is restricted to ia64 only.  Newer
-    architectures with EFI support may want to also use that driver. This
-    patch moves the platform device setup from ia64 into drivers/rtc and allow
-    any architecture with CONFIG_EFI=y to use the rtc-efi driver.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-    Cc: Alessandro Zummo <a.zummo@towertech.it>
-    Cc: Tony Luck <tony.luck@intel.com>
-    Cc: Fenghua Yu <fenghua.yu@intel.com>
-    Cc: Andrew Morton <akpm@linux-foundation.org>
-
-commit 3b2f96c7a6bfbd46e7dee1d7000081422a7983ce
-Author: Kyle McMartin <kmcmarti@redhat.com>
-Date:   Tue May 13 22:25:26 2014 -0400
-
-    arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
-    
-    Message-id: <20140513222526.GC26038@redacted.bos.redhat.com>
-    Patchwork-id: 79789
-    O-Subject: [ACADIA PATCH] arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
-    Bugzilla: 1085528
-    
-    BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1085528
-    Upstream: submitted soon
-    
-    [Sadly this isn't (yet) sufficient... but it fixes at least one issue
-     here... cat /proc/$$/personality shows READ_IMPLIES_EXEC before. I'll
-     try to figure the rest out tomorrow.]
-    
-    Currently, we're accidentally ending up with executable stacks on
-    AArch64 when the ABI says we shouldn't be, and relying on glibc to fix
-    things up for us when we're loaded. However, SELinux will deny us
-    mucking with the stack, and hit us with execmem AVCs.
-    
-    The reason this is happening is somewhat complex:
-    
-    fs/binfmt_elf.c:load_elf_binary()
-     - initializes executable_stack = EXSTACK_DEFAULT implying the
-       architecture should make up its mind.
-     - does a pile of loading goo
-     - runs through the program headers, looking for PT_GNU_STACK
-       and setting (or unsetting) executable_stack if it finds it.
-    
-       This is our first problem, we won't generate these unless an
-       executable stack is explicitly requested.
-    
-     - more ELF loading goo
-     - sets whether we're a compat task or not (TIF_32BIT) based on compat.h
-     - for compat reasons (pre-GNU_STACK) checks if the READ_IMPLIES_EXEC
-       flag should be set for ancient toolchains
-    
-       Here's our second problem, we test if read_implies_exec based on
-       stk != EXSTACK_DISABLE_X, which is true since stk == EXSTACK_DEFAULT.
-    
-       So we set current->personality |= READ_IMPLIES_EXEC like a broken
-       legacy toolchain would want.
-    
-     - Now we call setup_arg_pages to set up the stack...
-    
-    fs/exec.c:setup_arg_pages()
-     - lots of magic happens here
-     - vm_flags gets initialized to VM_STACK_FLAGS
-    
-       Here's our third problem, VM_STACK_FLAGS on arm64 is
-       VM_DEFAULT_DATA_FLAG which tests READ_IMPLIES_EXEC and sets VM_EXEC
-       if it's true. So we end up with an executable stack mapping, since we
-       don't have executable_stack set (it's still EXSTACK_DEFAULT at this
-       point) to unset it anywhere.
-    
-    Bang. execstack AVC when the program starts running.
-    
-    The easiest way I can see to fix this is to test if we're a legacy task
-    and fix it up there. But that's not as simple as it sounds, because
-    the 32-bit ABI depends on what revision of the CPU we've enabled (not
-    that it matters since we're ARMv8...) Regardless, in the compat case,
-    set READ_IMPLIES_EXEC if we've found a GNU_STACK header which explicitly
-    requested it as in arch/arm/kernel/elf.c:arm_elf_read_implies_exec().
-    
-    Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
-    Signed-off-by: Donald Dutile <ddutile@redhat.com>
-
-commit 4b866971e92b925a44da8d876cb57864942a90b8
-Author: Mark Salter <msalter@redhat.com>
-Date:   Thu Jul 24 15:56:15 2014 +0100
-
-    arm64: fix soft lockup due to large tlb flush range
-    
-    Under certain loads, this soft lockup has been observed:
-    
-       BUG: soft lockup - CPU#2 stuck for 22s! [ip6tables:1016]
-       Modules linked in: ip6t_rpfilter ip6t_REJECT cfg80211 rfkill xt_conntrack ebtable_nat ebtable_broute bridge stp llc ebtable_filter ebtables ip6table_nat nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 ip6table_mangle ip6table_security ip6table_raw ip6table_filter ip6_tables iptable_nat nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack iptable_mangle iptable_security iptable_raw vfat fat efivarfs xfs libcrc32c
-    
-       CPU: 2 PID: 1016 Comm: ip6tables Not tainted 3.13.0-0.rc7.30.sa2.aarch64 #1
-       task: fffffe03e81d1400 ti: fffffe03f01f8000 task.ti: fffffe03f01f8000
-       PC is at __cpu_flush_kern_tlb_range+0xc/0x40
-       LR is at __purge_vmap_area_lazy+0x28c/0x3ac
-       pc : [<fffffe000009c5cc>] lr : [<fffffe0000182710>] pstate: 80000145
-       sp : fffffe03f01fbb70
-       x29: fffffe03f01fbb70 x28: fffffe03f01f8000
-       x27: fffffe0000b19000 x26: 00000000000000d0
-       x25: 000000000000001c x24: fffffe03f01fbc50
-       x23: fffffe03f01fbc58 x22: fffffe03f01fbc10
-       x21: fffffe0000b2a3f8 x20: 0000000000000802
-       x19: fffffe0000b2a3c8 x18: 000003fffdf52710
-       x17: 000003ff9d8bb910 x16: fffffe000050fbfc
-       x15: 0000000000005735 x14: 000003ff9d7e1a5c
-       x13: 0000000000000000 x12: 000003ff9d7e1a5c
-       x11: 0000000000000007 x10: fffffe0000c09af0
-       x9 : fffffe0000ad1000 x8 : 000000000000005c
-       x7 : fffffe03e8624000 x6 : 0000000000000000
-       x5 : 0000000000000000 x4 : 0000000000000000
-       x3 : fffffe0000c09cc8 x2 : 0000000000000000
-       x1 : 000fffffdfffca80 x0 : 000fffffcd742150
-    
-    The __cpu_flush_kern_tlb_range() function looks like:
-    
-      ENTRY(__cpu_flush_kern_tlb_range)
-    	dsb	sy
-    	lsr	x0, x0, #12
-    	lsr	x1, x1, #12
-      1:	tlbi	vaae1is, x0
-    	add	x0, x0, #1
-    	cmp	x0, x1
-    	b.lo	1b
-    	dsb	sy
-    	isb
-    	ret
-      ENDPROC(__cpu_flush_kern_tlb_range)
-    
-    The above soft lockup shows the PC at tlbi insn with:
-    
-      x0 = 0x000fffffcd742150
-      x1 = 0x000fffffdfffca80
-    
-    So __cpu_flush_kern_tlb_range has 0x128ba930 tlbi flushes left
-    after it has already been looping for 23 seconds!.
-    
-    Looking up one frame at __purge_vmap_area_lazy(), there is:
-    
-    	...
-    	list_for_each_entry_rcu(va, &vmap_area_list, list) {
-    		if (va->flags & VM_LAZY_FREE) {
-    			if (va->va_start < *start)
-    				*start = va->va_start;
-    			if (va->va_end > *end)
-    				*end = va->va_end;
-    			nr += (va->va_end - va->va_start) >> PAGE_SHIFT;
-    			list_add_tail(&va->purge_list, &valist);
-    			va->flags |= VM_LAZY_FREEING;
-    			va->flags &= ~VM_LAZY_FREE;
-    		}
-    	}
-    	...
-    	if (nr || force_flush)
-    		flush_tlb_kernel_range(*start, *end);
-    
-    So if two areas are being freed, the range passed to
-    flush_tlb_kernel_range() may be as large as the vmalloc
-    space. For arm64, this is ~240GB for 4k pagesize and ~2TB
-    for 64kpage size.
-    
-    This patch works around this problem by adding a loop limit.
-    If the range is larger than the limit, use flush_tlb_all()
-    rather than flushing based on individual pages. The limit
-    chosen is arbitrary as the TLB size is implementation
-    specific and not accessible in an architected way. The aim
-    of the arbitrary limit is to avoid soft lockup.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-    [catalin.marinas@arm.com: commit log update]
-    [catalin.marinas@arm.com: marginal optimisation]
-    [catalin.marinas@arm.com: changed to MAX_TLB_RANGE and added comment]
-    Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
-
 diff --git a/Documentation/arm64/booting.txt b/Documentation/arm64/booting.txt
-index 37fc4f6..da1d4bf 100644
+index 85af34d..f3c05b5 100644
 --- a/Documentation/arm64/booting.txt
 +++ b/Documentation/arm64/booting.txt
-@@ -141,6 +141,14 @@ Before jumping into the kernel, the following conditions must be met:
+@@ -168,6 +168,14 @@ Before jumping into the kernel, the following conditions must be met:
    the kernel image will be entered must be initialised by software at a
    higher exception level to prevent execution in an UNKNOWN state.
  
@@ -1200,10 +239,10 @@ index 0000000..e19fdb8
 +		status = "ok";
 +	};
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 86efa7e..14a3ef1 100644
+index 0f066dd..5a10717 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -699,6 +699,14 @@ S:	Maintained
+@@ -701,6 +701,14 @@ S:	Maintained
  F:	drivers/net/appletalk/
  F:	net/appletalk/
  
@@ -1218,7 +257,7 @@ index 86efa7e..14a3ef1 100644
  APTINA CAMERA SENSOR PLL
  M:	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
  L:	linux-media@vger.kernel.org
-@@ -6851,6 +6859,13 @@ S:	Maintained
+@@ -6861,6 +6869,13 @@ S:	Maintained
  F:	Documentation/devicetree/bindings/pci/host-generic-pci.txt
  F:	drivers/pci/host/pci-host-generic.c
  
@@ -1342,18 +381,10 @@ index 76af9302..e4eaf30 100644
  1:	ldr	r6, [r3], #4
  	str	r6, [r2], #4
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 839f48c..23871dd 100644
+index b0f9c9d..be54ce2 100644
 --- a/arch/arm64/Kconfig
 +++ b/arch/arm64/Kconfig
-@@ -11,6 +11,7 @@ config ARM64
- 	select ARM_AMBA
- 	select ARM_ARCH_TIMER
- 	select ARM_GIC
-+	select ARM_GIC_V3
- 	select BUILDTIME_EXTABLE_SORT
- 	select CLONE_BACKWARDS
- 	select COMMON_CLK
-@@ -76,7 +77,7 @@ config MMU
+@@ -80,7 +80,7 @@ config MMU
  	def_bool y
  
  config NO_IOPORT_MAP
@@ -1362,7 +393,7 @@ index 839f48c..23871dd 100644
  
  config STACKTRACE_SUPPORT
  	def_bool y
-@@ -151,6 +152,23 @@ menu "Bus support"
+@@ -155,6 +155,23 @@ menu "Bus support"
  config ARM_AMBA
  	bool
  
@@ -1915,60 +946,6 @@ index 0000000..3f7856e
 +
 +#endif  /* __KERNEL__ */
 +#endif  /* __ASM_PCI_H */
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index b9349c4..ecbd081 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -98,8 +98,8 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
- 	dsb(ish);
- }
- 
--static inline void flush_tlb_range(struct vm_area_struct *vma,
--					unsigned long start, unsigned long end)
-+static inline void __flush_tlb_range(struct vm_area_struct *vma,
-+				     unsigned long start, unsigned long end)
- {
- 	unsigned long asid = (unsigned long)ASID(vma->vm_mm) << 48;
- 	unsigned long addr;
-@@ -112,7 +112,7 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
- 	dsb(ish);
- }
- 
--static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-+static inline void __flush_tlb_kernel_range(unsigned long start, unsigned long end)
- {
- 	unsigned long addr;
- 	start >>= 12;
-@@ -125,6 +125,29 @@ static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end
- }
- 
- /*
-+ * This is meant to avoid soft lock-ups on large TLB flushing ranges and not
-+ * necessarily a performance improvement.
-+ */
-+#define MAX_TLB_RANGE	(1024UL << PAGE_SHIFT)
-+
-+static inline void flush_tlb_range(struct vm_area_struct *vma,
-+				   unsigned long start, unsigned long end)
-+{
-+	if ((end - start) <= MAX_TLB_RANGE)
-+		__flush_tlb_range(vma, start, end);
-+	else
-+		flush_tlb_mm(vma->vm_mm);
-+}
-+
-+static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-+{
-+	if ((end - start) <= MAX_TLB_RANGE)
-+		__flush_tlb_kernel_range(start, end);
-+	else
-+		flush_tlb_all();
-+}
-+
-+/*
-  * On AArch64, the cache coherency is handled via the set_pte_at() function.
-  */
- static inline void update_mmu_cache(struct vm_area_struct *vma,
 diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
 index 215ad46..7a5df52 100644
 --- a/arch/arm64/include/asm/virt.h
@@ -1985,7 +962,7 @@ index 215ad46..7a5df52 100644
  
  #endif /* ! __ASM__VIRT_H */
 diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index cdaedad..36b117a 100644
+index df7ef87..1ed5a06 100644
 --- a/arch/arm64/kernel/Makefile
 +++ b/arch/arm64/kernel/Makefile
 @@ -29,6 +29,7 @@ arm64-obj-$(CONFIG_ARM64_CPU_SUSPEND)	+= sleep.o suspend.o
@@ -2033,10 +1010,10 @@ index 646f888..e74654c 100644
    DEFINE(KVM_VTTBR,		offsetof(struct kvm, arch.vttbr));
    DEFINE(KVM_VGIC_VCTRL,	offsetof(struct kvm, arch.vgic.vctrl_base));
 diff --git a/arch/arm64/kernel/efi-stub.c b/arch/arm64/kernel/efi-stub.c
-index e786e6c..320ef48 100644
+index 1317fef..d27dd98 100644
 --- a/arch/arm64/kernel/efi-stub.c
 +++ b/arch/arm64/kernel/efi-stub.c
-@@ -58,20 +58,16 @@ static efi_status_t handle_kernel_image(efi_system_table_t *sys_table,
+@@ -28,20 +28,16 @@ efi_status_t handle_kernel_image(efi_system_table_t *sys_table,
  	kernel_size = _edata - _text;
  	if (*image_addr != (dram_base + TEXT_OFFSET)) {
  		kernel_memsize = kernel_size + (_end - _edata);
@@ -2053,7 +1030,7 @@ index e786e6c..320ef48 100644
 -		if (*image_addr != (dram_base + TEXT_OFFSET)) {
 -			pr_efi_err(sys_table, "Failed to alloc kernel memory\n");
 -			efi_free(sys_table, kernel_memsize, *image_addr);
--			return EFI_ERROR;
+-			return EFI_LOAD_ERROR;
 -		}
 -		*image_size = kernel_memsize;
 +		memcpy((void *)*reserve_addr + TEXT_OFFSET, (void *)*image_addr,
@@ -2064,11 +1041,11 @@ index e786e6c..320ef48 100644
  
  
 diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
-index 14db1f6..453b7f8 100644
+index e72f310..72ee260 100644
 --- a/arch/arm64/kernel/efi.c
 +++ b/arch/arm64/kernel/efi.c
-@@ -467,3 +467,14 @@ static int __init arm64_enter_virtual_mode(void)
- 	return 0;
+@@ -475,3 +475,14 @@ err_unmap:
+ 	return -1;
  }
  early_initcall(arm64_enter_virtual_mode);
 +
@@ -2083,18 +1060,10 @@ index 14db1f6..453b7f8 100644
 +	return pm_power_off == NULL;
 +}
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index a2c1195..8df59be 100644
+index 144f105..b6ca95a 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
-@@ -22,6 +22,7 @@
- 
- #include <linux/linkage.h>
- #include <linux/init.h>
-+#include <linux/irqchip/arm-gic-v3.h>
- 
- #include <asm/assembler.h>
- #include <asm/ptrace.h>
-@@ -156,7 +157,7 @@ optional_header:
+@@ -151,7 +151,7 @@ optional_header:
  	.short	0x20b				// PE32+ format
  	.byte	0x02				// MajorLinkerVersion
  	.byte	0x14				// MinorLinkerVersion
@@ -2103,7 +1072,7 @@ index a2c1195..8df59be 100644
  	.long	0				// SizeOfInitializedData
  	.long	0				// SizeOfUninitializedData
  	.long	efi_stub_entry - efi_head	// AddressOfEntryPoint
-@@ -174,7 +175,7 @@ extra_header_fields:
+@@ -169,7 +169,7 @@ extra_header_fields:
  	.short	0				// MinorSubsystemVersion
  	.long	0				// Win32VersionValue
  
@@ -2112,7 +1081,7 @@ index a2c1195..8df59be 100644
  
  	// Everything before the kernel image is considered part of the header
  	.long	stext - efi_head		// SizeOfHeaders
-@@ -221,7 +222,7 @@ section_table:
+@@ -216,7 +216,7 @@ section_table:
  	.byte	0
  	.byte	0
  	.byte	0        		// end of 0 padding of section name
@@ -2121,42 +1090,6 @@ index a2c1195..8df59be 100644
  	.long	stext - efi_head	// VirtualAddress
  	.long	_edata - stext		// SizeOfRawData
  	.long	stext - efi_head	// PointerToRawData
-@@ -295,6 +296,23 @@ CPU_LE(	bic	x0, x0, #(3 << 24)	)	// Clear the EE and E0E bits for EL1
- 	msr	cnthctl_el2, x0
- 	msr	cntvoff_el2, xzr		// Clear virtual offset
- 
-+#ifdef CONFIG_ARM_GIC_V3
-+	/* GICv3 system register access */
-+	mrs	x0, id_aa64pfr0_el1
-+	ubfx	x0, x0, #24, #4
-+	cmp	x0, #1
-+	b.ne	3f
-+
-+	mrs	x0, ICC_SRE_EL2
-+	orr	x0, x0, #ICC_SRE_EL2_SRE	// Set ICC_SRE_EL2.SRE==1
-+	orr	x0, x0, #ICC_SRE_EL2_ENABLE	// Set ICC_SRE_EL2.Enable==1
-+	msr	ICC_SRE_EL2, x0
-+	isb					// Make sure SRE is now set
-+	msr	ICH_HCR_EL2, xzr		// Reset ICC_HCR_EL2 to defaults
-+
-+3:
-+#endif
-+
- 	/* Populate ID registers. */
- 	mrs	x0, midr_el1
- 	mrs	x1, mpidr_el1
-diff --git a/arch/arm64/kernel/hyp-stub.S b/arch/arm64/kernel/hyp-stub.S
-index 0959611..a272f33 100644
---- a/arch/arm64/kernel/hyp-stub.S
-+++ b/arch/arm64/kernel/hyp-stub.S
-@@ -19,6 +19,7 @@
- 
- #include <linux/init.h>
- #include <linux/linkage.h>
-+#include <linux/irqchip/arm-gic-v3.h>
- 
- #include <asm/assembler.h>
- #include <asm/ptrace.h>
 diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
 new file mode 100644
 index 0000000..955d6d1
@@ -2202,7 +1135,7 @@ index 0000000..955d6d1
 +	return res->start;
 +}
 diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 43b7c34..ec5cbbe 100644
+index 1309d64..8ff5208 100644
 --- a/arch/arm64/kernel/process.c
 +++ b/arch/arm64/kernel/process.c
 @@ -43,6 +43,7 @@
@@ -2213,7 +1146,7 @@ index 43b7c34..ec5cbbe 100644
  
  #include <asm/compat.h>
  #include <asm/cacheflush.h>
-@@ -176,6 +177,11 @@ void machine_restart(char *cmd)
+@@ -182,6 +183,11 @@ void machine_restart(char *cmd)
  		arm_pm_restart(reboot_mode, cmd);
  
  	/*
@@ -2613,7 +1546,7 @@ index 0000000..ae21177
 +	.popsection
 diff --git a/arch/arm64/kvm/vgic-v3-switch.S b/arch/arm64/kvm/vgic-v3-switch.S
 new file mode 100644
-index 0000000..21e68f6
+index 0000000..d160469
 --- /dev/null
 +++ b/arch/arm64/kvm/vgic-v3-switch.S
 @@ -0,0 +1,267 @@
@@ -2667,11 +1600,11 @@ index 0000000..21e68f6
 +	dsb	st
 +
 +	// Save all interesting registers
-+	mrs	x4, ICH_HCR_EL2
-+	mrs	x5, ICH_VMCR_EL2
-+	mrs	x6, ICH_MISR_EL2
-+	mrs	x7, ICH_EISR_EL2
-+	mrs	x8, ICH_ELSR_EL2
++	mrs_s	x4, ICH_HCR_EL2
++	mrs_s	x5, ICH_VMCR_EL2
++	mrs_s	x6, ICH_MISR_EL2
++	mrs_s	x7, ICH_EISR_EL2
++	mrs_s	x8, ICH_ELSR_EL2
 +
 +	str	w4, [x3, #VGIC_V3_CPU_HCR]
 +	str	w5, [x3, #VGIC_V3_CPU_VMCR]
@@ -2679,9 +1612,9 @@ index 0000000..21e68f6
 +	str	w7, [x3, #VGIC_V3_CPU_EISR]
 +	str	w8, [x3, #VGIC_V3_CPU_ELRSR]
 +
-+	msr	ICH_HCR_EL2, xzr
++	msr_s	ICH_HCR_EL2, xzr
 +
-+	mrs	x21, ICH_VTR_EL2
++	mrs_s	x21, ICH_VTR_EL2
 +	mvn	w22, w21
 +	ubfiz	w23, w22, 2, 4	// w23 = (15 - ListRegs) * 4
 +
@@ -2690,22 +1623,22 @@ index 0000000..21e68f6
 +	br	x24
 +
 +1:
-+	mrs	x20, ICH_LR15_EL2
-+	mrs	x19, ICH_LR14_EL2
-+	mrs	x18, ICH_LR13_EL2
-+	mrs	x17, ICH_LR12_EL2
-+	mrs	x16, ICH_LR11_EL2
-+	mrs	x15, ICH_LR10_EL2
-+	mrs	x14, ICH_LR9_EL2
-+	mrs	x13, ICH_LR8_EL2
-+	mrs	x12, ICH_LR7_EL2
-+	mrs	x11, ICH_LR6_EL2
-+	mrs	x10, ICH_LR5_EL2
-+	mrs	x9, ICH_LR4_EL2
-+	mrs	x8, ICH_LR3_EL2
-+	mrs	x7, ICH_LR2_EL2
-+	mrs	x6, ICH_LR1_EL2
-+	mrs	x5, ICH_LR0_EL2
++	mrs_s	x20, ICH_LR15_EL2
++	mrs_s	x19, ICH_LR14_EL2
++	mrs_s	x18, ICH_LR13_EL2
++	mrs_s	x17, ICH_LR12_EL2
++	mrs_s	x16, ICH_LR11_EL2
++	mrs_s	x15, ICH_LR10_EL2
++	mrs_s	x14, ICH_LR9_EL2
++	mrs_s	x13, ICH_LR8_EL2
++	mrs_s	x12, ICH_LR7_EL2
++	mrs_s	x11, ICH_LR6_EL2
++	mrs_s	x10, ICH_LR5_EL2
++	mrs_s	x9, ICH_LR4_EL2
++	mrs_s	x8, ICH_LR3_EL2
++	mrs_s	x7, ICH_LR2_EL2
++	mrs_s	x6, ICH_LR1_EL2
++	mrs_s	x5, ICH_LR0_EL2
 +
 +	adr	x24, 1f
 +	add	x24, x24, x23
@@ -2732,34 +1665,34 @@ index 0000000..21e68f6
 +	tbnz	w21, #29, 6f	// 6 bits
 +	tbz	w21, #30, 5f	// 5 bits
 +				// 7 bits
-+	mrs	x20, ICH_AP0R3_EL2
++	mrs_s	x20, ICH_AP0R3_EL2
 +	str	w20, [x3, #(VGIC_V3_CPU_AP0R + 3*4)]
-+	mrs	x19, ICH_AP0R2_EL2
++	mrs_s	x19, ICH_AP0R2_EL2
 +	str	w19, [x3, #(VGIC_V3_CPU_AP0R + 2*4)]
-+6:	mrs	x18, ICH_AP0R1_EL2
++6:	mrs_s	x18, ICH_AP0R1_EL2
 +	str	w18, [x3, #(VGIC_V3_CPU_AP0R + 1*4)]
-+5:	mrs	x17, ICH_AP0R0_EL2
++5:	mrs_s	x17, ICH_AP0R0_EL2
 +	str	w17, [x3, #VGIC_V3_CPU_AP0R]
 +
 +	tbnz	w21, #29, 6f	// 6 bits
 +	tbz	w21, #30, 5f	// 5 bits
 +				// 7 bits
-+	mrs	x20, ICH_AP1R3_EL2
++	mrs_s	x20, ICH_AP1R3_EL2
 +	str	w20, [x3, #(VGIC_V3_CPU_AP1R + 3*4)]
-+	mrs	x19, ICH_AP1R2_EL2
++	mrs_s	x19, ICH_AP1R2_EL2
 +	str	w19, [x3, #(VGIC_V3_CPU_AP1R + 2*4)]
-+6:	mrs	x18, ICH_AP1R1_EL2
++6:	mrs_s	x18, ICH_AP1R1_EL2
 +	str	w18, [x3, #(VGIC_V3_CPU_AP1R + 1*4)]
-+5:	mrs	x17, ICH_AP1R0_EL2
++5:	mrs_s	x17, ICH_AP1R0_EL2
 +	str	w17, [x3, #VGIC_V3_CPU_AP1R]
 +
 +	// Restore SRE_EL1 access and re-enable SRE at EL1.
-+	mrs	x5, ICC_SRE_EL2
++	mrs_s	x5, ICC_SRE_EL2
 +	orr	x5, x5, #ICC_SRE_EL2_ENABLE
-+	msr	ICC_SRE_EL2, x5
++	msr_s	ICC_SRE_EL2, x5
 +	isb
 +	mov	x5, #1
-+	msr	ICC_SRE_EL1, x5
++	msr_s	ICC_SRE_EL1, x5
 +.endm
 +
 +/*
@@ -2769,7 +1702,7 @@ index 0000000..21e68f6
 +.macro	restore_vgic_v3_state
 +	// Disable SRE_EL1 access. Necessary, otherwise
 +	// ICH_VMCR_EL2.VFIQEn becomes one, and FIQ happens...
-+	msr	ICC_SRE_EL1, xzr
++	msr_s	ICC_SRE_EL1, xzr
 +	isb
 +
 +	// Compute the address of struct vgic_cpu
@@ -2779,34 +1712,34 @@ index 0000000..21e68f6
 +	ldr	w4, [x3, #VGIC_V3_CPU_HCR]
 +	ldr	w5, [x3, #VGIC_V3_CPU_VMCR]
 +
-+	msr	ICH_HCR_EL2, x4
-+	msr	ICH_VMCR_EL2, x5
++	msr_s	ICH_HCR_EL2, x4
++	msr_s	ICH_VMCR_EL2, x5
 +
-+	mrs	x21, ICH_VTR_EL2
++	mrs_s	x21, ICH_VTR_EL2
 +
 +	tbnz	w21, #29, 6f	// 6 bits
 +	tbz	w21, #30, 5f	// 5 bits
 +				// 7 bits
 +	ldr	w20, [x3, #(VGIC_V3_CPU_AP1R + 3*4)]
-+	msr	ICH_AP1R3_EL2, x20
++	msr_s	ICH_AP1R3_EL2, x20
 +	ldr	w19, [x3, #(VGIC_V3_CPU_AP1R + 2*4)]
-+	msr	ICH_AP1R2_EL2, x19
++	msr_s	ICH_AP1R2_EL2, x19
 +6:	ldr	w18, [x3, #(VGIC_V3_CPU_AP1R + 1*4)]
-+	msr	ICH_AP1R1_EL2, x18
++	msr_s	ICH_AP1R1_EL2, x18
 +5:	ldr	w17, [x3, #VGIC_V3_CPU_AP1R]
-+	msr	ICH_AP1R0_EL2, x17
++	msr_s	ICH_AP1R0_EL2, x17
 +
 +	tbnz	w21, #29, 6f	// 6 bits
 +	tbz	w21, #30, 5f	// 5 bits
 +				// 7 bits
 +	ldr	w20, [x3, #(VGIC_V3_CPU_AP0R + 3*4)]
-+	msr	ICH_AP0R3_EL2, x20
++	msr_s	ICH_AP0R3_EL2, x20
 +	ldr	w19, [x3, #(VGIC_V3_CPU_AP0R + 2*4)]
-+	msr	ICH_AP0R2_EL2, x19
++	msr_s	ICH_AP0R2_EL2, x19
 +6:	ldr	w18, [x3, #(VGIC_V3_CPU_AP0R + 1*4)]
-+	msr	ICH_AP0R1_EL2, x18
++	msr_s	ICH_AP0R1_EL2, x18
 +5:	ldr	w17, [x3, #VGIC_V3_CPU_AP0R]
-+	msr	ICH_AP0R0_EL2, x17
++	msr_s	ICH_AP0R0_EL2, x17
 +
 +	and	w22, w21, #0xf
 +	mvn	w22, w21
@@ -2839,22 +1772,22 @@ index 0000000..21e68f6
 +	br	x24
 +
 +1:
-+	msr	ICH_LR15_EL2, x20
-+	msr	ICH_LR14_EL2, x19
-+	msr	ICH_LR13_EL2, x18
-+	msr	ICH_LR12_EL2, x17
-+	msr	ICH_LR11_EL2, x16
-+	msr	ICH_LR10_EL2, x15
-+	msr	ICH_LR9_EL2,  x14
-+	msr	ICH_LR8_EL2,  x13
-+	msr	ICH_LR7_EL2,  x12
-+	msr	ICH_LR6_EL2,  x11
-+	msr	ICH_LR5_EL2,  x10
-+	msr	ICH_LR4_EL2,   x9
-+	msr	ICH_LR3_EL2,   x8
-+	msr	ICH_LR2_EL2,   x7
-+	msr	ICH_LR1_EL2,   x6
-+	msr	ICH_LR0_EL2,   x5
++	msr_s	ICH_LR15_EL2, x20
++	msr_s	ICH_LR14_EL2, x19
++	msr_s	ICH_LR13_EL2, x18
++	msr_s	ICH_LR12_EL2, x17
++	msr_s	ICH_LR11_EL2, x16
++	msr_s	ICH_LR10_EL2, x15
++	msr_s	ICH_LR9_EL2,  x14
++	msr_s	ICH_LR8_EL2,  x13
++	msr_s	ICH_LR7_EL2,  x12
++	msr_s	ICH_LR6_EL2,  x11
++	msr_s	ICH_LR5_EL2,  x10
++	msr_s	ICH_LR4_EL2,   x9
++	msr_s	ICH_LR3_EL2,   x8
++	msr_s	ICH_LR2_EL2,   x7
++	msr_s	ICH_LR1_EL2,   x6
++	msr_s	ICH_LR0_EL2,   x5
 +
 +	// Ensure that the above will have reached the
 +	// (re)distributors. This ensure the guest will read
@@ -2863,9 +1796,9 @@ index 0000000..21e68f6
 +	dsb	sy
 +
 +	// Prevent the guest from touching the GIC system registers
-+	mrs	x5, ICC_SRE_EL2
++	mrs_s	x5, ICC_SRE_EL2
 +	and	x5, x5, #~ICC_SRE_EL2_ENABLE
-+	msr	ICC_SRE_EL2, x5
++	msr_s	ICC_SRE_EL2, x5
 +.endm
 +
 +ENTRY(__save_vgic_v3_state)
@@ -2879,24 +1812,11 @@ index 0000000..21e68f6
 +ENDPROC(__restore_vgic_v3_state)
 +
 +ENTRY(__vgic_v3_get_ich_vtr_el2)
-+	mrs	x0, ICH_VTR_EL2
++	mrs_s	x0, ICH_VTR_EL2
 +	ret
 +ENDPROC(__vgic_v3_get_ich_vtr_el2)
 +
 +	.popsection
-diff --git a/arch/ia64/kernel/process.c b/arch/ia64/kernel/process.c
-index 55d4ba4..deed6fa 100644
---- a/arch/ia64/kernel/process.c
-+++ b/arch/ia64/kernel/process.c
-@@ -662,7 +662,7 @@ void
- machine_restart (char *restart_cmd)
- {
- 	(void) notify_die(DIE_MACHINE_RESTART, restart_cmd, NULL, 0, 0, 0);
--	(*efi.reset_system)(EFI_RESET_WARM, 0, 0, NULL);
-+	efi_reboot(REBOOT_WARM, NULL);
- }
- 
- void
 diff --git a/arch/ia64/kernel/time.c b/arch/ia64/kernel/time.c
 index 71c52bc..a149c67 100644
 --- a/arch/ia64/kernel/time.c
@@ -2923,704 +1843,11 @@ index 71c52bc..a149c67 100644
  void read_persistent_clock(struct timespec *ts)
  {
  	efi_gettimeofday(ts);
-diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
-index 1eb5f64..5d71d0e 100644
---- a/arch/x86/include/asm/efi.h
-+++ b/arch/x86/include/asm/efi.h
-@@ -104,6 +104,8 @@ extern void __init runtime_code_page_mkexec(void);
- extern void __init efi_runtime_mkexec(void);
- extern void __init efi_dump_pagetable(void);
- extern void __init efi_apply_memmap_quirks(void);
-+extern int __init efi_reuse_config(u64 tables, int nr_tables);
-+extern void efi_delete_dummy_variable(void);
- 
- struct efi_setup_data {
- 	u64 fw_vendor;
-@@ -156,6 +158,8 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
- 	return EFI_SUCCESS;
- }
- #endif /* CONFIG_EFI_MIXED */
-+
-+extern bool efi_reboot_required(void);
- #else
- /*
-  * IF EFI is not configured, have the EFI calls return -ENOSYS.
-@@ -168,6 +172,10 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
- #define efi_call5(_f, _a1, _a2, _a3, _a4, _a5)		(-ENOSYS)
- #define efi_call6(_f, _a1, _a2, _a3, _a4, _a5, _a6)	(-ENOSYS)
- static inline void parse_efi_setup(u64 phys_addr, u32 data_len) {}
-+static inline bool efi_reboot_required(void)
-+{
-+	return false;
-+}
- #endif /* CONFIG_EFI */
- 
- #endif /* _ASM_X86_EFI_H */
-diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
-index 52b1157..17962e6 100644
---- a/arch/x86/kernel/reboot.c
-+++ b/arch/x86/kernel/reboot.c
-@@ -28,6 +28,7 @@
- #include <linux/mc146818rtc.h>
- #include <asm/realmode.h>
- #include <asm/x86_init.h>
-+#include <asm/efi.h>
- 
- /*
-  * Power off function, if any
-@@ -401,12 +402,25 @@ static struct dmi_system_id __initdata reboot_dmi_table[] = {
- 
- static int __init reboot_init(void)
- {
-+	int rv;
-+
- 	/*
- 	 * Only do the DMI check if reboot_type hasn't been overridden
- 	 * on the command line
- 	 */
--	if (reboot_default)
--		dmi_check_system(reboot_dmi_table);
-+	if (!reboot_default)
-+		return 0;
-+
-+	/*
-+	 * The DMI quirks table takes precedence. If no quirks entry
-+	 * matches and the ACPI Hardware Reduced bit is set, force EFI
-+	 * reboot.
-+	 */
-+	rv = dmi_check_system(reboot_dmi_table);
-+
-+	if (!rv && efi_reboot_required())
-+		reboot_type = BOOT_EFI;
-+
- 	return 0;
- }
- core_initcall(reboot_init);
-@@ -528,11 +542,7 @@ static void native_machine_emergency_restart(void)
- 			break;
- 
- 		case BOOT_EFI:
--			if (efi_enabled(EFI_RUNTIME_SERVICES))
--				efi.reset_system(reboot_mode == REBOOT_WARM ?
--						 EFI_RESET_WARM :
--						 EFI_RESET_COLD,
--						 EFI_SUCCESS, 0, NULL);
-+			efi_reboot(reboot_mode, NULL);
- 			reboot_type = BOOT_BIOS;
- 			break;
- 
-diff --git a/arch/x86/platform/efi/Makefile b/arch/x86/platform/efi/Makefile
-index d51045a..2846aaa 100644
---- a/arch/x86/platform/efi/Makefile
-+++ b/arch/x86/platform/efi/Makefile
-@@ -1,4 +1,4 @@
--obj-$(CONFIG_EFI) 		+= efi.o efi_$(BITS).o efi_stub_$(BITS).o
-+obj-$(CONFIG_EFI) 		+= quirks.o efi.o efi_$(BITS).o efi_stub_$(BITS).o
- obj-$(CONFIG_ACPI_BGRT) += efi-bgrt.o
- obj-$(CONFIG_EARLY_PRINTK_EFI)	+= early_printk.o
- obj-$(CONFIG_EFI_MIXED)		+= efi_thunk_$(BITS).o
-diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index 87fc96b..f852443 100644
---- a/arch/x86/platform/efi/efi.c
-+++ b/arch/x86/platform/efi/efi.c
-@@ -56,13 +56,6 @@
- 
- #define EFI_DEBUG
- 
--#define EFI_MIN_RESERVE 5120
--
--#define EFI_DUMMY_GUID \
--	EFI_GUID(0x4424ac57, 0xbe4b, 0x47dd, 0x9e, 0x97, 0xed, 0x50, 0xf0, 0x9f, 0x92, 0xa9)
--
--static efi_char16_t efi_dummy_name[6] = { 'D', 'U', 'M', 'M', 'Y', 0 };
--
- struct efi_memory_map memmap;
- 
- static struct efi efi_phys __initdata;
-@@ -95,15 +88,6 @@ static int __init setup_add_efi_memmap(char *arg)
- }
- early_param("add_efi_memmap", setup_add_efi_memmap);
- 
--static bool efi_no_storage_paranoia;
--
--static int __init setup_storage_paranoia(char *arg)
--{
--	efi_no_storage_paranoia = true;
--	return 0;
--}
--early_param("efi_no_storage_paranoia", setup_storage_paranoia);
--
- static efi_status_t virt_efi_get_time(efi_time_t *tm, efi_time_cap_t *tc)
- {
- 	unsigned long flags;
-@@ -392,37 +376,6 @@ static void __init print_efi_memmap(void)
- #endif  /*  EFI_DEBUG  */
- }
- 
--void __init efi_reserve_boot_services(void)
--{
--	void *p;
--
--	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
--		efi_memory_desc_t *md = p;
--		u64 start = md->phys_addr;
--		u64 size = md->num_pages << EFI_PAGE_SHIFT;
--
--		if (md->type != EFI_BOOT_SERVICES_CODE &&
--		    md->type != EFI_BOOT_SERVICES_DATA)
--			continue;
--		/* Only reserve where possible:
--		 * - Not within any already allocated areas
--		 * - Not over any memory area (really needed, if above?)
--		 * - Not within any part of the kernel
--		 * - Not the bios reserved area
--		*/
--		if ((start + size > __pa_symbol(_text)
--				&& start <= __pa_symbol(_end)) ||
--			!e820_all_mapped(start, start+size, E820_RAM) ||
--			memblock_is_region_reserved(start, size)) {
--			/* Could not reserve, skip it */
--			md->num_pages = 0;
--			memblock_dbg("Could not reserve boot range [0x%010llx-0x%010llx]\n",
--				     start, start+size-1);
--		} else
--			memblock_reserve(start, size);
--	}
--}
--
- void __init efi_unmap_memmap(void)
- {
- 	clear_bit(EFI_MEMMAP, &efi.flags);
-@@ -432,29 +385,6 @@ void __init efi_unmap_memmap(void)
- 	}
- }
- 
--void __init efi_free_boot_services(void)
--{
--	void *p;
--
--	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
--		efi_memory_desc_t *md = p;
--		unsigned long long start = md->phys_addr;
--		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
--
--		if (md->type != EFI_BOOT_SERVICES_CODE &&
--		    md->type != EFI_BOOT_SERVICES_DATA)
--			continue;
--
--		/* Could not reserve boot area */
--		if (!size)
--			continue;
--
--		free_bootmem_late(start, size);
--	}
--
--	efi_unmap_memmap();
--}
--
- static int __init efi_systab_init(void *phys)
- {
- 	if (efi_enabled(EFI_64BIT)) {
-@@ -649,62 +579,6 @@ static int __init efi_memmap_init(void)
- 	return 0;
- }
- 
--/*
-- * A number of config table entries get remapped to virtual addresses
-- * after entering EFI virtual mode. However, the kexec kernel requires
-- * their physical addresses therefore we pass them via setup_data and
-- * correct those entries to their respective physical addresses here.
-- *
-- * Currently only handles smbios which is necessary for some firmware
-- * implementation.
-- */
--static int __init efi_reuse_config(u64 tables, int nr_tables)
--{
--	int i, sz, ret = 0;
--	void *p, *tablep;
--	struct efi_setup_data *data;
--
--	if (!efi_setup)
--		return 0;
--
--	if (!efi_enabled(EFI_64BIT))
--		return 0;
--
--	data = early_memremap(efi_setup, sizeof(*data));
--	if (!data) {
--		ret = -ENOMEM;
--		goto out;
--	}
--
--	if (!data->smbios)
--		goto out_memremap;
--
--	sz = sizeof(efi_config_table_64_t);
--
--	p = tablep = early_memremap(tables, nr_tables * sz);
--	if (!p) {
--		pr_err("Could not map Configuration table!\n");
--		ret = -ENOMEM;
--		goto out_memremap;
--	}
--
--	for (i = 0; i < efi.systab->nr_tables; i++) {
--		efi_guid_t guid;
--
--		guid = ((efi_config_table_64_t *)p)->guid;
--
--		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
--			((efi_config_table_64_t *)p)->table = data->smbios;
--		p += sz;
--	}
--	early_iounmap(tablep, nr_tables * sz);
--
--out_memremap:
--	early_iounmap(data, sizeof(*data));
--out:
--	return ret;
--}
--
- void __init efi_init(void)
- {
- 	efi_char16_t *c16;
-@@ -1057,11 +931,7 @@ static void __init kexec_enter_virtual_mode(void)
- 		runtime_code_page_mkexec();
- 
- 	/* clean DUMMY object */
--	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
--			 EFI_VARIABLE_NON_VOLATILE |
--			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
--			 EFI_VARIABLE_RUNTIME_ACCESS,
--			 0, NULL);
-+	efi_delete_dummy_variable();
- #endif
- }
- 
-@@ -1179,11 +1049,7 @@ static void __init __efi_enter_virtual_mode(void)
- 	free_pages((unsigned long)new_memmap, pg_shift);
- 
- 	/* clean DUMMY object */
--	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
--			 EFI_VARIABLE_NON_VOLATILE |
--			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
--			 EFI_VARIABLE_RUNTIME_ACCESS,
--			 0, NULL);
-+	efi_delete_dummy_variable();
- }
- 
- void __init efi_enter_virtual_mode(void)
-@@ -1230,86 +1096,6 @@ u64 efi_mem_attributes(unsigned long phys_addr)
- 	return 0;
- }
- 
--/*
-- * Some firmware implementations refuse to boot if there's insufficient space
-- * in the variable store. Ensure that we never use more than a safe limit.
-- *
-- * Return EFI_SUCCESS if it is safe to write 'size' bytes to the variable
-- * store.
-- */
--efi_status_t efi_query_variable_store(u32 attributes, unsigned long size)
--{
--	efi_status_t status;
--	u64 storage_size, remaining_size, max_size;
--
--	if (!(attributes & EFI_VARIABLE_NON_VOLATILE))
--		return 0;
--
--	status = efi.query_variable_info(attributes, &storage_size,
--					 &remaining_size, &max_size);
--	if (status != EFI_SUCCESS)
--		return status;
--
--	/*
--	 * We account for that by refusing the write if permitting it would
--	 * reduce the available space to under 5KB. This figure was provided by
--	 * Samsung, so should be safe.
--	 */
--	if ((remaining_size - size < EFI_MIN_RESERVE) &&
--		!efi_no_storage_paranoia) {
--
--		/*
--		 * Triggering garbage collection may require that the firmware
--		 * generate a real EFI_OUT_OF_RESOURCES error. We can force
--		 * that by attempting to use more space than is available.
--		 */
--		unsigned long dummy_size = remaining_size + 1024;
--		void *dummy = kzalloc(dummy_size, GFP_ATOMIC);
--
--		if (!dummy)
--			return EFI_OUT_OF_RESOURCES;
--
--		status = efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
--					  EFI_VARIABLE_NON_VOLATILE |
--					  EFI_VARIABLE_BOOTSERVICE_ACCESS |
--					  EFI_VARIABLE_RUNTIME_ACCESS,
--					  dummy_size, dummy);
--
--		if (status == EFI_SUCCESS) {
--			/*
--			 * This should have failed, so if it didn't make sure
--			 * that we delete it...
--			 */
--			efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
--					 EFI_VARIABLE_NON_VOLATILE |
--					 EFI_VARIABLE_BOOTSERVICE_ACCESS |
--					 EFI_VARIABLE_RUNTIME_ACCESS,
--					 0, dummy);
--		}
--
--		kfree(dummy);
--
--		/*
--		 * The runtime code may now have triggered a garbage collection
--		 * run, so check the variable info again
--		 */
--		status = efi.query_variable_info(attributes, &storage_size,
--						 &remaining_size, &max_size);
--
--		if (status != EFI_SUCCESS)
--			return status;
--
--		/*
--		 * There still isn't enough room, so return an error
--		 */
--		if (remaining_size - size < EFI_MIN_RESERVE)
--			return EFI_OUT_OF_RESOURCES;
--	}
--
--	return EFI_SUCCESS;
--}
--EXPORT_SYMBOL_GPL(efi_query_variable_store);
--
- static int __init parse_efi_cmdline(char *str)
- {
- 	if (*str == '=')
-@@ -1321,22 +1107,3 @@ static int __init parse_efi_cmdline(char *str)
- 	return 0;
- }
- early_param("efi", parse_efi_cmdline);
--
--void __init efi_apply_memmap_quirks(void)
--{
--	/*
--	 * Once setup is done earlier, unmap the EFI memory map on mismatched
--	 * firmware/kernel architectures since there is no support for runtime
--	 * services.
--	 */
--	if (!efi_runtime_supported()) {
--		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
--		efi_unmap_memmap();
--	}
--
--	/*
--	 * UV doesn't support the new EFI pagetable mapping yet.
--	 */
--	if (is_uv_system())
--		set_bit(EFI_OLD_MEMMAP, &efi.flags);
--}
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-new file mode 100644
-index 0000000..1b9c4c3
---- /dev/null
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -0,0 +1,290 @@
-+#include <linux/init.h>
-+#include <linux/kernel.h>
-+#include <linux/string.h>
-+#include <linux/time.h>
-+#include <linux/types.h>
-+#include <linux/efi.h>
-+#include <linux/slab.h>
-+#include <linux/memblock.h>
-+#include <linux/bootmem.h>
-+#include <linux/acpi.h>
-+#include <asm/efi.h>
-+#include <asm/uv/uv.h>
-+
-+#define EFI_MIN_RESERVE 5120
-+
-+#define EFI_DUMMY_GUID \
-+	EFI_GUID(0x4424ac57, 0xbe4b, 0x47dd, 0x9e, 0x97, 0xed, 0x50, 0xf0, 0x9f, 0x92, 0xa9)
-+
-+static efi_char16_t efi_dummy_name[6] = { 'D', 'U', 'M', 'M', 'Y', 0 };
-+
-+static bool efi_no_storage_paranoia;
-+
-+/*
-+ * Some firmware implementations refuse to boot if there's insufficient
-+ * space in the variable store. The implementation of garbage collection
-+ * in some FW versions causes stale (deleted) variables to take up space
-+ * longer than intended and space is only freed once the store becomes
-+ * almost completely full.
-+ *
-+ * Enabling this option disables the space checks in
-+ * efi_query_variable_store() and forces garbage collection.
-+ *
-+ * Only enable this option if deleting EFI variables does not free up
-+ * space in your variable store, e.g. if despite deleting variables
-+ * you're unable to create new ones.
-+ */
-+static int __init setup_storage_paranoia(char *arg)
-+{
-+	efi_no_storage_paranoia = true;
-+	return 0;
-+}
-+early_param("efi_no_storage_paranoia", setup_storage_paranoia);
-+
-+/*
-+ * Deleting the dummy variable which kicks off garbage collection
-+*/
-+void efi_delete_dummy_variable(void)
-+{
-+	efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
-+			 EFI_VARIABLE_NON_VOLATILE |
-+			 EFI_VARIABLE_BOOTSERVICE_ACCESS |
-+			 EFI_VARIABLE_RUNTIME_ACCESS,
-+			 0, NULL);
-+}
-+
-+/*
-+ * Some firmware implementations refuse to boot if there's insufficient space
-+ * in the variable store. Ensure that we never use more than a safe limit.
-+ *
-+ * Return EFI_SUCCESS if it is safe to write 'size' bytes to the variable
-+ * store.
-+ */
-+efi_status_t efi_query_variable_store(u32 attributes, unsigned long size)
-+{
-+	efi_status_t status;
-+	u64 storage_size, remaining_size, max_size;
-+
-+	if (!(attributes & EFI_VARIABLE_NON_VOLATILE))
-+		return 0;
-+
-+	status = efi.query_variable_info(attributes, &storage_size,
-+					 &remaining_size, &max_size);
-+	if (status != EFI_SUCCESS)
-+		return status;
-+
-+	/*
-+	 * We account for that by refusing the write if permitting it would
-+	 * reduce the available space to under 5KB. This figure was provided by
-+	 * Samsung, so should be safe.
-+	 */
-+	if ((remaining_size - size < EFI_MIN_RESERVE) &&
-+		!efi_no_storage_paranoia) {
-+
-+		/*
-+		 * Triggering garbage collection may require that the firmware
-+		 * generate a real EFI_OUT_OF_RESOURCES error. We can force
-+		 * that by attempting to use more space than is available.
-+		 */
-+		unsigned long dummy_size = remaining_size + 1024;
-+		void *dummy = kzalloc(dummy_size, GFP_ATOMIC);
-+
-+		if (!dummy)
-+			return EFI_OUT_OF_RESOURCES;
-+
-+		status = efi.set_variable(efi_dummy_name, &EFI_DUMMY_GUID,
-+					  EFI_VARIABLE_NON_VOLATILE |
-+					  EFI_VARIABLE_BOOTSERVICE_ACCESS |
-+					  EFI_VARIABLE_RUNTIME_ACCESS,
-+					  dummy_size, dummy);
-+
-+		if (status == EFI_SUCCESS) {
-+			/*
-+			 * This should have failed, so if it didn't make sure
-+			 * that we delete it...
-+			 */
-+			efi_delete_dummy_variable();
-+		}
-+
-+		kfree(dummy);
-+
-+		/*
-+		 * The runtime code may now have triggered a garbage collection
-+		 * run, so check the variable info again
-+		 */
-+		status = efi.query_variable_info(attributes, &storage_size,
-+						 &remaining_size, &max_size);
-+
-+		if (status != EFI_SUCCESS)
-+			return status;
-+
-+		/*
-+		 * There still isn't enough room, so return an error
-+		 */
-+		if (remaining_size - size < EFI_MIN_RESERVE)
-+			return EFI_OUT_OF_RESOURCES;
-+	}
-+
-+	return EFI_SUCCESS;
-+}
-+EXPORT_SYMBOL_GPL(efi_query_variable_store);
-+
-+/*
-+ * The UEFI specification makes it clear that the operating system is free to do
-+ * whatever it wants with boot services code after ExitBootServices() has been
-+ * called. Ignoring this recommendation a significant bunch of EFI implementations 
-+ * continue calling into boot services code (SetVirtualAddressMap). In order to 
-+ * work around such buggy implementations we reserve boot services region during 
-+ * EFI init and make sure it stays executable. Then, after SetVirtualAddressMap(), it
-+* is discarded.
-+*/
-+void __init efi_reserve_boot_services(void)
-+{
-+	void *p;
-+
-+	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
-+		efi_memory_desc_t *md = p;
-+		u64 start = md->phys_addr;
-+		u64 size = md->num_pages << EFI_PAGE_SHIFT;
-+
-+		if (md->type != EFI_BOOT_SERVICES_CODE &&
-+		    md->type != EFI_BOOT_SERVICES_DATA)
-+			continue;
-+		/* Only reserve where possible:
-+		 * - Not within any already allocated areas
-+		 * - Not over any memory area (really needed, if above?)
-+		 * - Not within any part of the kernel
-+		 * - Not the bios reserved area
-+		*/
-+		if ((start + size > __pa_symbol(_text)
-+				&& start <= __pa_symbol(_end)) ||
-+			!e820_all_mapped(start, start+size, E820_RAM) ||
-+			memblock_is_region_reserved(start, size)) {
-+			/* Could not reserve, skip it */
-+			md->num_pages = 0;
-+			memblock_dbg("Could not reserve boot range [0x%010llx-0x%010llx]\n",
-+				     start, start+size-1);
-+		} else
-+			memblock_reserve(start, size);
-+	}
-+}
-+
-+void __init efi_free_boot_services(void)
-+{
-+	void *p;
-+
-+	for (p = memmap.map; p < memmap.map_end; p += memmap.desc_size) {
-+		efi_memory_desc_t *md = p;
-+		unsigned long long start = md->phys_addr;
-+		unsigned long long size = md->num_pages << EFI_PAGE_SHIFT;
-+
-+		if (md->type != EFI_BOOT_SERVICES_CODE &&
-+		    md->type != EFI_BOOT_SERVICES_DATA)
-+			continue;
-+
-+		/* Could not reserve boot area */
-+		if (!size)
-+			continue;
-+
-+		free_bootmem_late(start, size);
-+	}
-+
-+	efi_unmap_memmap();
-+}
-+
-+/*
-+ * A number of config table entries get remapped to virtual addresses
-+ * after entering EFI virtual mode. However, the kexec kernel requires
-+ * their physical addresses therefore we pass them via setup_data and
-+ * correct those entries to their respective physical addresses here.
-+ *
-+ * Currently only handles smbios which is necessary for some firmware
-+ * implementation.
-+ */
-+int __init efi_reuse_config(u64 tables, int nr_tables)
-+{
-+	int i, sz, ret = 0;
-+	void *p, *tablep;
-+	struct efi_setup_data *data;
-+
-+	if (!efi_setup)
-+		return 0;
-+
-+	if (!efi_enabled(EFI_64BIT))
-+		return 0;
-+
-+	data = early_memremap(efi_setup, sizeof(*data));
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	if (!data->smbios)
-+		goto out_memremap;
-+
-+	sz = sizeof(efi_config_table_64_t);
-+
-+	p = tablep = early_memremap(tables, nr_tables * sz);
-+	if (!p) {
-+		pr_err("Could not map Configuration table!\n");
-+		ret = -ENOMEM;
-+		goto out_memremap;
-+	}
-+
-+	for (i = 0; i < efi.systab->nr_tables; i++) {
-+		efi_guid_t guid;
-+
-+		guid = ((efi_config_table_64_t *)p)->guid;
-+
-+		if (!efi_guidcmp(guid, SMBIOS_TABLE_GUID))
-+			((efi_config_table_64_t *)p)->table = data->smbios;
-+		p += sz;
-+	}
-+	early_iounmap(tablep, nr_tables * sz);
-+
-+out_memremap:
-+	early_iounmap(data, sizeof(*data));
-+out:
-+	return ret;
-+}
-+
-+void __init efi_apply_memmap_quirks(void)
-+{
-+	/*
-+	 * Once setup is done earlier, unmap the EFI memory map on mismatched
-+	 * firmware/kernel architectures since there is no support for runtime
-+	 * services.
-+	 */
-+	if (!efi_runtime_supported()) {
-+		pr_info("efi: Setup done, disabling due to 32/64-bit mismatch\n");
-+		efi_unmap_memmap();
-+	}
-+
-+	/*
-+	 * UV doesn't support the new EFI pagetable mapping yet.
-+	 */
-+	if (is_uv_system())
-+		set_bit(EFI_OLD_MEMMAP, &efi.flags);
-+}
-+
-+/*
-+ * For most modern platforms the preferred method of powering off is via
-+ * ACPI. However, there are some that are known to require the use of
-+ * EFI runtime services and for which ACPI does not work at all.
-+ *
-+ * Using EFI is a last resort, to be used only if no other option
-+ * exists.
-+ */
-+bool efi_reboot_required(void)
-+{
-+	if (!acpi_gbl_reduced_hardware)
-+		return false;
-+
-+	efi_reboot_quirk_mode = EFI_RESET_WARM;
-+	return true;
-+}
-+
-+bool efi_poweroff_required(void)
-+{
-+	return !!acpi_gbl_reduced_hardware;
-+}
 diff --git a/drivers/ata/ahci_xgene.c b/drivers/ata/ahci_xgene.c
-index ee3a365..f9431b4 100644
+index bc28111..00e5a0c 100644
 --- a/drivers/ata/ahci_xgene.c
 +++ b/drivers/ata/ahci_xgene.c
-@@ -131,7 +131,8 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
+@@ -134,7 +134,8 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
  	struct xgene_ahci_context *ctx = hpriv->plat_data;
  	int rc = 0;
  
@@ -3630,1050 +1857,11 @@ index ee3a365..f9431b4 100644
  		xgene_ahci_restart_engine(ap);
  
  	rc = ahci_qc_issue(qc);
-diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index 9553496..c135154 100644
---- a/drivers/firmware/efi/Makefile
-+++ b/drivers/firmware/efi/Makefile
-@@ -1,7 +1,7 @@
- #
- # Makefile for linux kernel
- #
--obj-$(CONFIG_EFI)			+= efi.o vars.o
-+obj-$(CONFIG_EFI)			+= efi.o vars.o reboot.o
- obj-$(CONFIG_EFI_VARS)			+= efivars.o
- obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
- obj-$(CONFIG_UEFI_CPER)			+= cper.o
-diff --git a/drivers/firmware/efi/reboot.c b/drivers/firmware/efi/reboot.c
-new file mode 100644
-index 0000000..f94fb95
---- /dev/null
-+++ b/drivers/firmware/efi/reboot.c
-@@ -0,0 +1,55 @@
-+/*
-+ * Copyright (C) 2014 Intel Corporation; author Matt Fleming
-+ */
-+#include <linux/efi.h>
-+#include <linux/reboot.h>
-+
-+int efi_reboot_quirk_mode = -1;
-+
-+void efi_reboot(enum reboot_mode reboot_mode, const char *__unused)
-+{
-+	int efi_mode;
-+
-+	if (!efi_enabled(EFI_RUNTIME_SERVICES))
-+		return;
-+
-+	switch (reboot_mode) {
-+	case REBOOT_WARM:
-+	case REBOOT_SOFT:
-+		efi_mode = EFI_RESET_WARM;
-+		break;
-+	default:
-+		efi_mode = EFI_RESET_COLD;
-+		break;
-+	}
-+
-+	/*
-+	 * If a quirk forced an EFI reset mode, always use that.
-+	 */
-+	if (efi_reboot_quirk_mode != -1)
-+		efi_mode = efi_reboot_quirk_mode;
-+
-+	efi.reset_system(efi_mode, EFI_SUCCESS, 0, NULL);
-+}
-+
-+bool __weak efi_poweroff_required(void)
-+{
-+	return false;
-+}
-+
-+static void efi_power_off(void)
-+{
-+	efi.reset_system(EFI_RESET_SHUTDOWN, EFI_SUCCESS, 0, NULL);
-+}
-+
-+static int __init efi_shutdown_init(void)
-+{
-+	if (!efi_enabled(EFI_RUNTIME_SERVICES))
-+		return -ENODEV;
-+
-+	if (efi_poweroff_required())
-+		pm_power_off = efi_power_off;
-+
-+	return 0;
-+}
-+late_initcall(efi_shutdown_init);
-diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
-index bbb746e..7f0c2a3 100644
---- a/drivers/irqchip/Kconfig
-+++ b/drivers/irqchip/Kconfig
-@@ -10,6 +10,11 @@ config ARM_GIC
- config GIC_NON_BANKED
- 	bool
- 
-+config ARM_GIC_V3
-+	bool
-+	select IRQ_DOMAIN
-+	select MULTI_IRQ_HANDLER
-+
- config ARM_NVIC
- 	bool
- 	select IRQ_DOMAIN
-diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile
-index 62a13e5..c57e642 100644
---- a/drivers/irqchip/Makefile
-+++ b/drivers/irqchip/Makefile
-@@ -15,7 +15,8 @@ obj-$(CONFIG_ORION_IRQCHIP)		+= irq-orion.o
- obj-$(CONFIG_ARCH_SUNXI)		+= irq-sun4i.o
- obj-$(CONFIG_ARCH_SUNXI)		+= irq-sunxi-nmi.o
- obj-$(CONFIG_ARCH_SPEAR3XX)		+= spear-shirq.o
--obj-$(CONFIG_ARM_GIC)			+= irq-gic.o
-+obj-$(CONFIG_ARM_GIC)			+= irq-gic.o irq-gic-common.o
-+obj-$(CONFIG_ARM_GIC_V3)		+= irq-gic-v3.o irq-gic-common.o
- obj-$(CONFIG_ARM_NVIC)			+= irq-nvic.o
- obj-$(CONFIG_ARM_VIC)			+= irq-vic.o
- obj-$(CONFIG_IMGPDC_IRQ)		+= irq-imgpdc.o
-diff --git a/drivers/irqchip/irq-gic-common.c b/drivers/irqchip/irq-gic-common.c
-new file mode 100644
-index 0000000..60ac704
---- /dev/null
-+++ b/drivers/irqchip/irq-gic-common.c
-@@ -0,0 +1,115 @@
-+/*
-+ * Copyright (C) 2002 ARM Limited, All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/irq.h>
-+#include <linux/irqchip/arm-gic.h>
-+
-+#include "irq-gic-common.h"
-+
-+void gic_configure_irq(unsigned int irq, unsigned int type,
-+		       void __iomem *base, void (*sync_access)(void))
-+{
-+	u32 enablemask = 1 << (irq % 32);
-+	u32 enableoff = (irq / 32) * 4;
-+	u32 confmask = 0x2 << ((irq % 16) * 2);
-+	u32 confoff = (irq / 16) * 4;
-+	bool enabled = false;
-+	u32 val;
-+
-+	/*
-+	 * Read current configuration register, and insert the config
-+	 * for "irq", depending on "type".
-+	 */
-+	val = readl_relaxed(base + GIC_DIST_CONFIG + confoff);
-+	if (type == IRQ_TYPE_LEVEL_HIGH)
-+		val &= ~confmask;
-+	else if (type == IRQ_TYPE_EDGE_RISING)
-+		val |= confmask;
-+
-+	/*
-+	 * As recommended by the spec, disable the interrupt before changing
-+	 * the configuration
-+	 */
-+	if (readl_relaxed(base + GIC_DIST_ENABLE_SET + enableoff) & enablemask) {
-+		writel_relaxed(enablemask, base + GIC_DIST_ENABLE_CLEAR + enableoff);
-+		if (sync_access)
-+			sync_access();
-+		enabled = true;
-+	}
-+
-+	/*
-+	 * Write back the new configuration, and possibly re-enable
-+	 * the interrupt.
-+	 */
-+	writel_relaxed(val, base + GIC_DIST_CONFIG + confoff);
-+
-+	if (enabled)
-+		writel_relaxed(enablemask, base + GIC_DIST_ENABLE_SET + enableoff);
-+
-+	if (sync_access)
-+		sync_access();
-+}
-+
-+void __init gic_dist_config(void __iomem *base, int gic_irqs,
-+			    void (*sync_access)(void))
-+{
-+	unsigned int i;
-+
-+	/*
-+	 * Set all global interrupts to be level triggered, active low.
-+	 */
-+	for (i = 32; i < gic_irqs; i += 16)
-+		writel_relaxed(0, base + GIC_DIST_CONFIG + i / 4);
-+
-+	/*
-+	 * Set priority on all global interrupts.
-+	 */
-+	for (i = 32; i < gic_irqs; i += 4)
-+		writel_relaxed(0xa0a0a0a0, base + GIC_DIST_PRI + i);
-+
-+	/*
-+	 * Disable all interrupts.  Leave the PPI and SGIs alone
-+	 * as they are enabled by redistributor registers.
-+	 */
-+	for (i = 32; i < gic_irqs; i += 32)
-+		writel_relaxed(0xffffffff, base + GIC_DIST_ENABLE_CLEAR + i / 8);
-+
-+	if (sync_access)
-+		sync_access();
-+}
-+
-+void gic_cpu_config(void __iomem *base, void (*sync_access)(void))
-+{
-+	int i;
-+
-+	/*
-+	 * Deal with the banked PPI and SGI interrupts - disable all
-+	 * PPI interrupts, ensure all SGI interrupts are enabled.
-+	 */
-+	writel_relaxed(0xffff0000, base + GIC_DIST_ENABLE_CLEAR);
-+	writel_relaxed(0x0000ffff, base + GIC_DIST_ENABLE_SET);
-+
-+	/*
-+	 * Set priority on PPI and SGI interrupts
-+	 */
-+	for (i = 0; i < 32; i += 4)
-+		writel_relaxed(0xa0a0a0a0, base + GIC_DIST_PRI + i * 4 / 4);
-+
-+	if (sync_access)
-+		sync_access();
-+}
-diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-new file mode 100644
-index 0000000..b41f024
---- /dev/null
-+++ b/drivers/irqchip/irq-gic-common.h
-@@ -0,0 +1,29 @@
-+/*
-+ * Copyright (C) 2002 ARM Limited, All Rights Reserved.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#ifndef _IRQ_GIC_COMMON_H
-+#define _IRQ_GIC_COMMON_H
-+
-+#include <linux/of.h>
-+#include <linux/irqdomain.h>
-+
-+void gic_configure_irq(unsigned int irq, unsigned int type,
-+                       void __iomem *base, void (*sync_access)(void));
-+void gic_dist_config(void __iomem *base, int gic_irqs,
-+		     void (*sync_access)(void));
-+void gic_cpu_config(void __iomem *base, void (*sync_access)(void));
-+
-+#endif /* _IRQ_GIC_COMMON_H */
-diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-new file mode 100644
-index 0000000..81519ba
---- /dev/null
-+++ b/drivers/irqchip/irq-gic-v3.c
-@@ -0,0 +1,692 @@
-+/*
-+ * Copyright (C) 2013, 2014 ARM Limited, All Rights Reserved.
-+ * Author: Marc Zyngier <marc.zyngier@arm.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+
-+#include <linux/cpu.h>
-+#include <linux/delay.h>
-+#include <linux/interrupt.h>
-+#include <linux/of.h>
-+#include <linux/of_address.h>
-+#include <linux/of_irq.h>
-+#include <linux/percpu.h>
-+#include <linux/slab.h>
-+
-+#include <linux/irqchip/arm-gic-v3.h>
-+
-+#include <asm/cputype.h>
-+#include <asm/exception.h>
-+#include <asm/smp_plat.h>
-+
-+#include "irq-gic-common.h"
-+#include "irqchip.h"
-+
-+struct gic_chip_data {
-+	void __iomem		*dist_base;
-+	void __iomem		**redist_base;
-+	void __percpu __iomem	**rdist;
-+	struct irq_domain	*domain;
-+	u64			redist_stride;
-+	u32			redist_regions;
-+	unsigned int		irq_nr;
-+};
-+
-+static struct gic_chip_data gic_data __read_mostly;
-+
-+#define gic_data_rdist()		(this_cpu_ptr(gic_data.rdist))
-+#define gic_data_rdist_rd_base()	(*gic_data_rdist())
-+#define gic_data_rdist_sgi_base()	(gic_data_rdist_rd_base() + SZ_64K)
-+
-+/* Our default, arbitrary priority value. Linux only uses one anyway. */
-+#define DEFAULT_PMR_VALUE	0xf0
-+
-+static inline unsigned int gic_irq(struct irq_data *d)
-+{
-+	return d->hwirq;
-+}
-+
-+static inline int gic_irq_in_rdist(struct irq_data *d)
-+{
-+	return gic_irq(d) < 32;
-+}
-+
-+static inline void __iomem *gic_dist_base(struct irq_data *d)
-+{
-+	if (gic_irq_in_rdist(d))	/* SGI+PPI -> SGI_base for this CPU */
-+		return gic_data_rdist_sgi_base();
-+
-+	if (d->hwirq <= 1023)		/* SPI -> dist_base */
-+		return gic_data.dist_base;
-+
-+	if (d->hwirq >= 8192)
-+		BUG();		/* LPI Detected!!! */
-+
-+	return NULL;
-+}
-+
-+static void gic_do_wait_for_rwp(void __iomem *base)
-+{
-+	u32 count = 1000000;	/* 1s! */
-+
-+	while (readl_relaxed(base + GICD_CTLR) & GICD_CTLR_RWP) {
-+		count--;
-+		if (!count) {
-+			pr_err_ratelimited("RWP timeout, gone fishing\n");
-+			return;
-+		}
-+		cpu_relax();
-+		udelay(1);
-+	};
-+}
-+
-+/* Wait for completion of a distributor change */
-+static void gic_dist_wait_for_rwp(void)
-+{
-+	gic_do_wait_for_rwp(gic_data.dist_base);
-+}
-+
-+/* Wait for completion of a redistributor change */
-+static void gic_redist_wait_for_rwp(void)
-+{
-+	gic_do_wait_for_rwp(gic_data_rdist_rd_base());
-+}
-+
-+/* Low level accessors */
-+static u64 gic_read_iar(void)
-+{
-+	u64 irqstat;
-+
-+	asm volatile("mrs %0, " __stringify(ICC_IAR1_EL1) : "=r" (irqstat));
-+	return irqstat;
-+}
-+
-+static void gic_write_pmr(u64 val)
-+{
-+	asm volatile("msr " __stringify(ICC_PMR_EL1) ", %0" : : "r" (val));
-+}
-+
-+static void gic_write_ctlr(u64 val)
-+{
-+	asm volatile("msr " __stringify(ICC_CTLR_EL1) ", %0" : : "r" (val));
-+	isb();
-+}
-+
-+static void gic_write_grpen1(u64 val)
-+{
-+	asm volatile("msr " __stringify(ICC_GRPEN1_EL1) ", %0" : : "r" (val));
-+	isb();
-+}
-+
-+static void gic_write_sgi1r(u64 val)
-+{
-+	asm volatile("msr " __stringify(ICC_SGI1R_EL1) ", %0" : : "r" (val));
-+}
-+
-+static void gic_enable_sre(void)
-+{
-+	u64 val;
-+
-+	asm volatile("mrs %0, " __stringify(ICC_SRE_EL1) : "=r" (val));
-+	val |= ICC_SRE_EL1_SRE;
-+	asm volatile("msr " __stringify(ICC_SRE_EL1) ", %0" : : "r" (val));
-+	isb();
-+
-+	/*
-+	 * Need to check that the SRE bit has actually been set. If
-+	 * not, it means that SRE is disabled at EL2. We're going to
-+	 * die painfully, and there is nothing we can do about it.
-+	 *
-+	 * Kindly inform the luser.
-+	 */
-+	asm volatile("mrs %0, " __stringify(ICC_SRE_EL1) : "=r" (val));
-+	if (!(val & ICC_SRE_EL1_SRE))
-+		pr_err("GIC: unable to set SRE (disabled at EL2), panic ahead\n");
-+}
-+
-+static void gic_enable_redist(void)
-+{
-+	void __iomem *rbase;
-+	u32 count = 1000000;	/* 1s! */
-+	u32 val;
-+
-+	rbase = gic_data_rdist_rd_base();
-+
-+	/* Wake up this CPU redistributor */
-+	val = readl_relaxed(rbase + GICR_WAKER);
-+	val &= ~GICR_WAKER_ProcessorSleep;
-+	writel_relaxed(val, rbase + GICR_WAKER);
-+
-+	while (readl_relaxed(rbase + GICR_WAKER) & GICR_WAKER_ChildrenAsleep) {
-+		count--;
-+		if (!count) {
-+			pr_err_ratelimited("redist didn't wake up...\n");
-+			return;
-+		}
-+		cpu_relax();
-+		udelay(1);
-+	};
-+}
-+
-+/*
-+ * Routines to disable, enable, EOI and route interrupts
-+ */
-+static void gic_poke_irq(struct irq_data *d, u32 offset)
-+{
-+	u32 mask = 1 << (gic_irq(d) % 32);
-+	void (*rwp_wait)(void);
-+	void __iomem *base;
-+
-+	if (gic_irq_in_rdist(d)) {
-+		base = gic_data_rdist_sgi_base();
-+		rwp_wait = gic_redist_wait_for_rwp;
-+	} else {
-+		base = gic_data.dist_base;
-+		rwp_wait = gic_dist_wait_for_rwp;
-+	}
-+
-+	writel_relaxed(mask, base + offset + (gic_irq(d) / 32) * 4);
-+	rwp_wait();
-+}
-+
-+static int gic_peek_irq(struct irq_data *d, u32 offset)
-+{
-+	u32 mask = 1 << (gic_irq(d) % 32);
-+	void __iomem *base;
-+
-+	if (gic_irq_in_rdist(d))
-+		base = gic_data_rdist_sgi_base();
-+	else
-+		base = gic_data.dist_base;
-+
-+	return !!(readl_relaxed(base + offset + (gic_irq(d) / 32) * 4) & mask);
-+}
-+
-+static void gic_mask_irq(struct irq_data *d)
-+{
-+	gic_poke_irq(d, GICD_ICENABLER);
-+}
-+
-+static void gic_unmask_irq(struct irq_data *d)
-+{
-+	gic_poke_irq(d, GICD_ISENABLER);
-+}
-+
-+static void gic_eoi_irq(struct irq_data *d)
-+{
-+	gic_write_eoir(gic_irq(d));
-+}
-+
-+static int gic_set_type(struct irq_data *d, unsigned int type)
-+{
-+	unsigned int irq = gic_irq(d);
-+	void (*rwp_wait)(void);
-+	void __iomem *base;
-+
-+	/* Interrupt configuration for SGIs can't be changed */
-+	if (irq < 16)
-+		return -EINVAL;
-+
-+	if (type != IRQ_TYPE_LEVEL_HIGH && type != IRQ_TYPE_EDGE_RISING)
-+		return -EINVAL;
-+
-+	if (gic_irq_in_rdist(d)) {
-+		base = gic_data_rdist_sgi_base();
-+		rwp_wait = gic_redist_wait_for_rwp;
-+	} else {
-+		base = gic_data.dist_base;
-+		rwp_wait = gic_dist_wait_for_rwp;
-+	}
-+
-+	gic_configure_irq(irq, type, base, rwp_wait);
-+
-+	return 0;
-+}
-+
-+static u64 gic_mpidr_to_affinity(u64 mpidr)
-+{
-+	u64 aff;
-+
-+	aff = (MPIDR_AFFINITY_LEVEL(mpidr, 3) << 32 |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 2) << 16 |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 1) << 8  |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 0));
-+
-+	return aff;
-+}
-+
-+static asmlinkage void __exception_irq_entry gic_handle_irq(struct pt_regs *regs)
-+{
-+	u64 irqnr;
-+
-+	do {
-+		irqnr = gic_read_iar();
-+
-+		if (likely(irqnr > 15 && irqnr < 1020)) {
-+			u64 irq = irq_find_mapping(gic_data.domain, irqnr);
-+			if (likely(irq)) {
-+				handle_IRQ(irq, regs);
-+				continue;
-+			}
-+
-+			WARN_ONCE(true, "Unexpected SPI received!\n");
-+			gic_write_eoir(irqnr);
-+		}
-+		if (irqnr < 16) {
-+			gic_write_eoir(irqnr);
-+#ifdef CONFIG_SMP
-+			handle_IPI(irqnr, regs);
-+#else
-+			WARN_ONCE(true, "Unexpected SGI received!\n");
-+#endif
-+			continue;
-+		}
-+	} while (irqnr != ICC_IAR1_EL1_SPURIOUS);
-+}
-+
-+static void __init gic_dist_init(void)
-+{
-+	unsigned int i;
-+	u64 affinity;
-+	void __iomem *base = gic_data.dist_base;
-+
-+	/* Disable the distributor */
-+	writel_relaxed(0, base + GICD_CTLR);
-+	gic_dist_wait_for_rwp();
-+
-+	gic_dist_config(base, gic_data.irq_nr, gic_dist_wait_for_rwp);
-+
-+	/* Enable distributor with ARE, Group1 */
-+	writel_relaxed(GICD_CTLR_ARE_NS | GICD_CTLR_ENABLE_G1A | GICD_CTLR_ENABLE_G1,
-+		       base + GICD_CTLR);
-+
-+	/*
-+	 * Set all global interrupts to the boot CPU only. ARE must be
-+	 * enabled.
-+	 */
-+	affinity = gic_mpidr_to_affinity(cpu_logical_map(smp_processor_id()));
-+	for (i = 32; i < gic_data.irq_nr; i++)
-+		writeq_relaxed(affinity, base + GICD_IROUTER + i * 8);
-+}
-+
-+static int gic_populate_rdist(void)
-+{
-+	u64 mpidr = cpu_logical_map(smp_processor_id());
-+	u64 typer;
-+	u32 aff;
-+	int i;
-+
-+	/*
-+	 * Convert affinity to a 32bit value that can be matched to
-+	 * GICR_TYPER bits [63:32].
-+	 */
-+	aff = (MPIDR_AFFINITY_LEVEL(mpidr, 3) << 24 |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 2) << 16 |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 1) << 8 |
-+	       MPIDR_AFFINITY_LEVEL(mpidr, 0));
-+
-+	for (i = 0; i < gic_data.redist_regions; i++) {
-+		void __iomem *ptr = gic_data.redist_base[i];
-+		u32 reg;
-+
-+		reg = readl_relaxed(ptr + GICR_PIDR2) & GIC_PIDR2_ARCH_MASK;
-+		if (reg != GIC_PIDR2_ARCH_GICv3 &&
-+		    reg != GIC_PIDR2_ARCH_GICv4) { /* We're in trouble... */
-+			pr_warn("No redistributor present @%p\n", ptr);
-+			break;
-+		}
-+
-+		do {
-+			typer = readq_relaxed(ptr + GICR_TYPER);
-+			if ((typer >> 32) == aff) {
-+				gic_data_rdist_rd_base() = ptr;
-+				pr_info("CPU%d: found redistributor %llx @%p\n",
-+					smp_processor_id(),
-+					(unsigned long long)mpidr, ptr);
-+				return 0;
-+			}
-+
-+			if (gic_data.redist_stride) {
-+				ptr += gic_data.redist_stride;
-+			} else {
-+				ptr += SZ_64K * 2; /* Skip RD_base + SGI_base */
-+				if (typer & GICR_TYPER_VLPIS)
-+					ptr += SZ_64K * 2; /* Skip VLPI_base + reserved page */
-+			}
-+		} while (!(typer & GICR_TYPER_LAST));
-+	}
-+
-+	/* We couldn't even deal with ourselves... */
-+	WARN(true, "CPU%d: mpidr %llx has no re-distributor!\n",
-+	     smp_processor_id(), (unsigned long long)mpidr);
-+	return -ENODEV;
-+}
-+
-+static void gic_cpu_init(void)
-+{
-+	void __iomem *rbase;
-+
-+	/* Register ourselves with the rest of the world */
-+	if (gic_populate_rdist())
-+		return;
-+
-+	gic_enable_redist();
-+
-+	rbase = gic_data_rdist_sgi_base();
-+
-+	gic_cpu_config(rbase, gic_redist_wait_for_rwp);
-+
-+	/* Enable system registers */
-+	gic_enable_sre();
-+
-+	/* Set priority mask register */
-+	gic_write_pmr(DEFAULT_PMR_VALUE);
-+
-+	/* EOI deactivates interrupt too (mode 0) */
-+	gic_write_ctlr(ICC_CTLR_EL1_EOImode_drop_dir);
-+
-+	/* ... and let's hit the road... */
-+	gic_write_grpen1(1);
-+}
-+
-+#ifdef CONFIG_SMP
-+static int gic_secondary_init(struct notifier_block *nfb,
-+			      unsigned long action, void *hcpu)
-+{
-+	if (action == CPU_STARTING || action == CPU_STARTING_FROZEN)
-+		gic_cpu_init();
-+	return NOTIFY_OK;
-+}
-+
-+/*
-+ * Notifier for enabling the GIC CPU interface. Set an arbitrarily high
-+ * priority because the GIC needs to be up before the ARM generic timers.
-+ */
-+static struct notifier_block gic_cpu_notifier = {
-+	.notifier_call = gic_secondary_init,
-+	.priority = 100,
-+};
-+
-+static u16 gic_compute_target_list(int *base_cpu, const struct cpumask *mask,
-+				   u64 cluster_id)
-+{
-+	int cpu = *base_cpu;
-+	u64 mpidr = cpu_logical_map(cpu);
-+	u16 tlist = 0;
-+
-+	while (cpu < nr_cpu_ids) {
-+		/*
-+		 * If we ever get a cluster of more than 16 CPUs, just
-+		 * scream and skip that CPU.
-+		 */
-+		if (WARN_ON((mpidr & 0xff) >= 16))
-+			goto out;
-+
-+		tlist |= 1 << (mpidr & 0xf);
-+
-+		cpu = cpumask_next(cpu, mask);
-+		if (cpu == nr_cpu_ids)
-+			goto out;
-+
-+		mpidr = cpu_logical_map(cpu);
-+
-+		if (cluster_id != (mpidr & ~0xffUL)) {
-+			cpu--;
-+			goto out;
-+		}
-+	}
-+out:
-+	*base_cpu = cpu;
-+	return tlist;
-+}
-+
-+static void gic_send_sgi(u64 cluster_id, u16 tlist, unsigned int irq)
-+{
-+	u64 val;
-+
-+	val = (MPIDR_AFFINITY_LEVEL(cluster_id, 3) << 48	|
-+	       MPIDR_AFFINITY_LEVEL(cluster_id, 2) << 32	|
-+	       irq << 24			    		|
-+	       MPIDR_AFFINITY_LEVEL(cluster_id, 1) << 16	|
-+	       tlist);
-+
-+	pr_debug("CPU%d: ICC_SGI1R_EL1 %llx\n", smp_processor_id(), val);
-+	gic_write_sgi1r(val);
-+}
-+
-+static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
-+{
-+	int cpu;
-+
-+	if (WARN_ON(irq >= 16))
-+		return;
-+
-+	/*
-+	 * Ensure that stores to Normal memory are visible to the
-+	 * other CPUs before issuing the IPI.
-+	 */
-+	smp_wmb();
-+
-+	for_each_cpu_mask(cpu, *mask) {
-+		u64 cluster_id = cpu_logical_map(cpu) & ~0xffUL;
-+		u16 tlist;
-+
-+		tlist = gic_compute_target_list(&cpu, mask, cluster_id);
-+		gic_send_sgi(cluster_id, tlist, irq);
-+	}
-+
-+	/* Force the above writes to ICC_SGI1R_EL1 to be executed */
-+	isb();
-+}
-+
-+static void gic_smp_init(void)
-+{
-+	set_smp_cross_call(gic_raise_softirq);
-+	register_cpu_notifier(&gic_cpu_notifier);
-+}
-+
-+static int gic_set_affinity(struct irq_data *d, const struct cpumask *mask_val,
-+			    bool force)
-+{
-+	unsigned int cpu = cpumask_any_and(mask_val, cpu_online_mask);
-+	void __iomem *reg;
-+	int enabled;
-+	u64 val;
-+
-+	if (gic_irq_in_rdist(d))
-+		return -EINVAL;
-+
-+	/* If interrupt was enabled, disable it first */
-+	enabled = gic_peek_irq(d, GICD_ISENABLER);
-+	if (enabled)
-+		gic_mask_irq(d);
-+
-+	reg = gic_dist_base(d) + GICD_IROUTER + (gic_irq(d) * 8);
-+	val = gic_mpidr_to_affinity(cpu_logical_map(cpu));
-+
-+	writeq_relaxed(val, reg);
-+
-+	/*
-+	 * If the interrupt was enabled, enabled it again. Otherwise,
-+	 * just wait for the distributor to have digested our changes.
-+	 */
-+	if (enabled)
-+		gic_unmask_irq(d);
-+	else
-+		gic_dist_wait_for_rwp();
-+
-+	return IRQ_SET_MASK_OK;
-+}
-+#else
-+#define gic_set_affinity	NULL
-+#define gic_smp_init()		do { } while(0)
-+#endif
-+
-+static struct irq_chip gic_chip = {
-+	.name			= "GICv3",
-+	.irq_mask		= gic_mask_irq,
-+	.irq_unmask		= gic_unmask_irq,
-+	.irq_eoi		= gic_eoi_irq,
-+	.irq_set_type		= gic_set_type,
-+	.irq_set_affinity	= gic_set_affinity,
-+};
-+
-+static int gic_irq_domain_map(struct irq_domain *d, unsigned int irq,
-+			      irq_hw_number_t hw)
-+{
-+	/* SGIs are private to the core kernel */
-+	if (hw < 16)
-+		return -EPERM;
-+	/* PPIs */
-+	if (hw < 32) {
-+		irq_set_percpu_devid(irq);
-+		irq_set_chip_and_handler(irq, &gic_chip,
-+					 handle_percpu_devid_irq);
-+		set_irq_flags(irq, IRQF_VALID | IRQF_NOAUTOEN);
-+	}
-+	/* SPIs */
-+	if (hw >= 32 && hw < gic_data.irq_nr) {
-+		irq_set_chip_and_handler(irq, &gic_chip,
-+					 handle_fasteoi_irq);
-+		set_irq_flags(irq, IRQF_VALID | IRQF_PROBE);
-+	}
-+	irq_set_chip_data(irq, d->host_data);
-+	return 0;
-+}
-+
-+static int gic_irq_domain_xlate(struct irq_domain *d,
-+				struct device_node *controller,
-+				const u32 *intspec, unsigned int intsize,
-+				unsigned long *out_hwirq, unsigned int *out_type)
-+{
-+	if (d->of_node != controller)
-+		return -EINVAL;
-+	if (intsize < 3)
-+		return -EINVAL;
-+
-+	switch(intspec[0]) {
-+	case 0:			/* SPI */
-+		*out_hwirq = intspec[1] + 32;
-+		break;
-+	case 1:			/* PPI */
-+		*out_hwirq = intspec[1] + 16;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	*out_type = intspec[2] & IRQ_TYPE_SENSE_MASK;
-+	return 0;
-+}
-+
-+static const struct irq_domain_ops gic_irq_domain_ops = {
-+	.map = gic_irq_domain_map,
-+	.xlate = gic_irq_domain_xlate,
-+};
-+
-+static int __init gic_of_init(struct device_node *node, struct device_node *parent)
-+{
-+	void __iomem *dist_base;
-+	void __iomem **redist_base;
-+	u64 redist_stride;
-+	u32 redist_regions;
-+	u32 reg;
-+	int gic_irqs;
-+	int err;
-+	int i;
-+
-+	dist_base = of_iomap(node, 0);
-+	if (!dist_base) {
-+		pr_err("%s: unable to map gic dist registers\n",
-+			node->full_name);
-+		return -ENXIO;
-+	}
-+
-+	reg = readl_relaxed(dist_base + GICD_PIDR2) & GIC_PIDR2_ARCH_MASK;
-+	if (reg != GIC_PIDR2_ARCH_GICv3 && reg != GIC_PIDR2_ARCH_GICv4) {
-+		pr_err("%s: no distributor detected, giving up\n",
-+			node->full_name);
-+		err = -ENODEV;
-+		goto out_unmap_dist;
-+	}
-+
-+	if (of_property_read_u32(node, "#redistributor-regions", &redist_regions))
-+		redist_regions = 1;
-+
-+	redist_base = kzalloc(sizeof(*redist_base) * redist_regions, GFP_KERNEL);
-+	if (!redist_base) {
-+		err = -ENOMEM;
-+		goto out_unmap_dist;
-+	}
-+
-+	for (i = 0; i < redist_regions; i++) {
-+		redist_base[i] = of_iomap(node, 1 + i);
-+		if (!redist_base[i]) {
-+			pr_err("%s: couldn't map region %d\n",
-+			       node->full_name, i);
-+			err = -ENODEV;
-+			goto out_unmap_rdist;
-+		}
-+	}
-+
-+	if (of_property_read_u64(node, "redistributor-stride", &redist_stride))
-+		redist_stride = 0;
-+
-+	gic_data.dist_base = dist_base;
-+	gic_data.redist_base = redist_base;
-+	gic_data.redist_regions = redist_regions;
-+	gic_data.redist_stride = redist_stride;
-+
-+	/*
-+	 * Find out how many interrupts are supported.
-+	 * The GIC only supports up to 1020 interrupt sources (SGI+PPI+SPI)
-+	 */
-+	gic_irqs = readl_relaxed(gic_data.dist_base + GICD_TYPER) & 0x1f;
-+	gic_irqs = (gic_irqs + 1) * 32;
-+	if (gic_irqs > 1020)
-+		gic_irqs = 1020;
-+	gic_data.irq_nr = gic_irqs;
-+
-+	gic_data.domain = irq_domain_add_tree(node, &gic_irq_domain_ops,
-+					      &gic_data);
-+	gic_data.rdist = alloc_percpu(typeof(*gic_data.rdist));
-+
-+	if (WARN_ON(!gic_data.domain) || WARN_ON(!gic_data.rdist)) {
-+		err = -ENOMEM;
-+		goto out_free;
-+	}
-+
-+	set_handle_irq(gic_handle_irq);
-+
-+	gic_smp_init();
-+	gic_dist_init();
-+	gic_cpu_init();
-+
-+	return 0;
-+
-+out_free:
-+	if (gic_data.domain)
-+		irq_domain_remove(gic_data.domain);
-+	free_percpu(gic_data.rdist);
-+out_unmap_rdist:
-+	for (i = 0; i < redist_regions; i++)
-+		if (redist_base[i])
-+			iounmap(redist_base[i]);
-+	kfree(redist_base);
-+out_unmap_dist:
-+	iounmap(dist_base);
-+	return err;
-+}
-+
-+IRQCHIP_DECLARE(gic_v3, "arm,gic-v3", gic_of_init);
 diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 7c131cf..1ddfdde 100644
+index 9c1f883..1ddfdde 100644
 --- a/drivers/irqchip/irq-gic.c
 +++ b/drivers/irqchip/irq-gic.c
-@@ -47,6 +47,7 @@
- #include <asm/exception.h>
- #include <asm/smp_plat.h>
- 
-+#include "irq-gic-common.h"
- #include "irqchip.h"
- 
- union gic_base {
-@@ -189,12 +190,6 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
- {
- 	void __iomem *base = gic_dist_base(d);
- 	unsigned int gicirq = gic_irq(d);
--	u32 enablemask = 1 << (gicirq % 32);
--	u32 enableoff = (gicirq / 32) * 4;
--	u32 confmask = 0x2 << ((gicirq % 16) * 2);
--	u32 confoff = (gicirq / 16) * 4;
--	bool enabled = false;
--	u32 val;
- 
- 	/* Interrupt configuration for SGIs can't be changed */
- 	if (gicirq < 16)
-@@ -208,25 +203,7 @@ static int gic_set_type(struct irq_data *d, unsigned int type)
- 	if (gic_arch_extn.irq_set_type)
- 		gic_arch_extn.irq_set_type(d, type);
- 
--	val = readl_relaxed(base + GIC_DIST_CONFIG + confoff);
--	if (type == IRQ_TYPE_LEVEL_HIGH)
--		val &= ~confmask;
--	else if (type == IRQ_TYPE_EDGE_RISING)
--		val |= confmask;
--
--	/*
--	 * As recommended by the spec, disable the interrupt before changing
--	 * the configuration
--	 */
--	if (readl_relaxed(base + GIC_DIST_ENABLE_SET + enableoff) & enablemask) {
--		writel_relaxed(enablemask, base + GIC_DIST_ENABLE_CLEAR + enableoff);
--		enabled = true;
--	}
--
--	writel_relaxed(val, base + GIC_DIST_CONFIG + confoff);
--
--	if (enabled)
--		writel_relaxed(enablemask, base + GIC_DIST_ENABLE_SET + enableoff);
-+	gic_configure_irq(gicirq, type, base, NULL);
- 
- 	raw_spin_unlock(&irq_controller_lock);
- 
-@@ -388,12 +365,6 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
- 	writel_relaxed(0, base + GIC_DIST_CTRL);
- 
- 	/*
--	 * Set all global interrupts to be level triggered, active low.
--	 */
--	for (i = 32; i < gic_irqs; i += 16)
--		writel_relaxed(0, base + GIC_DIST_CONFIG + i * 4 / 16);
--
--	/*
- 	 * Set all global interrupts to this CPU only.
- 	 */
- 	cpumask = gic_get_cpumask(gic);
-@@ -402,18 +373,7 @@ static void __init gic_dist_init(struct gic_chip_data *gic)
- 	for (i = 32; i < gic_irqs; i += 4)
- 		writel_relaxed(cpumask, base + GIC_DIST_TARGET + i * 4 / 4);
- 
--	/*
--	 * Set priority on all global interrupts.
--	 */
--	for (i = 32; i < gic_irqs; i += 4)
--		writel_relaxed(0xa0a0a0a0, base + GIC_DIST_PRI + i * 4 / 4);
--
--	/*
--	 * Disable all interrupts.  Leave the PPI and SGIs alone
--	 * as these enables are banked registers.
--	 */
--	for (i = 32; i < gic_irqs; i += 32)
--		writel_relaxed(0xffffffff, base + GIC_DIST_ENABLE_CLEAR + i * 4 / 32);
-+	gic_dist_config(base, gic_irqs, NULL);
- 
- 	writel_relaxed(1, base + GIC_DIST_CTRL);
- }
-@@ -423,6 +383,7 @@ static void gic_cpu_init(struct gic_chip_data *gic)
+@@ -383,6 +383,7 @@ static void gic_cpu_init(struct gic_chip_data *gic)
  	void __iomem *dist_base = gic_data_dist_base(gic);
  	void __iomem *base = gic_data_cpu_base(gic);
  	unsigned int cpu_mask, cpu = smp_processor_id();
@@ -4681,23 +1869,8 @@ index 7c131cf..1ddfdde 100644
  	int i;
  
  	/*
-@@ -440,27 +401,32 @@ static void gic_cpu_init(struct gic_chip_data *gic)
- 		if (i != cpu)
- 			gic_cpu_map[i] &= ~cpu_mask;
- 
--	/*
--	 * Deal with the banked PPI and SGI interrupts - disable all
--	 * PPI interrupts, ensure all SGI interrupts are enabled.
--	 */
--	writel_relaxed(0xffff0000, dist_base + GIC_DIST_ENABLE_CLEAR);
--	writel_relaxed(0x0000ffff, dist_base + GIC_DIST_ENABLE_SET);
--
--	/*
--	 * Set priority on PPI and SGI interrupts
--	 */
--	for (i = 0; i < 32; i += 4)
--		writel_relaxed(0xa0a0a0a0, dist_base + GIC_DIST_PRI + i * 4 / 4);
-+	gic_cpu_config(dist_base, NULL);
+@@ -403,13 +404,29 @@ static void gic_cpu_init(struct gic_chip_data *gic)
+ 	gic_cpu_config(dist_base, NULL);
  
  	writel_relaxed(0xf0, base + GIC_CPU_PRIMASK);
 -	writel_relaxed(1, base + GIC_CPU_CTRL);
@@ -4728,7 +1901,7 @@ index 7c131cf..1ddfdde 100644
  }
  
  #ifdef CONFIG_CPU_PM
-@@ -571,6 +537,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
+@@ -520,6 +537,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
  {
  	int i;
  	u32 *ptr;
@@ -4736,7 +1909,7 @@ index 7c131cf..1ddfdde 100644
  	void __iomem *dist_base;
  	void __iomem *cpu_base;
  
-@@ -595,7 +562,15 @@ static void gic_cpu_restore(unsigned int gic_nr)
+@@ -544,7 +562,15 @@ static void gic_cpu_restore(unsigned int gic_nr)
  		writel_relaxed(0xa0a0a0a0, dist_base + GIC_DIST_PRI + i * 4);
  
  	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
@@ -8256,7 +5429,7 @@ index 0000000..7bf4ac7
 +MODULE_DESCRIPTION("APM X-Gene PCIe driver");
 +MODULE_LICENSE("GPL v2");
 diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 1c8592b..b81dc68 100644
+index 2c9ac70..7bae0f9 100644
 --- a/drivers/pci/pci.c
 +++ b/drivers/pci/pci.c
 @@ -17,6 +17,7 @@
@@ -8703,247 +5876,6 @@ index f27000f..35b0c12 100644
  #else
  static inline int kvm_vgic_hyp_init(void)
  {
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 41bbf8b..b3fac7c 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -20,6 +20,7 @@
- #include <linux/ioport.h>
- #include <linux/pfn.h>
- #include <linux/pstore.h>
-+#include <linux/reboot.h>
- 
- #include <asm/page.h>
- 
-@@ -875,6 +876,9 @@ extern void efi_reserve_boot_services(void);
- extern int efi_get_fdt_params(struct efi_fdt_params *params, int verbose);
- extern struct efi_memory_map memmap;
- 
-+extern int efi_reboot_quirk_mode;
-+extern bool efi_poweroff_required(void);
-+
- /* Iterate through an efi_memory_map */
- #define for_each_efi_memory_desc(m, md)					   \
- 	for ((md) = (m)->map;						   \
-@@ -926,11 +930,14 @@ static inline bool efi_enabled(int feature)
- {
- 	return test_bit(feature, &efi.flags) != 0;
- }
-+extern void efi_reboot(enum reboot_mode reboot_mode, const char *__unused);
- #else
- static inline bool efi_enabled(int feature)
- {
- 	return false;
- }
-+static inline void
-+efi_reboot(enum reboot_mode reboot_mode, const char *__unused) {}
- #endif
- 
- /*
-diff --git a/include/linux/irqchip/arm-gic-v3.h b/include/linux/irqchip/arm-gic-v3.h
-new file mode 100644
-index 0000000..30cb755
---- /dev/null
-+++ b/include/linux/irqchip/arm-gic-v3.h
-@@ -0,0 +1,198 @@
-+/*
-+ * Copyright (C) 2013, 2014 ARM Limited, All Rights Reserved.
-+ * Author: Marc Zyngier <marc.zyngier@arm.com>
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-+ */
-+#ifndef __LINUX_IRQCHIP_ARM_GIC_V3_H
-+#define __LINUX_IRQCHIP_ARM_GIC_V3_H
-+
-+/*
-+ * Distributor registers. We assume we're running non-secure, with ARE
-+ * being set. Secure-only and non-ARE registers are not described.
-+ */
-+#define GICD_CTLR			0x0000
-+#define GICD_TYPER			0x0004
-+#define GICD_IIDR			0x0008
-+#define GICD_STATUSR			0x0010
-+#define GICD_SETSPI_NSR			0x0040
-+#define GICD_CLRSPI_NSR			0x0048
-+#define GICD_SETSPI_SR			0x0050
-+#define GICD_CLRSPI_SR			0x0058
-+#define GICD_SEIR			0x0068
-+#define GICD_ISENABLER			0x0100
-+#define GICD_ICENABLER			0x0180
-+#define GICD_ISPENDR			0x0200
-+#define GICD_ICPENDR			0x0280
-+#define GICD_ISACTIVER			0x0300
-+#define GICD_ICACTIVER			0x0380
-+#define GICD_IPRIORITYR			0x0400
-+#define GICD_ICFGR			0x0C00
-+#define GICD_IROUTER			0x6000
-+#define GICD_PIDR2			0xFFE8
-+
-+#define GICD_CTLR_RWP			(1U << 31)
-+#define GICD_CTLR_ARE_NS		(1U << 4)
-+#define GICD_CTLR_ENABLE_G1A		(1U << 1)
-+#define GICD_CTLR_ENABLE_G1		(1U << 0)
-+
-+#define GICD_IROUTER_SPI_MODE_ONE	(0U << 31)
-+#define GICD_IROUTER_SPI_MODE_ANY	(1U << 31)
-+
-+#define GIC_PIDR2_ARCH_MASK		0xf0
-+#define GIC_PIDR2_ARCH_GICv3		0x30
-+#define GIC_PIDR2_ARCH_GICv4		0x40
-+
-+/*
-+ * Re-Distributor registers, offsets from RD_base
-+ */
-+#define GICR_CTLR			GICD_CTLR
-+#define GICR_IIDR			0x0004
-+#define GICR_TYPER			0x0008
-+#define GICR_STATUSR			GICD_STATUSR
-+#define GICR_WAKER			0x0014
-+#define GICR_SETLPIR			0x0040
-+#define GICR_CLRLPIR			0x0048
-+#define GICR_SEIR			GICD_SEIR
-+#define GICR_PROPBASER			0x0070
-+#define GICR_PENDBASER			0x0078
-+#define GICR_INVLPIR			0x00A0
-+#define GICR_INVALLR			0x00B0
-+#define GICR_SYNCR			0x00C0
-+#define GICR_MOVLPIR			0x0100
-+#define GICR_MOVALLR			0x0110
-+#define GICR_PIDR2			GICD_PIDR2
-+
-+#define GICR_WAKER_ProcessorSleep	(1U << 1)
-+#define GICR_WAKER_ChildrenAsleep	(1U << 2)
-+
-+/*
-+ * Re-Distributor registers, offsets from SGI_base
-+ */
-+#define GICR_ISENABLER0			GICD_ISENABLER
-+#define GICR_ICENABLER0			GICD_ICENABLER
-+#define GICR_ISPENDR0			GICD_ISPENDR
-+#define GICR_ICPENDR0			GICD_ICPENDR
-+#define GICR_ISACTIVER0			GICD_ISACTIVER
-+#define GICR_ICACTIVER0			GICD_ICACTIVER
-+#define GICR_IPRIORITYR0		GICD_IPRIORITYR
-+#define GICR_ICFGR0			GICD_ICFGR
-+
-+#define GICR_TYPER_VLPIS		(1U << 1)
-+#define GICR_TYPER_LAST			(1U << 4)
-+
-+/*
-+ * CPU interface registers
-+ */
-+#define ICC_CTLR_EL1_EOImode_drop_dir	(0U << 1)
-+#define ICC_CTLR_EL1_EOImode_drop	(1U << 1)
-+#define ICC_SRE_EL1_SRE			(1U << 0)
-+
-+/*
-+ * Hypervisor interface registers (SRE only)
-+ */
-+#define ICH_LR_VIRTUAL_ID_MASK		((1UL << 32) - 1)
-+
-+#define ICH_LR_EOI			(1UL << 41)
-+#define ICH_LR_GROUP			(1UL << 60)
-+#define ICH_LR_STATE			(3UL << 62)
-+#define ICH_LR_PENDING_BIT		(1UL << 62)
-+#define ICH_LR_ACTIVE_BIT		(1UL << 63)
-+
-+#define ICH_MISR_EOI			(1 << 0)
-+#define ICH_MISR_U			(1 << 1)
-+
-+#define ICH_HCR_EN			(1 << 0)
-+#define ICH_HCR_UIE			(1 << 1)
-+
-+#define ICH_VMCR_CTLR_SHIFT		0
-+#define ICH_VMCR_CTLR_MASK		(0x21f << ICH_VMCR_CTLR_SHIFT)
-+#define ICH_VMCR_BPR1_SHIFT		18
-+#define ICH_VMCR_BPR1_MASK		(7 << ICH_VMCR_BPR1_SHIFT)
-+#define ICH_VMCR_BPR0_SHIFT		21
-+#define ICH_VMCR_BPR0_MASK		(7 << ICH_VMCR_BPR0_SHIFT)
-+#define ICH_VMCR_PMR_SHIFT		24
-+#define ICH_VMCR_PMR_MASK		(0xffUL << ICH_VMCR_PMR_SHIFT)
-+
-+#define ICC_EOIR1_EL1			S3_0_C12_C12_1
-+#define ICC_IAR1_EL1			S3_0_C12_C12_0
-+#define ICC_SGI1R_EL1			S3_0_C12_C11_5
-+#define ICC_PMR_EL1			S3_0_C4_C6_0
-+#define ICC_CTLR_EL1			S3_0_C12_C12_4
-+#define ICC_SRE_EL1			S3_0_C12_C12_5
-+#define ICC_GRPEN1_EL1			S3_0_C12_C12_7
-+
-+#define ICC_IAR1_EL1_SPURIOUS		0x3ff
-+
-+#define ICC_SRE_EL2			S3_4_C12_C9_5
-+
-+#define ICC_SRE_EL2_SRE			(1 << 0)
-+#define ICC_SRE_EL2_ENABLE		(1 << 3)
-+
-+/*
-+ * System register definitions
-+ */
-+#define ICH_VSEIR_EL2			S3_4_C12_C9_4
-+#define ICH_HCR_EL2			S3_4_C12_C11_0
-+#define ICH_VTR_EL2			S3_4_C12_C11_1
-+#define ICH_MISR_EL2			S3_4_C12_C11_2
-+#define ICH_EISR_EL2			S3_4_C12_C11_3
-+#define ICH_ELSR_EL2			S3_4_C12_C11_5
-+#define ICH_VMCR_EL2			S3_4_C12_C11_7
-+
-+#define __LR0_EL2(x)			S3_4_C12_C12_ ## x
-+#define __LR8_EL2(x)			S3_4_C12_C13_ ## x
-+
-+#define ICH_LR0_EL2			__LR0_EL2(0)
-+#define ICH_LR1_EL2			__LR0_EL2(1)
-+#define ICH_LR2_EL2			__LR0_EL2(2)
-+#define ICH_LR3_EL2			__LR0_EL2(3)
-+#define ICH_LR4_EL2			__LR0_EL2(4)
-+#define ICH_LR5_EL2			__LR0_EL2(5)
-+#define ICH_LR6_EL2			__LR0_EL2(6)
-+#define ICH_LR7_EL2			__LR0_EL2(7)
-+#define ICH_LR8_EL2			__LR8_EL2(0)
-+#define ICH_LR9_EL2			__LR8_EL2(1)
-+#define ICH_LR10_EL2			__LR8_EL2(2)
-+#define ICH_LR11_EL2			__LR8_EL2(3)
-+#define ICH_LR12_EL2			__LR8_EL2(4)
-+#define ICH_LR13_EL2			__LR8_EL2(5)
-+#define ICH_LR14_EL2			__LR8_EL2(6)
-+#define ICH_LR15_EL2			__LR8_EL2(7)
-+
-+#define __AP0Rx_EL2(x)			S3_4_C12_C8_ ## x
-+#define ICH_AP0R0_EL2			__AP0Rx_EL2(0)
-+#define ICH_AP0R1_EL2			__AP0Rx_EL2(1)
-+#define ICH_AP0R2_EL2			__AP0Rx_EL2(2)
-+#define ICH_AP0R3_EL2			__AP0Rx_EL2(3)
-+
-+#define __AP1Rx_EL2(x)			S3_4_C12_C9_ ## x
-+#define ICH_AP1R0_EL2			__AP1Rx_EL2(0)
-+#define ICH_AP1R1_EL2			__AP1Rx_EL2(1)
-+#define ICH_AP1R2_EL2			__AP1Rx_EL2(2)
-+#define ICH_AP1R3_EL2			__AP1Rx_EL2(3)
-+
-+#ifndef __ASSEMBLY__
-+
-+#include <linux/stringify.h>
-+
-+static inline void gic_write_eoir(u64 irq)
-+{
-+	asm volatile("msr " __stringify(ICC_EOIR1_EL1) ", %0" : : "r" (irq));
-+	isb();
-+}
-+
-+#endif
-+
-+#endif
 diff --git a/include/linux/of_address.h b/include/linux/of_address.h
 index c13b878..33c0420 100644
 --- a/include/linux/of_address.h
@@ -9005,7 +5937,7 @@ index dde3a4a..71e36d0 100644
  
  #if defined(CONFIG_OF) && defined(CONFIG_PCI_MSI)
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 466bcd1..65fb1fc 100644
+index 61978a4..f582746 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
 @@ -401,6 +401,8 @@ struct pci_host_bridge_window {
@@ -9027,7 +5959,7 @@ index 466bcd1..65fb1fc 100644
  int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int busmax);
  int pci_bus_update_busn_res_end(struct pci_bus *b, int busmax);
  void pci_bus_release_busn_res(struct pci_bus *b);
-@@ -1095,6 +1100,9 @@ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
+@@ -1097,6 +1102,9 @@ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
  						  resource_size_t),
  			void *alignf_data);
  
@@ -9037,7 +5969,7 @@ index 466bcd1..65fb1fc 100644
  static inline dma_addr_t pci_bus_address(struct pci_dev *pdev, int bar)
  {
  	struct pci_bus_region region;
-@@ -1805,8 +1813,15 @@ static inline void pci_set_of_node(struct pci_dev *dev) { }
+@@ -1815,8 +1823,15 @@ static inline void pci_set_of_node(struct pci_dev *dev) { }
  static inline void pci_release_of_node(struct pci_dev *dev) { }
  static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
  static inline void pci_release_bus_of_node(struct pci_bus *bus) { }
