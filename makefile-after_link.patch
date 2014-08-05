@@ -21,17 +21,17 @@ Signed-off-by: Roland McGrath <roland@redhat.com>
  7 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-index 6d20b7d162d8..863a01bde0bf 100644
+index ff3bddea482d..d8a439dd6351 100644
 --- a/arch/arm64/kernel/vdso/Makefile
 +++ b/arch/arm64/kernel/vdso/Makefile
-@@ -48,7 +48,8 @@ $(obj-vdso): %.o: %.S
+@@ -48,7 +48,8 @@ $(obj-vdso): %.o: %.S FORCE
  
  # Actual build commands
- quiet_cmd_vdsold = VDSOL $@
+ quiet_cmd_vdsold = VDSOL   $@
 -      cmd_vdsold = $(CC) $(c_flags) -Wl,-n -Wl,-T $^ -o $@
 +      cmd_vdsold = $(CC) $(c_flags) -Wl,-n -Wl,-T $^ -o $@ \
-+				   $(if $(AFTER_LINK),;$(AFTER_LINK))
- quiet_cmd_vdsoas = VDSOA $@
++				    $(if $(AFTER_LINK),;$(AFTER_LINK))
+ quiet_cmd_vdsoas = VDSOA   $@
        cmd_vdsoas = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
@@ -91,10 +91,10 @@ index 2a8ddfd12a5b..452ca53561fe 100644
        cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/x86/vdso/Makefile b/arch/x86/vdso/Makefile
-index 9206ac7961a5..3d7f533f6757 100644
+index 5a4affe025e8..8ff38ce94c8e 100644
 --- a/arch/x86/vdso/Makefile
 +++ b/arch/x86/vdso/Makefile
-@@ -181,8 +181,9 @@ $(obj)/vdso32-syms.lds: $(vdso32.so-y:%=$(obj)/vdso32-%-syms.lds) FORCE
+@@ -171,8 +171,9 @@ $(vdso32-images:%=$(obj)/%.dbg): $(obj)/vdso32-%.so.dbg: FORCE \
  quiet_cmd_vdso = VDSO    $@
        cmd_vdso = $(CC) -nostdlib -o $@ \
  		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
@@ -105,9 +105,9 @@ index 9206ac7961a5..3d7f533f6757 100644
 +		sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
  
  VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=sysv) \
- 		$(LTO_CFLAGS)
+ 	$(call cc-ldoption, -Wl$(comma)--build-id) -Wl,-Bsymbolic $(LTO_CFLAGS)
 diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 2dcb37736d84..25e170e92ef1 100644
+index 86a4fe75f453..161637ed5611 100644
 --- a/scripts/link-vmlinux.sh
 +++ b/scripts/link-vmlinux.sh
 @@ -65,6 +65,10 @@ vmlinux_link()
@@ -121,6 +121,3 @@ index 2dcb37736d84..25e170e92ef1 100644
  }
  
  
--- 
-1.8.5.3
-

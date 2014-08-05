@@ -1,7 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
 
-From 952dbcbea4cffb1a05773af3b5f41e8ed477c5fe Mon Sep 17 00:00:00 2001
+From c66361cce3b23ea9c7fa8010f55e1fe31c23d5b1 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH 01/14] Add secure_modules() call
@@ -42,10 +42,10 @@ index f520a767c86c..fc9b54eb779e 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 81e727cf6df9..fc14f48915dd 100644
+index ae79ce615cb9..e8909e2a8b96 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3843,3 +3843,13 @@ void module_layout(struct module *mod,
+@@ -3839,3 +3839,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif
@@ -60,10 +60,10 @@ index 81e727cf6df9..fc14f48915dd 100644
 +}
 +EXPORT_SYMBOL(secure_modules);
 -- 
-1.9.3
+2.0.4
 
 
-From 3b451a12e60a47d152ecce1c02634c4d7320b024 Mon Sep 17 00:00:00 2001
+From eb614212bd2ad9acb2a279c669624a174899e0d5 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
 Subject: [PATCH 02/14] PCI: Lock down BAR access when module security is
@@ -179,10 +179,10 @@ index b91c4da68365..98f5637304d1 100644
  
  	dev = pci_get_bus_and_slot(bus, dfn);
 -- 
-1.9.3
+2.0.4
 
 
-From 42a620055ac873fb378ec69731c7a2200f6779cc Mon Sep 17 00:00:00 2001
+From 6774235b4571f527a2a101c291434f43fc8b668c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
 Subject: [PATCH 03/14] x86: Lock down IO port access when module security is
@@ -252,10 +252,10 @@ index 917403fe10da..cdf839f9defe 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-1.9.3
+2.0.4
 
 
-From 8019fb7c7b5f18b19f7c980987953680ee218c9f Mon Sep 17 00:00:00 2001
+From 8693d39f3b0d3f43dbc45f9a1961e695e8a21373 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
 Subject: [PATCH 04/14] ACPI: Limit access to custom_method
@@ -284,10 +284,10 @@ index c68e72414a67..4277938af700 100644
  		/* parse the table header to get the table length */
  		if (count <= sizeof(struct acpi_table_header))
 -- 
-1.9.3
+2.0.4
 
 
-From bf84e9e1022b2d3d0c97ae48fb8b61e5336c50f8 Mon Sep 17 00:00:00 2001
+From 7e5fa9a5109284bcd70c8ae2fc82265e2617a31c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:46:50 -0500
 Subject: [PATCH 05/14] asus-wmi: Restrict debugfs interface when module
@@ -339,10 +339,10 @@ index 3c6ccedc82b6..960c46536c65 100644
  				     1, asus->debug.method_id,
  				     &input, &output);
 -- 
-1.9.3
+2.0.4
 
 
-From 9a56e8715d3b6dc84989997f34b6b5d407cabad2 Mon Sep 17 00:00:00 2001
+From 7ed379a80612df99b1220869003522211d23bd96 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
 Subject: [PATCH 06/14] Restrict /dev/mem and /dev/kmem when module loading is
@@ -382,10 +382,10 @@ index cdf839f9defe..c63cf93b00eb 100644
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
 -- 
-1.9.3
+2.0.4
 
 
-From 8d6faa19bbbaa4df411becda7e40c4ea0684c134 Mon Sep 17 00:00:00 2001
+From c46f20cad9d85bbf467162dddb56759e7b02e0f2 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
 Subject: [PATCH 07/14] acpi: Ignore acpi_rsdp kernel parameter when module
@@ -422,10 +422,10 @@ index bad25b070fe0..0606585e8b93 100644
  #endif
  
 -- 
-1.9.3
+2.0.4
 
 
-From 1ff86ddea019f543f6668b56889f86811028f303 Mon Sep 17 00:00:00 2001
+From 8cb020222a1602bd196163d132b95bb1f69925b2 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH 08/14] kexec: Disable at runtime if the kernel enforces module
@@ -467,10 +467,10 @@ index 4b8f0c925884..df14daa323a9 100644
  	 * This leaves us room for future extensions.
  	 */
 -- 
-1.9.3
+2.0.4
 
 
-From 4d56368f1364b45c18067bab1d6abc5ce0f67183 Mon Sep 17 00:00:00 2001
+From 2e30f7a56dcccf68c9c62dfdc791664f07737e94 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
 Subject: [PATCH 09/14] x86: Restrict MSR access when module loading is
@@ -512,10 +512,10 @@ index c9603ac80de5..8bef43fc3f40 100644
  			err = -EFAULT;
  			break;
 -- 
-1.9.3
+2.0.4
 
 
-From aab8ba85241a85a0b2ed622edd7874c74cafa496 Mon Sep 17 00:00:00 2001
+From f3437ca79d1ddd12ebdff439c4c3931ba0081a1e Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH 10/14] Add option to automatically enforce module signatures
@@ -551,10 +551,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d24887b645dc..870aac9520b3 100644
+index 6b71f0417293..67e25e3c8583 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1557,6 +1557,16 @@ config EFI_MIXED
+@@ -1559,6 +1559,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -572,7 +572,7 @@ index d24887b645dc..870aac9520b3 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 0331d765c2bb..85defaf5a27c 100644
+index f277184e2ac1..88edd48f03e9 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -583,7 +583,7 @@ index 0331d765c2bb..85defaf5a27c 100644
  
  #undef memcpy			/* Use memcpy from misc.c */
  
-@@ -809,6 +810,37 @@ out:
+@@ -803,6 +804,37 @@ out:
  	return status;
  }
  
@@ -621,7 +621,7 @@ index 0331d765c2bb..85defaf5a27c 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1372,6 +1404,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1374,6 +1406,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -631,7 +631,7 @@ index 0331d765c2bb..85defaf5a27c 100644
 +
  	setup_graphics(boot_params);
  
- 	setup_efi_pci(boot_params);
+ 	status = setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
 index 225b0988043a..90dbfb73e11f 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
@@ -647,7 +647,7 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 78a0e6298922..8ecfec85e527 100644
+index 41ead8d3bc0b..5a5cf7395724 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1142,6 +1142,12 @@ void __init setup_arch(char **cmdline_p)
@@ -681,10 +681,10 @@ index fc9b54eb779e..7377bc851461 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index fc14f48915dd..2d68d276f3b6 100644
+index e8909e2a8b96..7d5b301efa01 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3844,6 +3844,13 @@ void module_layout(struct module *mod,
+@@ -3840,6 +3840,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
@@ -699,10 +699,10 @@ index fc14f48915dd..2d68d276f3b6 100644
  {
  #ifdef CONFIG_MODULE_SIG
 -- 
-1.9.3
+2.0.4
 
 
-From eae8a80ddc185b3f233e2620dbfc6454b6f0c3a6 Mon Sep 17 00:00:00 2001
+From ad56618c3851b102d59bab12d946bcce41caa48f Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH 11/14] efi: Disable secure boot if shim is in insecure mode
@@ -719,10 +719,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 85defaf5a27c..b4013a4ba005 100644
+index 88edd48f03e9..3b18ef2b534c 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -812,8 +812,9 @@ out:
+@@ -806,8 +806,9 @@ out:
  
  static int get_secure_boot(void)
  {
@@ -733,7 +733,7 @@ index 85defaf5a27c..b4013a4ba005 100644
  	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
  	efi_status_t status;
  
-@@ -837,6 +838,23 @@ static int get_secure_boot(void)
+@@ -831,6 +832,23 @@ static int get_secure_boot(void)
  	if (setup == 1)
  		return 0;
  
@@ -758,10 +758,10 @@ index 85defaf5a27c..b4013a4ba005 100644
  }
  
 -- 
-1.9.3
+2.0.4
 
 
-From 9728a4f49b284b7354876e1d77174d5838306e21 Mon Sep 17 00:00:00 2001
+From d3bcd51e1e47252afa3b2bb4da781b358da7d3d0 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
 Subject: [PATCH 12/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
@@ -775,10 +775,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 870aac9520b3..7aecd3f9f8ee 100644
+index 67e25e3c8583..a46be2f21b95 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1558,7 +1558,8 @@ config EFI_MIXED
+@@ -1560,7 +1560,8 @@ config EFI_MIXED
  	   If unsure, say N.
  
  config EFI_SECURE_BOOT_SIG_ENFORCE
@@ -789,10 +789,10 @@ index 870aac9520b3..7aecd3f9f8ee 100644
  	---help---
  	  UEFI Secure Boot provides a mechanism for ensuring that the
 -- 
-1.9.3
+2.0.4
 
 
-From 4211b4919b8ccecc4f4cdc0a46ead7294478b687 Mon Sep 17 00:00:00 2001
+From 3d30f2c07daac85befa76ac44b4dc4db3d64a018 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:33:03 -0400
 Subject: [PATCH 13/14] efi: Add EFI_SECURE_BOOT bit
@@ -807,7 +807,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 8ecfec85e527..5ce785fc9f05 100644
+index 5a5cf7395724..fb282ff6a802 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1144,7 +1144,9 @@ void __init setup_arch(char **cmdline_p)
@@ -821,22 +821,22 @@ index 8ecfec85e527..5ce785fc9f05 100644
  #endif
  
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 41bbf8ba4ba8..e73f391fd3c8 100644
+index efc681fd5895..3f683a13d7aa 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -917,6 +917,7 @@ extern int __init efi_setup_pcdp_console(char *);
- #define EFI_MEMMAP		4	/* Can we use EFI memory map? */
+@@ -923,6 +923,7 @@ extern int __init efi_setup_pcdp_console(char *);
  #define EFI_64BIT		5	/* Is the firmware 64-bit? */
- #define EFI_ARCH_1		6	/* First arch-specific bit */
-+#define EFI_SECURE_BOOT		7 /* Are we in Secure Boot mode? */
+ #define EFI_PARAVIRT		6	/* Access is via a paravirt interface */
+ #define EFI_ARCH_1		7	/* First arch-specific bit */
++#define EFI_SECURE_BOOT		8	/* Are we in Secure Boot mode? */
  
  #ifdef CONFIG_EFI
  /*
 -- 
-1.9.3
+2.0.4
 
 
-From 18b50c6f0597b606cb03cbd8a9fdef7478cb2b21 Mon Sep 17 00:00:00 2001
+From f19107379dbcfced86458de8ad9cf8a6443567e9 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 20 Jun 2014 08:53:24 -0400
 Subject: [PATCH 14/14] hibernate: Disable in a signed modules environment
@@ -852,7 +852,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index fcc2611d3f14..61711801a9c4 100644
+index a9dfa79b6bab..14c7356ff53a 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
 @@ -28,6 +28,7 @@
@@ -873,5 +873,5 @@ index fcc2611d3f14..61711801a9c4 100644
  
  /**
 -- 
-1.9.3
+2.0.4
 

@@ -6,9 +6,9 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -639,9 +639,6 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#rhbz 1117942
-Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1367,9 +1364,6 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#rhbz 1117942
-ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2253,7 +2247,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon Aug 04 2014 Josh Boyer <jwboyer@gmail.com> - 3.16.0-1
+* Tue Aug 05 2014 Josh Boyer <jwboyer@gmail.com> - 3.17.0-0.rc0.git1.1
+- Linux v3.16-3652-gf19107379dbc
+- Reenable debugging options.
+
+* Mon Aug 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-1
 - Linux v3.16
 - Disable debugging options.
 
