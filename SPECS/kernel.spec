@@ -367,10 +367,10 @@ Source2000: cpupower.service
 Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
+Patch1000: debrand-single-cpu.patch
+Patch1001: debrand-rh_taint.patch
+Patch1002: debrand-rh-i686-cpu.patch
 Patch999999: linux-kernel-test.patch
-Patch1000:	debrand-single-cpu.patch
-Patch1001:	debrand-rh_taint.patch
-Patch1002:	debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
