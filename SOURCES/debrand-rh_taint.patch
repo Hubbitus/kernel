@@ -1,0 +1,25 @@
+From 69c0d42cfa26515196896dea086857c2caccb6eb Mon Sep 17 00:00:00 2001
+From: Jim Perrin <jperrin@centos.org>
+Date: Thu, 19 Jun 2014 10:05:12 -0500
+Subject: [PATCH] branding patch for rh_taint
+
+---
+ kernel/rh_taint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/rh_taint.c b/kernel/rh_taint.c
+index 59a74b0..0708e15 100644
+--- a/kernel/rh_taint.c
++++ b/kernel/rh_taint.c
+@@ -8,7 +8,7 @@
+ void mark_hardware_unsupported(const char *msg)
+ {
+ 	/* Print one single message */
+-	pr_crit("Warning: %s - this hardware has not undergone testing by Red Hat and might not be certified. Please consult https://hardware.redhat.com for certified hardware.\n", msg);
++	pr_crit("Warning: %s - this hardware has not undergone upstream testing. Please consult http://wiki.centos.org/FAQ for more information\n", msg);
+ }
+ EXPORT_SYMBOL(mark_hardware_unsupported);
+ 
+-- 
+1.8.3.1
+

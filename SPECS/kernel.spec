@@ -338,7 +338,7 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: securebootca.cer
+Source13: centos.cer
 Source14: secureboot.cer
 Source15: rheldup3.x509
 Source16: rhelkpatch1.x509
@@ -369,6 +369,8 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
+Patch1001:	debrand-rh_taint.patch
+Patch1000:	debrand-single-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -668,6 +670,11 @@ cd linux-%{KVRA}
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
 
+# CentOS Branding Modification
+ApplyOptionalPatch debrand-rh_taint.patch
+ApplyOptionalPatch debrand-single-cpu.patch
+# End of CentOS Modification
+
 ApplyOptionalPatch linux-kernel-test.patch
 
 # Any further pre-build tree manipulations happen here.
@@ -819,7 +826,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1474,6 +1481,12 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Wed Aug 06 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.6.3.el7
+- Apply debranding changes
+
+* Wed Aug 06 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.6.3.el7
+- Apply debranding changes
+
 * Wed Jul 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.3.el7]
 - [net] l2tp_ppp: fail when socket option level is not SOL_PPPOL2TP (Petr Matousek) [1119465 1119466] {CVE-2014-4943}
 
