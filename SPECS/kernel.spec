@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.4.4.el7
+%define pkgrelease 123.6.3.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,9 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source13: securebootca.cer
+Source14: secureboot.cer
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -365,11 +366,6 @@ Source72: kernel-%{version}-s390x-kdump.config
 # Sources for kernel-tools
 Source2000: cpupower.service
 Source2001: cpupower.config
-
-# branding patches
-Patch1001: debrand-single-cpu.patch
-Patch1002: debrand-rh_taint.patch
-Patch1003: debrand-rh-i686-cpu.patch
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
@@ -525,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -671,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -829,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13} 
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1484,19 +1474,45 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Thu Jul 24 2014 Johnny Hughes <johnny@centos.org> [3.10.0-123.4.4.el7]
-- Add in CentOS SecureBoot certs
-- Add in debranding changes
-- Add in CentOS kdump and driver update certs
-- Modifications to remove Red Hat branding from spec file
+* Wed Jul 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.3.el7]
+- [net] l2tp_ppp: fail when socket option level is not SOL_PPPOL2TP (Petr Matousek) [1119465 1119466] {CVE-2014-4943}
 
-* Wed Jul 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.4.el7]
-- [net] l2tp_ppp: fail when socket option level is not SOL_PPPOL2TP (Petr  Matousek) [1119465 1119466] {CVE-2014-4943}
+* Wed Jul 09 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.2.el7]
+- [s390] ptrace: correct insufficient sanitization when setting psw mask (Hendrik Brueckner) [1114090 1113673]
 
-* Thu Jul 10 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.3.el7]
+* Wed Jul 09 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.1.el7]
 - [x86] ptrace: force IRET path after a ptrace_stop() (Oleg Nesterov) [1115934 1115935] {CVE-2014-4699}
 
-* Thu Jun 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.4.2.el7]
+* Wed Jul 02 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.5.1.el7]
+- [net] ipv4/tunnels: fix an oops when using ipip/sit with IPsec (Jiri Pirko) [1114957 1108857]
+- [scsi] Add timeout to avoid infinite command retry (Ewan Milne) [1114468 1061871]
+- [net] filter: let bpf_tell_extensions return SKF_AD_MAX (Jiri Benc) [1114404 1079524]
+- [net] filter: introduce SO_BPF_EXTENSIONS (Jiri Benc) [1114404 1079524]
+- [net] sctp: Fix sk_ack_backlog wrap-around problem (Daniel Borkmann) [1113971 1112726] {CVE-2014-4667}
+- [tty] Set correct tty name in 'active' sysfs attribute (Denys Vlasenko) [1113467 1066403]
+- [powerpc] tm: Disable IRQ in tm_recheckpoint (Larry Woodman) [1113150 1088224]
+- [scsi] qla2xxx: Update version number to 8.06.00.08.07.0-k3 (Chad Dupuis) [1112389 1090378]
+- [scsi] qla2xxx: Reduce the time we wait for a command to complete during SCSI error handling (Chad Dupuis) [1112389 1090378]
+- [scsi] qla2xxx: Clear loop_id for ports that are marked lost during fabric scanning (Chad Dupuis) [1112389 1090378]
+- [scsi] qla2xxx: Avoid escalating the SCSI error handler if the command is not found in firmware (Chad Dupuis) [1112389 1090378]
+- [scsi] qla2xxx: Don't check for firmware hung during the reset context for ISP82XX (Chad Dupuis) [1112389 1090378]
+- [scsi] qla2xxx: Issue abort command for outstanding commands during cleanup when only firmware is alive (Chad Dupuis) [1112389 1090378]
+- [fs] nfs: Apply NFS_MOUNT_CMP_FLAGMASK to nfs_compare_remount_data() (Scott Mayhew) [1109407 1103805]
+- [ethernet] bnx2x: Fix kernel crash and data miscompare after EEH recovery (Michal Schmidt) [1107721 1101808]
+- [net] gro: restore frag0 optimization (and fix crash) (Michal Schmidt) [1099950 1069741]
+- [watchdog] hpwdt: display informative string (Nigel Croxon) [1096961 1074038]
+- [net] Use netlink_ns_capable to verify the permisions of netlink messages (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [net] netlink: Add variants of capable for use on netlink messages (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [net] diag: Move the permission check in sock_diag_put_filterinfo to packet_diag_dump (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [net] netlink: Rename netlink_capable netlink_allowed (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [net] diag: Fix ns_capable check in sock_diag_put_filterinfo (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [net] netlink: Fix permission check in netlink_connect() (Jiri Benc) [1094271 1094272] {CVE-2014-0181}
+- [kernel] cputime: Fix jiffies based cputime assumption on steal accounting (Frederic Weisbecker) [1090974 1047732]
+- [kernel] cputime: Bring cputime -> nsecs conversion (Frederic Weisbecker) [1090974 1047732]
+- [kernel] cputime: Default implementation of nsecs -> cputime conversion (Frederic Weisbecker) [1090974 1047732]
+- [net] mac80211: fix crash due to AP powersave TX vs. wakeup race (Jacob Tanenbaum) [1083533 1083534] {CVE-2014-2706}
+- [wireless] ath9k: tid->sched race in ath_tx_aggr_sleep() (Jacob Tanenbaum) [1083251 1083252] {CVE-2014-2672}
+- [powerpc] tm: Fix crash when forking inside a transaction (Radomir Vrbovsky) [1083214 1083215] {CVE-2014-2673}
 - [fs] aio: fix plug memory disclosure and fix reqs_active accounting backport (Jeff Moyer) [1094604 1094605] {CVE-2014-0206}
 - [fs] aio: plug memory disclosure and fix reqs_active accounting (Mateusz Guzik) [1094604 1094605] {CVE-2014-0206}
 
