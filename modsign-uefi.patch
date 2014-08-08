@@ -1,7 +1,8 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard for now
 
-From fa2bfe718da40bf24f92c85846577e9bc788882c Mon Sep 17 00:00:00 2001
+
+From ca81c32a62c0330afedb506324ace85cc0116eaf Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH 1/5] Add EFI signature data types
@@ -15,10 +16,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index e73f391fd3c8..3d66a61bbbca 100644
+index 3f683a13d7aa..27aae6eb65d8 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -578,6 +578,12 @@ typedef efi_status_t efi_query_variable_store_t(u32 attributes, unsigned long si
+@@ -581,6 +581,12 @@ void efi_native_runtime_setup(void);
  #define DEVICE_TREE_GUID \
      EFI_GUID(  0xb1b621d5, 0xf19c, 0x41a5, 0x83, 0x0b, 0xd9, 0x15, 0x2c, 0x69, 0xaa, 0xe0 )
  
@@ -31,7 +32,7 @@ index e73f391fd3c8..3d66a61bbbca 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -793,6 +799,20 @@ typedef struct _efi_file_io_interface {
+@@ -796,6 +802,20 @@ typedef struct _efi_file_io_interface {
  
  #define EFI_INVALID_TABLE_ADDR		(~0UL)
  
@@ -53,10 +54,10 @@ index e73f391fd3c8..3d66a61bbbca 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-1.9.3
+2.0.4
 
 
-From 922e0512ce70101b596558d5bb075cd40a450322 Mon Sep 17 00:00:00 2001
+From 8662475501e4f68f872c86f5e915c204ccae0cb2 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 2/5] Add an EFI signature blob parser and key loader.
@@ -74,12 +75,12 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  create mode 100644 crypto/asymmetric_keys/efi_parser.c
 
 diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index 03a6eb95ab50..6306ffc2a7fe 100644
+index 4870f28403f5..4a1b50d73b80 100644
 --- a/crypto/asymmetric_keys/Kconfig
 +++ b/crypto/asymmetric_keys/Kconfig
-@@ -37,4 +37,12 @@ config X509_CERTIFICATE_PARSER
- 	  data and provides the ability to instantiate a crypto key from a
- 	  public key packet found inside the certificate.
+@@ -67,4 +67,12 @@ config SIGNED_PE_FILE_VERIFICATION
+ 	  This option provides support for verifying the signature(s) on a
+ 	  signed PE binary.
  
 +config EFI_SIGNATURE_LIST_PARSER
 +	bool "EFI signature list parser"
@@ -91,7 +92,7 @@ index 03a6eb95ab50..6306ffc2a7fe 100644
 +
  endif # ASYMMETRIC_KEY_TYPE
 diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index 0727204aab68..cd8388e5f2f1 100644
+index e47fcd9ac5e8..6512f6596785 100644
 --- a/crypto/asymmetric_keys/Makefile
 +++ b/crypto/asymmetric_keys/Makefile
 @@ -8,6 +8,7 @@ asymmetric_keys-y := asymmetric_type.o signature.o
@@ -218,10 +219,10 @@ index 000000000000..424896a0b169
 +	return 0;
 +}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 3d66a61bbbca..7854ff3c0f11 100644
+index 27aae6eb65d8..353dd105533e 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -901,6 +901,10 @@ extern struct efi_memory_map memmap;
+@@ -906,6 +906,10 @@ extern bool efi_poweroff_required(void);
  	     (md) <= (efi_memory_desc_t *)((m)->map_end - (m)->desc_size); \
  	     (md) = (void *)(md) + (m)->desc_size)
  
@@ -233,10 +234,10 @@ index 3d66a61bbbca..7854ff3c0f11 100644
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
 -- 
-1.9.3
+2.0.4
 
 
-From 2534dedee545507c00973279d5db515e122b5104 Mon Sep 17 00:00:00 2001
+From d5bc057ec6b984222b76622b2222485bef771ceb Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
 Subject: [PATCH 3/5] KEYS: Add a system blacklist keyring
@@ -255,25 +256,23 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  4 files changed, 42 insertions(+)
 
 diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index 8dabc399bd1d..e466de10ceec 100644
+index 72665eb80692..2c7b80d31366 100644
 --- a/include/keys/system_keyring.h
 +++ b/include/keys/system_keyring.h
-@@ -18,6 +18,10 @@
- 
- extern struct key *system_trusted_keyring;
+@@ -28,4 +28,8 @@ static inline struct key *get_system_trusted_keyring(void)
+ }
+ #endif
  
 +#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +extern struct key *system_blacklist_keyring;
 +#endif
 +
- #endif
- 
  #endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 9d76b99af1b9..ac5f580437a0 100644
+index a291b7ef4738..7c199415ee28 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1677,6 +1677,15 @@ config SYSTEM_TRUSTED_KEYRING
+@@ -1715,6 +1715,15 @@ config SYSTEM_TRUSTED_KEYRING
  
  	  Keys in this keyring are used by module signature checking.
  
@@ -313,7 +312,7 @@ index be5b8fac4bd0..fed815fcdaf2 100644
  			     &key_type_asymmetric, id);
  	if (IS_ERR(key))
 diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
-index 52ebc70263f4..478c4f8ec908 100644
+index 875f64e8935b..c15e93f5a418 100644
 --- a/kernel/system_keyring.c
 +++ b/kernel/system_keyring.c
 @@ -20,6 +20,9 @@
@@ -348,10 +347,10 @@ index 52ebc70263f4..478c4f8ec908 100644
  }
  
 -- 
-1.9.3
+2.0.4
 
 
-From a72ed58241f0d62b7f9fbf4e1fbbcc1e02145098 Mon Sep 17 00:00:00 2001
+From 2f1892982340c8219cb07e38ca06275e67f7caf2 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH 4/5] MODSIGN: Import certificates from UEFI Secure Boot
@@ -379,10 +378,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 7854ff3c0f11..31fd75e7230b 100644
+index 353dd105533e..f89c9a427dd4 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -584,6 +584,12 @@ typedef efi_status_t efi_query_variable_store_t(u32 attributes, unsigned long si
+@@ -587,6 +587,12 @@ void efi_native_runtime_setup(void);
  #define EFI_CERT_X509_GUID \
      EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
  
@@ -396,10 +395,10 @@ index 7854ff3c0f11..31fd75e7230b 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index ac5f580437a0..ca7268b594aa 100644
+index 7c199415ee28..673796afbf7d 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1831,6 +1831,15 @@ config MODULE_SIG_ALL
+@@ -1869,6 +1869,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -416,10 +415,10 @@ index ac5f580437a0..ca7268b594aa 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index f2a8b6246ce9..706e7952bde5 100644
+index 0026cf531769..63f3d0023798 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_UID16) += uid16.o
+@@ -45,6 +45,7 @@ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -535,10 +534,10 @@ index 000000000000..94b0eb38a284
 +}
 +late_initcall(load_uefi_certs);
 -- 
-1.9.3
+2.0.4
 
 
-From 11bb98e3a62de77fc66a3e2197578dd9d891b998 Mon Sep 17 00:00:00 2001
+From 396b99487836b7e5bb37422f4ffb32e722b9f794 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Thu, 3 Oct 2013 10:14:23 -0400
 Subject: [PATCH 5/5] MODSIGN: Support not importing certs from db
@@ -620,5 +619,5 @@ index 94b0eb38a284..ae28b974d49a 100644
  
  	mok = get_cert_list(L"MokListRT", &mok_var, &moksize);
 -- 
-1.9.3
+2.0.4
 

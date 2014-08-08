@@ -248,9 +248,31 @@ CONFIG_CMA_AREAS=7
 
 # serial
 # CONFIG_SERIAL_SH_SCI is not set
+# CONFIG_SERIAL_MAX3100 is not set
+# CONFIG_SERIAL_MAX310X is not set
+# CONFIG_SERIAL_IFX6X60 is not set
 
 # drm
 # CONFIG_DRM_VMWGFX is not set
 # CONFIG_IMX_IPUV3_CORE is not set
 
 # CONFIG_DEBUG_SET_MODULE_RONX is not set
+
+# spi
+# CONFIG_SPI_ALTERA is not set
+# CONFIG_SPI_BITBANG is not set
+# CONFIG_SPI_GPIO is not set
+# CONFIG_SPI_FSL_SPI is not set
+# CONFIG_SPI_OC_TINY is not set
+# CONFIG_SPI_PL022 is not set
+# CONFIG_SPI_ROCKCHIP is not set
+# CONFIG_SPI_SC18IS602 is not set
+# CONFIG_SPI_XCOMM is not set
+# CONFIG_SPI_XILINX is not set
+# CONFIG_SPI_DESIGNWARE is not set
+# CONFIG_SPI_SPIDEV is not set
+# CONFIG_SPI_TLE62X0 is not set
+# 
+# CONFIG_LATTICE_ECP3_CONFIG is not set
+# CONFIG_BMP085_SPI is not set
+# CONFIG_TI_DAC7512 is not set

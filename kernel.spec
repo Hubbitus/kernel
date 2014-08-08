@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2247,6 +2247,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git2.1
+- Linux v3.16-7503-g33caee39925b
+
 * Tue Aug 05 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: fix up merge conflict and re-enable
 
