@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -737,9 +737,6 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#CVE-2014-4943 rhbz 1119458 1120542
-Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
@@ -1459,9 +1456,6 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
-
-#CVE-2014-4943 rhbz 1119458 1120542
-ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
@@ -2296,6 +2290,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-200
+- Linux v3.15.9
+
 * Sat Aug 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport two patches to fix T440s dock audio (rhbz 1101386)
 
