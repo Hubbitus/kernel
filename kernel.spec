@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -565,7 +565,7 @@ Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #rhbz 917708
 Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
-Patch800: crash-driver.patch
+# atch800: crash-driver.patch
 
 # crypto/
 
@@ -604,8 +604,6 @@ Patch15000: nowatchdog-on-virt.patch
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
-# http://www.spinics.net/lists/linux-tegra/msg17948.html
-Patch21023: arm-tegra-drmdetection.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -634,8 +632,6 @@ Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
@@ -1238,7 +1234,6 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-beagle.patch
 ApplyPatch arm-imx6-utilite.patch
-ApplyPatch arm-tegra-drmdetection.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1300,7 +1295,7 @@ ApplyPatch silence-fbcon-logo.patch
 ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
-ApplyPatch crash-driver.patch
+# pplyPatch crash-driver.patch
 
 # crypto/
 
@@ -1359,8 +1354,6 @@ ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
@@ -2247,6 +2240,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Aug 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git3.1
+- Linux v3.16-10013-gc309bfa9b481
+- Temporarily don't apply crash driver patch
+
 * Thu Aug 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git2.1
 - Linux v3.16-7503-g33caee39925b
 
