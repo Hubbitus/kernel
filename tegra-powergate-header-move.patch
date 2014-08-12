@@ -1,0 +1,13 @@
+diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
+index fc3df47..4392190 100644
+--- a/drivers/ata/ahci_tegra.c
++++ b/drivers/ata/ahci_tegra.c
+@@ -24,7 +24,7 @@
+ #include <linux/module.h>
+ #include <linux/of_device.h>
+ #include <linux/platform_device.h>
+-#include <linux/tegra-powergate.h>
++#include <soc/tegra/powergate.h>
+ #include <linux/regulator/consumer.h>
+ #include "ahci.h"
+ 

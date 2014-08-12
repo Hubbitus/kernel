@@ -624,6 +624,9 @@ Patch25063: disable-libdw-unwind-on-non-x86.patch
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
+#rhbz 1021036, submitted upstream
+Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
 Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
@@ -633,8 +636,7 @@ Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1021036, submitted upstream
-Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+Patch27000: tegra-powergate-header-move.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1357,6 +1359,8 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
+
+ApplyPatch tegra-powergate-header-move.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2240,6 +2244,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 12 2014 Kyle McMartin <kyle@fedoraproject.org>
+- tegra-powergate-header-move.patch: deal with armv7hl breakage
+
 * Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git4.1
 - Add updated crash driver from Dave Anderson and re-enable
 
