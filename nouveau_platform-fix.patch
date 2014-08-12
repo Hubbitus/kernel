@@ -1,0 +1,13 @@
+diff --git a/drivers/gpu/drm/nouveau/nouveau_platform.c b/drivers/gpu/drm/nouveau/nouveau_platform.c
+index 0ffeb50..e53e854 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_platform.c
++++ b/drivers/gpu/drm/nouveau/nouveau_platform.c
+@@ -149,7 +149,7 @@ power_down:
+ static int nouveau_platform_remove(struct platform_device *pdev)
+ {
+ 	struct drm_device *drm_dev = platform_get_drvdata(pdev);
+-	struct nouveau_device *device = nouveau_dev(drm_dev);
++	struct nouveau_device *device = nv_device(nouveau_drm(dev)->device);
+ 	struct nouveau_platform_gpu *gpu = nv_device_to_platform(device)->gpu;
+ 
+ 	nouveau_drm_device_remove(drm_dev);
