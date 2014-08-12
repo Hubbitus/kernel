@@ -7,7 +7,7 @@ index 0ffeb50..e53e854 100644
  {
  	struct drm_device *drm_dev = platform_get_drvdata(pdev);
 -	struct nouveau_device *device = nouveau_dev(drm_dev);
-+	struct nouveau_device *device = nv_device(nouveau_drm(dev)->device);
++	struct nouveau_device *device = nv_device(nouveau_drm(drm_dev)->device);
  	struct nouveau_platform_gpu *gpu = nv_device_to_platform(device)->gpu;
  
  	nouveau_drm_device_remove(drm_dev);
