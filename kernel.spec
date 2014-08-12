@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 0
+%global aarch64patches 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -2240,6 +2240,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 12 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: fix up merge conflict and re-enable
+
 * Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git4.1
 - Linux v3.16-10473-gc8d6637d0497
 
