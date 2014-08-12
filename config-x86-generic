@@ -143,6 +143,8 @@ CONFIG_IPW2200_QOS=y
 
 CONFIG_BLK_DEV_AMD74XX=y
 
+# I2C_ACPI casues I2C to be built in.  This should probably be fixed.
+CONFIG_I2C_ACPI=y
 CONFIG_I2C_AMD756=m
 CONFIG_I2C_AMD756_S4882=m
 CONFIG_I2C_AMD8111=m
@@ -378,6 +380,33 @@ CONFIG_GPIO_ICH=m
 # CONFIG_GPIO_LYNXPOINT is not set
 # CONFIG_GPIO_MCP23S08 is not set
 # CONFIG_GPIO_F7188X is not set
+
+# These should all go away with IC2_ACPI is fixed
+# CONFIG_MFD_AS3711 is not set
+# CONFIG_PMIC_ADP5520 is not set
+# CONFIG_MFD_AAT2870_CORE is not set
+# CONFIG_MFD_AXP20X is not set
+# CONFIG_PMIC_DA903X is not set
+# CONFIG_MFD_DA9052_I2C is not set
+# CONFIG_MFD_DA9055 is not set
+# CONFIG_MFD_88PM800 is not set
+# CONFIG_MFD_88PM805 is not set
+# CONFIG_MFD_MAX14577 is not set
+# CONFIG_MFD_MAX77686 is not set
+# CONFIG_MFD_MAX77693 is not set
+# CONFIG_MFD_MAX8907 is not set
+# CONFIG_MFD_MAX8997 is not set
+# CONFIG_MFD_RC5T583 is not set
+# CONFIG_MFD_SEC_CORE is not set
+# CONFIG_MFD_SMSC is not set
+# CONFIG_MFD_LP8788 is not set
+# CONFIG_MFD_PALMAS is not set
+# CONFIG_MFD_TPS65090 is not set
+# CONFIG_MFD_TPS65910 is not set
+# CONFIG_MFD_TPS65912_I2C is not set
+# CONFIG_MFD_TPS80031 is not set
+# CONFIG_TWL4030_CORE is not set
+# CONFIG_TWL6040_CORE is not set
 
 
 CONFIG_PCI_CNB20LE_QUIRK=y

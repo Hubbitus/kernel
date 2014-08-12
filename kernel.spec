@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2240,6 +2240,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git4.1
+- Linux v3.16-10473-gc8d6637d0497
+
 * Sat Aug 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git3.1
 - Linux v3.16-10013-gc309bfa9b481
 - Temporarily don't apply crash driver patch
