@@ -565,7 +565,7 @@ Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 #rhbz 917708
 Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
-# atch800: crash-driver.patch
+Patch800: crash-driver.patch
 
 # crypto/
 
@@ -1295,7 +1295,7 @@ ApplyPatch silence-fbcon-logo.patch
 ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
-# pplyPatch crash-driver.patch
+ApplyPatch crash-driver.patch
 
 # crypto/
 
@@ -2240,10 +2240,13 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git4.1
+- Add updated crash driver from Dave Anderson and re-enable
+
 * Tue Aug 12 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: fix up merge conflict and re-enable
 
-* Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git4.1
+* Tue Aug 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.16-10473-gc8d6637d0497
 
 * Sat Aug 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git3.1
