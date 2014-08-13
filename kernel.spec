@@ -2246,6 +2246,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Aug 13 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- 3.17 ARMv7 updates
+- Cleanup some old removed options
+- Disable legacy USB OTG (using new configfs equivilents)
+
 * Tue Aug 12 2014 Kyle McMartin <kyle@fedoraproject.org> 3.17.0-0.rc0.git4.2
 - tegra-powergate-header-move.patch: deal with armv7hl breakage
 - nouveau_platform-fix.patch: handle nouveau_dev() removal
