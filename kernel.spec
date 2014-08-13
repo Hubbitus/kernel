@@ -760,6 +760,9 @@ Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 Patch25128: 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
 Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+Patch25130: namespaces-remount-fixes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1478,6 +1481,9 @@ ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 #rhbz 1101386
 ApplyPatch 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
 ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
+
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+ApplyPatch namespaces-remount-fixes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
+
 * Sat Aug 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-200
 - Linux v3.15.9
 
