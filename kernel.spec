@@ -643,6 +643,9 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+Patch25119: namespaces-remount-fixes.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1370,6 +1373,9 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
+
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+ApplyPatch namespaces-remount-fixes.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2253,7 +2259,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon Aug 04 2014 Josh Boyer <jwboyer@gmail.com> - 3.16.0-1
+* Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
+
+* Mon Aug 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-1
 - Linux v3.16
 - Disable debugging options.
 
