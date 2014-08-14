@@ -251,7 +251,6 @@ CONFIG_CMA_AREAS=7
 # CONFIG_SCSI_MPT3SAS is not set
 
 # serial
-# CONFIG_SERIAL_SH_SCI is not set
 # CONFIG_SERIAL_MAX3100 is not set
 # CONFIG_SERIAL_MAX310X is not set
 # CONFIG_SERIAL_IFX6X60 is not set
