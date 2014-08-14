@@ -763,6 +763,9 @@ Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 Patch25130: namespaces-remount-fixes.patch
 
+#rhbz 1128472
+Patch25131: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1484,6 +1487,9 @@ ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 ApplyPatch namespaces-remount-fixes.patch
+
+#rhbz 1128472
+ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
+- UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
+
 * Wed Aug 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-201
 - Bump for build
 
