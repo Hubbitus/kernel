@@ -1,36 +1,35 @@
  .../devicetree/bindings/pci/xgene-pci.txt          |  52 ++
- MAINTAINERS                                        |  15 +
+ MAINTAINERS                                        |   7 +
  arch/arm64/Kconfig                                 |  19 +-
- arch/arm64/boot/dts/apm-mustang.dts                |  12 +
- arch/arm64/boot/dts/apm-storm.dtsi                 | 208 ++++-
+ arch/arm64/boot/dts/apm-mustang.dts                |   8 +
+ arch/arm64/boot/dts/apm-storm.dtsi                 | 180 ++++-
  arch/arm64/include/asm/Kbuild                      |   1 +
  arch/arm64/include/asm/elf.h                       |   3 +-
  arch/arm64/include/asm/io.h                        |   3 +-
- arch/arm64/include/asm/kvm_mmu.h                   |  12 +-
  arch/arm64/include/asm/pci.h                       |  49 ++
  arch/arm64/kernel/Makefile                         |   1 +
  arch/arm64/kernel/efi-stub.c                       |  16 +-
  arch/arm64/kernel/efi.c                            |  11 +
  arch/arm64/kernel/head.S                           |   6 +-
- arch/arm64/kernel/pci.c                            |  38 +
+ arch/arm64/kernel/pci.c                            |  38 ++
  arch/arm64/kernel/process.c                        |   6 +
  arch/arm64/kernel/smp_spin_table.c                 |  21 +-
  drivers/ata/ahci_xgene.c                           |   3 +-
  drivers/irqchip/irq-gic.c                          |  32 +-
  drivers/of/address.c                               | 108 +++
- drivers/of/of_pci.c                                | 136 +++
+ drivers/of/of_pci.c                                | 136 ++++
  drivers/pci/host-bridge.c                          |  18 +-
  drivers/pci/host/Kconfig                           |  10 +
  drivers/pci/host/Makefile                          |   1 +
- drivers/pci/host/pci-xgene.c                       | 725 ++++++++++++++++
- drivers/pci/pci.c                                  |  37 +
+ drivers/pci/host/pci-xgene.c                       | 725 +++++++++++++++++++++
+ drivers/pci/pci.c                                  |  37 ++
  drivers/pci/probe.c                                |  68 +-
  include/asm-generic/io.h                           |   2 +-
  include/linux/of_address.h                         |  14 +-
  include/linux/of_pci.h                             |  10 +
  include/linux/pci.h                                |  15 +
  tools/perf/arch/arm64/include/perf_regs.h          |   2 +
- 44 files changed, 3992 insertions(+), 73 deletions(-)
+ 31 files changed, 1533 insertions(+), 69 deletions(-)
 
 diff --git a/Documentation/devicetree/bindings/pci/xgene-pci.txt b/Documentation/devicetree/bindings/pci/xgene-pci.txt
 new file mode 100644
@@ -91,12 +90,12 @@ index 0000000..e19fdb8
 +		status = "ok";
 +	};
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 7e2eb4c..7bf051dd 100644
+index 2f85f55..8980971 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -6880,6 +6888,13 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/pci/host-generic-pci.txt
- F:	drivers/pci/host/pci-host-generic.c
+@@ -6894,6 +6894,13 @@ L:	linux-pci@vger.kernel.org
+ S:	Maintained
+ F:	drivers/pci/host/*spear*
  
 +PCI DRIVER FOR APPLIEDMICRO XGENE
 +M:	Tanmay Inamdar <tinamdar@apm.com>
@@ -105,9 +104,9 @@ index 7e2eb4c..7bf051dd 100644
 +S:	Maintained
 +F:	drivers/pci/host/pci-xgene.c
 +
- PCIE DRIVER FOR ST SPEAR13XX
- M:	Mohit Kumar <mohit.kumar@st.com>
- L:	linux-pci@vger.kernel.org
+ PCMCIA SUBSYSTEM
+ P:	Linux PCMCIA Team
+ L:	linux-pcmcia@lists.infradead.org
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
 index fd4e81a..e8559bb 100644
 --- a/arch/arm64/Kconfig
@@ -146,17 +145,13 @@ index fd4e81a..e8559bb 100644
  
  menu "Kernel Features"
 diff --git a/arch/arm64/boot/dts/apm-mustang.dts b/arch/arm64/boot/dts/apm-mustang.dts
-index 6541962..0cb67fc 100644
+index b2f5622..0cb67fc 100644
 --- a/arch/arm64/boot/dts/apm-mustang.dts
 +++ b/arch/arm64/boot/dts/apm-mustang.dts
-@@ -28,3 +28,15 @@
- &serial0 {
+@@ -32,3 +32,11 @@
+ &menet {
  	status = "ok";
  };
-+
-+&menet {
-+	status = "ok";
-+};
 +
 +&pcie0clk {
 +	status = "ok";
@@ -166,7 +161,7 @@ index 6541962..0cb67fc 100644
 +	status = "ok";
 +};
 diff --git a/arch/arm64/boot/dts/apm-storm.dtsi b/arch/arm64/boot/dts/apm-storm.dtsi
-index 40aa96c..fb2ee54 100644
+index c0aceef..fb2ee54 100644
 --- a/arch/arm64/boot/dts/apm-storm.dtsi
 +++ b/arch/arm64/boot/dts/apm-storm.dtsi
 @@ -24,56 +24,56 @@
@@ -246,7 +241,7 @@ index 40aa96c..fb2ee54 100644
  	soc {
  		compatible = "simple-bus";
  		#address-cells = <2>;
-@@ -270,6 +274,161 @@
+@@ -269,6 +274,161 @@
  				enable-mask = <0x2>;
  				clock-output-names = "rtcclk";
  			};
@@ -408,7 +403,7 @@ index 40aa96c..fb2ee54 100644
  		};
  
  		serial0: serial@1c020000 {
-@@ -278,7 +437,7 @@
+@@ -277,7 +437,7 @@
  			compatible = "ns16550a";
  			reg = <0 0x1c020000 0x0 0x1000>;
  			reg-shift = <2>;
@@ -417,6 +412,15 @@ index 40aa96c..fb2ee54 100644
  			interrupt-parent = <&gic>;
  			interrupts = <0x0 0x4c 0x4>;
  		};
+@@ -407,7 +567,7 @@
+ 			interrupts = <0x0 0x3c 0x4>;
+ 			dma-coherent;
+ 			clocks = <&menetclk 0>;
+-			local-mac-address = [00 01 73 00 00 01];
++			local-mac-address = [00 00 00 00 00 00];
+ 			phy-connection-type = "rgmii";
+ 			phy-handle = <&menetphy>;
+ 			mdio {
 diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
 index 0b3fcf8..07cb417 100644
 --- a/arch/arm64/include/asm/Kbuild
@@ -457,29 +461,6 @@ index e0ecdcf..dc34039 100644
  #define PCI_IOBASE		((void __iomem *)(MODULES_VADDR - SZ_32M))
  
  static inline u8 inb(unsigned long addr)
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 8e138c7..f8c9385 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -122,8 +122,16 @@ static inline void kvm_set_s2pmd_writable(pmd_t *pmd)
- }
- 
- #define kvm_pgd_addr_end(addr, end)	pgd_addr_end(addr, end)
--#define kvm_pud_addr_end(addr, end)	pud_addr_end(addr, end)
--#define kvm_pmd_addr_end(addr, end)	pmd_addr_end(addr, end)
-+
-+#define kvm_pud_addr_end(addr, end)					\
-+({	unsigned long __boundary = ((addr) + PUD_SIZE) & PUD_MASK;	\
-+	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
-+})
-+
-+#define kvm_pmd_addr_end(addr, end)					\
-+({	unsigned long __boundary = ((addr) + PMD_SIZE) & PMD_MASK;	\
-+	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
-+})
- 
- static inline bool kvm_page_empty(void *ptr)
- {
 diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
 new file mode 100644
 index 0000000..3f7856e
@@ -1164,12 +1145,12 @@ index 0e5f3c9..54ceafd 100644
 +	return 0;
 +}
 diff --git a/drivers/pci/host/Kconfig b/drivers/pci/host/Kconfig
-index 2d8a4d0..76daa18 100644
+index 2d8a4d0..e17a28e 100644
 --- a/drivers/pci/host/Kconfig
 +++ b/drivers/pci/host/Kconfig
-@@ -46,6 +46,16 @@ config PCI_HOST_GENERIC
- 	  Say Y here if you want to support a simple generic PCI host
- 	  controller, such as the one emulated by kvmtool.
+@@ -54,4 +54,14 @@ config PCIE_SPEAR13XX
+ 	help
+ 	  Say Y here if you want PCIe support on SPEAr13XX SoCs.
  
 +config PCI_XGENE
 +	bool "X-Gene PCIe controller"
@@ -1181,19 +1162,16 @@ index 2d8a4d0..76daa18 100644
 +	  There are 5 internal PCIe ports available. Each port is GEN3 capable
 +	  and have varied lanes from x1 to x8.
 +
- config PCIE_SPEAR13XX
- 	tristate "STMicroelectronics SPEAr PCIe controller"
- 	depends on ARCH_SPEAR13XX
+ endmenu
 diff --git a/drivers/pci/host/Makefile b/drivers/pci/host/Makefile
-index 0daec79..6990412 100644
+index 0daec79..7600482 100644
 --- a/drivers/pci/host/Makefile
 +++ b/drivers/pci/host/Makefile
-@@ -6,4 +6,5 @@ obj-$(CONFIG_PCI_TEGRA) += pci-tegra.o
- obj-$(CONFIG_PCI_RCAR_GEN2) += pci-rcar-gen2.o
+@@ -7,3 +7,4 @@ obj-$(CONFIG_PCI_RCAR_GEN2) += pci-rcar-gen2.o
  obj-$(CONFIG_PCI_RCAR_GEN2_PCIE) += pcie-rcar.o
  obj-$(CONFIG_PCI_HOST_GENERIC) += pci-host-generic.o
-+obj-$(CONFIG_PCI_XGENE) += pci-xgene.o
  obj-$(CONFIG_PCIE_SPEAR13XX) += pcie-spear13xx.o
++obj-$(CONFIG_PCI_XGENE) += pci-xgene.o
 diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
 new file mode 100644
 index 0000000..7bf4ac7

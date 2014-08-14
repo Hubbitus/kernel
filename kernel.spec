@@ -2246,6 +2246,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 14 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64: resynch with git head (no functional change)
+
 * Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git5.1
 - Linux v3.16-10959-gf0094b28f303
 
