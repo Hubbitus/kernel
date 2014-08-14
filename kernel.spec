@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2271,6 +2271,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.1-300
+- Linux v3.16.1
+
 * Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
 - Blacklist usb bulk streams on Etron EJ168 xhci controllers (rhbz#1121288)
 - UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
