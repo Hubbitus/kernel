@@ -646,6 +646,12 @@ Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 Patch25119: namespaces-remount-fixes.patch
 
+#rhbz 1121288
+Patch25120: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1128472
+Patch25121: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1376,6 +1382,12 @@ ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 ApplyPatch namespaces-remount-fixes.patch
+
+#rhbz 1121288
+ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1128472
+ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2259,6 +2271,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Blacklist usb bulk streams on Etron EJ168 xhci controllers (rhbz#1121288)
+- UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
+
 * Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
 
