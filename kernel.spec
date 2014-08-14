@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2296,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-201
+- Bump for build
+
 * Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
 
