@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 10
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -743,9 +743,6 @@ Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1060327
 Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
-
-#CVE-2014-5077 rhbz 1122982 1123696
-Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 #rhbz 1025690
 Patch25125: 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
@@ -1468,9 +1465,6 @@ ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1060327
 ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
-
-#CVE-2014-5077 rhbz 1122982 1123696
-ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 #rhbz 1025690
 ApplyPatch 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
@@ -2302,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.10-200
+- Linux v3.15.10
+
 * Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
 - UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
 
