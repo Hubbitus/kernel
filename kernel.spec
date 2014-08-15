@@ -606,6 +606,7 @@ Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
 # http://www.spinics.net/lists/linux-tegra/msg17948.html
 Patch21023: arm-tegra-drmdetection.patch
+Patch21024: arm-qemu-fixdisplay.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1251,6 +1252,7 @@ ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-beagle.patch
 ApplyPatch arm-imx6-utilite.patch
 ApplyPatch arm-tegra-drmdetection.patch
+ApplyPatch arm-qemu-fixdisplay.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2271,6 +2273,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 15 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM updates for 3.16
+- Cleanup some old removed options
+- Disable legacy USB OTG (using new configfs equivilents)
+- Upstream patch to fix display on qemu (VExpress A9)
+
 * Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.1-300
 - Linux v3.16.1
 
