@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2246,6 +2246,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc0.git6.1
+- Linux v3.16-11383-gc9d26423e56c
+
 * Thu Aug 14 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64: resynch with git head (no functional change)
 
