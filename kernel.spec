@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 8
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -766,23 +766,35 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 #rhbz 1064516
 Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-Patch25102: intel_pstate-Fix-setting-VID.patch
-Patch25103: intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-Patch25104: intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1114768
-Patch25112: 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+#CVE-2014-4943 rhbz 1119458 1120542
+Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
-# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
-Patch25113: i915-fix-backlight-regression-misconfigured-VBT.patch
+#rhbz 1117942
+Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
-#rhbz 1117008
-Patch25114: Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+#rhbz 1060327
+Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
+
+#CVE-2014-5077 rhbz 1122982 1123696
+Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
+
+#rhbz 1025690
+Patch25125: 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1123565
+Patch25126: 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+
+#rhbz 1121288
+Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1101386
+Patch25128: 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
+Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1500,23 +1512,35 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 #rhbz 1064516
 ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
-ApplyPatch intel_pstate-Fix-setting-VID.patch
-ApplyPatch intel_pstate-dont-touch-turbo-bit-if-turbo-disabled-or-unavailable.patch
-ApplyPatch intel_pstate-Update-documentation-of-max-min_perf_pct-sysfs-files.patch
-
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1114768
-ApplyPatch 0001-synaptics-Add-min-max-quirk-for-pnp-id-LEN2002-Edge-.patch
+#CVE-2014-4943 rhbz 1119458 1120542
+ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
 
-# https://bugs.freedesktop.org/show_bug.cgi?id=79813 submitted upstream
-ApplyPatch i915-fix-backlight-regression-misconfigured-VBT.patch
+#rhbz 1117942
+ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
-#rhbz 1117008
-ApplyPatch Revert-drm-i915-reverse-dp-link-param-selection-pref.patch
+#rhbz 1060327
+ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
+
+#CVE-2014-5077 rhbz 1122982 1123696
+ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
+
+#rhbz 1025690
+ApplyPatch 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1123565
+ApplyPatch 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+
+#rhbz 1121288
+ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1101386
+ApplyPatch 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
+ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2333,6 +2357,43 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Aug 3 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.8-200.hu.1.bfq.bfs.uksm
+- 3.15.8-200.hu.1.bfq.bfs.uksm
+
+* Sat Aug 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport two patches to fix T440s dock audio (rhbz 1101386)
+
+* Thu Jul 31 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.8-200
+- Linux v3.15.8
+
+* Mon Jul 28 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.7-200
+- Linux v3.15.7
+
+* Mon Jul 28 2014 Hans de Goede <hdegoede@redhat.com>
+- Add use_native_backlight=1 quirk for HP ProBook 4540s (rhbz#1025690)
+- Add use_native_backlight=1 quirk for HP EliteBook 2014 series (rhbz#1123565)
+- Blacklist usb bulk streams on Etron EJ168 xhci controllers (rhbz#1121288)
+
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
+
+* Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Re-add patch fixing spice resize (rhbz 1060327)
+
+* Thu Jul 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-4171 shmem: denial of service (rhbz 1111180 1118247)
+- CVE-2014-5045 vfs: refcount issues during lazy umount on symlink (rhbz 1122471 1122482)
+- Fix regression in sched_setparam (rhbz 1117942)
+- CVE-2014-3534 s390: ptrace: insufficient sanitization with psw mask (rhbz 1114089 1122612)
+- Fix ath3k bluetooth regression (rhbz 1121785)
+
+* Thu Jul 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.6-200
+- Linux v3.15.6
+- CVE-2014-4943 pppol2tp level handling (rhbz 1119458 1120542)
+
+* Wed Jul 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable hermes prism driver (rhbz 1120393)
+
 * Tue Jul 15 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.5-200.hu.1.bfq.bfs.uksm
 - 3.15.5-200.hu.1.bfq.bfs.uksm.tuxonice
 - Update UKSM patch to: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
