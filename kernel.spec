@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 10
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -771,17 +771,11 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#CVE-2014-4943 rhbz 1119458 1120542
-Patch25115: net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
-
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1060327
 Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
-
-#CVE-2014-5077 rhbz 1122982 1123696
-Patch25124: net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 #rhbz 1025690
 Patch25125: 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
@@ -795,6 +789,12 @@ Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 #rhbz 1101386
 Patch25128: 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
 Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
+
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+Patch25130: namespaces-remount-fixes.patch
+
+#rhbz 1128472
+Patch25131: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1517,17 +1517,11 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#CVE-2014-4943 rhbz 1119458 1120542
-ApplyPatch net-l2tp-don-t-fall-back-on-UDP-get-set-sockopt.patch
-
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
 #rhbz 1060327
 ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
-
-#CVE-2014-5077 rhbz 1122982 1123696
-ApplyPatch net-v2-net-sctp-inherit-auth_capable-on-INIT-collisions.patch
 
 #rhbz 1025690
 ApplyPatch 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
@@ -1541,6 +1535,12 @@ ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 #rhbz 1101386
 ApplyPatch 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
 ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
+
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+ApplyPatch namespaces-remount-fixes.patch
+
+#rhbz 1128472
+ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2357,6 +2357,21 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.10-200
+- Linux v3.15.10
+
+* Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
+- UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
+
+* Wed Aug 13 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-201
+- Bump for build
+
+* Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
+
+* Sat Aug 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> 3.15.9-200
+- Linux v3.15.9
+
 * Sun Aug 3 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.8-200.hu.1.bfq.bfs.uksm
 - 3.15.8-200.hu.1.bfq.bfs.uksm
 
