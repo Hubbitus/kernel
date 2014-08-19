@@ -695,8 +695,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
@@ -1421,8 +1419,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
-
-ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
