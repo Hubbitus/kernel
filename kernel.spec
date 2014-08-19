@@ -653,6 +653,9 @@ Patch25120: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 #rhbz 1128472
 Patch25121: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
+#rhbz 1131551
+Patch25122: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1390,6 +1393,9 @@ ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
 
 #rhbz 1128472
 ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
+#rhbz 1131551
+ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2273,6 +2279,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFSv3 oops (rhbz 1131551)
+
 * Fri Aug 15 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM updates for 3.16
 - Cleanup some old removed options
