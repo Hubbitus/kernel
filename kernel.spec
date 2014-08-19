@@ -763,6 +763,9 @@ Patch25130: namespaces-remount-fixes.patch
 #rhbz 1128472
 Patch25131: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
+#rhbz 1131551
+Patch25132: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1484,6 +1487,9 @@ ApplyPatch namespaces-remount-fixes.patch
 
 #rhbz 1128472
 ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
+#rhbz 1131551
+ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Aug 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFSv3 oops (rhbz 1131551)
+
 * Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.10-200
 - Linux v3.15.10
 
