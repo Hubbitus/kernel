@@ -626,8 +626,6 @@ Patch390: defaults-acpi-video.patch
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
 
-Patch460: serial-460800.patch
-
 Patch470: die-floppy-die.patch
 
 Patch510: silence-noise.patch
@@ -1361,9 +1359,6 @@ ApplyPatch input-kill-stupid-messages.patch
 ApplyPatch die-floppy-die.patch
 
 ApplyPatch no-pcspkr-modalias.patch
-
-# Allow to use 480600 baud on 16C950 UARTs
-ApplyPatch serial-460800.patch
 
 # Silence some useless messages that still get printed with 'quiet'
 ApplyPatch silence-noise.patch
