@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -537,7 +537,7 @@ Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
 Patch04: compile-fixes.patch
 
 # build tweak for build ID magic, even for -vanilla
-Patch05: makefile-after_link.patch
+Patch05: kbuild-AFTER_LINK.patch
 
 %if !%{nopatches}
 
@@ -555,10 +555,10 @@ Patch470: die-floppy-die.patch
 
 Patch500: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
-Patch510: silence-noise.patch
+Patch510: input-silence-i8042-noise.patch
 Patch530: silence-fbcon-logo.patch
 
-Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+Patch600: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 #rhbz 917708
 Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
@@ -568,10 +568,28 @@ Patch800: crash-driver.patch
 # crypto/
 
 # secure boot
-Patch1000: secure-modules.patch
-Patch1001: modsign-uefi.patch
-# atch1002: sb-hibernate.patch
-Patch1003: sysrq-secure-boot.patch
+Patch1000: Add-secure_modules-call.patch
+Patch1001: PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
+Patch1002: x86-Lock-down-IO-port-access-when-module-security-is.patch
+Patch1003: ACPI-Limit-access-to-custom_method.patch
+Patch1004: asus-wmi-Restrict-debugfs-interface-when-module-load.patch
+Patch1005: Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
+Patch1006: acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
+Patch1007: kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
+Patch1008: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
+Patch1009: Add-option-to-automatically-enforce-module-signature.patch
+Patch1010: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+Patch1011: efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
+Patch1012: efi-Add-EFI_SECURE_BOOT-bit.patch
+Patch1013: hibernate-Disable-in-a-signed-modules-environment.patch
+
+Patch1014: Add-EFI-signature-data-types.patch
+Patch1015: Add-an-EFI-signature-blob-parser-and-key-loader.patch
+Patch1016: KEYS-Add-a-system-blacklist-keyring.patch
+Patch1017: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
+Patch1018: MODSIGN-Support-not-importing-certs-from-db.patch
+
+Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # virt + ksm patches
 
@@ -594,14 +612,21 @@ Patch14000: hibernate-freeze-filesystems.patch
 
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
-Patch15000: nowatchdog-on-virt.patch
+Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 # ARM64
 
 # ARMv7
-Patch21020: arm-tegra-usb-no-reset-linux33.patch
-Patch21021: arm-beagle.patch
-Patch21022: arm-imx6-utilite.patch
+Patch21020: ARM-tegra-usb-no-reset.patch
+Patch21021: arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
+Patch21022: arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
+Patch21023: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
+Patch21024: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
+Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
+Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
+Patch21027: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
+
+Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -610,7 +635,7 @@ Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 Patch21242: criu-no-expert.patch
 
 #rhbz 892811
-Patch21247: ath9k_rx_dma_stop_check.patch
+Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
@@ -618,9 +643,9 @@ Patch22000: weird-root-dentry-name-debug.patch
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
-Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+Patch25069: acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-Patch26000: perf-lib64.patch
+Patch26000: perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
@@ -1203,7 +1228,7 @@ do
 done
 %endif
 
-ApplyPatch makefile-after_link.patch
+ApplyPatch kbuild-AFTER_LINK.patch
 
 #
 # misc small stuff to make things compile
@@ -1217,16 +1242,23 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
-ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
 
 #
 # ARM
 #
-ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch arm-beagle.patch
-ApplyPatch arm-imx6-utilite.patch
+ApplyPatch ARM-tegra-usb-no-reset.patch
+ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
+ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
+ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
+ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
+ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
+ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
+ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
+
+ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1274,7 +1306,7 @@ ApplyPatch die-floppy-die.patch
 ApplyPatch no-pcspkr-modalias.patch
 
 # Silence some useless messages that still get printed with 'quiet'
-ApplyPatch silence-noise.patch
+ApplyPatch input-silence-i8042-noise.patch
 
 # Make fbcon not show the penguins with 'quiet'
 ApplyPatch silence-fbcon-logo.patch
@@ -1290,10 +1322,28 @@ ApplyPatch crash-driver.patch
 # crypto/
 
 # secure boot
-ApplyPatch secure-modules.patch
-ApplyPatch modsign-uefi.patch
-# pplyPatch sb-hibernate.patch
-ApplyPatch sysrq-secure-boot.patch
+ApplyPatch Add-secure_modules-call.patch
+ApplyPatch PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
+ApplyPatch x86-Lock-down-IO-port-access-when-module-security-is.patch
+ApplyPatch ACPI-Limit-access-to-custom_method.patch
+ApplyPatch asus-wmi-Restrict-debugfs-interface-when-module-load.patch
+ApplyPatch Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
+ApplyPatch acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
+ApplyPatch kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
+ApplyPatch x86-Restrict-MSR-access-when-module-loading-is-restr.patch
+ApplyPatch Add-option-to-automatically-enforce-module-signature.patch
+ApplyPatch efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+ApplyPatch efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
+ApplyPatch efi-Add-EFI_SECURE_BOOT-bit.patch
+ApplyPatch hibernate-Disable-in-a-signed-modules-environment.patch
+
+ApplyPatch Add-EFI-signature-data-types.patch
+ApplyPatch Add-an-EFI-signature-blob-parser-and-key-loader.patch
+ApplyPatch KEYS-Add-a-system-blacklist-keyring.patch
+ApplyPatch MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
+ApplyPatch MODSIGN-Support-not-importing-certs-from-db.patch
+
+ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Assorted Virt Fixes
 
@@ -1315,7 +1365,7 @@ ApplyPatch disable-i8042-check-on-apple-mac.patch
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 # Disable watchdog on virtual machines.
-ApplyPatch nowatchdog-on-virt.patch
+ApplyPatch watchdog-Disable-watchdog-on-virtual-machines.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1326,15 +1376,15 @@ ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
-ApplyPatch ath9k_rx_dma_stop_check.patch
+ApplyPatch ath9k-rx-dma-stop-check.patch
 
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
-ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
+ApplyPatch acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-ApplyPatch perf-lib64.patch
+ApplyPatch perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch

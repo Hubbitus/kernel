@@ -1,5 +1,15 @@
+From fff8a8a8830bc36b093ba123b136fd1ec6bf4fa3 Mon Sep 17 00:00:00 2001
+From: Kyle McMartin <kmcmarti@redhat.com>
+Date: Tue, 12 Aug 2014 15:28:06 -0400
+Subject: [PATCH] tegra-powergate: header move
+
+deal with armv7hl breakage
+---
+ drivers/ata/ahci_tegra.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
 diff --git a/drivers/ata/ahci_tegra.c b/drivers/ata/ahci_tegra.c
-index fc3df47..4392190 100644
+index fc3df47fca35..7194835bc316 100644
 --- a/drivers/ata/ahci_tegra.c
 +++ b/drivers/ata/ahci_tegra.c
 @@ -24,7 +24,7 @@
@@ -11,3 +21,6 @@ index fc3df47..4392190 100644
  #include <linux/regulator/consumer.h>
  #include "ahci.h"
  
+-- 
+1.9.3
+

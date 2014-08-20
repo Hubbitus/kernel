@@ -1,13 +1,15 @@
-Bugzilla: 917708
-Upstream-status: Fedora mustard
-
-From e3da68be55914bfeedb8866f191cc0958579611d Mon Sep 17 00:00:00 2001
+From 6401611f6bd360109394b46051107f2e0f55c9da Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Wed, 13 Nov 2013 10:21:18 -0500
 Subject: [PATCH] Revert "userns: Allow unprivileged users to create user
  namespaces."
 
 This reverts commit 5eaf563e53294d6696e651466697eb9d491f3946.
+
+Bugzilla: 917708
+Upstream-status: Fedora mustard
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 
 Conflicts:
 	kernel/fork.c
@@ -16,10 +18,10 @@ Conflicts:
  1 file changed, 13 insertions(+)
 
 diff --git a/kernel/fork.c b/kernel/fork.c
-index f6d11fc..e04c9a7 100644
+index 0cf9cdb6e491..31d3a9763887 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -1573,6 +1573,19 @@ long do_fork(unsigned long clone_flags,
+@@ -1624,6 +1624,19 @@ long do_fork(unsigned long clone_flags,
  	long nr;
  
  	/*
@@ -40,5 +42,5 @@ index f6d11fc..e04c9a7 100644
  	 * called from kernel_thread or CLONE_UNTRACED is explicitly
  	 * requested, no event is reported; otherwise, report if the event
 -- 
-1.8.3.1
+1.9.3
 

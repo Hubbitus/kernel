@@ -1,10 +1,7 @@
-Bugzilla: 971139
-Upstream-status: Fedora mustard for now
-
-From 17109685bfce322c73a816e097b137458fbd55ae Mon Sep 17 00:00:00 2001
+From bfe8bae33c1a3ce1695ac83052f1c48d1757079c Mon Sep 17 00:00:00 2001
 From: Dave Jones <davej@redhat.com>
 Date: Tue, 24 Jun 2014 08:43:34 -0400
-Subject: [PATCH] Disable watchdog on virtual machines.
+Subject: [PATCH] watchdog: Disable watchdog on virtual machines.
 
 For various reasons, VMs seem to trigger the soft lockup detector a lot,
 in cases where it's just not possible for a lockup to occur.
@@ -15,13 +12,16 @@ the VM for a very long time (Could be the host was under heavy load).
 
 Just disable the detector on VMs.
 
+Bugzilla: 971139
+Upstream-status: Fedora mustard for now
+
 Signed-off-by: Dave Jones <davej@redhat.com>
 ---
  kernel/watchdog.c | 29 +++++++++++++++++++++++++++++
  1 file changed, 29 insertions(+)
 
 diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index c3319bd1b040..0e3687675aaa 100644
+index a8d6914030fe..d0a8c308170d 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
 @@ -24,6 +24,7 @@
@@ -65,7 +65,7 @@ index c3319bd1b040..0e3687675aaa 100644
  /*
   * Hard-lockup warnings should be triggered after just a few seconds. Soft-
   * lockups can have false positives under extreme conditions. So we generally
-@@ -641,6 +668,8 @@ out:
+@@ -644,6 +671,8 @@ out:
  
  void __init lockup_detector_init(void)
  {
