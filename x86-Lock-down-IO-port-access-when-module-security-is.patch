@@ -1,4 +1,4 @@
-From d27eea3ac26af4673f829ab50c90f8879715d739 Mon Sep 17 00:00:00 2001
+From 0ce6931ffddbe2570f8266798c9121d0567a8dfc Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
 Subject: [PATCH] x86: Lock down IO port access when module security is enabled

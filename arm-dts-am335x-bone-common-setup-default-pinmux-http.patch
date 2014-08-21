@@ -1,4 +1,4 @@
-From 4546ddeebfc63fcb8ea157d6d730be0e4f122344 Mon Sep 17 00:00:00 2001
+From b9ffe6d2b823ccda528ba88a5814b9195da108f2 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Tue, 31 Dec 2013 14:18:00 -0600
 Subject: [PATCH] arm: dts: am335x-bone-common: setup default pinmux

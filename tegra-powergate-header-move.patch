@@ -1,4 +1,4 @@
-From fff8a8a8830bc36b093ba123b136fd1ec6bf4fa3 Mon Sep 17 00:00:00 2001
+From 6e9a2cd2b1675a2034ebabcebe4dd8f9fe0d5007 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kmcmarti@redhat.com>
 Date: Tue, 12 Aug 2014 15:28:06 -0400
 Subject: [PATCH] tegra-powergate: header move

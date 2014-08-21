@@ -1,4 +1,4 @@
-From 97810ad51fb090a759a7c56cd860e0a886675945 Mon Sep 17 00:00:00 2001
+From d075517f07e1aa8c1b2f3e38553801c69e3ac201 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Thu, 3 Oct 2013 10:14:23 -0400
 Subject: [PATCH] MODSIGN: Support not importing certs from db
