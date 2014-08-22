@@ -1,4 +1,4 @@
-From 3e45e53d90b3e20f77bebb9d0fedc8247ee0b8bf Mon Sep 17 00:00:00 2001
+From 91023024d86f90e3dcbdc354c8f35377486266fb Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Mon, 11 Nov 2013 08:39:16 -0500
 Subject: [PATCH] lib/cpumask: Make CPUMASK_OFFSTACK usable without debug

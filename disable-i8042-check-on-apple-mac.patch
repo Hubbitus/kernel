@@ -1,4 +1,4 @@
-From c5e4d133df11da97c504710ac55ab1038d3f5fe6 Mon Sep 17 00:00:00 2001
+From 064cc83b636f98680cc01a46ffc0c5a1dffa0753 Mon Sep 17 00:00:00 2001
 From: Bastien Nocera <hadess@hadess.net>
 Date: Thu, 20 May 2010 10:30:31 -0400
 Subject: [PATCH] disable i8042 check on apple mac

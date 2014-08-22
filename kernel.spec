@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -651,8 +651,6 @@ Patch26000: perf-install-trace-event-plugins.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-Patch27000: tegra-powergate-header-move.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1390,8 +1388,6 @@ ApplyPatch perf-install-trace-event-plugins.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-ApplyPatch tegra-powergate-header-move.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2275,6 +2271,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc1.git3.1
+- Linux v3.17-rc1-99-g5317821c0853
+
 * Thu Aug 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc1.git2.1
 - Linux v3.17-rc1-51-g372b1dbdd1fb
 

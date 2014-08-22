@@ -1,4 +1,4 @@
-From 45b12485b9b6481a10f6100c8ff37e18e0bd141d Mon Sep 17 00:00:00 2001
+From adcd525daee026ee5e916a313cc79b42f2586930 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Wed, 30 Jan 2013 10:55:31 -0500
 Subject: [PATCH] criu: no expert

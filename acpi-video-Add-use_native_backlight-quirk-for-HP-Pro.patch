@@ -1,4 +1,4 @@
-From 1c388c7789b0b173f8c16787381c3842f2ef0e1c Mon Sep 17 00:00:00 2001
+From b188dee12ee4f17ca9172cdd83fedf56511de664 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 2 Jun 2014 17:41:11 +0200
 Subject: [PATCH] acpi-video: Add use_native_backlight quirk for HP ProBook

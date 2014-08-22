@@ -1,4 +1,4 @@
-From 210af573bede5441c8ece851aba8551e53235958 Mon Sep 17 00:00:00 2001
+From 4b8ff4ede68d09f1a262f0a07718d65782422132 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Wed, 13 Nov 2013 10:21:18 -0500
 Subject: [PATCH] Revert "userns: Allow unprivileged users to create user
