@@ -560,9 +560,6 @@ Patch530: silence-fbcon-logo.patch
 
 Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
-#rhbz 917708
-Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
-
 Patch800: crash-driver.patch
 
 # crypto/
@@ -1305,9 +1302,6 @@ ApplyPatch silence-noise.patch
 ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
-
-#rhbz 917708
-ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
@@ -2270,6 +2264,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop userns revert patch (rhbz 917708)
+
 * Tue Aug 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix NFSv3 oops (rhbz 1131551)
 
