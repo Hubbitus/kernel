@@ -1,4 +1,4 @@
-From e3f034a90a2dc3bf8afd7d10e43a76dcabea9188 Mon Sep 17 00:00:00 2001
+From 32d5013e685e54397ae7bd2d12e3107706e0020a Mon Sep 17 00:00:00 2001
 From: Adam Jackson <ajax@redhat.com>
 Date: Wed, 13 Nov 2013 10:17:24 -0500
 Subject: [PATCH] drm/i915: hush check crtc state
@@ -15,10 +15,10 @@ Upstream-status: http://lists.freedesktop.org/archives/intel-gfx/2013-November/0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index 018fb7222f60..922818d16e93 100644
+index d074d704f458..e5ce498188c1 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -10640,7 +10640,7 @@ check_crtc_state(struct drm_device *dev)
+@@ -10633,7 +10633,7 @@ check_crtc_state(struct drm_device *dev)
  
  		if (active &&
  		    !intel_pipe_config_compare(dev, &crtc->config, &pipe_config)) {

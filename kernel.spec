@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -648,6 +648,9 @@ Patch26000: perf-install-trace-event-plugins.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1132368
+Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1382,6 +1385,9 @@ ApplyPatch perf-install-trace-event-plugins.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+
+#rhbz 1132368
+ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2265,6 +2271,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Aug 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc1.git4.1
+- Linux v3.17-rc1-231-g7be141d05549
+- Add patch to fix NFS oops on /proc removal (rhbz 1132368)
+
 * Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Drop userns revert patch (rhbz 917708)
 
