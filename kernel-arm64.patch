@@ -1,3 +1,964 @@
+commit db044807ca763c21bae298388239be6177c6ccec
+Merge: 649c9e3 26bcd8b
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Wed Jul 30 14:31:24 2014 -0400
+
+    Merge branch 'master' into devel
+    
+    Conflicts:
+    	virt/kvm/arm/vgic.c
+
+commit 649c9e3a45e81852daf80c126a332297b75cb109
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue Jul 29 12:49:10 2014 +0200
+
+    arm64/efi: efistub: don't abort if base of DRAM is occupied
+    
+    If we cannot relocate the kernel Image to its preferred offset of base of DRAM
+    plus TEXT_OFFSET, instead relocate it to the lowest available 2 MB boundary plus
+    TEXT_OFFSET. We may lose a bit of memory at the low end, but we can still
+    proceed normally otherwise.
+    
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+
+commit 5102fd06b12467a0518537061805483a759bc856
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue Jul 29 12:49:09 2014 +0200
+
+    arm64/efi: efistub: cover entire static mem footprint in PE/COFF .text
+    
+    The static memory footprint of a kernel Image at boot is larger than the
+    Image file itself. Things like .bss data and initial page tables are allocated
+    statically but populated dynamically so their content is not contained in the
+    Image file.
+    
+    However, if EFI (or GRUB) has loaded the Image at precisely the desired offset
+    of base of DRAM + TEXT_OFFSET, the Image will be booted in place, and we have
+    to make sure that the allocation done by the PE/COFF loader is large enough.
+    
+    Fix this by growing the PE/COFF .text section to cover the entire static
+    memory footprint. The part of the section that is not covered by the payload
+    will be zero initialised by the PE/COFF loader.
+    
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+
+commit 3b4dfb00a401b7fecf01d3c89b154907167dff52
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Tue Jul 29 12:49:08 2014 +0200
+
+    arm64: spin-table: handle unmapped cpu-release-addrs
+    
+    In certain cases the cpu-release-addr of a CPU may not fall in the
+    linear mapping (e.g. when the kernel is loaded above this address due to
+    the presence of other images in memory). This is problematic for the
+    spin-table code as it assumes that it can trivially convert a
+    cpu-release-addr to a valid VA in the linear map.
+    
+    This patch modifies the spin-table code to use a temporary cached
+    mapping to write to a given cpu-release-addr, enabling us to support
+    addresses regardless of whether they are covered by the linear mapping.
+    
+    Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+
+commit a49ad891b2e91338587dc5576c9da73b249a9d13
+Author: Mark Salter <msalter@redhat.com>
+Date:   Mon Jul 14 15:52:06 2014 -0400
+
+    pci/xgene: use pci_remap_iospace() instead of pci_ioremap_io()
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 1a958ec71db226d35ed51756b7164142bb0a60a3
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Wed Mar 19 16:12:42 2014 -0700
+
+    MAINTAINERS: entry for APM X-Gene PCIe host driver
+    
+    Add entry for AppliedMicro X-Gene PCIe host driver.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 03dc92f35b8f8be898ca12e3dc7c15961f414907
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Wed Mar 19 16:12:41 2014 -0700
+
+    dt-bindings: pci: xgene pcie device tree bindings
+    
+    This patch adds the bindings for X-Gene PCIe driver. The driver resides
+    under 'drivers/pci/host/pci-xgene.c' file.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 1f8d894f2066d9db2b251d512f6f6f772ae7147f
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Wed Mar 19 16:12:40 2014 -0700
+
+    arm64: dts: APM X-Gene PCIe device tree nodes
+    
+    This patch adds the device tree nodes for APM X-Gene PCIe controller and
+    PCIe clock interface. Since X-Gene SOC supports maximum 5 ports, 5 dts
+    nodes are added.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit c0855fcf0cc9adcb1ba5e6b1318536c56244796d
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Wed Mar 19 16:12:39 2014 -0700
+
+    pci: APM X-Gene PCIe controller driver
+    
+    This patch adds the AppliedMicro X-Gene SOC PCIe controller driver.
+    X-Gene PCIe controller supports maximum up to 8 lanes and GEN3 speed.
+    X-Gene SOC supports maximum 5 PCIe ports.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 1cc0c322237d3b58b08fe39e79e6c2e2f90a8c98
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:44:00 2014 +0100
+
+    arm64: Add architectural support for PCI
+    
+    Use the generic host bridge functions to provide support for
+    PCI Express on arm64.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+
+commit aba1eca911a87959eb4be515110f7a6b8692e9a4
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:34 2014 +0100
+
+    pci: Remap I/O bus resources into CPU space with pci_remap_iospace()
+    
+    Introduce a default implementation for remapping PCI bus I/O resources
+    onto the CPU address space. Architectures with special needs may
+    provide their own version, but most should be able to use this one.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+
+commit e1eacc3da10ca19eff1f88fb342a13586092b613
+Author: Liviu Dudau <liviu@dudau.co.uk>
+Date:   Tue Jul 1 21:50:50 2014 +0100
+
+    pci: Add support for creating a generic host_bridge from device tree
+    
+    Several platforms use a rather generic version of parsing
+    the device tree to find the host bridge ranges. Move the common code
+    into the generic PCI code and use it to create a pci_host_bridge
+    structure that can be used by arch code.
+    
+    Based on early attempts by Andrew Murray to unify the code.
+    Used powerpc and microblaze PCI code as starting point.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit aee55d507eb451223b51b52e6617b06b8e518ea6
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:32 2014 +0100
+
+    pci: of: Parse and map the IRQ when adding the PCI device.
+    
+    Enhance the default implementation of pcibios_add_device() to
+    parse and map the IRQ of the device if a DT binding is available.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+
+commit 0cf0470962f0498b598ff44e0c671407df54b22e
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:31 2014 +0100
+
+    pci: Introduce a domain number for pci_host_bridge.
+    
+    Make it easier to discover the domain number of a bus by storing
+    the number in pci_host_bridge for the root bus. Several architectures
+    have their own way of storing this information, so it makes sense
+    to try to unify the code. While at this, add a new function that
+    creates a root bus in a given domain and make pci_create_root_bus()
+    a wrapper around this function.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 1bc8fcf01469c202b4aea5f1d0a3a75c9302f3e2
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:30 2014 +0100
+
+    pci: Create pci_host_bridge before its associated bus in pci_create_root_bus.
+    
+    Before commit 7b5436635800 the pci_host_bridge was created before the root bus.
+    As that commit has added a needless dependency on the bus for pci_alloc_host_bridge()
+    the creation order has been changed for no good reason. Revert the order of
+    creation as we are going to depend on the pci_host_bridge structure to retrieve the
+    domain number of the root bus.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Acked-by: Grant Likely <grant.likely@linaro.org>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 55353327169dc08c1047d994e00b8a38630f5a8d
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:29 2014 +0100
+
+    pci: OF: Fix the conversion of IO ranges into IO resources.
+    
+    The ranges property for a host bridge controller in DT describes
+    the mapping between the PCI bus address and the CPU physical address.
+    The resources framework however expects that the IO resources start
+    at a pseudo "port" address 0 (zero) and have a maximum size of IO_SPACE_LIMIT.
+    The conversion from pci ranges to resources failed to take that into account.
+    
+    In the process move the function into drivers/of/address.c as it now
+    depends on pci_address_to_pio() code and make it return an error message.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 34079a20796d5c74e2984c37a99baef4871709a6
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:28 2014 +0100
+
+    pci: Introduce pci_register_io_range() helper function.
+    
+    Some architectures do not have a simple view of the PCI I/O space
+    and instead use a range of CPU addresses that map to bus addresses. For
+    some architectures these ranges will be expressed by OF bindings
+    in a device tree file.
+    
+    Introduce a pci_register_io_range() helper function with a generic
+    implementation that can be used by such architectures to keep track
+    of the I/O ranges described by the PCI bindings. If the PCI_IOBASE
+    macro is not defined that signals lack of support for PCI and we
+    return an error.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+
+commit a81abc095ab4b9b90e446ddbd59247e23df9d4ad
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:27 2014 +0100
+
+    pci: Export find_pci_host_bridge() function.
+    
+    This is a useful function and we should make it visible outside the
+    generic PCI code. Export it as a GPL symbol.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 78361698444e81bedbf30ec2b7aae1afd110d11f
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Jul 1 19:43:26 2014 +0100
+
+    Fix ioport_map() for !CONFIG_GENERIC_IOMAP cases.
+    
+    The inline version of ioport_map() that gets used when !CONFIG_GENERIC_IOMAP
+    is wrong. It returns a mapped (i.e. virtual) address that can start from
+    zero and completely ignores the PCI_IOBASE and IO_SPACE_LIMIT that most
+    architectures that use !CONFIG_GENERIC_MAP define.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Acked-by: Arnd Bergmann <arnd@arndb.de>
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 5540bbe2eca72e37be2e6a1c18e2fc7e73f0eab6
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:50 2014 +0100
+
+    arm64: KVM: vgic: enable GICv2 emulation on top on GICv3 hardware
+    
+    Add the last missing bits that enable GICv2 emulation on top of
+    GICv3 hardware.
+    
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit f057aaf81a7df641bcaa992965a257e3260ad36e
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:49 2014 +0100
+
+    arm64: KVM: vgic: add GICv3 world switch
+    
+    Introduce the GICv3 world switch code used to save/restore the
+    GICv3 context.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 7f1b8a791bb375933fdc8420cd08f127d07dd259
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:48 2014 +0100
+
+    KVM: ARM: vgic: add the GICv3 backend
+    
+    Introduce the support code for emulating a GICv2 on top of GICv3
+    hardware.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 74428905c3b450eab53a21bee74236501629a443
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:47 2014 +0100
+
+    arm64: KVM: move HCR_EL2.{IMO, FMO} manipulation into the vgic switch code
+    
+    GICv3 requires the IMO and FMO bits to be tightly coupled with some
+    of the interrupt controller's register switch.
+    
+    In order to have similar code paths, move the manipulation of these
+    bits to the GICv2 switch code.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit b691c1f97f1fb5b29c3ae4cc836fdbefe61a11ff
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:46 2014 +0100
+
+    arm64: KVM: split GICv2 world switch from hyp code
+    
+    Move the GICv2 world switch code into its own file, and add the
+    necessary indirection to the arm64 switch code.
+    
+    Also introduce a new type field to the vgic_params structure.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit d3f4563f1bebed7f60f714bdab640e477a081c4b
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:45 2014 +0100
+
+    arm64: KVM: remove __kvm_hyp_code_{start, end} from hyp.S
+    
+    We already have __hyp_text_{start,end} to express the boundaries
+    of the HYP text section, and __kvm_hyp_code_{start,end} are getting
+    in the way of a more modular world switch code.
+    
+    Just turn __kvm_hyp_code_{start,end} into #defines mapping the
+    linker-emited symbols.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 8ede261e09ad25ab8229d5efb476d5b4f6dc6434
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:44 2014 +0100
+
+    KVM: ARM: vgic: revisit implementation of irqchip_in_kernel
+    
+    So far, irqchip_in_kernel() was implemented by testing the value of
+    vctrl_base, which worked fine with GICv2.
+    
+    With GICv3, this field is useless, as we're using system registers
+    instead of a emmory mapped interface. To solve this, add a boolean
+    flag indicating if the we're using a vgic or not.
+    
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit ff7faf70feb47e5f1cf1e0f0d02e0f2807da11f5
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:43 2014 +0100
+
+    KVM: ARM: vgic: split GICv2 backend from the main vgic code
+    
+    Brutally hack the innocent vgic code, and move the GICv2 specific code
+    to its own file, using vgic_ops and vgic_params as a way to pass
+    information between the two blocks.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 63480283c0e1dc92f506e5e5306be0ac9b239499
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:42 2014 +0100
+
+    KVM: ARM: introduce vgic_params structure
+    
+    Move all the data specific to a given GIC implementation into its own
+    little structure.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit dcb20f9b66d5615a3e7e492424fa7953c1fe9f01
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:41 2014 +0100
+
+    KVM: ARM: vgic: introduce vgic_enable
+    
+    Move the code dealing with enabling the VGIC on to vgic_ops.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 67e3bcf8dd823eec79c74bc993fa62fb08b1acea
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:40 2014 +0100
+
+    KVM: ARM: vgic: abstract VMCR access
+    
+    Instead of directly messing with with the GICH_VMCR bits for the CPU
+    interface save/restore code, add accessors that encode/decode the
+    entire set of registers exposed by VMCR.
+    
+    Not the most efficient thing, but given that this code is only used
+    by the save/restore code, performance is far from being critical.
+    
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 67caf34f138a4f2516a2afcd5657add2eaaf0ab4
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:39 2014 +0100
+
+    KVM: ARM: vgic: move underflow handling to vgic_ops
+    
+    Move the code dealing with LR underflow handling to its own functions,
+    and make them accessible through vgic_ops.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 30acb0a340d388135ae89bed7e248bad203ec876
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:38 2014 +0100
+
+    KVM: ARM: vgic: abstract MISR decoding
+    
+    Instead of directly dealing with the GICH_MISR bits, move the code to
+    its own function and use a couple of public flags to represent the
+    actual state.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 464cbe47011e07b654d161ab4d4bdd05b4d025b3
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:37 2014 +0100
+
+    KVM: ARM: vgic: abstract EISR bitmap access
+    
+    Move the GICH_EISR access to its own function.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 33930dc5f401e9fc2268c2f128853eb5275e7ab1
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:36 2014 +0100
+
+    KVM: ARM: vgic: abstract access to the ELRSR bitmap
+    
+    Move the GICH_ELRSR access to its own functions, and add them to
+    the vgic_ops structure.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 0dca962ccd5b96fb7174880c1bc25085dcc09927
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:35 2014 +0100
+
+    KVM: ARM: vgic: introduce vgic_ops and LR manipulation primitives
+    
+    In order to split the various register manipulation from the main vgic
+    code, introduce a vgic_ops structure, and start by abstracting the
+    LR manipulation code with a couple of accessors.
+    
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit e66aa6cbdaa25764c58ba8d21da8d1b7d75e7570
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:34 2014 +0100
+
+    KVM: arm/arm64: vgic: move GICv2 registers to their own structure
+    
+    In order to make way for the GICv3 registers, move the v2-specific
+    registers to their own structure.
+    
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit b04259737c6bb38592c02c93e939fd53909dad04
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:33 2014 +0100
+
+    arm64: boot protocol documentation update for GICv3
+    
+    Linux has some requirements that must be satisfied in order to boot
+    on a system built with a GICv3.
+    
+    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit a864693311bd4305214d966b7ca0e0015216c2c4
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:32 2014 +0100
+
+    arm64: GICv3 device tree binding documentation
+    
+    Add the necessary documentation to support GICv3.
+    
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Mark Rutland <mark.rutland@arm.com>
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Acked-by: Rob Herring <robh@kernel.org>
+    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit af3035d3ddddb6e19bac9295f0c785bb2c8e718c
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:31 2014 +0100
+
+    irqchip: arm64: Initial support for GICv3
+    
+    The Generic Interrupt Controller (version 3) offers services that are
+    similar to GICv2, with a number of additional features:
+    - Affinity routing based on the CPU MPIDR (ARE)
+    - System register for the CPU interfaces (SRE)
+    - Support for more that 8 CPUs
+    - Locality-specific Peripheral Interrupts (LPIs)
+    - Interrupt Translation Services (ITS)
+    
+    This patch adds preliminary support for GICv3 with ARE and SRE,
+    non-secure mode only. It relies on higher exception levels to grant ARE
+    and SRE access.
+    
+    Support for LPI and ITS will be added at a later time.
+    
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Jason Cooper <jason@lakedaemon.net>
+    Reviewed-by: Zi Shen Lim <zlim@broadcom.com>
+    Reviewed-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Reviewed-by: Tirumalesh Chalamarla <tchalamarla@cavium.com>
+    Reviewed-by: Yun Wu <wuyun.wu@huawei.com>
+    Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+    Tested-by: Tirumalesh Chalamarla<tchalamarla@cavium.com>
+    Tested-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
+    Acked-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit c50b02761c3ad5d37ce8fffe7c0bf6b46d23109e
+Author: Marc Zyngier <marc.zyngier@arm.com>
+Date:   Mon Jun 30 16:01:30 2014 +0100
+
+    irqchip: ARM: GIC: Move some bits of GICv2 to a library-type file
+    
+    A few GICv2 low-level function are actually very useful to GICv3,
+    and it makes some sense to share them across the two drivers.
+    They end-up in their own file, with an additional parameter used
+    to ensure an optional synchronization (unused on GICv2).
+    
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Jason Cooper <jason@lakedaemon.net>
+    Acked-by: Christoffer Dall <christoffer.dall@linaro.org>
+    Signed-off-by: Marc Zyngier <marc.zyngier@arm.com>
+
+commit 6a6033cdcbf6022c2848e2181ed6d8b7545af02e
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Jun 24 23:16:45 2014 -0400
+
+    perf: fix arm64 build error
+    
+    I'm seeing the following build error on arm64:
+    
+      In file included from util/event.c:3:0:
+      util/event.h:95:17: error: 'PERF_REGS_MAX' undeclared here (not in a function)
+        u64 cache_regs[PERF_REGS_MAX];
+                     ^
+    
+    This patch adds a PEFF_REGS_MAX definition for arm64.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 1de8987fa549d421576c1b61282c4041c8c78a5f
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Jun 24 09:50:28 2014 -0400
+
+    arm64: use EFI as last resort for reboot and poweroff
+    
+    Wire in support for EFI reboot and poweroff functions. We use these
+    only if no other mechanism has been registered with arm_pm_reboot
+    and/or pm_power_off respectively.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 1c973051e86625be7ffb3db90d4a70b9ca4199c6
+Author: Matt Fleming <matt.fleming@intel.com>
+Date:   Fri Jun 13 12:39:55 2014 +0100
+
+    x86/reboot: Add EFI reboot quirk for ACPI Hardware Reduced flag
+    
+    It appears that the BayTrail-T class of hardware requires EFI in order
+    to powerdown and reboot and no other reliable method exists.
+    
+    This quirk is generally applicable to all hardware that has the ACPI
+    Hardware Reduced bit set, since usually ACPI would be the preferred
+    method.
+    
+    Cc: Len Brown <len.brown@intel.com>
+    Cc: Mark Salter <msalter@redhat.com>
+    Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+commit 621b2a0f1df86bd2f147799303b94575f3acee95
+Author: Matt Fleming <matt.fleming@intel.com>
+Date:   Fri Jun 13 12:35:21 2014 +0100
+
+    efi/reboot: Allow powering off machines using EFI
+    
+    Not only can EfiResetSystem() be used to reboot, it can also be used to
+    power down machines.
+    
+    By and large, this functionality doesn't work very well across the range
+    of EFI machines in the wild, so it should definitely only be used as a
+    last resort. In an ideal world, this wouldn't be needed at all.
+    
+    Unfortunately, we're starting to see machines where EFI is the *only*
+    reliable way to power down, and nothing else, not PCI, not ACPI, works.
+    
+    efi_poweroff_required() should be implemented on a per-architecture
+    basis, since exactly when we should be using EFI runtime services is a
+    platform-specific decision. There's no analogue for reboot because each
+    architecture handles reboot very differently - the x86 code in
+    particular is pretty complex.
+    
+    Patches to enable this for specific classes of hardware will be
+    submitted separately.
+    
+    Cc: Mark Salter <msalter@redhat.com>
+    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+commit 6b2e219b20933cad5d5ba34f7af4efc5317c0fb9
+Author: Matt Fleming <matt.fleming@intel.com>
+Date:   Fri Jun 13 12:22:22 2014 +0100
+
+    efi/reboot: Add generic wrapper around EfiResetSystem()
+    
+    Implement efi_reboot(), which is really just a wrapper around the
+    EfiResetSystem() EFI runtime service, but it does at least allow us to
+    funnel all callers through a single location.
+    
+    It also simplifies the callsites since users no longer need to check to
+    see whether EFI_RUNTIME_SERVICES are enabled.
+    
+    Cc: Tony Luck <tony.luck@intel.com>
+    Cc: Mark Salter <msalter@redhat.com>
+    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+commit d0d41b99122d97f81ad05868dff38ccf0a3ffd33
+Author: Saurabh Tangri <saurabh.tangri@intel.com>
+Date:   Mon Jun 2 05:18:35 2014 -0700
+
+    x86/efi: Move all workarounds to a separate file quirks.c
+    
+    Currently, it's difficult to find all the workarounds that are
+    applied when running on EFI, because they're littered throughout
+    various code paths. This change moves all of them into a separate
+    file with the hope that it will be come the single location for all
+    our well documented quirks.
+    
+    Signed-off-by: Saurabh Tangri <saurabh.tangri@intel.com>
+    Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+commit b5e3a1e8825abb0406ead0e85436df4df20ddcdb
+Author: Don Dutile <ddutile@redhat.com>
+Date:   Tue Mar 25 20:22:26 2014 -0400
+
+    pmu: Adding support for Xgene PMUs
+    
+    Message-id: <1395778948-47814-2-git-send-email-ddutile@redhat.com>
+    Patchwork-id: 78602
+    O-Subject: [PATCH 1/3] pmu: Adding support for Xgene PMUs
+    Bugzilla: 1079110
+    
+    Backport of these two posted (but not upstream) patches.
+    Combined into single patch due to gic-patch dependency.
+    
+    Signed-off-by: Donald Dutile <ddutile@redhat.com>
+
+commit 9f4c27693bb120a3134e3e7e8d452fb02d023e2b
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sun Jun 15 09:06:55 2014 -0400
+
+    arm64: fix up APM Mustang devicetree
+    
+    These are changes needed when loading device tree blob built with
+    kernel. i.e. with grub. These are not needed when using devicetree
+    from Tianocore which will be fixed up at tianocore runtime.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 1f3a5b228be88be3f734d7a43db3b3f81e160443
+Author: Iyappan Subramanian <isubramanian@apm.com>
+Date:   Mon Jul 14 15:18:05 2014 -0700
+
+    drivers: net: Add APM X-Gene SoC ethernet driver support.
+    
+    This patch adds network driver for APM X-Gene SoC ethernet.
+    
+    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
+    Signed-off-by: Ravi Patel <rapatel@apm.com>
+    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
+
+commit 54b3fe04c4a953eeb6907ffe9f57aae282f59457
+Author: Iyappan Subramanian <isubramanian@apm.com>
+Date:   Mon Jul 14 15:18:04 2014 -0700
+
+    dts: Add bindings for APM X-Gene SoC ethernet driver
+    
+    This patch adds bindings for APM X-Gene SoC ethernet driver.
+    
+    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
+    Signed-off-by: Ravi Patel <rapatel@apm.com>
+    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
+
+commit 85125c4e1c1b1ef53d6cb77966efa89062540f43
+Author: Iyappan Subramanian <isubramanian@apm.com>
+Date:   Mon Jul 14 15:18:03 2014 -0700
+
+    Documentation: dts: Add bindings for APM X-Gene SoC ethernet driver
+    
+    This patch adds documentation for APM X-Gene SoC ethernet DTS binding.
+    
+    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
+    Signed-off-by: Ravi Patel <rapatel@apm.com>
+    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
+
+commit fe8ec437eedc45384c23e1e12a09baa82d24fa16
+Author: Iyappan Subramanian <isubramanian@apm.com>
+Date:   Mon Jul 14 15:18:02 2014 -0700
+
+    MAINTAINERS: Add entry for APM X-Gene SoC ethernet driver
+    
+    This patch adds a MAINTAINERS entry for APM X-Gene SoC
+    ethernet driver.
+    
+    Signed-off-by: Iyappan Subramanian <isubramanian@apm.com>
+    Signed-off-by: Ravi Patel <rapatel@apm.com>
+    Signed-off-by: Keyur Chudgar <kchudgar@apm.com>
+
+commit 237639e43c3d6587985a736f33264e129123d7a5
+Author: Mark Salter <msalter@redhat.com>
+Date:   Fri Jul 25 15:14:32 2014 -0400
+
+    arm/kvm: WIP fix for stage2 pgd memory leak
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 0794e2900e5e4be4b7aa0b389e6b0bf8b55c5cd7
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Jul 17 13:34:50 2014 -0400
+
+    ahci_xgene: add errata workaround for ATA_CMD_SMART
+    
+    commit 2a0bdff6b958d1b2:
+    
+     ahci_xgene: fix the dma state machine lockup for the IDENTIFY DEVICE PIO mode command.
+    
+    added a workaround for X-Gene AHCI controller errata. This was done
+    for all ATA_CMD_ID_ATA commands. The errata also appears to affect
+    ATA_CMD_SMART commands as well. This was discovered when running
+    smartd or just smartctl -x. This patch adds a dma engine restart for
+    ATA_CMD_SMART commands which clears up the issues seen with smartd.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 7adf85b63608b8bea1148f2faa84f475252a9e43
+Author: Mark Salter <msalter@redhat.com>
+Date:   Fri Jul 25 15:32:05 2014 -0400
+
+    rtc: ia64: allow other architectures to use EFI RTC
+    
+    Currently, the rtc-efi driver is restricted to ia64 only.  Newer
+    architectures with EFI support may want to also use that driver. This
+    patch moves the platform device setup from ia64 into drivers/rtc and allow
+    any architecture with CONFIG_EFI=y to use the rtc-efi driver.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+    Cc: Alessandro Zummo <a.zummo@towertech.it>
+    Cc: Tony Luck <tony.luck@intel.com>
+    Cc: Fenghua Yu <fenghua.yu@intel.com>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+
+commit 3b2f96c7a6bfbd46e7dee1d7000081422a7983ce
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Tue May 13 22:25:26 2014 -0400
+
+    arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
+    
+    Message-id: <20140513222526.GC26038@redacted.bos.redhat.com>
+    Patchwork-id: 79789
+    O-Subject: [ACADIA PATCH] arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
+    Bugzilla: 1085528
+    
+    BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1085528
+    Upstream: submitted soon
+    
+    [Sadly this isn't (yet) sufficient... but it fixes at least one issue
+     here... cat /proc/$$/personality shows READ_IMPLIES_EXEC before. I'll
+     try to figure the rest out tomorrow.]
+    
+    Currently, we're accidentally ending up with executable stacks on
+    AArch64 when the ABI says we shouldn't be, and relying on glibc to fix
+    things up for us when we're loaded. However, SELinux will deny us
+    mucking with the stack, and hit us with execmem AVCs.
+    
+    The reason this is happening is somewhat complex:
+    
+    fs/binfmt_elf.c:load_elf_binary()
+     - initializes executable_stack = EXSTACK_DEFAULT implying the
+       architecture should make up its mind.
+     - does a pile of loading goo
+     - runs through the program headers, looking for PT_GNU_STACK
+       and setting (or unsetting) executable_stack if it finds it.
+    
+       This is our first problem, we won't generate these unless an
+       executable stack is explicitly requested.
+    
+     - more ELF loading goo
+     - sets whether we're a compat task or not (TIF_32BIT) based on compat.h
+     - for compat reasons (pre-GNU_STACK) checks if the READ_IMPLIES_EXEC
+       flag should be set for ancient toolchains
+    
+       Here's our second problem, we test if read_implies_exec based on
+       stk != EXSTACK_DISABLE_X, which is true since stk == EXSTACK_DEFAULT.
+    
+       So we set current->personality |= READ_IMPLIES_EXEC like a broken
+       legacy toolchain would want.
+    
+     - Now we call setup_arg_pages to set up the stack...
+    
+    fs/exec.c:setup_arg_pages()
+     - lots of magic happens here
+     - vm_flags gets initialized to VM_STACK_FLAGS
+    
+       Here's our third problem, VM_STACK_FLAGS on arm64 is
+       VM_DEFAULT_DATA_FLAG which tests READ_IMPLIES_EXEC and sets VM_EXEC
+       if it's true. So we end up with an executable stack mapping, since we
+       don't have executable_stack set (it's still EXSTACK_DEFAULT at this
+       point) to unset it anywhere.
+    
+    Bang. execstack AVC when the program starts running.
+    
+    The easiest way I can see to fix this is to test if we're a legacy task
+    and fix it up there. But that's not as simple as it sounds, because
+    the 32-bit ABI depends on what revision of the CPU we've enabled (not
+    that it matters since we're ARMv8...) Regardless, in the compat case,
+    set READ_IMPLIES_EXEC if we've found a GNU_STACK header which explicitly
+    requested it as in arch/arm/kernel/elf.c:arm_elf_read_implies_exec().
+    
+    Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
+    Signed-off-by: Donald Dutile <ddutile@redhat.com>
+
+commit 4b866971e92b925a44da8d876cb57864942a90b8
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Jul 24 15:56:15 2014 +0100
+
+    arm64: fix soft lockup due to large tlb flush range
+    
+    Under certain loads, this soft lockup has been observed:
+    
+       BUG: soft lockup - CPU#2 stuck for 22s! [ip6tables:1016]
+       Modules linked in: ip6t_rpfilter ip6t_REJECT cfg80211 rfkill xt_conntrack ebtable_nat ebtable_broute bridge stp llc ebtable_filter ebtables ip6table_nat nf_conntrack_ipv6 nf_defrag_ipv6 nf_nat_ipv6 ip6table_mangle ip6table_security ip6table_raw ip6table_filter ip6_tables iptable_nat nf_conntrack_ipv4 nf_defrag_ipv4 nf_nat_ipv4 nf_nat nf_conntrack iptable_mangle iptable_security iptable_raw vfat fat efivarfs xfs libcrc32c
+    
+       CPU: 2 PID: 1016 Comm: ip6tables Not tainted 3.13.0-0.rc7.30.sa2.aarch64 #1
+       task: fffffe03e81d1400 ti: fffffe03f01f8000 task.ti: fffffe03f01f8000
+       PC is at __cpu_flush_kern_tlb_range+0xc/0x40
+       LR is at __purge_vmap_area_lazy+0x28c/0x3ac
+       pc : [<fffffe000009c5cc>] lr : [<fffffe0000182710>] pstate: 80000145
+       sp : fffffe03f01fbb70
+       x29: fffffe03f01fbb70 x28: fffffe03f01f8000
+       x27: fffffe0000b19000 x26: 00000000000000d0
+       x25: 000000000000001c x24: fffffe03f01fbc50
+       x23: fffffe03f01fbc58 x22: fffffe03f01fbc10
+       x21: fffffe0000b2a3f8 x20: 0000000000000802
+       x19: fffffe0000b2a3c8 x18: 000003fffdf52710
+       x17: 000003ff9d8bb910 x16: fffffe000050fbfc
+       x15: 0000000000005735 x14: 000003ff9d7e1a5c
+       x13: 0000000000000000 x12: 000003ff9d7e1a5c
+       x11: 0000000000000007 x10: fffffe0000c09af0
+       x9 : fffffe0000ad1000 x8 : 000000000000005c
+       x7 : fffffe03e8624000 x6 : 0000000000000000
+       x5 : 0000000000000000 x4 : 0000000000000000
+       x3 : fffffe0000c09cc8 x2 : 0000000000000000
+       x1 : 000fffffdfffca80 x0 : 000fffffcd742150
+    
+    The __cpu_flush_kern_tlb_range() function looks like:
+    
+      ENTRY(__cpu_flush_kern_tlb_range)
+    	dsb	sy
+    	lsr	x0, x0, #12
+    	lsr	x1, x1, #12
+      1:	tlbi	vaae1is, x0
+    	add	x0, x0, #1
+    	cmp	x0, x1
+    	b.lo	1b
+    	dsb	sy
+    	isb
+    	ret
+      ENDPROC(__cpu_flush_kern_tlb_range)
+    
+    The above soft lockup shows the PC at tlbi insn with:
+    
+      x0 = 0x000fffffcd742150
+      x1 = 0x000fffffdfffca80
+    
+    So __cpu_flush_kern_tlb_range has 0x128ba930 tlbi flushes left
+    after it has already been looping for 23 seconds!.
+    
+    Looking up one frame at __purge_vmap_area_lazy(), there is:
+    
+    	...
+    	list_for_each_entry_rcu(va, &vmap_area_list, list) {
+    		if (va->flags & VM_LAZY_FREE) {
+    			if (va->va_start < *start)
+    				*start = va->va_start;
+    			if (va->va_end > *end)
+    				*end = va->va_end;
+    			nr += (va->va_end - va->va_start) >> PAGE_SHIFT;
+    			list_add_tail(&va->purge_list, &valist);
+    			va->flags |= VM_LAZY_FREEING;
+    			va->flags &= ~VM_LAZY_FREE;
+    		}
+    	}
+    	...
+    	if (nr || force_flush)
+    		flush_tlb_kernel_range(*start, *end);
+    
+    So if two areas are being freed, the range passed to
+    flush_tlb_kernel_range() may be as large as the vmalloc
+    space. For arm64, this is ~240GB for 4k pagesize and ~2TB
+    for 64kpage size.
+    
+    This patch works around this problem by adding a loop limit.
+    If the range is larger than the limit, use flush_tlb_all()
+    rather than flushing based on individual pages. The limit
+    chosen is arbitrary as the TLB size is implementation
+    specific and not accessible in an architected way. The aim
+    of the arbitrary limit is to avoid soft lockup.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+    [catalin.marinas@arm.com: commit log update]
+    [catalin.marinas@arm.com: marginal optimisation]
+    [catalin.marinas@arm.com: changed to MAX_TLB_RANGE and added comment]
+    Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+
 diff --git a/Documentation/arm64/booting.txt b/Documentation/arm64/booting.txt
 index 37fc4f6..da1d4bf 100644
 --- a/Documentation/arm64/booting.txt
@@ -239,7 +1200,7 @@ index 0000000..e19fdb8
 +		status = "ok";
 +	};
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 61a8f48..78946ce 100644
+index 86efa7e..14a3ef1 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -699,6 +699,14 @@ S:	Maintained
@@ -876,6 +1837,29 @@ index 92242ce..4ae9213 100644
 +}
 +
  #endif /* __ARM64_KVM_HOST_H__ */
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index 7d29847..d7f77ff 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -122,8 +122,16 @@ static inline void kvm_set_s2pmd_writable(pmd_t *pmd)
+ }
+ 
+ #define kvm_pgd_addr_end(addr, end)	pgd_addr_end(addr, end)
+-#define kvm_pud_addr_end(addr, end)	pud_addr_end(addr, end)
+-#define kvm_pmd_addr_end(addr, end)	pmd_addr_end(addr, end)
++
++#define kvm_pud_addr_end(addr, end)					\
++({	unsigned long __boundary = ((addr) + PUD_SIZE) & PUD_MASK;	\
++	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
++})
++
++#define kvm_pmd_addr_end(addr, end)					\
++({	unsigned long __boundary = ((addr) + PMD_SIZE) & PMD_MASK;	\
++	(__boundary - 1 < (end) - 1)? __boundary: (end);		\
++})
+ 
+ struct kvm;
+ 
 diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
 new file mode 100644
 index 0000000..3f7856e
@@ -932,7 +1916,7 @@ index 0000000..3f7856e
 +#endif  /* __KERNEL__ */
 +#endif  /* __ASM_PCI_H */
 diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index b9349c4..e0f37ef 100644
+index b9349c4..ecbd081 100644
 --- a/arch/arm64/include/asm/tlbflush.h
 +++ b/arch/arm64/include/asm/tlbflush.h
 @@ -98,8 +98,8 @@ static inline void flush_tlb_page(struct vm_area_struct *vma,
@@ -946,25 +1930,28 @@ index b9349c4..e0f37ef 100644
  {
  	unsigned long asid = (unsigned long)ASID(vma->vm_mm) << 48;
  	unsigned long addr;
-@@ -112,7 +112,9 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
+@@ -112,7 +112,7 @@ static inline void flush_tlb_range(struct vm_area_struct *vma,
  	dsb(ish);
  }
  
 -static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
-+#define MAX_TLB_LOOP 128
-+
 +static inline void __flush_tlb_kernel_range(unsigned long start, unsigned long end)
  {
  	unsigned long addr;
  	start >>= 12;
-@@ -124,6 +126,23 @@ static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end
- 	dsb(ish);
+@@ -125,6 +125,29 @@ static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end
  }
  
+ /*
++ * This is meant to avoid soft lock-ups on large TLB flushing ranges and not
++ * necessarily a performance improvement.
++ */
++#define MAX_TLB_RANGE	(1024UL << PAGE_SHIFT)
++
 +static inline void flush_tlb_range(struct vm_area_struct *vma,
 +				   unsigned long start, unsigned long end)
 +{
-+	if (((end - start) >> PAGE_SHIFT) < MAX_TLB_LOOP)
++	if ((end - start) <= MAX_TLB_RANGE)
 +		__flush_tlb_range(vma, start, end);
 +	else
 +		flush_tlb_mm(vma->vm_mm);
@@ -972,15 +1959,16 @@ index b9349c4..e0f37ef 100644
 +
 +static inline void flush_tlb_kernel_range(unsigned long start, unsigned long end)
 +{
-+	if (((end - start) >> PAGE_SHIFT) < MAX_TLB_LOOP)
++	if ((end - start) <= MAX_TLB_RANGE)
 +		__flush_tlb_kernel_range(start, end);
 +	else
 +		flush_tlb_all();
 +}
 +
- /*
++/*
   * On AArch64, the cache coherency is handled via the set_pte_at() function.
   */
+ static inline void update_mmu_cache(struct vm_area_struct *vma,
 diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
 index 215ad46..7a5df52 100644
 --- a/arch/arm64/include/asm/virt.h
@@ -1044,6 +2032,37 @@ index 646f888..e74654c 100644
    DEFINE(VGIC_CPU_NR_LR,	offsetof(struct vgic_cpu, nr_lr));
    DEFINE(KVM_VTTBR,		offsetof(struct kvm, arch.vttbr));
    DEFINE(KVM_VGIC_VCTRL,	offsetof(struct kvm, arch.vgic.vctrl_base));
+diff --git a/arch/arm64/kernel/efi-stub.c b/arch/arm64/kernel/efi-stub.c
+index e786e6c..320ef48 100644
+--- a/arch/arm64/kernel/efi-stub.c
++++ b/arch/arm64/kernel/efi-stub.c
+@@ -58,20 +58,16 @@ static efi_status_t handle_kernel_image(efi_system_table_t *sys_table,
+ 	kernel_size = _edata - _text;
+ 	if (*image_addr != (dram_base + TEXT_OFFSET)) {
+ 		kernel_memsize = kernel_size + (_end - _edata);
+-		status = efi_relocate_kernel(sys_table, image_addr,
+-					     kernel_size, kernel_memsize,
+-					     dram_base + TEXT_OFFSET,
+-					     PAGE_SIZE);
++		status = efi_low_alloc(sys_table, kernel_memsize + TEXT_OFFSET,
++				       SZ_2M, reserve_addr);
+ 		if (status != EFI_SUCCESS) {
+ 			pr_efi_err(sys_table, "Failed to relocate kernel\n");
+ 			return status;
+ 		}
+-		if (*image_addr != (dram_base + TEXT_OFFSET)) {
+-			pr_efi_err(sys_table, "Failed to alloc kernel memory\n");
+-			efi_free(sys_table, kernel_memsize, *image_addr);
+-			return EFI_ERROR;
+-		}
+-		*image_size = kernel_memsize;
++		memcpy((void *)*reserve_addr + TEXT_OFFSET, (void *)*image_addr,
++		       kernel_size);
++		*image_addr = *reserve_addr + TEXT_OFFSET;
++		*reserve_size = kernel_memsize + TEXT_OFFSET;
+ 	}
+ 
+ 
 diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
 index 14db1f6..453b7f8 100644
 --- a/arch/arm64/kernel/efi.c
@@ -1064,7 +2083,7 @@ index 14db1f6..453b7f8 100644
 +	return pm_power_off == NULL;
 +}
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index a2c1195..d1f7b96 100644
+index a2c1195..8df59be 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
 @@ -22,6 +22,7 @@
@@ -1075,6 +2094,33 @@ index a2c1195..d1f7b96 100644
  
  #include <asm/assembler.h>
  #include <asm/ptrace.h>
+@@ -156,7 +157,7 @@ optional_header:
+ 	.short	0x20b				// PE32+ format
+ 	.byte	0x02				// MajorLinkerVersion
+ 	.byte	0x14				// MinorLinkerVersion
+-	.long	_edata - stext			// SizeOfCode
++	.long	_end - stext			// SizeOfCode
+ 	.long	0				// SizeOfInitializedData
+ 	.long	0				// SizeOfUninitializedData
+ 	.long	efi_stub_entry - efi_head	// AddressOfEntryPoint
+@@ -174,7 +175,7 @@ extra_header_fields:
+ 	.short	0				// MinorSubsystemVersion
+ 	.long	0				// Win32VersionValue
+ 
+-	.long	_edata - efi_head		// SizeOfImage
++	.long	_end - efi_head			// SizeOfImage
+ 
+ 	// Everything before the kernel image is considered part of the header
+ 	.long	stext - efi_head		// SizeOfHeaders
+@@ -221,7 +222,7 @@ section_table:
+ 	.byte	0
+ 	.byte	0
+ 	.byte	0        		// end of 0 padding of section name
+-	.long	_edata - stext		// VirtualSize
++	.long	_end - stext		// VirtualSize
+ 	.long	stext - efi_head	// VirtualAddress
+ 	.long	_edata - stext		// SizeOfRawData
+ 	.long	stext - efi_head	// PointerToRawData
 @@ -295,6 +296,23 @@ CPU_LE(	bic	x0, x0, #(3 << 24)	)	// Clear the EE and E0E bits for EL1
  	msr	cnthctl_el2, x0
  	msr	cntvoff_el2, xzr		// Clear virtual offset
@@ -1179,6 +2225,62 @@ index 43b7c34..ec5cbbe 100644
  	 * Whoops - the architecture was unable to reboot.
  	 */
  	printk("Reboot failed -- System halted\n");
+diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
+index 0347d38..70181c1 100644
+--- a/arch/arm64/kernel/smp_spin_table.c
++++ b/arch/arm64/kernel/smp_spin_table.c
+@@ -20,6 +20,7 @@
+ #include <linux/init.h>
+ #include <linux/of.h>
+ #include <linux/smp.h>
++#include <linux/types.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/cpu_ops.h>
+@@ -65,12 +66,21 @@ static int smp_spin_table_cpu_init(struct device_node *dn, unsigned int cpu)
+ 
+ static int smp_spin_table_cpu_prepare(unsigned int cpu)
+ {
+-	void **release_addr;
++	__le64 __iomem *release_addr;
+ 
+ 	if (!cpu_release_addr[cpu])
+ 		return -ENODEV;
+ 
+-	release_addr = __va(cpu_release_addr[cpu]);
++	/*
++	 * The cpu-release-addr may or may not be inside the linear mapping.
++	 * As ioremap_cache will either give us a new mapping or reuse the
++	 * existing linear mapping, we can use it to cover both cases. In
++	 * either case the memory will be MT_NORMAL.
++	 */
++	release_addr = ioremap_cache(cpu_release_addr[cpu],
++				     sizeof(*release_addr));
++	if (!release_addr)
++		return -ENOMEM;
+ 
+ 	/*
+ 	 * We write the release address as LE regardless of the native
+@@ -79,15 +89,16 @@ static int smp_spin_table_cpu_prepare(unsigned int cpu)
+ 	 * boot-loader's endianess before jumping. This is mandated by
+ 	 * the boot protocol.
+ 	 */
+-	release_addr[0] = (void *) cpu_to_le64(__pa(secondary_holding_pen));
+-
+-	__flush_dcache_area(release_addr, sizeof(release_addr[0]));
++	writeq_relaxed(__pa(secondary_holding_pen), release_addr);
++	__flush_dcache_area(release_addr, sizeof(*release_addr));
+ 
+ 	/*
+ 	 * Send an event to wake up the secondary CPU.
+ 	 */
+ 	sev();
+ 
++	iounmap(release_addr);
++
+ 	return 0;
+ }
+ 
 diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
 index 72a9fd5..32a0961 100644
 --- a/arch/arm64/kvm/Makefile
@@ -7377,10 +8479,10 @@ index 70347d0..f1dfc36 100644
  rtc-core-$(CONFIG_RTC_INTF_SYSFS) += rtc-sysfs.o
 diff --git a/drivers/rtc/rtc-efi-platform.c b/drivers/rtc/rtc-efi-platform.c
 new file mode 100644
-index 0000000..1a7f890
+index 0000000..b40fbe3
 --- /dev/null
 +++ b/drivers/rtc/rtc-efi-platform.c
-@@ -0,0 +1,30 @@
+@@ -0,0 +1,31 @@
 +/*
 + * Moved from arch/ia64/kernel/time.c
 + *
@@ -7404,8 +8506,9 @@ index 0000000..1a7f890
 +
 +static int __init rtc_init(void)
 +{
-+	if (platform_device_register(&rtc_efi_dev) < 0)
-+		pr_err("unable to register rtc device...\n");
++	if (efi_enabled(EFI_RUNTIME_SERVICES))
++		if (platform_device_register(&rtc_efi_dev) < 0)
++			pr_err("unable to register rtc device...\n");
 +
 +	/* not necessarily an error */
 +	return 0;
@@ -7965,10 +9068,10 @@ index e9441b9..1d3f39c 100644
  
 diff --git a/virt/kvm/arm/vgic-v2.c b/virt/kvm/arm/vgic-v2.c
 new file mode 100644
-index 0000000..5fd2b75
+index 0000000..ff597d8
 --- /dev/null
 +++ b/virt/kvm/arm/vgic-v2.c
-@@ -0,0 +1,243 @@
+@@ -0,0 +1,259 @@
 +/*
 + * Copyright (C) 2012,2013 ARM Limited, All Rights Reserved.
 + * Author: Marc Zyngier <marc.zyngier@arm.com>
@@ -8196,10 +9299,26 @@ index 0000000..5fd2b75
 +		ret = -ENXIO;
 +		goto out_unmap;
 +	}
++
++	if (!PAGE_ALIGNED(vcpu_res.start)) {
++		kvm_err("GICV physical address 0x%llx not page aligned\n",
++			(unsigned long long)vcpu_res.start);
++		ret = -ENXIO;
++		goto out_unmap;
++	}
++
++	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
++		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
++			(unsigned long long)resource_size(&vcpu_res),
++			PAGE_SIZE);
++		ret = -ENXIO;
++		goto out_unmap;
++	}
++
 +	vgic->vcpu_base = vcpu_res.start;
 +
 +	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
-+		 vctrl_res.start, vgic->maint_irq);
++		 vgic->vctrl_base, vgic->maint_irq);
 +
 +	vgic->type = VGIC_V2;
 +	*ops = &vgic_v2_ops;
@@ -8450,7 +9569,7 @@ index 0000000..f01d446
 +	return ret;
 +}
 diff --git a/virt/kvm/arm/vgic.c b/virt/kvm/arm/vgic.c
-index 56ff9be..795ab48 100644
+index 476d3bf..795ab48 100644
 --- a/virt/kvm/arm/vgic.c
 +++ b/virt/kvm/arm/vgic.c
 @@ -76,14 +76,6 @@
@@ -8912,7 +10031,7 @@ index 56ff9be..795ab48 100644
  	}
  
  	ret = __register_cpu_notifier(&vgic_cpu_nb);
-@@ -1502,49 +1567,15 @@ int kvm_vgic_hyp_init(void)
+@@ -1502,65 +1567,15 @@ int kvm_vgic_hyp_init(void)
  		goto out_free_irq;
  	}
  
@@ -8940,20 +10059,37 @@ index 56ff9be..795ab48 100644
 -		goto out_unmap;
 -	}
 -
--	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
--		 vctrl_res.start, vgic_maint_irq);
- 	on_each_cpu(vgic_init_maintenance_interrupt, NULL, 1);
- 
 -	if (of_address_to_resource(vgic_node, 3, &vcpu_res)) {
 -		kvm_err("Cannot obtain VCPU resource\n");
 -		ret = -ENXIO;
 -		goto out_unmap;
 -	}
+-
+-	if (!PAGE_ALIGNED(vcpu_res.start)) {
+-		kvm_err("GICV physical address 0x%llx not page aligned\n",
+-			(unsigned long long)vcpu_res.start);
+-		ret = -ENXIO;
+-		goto out_unmap;
+-	}
+-
+-	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
+-		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
+-			(unsigned long long)resource_size(&vcpu_res),
+-			PAGE_SIZE);
+-		ret = -ENXIO;
+-		goto out_unmap;
+-	}
+-
 -	vgic_vcpu_base = vcpu_res.start;
-+	/* Callback into for arch code for setup */
-+	vgic_arch_setup(vgic);
+-
+-	kvm_info("%s@%llx IRQ%d\n", vgic_node->name,
+-		 vctrl_res.start, vgic_maint_irq);
+ 	on_each_cpu(vgic_init_maintenance_interrupt, NULL, 1);
  
 -	goto out;
++	/* Callback into for arch code for setup */
++	vgic_arch_setup(vgic);
++
 +	return 0;
  
 -out_unmap:
@@ -8966,7 +10102,7 @@ index 56ff9be..795ab48 100644
  	return ret;
  }
  
-@@ -1577,7 +1608,7 @@ int kvm_vgic_init(struct kvm *kvm)
+@@ -1593,7 +1608,7 @@ int kvm_vgic_init(struct kvm *kvm)
  	}
  
  	ret = kvm_phys_addr_ioremap(kvm, kvm->arch.vgic.vgic_cpu_base,
@@ -8975,7 +10111,7 @@ index 56ff9be..795ab48 100644
  	if (ret) {
  		kvm_err("Unable to remap VGIC CPU to VCPU\n");
  		goto out;
-@@ -1623,7 +1654,8 @@ int kvm_vgic_create(struct kvm *kvm)
+@@ -1639,7 +1654,8 @@ int kvm_vgic_create(struct kvm *kvm)
  	}
  
  	spin_lock_init(&kvm->arch.vgic.lock);
@@ -8985,7 +10121,7 @@ index 56ff9be..795ab48 100644
  	kvm->arch.vgic.vgic_dist_base = VGIC_ADDR_UNDEF;
  	kvm->arch.vgic.vgic_cpu_base = VGIC_ADDR_UNDEF;
  
-@@ -1722,39 +1754,40 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
+@@ -1738,39 +1754,40 @@ int kvm_vgic_addr(struct kvm *kvm, unsigned long type, u64 *addr, bool write)
  static bool handle_cpu_mmio_misc(struct kvm_vcpu *vcpu,
  				 struct kvm_exit_mmio *mmio, phys_addr_t offset)
  {

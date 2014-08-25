@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 %global aarch64patches 1
 
@@ -43,19 +43,19 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 15
+%define base_sublevel 16
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -131,7 +131,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -552,17 +552,14 @@ Patch09: upstream-reverts.patch
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
 
-Patch460: serial-460800.patch
-
 Patch470: die-floppy-die.patch
+
+Patch500: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
 
 Patch600: 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
-
-#rhbz 917708
-Patch700: Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 Patch800: crash-driver.patch
 
@@ -603,6 +600,9 @@ Patch15000: nowatchdog-on-virt.patch
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
 Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
+# http://www.spinics.net/lists/linux-tegra/msg17948.html
+Patch21023: arm-tegra-drmdetection.patch
+Patch21024: arm-qemu-fixdisplay.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -614,8 +614,6 @@ Patch21242: criu-no-expert.patch
 Patch21247: ath9k_rx_dma_stop_check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
-
-Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
 
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
@@ -640,11 +638,17 @@ Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1117942
 Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
 
-#CVE-2014-5045 rhbz 1122472 1122482
-Patch25119: fs-umount-on-symlink-leaks-mnt-count.patch
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+Patch25119: namespaces-remount-fixes.patch
 
-#rhbz 1115120
-Patch25120: selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
+#rhbz 1121288
+Patch25120: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1128472
+Patch25121: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
+#rhbz 1131551
+Patch25122: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1268,6 +1272,8 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-beagle.patch
 ApplyPatch arm-imx6-utilite.patch
+ApplyPatch arm-tegra-drmdetection.patch
+ApplyPatch arm-qemu-fixdisplay.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1299,6 +1305,8 @@ ApplyPatch arm-imx6-utilite.patch
 
 # ACPI
 
+ApplyPatch Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
+
 # ALSA
 
 # Networking
@@ -1312,9 +1320,6 @@ ApplyPatch die-floppy-die.patch
 
 ApplyPatch no-pcspkr-modalias.patch
 
-# Allow to use 480600 baud on 16C950 UARTs
-ApplyPatch serial-460800.patch
-
 # Silence some useless messages that still get printed with 'quiet'
 ApplyPatch silence-noise.patch
 
@@ -1322,9 +1327,6 @@ ApplyPatch silence-noise.patch
 ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
-
-#rhbz 917708
-ApplyPatch Revert-userns-Allow-unprivileged-users-to-create-use.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
@@ -1370,8 +1372,6 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
-ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
@@ -1395,11 +1395,17 @@ ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 #rhbz 1117942
 ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
 
-#CVE-2014-5045 rhbz 1122472 1122482
-ApplyPatch fs-umount-on-symlink-leaks-mnt-count.patch
+#CVE-2014-{5206,5207} rhbz 1129662 1129669
+ApplyPatch namespaces-remount-fixes.patch
 
-#rhbz 1115120
-ApplyPatch selinux-4da6daf4d3df5a977e4623963f141a627fd2efce.patch
+#rhbz 1121288
+ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+
+#rhbz 1128472
+ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
+
+#rhbz 1131551
+ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2289,15 +2295,81 @@ fi
 #
 # 
 #                        ___________________________________________________________
-#                       / This branch is for Fedora 22. You probably want to commit \
-#  _____ ____  ____     \ to the f21 branch instead, or in addition to this one.    /
-# |  ___|___ \|___ \     -----------------------------------------------------------
-# | |_    __) | __) |        \   ^__^
-# |  _|  / __/ / __/          \  (@@)\_______
-# |_|   |_____|_____|            (__)\       )\/\
+#                       / This branch is for Fedora 21. You probably want to commit \
+#  _____ ____  _        \ to the F-20 branch instead, or in addition to this one.   /
+# |  ___|___ \/ |        -----------------------------------------------------------
+# | |_    __) | |             \   ^__^
+# |  _|  / __/| |              \  (@@)\_______
+# |_|   |_____|_|                 (__)\       )\/\
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.1-301
+- Drop userns revert patch (rhbz 917708)
+
+* Tue Aug 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFSv3 oops (rhbz 1131551)
+
+* Fri Aug 15 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM updates for 3.16
+- Cleanup some old removed options
+- Disable legacy USB OTG (using new configfs equivilents)
+- Upstream patch to fix display on qemu (VExpress A9)
+
+* Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.1-300
+- Linux v3.16.1
+
+* Thu Aug 14 2014 Hans de Goede <hdegoede@redhat.com>
+- Blacklist usb bulk streams on Etron EJ168 xhci controllers (rhbz#1121288)
+- UAS: Limit max number of requests over USB-2 to 32 (rhbz#1128472)
+
+* Wed Aug 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-{5206,5207} ro bind mount bypass with namespaces (rhbz 1129662 1129669)
+
+* Mon Aug 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-1
+- Linux v3.16
+- Disable debugging options.
+
+* Sun Aug  3 2014 Peter Robinson <pbrobinson@redhat.com>
+- Minor config updates for Armada and Sunxi ARM devices
+
+* Fri Aug 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git4.1
+- Linux v3.16-rc7-84-g6f0928036bcb
+
+* Thu Jul 31 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git3.1
+- Linux v3.16-rc7-76-g3a1122d26c62
+
+* Wed Jul 30 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: fix up merge conflict and re-enable
+
+* Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git2.1
+- Linux v3.16-rc7-64-g26bcd8b72563
+- Temporarily disable aarch64patches
+
+* Wed Jul 30 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Apply different patch from Milan Broz to fix LUKS partitions (rhbz 1115120)
+
+* Tue Jul 29 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: update from upstream git.
+
+* Tue Jul 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git1.1
+- Linux v3.16-rc7-7-g31dab719fa50
+- Reenable debugging options.
+
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Make sure acpi brightness_switch is disabled (like forever in Fedora)
+- CVE-2014-5077 sctp: fix NULL ptr dereference (rhbz 1122982 1123696)
+
+* Mon Jul 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc7.git0.1
+- Linux v3.16-rc7
+- Disable debugging options.
+
+* Mon Jul 28 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix loading of tegra drm using device tree
+
+* Sat Jul 26 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc6.git3.1
+- Linux v3.16-rc6-139-g9c5502189fa0
+
 * Fri Jul 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc6.git2.1
 - Linux v3.16-rc6-118-g82e13c71bc65
 - Fix selinux sock_graft hook for AF_ALG address family (rhbz 1115120)
