@@ -621,7 +621,6 @@ Patch21023: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 Patch21024: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
-Patch21027: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
@@ -1254,7 +1253,6 @@ ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
-ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
 
@@ -2271,6 +2269,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor generic ARMv7 updates
+- Build tegra on both LPAE and general ARMv7 kernels (thank srwarren RHBZ 1110963)
+- Set CMA to 64mb on LPAE kernel (RHBZ 1127000)
+
 * Mon Aug 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc1.git4.1
 - Linux v3.17-rc1-231-g7be141d05549
 - Add patch to fix NFS oops on /proc removal (rhbz 1132368)
