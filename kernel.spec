@@ -2264,6 +2264,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor generic ARMv7 updates
+- Build tegra on both LPAE and general ARMv7 kernels (thank srwarren RHBZ 1110963)
+- Set CMA to 64mb on LPAE kernel (RHBZ 1127000)
+
 * Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.1-301
 - Drop userns revert patch (rhbz 917708)
 
