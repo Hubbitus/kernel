@@ -1,4 +1,4 @@
-From 5aacf54210c1147d771cdb52b7a1f3cf69a39a8c Mon Sep 17 00:00:00 2001
+From d0bb5aa9ffb293df4189cab67f8de0b21412aaf9 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Thu, 13 Mar 2014 14:18:52 -0500
 Subject: [PATCH] arm: dts: am335x-bone-common: add
@@ -10,10 +10,10 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 21 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index db4518ef755d..c983caab7d9b 100644
+index 86cdb52dbf8a..db4518ef755d 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -126,6 +126,27 @@
+@@ -105,6 +105,27 @@
  		>;
  	};
  

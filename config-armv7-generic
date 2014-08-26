@@ -418,6 +418,15 @@ CONFIG_MFD_TPS65912_SPI=y
 # CONFIG_MFD_WM831X_SPI is not set
 # CONFIG_MFD_MC13XXX_SPI is not set
 # CONFIG_MFD_PM8921_CORE is not set
+# CONFIG_MFD_DA9052_I2C is not set
+# CONFIG_MFD_DA9055 is not set
+# CONFIG_MFD_88PM800 is not set
+# CONFIG_MFD_88PM805 is not set
+# CONFIG_MFD_PALMAS is not set
+# CONFIG_MFD_TPS80031 is not set
+# CONFIG_TWL4030_CORE is not set
+# CONFIG_TWL6040_CORE is not set
+# 
 
 # Pin stuff
 CONFIG_PINMUX=y
