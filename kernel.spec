@@ -2269,6 +2269,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor tegra updates due to incorrect nvidia kernel config options
+
 * Tue Aug 26 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git0.1
 - Linux v3.17-rc2
 - Fixup ARM MFD options after I2C=y change
