@@ -2269,7 +2269,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+* Tue Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor generic ARMv7 updates
 - Build tegra on both LPAE and general ARMv7 kernels (thank srwarren RHBZ 1110963)
 - Set CMA to 64mb on LPAE kernel (RHBZ 1127000)
