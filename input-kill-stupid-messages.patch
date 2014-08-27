@@ -1,4 +1,4 @@
-From a53ddab3c36f35eff3c5954e0c86ab4244096faf Mon Sep 17 00:00:00 2001
+From be281d27c3a3606a0a87679fb451964e47cd60a7 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Thu, 29 Jul 2010 16:46:31 -0700
 Subject: [PATCH] input: kill stupid messages

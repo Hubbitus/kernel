@@ -1,4 +1,4 @@
-From 89a0b4441bab2988da421dbb013aa927618facba Mon Sep 17 00:00:00 2001
+From 8bc452cd9f94cad31c497959081ca2f44ff200c9 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Fri, 27 Dec 2013 13:14:19 -0600
 Subject: [PATCH] arm: dts: am335x-boneblack: add cpu0 opp points
