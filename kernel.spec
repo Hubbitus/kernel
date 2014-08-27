@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -761,6 +761,9 @@ Patch25132: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 #rhbz 1132666
 Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
+#CVE-2014-{5471,5472} rhbz 1134099 1134101
+Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1481,6 +1484,9 @@ ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
 #rhbz 1132666
 ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
+#CVE-2014-{5471,5472} rhbz 1134099 1134101
+ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2293,6 +2299,10 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 27 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.15.10-201
+- CVE-2014-{5471,5472} isofs: Fix unbounded recursion when processing relocated
+  directories (rhbz 1134099 1134101)
+
 * Wed Aug 27 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Disable streams on via XHCI (rhbz 1132666)
 
