@@ -649,6 +649,9 @@ Patch25121: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 #rhbz 1131551
 Patch25122: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
+#rhbz 1132666
+Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1381,6 +1384,9 @@ ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 #rhbz 1131551
 ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
+
+#rhbz 1132666
+ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2264,6 +2270,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Aug 27 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable streams on via XHCI (rhbz 1132666)
+
 * Tue Aug 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor generic ARMv7 updates
 - Build tegra on both LPAE and general ARMv7 kernels (thank srwarren RHBZ 1110963)
