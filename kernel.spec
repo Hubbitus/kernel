@@ -651,6 +651,9 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 #rhbz 1132368
 Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
+#rhbz 1132666
+Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1386,6 +1389,9 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1132368
 ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
+
+#rhbz 1132666
+ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2270,6 +2276,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Aug 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git1.1
+- Disable streams on via XHCI (rhbz 1132666)
 - Linux v3.17-rc2-9-g68e370289c29
 - Reenable debugging options.
 
