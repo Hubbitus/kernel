@@ -759,6 +759,9 @@ Patch25131: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 #rhbz 1131551
 Patch25132: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
 
+#rhbz 1132666
+Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1475,6 +1478,9 @@ ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
 
 #rhbz 1131551
 ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
+
+#rhbz 1132666
+ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2287,6 +2293,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Wed Aug 27 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable streams on via XHCI (rhbz 1132666)
+
 * Fri Aug 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Drop userns revert patch (rhbz 917708)
 
