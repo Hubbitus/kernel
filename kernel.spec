@@ -765,6 +765,9 @@ Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 #CVE-2014-{5471,5472} rhbz 1134099 1134101
 Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
 
+#rhbz 1132786
+Patch26018: NFSv3-Fix-another-acl-regression.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1487,6 +1490,9 @@ ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 
 #CVE-2014-{5471,5472} rhbz 1134099 1134101
 ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
+
+#rhbz 1132786
+ApplyPatch NFSv3-Fix-another-acl-regression.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2300,6 +2306,7 @@ fi
 #                 ||     ||
 %changelog
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFSv3 ACL regression (rhbz 1132786)
 - Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
 
 * Wed Aug 27 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.15.10-201
