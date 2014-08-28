@@ -2276,6 +2276,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
+
 * Wed Aug 27 2014 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2014-{5471,5472} isofs: Fix unbounded recursion when processing relocated
   directories (rhbz 1134099 1134101)
