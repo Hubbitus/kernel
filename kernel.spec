@@ -654,6 +654,9 @@ Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
 #rhbz 1132666
 Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
 
+#rhbz 1132786
+Patch26018: NFSv3-Fix-another-acl-regression.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1392,6 +1395,9 @@ ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
 #rhbz 1132666
 ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
+
+#rhbz 1132786
+ApplyPatch NFSv3-Fix-another-acl-regression.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2275,6 +2281,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix NFSv3 ACL regression (rhbz 1132786)
+
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git2.1
 - Linux v3.17-rc2-42-gf1bd473f95e0
 - Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
