@@ -1,4 +1,4 @@
-From ce3a7a0782ea5efbff78b755a0b94c28c32870cd Mon Sep 17 00:00:00 2001
+From 0d551caa381d9ac171301de5b84b4bac261c628d Mon Sep 17 00:00:00 2001
 From: Adam Jackson <ajax@redhat.com>
 Date: Wed, 13 Nov 2013 10:17:24 -0500
 Subject: [PATCH] drm/i915: hush check crtc state

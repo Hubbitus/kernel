@@ -1,4 +1,4 @@
-From b141dc019cb4ae85a69ed3426734a7f8a68701d0 Mon Sep 17 00:00:00 2001
+From 995a7066e08c740756da6b53b5cb117fb091c491 Mon Sep 17 00:00:00 2001
 From: Dave Anderson <anderson@redhat.com>
 Date: Tue, 26 Nov 2013 12:42:46 -0500
 Subject: [PATCH] crash-driver

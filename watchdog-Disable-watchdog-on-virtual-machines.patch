@@ -1,4 +1,4 @@
-From 2f49ee1bd94717b5c7f07bbc14b5a452b2cf47f2 Mon Sep 17 00:00:00 2001
+From 998715094cfab4eb230db8206d60dc5f32488e73 Mon Sep 17 00:00:00 2001
 From: Dave Jones <davej@redhat.com>
 Date: Tue, 24 Jun 2014 08:43:34 -0400
 Subject: [PATCH] watchdog: Disable watchdog on virtual machines.

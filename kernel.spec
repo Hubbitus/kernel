@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2275,6 +2275,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git2.1
+- Linux v3.17-rc2-42-gf1bd473f95e0
+- Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
+
 * Wed Aug 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git1.1
 - Disable streams on via XHCI (rhbz 1132666)
 - Linux v3.17-rc2-9-g68e370289c29
