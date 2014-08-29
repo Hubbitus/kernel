@@ -1,4 +1,4 @@
-From e1deafe52a84df3578222bd3caecbcc09f382c57 Mon Sep 17 00:00:00 2001
+From de32208cf27a674b76a2b6aefafbfcf08a63dc5d Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Tue, 31 Dec 2013 11:17:45 -0600
 Subject: [PATCH] arm: dts: am335x-bone-common: enable and use i2c2

@@ -1,4 +1,4 @@
-From 4296d841b871f7ade8eee191e096b965ba8dcf55 Mon Sep 17 00:00:00 2001
+From b44851be03d4f56ad97c7e6b460318f27118e26a Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH] kexec: Disable at runtime if the kernel enforces module

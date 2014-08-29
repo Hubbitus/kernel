@@ -1,4 +1,4 @@
-From 6e014b000a525f396b9c3565826c63642e052df7 Mon Sep 17 00:00:00 2001
+From d227cac448478d6d221c455e16d5df137b79d545 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 25 Aug 2014 12:21:56 +0200
 Subject: [PATCH] xhci: Disable streams on Via XHCI with device-id 0x3432

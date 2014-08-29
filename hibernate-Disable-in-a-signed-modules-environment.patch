@@ -1,4 +1,4 @@
-From a337cd78947a4ad3c40d0a61abcbaed78eccccc3 Mon Sep 17 00:00:00 2001
+From f86106f53045d789de59b5a2ca34685026d12b1a Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 20 Jun 2014 08:53:24 -0400
 Subject: [PATCH] hibernate: Disable in a signed modules environment
