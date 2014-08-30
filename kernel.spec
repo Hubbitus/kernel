@@ -2357,6 +2357,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sun Aug 17 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.10-200.hu.1.bfq.bfs.uksm
+ - 3.15.10-200.hu.1.bfq.bfs.uksm
+
 * Thu Aug 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.15.10-200
 - Linux v3.15.10
 
