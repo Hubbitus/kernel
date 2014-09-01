@@ -1,4 +1,4 @@
-From e227a8b7b0828e257991f920080b8b7b0eb31b7a Mon Sep 17 00:00:00 2001
+From 89c67c189f43693fa8f85155cf1668886c2dea18 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
 Date: Fri, 30 Aug 2013 09:28:51 -0400
 Subject: [PATCH] Add sysrq option to disable secure boot mode

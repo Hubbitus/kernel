@@ -1,4 +1,4 @@
-From e1ed631afca4923db652c932f36a0d846c3a7c1c Mon Sep 17 00:00:00 2001
+From cabc6f250bdbe322b086653b2b4eac8cd797c435 Mon Sep 17 00:00:00 2001
 From: Cong Wang <xiyou.wangcong@gmail.com>
 Date: Sat, 16 Aug 2014 12:36:46 -0700
 Subject: [PATCH] nfs: fix kernel warning when removing proc entry

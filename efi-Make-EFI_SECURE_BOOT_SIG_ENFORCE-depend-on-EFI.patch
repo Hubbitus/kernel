@@ -1,4 +1,4 @@
-From f2b7a4ec63a222b92d6f03f93e927963997032ae Mon Sep 17 00:00:00 2001
+From 03fd7499489bae79cb6a3a791fbb5f72aecb99ac Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
 Subject: [PATCH] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
@@ -12,7 +12,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 46392bfab57e..5bb9b06573a3 100644
+index 8899dc333793..33dfa4ce8c09 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -1566,7 +1566,8 @@ config EFI_MIXED

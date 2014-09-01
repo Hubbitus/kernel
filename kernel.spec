@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -130,7 +130,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -650,12 +650,6 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1132368
 Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
-#rhbz 1132666
-Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#rhbz 1132786
-Patch26018: NFSv3-Fix-another-acl-regression.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1392,12 +1386,6 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1132368
 ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
-#rhbz 1132666
-ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#rhbz 1132786
-ApplyPatch NFSv3-Fix-another-acl-regression.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2281,6 +2269,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc3.git0.1
+- Linux v3.17-rc3
+- Disable debugging options.
+
 * Fri Aug 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc2.git3.1
 - Linux v3.17-rc2-89-g59753a805499
 
