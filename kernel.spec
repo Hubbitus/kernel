@@ -94,8 +94,6 @@ Summary: The Linux kernel
 %define with_debug     %{?_without_debug:     0} %{?!_without_debug:     1}
 # kernel-headers
 %define with_headers   %{?_without_headers:   0} %{?!_without_headers:   1}
-# kernel-modules-extra
-%define with_extra     %{?_without_extra:     0} %{?!_without_extra:     1}
 # perf
 %define with_perf      %{?_without_perf:      0} %{?!_without_perf:      1}
 # tools
@@ -932,9 +930,7 @@ Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{?1:+%{1}}\
 %endif\
 %{expand:%%kernel_devel_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
 %{expand:%%kernel_modules_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
-%if %{with_extra}\
 %{expand:%%kernel_modules_extra_package %{?1:%{1}} %{!?{-n}:%{1}}%{?{-n}:%{-n*}}}\
-%endif\
 %{expand:%%kernel_debuginfo_package %{?1:%{1}}}\
 %{nil}
 
@@ -1707,10 +1703,8 @@ BuildKernel() {
         rm -f modules.{alias*,builtin.bin,dep*,*map,symbols*,devname,softdep}
     popd
 
-%if %{with_extra}
     # Call the modules-extra script to move things around
     %{SOURCE17} $RPM_BUILD_ROOT/lib/modules/$KernelVer %{SOURCE16}
-%endif
 
     #
     # Generate the kernel-core and kernel-modules files lists
@@ -2080,9 +2074,7 @@ fi\
 %define kernel_variant_post(v:r:) \
 %{expand:%%kernel_devel_post %{?-v*}}\
 %{expand:%%kernel_modules_post %{?-v*}}\
-%if %{with_extra}\
 %{expand:%%kernel_modules_extra_post %{?-v*}}\
-%endif\
 %{expand:%%kernel_variant_posttrans %{?-v*}}\
 %{expand:%%post %{?-v*:%{-v*}-}core}\
 %{-r:\
@@ -2243,9 +2235,7 @@ fi
 %{expand:%%files %{?2:%{2}-}devel}\
 %defattr(-,root,root)\
 /usr/src/kernels/%{KVERREL}%{?2:+%{2}}\
-%if %{with_extra}\
 %{expand:%%files %{?2:%{2}-}modules-extra}\
-%endif\
 %defattr(-,root,root)\
 /lib/modules/%{KVERREL}%{?2:+%{2}}/extra\
 %if %{with_debuginfo}\
@@ -2282,6 +2272,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Remove with_extra switch
+
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix NFSv3 ACL regression (rhbz 1132786)
 - Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
