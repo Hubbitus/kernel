@@ -1,4 +1,4 @@
-From 479350536759f64157d2a1ad43d9dad97e12ce83 Mon Sep 17 00:00:00 2001
+From c2bc8f30956ca57912c12dfc939110bb41a23fe1 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Thu, 3 May 2012 20:27:11 +0100
 Subject: [PATCH] ARM: tegra: usb no reset
