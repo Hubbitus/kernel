@@ -1,4 +1,4 @@
-From f415fb4f33f6dd3dc49b927500dc5d5e73158466 Mon Sep 17 00:00:00 2001
+From 80d48cbf9f5ed2b5d6bd50432f424510379d8c74 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
 Subject: [PATCH] KEYS: Add a system blacklist keyring

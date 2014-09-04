@@ -1,4 +1,4 @@
-From 477a4e0a9f9f90895c12358f0604f63746786c2c Mon Sep 17 00:00:00 2001
+From 58548a5bd385bfbfb33d5bbec7bbaa14f43c39aa Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Fri, 11 Jul 2014 00:10:56 +0100
 Subject: [PATCH] arm: i.MX6 Utilite device dtb

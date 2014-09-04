@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -648,6 +648,9 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1132368
 Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
+
+#rhbz 1134969
+Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1382,6 +1385,9 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1132368
 ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
+
+#rhbz 1134969
+ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2259,6 +2265,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc3.git2.1
+- Linux v3.17-rc3-63-g44bf091f5089
+- Enable kexec bzImage signature verification (from Vivek Goyal)
+- Add support for Wacom Cintiq Companion from Benjamin Tissoires (rhbz 1134969)
+
 * Wed Sep 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc3.git1.1
 - Linux v3.17-rc3-16-g955837d8f50e
 - Reenable debugging options.

@@ -1,4 +1,4 @@
-From 9b6cd1c7dc2e48b990c8afcc108ba42ed948864d Mon Sep 17 00:00:00 2001
+From 486f9c971bb10d73ec1b8f88a6a0214a4c23bf60 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Thu, 13 Mar 2014 14:18:52 -0500
 Subject: [PATCH] arm: dts: am335x-bone-common: add
