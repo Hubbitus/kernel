@@ -656,6 +656,9 @@ Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.
 #rhbz 1132786
 Patch26018: NFSv3-Fix-another-acl-regression.patch
 
+#rhbz 1134969
+Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1395,6 +1398,9 @@ ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.p
 
 #rhbz 1132786
 ApplyPatch NFSv3-Fix-another-acl-regression.patch
+
+#rhbz 1134969
+ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2272,6 +2278,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for Wacom Cintiq Companion from Benjamin Tissoires (rhbz 1134969)
+
 * Tue Sep 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Remove with_extra switch
 
