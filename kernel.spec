@@ -768,6 +768,9 @@ Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.
 #rhbz 1132786
 Patch26018: NFSv3-Fix-another-acl-regression.patch
 
+#rhbz 1134969
+Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1493,6 +1496,9 @@ ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.p
 
 #rhbz 1132786
 ApplyPatch NFSv3-Fix-another-acl-regression.patch
+
+#rhbz 1134969
+ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2305,6 +2311,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for Wacom Cintiq Companion from Benjamin Tissoires (rhbz 1134969)
+
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix NFSv3 ACL regression (rhbz 1132786)
 - Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)

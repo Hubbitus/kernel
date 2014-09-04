@@ -1,0 +1,46 @@
+From bdfffc320102278edac2db5a397ffbfd89faeab3 Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Wed, 3 Sep 2014 15:43:25 -0400
+Subject: [PATCH] Input: wacom: Add support for the Cintiq Companion
+
+The Wacom Cintiq Companion shares the same sensor than the Cintiq
+Companion Hybrid, with the exception of the different PIDs.
+
+Bugzilla: 1134969
+Upstream-status: Queued for 3.18
+
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+---
+ drivers/input/tablet/wacom_wac.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/input/tablet/wacom_wac.c b/drivers/input/tablet/wacom_wac.c
+index e73cf2c71f35..7f6caf8c85fb 100644
+--- a/drivers/input/tablet/wacom_wac.c
++++ b/drivers/input/tablet/wacom_wac.c
+@@ -2332,6 +2332,13 @@ static const struct wacom_features wacom_features_0x0307 =
+ static const struct wacom_features wacom_features_0x0309 =
+ 	{ "Wacom ISDv5 309", .type = WACOM_24HDT, /* Touch */
+ 	  .oVid = USB_VENDOR_ID_WACOM, .oPid = 0x0307, .touch_max = 10 };
++static const struct wacom_features wacom_features_0x030A =
++        { "Wacom ISDv5 30A", WACOM_PKGLEN_INTUOS,  59352,  33648, 2047,
++          63, CINTIQ_HYBRID, WACOM_INTUOS3_RES, WACOM_INTUOS3_RES, 200, 200,
++	  .oVid = USB_VENDOR_ID_WACOM, .oPid = 0x30C };
++static const struct wacom_features wacom_features_0x030C =
++	{ "Wacom ISDv5 30C", .type = WACOM_24HDT, /* Touch */
++	  .oVid = USB_VENDOR_ID_WACOM, .oPid = 0x030A, .touch_max = 10 };
+ 
+ #define USB_DEVICE_WACOM(prod)					\
+ 	USB_DEVICE(USB_VENDOR_ID_WACOM, prod),			\
+@@ -2478,6 +2485,8 @@ const struct usb_device_id wacom_ids[] = {
+ 	{ USB_DEVICE_WACOM(0xFA) },
+ 	{ USB_DEVICE_WACOM(0xFB) },
+ 	{ USB_DEVICE_WACOM(0x0307) },
++	{ USB_DEVICE_WACOM(0x030A) },
++        { USB_DEVICE_DETAILED(0x030C, USB_CLASS_HID, 0, 0) },
+ 	{ USB_DEVICE_DETAILED(0x0309, USB_CLASS_HID, 0, 0) },
+ 	{ USB_DEVICE_LENOVO(0x6004) },
+ 	{ }
+-- 
+1.9.3
+
