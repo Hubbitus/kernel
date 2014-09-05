@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2265,6 +2265,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc3.git3.1
+- Linux v3.17-rc3-94-gb7fece1be8b1
+
 * Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc3.git2.1
 - Linux v3.17-rc3-63-g44bf091f5089
 - Enable kexec bzImage signature verification (from Vivek Goyal)

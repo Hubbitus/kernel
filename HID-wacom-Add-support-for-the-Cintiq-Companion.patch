@@ -1,4 +1,4 @@
-From 129415b6c574aa4c3e04b0e623c09d7c4097c56c Mon Sep 17 00:00:00 2001
+From 79ebffd4f0a66c63430debbc9e5bc4f5b2378a17 Mon Sep 17 00:00:00 2001
 From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Date: Wed, 3 Sep 2014 15:43:25 -0400
 Subject: [PATCH] HID: wacom: Add support for the Cintiq Companion
