@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -632,29 +632,8 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117942
-Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
-
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 Patch25119: namespaces-remount-fixes.patch
-
-#rhbz 1121288
-Patch25120: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
-
-#rhbz 1128472
-Patch25121: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
-
-#rhbz 1131551
-Patch25122: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
-
-#rhbz 1132666
-Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#CVE-2014-{5471,5472} rhbz 1134099 1134101
-Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
-
-#rhbz 1132786
-Patch26018: NFSv3-Fix-another-acl-regression.patch
 
 #rhbz 1134969
 Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
@@ -1375,29 +1354,8 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117942
-ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
-
 #CVE-2014-{5206,5207} rhbz 1129662 1129669
 ApplyPatch namespaces-remount-fixes.patch
-
-#rhbz 1121288
-ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
-
-#rhbz 1128472
-ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
-
-#rhbz 1131551
-ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
-
-#rhbz 1132666
-ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#CVE-2014-{5471,5472} rhbz 1134099 1134101
-ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
-
-#rhbz 1132786
-ApplyPatch NFSv3-Fix-another-acl-regression.patch
 
 #rhbz 1134969
 ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
@@ -2278,6 +2236,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.2-300
+- Linux v3.16.2
+
 * Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for Wacom Cintiq Companion from Benjamin Tissoires (rhbz 1134969)
 
