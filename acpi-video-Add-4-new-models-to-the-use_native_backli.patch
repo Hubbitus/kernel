@@ -1,4 +1,4 @@
-From 2bf95b9ebff45a50f9c31fffd256510d0667abd8 Mon Sep 17 00:00:00 2001
+From 0bfb15091ed3660f1616c4c9b13443060bd1a340 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Wed, 30 Apr 2014 15:24:19 +0200
 Subject: [PATCH] acpi-video: Add 4 new models to the use_native_backlight dmi
@@ -21,10 +21,10 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 32 insertions(+)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index a9fa83829ee4..bef6c393e8a0 100644
+index 2e0236af78b9..df1626d2ba10 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
-@@ -550,6 +550,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -556,6 +556,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  		},
  	},
  	{
@@ -39,7 +39,7 @@ index a9fa83829ee4..bef6c393e8a0 100644
  	.callback = video_set_use_native_backlight,
  	.ident = "Thinkpad Helix",
  	.matches = {
-@@ -591,6 +599,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -597,6 +605,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  	},
  	{
  	 .callback = video_set_use_native_backlight,
@@ -54,7 +54,7 @@ index a9fa83829ee4..bef6c393e8a0 100644
  	 .ident = "Acer Aspire V5-431",
  	 .matches = {
  		DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
-@@ -638,6 +654,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -644,6 +660,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  		},
  	},
  	{
@@ -69,7 +69,7 @@ index a9fa83829ee4..bef6c393e8a0 100644
  	.callback = video_set_use_native_backlight,
  	.ident = "HP ProBook 4340s",
  	.matches = {
-@@ -714,6 +738,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -720,6 +744,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  	},
  	{
  	.callback = video_set_use_native_backlight,

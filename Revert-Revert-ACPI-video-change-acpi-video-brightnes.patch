@@ -1,4 +1,4 @@
-From 2c9e38fdcca04ddca960042b90e1da0e099c4113 Mon Sep 17 00:00:00 2001
+From aa0bf83ad06f0e164b099f9df6d78a288ba7c1f8 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Mon, 28 Jul 2014 12:59:48 -0400
 Subject: [PATCH] Revert "Revert "ACPI / video: change acpi-video
@@ -29,7 +29,7 @@ index 5ae8608ca9f5..8ffa8f91eeb2 100644
  	virtio_mmio.device=
  			[VMMIO] Memory mapped virtio (platform) device.
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index 826884392e6b..a9fa83829ee4 100644
+index fcbda105616e..2e0236af78b9 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -68,7 +68,7 @@ MODULE_AUTHOR("Bruno Ducrot");
