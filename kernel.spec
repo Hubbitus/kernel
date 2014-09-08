@@ -228,7 +228,7 @@ Summary: The Linux kernel
 
 %if %{with_vdso_install}
 # These arches install vdso/ directories.
-%define vdso_arches %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x aarch64 ppc64le
+%define vdso_arches %{all_x86} x86_64 ppc %{power64} s390 s390x aarch64
 %endif
 
 # Overrides for generic default options
@@ -253,12 +253,9 @@ Summary: The Linux kernel
 %endif
 
 # bootwrapper is only on ppc
-%ifnarch ppc ppc64 ppc64p7 ppc64le
+# sparse blows up on ppc
+%ifnarch ppc %{power64}
 %define with_bootwrapper 0
-%endif
-
-# sparse blows up on ppc64 and sparc64
-%ifarch ppc64 ppc ppc64p7 ppc64le
 %define with_sparse 0
 %endif
 
@@ -280,25 +277,19 @@ Summary: The Linux kernel
 %define kernel_image arch/x86/boot/bzImage
 %endif
 
+%ifarch %{power64}
+%define asmarch powerpc
+%define hdrarch powerpc
+%define image_install_path boot
+%define make_target vmlinux
+%define kernel_image vmlinux
+%define kernel_image_elf 1
 %ifarch ppc64 ppc64p7
-%define asmarch powerpc
-%define hdrarch powerpc
 %define all_arch_configs kernel-%{version}-ppc64*.config
-%define image_install_path boot
-%define make_target vmlinux
-%define kernel_image vmlinux
-%define kernel_image_elf 1
 %endif
-
 %ifarch ppc64le
-%define asmarch powerpc
-%define hdrarch powerpc
 %define all_arch_configs kernel-%{version}-ppc64le.config
-%define image_install_path boot
-%define make_target vmlinux
-%define kernel_image vmlinux
-%define kernel_image_elf 1
-%define with_tools 0
+%endif
 %endif
 
 %ifarch s390x
@@ -386,7 +377,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 ppc ppc64 ppc64p7 %{arm} aarch64 ppc64le
+%define cpupowerarchs %{ix86} x86_64 ppc %{power64} %{arm} aarch64 
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -609,6 +600,8 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 
 Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 
+# PPC
+Patch18000: ppc64-fixtools.patch
 # ARM64
 
 # ARMv7
@@ -1240,6 +1233,8 @@ ApplyOptionalPatch upstream-reverts.patch -R
 # x86(-64)
 ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
+# PPC
+ApplyPatch ppc64-fixtools.patch
 # ARM64
 
 #
@@ -1619,7 +1614,7 @@ BuildKernel() {
     fi
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*.o
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*/*.o
-%ifarch ppc ppc64 ppc64p7
+%ifarch ppc %{power64}
     cp -a --parents arch/powerpc/lib/crtsavres.[So] $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
 %endif
     if [ -d arch/%{asmarch}/include ]; then
@@ -2265,6 +2260,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep  8 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build tools on ppc64le (rhbz 1138884)
+- Some minor ppc64 cleanups
+
 * Mon Sep 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git0.1
 - Linux v3.17-rc4
 - Disable debugging options.
