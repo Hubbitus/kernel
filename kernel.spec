@@ -86,8 +86,6 @@ Summary: The Linux kernel
 #
 # standard kernel
 %define with_up        %{?_without_up:        0} %{?!_without_up:        1}
-# kernel-smp (only valid for ppc 32-bit)
-%define with_smp       %{?_without_smp:       0} %{?!_without_smp:       1}
 # kernel PAE (only valid for i686 (PAE) and ARM (lpae))
 %define with_pae       %{?_without_pae:       0} %{?!_without_pae:       1}
 # kernel-debug
@@ -109,8 +107,6 @@ Summary: The Linux kernel
 #
 # Only build the base kernel (--with baseonly):
 %define with_baseonly  %{?_with_baseonly:     1} %{?!_with_baseonly:     0}
-# Only build the smp kernel (--with smponly):
-%define with_smponly   %{?_with_smponly:      1} %{?!_with_smponly:      0}
 # Only build the pae kernel (--with paeonly):
 %define with_paeonly   %{?_with_paeonly:      1} %{?!_with_paeonly:      0}
 # Only build the debug kernel (--with dbgonly):
@@ -193,14 +189,6 @@ Summary: The Linux kernel
 
 # if requested, only build base kernel
 %if %{with_baseonly}
-%define with_smp 0
-%define with_pae 0
-%define with_debug 0
-%endif
-
-# if requested, only build smp kernel
-%if %{with_smponly}
-%define with_up 0
 %define with_pae 0
 %define with_debug 0
 %endif
@@ -208,7 +196,6 @@ Summary: The Linux kernel
 # if requested, only build pae kernel
 %if %{with_paeonly}
 %define with_up 0
-%define with_smp 0
 %define with_debug 0
 %endif
 
@@ -218,7 +205,6 @@ Summary: The Linux kernel
 %define with_up 0
 %define with_pae 0
 %endif
-%define with_smp 0
 %define with_pae 0
 %define with_tools 0
 %define with_perf 0
@@ -228,15 +214,10 @@ Summary: The Linux kernel
 
 %if %{with_vdso_install}
 # These arches install vdso/ directories.
-%define vdso_arches %{all_x86} x86_64 ppc %{power64} s390 s390x aarch64
+%define vdso_arches %{all_x86} x86_64 %{power64} s390 s390x aarch64
 %endif
 
 # Overrides for generic default options
-
-# only ppc needs a separate smp kernel
-%ifnarch ppc 
-%define with_smp 0
-%endif
 
 # don't do debug builds on anything but i686 and x86_64
 %ifnarch i686 x86_64
@@ -254,7 +235,7 @@ Summary: The Linux kernel
 
 # bootwrapper is only on ppc
 # sparse blows up on ppc
-%ifnarch ppc %{power64}
+%ifnarch %{power64}
 %define with_bootwrapper 0
 %define with_sparse 0
 %endif
@@ -300,16 +281,6 @@ Summary: The Linux kernel
 %define make_target image
 %define kernel_image arch/s390/boot/image
 %define with_tools 0
-%endif
-
-%ifarch ppc
-%define asmarch powerpc
-%define hdrarch powerpc
-%define all_arch_configs kernel-%{version}-ppc{-,.}*config
-%define image_install_path boot
-%define make_target vmlinux
-%define kernel_image vmlinux
-%define kernel_image_elf 1
 %endif
 
 %ifarch %{arm}
@@ -363,7 +334,6 @@ Summary: The Linux kernel
 
 %ifarch %nobuildarches
 %define with_up 0
-%define with_smp 0
 %define with_pae 0
 %define with_debuginfo 0
 %define with_perf 0
@@ -377,7 +347,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 ppc %{power64} %{arm} aarch64 
+%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64 
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -395,7 +365,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: %{all_x86} x86_64 ppc ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
+ExclusiveArch: %{all_x86} x86_64 ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
 Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
@@ -449,7 +419,6 @@ Source90: filter-x86_64.sh
 Source91: filter-armv7hl.sh
 Source92: filter-i686.sh
 Source93: filter-aarch64.sh
-Source94: filter-ppc.sh
 Source95: filter-ppc64.sh
 Source96: filter-ppc64le.sh
 Source97: filter-s390x.sh
@@ -471,8 +440,6 @@ Source32: config-x86-32-generic
 Source40: config-x86_64-generic
 
 Source50: config-powerpc-generic
-Source51: config-powerpc32-generic
-Source52: config-powerpc32-smp
 Source53: config-powerpc64
 Source54: config-powerpc64p7
 Source55: config-powerpc64le
@@ -926,15 +893,6 @@ Provides: kernel-%{?1:%{1}-}core-uname-r = %{KVERREL}%{?1:+%{1}}\
 
 # Now, each variant package.
 
-%define variant_summary The Linux kernel compiled for SMP machines
-%kernel_variant_package -n SMP smp
-%description smp-core
-This package includes a SMP version of the Linux kernel. It is
-required only on machines with two or more CPUs as well as machines with
-hyperthreading technology.
-
-Install the kernel-smp package if your machine uses two or more CPUs.
-
 %ifnarch armv7hl
 %define variant_summary The Linux kernel compiled for PAE capable machines
 %kernel_variant_package %{pae}
@@ -994,13 +952,6 @@ input and output, etc.
 %if %{with_baseonly}
 %if !%{with_up}%{with_pae}
 echo "Cannot build --with baseonly, up build is disabled"
-exit 1
-%endif
-%endif
-
-%if %{with_smponly}
-%if !%{with_smp}
-echo "Cannot build --with smponly, smp build is disabled"
 exit 1
 %endif
 %endif
@@ -1615,7 +1566,7 @@ BuildKernel() {
     fi
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*.o
     rm -f $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/scripts/*/*.o
-%ifarch ppc %{power64}
+%ifarch %{power64}
     cp -a --parents arch/powerpc/lib/crtsavres.[So] $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
 %endif
     if [ -d arch/%{asmarch}/include ]; then
@@ -1796,10 +1747,6 @@ BuildKernel %make_target %kernel_image %{pae}
 
 %if %{with_up}
 BuildKernel %make_target %kernel_image
-%endif
-
-%if %{with_smp}
-BuildKernel %make_target %kernel_image smp
 %endif
 
 %global perf_make \
@@ -2085,9 +2032,6 @@ fi}\
 %kernel_variant_preun
 %kernel_variant_post -r kernel-smp
 
-%kernel_variant_preun smp
-%kernel_variant_post -v smp
-
 %kernel_variant_preun %{pae}
 %kernel_variant_post -v %{pae} -r (kernel|kernel-smp)
 
@@ -2242,7 +2186,6 @@ fi
 
 
 %kernel_variant_files %{with_up}
-%kernel_variant_files %{with_smp} smp
 %kernel_variant_files %{with_debug} debug
 %kernel_variant_files %{with_pae} %{pae}
 %kernel_variant_files %{with_pae_debug} %{pae}debug
