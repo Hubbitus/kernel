@@ -1,4 +1,4 @@
-From e08a4c7e55340c8e7f184510e6663c64e642ed0c Mon Sep 17 00:00:00 2001
+From 97f499324e8f5aeaf9fb1c9c565bd637b9cbc137 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Thu, 29 Jul 2010 16:46:31 -0700
 Subject: [PATCH] silence fbcon logo

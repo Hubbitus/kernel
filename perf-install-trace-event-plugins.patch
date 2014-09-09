@@ -1,4 +1,4 @@
-From 8b46543b65371829ddaa0417f7238e5225b7c30b Mon Sep 17 00:00:00 2001
+From dc22e4267fc1d0add0c5fdcb652bc3ead27f1835 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kmcmarti@redhat.com>
 Date: Mon, 2 Jun 2014 15:11:01 -0400
 Subject: [PATCH] perf: install trace-event plugins

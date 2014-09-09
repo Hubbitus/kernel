@@ -1,4 +1,4 @@
-From dc642156b393f457b40655d6e76dd2aff1189020 Mon Sep 17 00:00:00 2001
+From 2ce63af19b2cbf06bba9a9955b88d3e2f1b9e881 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot

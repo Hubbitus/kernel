@@ -1,4 +1,4 @@
-From a8754f8fa00e10c8f574ccc464b5c2e93318f80a Mon Sep 17 00:00:00 2001
+From 15c7f26845d2fe4f9a1b15ad4508905b5d9db5cb Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH] efi: Disable secure boot if shim is in insecure mode

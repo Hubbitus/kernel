@@ -1,4 +1,4 @@
-From 41f86e227f32497c818fe6dd5facdd709b447713 Mon Sep 17 00:00:00 2001
+From 1b82a00460fcd1da07fb8cbdec2f5dfc62dfb8e1 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
 Subject: [PATCH] ACPI: Limit access to custom_method
