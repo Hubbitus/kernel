@@ -30,7 +30,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_DEBUG_STACK_USAGE is not set/CONFIG_DEBUG_STACK_USAGE=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SLAB is not set/CONFIG_DEBUG_SLAB=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_MUTEXES is not set/CONFIG_DEBUG_MUTEXES=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_WW_MUTEX_SLOWPATH is not set/CONFIG_DEBUG_WW_MUTEX_SLOWPATH=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_RT_MUTEXES is not set/CONFIG_DEBUG_RT_MUTEXES=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_LOCK_ALLOC is not set/CONFIG_DEBUG_LOCK_ALLOC=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_LOCK_TORTURE_TEST is not set/CONFIG_LOCK_TORTURE_TEST=m/' config-nodebug
