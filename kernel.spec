@@ -655,6 +655,11 @@ Patch31010: 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 # https://bugzilla.kernel.org/show_bug.cgi?id=67921
 Patch31011: baytrail_gpio_quirk_v3.patch
 
+# Update name of audio firmware file
+# http://comments.gmane.org/gmane.linux.alsa.devel/126117
+# Upstream 3.17
+Patch31012: ASoC-Intel-update-baytrail-adsp-firmware-name.patch
+
 # END OF AWB PATCH DEFINITIONS
 
 # END OF PATCH DEFINITIONS
@@ -1395,6 +1400,8 @@ ApplyPatch x86-new-Intel-Atom-SoC-power-management-controller-driver.patch
 ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 # Doesn't apply cleanly to 3.16
 #ApplyPatch baytrail_gpio_quirk_v3.patch
+
+ApplyPatch ASoC-Intel-update-baytrail-adsp-firmware-name.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
 
