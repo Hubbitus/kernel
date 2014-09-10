@@ -629,6 +629,9 @@ Patch25119: namespaces-remount-fixes.patch
 #rhbz 1134969
 Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
+# CVE-2014-3631 rhbz 1116347
+Patch26020: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1350,6 +1353,9 @@ ApplyPatch namespaces-remount-fixes.patch
 
 #rhbz 1134969
 ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
+
+# CVE-2014-3631 rhbz 1116347
+ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2227,6 +2233,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3631 Add patch to fix oops on keyring gc (rhbz 1116347)
+
 * Mon Sep  8 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build tools on ppc64le (rhbz 1138884)
 - Some minor ppc64 cleanups
