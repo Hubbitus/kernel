@@ -1,4 +1,4 @@
-From cdd9ed19953df0561de14f4a76d531f74b30b317 Mon Sep 17 00:00:00 2001
+From 81373f60218537d4b7f03077e74394059bdaacc4 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Mon, 28 Jul 2014 12:59:48 -0400
 Subject: [PATCH] Revert "Revert "ACPI / video: change acpi-video

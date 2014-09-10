@@ -1,4 +1,4 @@
-From 7457a804e044fc513d15da6d6a1a14b852680b6b Mon Sep 17 00:00:00 2001
+From 0aa239528b0bd13d924a0415716ad7acd10096e0 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
 Subject: [PATCH] PCI: Lock down BAR access when module security is enabled

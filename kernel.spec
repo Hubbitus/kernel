@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -611,6 +611,9 @@ Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
 #rhbz 1134969
 Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
+
+#rhbz 1116347
+Patch26017: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1334,6 +1337,9 @@ ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
 
 #rhbz 1134969
 ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
+
+#rhbz 1116347
+ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2203,6 +2209,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git2.1
+- Linux v3.17-rc4-158-ge874a5fe3efa
+- Add patch to fix oops on keyring gc (rhbz 1116347)
+
 * Tue Sep 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git1.1
 - Linux v3.17-rc4-140-g8c68face5548
 - Reenable debugging options.

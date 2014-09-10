@@ -1,4 +1,4 @@
-From 251915645afe8d96605d74e9168b94749c48dbcf Mon Sep 17 00:00:00 2001
+From fa83c1b01f1764a7a2c22153c942470526a2d6ba Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Fri, 10 Feb 2012 14:56:13 -0500
 Subject: [PATCH] scsi: sd_revalidate_disk prevent NULL ptr deref
