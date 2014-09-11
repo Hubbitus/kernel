@@ -716,6 +716,11 @@ Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 #CVE-2014-3631 rhbz 1116347
 Patch26020: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
+#rhbz 1110011
+Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
+Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
+Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1399,6 +1404,11 @@ ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 #CVE-2014-3631 rhbz 1116347
 ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
+
+#rhbz 1110011
+ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
+ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
+ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2218,6 +2228,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for touchpad in Asus X450 and X550 (rhbz 1110011)
+
 * Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3631 Add patch to fix oops on keyring gc (rhbz 1116347)
 
