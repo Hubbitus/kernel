@@ -1,4 +1,4 @@
-From 1ba3576c5396f24b860cb26f59f86c23160527f0 Mon Sep 17 00:00:00 2001
+From 53b8698d406d7952fb5e11f78ea0189176388927 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Wed, 6 Feb 2013 09:57:47 -0500
 Subject: [PATCH] ath9k: rx dma stop check

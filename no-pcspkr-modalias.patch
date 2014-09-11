@@ -1,4 +1,4 @@
-From 3ab58afed04ef5c2aaf938133f6f5208611ecea4 Mon Sep 17 00:00:00 2001
+From 0c1ad86140d76d51b5961cd463d8823ba54fa513 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Thu, 29 Jul 2010 16:46:31 -0700
 Subject: [PATCH] no pcspkr modalias

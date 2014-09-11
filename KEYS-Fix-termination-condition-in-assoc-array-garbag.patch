@@ -1,4 +1,4 @@
-From 11646ff9e6874d205ab92af605db6b90fbe214d1 Mon Sep 17 00:00:00 2001
+From 0d0f2dc88164691b2e418f2c390ac93cbd348f2c Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 9 Sep 2014 19:12:32 +0100
 Subject: [PATCH] KEYS: Fix termination condition in assoc array garbage
