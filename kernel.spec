@@ -2219,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable ACPI_I2C_OPREGION
+
 * Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git3.1
 - Linux v3.17-rc4-168-g7ec62d421bdf
 - Add support for touchpad in Asus X450 and X550 (rhbz 1110011)
