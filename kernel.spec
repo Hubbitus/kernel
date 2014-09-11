@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2233,7 +2233,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.2-301
 - CVE-2014-3631 Add patch to fix oops on keyring gc (rhbz 1116347)
 
 * Mon Sep  8 2014 Peter Robinson <pbrobinson@fedoraproject.org>
