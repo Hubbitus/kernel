@@ -1,4 +1,4 @@
-From 4ab16f30317966f892342e8821a6dc26070d1a06 Mon Sep 17 00:00:00 2001
+From 9f60e7ea169aff31a737ef1be3ed8cfe11eab8d3 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Fri, 27 Jun 2014 18:50:33 +0200
 Subject: [PATCH] psmouse: Add support for detecting FocalTech PS/2 touchpads
@@ -119,7 +119,7 @@ index 000000000000..0d0fc49451fe
 +
 +#endif
 diff --git a/drivers/input/mouse/psmouse-base.c b/drivers/input/mouse/psmouse-base.c
-index bc1bc2653f15..0730209cddb0 100644
+index 02e68c3008a3..2c8c8e2172a2 100644
 --- a/drivers/input/mouse/psmouse-base.c
 +++ b/drivers/input/mouse/psmouse-base.c
 @@ -35,6 +35,7 @@
@@ -130,7 +130,7 @@ index bc1bc2653f15..0730209cddb0 100644
  
  #define DRIVER_DESC	"PS/2 mouse driver"
  
-@@ -720,6 +721,13 @@ static int psmouse_extensions(struct psmouse *psmouse,
+@@ -722,6 +723,13 @@ static int psmouse_extensions(struct psmouse *psmouse,
  {
  	bool synaptics_hardware = false;
  
@@ -144,7 +144,7 @@ index bc1bc2653f15..0730209cddb0 100644
  /*
   * We always check for lifebook because it does not disturb mouse
   * (it only checks DMI information).
-@@ -871,6 +879,8 @@ static int psmouse_extensions(struct psmouse *psmouse,
+@@ -873,6 +881,8 @@ static int psmouse_extensions(struct psmouse *psmouse,
  		}
  	}
  

@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2219,6 +2219,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git4.1
+- Linux v3.17-rc4-244-g5874cfed0b04
+
 * Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable ACPI_I2C_OPREGION
 

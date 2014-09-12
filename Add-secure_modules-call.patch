@@ -1,4 +1,4 @@
-From 908980155054138fcc42a3ecbb93c9d5edab1706 Mon Sep 17 00:00:00 2001
+From 3a2e996725c790c4a7db13246c312f3f5ed085e7 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH] Add secure_modules() call
