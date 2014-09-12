@@ -721,6 +721,9 @@ Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
+#CVE-2014-3181 rhbz 1141179 1141173
+Patch26024: HID-magicmouse-sanity-check-report-size-in-raw_event.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1409,6 +1412,9 @@ ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
+
+#CVE-2014-3181 rhbz 1141179 1141173
+ApplyPatch HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2228,6 +2234,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3181 HID: OOB write in magicmouse driver (rhbz 1141173 1141179)
+
 * Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for touchpad in Asus X450 and X550 (rhbz 1110011)
 
