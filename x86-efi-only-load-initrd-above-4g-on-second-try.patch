@@ -1,0 +1,79 @@
+From 47226ad4f4cfd1e91ded7f2ec42f83ff1c624663 Mon Sep 17 00:00:00 2001
+From: Yinghai Lu <yinghai@kernel.org>
+Date: Wed, 3 Sep 2014 21:50:07 -0700
+Subject: x86/efi: Only load initrd above 4g on second try
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Mantas found that after commit 4bf7111f5016 ("x86/efi: Support initrd
+loaded above 4G"), the kernel freezes at the earliest possible moment
+when trying to boot via UEFI on Asus laptop.
+
+Revert to old way to load initrd under 4G on first try, second try will
+use above 4G buffer when initrd is too big and does not fit under 4G.
+
+[ The cause of the freeze appears to be a firmware bug when reading
+  file data into buffers above 4GB, though the exact reason is unknown.
+  Mantas reports that the hang can be avoid if the file size is a
+  multiple of 512 bytes, but I've seen some ASUS firmware simply
+  corrupting the file data rather than freezing.
+
+  Laszlo fixed an issue in the upstream EDK2 DiskIO code in Aug 2013
+  which may possibly be related, commit 4e39b75e ("MdeModulePkg/DiskIoDxe:
+  fix source/destination pointer of overrun transfer").
+
+  Whatever the cause, it's unlikely that a fix will be forthcoming
+  from the vendor, hence the workaround - Matt ]
+
+Cc: Laszlo Ersek <lersek@redhat.com>
+Reported-by: Mantas Mikulėnas <grawity@gmail.com>
+Reported-by: Harald Hoyer <harald@redhat.com>
+Tested-by: Anders Darander <anders@chargestorm.se>
+Tested-by: Calvin Walton <calvin.walton@kepstin.ca>
+Signed-off-by: Yinghai Lu <yinghai@kernel.org>
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index f277184..dca9842 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -1032,7 +1032,6 @@ struct boot_params *make_boot_params(struct efi_config *c)
+ 	int i;
+ 	unsigned long ramdisk_addr;
+ 	unsigned long ramdisk_size;
+-	unsigned long initrd_addr_max;
+ 
+ 	efi_early = c;
+ 	sys_table = (efi_system_table_t *)(unsigned long)efi_early->table;
+@@ -1095,15 +1094,20 @@ struct boot_params *make_boot_params(struct efi_config *c)
+ 
+ 	memset(sdt, 0, sizeof(*sdt));
+ 
+-	if (hdr->xloadflags & XLF_CAN_BE_LOADED_ABOVE_4G)
+-		initrd_addr_max = -1UL;
+-	else
+-		initrd_addr_max = hdr->initrd_addr_max;
+-
+ 	status = handle_cmdline_files(sys_table, image,
+ 				      (char *)(unsigned long)hdr->cmd_line_ptr,
+-				      "initrd=", initrd_addr_max,
++				      "initrd=", hdr->initrd_addr_max,
+ 				      &ramdisk_addr, &ramdisk_size);
++
++	if (status != EFI_SUCCESS &&
++	    hdr->xloadflags & XLF_CAN_BE_LOADED_ABOVE_4G) {
++		efi_printk(sys_table, "Trying to load files to higher address\n");
++		status = handle_cmdline_files(sys_table, image,
++				      (char *)(unsigned long)hdr->cmd_line_ptr,
++				      "initrd=", -1UL,
++				      &ramdisk_addr, &ramdisk_size);
++	}
++
+ 	if (status != EFI_SUCCESS)
+ 		goto fail2;
+ 	hdr->ramdisk_image = ramdisk_addr & 0xffffffff;
+-- 
+cgit v0.10.1
+
+
