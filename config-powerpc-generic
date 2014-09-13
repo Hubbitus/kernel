@@ -61,7 +61,6 @@ CONFIG_CAPI_EICON=y
 
 CONFIG_NVRAM=y
 
-# CONFIG_PCMCIA_M8XX is not set
 # CONFIG_SCSI_AHA1542 is not set
 # CONFIG_SCSI_IN2000 is not set
 # CONFIG_SCSI_IPS is not set
