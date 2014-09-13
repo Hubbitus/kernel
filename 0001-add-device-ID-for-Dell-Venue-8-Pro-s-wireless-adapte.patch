@@ -1,0 +1,24 @@
+From 69968772071bb8632a57f42ec77a3acdddbe74d7 Mon Sep 17 00:00:00 2001
+From: Adam Williamson <awilliam@redhat.com>
+Date: Mon, 14 Apr 2014 16:05:32 -0700
+Subject: [PATCH] add device ID for Dell Venue 8 Pro's wireless adapter
+
+---
+ drivers/net/wireless/ath/ath6kl/sdio.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/wireless/ath/ath6kl/sdio.c b/drivers/net/wireless/ath/ath6kl/sdio.c
+index 7126bdd..f403ebb 100644
+--- a/drivers/net/wireless/ath/ath6kl/sdio.c
++++ b/drivers/net/wireless/ath/ath6kl/sdio.c
+@@ -1403,6 +1403,7 @@ static const struct sdio_device_id ath6kl_sdio_devices[] = {
+ 	{SDIO_DEVICE(MANUFACTURER_CODE, (MANUFACTURER_ID_AR6003_BASE | 0x1))},
+ 	{SDIO_DEVICE(MANUFACTURER_CODE, (MANUFACTURER_ID_AR6004_BASE | 0x0))},
+ 	{SDIO_DEVICE(MANUFACTURER_CODE, (MANUFACTURER_ID_AR6004_BASE | 0x1))},
++	{SDIO_DEVICE(MANUFACTURER_CODE, (MANUFACTURER_ID_AR6004_BASE | 0x18))},
+ 	{},
+ };
+ 
+-- 
+1.9.0
+
