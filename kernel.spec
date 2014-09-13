@@ -628,36 +628,12 @@ Patch30000: kernel-arm64.patch
 
 # AWB PATCH DEFINITIONS (BAYTRAIL)
 
-# Fixes shutdown and reboot, without quirks
-# https://bugzilla.kernel.org/show_bug.cgi?id=70931
-# https://patchwork.kernel.org/patch/3787341/
-Patch31000: x86-new-Intel-Atom-SoC-power-management-controller-driver.patch
-
-# Battery status support patch series from Lan Tianyu
-# https://bugzilla.kernel.org/show_bug.cgi?id=69011
-# https://lkml.org/lkml/2014/5/20/284
-# patches 1-3 already merged upstream
-Patch31001: V3-4-5-I2C-ACPI-Add-i2c-ACPI-operation-region-support.patch
-Patch31002: V3-5-5-I2C-ACPI-Clean-up-I2C-ACPI-code-and-Add-CONFIG_I2C_ACPI-config.patch
 # http://www.spinics.net/lists/linux-i2c/msg15201.html
 Patch31010: 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 
 # Test fix for SDIO device enumeration from Doug Johnson
 # https://bugzilla.kernel.org/show_bug.cgi?id=67921
 Patch31011: baytrail_gpio_quirk_v3.patch
-
-# Update name of audio firmware file
-# http://comments.gmane.org/gmane.linux.alsa.devel/126117
-# Upstream 3.17
-Patch31012: ASoC-Intel-update-baytrail-adsp-firmware-name.patch
-
-# ath6kl series backported from 3.17, should make wireless work
-Patch31101: 0001-ath6kl-Fix-ath6kl_bmi_read_hi32-macro.patch
-Patch31102: 0002-ath6kl-convert-ar6004-hardware-flags-to-firmware-fea.patch
-Patch31103: 0003-ath6kl-implement-rx-flush-for-htc-pipe.patch
-Patch31104: 0004-ath6kl-don-t-set-hi_refclk_hz-if-hardware-version-do.patch
-Patch31105: 0005-ath6kl-add-support-wmi-rate-tables-with-mcs15.patch
-Patch31106: 0006-ath6kl-add-support-for-ar6004-hw3.0.patch
 
 # Add SDIO ID for the V8P wireless adapter to ath6kl driver
 Patch31200: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
@@ -1402,24 +1378,9 @@ ApplyPatch kernel-arm64.patch -R
 # END OF FEDORA PATCH APPLICATIONS
 
 # AWB (BAYTRAIL) PATCH APPLICATIONS
-ApplyPatch V3-4-5-I2C-ACPI-Add-i2c-ACPI-operation-region-support.patch
-# Not applied as it causes all kinds of config file chaos, and I've never seen
-# the hang/crash that allegedly happens without it...
-#ApplyPatch V3-5-5-I2C-ACPI-Clean-up-I2C-ACPI-code-and-Add-CONFIG_I2C_ACPI-config.patch
-ApplyPatch x86-new-Intel-Atom-SoC-power-management-controller-driver.patch
-
 ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 # Doesn't apply cleanly to 3.16
 #ApplyPatch baytrail_gpio_quirk_v3.patch
-
-ApplyPatch ASoC-Intel-update-baytrail-adsp-firmware-name.patch
-
-ApplyPatch 0001-ath6kl-Fix-ath6kl_bmi_read_hi32-macro.patch
-ApplyPatch 0002-ath6kl-convert-ar6004-hardware-flags-to-firmware-fea.patch
-ApplyPatch 0003-ath6kl-implement-rx-flush-for-htc-pipe.patch
-ApplyPatch 0004-ath6kl-don-t-set-hi_refclk_hz-if-hardware-version-do.patch
-ApplyPatch 0005-ath6kl-add-support-wmi-rate-tables-with-mcs15.patch
-ApplyPatch 0006-ath6kl-add-support-for-ar6004-hw3.0.patch
 
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 
