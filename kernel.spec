@@ -631,10 +631,6 @@ Patch30000: kernel-arm64.patch
 # http://www.spinics.net/lists/linux-i2c/msg15201.html
 Patch31010: 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 
-# Test fix for SDIO device enumeration from Doug Johnson
-# https://bugzilla.kernel.org/show_bug.cgi?id=67921
-Patch31011: baytrail_gpio_quirk_v3.patch
-
 # Add SDIO ID for the V8P wireless adapter to ath6kl driver
 Patch31200: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 
@@ -1379,9 +1375,6 @@ ApplyPatch kernel-arm64.patch -R
 
 # AWB (BAYTRAIL) PATCH APPLICATIONS
 ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
-# Doesn't apply cleanly to 3.16
-#ApplyPatch baytrail_gpio_quirk_v3.patch
-
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
