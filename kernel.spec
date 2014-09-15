@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -606,14 +606,8 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1132368
-Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
 #rhbz 1134969
 Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-#rhbz 1116347
-Patch26017: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 #rhbz 1110011
 Patch26018: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
@@ -1337,14 +1331,8 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1132368
-ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
 #rhbz 1134969
 ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-#rhbz 1116347
-ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 #rhbz 1110011
 ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
@@ -2219,6 +2207,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git0.1
+- Linux v3.17-rc5
+- Disable debugging options.
+
 * Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git4.1
 - Linux v3.17-rc4-244-g5874cfed0b04
 

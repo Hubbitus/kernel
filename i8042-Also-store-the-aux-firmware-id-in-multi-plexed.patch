@@ -1,4 +1,4 @@
-From 6fd77b0f76b946fd6de55c0a1acff4eee191e5ed Mon Sep 17 00:00:00 2001
+From 3764b4c8c3944854fd1742548723d4cb9949b993 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Wed, 30 Jul 2014 17:56:05 +0200
 Subject: [PATCH] i8042: Also store the aux firmware id in multi-plexed aux
