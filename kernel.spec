@@ -724,6 +724,9 @@ Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 #CVE-2014-3181 rhbz 1141179 1141173
 Patch26024: HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 
+#CVE-2014-3186 rhbz 1141407 1141410
+Patch26025: HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1415,6 +1418,9 @@ ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 #CVE-2014-3181 rhbz 1141179 1141173
 ApplyPatch HID-magicmouse-sanity-check-report-size-in-raw_event.patch
+
+#CVE-2014-3186 rhbz 1141407 1141410
+ApplyPatch HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2234,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3186 HID: memory corruption via OOB write (rhbz 1141407 1141410)
+
 * Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-3181 HID: OOB write in magicmouse driver (rhbz 1141173 1141179)
 
