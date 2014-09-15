@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2246,7 +2246,7 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
-* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.2-201
 - CVE-2014-XXXX udf: avoid infinite loop on indirect ICBs (rhbz 1141809 1141810)
 - CVE-2014-3186 HID: memory corruption via OOB write (rhbz 1141407 1141410)
 
