@@ -727,7 +727,7 @@ Patch26024: HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 #CVE-2014-3186 rhbz 1141407 1141410
 Patch26025: HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
-#CVE-2014-XXXX rhbz 1141809 1141810
+#CVE-2014-6410 rhbz 1141809 1141810
 Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
@@ -1425,7 +1425,7 @@ ApplyPatch HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 #CVE-2014-3186 rhbz 1141407 1141410
 ApplyPatch HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
-#CVE-2014-XXXX rhbz 1141809 1141810
+#CVE-2014-6410 rhbz 1141809 1141810
 ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
 %if 0%{?aarch64patches}
@@ -2247,7 +2247,7 @@ fi
 #                 ||     ||
 %changelog
 * Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.2-201
-- CVE-2014-XXXX udf: avoid infinite loop on indirect ICBs (rhbz 1141809 1141810)
+- CVE-2014-6410 udf: avoid infinite loop on indirect ICBs (rhbz 1141809 1141810)
 - CVE-2014-3186 HID: memory corruption via OOB write (rhbz 1141407 1141410)
 
 * Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
