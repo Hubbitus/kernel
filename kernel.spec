@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -610,7 +610,6 @@ Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 #rhbz 1110011
-Patch26018: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
@@ -1335,7 +1334,6 @@ ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
 #rhbz 1110011
-ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
@@ -2207,6 +2205,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git1.1
+- Linux v3.17-rc5-13-g2324067fa9a4
+- Reenable debugging options.
+
 * Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git0.1
 - Linux v3.17-rc5
 - Disable debugging options.

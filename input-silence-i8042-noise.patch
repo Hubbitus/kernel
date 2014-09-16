@@ -1,4 +1,4 @@
-From 84ac09849fc978f5ebe86463a3edfd3bfe3c594a Mon Sep 17 00:00:00 2001
+From 43b38765023999cb920cf389baaa285e401d2be3 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 25 Sep 2008 16:23:33 -0400
 Subject: [PATCH] input: silence i8042 noise
@@ -30,7 +30,7 @@ index b67d9aef9fe4..dd58b0fdaafd 100644
  	if (dev->parent && dev->parent->power.is_prepared)
  		dev_warn(dev, "parent %s should not be sleeping\n",
 diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index 3807c3e971cc..612f855c340f 100644
+index f5a98af3b325..9bb95eab6926 100644
 --- a/drivers/input/serio/i8042.c
 +++ b/drivers/input/serio/i8042.c
 @@ -857,7 +857,6 @@ static int __init i8042_check_aux(void)
