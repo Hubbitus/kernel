@@ -2211,6 +2211,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 17 2014 Kyle McMartin <kyle@fedoraproject.org>
+- I also like to live dangerously. (Re-enable RCU_FAST_NO_HZ which has been off
+  since April 2012. Also enable NO_HZ_FULL on x86_64.)
+- I added zipped modules ages ago, remove it from TODO.
+
 * Wed Sep 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git2.1
 - Linux v3.17-rc5-24-g37504a3be90b
 - Fix vmwgfx header include (rhbz 1138759)
