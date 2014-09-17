@@ -1,4 +1,4 @@
-From 913036cdc44e936c194294184853e4844af0494b Mon Sep 17 00:00:00 2001
+From b908a0fe3b5e562ef471e777e257da288f96f532 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?=C3=89ric=20Piel?= <eric.piel@tremplin-utc.net>
 Date: Thu, 3 Nov 2011 16:22:40 +0100
 Subject: [PATCH] lis3: improve handling of null rate

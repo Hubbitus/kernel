@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 4
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -607,17 +607,10 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1132368
-Patch26015: nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
 #rhbz 1134969
 Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
-#rhbz 1116347
-Patch26017: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
-
 #rhbz 1110011
-Patch26018: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
@@ -1355,17 +1348,10 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1132368
-ApplyPatch nfs-fix-kernel-warning-when-removing-proc-entry.patch
-
 #rhbz 1134969
 ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 
-#rhbz 1116347
-ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
-
 #rhbz 1110011
-ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
@@ -2247,6 +2233,14 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git1.1
+- Linux v3.17-rc5-13-g2324067fa9a4
+- Reenable debugging options.
+
+* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git0.1
+- Linux v3.17-rc5
+- Disable debugging options.
+
 * Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc4.git4.1
 - Linux v3.17-rc4-244-g5874cfed0b04
 

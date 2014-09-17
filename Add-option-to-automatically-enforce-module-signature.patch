@@ -1,4 +1,4 @@
-From d9c97fea8a906281ee05486731746d648d8ff749 Mon Sep 17 00:00:00 2001
+From f2447f165fdb5b875f13e5c363675f64b5ace2be Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH] Add option to automatically enforce module signatures when in
@@ -34,10 +34,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 778178f4c7d1..8899dc333793 100644
+index 36327438caf0..61542c282e70 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1565,6 +1565,16 @@ config EFI_MIXED
+@@ -1566,6 +1566,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  

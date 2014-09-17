@@ -1,4 +1,4 @@
-From 9eeae62a9c758b843ac7dac5ee67248d3ad282a1 Mon Sep 17 00:00:00 2001
+From 53e0d01e8d7ac658bde8a81f7e8ceaf87974b5d2 Mon Sep 17 00:00:00 2001
 From: Bastien Nocera <hadess@hadess.net>
 Date: Thu, 20 May 2010 10:30:31 -0400
 Subject: [PATCH] disable i8042 check on apple mac
@@ -18,10 +18,10 @@ Signed-off-by: Bastien Nocera <hadess@hadess.net>
  1 file changed, 22 insertions(+)
 
 diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index 612f855c340f..f1aeb0240d6e 100644
+index 9bb95eab6926..4b5015f27f9e 100644
 --- a/drivers/input/serio/i8042.c
 +++ b/drivers/input/serio/i8042.c
-@@ -1469,6 +1469,22 @@ static struct platform_driver i8042_driver = {
+@@ -1471,6 +1471,22 @@ static struct platform_driver i8042_driver = {
  	.shutdown	= i8042_shutdown,
  };
  
@@ -44,7 +44,7 @@ index 612f855c340f..f1aeb0240d6e 100644
  static int __init i8042_init(void)
  {
  	struct platform_device *pdev;
-@@ -1476,6 +1492,12 @@ static int __init i8042_init(void)
+@@ -1478,6 +1494,12 @@ static int __init i8042_init(void)
  
  	dbg_init();
  

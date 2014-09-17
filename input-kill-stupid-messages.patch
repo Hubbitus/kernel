@@ -1,4 +1,4 @@
-From f10b526aee84af2e6de026ea7300e325e117705f Mon Sep 17 00:00:00 2001
+From 2fd9e12020ad2b89222bb44f026400ddec8ef2ce Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Thu, 29 Jul 2010 16:46:31 -0700
 Subject: [PATCH] input: kill stupid messages
@@ -10,7 +10,7 @@ Upstream-status: Fedora mustard
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/input/keyboard/atkbd.c b/drivers/input/keyboard/atkbd.c
-index 2dd1d0dd4f7d..7116b70074bf 100644
+index 6f5d79569136..95469f6ecfa5 100644
 --- a/drivers/input/keyboard/atkbd.c
 +++ b/drivers/input/keyboard/atkbd.c
 @@ -436,11 +436,15 @@ static irqreturn_t atkbd_interrupt(struct serio *serio, unsigned char data,
