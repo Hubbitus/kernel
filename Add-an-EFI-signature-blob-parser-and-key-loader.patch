@@ -1,4 +1,4 @@
-From 6a99c85fe212caec4c19893458c222bac7cd11ab Mon Sep 17 00:00:00 2001
+From b9f12fa10e9071026ae5f973eb8ba185e2f4d8d0 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH] Add an EFI signature blob parser and key loader.
