@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -623,14 +623,8 @@ Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pa
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#CVE-2014-{5206,5207} rhbz 1129662 1129669
-Patch25119: namespaces-remount-fixes.patch
-
 #rhbz 1134969
 Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-# CVE-2014-3631 rhbz 1116347
-Patch26020: KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 #rhbz 1110011
 Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
@@ -1362,14 +1356,8 @@ ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.pat
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#CVE-2014-{5206,5207} rhbz 1129662 1129669
-ApplyPatch namespaces-remount-fixes.patch
-
 #rhbz 1134969
 ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-# CVE-2014-3631 rhbz 1116347
-ApplyPatch KEYS-Fix-termination-condition-in-assoc-array-garbag.patch
 
 #rhbz 1110011
 ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
@@ -2261,6 +2249,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.3-300
+- Linux v3.16.3
+
 * Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-6410 udf: avoid infinite loop on indirect ICBs (rhbz 1141809 1141810)
 - CVE-2014-3186 HID: memory corruption via OOB write (rhbz 1141407 1141410)
