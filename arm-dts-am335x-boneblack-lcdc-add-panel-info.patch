@@ -1,4 +1,4 @@
-From 9436dedb20164a5dc795769958cec8ed187cc255 Mon Sep 17 00:00:00 2001
+From a2ba61d120db4edee80fcbfb658d9cffca3269f2 Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Fri, 27 Dec 2013 13:05:09 -0600
 Subject: [PATCH] arm: dts: am335x-boneblack: lcdc add panel-info

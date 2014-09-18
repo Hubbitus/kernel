@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -615,6 +615,8 @@ Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
+
+Patch26022: x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1342,6 +1344,8 @@ ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
+
+ApplyPatch x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2211,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Sep 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git3.1
+- Linux v3.17-rc5-25-g8ba4caf1ee15
+
 * Wed Sep 17 2014 Kyle McMartin <kyle@fedoraproject.org>
 - I also like to live dangerously. (Re-enable RCU_FAST_NO_HZ which has been off
   since April 2012. Also enable NO_HZ_FULL on x86_64.)

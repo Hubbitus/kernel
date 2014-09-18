@@ -1,0 +1,49 @@
+From 65c9d42b682211e20ae4090d8e18bd63e40709c5 Mon Sep 17 00:00:00 2001
+From: Matt Fleming <matt.fleming@intel.com>
+Date: Mon, 15 Sep 2014 16:20:54 +0100
+Subject: [PATCH] x86/efi: Delete misleading efi_printk() error message
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+A number of people are reporting seeing the "setup_efi_pci() failed!"
+error message in what used to be a quiet boot,
+
+  https://bugzilla.kernel.org/show_bug.cgi?id=81891
+
+The message isn't all that helpful because setup_efi_pci() can return a
+non-success error code for a variety of reasons, not all of them fatal.
+
+Drop the efi_printk() now that we have more fine-grained, and more
+specific, error messages throughout the *setup_efi_pci*() code paths.
+
+Upstream-status: 3.18
+
+Reported-by: Darren Hart <dvhart@linux.intel.com>
+Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
+Cc: Ulf Winkelvos <ulf@winkelvos.de>
+Cc: Andre Müller <andre.muller@web.de>
+Signed-off-by: Matt Fleming <matt.fleming@intel.com>
+---
+ arch/x86/boot/compressed/eboot.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index 3b18ef2b534c..700a7564a3d0 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -1430,10 +1430,7 @@ struct boot_params *efi_main(struct efi_config *c,
+ 
+ 	setup_graphics(boot_params);
+ 
+-	status = setup_efi_pci(boot_params);
+-	if (status != EFI_SUCCESS) {
+-		efi_printk(sys_table, "setup_efi_pci() failed!\n");
+-	}
++	setup_efi_pci(boot_params);
+ 
+ 	status = efi_call_early(allocate_pool, EFI_LOADER_DATA,
+ 				sizeof(*gdt), (void **)&gdt);
+-- 
+1.9.3
+

@@ -1,4 +1,4 @@
-From b99ea336cfee0e5de61666aa94657a46b4c4982a Mon Sep 17 00:00:00 2001
+From c09011533b2d0938185fd004260824bd747d4c86 Mon Sep 17 00:00:00 2001
 From: Roland McGrath <roland@redhat.com>
 Date: Mon, 6 Oct 2008 23:03:03 -0700
 Subject: [PATCH] kbuild: AFTER_LINK
