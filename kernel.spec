@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2215,6 +2215,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git4.1
+- Linux v3.17-rc5-63-gd9773ceabfaf
+- Enable infiniband on s390x
+
 * Thu Sep 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git3.1
 - Linux v3.17-rc5-25-g8ba4caf1ee15
 

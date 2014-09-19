@@ -1,4 +1,4 @@
-From 372b0f17e7f64fbd3a22ea48f36ea4cdfe607b2b Mon Sep 17 00:00:00 2001
+From 265abc39286aaa7b59c897279241714c7efa7e2e Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 25 Sep 2008 16:23:33 -0400
 Subject: [PATCH] input: silence i8042 noise
