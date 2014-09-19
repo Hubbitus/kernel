@@ -690,9 +690,6 @@ Patch21247: ath9k_rx_dma_stop_check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-<<<<<<< HEAD
-Patch25047: drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
 # Hubbitus patches
 # UKSM
 Patch30001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
@@ -726,8 +723,6 @@ Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5
 #? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #/end Hubbitus patches
 
-=======
->>>>>>> 77aea2e6d32fb26e379d4b24d1b0306bcdca09a6
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
@@ -1458,9 +1453,6 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k_rx_dma_stop_check.patch
 
-<<<<<<< HEAD
-ApplyPatch drm-radeon-Disable-writeback-by-default-on-ppc.patch
-
 #+Hubbitus patches
 #? ApplyPatch patch-3.14-pf1.xz --fuzz=2
 
@@ -1482,8 +1474,6 @@ ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/
 #? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #/Hubbitus patches
 
-=======
->>>>>>> 77aea2e6d32fb26e379d4b24d1b0306bcdca09a6
 #rhbz 1048314
 ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
 #rhbz 1089583
@@ -2376,6 +2366,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Aug 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.10-201.hu.1.bfq.bfs.uksm
+- 3.15.10-201.hu.1.bfq.bfs.uksm
+
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix NFSv3 ACL regression (rhbz 1132786)
 - Don't enable CONFIG_DEBUG_WW_MUTEX_SLOWPATH (rhbz 1114160)
