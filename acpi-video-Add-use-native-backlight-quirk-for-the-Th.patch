@@ -1,4 +1,4 @@
-From 9314fba2839598cb9cc844c5983be7205fc7ad4a Mon Sep 17 00:00:00 2001
+From 8319012a6df7afe31a3c464a5e9272eae4886470 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 2 Jun 2014 17:41:10 +0200
 Subject: [PATCH] acpi-video: Add use native backlight quirk for the ThinkPad

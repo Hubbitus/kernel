@@ -1,4 +1,4 @@
-From 5e7154e00c362cb84e85cc4f387519704f0277b0 Mon Sep 17 00:00:00 2001
+From 8c9644e12f66fc5f75109689742f641437c34afa Mon Sep 17 00:00:00 2001
 From: Matt Fleming <matt.fleming@intel.com>
 Date: Mon, 15 Sep 2014 16:20:54 +0100
 Subject: [PATCH] x86/efi: Delete misleading efi_printk() error message
@@ -29,10 +29,10 @@ Signed-off-by: Matt Fleming <matt.fleming@intel.com>
  1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 3b18ef2b534c..700a7564a3d0 100644
+index c32bc46bd699..9705cf1966c2 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -1430,10 +1430,7 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1434,10 +1434,7 @@ struct boot_params *efi_main(struct efi_config *c,
  
  	setup_graphics(boot_params);
  
