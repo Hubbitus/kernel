@@ -1,2 +1,3 @@
-SOURCES/linux-3.10.0-123.6.3.el7.tar.xz
-SOURCES/centos.cer
+SOURCES/linux-3.10.0-123.8.1.el7.tar.xz
+SOURCES/rheldup3.x509
+SOURCES/rhelkpatch1.x509

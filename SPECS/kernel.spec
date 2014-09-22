@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.6.3.el7
+%define pkgrelease 123.8.1.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,9 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
-Source15: centos-ldup.x509 
-Source16: centos-kpatch.x509
+Source13: securebootca.cer
+Source14: secureboot.cer
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -367,9 +368,6 @@ Source2000: cpupower.service
 Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 Patch999999: linux-kernel-test.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
@@ -523,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -669,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -827,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1482,17 +1474,53 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Wed Aug 06 2014 Johnny Hughes <johnny@centos.org> - 3.10.0-123.6.3.el7
-- Additional debranding changes
+* Mon Aug 11 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.8.1.el7]
+- [scsi] fnic: fix broken FIP discovery by initializing multicast address (Chris Leech) [1119727 1100078]
+- [scsi] libfcoe: Make fcoe_sysfs optional / fix fnic NULL exception (Chris Leech) [1119727 1100078]
+- [fs] nfs: Don't mark the data cache as invalid if it has been flushed (Scott Mayhew) [1115817 1114054]
+- [fs] nfs: Clear NFS_INO_REVAL_PAGECACHE when we update the file size (Scott Mayhew) [1115817 1114054]
+- [fs] nfs: Fix cache_validity check in nfs_write_pageuptodate() (Scott Mayhew) [1115817 1114054]
+- [mm] hugetlb: ensure hugepage access is denied if hugepages are not supported (David Gibson) [1122115 1081671]
+- [kernel] hrtimer: Prevent all reprogramming if hang detected (Prarit Bhargava) [1113175 1094732]
 
-* Wed Aug 06 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.6.3.el7
-- Apply debranding changes
-
-* Wed Jul 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.3.el7]
-- [net] l2tp_ppp: fail when socket option level is not SOL_PPPOL2TP (Petr Matousek) [1119465 1119466] {CVE-2014-4943}
-
-* Wed Jul 09 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.2.el7]
-- [s390] ptrace: correct insufficient sanitization when setting psw mask (Hendrik Brueckner) [1114090 1113673]
+* Tue Aug 05 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.7.1.el7]
+- [scsi] set DID_TIME_OUT correctly (Ewan Milne) [1122575 1103881]
+- [scsi] fix invalid setting of host byte (Ewan Milne) [1122575 1103881]
+- [scsi] More USB deadlock fixes (Ewan Milne) [1122575 1103881]
+- [scsi] Fix USB deadlock caused by SCSI error handling (Ewan Milne) [1122575 1103881]
+- [scsi] Fix command result state propagation (Ewan Milne) [1122575 1103881]
+- [scsi] Fix spurious request sense in error handling (Ewan Milne) [1122575 1103881]
+- [input] synaptics: fix resolution for manually provided min/max (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: change min/max quirk table to pnp-id matching (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add a matches_pnp_id helper function (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: T540p - unify with other LEN0034 models (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add min/max quirk for the ThinkPad W540 (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add min/max quirk for ThinkPad Edge E431 (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add min/max quirk for ThinkPad T431s, L440, L540, S1 Yoga and X1 (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: report INPUT_PROP_TOPBUTTONPAD property (Benjamin Tissoires) [1122559 1093449]
+- [input] Add INPUT_PROP_TOPBUTTONPAD device property (Benjamin Tissoires) [1122559 1093449]
+- [input] i8042: add firmware_id support (Benjamin Tissoires) [1122559 1093449]
+- [input] serio: add firmware_id sysfs attribute (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add manual min/max quirk for ThinkPad X240 (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: add manual min/max quirk (Benjamin Tissoires) [1122559 1093449]
+- [input] synaptics: fix incorrect placement of __initconst (Benjamin Tissoires) [1122559 1093449]
+- [ethernet] be2net: Fix invocation of be_close() after be_clear() (Ivan Vecera) [1122558 1066644]
+- [ethernet] be2net: enable interrupts in EEH resume (Ivan Vecera) [1121712 1076682]
+- [ethernet] sfc: PIO:Restrict to 64bit arch and use 64-bit writes (Nikolay Aleksandrov) [1119725 1089024]
+- [kernel] ftrace: Hardcode ftrace_module_init() call into load_module() (Takahiro MUNEDA) [1119721 1061553]
+- [kernel] trace: Make register/unregister_ftrace_command __init (Takahiro MUNEDA) [1119721 1061553]
+- [block] nvme: Initialize device reference count earlier (David Milburn) [1119720 1081734]
+- [ata] ahci: accommodate tag ordered controller (David Milburn) [1117154 1083746]
+- [s390] af_iucv: recvmsg problem for SOCK_STREAM sockets (Hendrik Brueckner) [1115585 1109703]
+- [s390] af_iucv: correct cleanup if listen backlog is full (Hendrik Brueckner) [1115584 1109033]
+- [mm] Revert: vmscan: do not swap anon pages just because free+file is low (Johannes Weiner) [1114938 1102991]
+- [drm] nouveau/bios: fix a bit shift error introduced by recent commit (Ulrich Obergfell) [1114869 1089936]
+- [ethernet] bnx2x: Adapter not recovery from EEH error injection (Michal Schmidt) [1107722 1067154]
+- [kernel] auditsc: audit_krule mask accesses need bounds checking (Denys Vlasenko) [1102708 1102710] {CVE-2014-3917}
+- [block] mtip32xx: mtip_async_complete() bug fixes (Jeff Moyer) [1125776 1102281]
+- [block] mtip32xx: Unmap the DMA segments before completing the IO request (Jeff Moyer) [1125776 1102281]
+- [net] l2tp: don't fall back on UDP [get|set]sockopt (Petr  Matousek) [1119465 1119466] {CVE-2014-4943}
+- [s390] ptrace: correct insufficient sanitization when setting psw mask (Hendrik Brueckner) [1114090 1113673] {CVE-2014-3534}
 
 * Wed Jul 09 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.6.1.el7]
 - [x86] ptrace: force IRET path after a ptrace_stop() (Oleg Nesterov) [1115934 1115935] {CVE-2014-4699}
