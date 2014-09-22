@@ -1,4 +1,4 @@
-From 763ce537fedc607cae30f48f48a75fb67aff839e Mon Sep 17 00:00:00 2001
+From d60ad4f488169a5cfc72b75a9abdf6c005fe1c86 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Fri, 27 Jun 2014 18:46:42 +0200
 Subject: [PATCH] psmouse: Add psmouse_matches_pnp_id helper function

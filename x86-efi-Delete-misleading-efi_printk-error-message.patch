@@ -1,4 +1,4 @@
-From 8c9644e12f66fc5f75109689742f641437c34afa Mon Sep 17 00:00:00 2001
+From ac93ab562e935184d08facf3ac292e243df8e950 Mon Sep 17 00:00:00 2001
 From: Matt Fleming <matt.fleming@intel.com>
 Date: Mon, 15 Sep 2014 16:20:54 +0100
 Subject: [PATCH] x86/efi: Delete misleading efi_printk() error message

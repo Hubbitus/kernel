@@ -1,4 +1,4 @@
-From 18a370eee0e3d1b4cc5d9808667190590352fcc0 Mon Sep 17 00:00:00 2001
+From 2022539fd7aa58b000b0b5436978a1a37e237ff8 Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Fri, 18 Apr 2014 06:58:29 -0400
 Subject: [PATCH] disable libdw unwind on non-x86
