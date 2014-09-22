@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -613,6 +613,11 @@ Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 #rhbz 1110011
 Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
+
+#rhbz 1138759
+Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
+
+Patch26022: x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1354,6 +1359,11 @@ ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 #rhbz 1110011
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
+
+#rhbz 1138759
+ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
+
+ApplyPatch x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2233,6 +2243,29 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Sep 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git5.1
+- Linux v3.17-rc5-105-g598a0c7d0932
+
+* Fri Sep 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable NO_HZ_FULL again
+- Enable early microcode loading (rhbz 1083716)
+
+* Fri Sep 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git4.1
+- Linux v3.17-rc5-63-gd9773ceabfaf
+- Enable infiniband on s390x
+
+* Thu Sep 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git3.1
+- Linux v3.17-rc5-25-g8ba4caf1ee15
+
+* Wed Sep 17 2014 Kyle McMartin <kyle@fedoraproject.org>
+- I also like to live dangerously. (Re-enable RCU_FAST_NO_HZ which has been off
+  since April 2012. Also enable NO_HZ_FULL on x86_64.)
+- I added zipped modules ages ago, remove it from TODO.
+
+* Wed Sep 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git2.1
+- Linux v3.17-rc5-24-g37504a3be90b
+- Fix vmwgfx header include (rhbz 1138759)
+
 * Tue Sep 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc5.git1.1
 - Linux v3.17-rc5-13-g2324067fa9a4
 - Reenable debugging options.

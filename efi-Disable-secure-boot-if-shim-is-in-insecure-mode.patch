@@ -1,4 +1,4 @@
-From a04f786b6799ace9a7d42631abc4daf3d8e3bd89 Mon Sep 17 00:00:00 2001
+From 3410b9e21b189627690287ee838bf3892e4fffe0 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
 Subject: [PATCH] efi: Disable secure boot if shim is in insecure mode
@@ -15,7 +15,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 88edd48f03e9..3b18ef2b534c 100644
+index baab83bcec44..c32bc46bd699 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -806,8 +806,9 @@ out:

@@ -1,4 +1,4 @@
-From 0b87591a56a41f7aee68991150471ff498b1c4e0 Mon Sep 17 00:00:00 2001
+From 4bcbe082519c8dfec88e038b7a8cdc772614bd6c Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Fri, 27 Jun 2014 18:50:33 +0200
 Subject: [PATCH] psmouse: Add support for detecting FocalTech PS/2 touchpads

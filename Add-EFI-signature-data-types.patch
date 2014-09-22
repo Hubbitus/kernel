@@ -1,4 +1,4 @@
-From a0cad672db673d76836c7293b832b4c1505ed8bb Mon Sep 17 00:00:00 2001
+From 398af2f1b6a3dadd215e32c2c992147660368f5a Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH] Add EFI signature data types

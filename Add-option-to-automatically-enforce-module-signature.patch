@@ -1,4 +1,4 @@
-From f2447f165fdb5b875f13e5c363675f64b5ace2be Mon Sep 17 00:00:00 2001
+From a31311c93c02cb524a33444130d852422febf65a Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH] Add option to automatically enforce module signatures when in
@@ -55,7 +55,7 @@ index 36327438caf0..61542c282e70 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index f277184e2ac1..88edd48f03e9 100644
+index dca9842d8f91..baab83bcec44 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -104,7 +104,7 @@ index f277184e2ac1..88edd48f03e9 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1374,6 +1406,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1378,6 +1410,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
