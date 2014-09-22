@@ -724,6 +724,9 @@ Patch26025: HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 #CVE-2014-6410 rhbz 1141809 1141810
 Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
+#rhbz 1143812
+Patch26027: HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1415,6 +1418,9 @@ ApplyPatch HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
 #CVE-2014-6410 rhbz 1141809 1141810
 ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
+
+#rhbz 1143812
+ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2234,6 +2240,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Sep 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix i2c-hid touchpad resume (rhbz 1143812)
+
 * Wed Sep 17 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.3-200
 - Linux v3.16.3
 
