@@ -1,4 +1,4 @@
-From 8e5faf7fe1509690473c40f38ff2eb1cff544c3b Mon Sep 17 00:00:00 2001
+From b3df526969b0a3f099f6bbf59d00cbc8cb89f50c Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 5 Sep 2014 13:19:59 -0400
 Subject: [PATCH] drm/vmwgfx: Fix drm.h include
