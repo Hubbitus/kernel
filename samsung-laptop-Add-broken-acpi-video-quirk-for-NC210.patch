@@ -1,4 +1,4 @@
-From 213444c6bff4cba137548404b2a6449c797345c7 Mon Sep 17 00:00:00 2001
+From 1d345df6c202948c81f543e8a14ef99eef35fdb6 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 2 Jun 2014 17:40:59 +0200
 Subject: [PATCH] samsung-laptop: Add broken-acpi-video quirk for NC210/NC110

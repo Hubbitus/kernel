@@ -1,4 +1,4 @@
-From a31311c93c02cb524a33444130d852422febf65a Mon Sep 17 00:00:00 2001
+From 43936581256163352d855fe449ecad6ce8859345 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH] Add option to automatically enforce module signatures when in
