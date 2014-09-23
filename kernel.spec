@@ -618,6 +618,9 @@ Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
 
 Patch26022: x86-efi-Delete-misleading-efi_printk-error-message.patch
 
+#rhbz 1123584
+Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1346,6 +1349,9 @@ ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
 
 ApplyPatch x86-efi-Delete-misleading-efi_printk-error-message.patch
+
+#rhbz 1123584
+ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2215,6 +2221,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix XPS 13 touchpad issue (rhbz 1123584)
+
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc6.git1.1
 - Linux v3.17-rc6-125-gf3670394c29f
 
