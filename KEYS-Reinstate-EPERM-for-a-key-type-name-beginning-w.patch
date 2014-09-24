@@ -1,4 +1,4 @@
-From e6291fa2e457abd3ffc00855244bdff976b4134b Mon Sep 17 00:00:00 2001
+From 97ae62050594a612dc6c590de7e550528811eb72 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Tue, 16 Sep 2014 17:29:03 +0100
 Subject: [PATCH] KEYS: Reinstate EPERM for a key type name beginning with a

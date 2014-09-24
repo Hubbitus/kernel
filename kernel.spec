@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2227,6 +2227,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc6.git2.1
+- Linux v3.17-rc6-180-g452b6361c4d9
+
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix return code when adding keys (rhbz 1145318)
 - Add patch to fix XPS 13 touchpad issue (rhbz 1123584)
