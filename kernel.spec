@@ -640,8 +640,6 @@ Patch31200: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 
 # UEFI boot fixes from Matt Fleming, try to fix
 # https://bugzilla.kernel.org/show_bug.cgi?id=84241
-Patch31201: x86-efi-only-load-initrd-above-4g-on-second-try.patch
-#Patch21202: x86-efi-fixup-got-in-all-boot-code-paths.patch
 Patch21203: UEFI-big-arse-revert.patch
 
 # END OF AWB PATCH DEFINITIONS
@@ -1390,8 +1388,6 @@ ApplyPatch kernel-arm64.patch -R
 # AWB (BAYTRAIL) PATCH APPLICATIONS
 ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
-#ApplyPatch x86-efi-only-load-initrd-above-4g-on-second-try.patch
-#ApplyPatch x86-efi-fixup-got-in-all-boot-code-paths.patch
 ApplyPatch UEFI-big-arse-revert.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
