@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -621,6 +621,9 @@ Patch26022: x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 #rhbz 1123584
 Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
+
+#rhbz 1145318
+Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1371,6 +1374,9 @@ ApplyPatch x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 #rhbz 1123584
 ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
+
+#rhbz 1145318
+ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2251,7 +2257,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Sep 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc6.git2.1
+- Linux v3.17-rc6-180-g452b6361c4d9
+
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix return code when adding keys (rhbz 1145318)
 - Add patch to fix XPS 13 touchpad issue (rhbz 1123584)
 
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc6.git1.1
