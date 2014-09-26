@@ -384,7 +384,7 @@ Summary: The Linux kernel
 # scripts use them.
 #
 %define kernel_prereq  fileutils, systemd >= 203-2
-%define initrd_prereq  dracut >= 027
+%define initrd_prereq  dracut >= 038-29
 
 
 Name: kernel%{?variant}
@@ -2263,6 +2263,7 @@ fi
 %changelog
 * Thu Sep 25 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.3-302
 - Enable early microcode loading (rhbz 1083716)
+- Bump prereq on dracut that defaults to early microcode
 
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix XPS 13 touchpad issue (rhbz 1123584)
