@@ -632,15 +632,24 @@ Patch30000: kernel-arm64.patch
 
 # AWB PATCH DEFINITIONS (BAYTRAIL)
 
-# http://www.spinics.net/lists/linux-i2c/msg15201.html
-Patch31010: 0001-ACPI-temporary-dep-solution-for-battery-support.patch
+# https://patchwork.kernel.org/patch/4953801/
+# https://bugzilla.kernel.org/show_bug.cgi?id=69011
+Patch31010: RFC-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
 
 # Add SDIO ID for the V8P wireless adapter to ath6kl driver
-Patch31200: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
+Patch31011: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 
 # UEFI boot fixes from Matt Fleming, try to fix
 # https://bugzilla.kernel.org/show_bug.cgi?id=84241
-Patch21203: UEFI-big-arse-revert.patch
+Patch31012: UEFI-big-arse-revert.patch
+
+# Map 'Home' button on Venue 8 Pro to left meta key (i.e. "Start")
+# from Jan-Michael Brummer
+Patch31013: soc_button_use_leftmeta.patch
+
+# Enable mic on RT5640 (i.e. lots of Baytrail hardware, we hope)
+# from Jan-Michael Brummer
+Patch31014: rt5640_enable_mic.patch
 
 # END OF AWB PATCH DEFINITIONS
 
@@ -1386,9 +1395,11 @@ ApplyPatch kernel-arm64.patch -R
 # END OF FEDORA PATCH APPLICATIONS
 
 # AWB (BAYTRAIL) PATCH APPLICATIONS
-ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
+ApplyPatch RFC-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 ApplyPatch UEFI-big-arse-revert.patch
+ApplyPatch rt5640_enable_mic.patch
+ApplyPatch soc_button_use_leftmeta.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
 
