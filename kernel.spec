@@ -632,9 +632,11 @@ Patch30000: kernel-arm64.patch
 
 # AWB PATCH DEFINITIONS (BAYTRAIL)
 
-# https://patchwork.kernel.org/patch/4953801/
+# https://lkml.org/lkml/2014/4/16/418
 # https://bugzilla.kernel.org/show_bug.cgi?id=69011
-Patch31010: RFC-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
+# The 'permanent' fix for this is under development but current patch doesn't
+# work, see #69011
+Patch31010: 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 
 # Add SDIO ID for the V8P wireless adapter to ath6kl driver
 Patch31011: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
@@ -1395,7 +1397,7 @@ ApplyPatch kernel-arm64.patch -R
 # END OF FEDORA PATCH APPLICATIONS
 
 # AWB (BAYTRAIL) PATCH APPLICATIONS
-ApplyPatch RFC-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
+ApplyPatch 0001-ACPI-temporary-dep-solution-for-battery-support.patch
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 ApplyPatch UEFI-big-arse-revert.patch
 ApplyPatch rt5640_enable_mic.patch
