@@ -1,4 +1,4 @@
-From a3dc621f23cb499ac51b5194805cb05cdf8e3c53 Mon Sep 17 00:00:00 2001
+From 7e2e06199a92d1d81682f1a3de63c1bf26bb6b67 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Wed, 30 Apr 2014 15:24:19 +0200
 Subject: [PATCH] acpi-video: Add 4 new models to the use_native_backlight dmi
@@ -21,7 +21,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 32 insertions(+)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index 2e0236af78b9..df1626d2ba10 100644
+index a3d293806f96..5c8ce8c699fc 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -556,6 +556,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {

@@ -1,4 +1,4 @@
-From d766862c6a4a47eb49abc235f97f181109da9331 Mon Sep 17 00:00:00 2001
+From 8d7568f0fcdd3f5387f45e0a31ba22901bf25659 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 2 Jun 2014 17:41:11 +0200
 Subject: [PATCH] acpi-video: Add use_native_backlight quirk for HP ProBook
@@ -18,7 +18,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index caa4d8fc3458..7e86097f7c2b 100644
+index d8a6ecb0b2b2..8dbf009521c7 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -693,6 +693,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {

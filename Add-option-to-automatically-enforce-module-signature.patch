@@ -1,4 +1,4 @@
-From c33f1163a808514d13b7f5c21dfe9776ff744ef4 Mon Sep 17 00:00:00 2001
+From 15d77b7f33d75a7d43bba6595b40a2a3101e2aca Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH] Add option to automatically enforce module signatures when in
@@ -55,7 +55,7 @@ index 36327438caf0..61542c282e70 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index dca9842d8f91..baab83bcec44 100644
+index de8eebd6f67c..975d11bfaf5b 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -66,7 +66,7 @@ index dca9842d8f91..baab83bcec44 100644
  
  #undef memcpy			/* Use memcpy from misc.c */
  
-@@ -803,6 +804,37 @@ out:
+@@ -814,6 +815,37 @@ out:
  	return status;
  }
  
@@ -104,7 +104,7 @@ index dca9842d8f91..baab83bcec44 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1378,6 +1410,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1389,6 +1421,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -114,7 +114,7 @@ index dca9842d8f91..baab83bcec44 100644
 +
  	setup_graphics(boot_params);
  
- 	status = setup_efi_pci(boot_params);
+ 	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
 index 225b0988043a..90dbfb73e11f 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h

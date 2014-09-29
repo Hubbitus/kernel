@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -615,8 +615,6 @@ Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
-
-Patch26022: x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 #rhbz 1123584
 Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
@@ -1350,8 +1348,6 @@ ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
-
-ApplyPatch x86-efi-Delete-misleading-efi_printk-error-message.patch
 
 #rhbz 1123584
 ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
@@ -2227,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc7.git0.1
+- Linux v3.17-rc7
+
 * Wed Sep 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc6.git2.1
 - Linux v3.17-rc6-180-g452b6361c4d9
 

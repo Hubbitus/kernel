@@ -1,4 +1,4 @@
-From 48bda121e75f2cadc828ee722dfd7fd1f6593fa8 Mon Sep 17 00:00:00 2001
+From 64cba3fb53724038ece9e9713f5f33b381b78006 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Mon, 2 Jun 2014 17:41:10 +0200
 Subject: [PATCH] acpi-video: Add use native backlight quirk for the ThinkPad
@@ -22,7 +22,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index df1626d2ba10..caa4d8fc3458 100644
+index 5c8ce8c699fc..d8a6ecb0b2b2 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -469,6 +469,14 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
