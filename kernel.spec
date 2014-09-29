@@ -2223,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Sep 29 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Update kernel-arm64.patch from git.
+
 * Mon Sep 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc7.git0.1
 - Linux v3.17-rc7
 

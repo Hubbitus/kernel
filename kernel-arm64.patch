@@ -1,42 +1,329 @@
- .../devicetree/bindings/pci/xgene-pci.txt          |  52 ++
- MAINTAINERS                                        |   7 +
- arch/arm64/Kconfig                                 |  19 +-
+ Documentation/arm64/arm-acpi.txt                   | 218 +++++++
+ .../devicetree/bindings/pci/xgene-pci.txt          |  57 ++
+ Documentation/kernel-parameters.txt                |   3 +-
+ MAINTAINERS                                        |   8 +
+ arch/arm/include/asm/io.h                          |   1 +
+ arch/arm/include/asm/kvm_mmu.h                     |  13 +
+ arch/arm/kvm/arm.c                                 |  23 +-
+ arch/arm/mach-integrator/pci_v3.c                  |  23 +-
+ arch/arm64/Kconfig                                 |  28 +-
+ arch/arm64/Makefile                                |   1 +
  arch/arm64/boot/dts/apm-mustang.dts                |   8 +
- arch/arm64/boot/dts/apm-storm.dtsi                 | 180 ++++-
+ arch/arm64/boot/dts/apm-storm.dtsi                 | 165 ++++++
  arch/arm64/include/asm/Kbuild                      |   1 +
+ arch/arm64/include/asm/acenv.h                     |  18 +
+ arch/arm64/include/asm/acpi.h                      |  99 ++++
+ arch/arm64/include/asm/cpu_ops.h                   |   1 +
  arch/arm64/include/asm/elf.h                       |   3 +-
  arch/arm64/include/asm/io.h                        |   3 +-
- arch/arm64/include/asm/pci.h                       |  49 ++
- arch/arm64/kernel/Makefile                         |   1 +
+ arch/arm64/include/asm/kvm_arm.h                   |  17 +-
+ arch/arm64/include/asm/kvm_mmu.h                   |  75 +++
+ arch/arm64/include/asm/pci.h                       |  37 ++
+ arch/arm64/include/asm/pgtable.h                   |   2 +
+ arch/arm64/include/asm/psci.h                      |   3 +-
+ arch/arm64/include/asm/smp.h                       |  10 +-
+ arch/arm64/kernel/Makefile                         |   5 +-
+ arch/arm64/kernel/acpi.c                           | 397 +++++++++++++
+ arch/arm64/kernel/cpu_ops.c                        |   8 +-
  arch/arm64/kernel/efi-stub.c                       |  16 +-
  arch/arm64/kernel/efi.c                            |  11 +
  arch/arm64/kernel/head.S                           |   6 +-
- arch/arm64/kernel/pci.c                            |  38 ++
+ arch/arm64/kernel/pci.c                            |  70 +++
  arch/arm64/kernel/process.c                        |   6 +
- arch/arm64/kernel/smp_spin_table.c                 |  21 +-
- drivers/ata/ahci_xgene.c                           |   3 +-
- drivers/irqchip/irq-gic.c                          |  32 +-
- drivers/of/address.c                               | 108 +++
- drivers/of/of_pci.c                                | 136 ++++
- drivers/pci/host-bridge.c                          |  18 +-
+ arch/arm64/kernel/psci.c                           |  78 ++-
+ arch/arm64/kernel/setup.c                          |  42 +-
+ arch/arm64/kernel/smp.c                            |   2 +-
+ arch/arm64/kernel/smp_parking_protocol.c           | 110 ++++
+ arch/arm64/kernel/smp_spin_table.c                 |  22 +-
+ arch/arm64/kernel/time.c                           |   7 +
+ arch/arm64/kvm/hyp-init.S                          |  20 +-
+ arch/arm64/mm/dma-mapping.c                        |  65 +++
+ arch/arm64/pci/Makefile                            |   1 +
+ arch/arm64/pci/pci.c                               |  28 +
+ drivers/acpi/Kconfig                               |   6 +-
+ drivers/acpi/Makefile                              |   6 +-
+ drivers/acpi/acpica/utresrc.c                      |   4 +-
+ drivers/acpi/bus.c                                 |   3 +
+ drivers/acpi/internal.h                            |   5 +
+ drivers/acpi/osl.c                                 |   6 +-
+ drivers/acpi/processor_core.c                      |  37 ++
+ drivers/acpi/sleep-arm.c                           |  28 +
+ drivers/acpi/tables.c                              | 115 +++-
+ drivers/acpi/utils.c                               |  26 +
+ drivers/ata/Kconfig                                |   2 +-
+ drivers/ata/ahci_platform.c                        |  13 +
+ drivers/ata/ahci_xgene.c                           |  30 +-
+ drivers/clocksource/arm_arch_timer.c               | 120 +++-
+ drivers/irqchip/irq-gic-v3.c                       |  10 +
+ drivers/irqchip/irq-gic.c                          | 116 ++++
+ drivers/irqchip/irqchip.c                          |   3 +
+ drivers/of/address.c                               | 154 +++++
+ drivers/of/of_pci.c                                | 142 +++++
  drivers/pci/host/Kconfig                           |  10 +
  drivers/pci/host/Makefile                          |   1 +
- drivers/pci/host/pci-xgene.c                       | 725 +++++++++++++++++++++
- drivers/pci/pci.c                                  |  37 ++
- drivers/pci/probe.c                                |  68 +-
+ drivers/pci/host/pci-tegra.c                       |  10 +-
+ drivers/pci/host/pci-xgene.c                       | 646 +++++++++++++++++++++
+ drivers/pci/host/pcie-rcar.c                       |  21 +-
+ drivers/pci/pci.c                                  |  40 ++
+ drivers/pci/probe.c                                |  46 +-
+ drivers/pnp/resource.c                             |   2 +
+ drivers/tty/Kconfig                                |   6 +
+ drivers/tty/Makefile                               |   1 +
+ drivers/tty/sbsauart.c                             | 355 +++++++++++
+ drivers/tty/serial/8250/8250_dw.c                  |   9 +
+ include/acpi/acnames.h                             |   4 +
+ include/acpi/acpi_bus.h                            |   2 +
+ include/acpi/acpi_io.h                             |   6 +
+ include/acpi/acpixf.h                              |   2 +-
+ include/acpi/actbl1.h                              |  19 +-
+ include/acpi/actbl3.h                              |   9 +-
  include/asm-generic/io.h                           |   2 +-
- include/linux/of_address.h                         |  14 +-
- include/linux/of_pci.h                             |  10 +
- include/linux/pci.h                                |  15 +
+ include/asm-generic/pgtable.h                      |   4 +
+ include/kvm/arm_vgic.h                             |  20 +-
+ include/linux/acpi.h                               |   5 +
+ include/linux/clocksource.h                        |   6 +
+ include/linux/irqchip/arm-gic-acpi.h               |  31 +
+ include/linux/irqchip/arm-gic.h                    |   2 +
+ include/linux/of_address.h                         |  17 +-
+ include/linux/of_pci.h                             |  13 +
+ include/linux/pci.h                                |  64 +-
  tools/perf/arch/arm64/include/perf_regs.h          |   2 +
- 31 files changed, 1533 insertions(+), 69 deletions(-)
+ virt/kvm/arm/arch_timer.c                          | 108 ++--
+ virt/kvm/arm/vgic-v2.c                             |  75 ++-
+ virt/kvm/arm/vgic-v3.c                             |   8 +-
+ virt/kvm/arm/vgic.c                                |  32 +-
+ 94 files changed, 3840 insertions(+), 275 deletions(-)
 
+diff --git a/Documentation/arm64/arm-acpi.txt b/Documentation/arm64/arm-acpi.txt
+new file mode 100644
+index 0000000..b7dc826
+--- /dev/null
++++ b/Documentation/arm64/arm-acpi.txt
+@@ -0,0 +1,218 @@
++ACPI on ARMv8 Servers
++---------------------
++
++ACPI can be used for ARMv8 general purpose servers designed to follow
++the SBSA specification (currently available to people with an ARM login at
++http://silver.arm.com).
++
++The kernel will implement minimum ACPI version is 5.1 + errata as released by
++the UEFI Forum, which is available at <http://www.uefi.org/acpi/specs>.
++
++If the machine does not meet the requirements of the SBSA, or cannot be
++described in the required ACPI specifications then it is likely that Device Tree
++(DT) is more suitable for the hardware.
++
++Relationship with Device Tree
++-----------------------------
++
++ACPI support in drivers and subsystems for ARMv8 should never be mutually
++exclusive with DT support at compile time.
++
++At boot time the kernel will only use one description method depending on
++parameters passed from the bootloader (including kernel bootargs).
++
++Regardless of whether DT or ACPI is used, the kernel must always be capable
++of booting with either scheme (in kernels with both schemes enabled at compile
++time).
++
++When booting using ACPI tables the /chosen node in DT will still be parsed
++to extract the kernel command line and initrd path. No other section of
++the DT will be used.
++
++Booting using ACPI tables
++-------------------------
++
++Currently, the only defined method to pass ACPI tables to the kernel on ARMv8
++is via the UEFI system configuration table.
++
++The UEFI implementation MUST set the ACPI_20_TABLE_GUID to point to the
++RSDP table (the table with the ACPI signature "RSD PTR ").
++
++The pointer to the RSDP table will be retrieved from EFI by the ACPI core.
++
++Processing of ACPI tables may be disabled by passing acpi=off on the kernel
++command line.
++
++DO use an XSDT; RSDTs are deprecated and should not be used on arm64. They
++only allow for 32-bit addresses.
++
++DO NOT use the 32-bit address fields in the FADT; they are deprecated. The
++64-bit alternatives MUST be used.
++
++The minimum set of tables MUST include RSDP, XSDT, FACS, FADT, DSDT, MADT
++and GTDT. If PCI is used the MCFG table MUST also be present.
++
++ACPI Detection
++--------------
++
++Drivers should determine their probe() type by checking for ACPI_HANDLE,
++or .of_node, or other information in the device structure. This is
++detailed further in the "Driver Recommendations" section.
++
++In non-driver code If the presence of ACPI needs to be detected at runtime,
++then check the value of acpi_disabled. If CONFIG_ACPI is not set,
++acpi_disabled will always be 1.
++
++Device Enumeration
++------------------
++
++Device descriptions in ACPI should use standard recognized ACPI interfaces.
++These are far simpler than the information provided via Device Tree. Drivers
++should take into account this simplicity and work with sensible defaults.
++
++On no account should a Device Tree attempt to be replicated in ASL using such
++constructs as Name(KEY0, "Value1") type constructs. Additional driver specific
++data should be represented with the appropriate _DSD (ACPI Section 6.2.5)
++structure. _DSM (ACPI Section 9.14.1) should only be used if _DSD cannot
++represent the data required.
++
++This data should be rare and not OS specific. For x86 ACPI has taken to
++identifying itself as Windows because it was found that only one path was
++routinely tested. For ARMv8 it would be preferable to have only one well
++tested path.
++
++_DSD covers more than the generic server case and care should be taken not to
++replicate highly specific embedded behaviour from DT into generic servers.
++
++Common _DSD bindings should be submitted to ASWG to be included in the
++document :-
++
++http://www.uefi.org/sites/default/files/resources/_DSD-implementation-guide-toplevel.htm
++
++If these bindings are mirrored from DT care should be taken to ensure they are
++reviewed as DT bindings before submission to limit divergance in bindings.
++
++Programmable Power Control Resources
++------------------------------------
++
++Programmable power control resources include such resources as voltage/current
++providers (regulators) and clock sources.
++
++For power control of these resources they should be represented with Power
++Resource Objects (ACPI Section 7.1). The ACPI core will then handle correctly
++enabling/disabling of resources as they are needed.
++
++The ACPI 5.1 specification does not contain any standard binding for these
++objects to enable programmable levels or rates so this should be avoided if
++possible and the resources set to appropriate levels by the firmware. If this is
++not possible then any manipulation should be abstracted in ASL.
++
++Each device in ACPI has D-states and these can be controlled through
++the optional methods _PS0..._PS3 where _PS0 is full on and _PS3 is full off.
++
++If either _PS0 or _PS3 is implemented, then the other method must also be
++implemented.
++
++If a device requires usage or setup of a power resource when on, the ASL
++should organize that it is allocated/enabled using the _PS0 method.
++
++Resources allocated/enabled in the _PS0 method should be disabled/de-allocated
++in the _PS3 method.
++
++Such code in _PS? methods will of course be very platform specific but
++should allow the driver to operate the device without special non-standard
++values being read from ASL. Further, abstracting the use of these resources
++allows hardware revisions without requiring updates to the kernel.
++
++Clocks
++------
++
++Like clocks that are part of the power resources there is no standard way
++to represent a clock tree in ACPI 5.1 in a similar manner to how it is
++described in DT.
++
++Devices affected by this include things like UARTs, SoC driven LCD displays,
++etc.
++
++The firmware (for example, UEFI) should initialize these clocks to fixed working
++values before the kernel is executed.
++
++Driver Recommendations
++----------------------
++
++DO NOT remove any FDT handling when adding ACPI support for a driver. Different
++systems may use the same device.
++
++DO try and keep complex sections of ACPI and DT functionality separate. This
++may mean a patch to break out some complex DT to another function before
++the patch to add ACPI. This may happen in other functions but is most likely
++in probe function. This gives a clearer flow of data for reviewing driver
++source.
++
++probe() :-
++
++static int device_probe_dt(struct platform_device *pdev)
++{
++	/* DT specific functionality */
++	...
++}
++
++static int device_probe_acpi(struct platform_device *pdev)
++{
++	/* ACPI specific functionality */
++	...
++}
++
++static int device_probe(stuct platform_device *pdev)
++{
++	...
++	struct device_node node = pdev->dev.of_node;
++	...
++
++	if (node)
++		ret = device_probe_dt(pdev);
++	else if (ACPI_HANDLE(&pdev->dev))
++		ret = device_probe_acpi(pdev);
++	else
++		/* other initialization */
++		...
++	/* Continue with any generic probe operations */
++	...
++}
++
++DO keep the MODULE_DEVICE_TABLE entries together in the driver to make it clear
++the different names the driver is probed for, both from DT and from ACPI.
++
++module device tables :-
++
++static struct of_device_id virtio_mmio_match[] = {
++        { .compatible = "virtio,mmio", },
++        { }
++};
++MODULE_DEVICE_TABLE(of, virtio_mmio_match);
++
++static const struct acpi_device_id virtio_mmio_acpi_match[] = {
++        { "LNRO0005", },
++        { }
++};
++MODULE_DEVICE_TABLE(acpi, virtio_mmio_acpi_match);
++
++ASWG
++----
++
++The following areas are not yet well defined for ARM in the current ACPI
++specification and are expected to be worked through in the UEFI ACPI
++Specification Working Group (ASWG) <http://www.uefi.org/workinggroups>.
++Participation in this group is open to all UEFI members.
++
++	- ACPI based CPU topology
++	- ACPI based Power management
++	- CPU idle control based on PSCI
++	- CPU performance control (CPPC)
++	- ACPI based SMMU
++	- ITS support for GIC in MADT
++
++No code shall be accepted into the kernel unless it complies with the released
++standards from UEFI ASWG. If there are features missing from ACPI to make it
++function on a platform, ECRs should be submitted to ASWG and go through the
++approval process.
 diff --git a/Documentation/devicetree/bindings/pci/xgene-pci.txt b/Documentation/devicetree/bindings/pci/xgene-pci.txt
 new file mode 100644
-index 0000000..e19fdb8
+index 0000000..1070b06
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/pci/xgene-pci.txt
-@@ -0,0 +1,52 @@
+@@ -0,0 +1,57 @@
 +* AppliedMicro X-Gene PCIe interface
 +
 +Required properties:
@@ -60,10 +347,12 @@ index 0000000..e19fdb8
 +
 +Optional properties:
 +- status: Either "ok" or "disabled".
++- dma-coherent: Present if dma operations are coherent
 +
 +Example:
 +
 +SoC specific DT Entry:
++
 +	pcie0: pcie@1f2b0000 {
 +		status = "disabled";
 +		device_type = "pci";
@@ -72,28 +361,52 @@ index 0000000..e19fdb8
 +		#size-cells = <2>;
 +		#address-cells = <3>;
 +		reg = < 0x00 0x1f2b0000 0x0 0x00010000   /* Controller registers */
-+			0xe0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++			0xe0 0xd0000000 0x0 0x00040000>; /* PCI config space */
 +		reg-names = "csr", "cfg";
-+		ranges = <0x01000000 0x00 0x00000000 0xe0 0x00000000 0x00 0x00010000   /* io */
-+			  0x02000000 0x00 0x10000000 0xe0 0x10000000 0x00 0x80000000>; /* mem */
-+		dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++		ranges = <0x01000000 0x00 0x00000000 0xe0 0x10000000 0x00 0x00010000   /* io */
++			  0x02000000 0x00 0x80000000 0xe1 0x80000000 0x00 0x80000000>; /* mem */
++		dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++			      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +		interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +		interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc2 0x1
 +				 0x0 0x0 0x0 0x2 &gic 0x0 0xc3 0x1
 +				 0x0 0x0 0x0 0x3 &gic 0x0 0xc4 0x1
 +				 0x0 0x0 0x0 0x4 &gic 0x0 0xc5 0x1>;
++		dma-coherent;
 +		clocks = <&pcie0clk 0>;
 +	};
++
 +
 +Board specific DT Entry:
 +	&pcie0 {
 +		status = "ok";
 +	};
+diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
+index 10d51c2..9464c6d 100644
+--- a/Documentation/kernel-parameters.txt
++++ b/Documentation/kernel-parameters.txt
+@@ -165,7 +165,7 @@ multipliers 'Kilo', 'Mega', and 'Giga', equalling 2^10, 2^20, and 2^30
+ bytes respectively. Such letter suffixes can also be entirely omitted.
+ 
+ 
+-	acpi=		[HW,ACPI,X86]
++	acpi=		[HW,ACPI,X86,ARM]
+ 			Advanced Configuration and Power Interface
+ 			Format: { force | off | strict | noirq | rsdt }
+ 			force -- enable ACPI if default was off
+@@ -175,6 +175,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+ 				strictly ACPI specification compliant.
+ 			rsdt -- prefer RSDT over (default) XSDT
+ 			copy_dsdt -- copy DSDT to memory
++			For ARM64, ONLY "acpi=off" is available.
+ 
+ 			See also Documentation/power/runtime_pm.txt, pci=noacpi
+ 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 2f85f55..8980971 100644
+index 670b3dc..b18bc49 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -6894,6 +6894,13 @@ L:	linux-pci@vger.kernel.org
+@@ -6942,6 +6942,14 @@ L:	linux-pci@vger.kernel.org
  S:	Maintained
  F:	drivers/pci/host/*spear*
  
@@ -102,16 +415,202 @@ index 2f85f55..8980971 100644
 +L:	linux-pci@vger.kernel.org
 +L:	linux-arm-kernel@lists.infradead.org
 +S:	Maintained
++F:	Documentation/devicetree/bindings/pci/xgene-pci.txt
 +F:	drivers/pci/host/pci-xgene.c
 +
  PCMCIA SUBSYSTEM
  P:	Linux PCMCIA Team
  L:	linux-pcmcia@lists.infradead.org
+diff --git a/arch/arm/include/asm/io.h b/arch/arm/include/asm/io.h
+index 3d23418..22b7529 100644
+--- a/arch/arm/include/asm/io.h
++++ b/arch/arm/include/asm/io.h
+@@ -178,6 +178,7 @@ static inline void __iomem *__typesafe_io(unsigned long addr)
+ 
+ /* PCI fixed i/o mapping */
+ #define PCI_IO_VIRT_BASE	0xfee00000
++#define PCI_IOBASE		PCI_IO_VIRT_BASE
+ 
+ #if defined(CONFIG_PCI)
+ void pci_ioremap_set_mem_type(int mem_type);
+diff --git a/arch/arm/include/asm/kvm_mmu.h b/arch/arm/include/asm/kvm_mmu.h
+index 5cc0b0f..03a08bb 100644
+--- a/arch/arm/include/asm/kvm_mmu.h
++++ b/arch/arm/include/asm/kvm_mmu.h
+@@ -21,6 +21,7 @@
+ 
+ #include <asm/memory.h>
+ #include <asm/page.h>
++#include <asm/kvm_arm.h>
+ 
+ /*
+  * We directly use the kernel VA for the HYP, as we can directly share
+@@ -178,6 +179,18 @@ static inline void coherent_cache_guest_page(struct kvm_vcpu *vcpu, hva_t hva,
+ 
+ void stage2_flush_vm(struct kvm *kvm);
+ 
++static inline int kvm_get_phys_addr_shift(void)
++{
++	return KVM_PHYS_SHIFT;
++}
++
++
++static inline u32 get_vttbr_baddr_mask(void)
++{
++	return VTTBR_BADDR_MASK;
++}
++
++
+ #endif	/* !__ASSEMBLY__ */
+ 
+ #endif /* __ARM_KVM_MMU_H__ */
+diff --git a/arch/arm/kvm/arm.c b/arch/arm/kvm/arm.c
+index a99e0cd..d0fca8f 100644
+--- a/arch/arm/kvm/arm.c
++++ b/arch/arm/kvm/arm.c
+@@ -37,6 +37,7 @@
+ #include <asm/mman.h>
+ #include <asm/tlbflush.h>
+ #include <asm/cacheflush.h>
++#include <asm/cputype.h>
+ #include <asm/virt.h>
+ #include <asm/kvm_arm.h>
+ #include <asm/kvm_asm.h>
+@@ -61,6 +62,12 @@ static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
+ static u8 kvm_next_vmid;
+ static DEFINE_SPINLOCK(kvm_vmid_lock);
+ 
++#ifdef CONFIG_ARM64
++static u64 vttbr_baddr_mask;
++#else
++static u32 vttbr_baddr_mask;
++#endif
++
+ static bool vgic_present;
+ 
+ static void kvm_arm_set_running_vcpu(struct kvm_vcpu *vcpu)
+@@ -429,8 +436,14 @@ static void update_vttbr(struct kvm *kvm)
+ 	/* update vttbr to be used with the new vmid */
+ 	pgd_phys = virt_to_phys(kvm->arch.pgd);
+ 	vmid = ((u64)(kvm->arch.vmid) << VTTBR_VMID_SHIFT) & VTTBR_VMID_MASK;
+-	kvm->arch.vttbr = pgd_phys & VTTBR_BADDR_MASK;
+-	kvm->arch.vttbr |= vmid;
++
++	/*
++	 * If the VTTBR isn't aligned there is something wrong with the system
++	 * or kernel.
++	 */
++	BUG_ON(pgd_phys & ~vttbr_baddr_mask);
++
++	kvm->arch.vttbr = pgd_phys | vmid;
+ 
+ 	spin_unlock(&kvm_vmid_lock);
+ }
+@@ -1015,6 +1028,12 @@ int kvm_arch_init(void *opaque)
+ 		}
+ 	}
+ 
++	vttbr_baddr_mask = get_vttbr_baddr_mask();
++	if (vttbr_baddr_mask == ~0) {
++		kvm_err("Cannot set vttbr_baddr_mask\n");
++		return -EINVAL;
++	}
++
+ 	cpu_notifier_register_begin();
+ 
+ 	err = init_hyp_mode();
+diff --git a/arch/arm/mach-integrator/pci_v3.c b/arch/arm/mach-integrator/pci_v3.c
+index 05e1f73..c186a17 100644
+--- a/arch/arm/mach-integrator/pci_v3.c
++++ b/arch/arm/mach-integrator/pci_v3.c
+@@ -660,6 +660,7 @@ static void __init pci_v3_preinit(void)
+ {
+ 	unsigned long flags;
+ 	unsigned int temp;
++	phys_addr_t io_address = pci_pio_to_address(io_mem.start);
+ 
+ 	pcibios_min_mem = 0x00100000;
+ 
+@@ -701,7 +702,7 @@ static void __init pci_v3_preinit(void)
+ 	/*
+ 	 * Setup window 2 - PCI IO
+ 	 */
+-	v3_writel(V3_LB_BASE2, v3_addr_to_lb_base2(io_mem.start) |
++	v3_writel(V3_LB_BASE2, v3_addr_to_lb_base2(io_address) |
+ 			V3_LB_BASE_ENABLE);
+ 	v3_writew(V3_LB_MAP2, v3_addr_to_lb_map2(0));
+ 
+@@ -742,6 +743,7 @@ static void __init pci_v3_preinit(void)
+ static void __init pci_v3_postinit(void)
+ {
+ 	unsigned int pci_cmd;
++	phys_addr_t io_address = pci_pio_to_address(io_mem.start);
+ 
+ 	pci_cmd = PCI_COMMAND_MEMORY |
+ 		  PCI_COMMAND_MASTER | PCI_COMMAND_INVALIDATE;
+@@ -758,7 +760,7 @@ static void __init pci_v3_postinit(void)
+ 		       "interrupt: %d\n", ret);
+ #endif
+ 
+-	register_isa_ports(non_mem.start, io_mem.start, 0);
++	register_isa_ports(non_mem.start, io_address, 0);
+ }
+ 
+ /*
+@@ -867,33 +869,32 @@ static int __init pci_v3_probe(struct platform_device *pdev)
+ 
+ 	for_each_of_pci_range(&parser, &range) {
+ 		if (!range.flags) {
+-			of_pci_range_to_resource(&range, np, &conf_mem);
++			ret = of_pci_range_to_resource(&range, np, &conf_mem);
+ 			conf_mem.name = "PCIv3 config";
+ 		}
+ 		if (range.flags & IORESOURCE_IO) {
+-			of_pci_range_to_resource(&range, np, &io_mem);
++			ret = of_pci_range_to_resource(&range, np, &io_mem);
+ 			io_mem.name = "PCIv3 I/O";
+ 		}
+ 		if ((range.flags & IORESOURCE_MEM) &&
+ 			!(range.flags & IORESOURCE_PREFETCH)) {
+ 			non_mem_pci = range.pci_addr;
+ 			non_mem_pci_sz = range.size;
+-			of_pci_range_to_resource(&range, np, &non_mem);
++			ret = of_pci_range_to_resource(&range, np, &non_mem);
+ 			non_mem.name = "PCIv3 non-prefetched mem";
+ 		}
+ 		if ((range.flags & IORESOURCE_MEM) &&
+ 			(range.flags & IORESOURCE_PREFETCH)) {
+ 			pre_mem_pci = range.pci_addr;
+ 			pre_mem_pci_sz = range.size;
+-			of_pci_range_to_resource(&range, np, &pre_mem);
++			ret = of_pci_range_to_resource(&range, np, &pre_mem);
+ 			pre_mem.name = "PCIv3 prefetched mem";
+ 		}
+-	}
+ 
+-	if (!conf_mem.start || !io_mem.start ||
+-	    !non_mem.start || !pre_mem.start) {
+-		dev_err(&pdev->dev, "missing ranges in device node\n");
+-		return -EINVAL;
++		if (ret < 0) {
++			dev_err(&pdev->dev, "missing ranges in device node\n");
++			return ret;
++		}
+ 	}
+ 
+ 	pci_v3.map_irq = of_irq_parse_and_map_pci;
 diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index fd4e81a..e8559bb 100644
+index fd4e81a..e57b91a 100644
 --- a/arch/arm64/Kconfig
 +++ b/arch/arm64/Kconfig
-@@ -81,7 +81,7 @@ config MMU
+@@ -1,5 +1,6 @@
+ config ARM64
+ 	def_bool y
++	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
+ 	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
+ 	select ARCH_HAS_SG_CHAIN
+ 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
+@@ -81,7 +82,7 @@ config MMU
  	def_bool y
  
  config NO_IOPORT_MAP
@@ -120,18 +619,21 @@ index fd4e81a..e8559bb 100644
  
  config STACKTRACE_SUPPORT
  	def_bool y
-@@ -156,6 +156,23 @@ menu "Bus support"
+@@ -156,6 +157,26 @@ menu "Bus support"
  config ARM_AMBA
  	bool
  
 +config PCI
 +	bool "PCI support"
 +	help
-+	  This feature enables support for PCIe bus system. If you say Y
++	  This feature enables support for PCI bus system. If you say Y
 +	  here, the kernel will include drivers and infrastructure code
-+	  to support PCIe bus devices.
++	  to support PCI bus devices.
 +
 +config PCI_DOMAINS
++	def_bool PCI
++
++config PCI_DOMAINS_GENERIC
 +	def_bool PCI
 +
 +config PCI_SYSCALL
@@ -144,15 +646,45 @@ index fd4e81a..e8559bb 100644
  endmenu
  
  menu "Kernel Features"
+@@ -235,6 +256,9 @@ config SMP
+ 
+ 	  If you don't know what to do here, say N.
+ 
++config ARM_PARKING_PROTOCOL
++	def_bool y if SMP
++
+ config SCHED_MC
+ 	bool "Multi-core scheduler support"
+ 	depends on SMP
+@@ -421,6 +445,8 @@ source "drivers/Kconfig"
+ 
+ source "drivers/firmware/Kconfig"
+ 
++source "drivers/acpi/Kconfig"
++
+ source "fs/Kconfig"
+ 
+ source "arch/arm64/kvm/Kconfig"
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 2df5e5d..bddd4e3 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -50,6 +50,7 @@ core-y		+= arch/arm64/kernel/ arch/arm64/mm/
+ core-$(CONFIG_KVM) += arch/arm64/kvm/
+ core-$(CONFIG_XEN) += arch/arm64/xen/
+ core-$(CONFIG_CRYPTO) += arch/arm64/crypto/
++drivers-$(CONFIG_PCI)	+= arch/arm64/pci/
+ libs-y		:= arch/arm64/lib/ $(libs-y)
+ libs-y		+= $(LIBGCC)
+ libs-$(CONFIG_EFI_STUB) += drivers/firmware/efi/libstub/
 diff --git a/arch/arm64/boot/dts/apm-mustang.dts b/arch/arm64/boot/dts/apm-mustang.dts
-index b2f5622..0cb67fc 100644
+index b2f5622..f649000 100644
 --- a/arch/arm64/boot/dts/apm-mustang.dts
 +++ b/arch/arm64/boot/dts/apm-mustang.dts
-@@ -32,3 +32,11 @@
- &menet {
- 	status = "ok";
+@@ -25,6 +25,14 @@
+ 	};
  };
-+
+ 
 +&pcie0clk {
 +	status = "ok";
 +};
@@ -160,88 +692,15 @@ index b2f5622..0cb67fc 100644
 +&pcie0 {
 +	status = "ok";
 +};
++
+ &serial0 {
+ 	status = "ok";
+ };
 diff --git a/arch/arm64/boot/dts/apm-storm.dtsi b/arch/arm64/boot/dts/apm-storm.dtsi
-index c0aceef..fb2ee54 100644
+index c0aceef..403197a 100644
 --- a/arch/arm64/boot/dts/apm-storm.dtsi
 +++ b/arch/arm64/boot/dts/apm-storm.dtsi
-@@ -24,56 +24,56 @@
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x000>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@001 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x001>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@100 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x100>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@101 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x101>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@200 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x200>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@201 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x201>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@300 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x300>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 		cpu@301 {
- 			device_type = "cpu";
- 			compatible = "apm,potenza", "arm,armv8";
- 			reg = <0x0 0x301>;
- 			enable-method = "spin-table";
--			cpu-release-addr = <0x1 0x0000fff8>;
-+			cpu-release-addr = <0x40 0x0000f000>;
- 		};
- 	};
- 
-@@ -97,6 +97,11 @@
- 		clock-frequency = <50000000>;
- 	};
- 
-+	pmu {
-+		compatible = "arm,armv8-pmuv3";
-+		interrupts = <1 12 0xff04>;
-+	};
-+
- 	soc {
- 		compatible = "simple-bus";
- 		#address-cells = <2>;
-@@ -269,6 +274,161 @@
+@@ -269,6 +269,171 @@
  				enable-mask = <0x2>;
  				clock-output-names = "rtcclk";
  			};
@@ -305,16 +764,18 @@ index c0aceef..fb2ee54 100644
 +			#size-cells = <2>;
 +			#address-cells = <3>;
 +			reg = < 0x00 0x1f2b0000 0x0 0x00010000   /* Controller registers */
-+				0xe0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++				0xe0 0xd0000000 0x0 0x00040000>; /* PCI config space */
 +			reg-names = "csr", "cfg";
-+			ranges = <0x01000000 0x00 0x00000000 0xe0 0x00000000 0x00 0x00010000   /* io */
-+				  0x02000000 0x00 0x10000000 0xe0 0x10000000 0x00 0x80000000>; /* mem */
-+			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			ranges = <0x01000000 0x00 0x00000000 0xe0 0x10000000 0x00 0x00010000   /* io */
++				  0x02000000 0x00 0x80000000 0xe1 0x80000000 0x00 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++				      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc2 0x1
 +					 0x0 0x0 0x0 0x2 &gic 0x0 0xc3 0x1
 +					 0x0 0x0 0x0 0x3 &gic 0x0 0xc4 0x1
 +					 0x0 0x0 0x0 0x4 &gic 0x0 0xc5 0x1>;
++			dma-coherent;
 +			clocks = <&pcie0clk 0>;
 +		};
 +
@@ -326,16 +787,18 @@ index c0aceef..fb2ee54 100644
 +			#size-cells = <2>;
 +			#address-cells = <3>;
 +			reg = < 0x00 0x1f2c0000 0x0 0x00010000   /* Controller registers */
-+				0xd0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++				0xd0 0xd0000000 0x0 0x00040000>; /* PCI config space */
 +			reg-names = "csr", "cfg";
-+			ranges = <0x01000000 0x0 0x00000000 0xd0 0x00000000 0x00 0x00010000   /* io  */
-+				  0x02000000 0x0 0x10000000 0xd0 0x10000000 0x00 0x80000000>; /* mem */
-+			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			ranges = <0x01000000 0x0 0x00000000 0xd0 0x10000000 0x00 0x00010000   /* io  */
++				  0x02000000 0x0 0x80000000 0xd1 0x80000000 0x00 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++				      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xc8 0x1
 +					 0x0 0x0 0x0 0x2 &gic 0x0 0xc9 0x1
 +					 0x0 0x0 0x0 0x3 &gic 0x0 0xca 0x1
 +					 0x0 0x0 0x0 0x4 &gic 0x0 0xcb 0x1>;
++			dma-coherent;
 +			clocks = <&pcie1clk 0>;
 +		};
 +
@@ -347,16 +810,18 @@ index c0aceef..fb2ee54 100644
 +			#size-cells = <2>;
 +			#address-cells = <3>;
 +			reg =  < 0x00 0x1f2d0000 0x0 0x00010000   /* Controller registers */
-+				 0x90 0xd0000000 0x0 0x00200000>; /* PCI config space */
++				 0x90 0xd0000000 0x0 0x00040000>; /* PCI config space */
 +			reg-names = "csr", "cfg";
-+			ranges = <0x01000000 0x0 0x00000000 0x90 0x00000000 0x0 0x00010000   /* io  */
-+				  0x02000000 0x0 0x10000000 0x90 0x10000000 0x0 0x80000000>; /* mem */
-+			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			ranges = <0x01000000 0x0 0x00000000 0x90 0x10000000 0x0 0x00010000   /* io  */
++				  0x02000000 0x0 0x80000000 0x91 0x80000000 0x0 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++				      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xce 0x1
 +					 0x0 0x0 0x0 0x2 &gic 0x0 0xcf 0x1
 +					 0x0 0x0 0x0 0x3 &gic 0x0 0xd0 0x1
 +					 0x0 0x0 0x0 0x4 &gic 0x0 0xd1 0x1>;
++			dma-coherent;
 +			clocks = <&pcie2clk 0>;
 +		};
 +
@@ -368,16 +833,18 @@ index c0aceef..fb2ee54 100644
 +			#size-cells = <2>;
 +			#address-cells = <3>;
 +			reg = < 0x00 0x1f500000 0x0 0x00010000   /* Controller registers */
-+				0xa0 0xd0000000 0x0 0x00200000>; /* PCI config space */
++				0xa0 0xd0000000 0x0 0x00040000>; /* PCI config space */
 +			reg-names = "csr", "cfg";
-+			ranges = <0x01000000 0x0 0x00000000 0xa0 0x00000000 0x0 0x00010000  /* io */
-+				  0x02000000 0x0 0x10000000 0xa0 0x10000000 0x0 0x80000000>; /* mem  */
-+			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			ranges = <0x01000000 0x0 0x00000000 0xa0 0x10000000 0x0 0x00010000   /* io   */
++				  0x02000000 0x0 0x80000000 0xa1 0x80000000 0x0 0x80000000>; /* mem  */
++			dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++				      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xd4 0x1
 +					 0x0 0x0 0x0 0x2 &gic 0x0 0xd5 0x1
 +					 0x0 0x0 0x0 0x3 &gic 0x0 0xd6 0x1
 +					 0x0 0x0 0x0 0x4 &gic 0x0 0xd7 0x1>;
++			dma-coherent;
 +			clocks = <&pcie3clk 0>;
 +		};
 +
@@ -391,36 +858,20 @@ index c0aceef..fb2ee54 100644
 +			reg = < 0x00 0x1f510000 0x0 0x00010000   /* Controller registers */
 +				0xc0 0xd0000000 0x0 0x00200000>; /* PCI config space */
 +			reg-names = "csr", "cfg";
-+			ranges = <0x01000000 0x0 0x00000000 0xc0 0x00000000 0x0 0x00010000   /* io  */
-+				  0x02000000 0x0 0x10000000 0xc0 0x10000000 0x0 0x80000000>; /* mem */
-+			dma-ranges = <0x42000000 0x40 0x00000000 0x40 0x00000000 0x40 0x00000000>;
++			ranges = <0x01000000 0x0 0x00000000 0xc0 0x10000000 0x0 0x00010000   /* io  */
++				  0x02000000 0x0 0x80000000 0xc1 0x80000000 0x0 0x80000000>; /* mem */
++			dma-ranges = <0x42000000 0x80 0x00000000 0x80 0x00000000 0x00 0x80000000
++				      0x42000000 0x00 0x00000000 0x00 0x00000000 0x80 0x00000000>;
 +			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
 +			interrupt-map = <0x0 0x0 0x0 0x1 &gic 0x0 0xda 0x1
 +					 0x0 0x0 0x0 0x2 &gic 0x0 0xdb 0x1
 +					 0x0 0x0 0x0 0x3 &gic 0x0 0xdc 0x1
 +					 0x0 0x0 0x0 0x4 &gic 0x0 0xdd 0x1>;
++			dma-coherent;
 +			clocks = <&pcie4clk 0>;
  		};
  
  		serial0: serial@1c020000 {
-@@ -277,7 +437,7 @@
- 			compatible = "ns16550a";
- 			reg = <0 0x1c020000 0x0 0x1000>;
- 			reg-shift = <2>;
--			clock-frequency = <10000000>; /* Updated by bootloader */
-+			clock-frequency = <50000000>; /* Updated by bootloader */
- 			interrupt-parent = <&gic>;
- 			interrupts = <0x0 0x4c 0x4>;
- 		};
-@@ -407,7 +567,7 @@
- 			interrupts = <0x0 0x3c 0x4>;
- 			dma-coherent;
- 			clocks = <&menetclk 0>;
--			local-mac-address = [00 01 73 00 00 01];
-+			local-mac-address = [00 00 00 00 00 00];
- 			phy-connection-type = "rgmii";
- 			phy-handle = <&menetphy>;
- 			mdio {
 diff --git a/arch/arm64/include/asm/Kbuild b/arch/arm64/include/asm/Kbuild
 index 0b3fcf8..07cb417 100644
 --- a/arch/arm64/include/asm/Kbuild
@@ -433,6 +884,147 @@ index 0b3fcf8..07cb417 100644
  generic-y += poll.h
  generic-y += preempt.h
  generic-y += resource.h
+diff --git a/arch/arm64/include/asm/acenv.h b/arch/arm64/include/asm/acenv.h
+new file mode 100644
+index 0000000..b49166f
+--- /dev/null
++++ b/arch/arm64/include/asm/acenv.h
+@@ -0,0 +1,18 @@
++/*
++ * ARM64 specific ACPICA environments and implementation
++ *
++ * Copyright (C) 2014, Linaro Ltd.
++ *   Author: Hanjun Guo <hanjun.guo@linaro.org>
++ *   Author: Graeme Gregory <graeme.gregory@linaro.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef _ASM_ACENV_H
++#define _ASM_ACENV_H
++
++/* It is required unconditionally by ACPI core, update it when needed. */
++
++#endif /* _ASM_ACENV_H */
+diff --git a/arch/arm64/include/asm/acpi.h b/arch/arm64/include/asm/acpi.h
+new file mode 100644
+index 0000000..7f6cd91
+--- /dev/null
++++ b/arch/arm64/include/asm/acpi.h
+@@ -0,0 +1,99 @@
++/*
++ *  Copyright (C) 2013-2014, Linaro Ltd.
++ *	Author: Al Stone <al.stone@linaro.org>
++ *	Author: Graeme Gregory <graeme.gregory@linaro.org>
++ *	Author: Hanjun Guo <hanjun.guo@linaro.org>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation;
++ */
++
++#ifndef _ASM_ACPI_H
++#define _ASM_ACPI_H
++
++#include <asm/smp_plat.h>
++
++/* Basic configuration for ACPI */
++#ifdef	CONFIG_ACPI
++#define acpi_strict 1	/* No out-of-spec workarounds on ARM64 */
++extern int acpi_disabled;
++extern int acpi_noirq;
++extern int acpi_pci_disabled;
++
++/* 1 to indicate PSCI 0.2+ is implemented */
++static inline bool acpi_psci_present(void)
++{
++	return acpi_gbl_FADT.arm_boot_flags & ACPI_FADT_PSCI_COMPLIANT;
++}
++
++/* 1 to indicate HVC must be used instead of SMC as the PSCI conduit */
++static inline bool acpi_psci_use_hvc(void)
++{
++	return acpi_gbl_FADT.arm_boot_flags & ACPI_FADT_PSCI_USE_HVC;
++}
++
++static inline void disable_acpi(void)
++{
++	acpi_disabled = 1;
++	acpi_pci_disabled = 1;
++	acpi_noirq = 1;
++}
++
++/* MPIDR value provided in GICC structure is 64 bits, but
++ * the acpi processor driver use the 32 bits cpu hardware
++ * ID (apic_id on intel platform) everywhere, it is pretty
++ * hard to modify the acpi processor driver to accept the
++ * 64 bits MPIDR value, at the same time, only 32 bits of
++ * the MPIDR is used in the 64 bits MPIDR, just pack the
++ * Affx fields into a single 32 bit identifier to accommodate
++ * the acpi processor drivers.
++ */
++static inline u32 pack_mpidr_into_32_bits(u64 mpidr)
++{
++	/*
++	 * Bits [0:7] Aff0;
++	 * Bits [8:15] Aff1;
++	 * Bits [16:23] Aff2;
++	 * Bits [32:39] Aff3;
++	 */
++	return (u32) ((mpidr & 0xff00000000) >> 8) | mpidr;
++}
++
++/*
++ * The ACPI processor driver for ACPI core code needs this macro
++ * to find out this cpu was already mapped (mapping from CPU hardware
++ * ID to CPU logical ID) or not.
++ *
++ * cpu_logical_map(cpu) is the mapping of MPIDR and the logical cpu,
++ * and MPIDR is the cpu hardware ID we needed to pack.
++ */
++#define cpu_physical_id(cpu) pack_mpidr_into_32_bits(cpu_logical_map(cpu))
++
++/*
++ * It's used from ACPI core in kdump to boot UP system with SMP kernel,
++ * with this check the ACPI core will not override the CPU index
++ * obtained from GICC with 0 and not print some error message as well.
++ * Since MADT must provide at least one GICC structure for GIC
++ * initialization, CPU will be always available in MADT on ARM64.
++ */
++static inline bool acpi_has_cpu_in_madt(void)
++{
++	return true;
++}
++
++static inline void arch_fix_phys_package_id(int num, u32 slot) { }
++void __init acpi_smp_init_cpus(void);
++
++extern int acpi_get_cpu_parked_address(int cpu, u64 *addr);
++
++#else
++
++static inline bool acpi_psci_present(void) { return false; }
++static inline bool acpi_psci_use_hvc(void) { return false; }
++static inline void acpi_smp_init_cpus(void) { }
++static inline int  acpi_get_cpu_parked_address(int cpu, u64 *addr) { return  -EOPNOTSUPP; }
++
++#endif /* CONFIG_ACPI */
++
++#endif /*_ASM_ACPI_H*/
+diff --git a/arch/arm64/include/asm/cpu_ops.h b/arch/arm64/include/asm/cpu_ops.h
+index d7b4b38..d149580 100644
+--- a/arch/arm64/include/asm/cpu_ops.h
++++ b/arch/arm64/include/asm/cpu_ops.h
+@@ -61,6 +61,7 @@ struct cpu_operations {
+ };
+ 
+ extern const struct cpu_operations *cpu_ops[NR_CPUS];
++const struct cpu_operations *cpu_get_ops(const char *name);
+ extern int __init cpu_read_ops(struct device_node *dn, int cpu);
+ extern void __init cpu_read_bootcpu_ops(void);
+ 
 diff --git a/arch/arm64/include/asm/elf.h b/arch/arm64/include/asm/elf.h
 index 01d3aab..8186df6 100644
 --- a/arch/arm64/include/asm/elf.h
@@ -448,7 +1040,7 @@ index 01d3aab..8186df6 100644
  #define CORE_DUMP_USE_REGSET
  #define ELF_EXEC_PAGESIZE	PAGE_SIZE
 diff --git a/arch/arm64/include/asm/io.h b/arch/arm64/include/asm/io.h
-index e0ecdcf..dc34039 100644
+index e0ecdcf..f998d90 100644
 --- a/arch/arm64/include/asm/io.h
 +++ b/arch/arm64/include/asm/io.h
 @@ -121,7 +121,8 @@ static inline u64 __raw_readq(const volatile void __iomem *addr)
@@ -457,16 +1049,162 @@ index e0ecdcf..dc34039 100644
   */
 -#define IO_SPACE_LIMIT		0xffff
 +#define arch_has_dev_port()	(1)
-+#define IO_SPACE_LIMIT		0x1ffffff
++#define IO_SPACE_LIMIT		(SZ_32M - 1)
  #define PCI_IOBASE		((void __iomem *)(MODULES_VADDR - SZ_32M))
  
  static inline u8 inb(unsigned long addr)
+diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
+index cc83520..ff4a4fa 100644
+--- a/arch/arm64/include/asm/kvm_arm.h
++++ b/arch/arm64/include/asm/kvm_arm.h
+@@ -95,7 +95,6 @@
+ /* TCR_EL2 Registers bits */
+ #define TCR_EL2_TBI	(1 << 20)
+ #define TCR_EL2_PS	(7 << 16)
+-#define TCR_EL2_PS_40B	(2 << 16)
+ #define TCR_EL2_TG0	(1 << 14)
+ #define TCR_EL2_SH0	(3 << 12)
+ #define TCR_EL2_ORGN0	(3 << 10)
+@@ -104,8 +103,6 @@
+ #define TCR_EL2_MASK	(TCR_EL2_TG0 | TCR_EL2_SH0 | \
+ 			 TCR_EL2_ORGN0 | TCR_EL2_IRGN0 | TCR_EL2_T0SZ)
+ 
+-#define TCR_EL2_FLAGS	(TCR_EL2_PS_40B)
+-
+ /* VTCR_EL2 Registers bits */
+ #define VTCR_EL2_PS_MASK	(7 << 16)
+ #define VTCR_EL2_TG0_MASK	(1 << 14)
+@@ -120,36 +117,28 @@
+ #define VTCR_EL2_SL0_MASK	(3 << 6)
+ #define VTCR_EL2_SL0_LVL1	(1 << 6)
+ #define VTCR_EL2_T0SZ_MASK	0x3f
+-#define VTCR_EL2_T0SZ_40B	24
++#define VTCR_EL2_T0SZ(bits)	(64 - (bits))
+ 
+ #ifdef CONFIG_ARM64_64K_PAGES
+ /*
+  * Stage2 translation configuration:
+- * 40bits output (PS = 2)
+- * 40bits input  (T0SZ = 24)
+  * 64kB pages (TG0 = 1)
+  * 2 level page tables (SL = 1)
+  */
+ #define VTCR_EL2_FLAGS		(VTCR_EL2_TG0_64K | VTCR_EL2_SH0_INNER | \
+ 				 VTCR_EL2_ORGN0_WBWA | VTCR_EL2_IRGN0_WBWA | \
+-				 VTCR_EL2_SL0_LVL1 | VTCR_EL2_T0SZ_40B)
+-#define VTTBR_X		(38 - VTCR_EL2_T0SZ_40B)
++				 VTCR_EL2_SL0_LVL1)
+ #else
+ /*
+  * Stage2 translation configuration:
+- * 40bits output (PS = 2)
+- * 40bits input  (T0SZ = 24)
+  * 4kB pages (TG0 = 0)
+  * 3 level page tables (SL = 1)
+  */
+ #define VTCR_EL2_FLAGS		(VTCR_EL2_TG0_4K | VTCR_EL2_SH0_INNER | \
+ 				 VTCR_EL2_ORGN0_WBWA | VTCR_EL2_IRGN0_WBWA | \
+-				 VTCR_EL2_SL0_LVL1 | VTCR_EL2_T0SZ_40B)
+-#define VTTBR_X		(37 - VTCR_EL2_T0SZ_40B)
++				 VTCR_EL2_SL0_LVL1)
+ #endif
+ 
+-#define VTTBR_BADDR_SHIFT (VTTBR_X - 1)
+-#define VTTBR_BADDR_MASK  (((1LLU << (40 - VTTBR_X)) - 1) << VTTBR_BADDR_SHIFT)
+ #define VTTBR_VMID_SHIFT  (48LLU)
+ #define VTTBR_VMID_MASK	  (0xffLLU << VTTBR_VMID_SHIFT)
+ 
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index 8e138c7..1c70b2f 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -167,5 +167,80 @@ static inline void coherent_cache_guest_page(struct kvm_vcpu *vcpu, hva_t hva,
+ 
+ void stage2_flush_vm(struct kvm *kvm);
+ 
++/*
++ * ARMv8 64K architecture limitations:
++ * 16 <= T0SZ <= 21 is valid under 3 level of translation tables
++ * 18 <= T0SZ <= 34 is valid under 2 level of translation tables
++ * 31 <= T0SZ <= 39 is valid under 1 level of transltaion tables
++ *
++ * ARMv8 4K architecture limitations:
++ * 16 <= T0SZ <= 24 is valid under 4 level of translation tables
++ * 21 <= T0SZ <= 33 is valid under 3 level of translation tables
++ * 30 <= T0SZ <= 39 is valid under 2 level of translation tables
++ *
++ * For 4K pages we only support 3 or 4 level, giving T0SZ a range of 16 to 33.
++ * For 64K pages we only support 2 or 3 level, giving T0SZ a range of 16 to 34.
++ *
++ * See Table D4-23 and Table D4-25 in ARM DDI 0487A.b to figure out
++ * the origin of the hardcoded values, 38 and 37.
++ */
++
++#ifdef CONFIG_ARM64_64K_PAGES
++static inline int t0sz_to_vttbr_x(int t0sz)
++{
++	if (t0sz < 16 || t0sz > 34) {
++		kvm_err("Cannot support %d-bit address space\n", 64 - t0sz);
++		return -EINVAL;
++	}
++
++	return 38 - t0sz;
++}
++#else /* 4K pages */
++static inline int t0sz_to_vttbr_x(int t0sz)
++{
++	if (t0sz < 16 || t0sz > 33) {
++		kvm_err("Cannot support %d-bit address space\n", 64 - t0sz);
++		return -EINVAL;
++	}
++	return 37 - t0sz;
++}
++#endif
++static inline int kvm_get_phys_addr_shift(void)
++{
++	int pa_range = read_cpuid(ID_AA64MMFR0_EL1) & 0xf;
++
++	switch (pa_range) {
++	case 0: return 32;
++	case 1: return 36;
++	case 2: return 40;
++	case 3: return 42;
++	case 4: return 44;
++	case 5: return 48;
++	default:
++		BUG();
++		return 0;
++	}
++}
++
++/**
++ * get_vttbr_baddr_mask - get mask value for vttbr base address
++ *
++ * In ARMv8, vttbr_baddr_mask cannot be determined in compile time since the
++ * stage2 input address size depends on hardware capability. Thus, we first
++ * need to read ID_AA64MMFR0_EL1.PARange and then set vttbr_baddr_mask with
++ * consideration of both the granule size and the level of translation tables.
++ */
++static inline u64 get_vttbr_baddr_mask(void)
++{
++	int t0sz, vttbr_x;
++
++	t0sz = VTCR_EL2_T0SZ(kvm_get_phys_addr_shift());
++	vttbr_x = t0sz_to_vttbr_x(t0sz);
++	if (vttbr_x < 0)
++		return ~0;
++	return GENMASK_ULL(48, (vttbr_x - 1));
++
++}
++
+ #endif /* __ASSEMBLY__ */
+ #endif /* __ARM64_KVM_MMU_H__ */
 diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
 new file mode 100644
-index 0000000..3f7856e
+index 0000000..872ba93
 --- /dev/null
 +++ b/arch/arm64/include/asm/pci.h
-@@ -0,0 +1,49 @@
+@@ -0,0 +1,37 @@
 +#ifndef __ASM_PCI_H
 +#define __ASM_PCI_H
 +#ifdef __KERNEL__
@@ -482,8 +1220,6 @@ index 0000000..3f7856e
 +#define PCIBIOS_MIN_IO		0x1000
 +#define PCIBIOS_MIN_MEM		0
 +
-+struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus);
-+
 +/*
 + * Set to 1 if the kernel should re-assign all PCI bus numbers
 + */
@@ -498,16 +1234,6 @@ index 0000000..3f7856e
 +extern int isa_dma_bridge_buggy;
 +
 +#ifdef CONFIG_PCI
-+static inline int pci_domain_nr(struct pci_bus *bus)
-+{
-+	struct pci_host_bridge *bridge = find_pci_host_bridge(bus);
-+
-+	if (bridge)
-+		return bridge->domain_nr;
-+
-+	return 0;
-+}
-+
 +static inline int pci_proc_domain(struct pci_bus *bus)
 +{
 +	return 1;
@@ -516,18 +1242,517 @@ index 0000000..3f7856e
 +
 +#endif  /* __KERNEL__ */
 +#endif  /* __ASM_PCI_H */
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index ffe1ba0..a968523 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -296,6 +296,8 @@ static inline int has_transparent_hugepage(void)
+ 	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_DEVICE_nGnRnE) | PTE_PXN | PTE_UXN)
+ #define pgprot_writecombine(prot) \
+ 	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_NORMAL_NC) | PTE_PXN | PTE_UXN)
++#define pgprot_device(prot) \
++	__pgprot_modify(prot, PTE_ATTRINDX_MASK, PTE_ATTRINDX(MT_DEVICE_nGnRE) | PTE_PXN | PTE_UXN)
+ #define __HAVE_PHYS_MEM_ACCESS_PROT
+ struct file;
+ extern pgprot_t phys_mem_access_prot(struct file *file, unsigned long pfn,
+diff --git a/arch/arm64/include/asm/psci.h b/arch/arm64/include/asm/psci.h
+index e5312ea..2454bc5 100644
+--- a/arch/arm64/include/asm/psci.h
++++ b/arch/arm64/include/asm/psci.h
+@@ -14,6 +14,7 @@
+ #ifndef __ASM_PSCI_H
+ #define __ASM_PSCI_H
+ 
+-int psci_init(void);
++int psci_dt_init(void);
++int psci_acpi_init(void);
+ 
+ #endif /* __ASM_PSCI_H */
+diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+index a498f2c..2ebbd55 100644
+--- a/arch/arm64/include/asm/smp.h
++++ b/arch/arm64/include/asm/smp.h
+@@ -39,9 +39,10 @@ extern void show_ipi_list(struct seq_file *p, int prec);
+ extern void handle_IPI(int ipinr, struct pt_regs *regs);
+ 
+ /*
+- * Setup the set of possible CPUs (via set_cpu_possible)
++ * Discover the set of possible CPUs and determine their
++ * SMP operations.
+  */
+-extern void smp_init_cpus(void);
++extern void of_smp_init_cpus(void);
+ 
+ /*
+  * Provide a function to raise an IPI cross call on CPUs in callmap.
+@@ -49,6 +50,11 @@ extern void smp_init_cpus(void);
+ extern void set_smp_cross_call(void (*)(const struct cpumask *, unsigned int));
+ 
+ /*
++ * Provide a function to signal a parked secondary CPU.
++ */
++extern void set_smp_boot_wakeup_call(void (*)(int cpu));
++
++/*
+  * Called from the secondary holding pen, this is the secondary CPU entry point.
+  */
+ asmlinkage void secondary_start_kernel(void);
 diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
-index df7ef87..1ed5a06 100644
+index df7ef87..b0bad2e 100644
 --- a/arch/arm64/kernel/Makefile
 +++ b/arch/arm64/kernel/Makefile
-@@ -29,6 +29,7 @@ arm64-obj-$(CONFIG_ARM64_CPU_SUSPEND)	+= sleep.o suspend.o
+@@ -21,7 +21,8 @@ arm64-obj-$(CONFIG_COMPAT)		+= sys32.o kuser32.o signal32.o 	\
+ 					   sys_compat.o
+ arm64-obj-$(CONFIG_FUNCTION_TRACER)	+= ftrace.o entry-ftrace.o
+ arm64-obj-$(CONFIG_MODULES)		+= arm64ksyms.o module.o
+-arm64-obj-$(CONFIG_SMP)			+= smp.o smp_spin_table.o topology.o
++arm64-obj-$(CONFIG_SMP)			+= smp.o smp_spin_table.o topology.o \
++					   smp_parking_protocol.o
+ arm64-obj-$(CONFIG_PERF_EVENTS)		+= perf_regs.o
+ arm64-obj-$(CONFIG_HW_PERF_EVENTS)	+= perf_event.o
+ arm64-obj-$(CONFIG_HAVE_HW_BREAKPOINT)	+= hw_breakpoint.o
+@@ -29,6 +30,8 @@ arm64-obj-$(CONFIG_ARM64_CPU_SUSPEND)	+= sleep.o suspend.o
  arm64-obj-$(CONFIG_JUMP_LABEL)		+= jump_label.o
  arm64-obj-$(CONFIG_KGDB)		+= kgdb.o
  arm64-obj-$(CONFIG_EFI)			+= efi.o efi-stub.o efi-entry.o
 +arm64-obj-$(CONFIG_PCI)			+= pci.o
++arm64-obj-$(CONFIG_ACPI)		+= acpi.o
  
  obj-y					+= $(arm64-obj-y) vdso/
  obj-m					+= $(arm64-obj-m)
+diff --git a/arch/arm64/kernel/acpi.c b/arch/arm64/kernel/acpi.c
+new file mode 100644
+index 0000000..5486426
+--- /dev/null
++++ b/arch/arm64/kernel/acpi.c
+@@ -0,0 +1,397 @@
++/*
++ *  ARM64 Specific Low-Level ACPI Boot Support
++ *
++ *  Copyright (C) 2013-2014, Linaro Ltd.
++ *	Author: Al Stone <al.stone@linaro.org>
++ *	Author: Graeme Gregory <graeme.gregory@linaro.org>
++ *	Author: Hanjun Guo <hanjun.guo@linaro.org>
++ *	Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
++ *	Author: Naresh Bhat <naresh.bhat@linaro.org>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#define pr_fmt(fmt) "ACPI: " fmt
++
++#include <linux/init.h>
++#include <linux/acpi.h>
++#include <linux/cpumask.h>
++#include <linux/memblock.h>
++#include <linux/irq.h>
++#include <linux/irqdomain.h>
++#include <linux/bootmem.h>
++#include <linux/smp.h>
++#include <linux/irqchip/arm-gic-acpi.h>
++
++#include <asm/cputype.h>
++#include <asm/cpu_ops.h>
++
++#define ARM64_ACPI_DISABLED_DEFAULT 1
++
++int acpi_noirq;			/* skip ACPI IRQ initialization */
++int acpi_disabled = ARM64_ACPI_DISABLED_DEFAULT;
++EXPORT_SYMBOL(acpi_disabled);
++
++int acpi_pci_disabled;		/* skip ACPI PCI scan and IRQ initialization */
++EXPORT_SYMBOL(acpi_pci_disabled);
++
++static int enabled_cpus;	/* Processors (GICC) with enabled flag in MADT */
++
++static char *boot_method;
++static u64 parked_address[NR_CPUS];
++
++/*
++ * Since we're on ARM, the default interrupt routing model
++ * clearly has to be GIC.
++ */
++enum acpi_irq_model_id acpi_irq_model = ACPI_IRQ_MODEL_GIC;
++
++/*
++ * __acpi_map_table() will be called before page_init(), so early_ioremap()
++ * or early_memremap() should be called here to for ACPI table mapping.
++ */
++char *__init __acpi_map_table(unsigned long phys, unsigned long size)
++{
++	if (!phys || !size)
++		return NULL;
++
++	return early_memremap(phys, size);
++}
++
++void __init __acpi_unmap_table(char *map, unsigned long size)
++{
++	if (!map || !size)
++		return;
++
++	early_memunmap(map, size);
++}
++
++/**
++ * acpi_map_gic_cpu_interface - generates a logical cpu number
++ * and map to MPIDR represented by GICC structure
++ * @mpidr: CPU's hardware id to register, MPIDR represented in MADT
++ * @enabled: this cpu is enabled or not
++ *
++ * Returns the logical cpu number which maps to MPIDR
++ */
++static int acpi_map_gic_cpu_interface(u64 mpidr, u64 parked_addr, u8 enabled)
++{
++	int cpu;
++
++	if (mpidr == INVALID_HWID) {
++		pr_info("Skip invalid cpu hardware ID\n");
++		return -EINVAL;
++	}
++
++	total_cpus++;
++	if (!enabled)
++		return -EINVAL;
++
++	if (enabled_cpus >=  NR_CPUS) {
++		pr_warn("NR_CPUS limit of %d reached, Processor %d/0x%llx ignored.\n",
++			NR_CPUS, total_cpus, mpidr);
++		return -EINVAL;
++	}
++
++	/* No need to check duplicate MPIDRs for the first CPU */
++	if (enabled_cpus) {
++		/*
++		 * Duplicate MPIDRs are a recipe for disaster. Scan
++		 * all initialized entries and check for
++		 * duplicates. If any is found just ignore the CPU.
++		 */
++		for_each_possible_cpu(cpu) {
++			if (cpu_logical_map(cpu) == mpidr) {
++				pr_err("Firmware bug, duplicate CPU MPIDR: 0x%llx in MADT\n",
++				mpidr);
++				return -EINVAL;
++			}
++		}
++		
++		/* allocate a logical cpu id for the new comer */
++		cpu = cpumask_next_zero(-1, cpu_possible_mask);
++	} else {
++		/* First GICC entry must be BSP as ACPI spec said */
++		if  (cpu_logical_map(0) != mpidr) {
++			pr_err("First GICC entry with MPIDR 0x%llx is not BSP\n",
++			       mpidr);
++			return -EINVAL;
++		}
++
++		/*
++		 * boot_cpu_init() already hold bit 0 in cpu_present_mask
++		 * for BSP, no need to allocate again.
++		 */
++		cpu = 0;
++	}
++
++	parked_address[cpu] = parked_addr;
++
++	/* CPU 0 was already initialized */
++	if (cpu) {
++		cpu_ops[cpu] = cpu_get_ops(boot_method);
++		if (!cpu_ops[cpu])
++			return -EINVAL;
++
++		if (cpu_ops[cpu]->cpu_init(NULL, cpu))
++			return -EOPNOTSUPP;
++
++		/* map the logical cpu id to cpu MPIDR */
++		cpu_logical_map(cpu) = mpidr;
++
++		set_cpu_possible(cpu, true);
++	} else {
++		/* get cpu0's ops, no need to return if ops is null */
++		cpu_ops[0] = cpu_get_ops(boot_method);
++	}
++
++	enabled_cpus++;
++	return cpu;
++}
++
++static int __init
++acpi_parse_gic_cpu_interface(struct acpi_subtable_header *header,
++				const unsigned long end)
++{
++	struct acpi_madt_generic_interrupt *processor;
++
++	processor = (struct acpi_madt_generic_interrupt *)header;
++
++	if (BAD_MADT_ENTRY(processor, end))
++		return -EINVAL;
++
++	acpi_table_print_madt_entry(header);
++
++	acpi_map_gic_cpu_interface(processor->arm_mpidr & MPIDR_HWID_BITMASK,
++		processor->parked_address, processor->flags & ACPI_MADT_ENABLED);
++
++	return 0;
++}
++
++/* Parse GIC cpu interface entries in MADT for SMP init */
++void __init acpi_smp_init_cpus(void)
++{
++	int count;
++
++	/*
++	 * do a partial walk of MADT to determine how many CPUs
++	 * we have including disabled CPUs, and get information
++	 * we need for SMP init
++	 */
++	count = acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_INTERRUPT,
++			acpi_parse_gic_cpu_interface, 0);
++
++	if (!count) {
++		pr_err("No GIC CPU interface entries present\n");
++		return;
++	} else if (count < 0) {
++		pr_err("Error parsing GIC CPU interface entry\n");
++		return;
++	}
++
++	/* Make boot-up look pretty */
++	pr_info("%d CPUs enabled, %d CPUs total\n", enabled_cpus, total_cpus);
++}
++
++int acpi_gsi_to_irq(u32 gsi, unsigned int *irq)
++{
++	*irq = irq_find_mapping(NULL, gsi);
++
++	return 0;
++}
++EXPORT_SYMBOL_GPL(acpi_gsi_to_irq);
++
++/*
++ * success: return IRQ number (>0)
++ * failure: return =< 0
++ */
++int acpi_register_gsi(struct device *dev, u32 gsi, int trigger, int polarity)
++{
++	unsigned int irq;
++	unsigned int irq_type;
++
++	/*
++	 * ACPI have no bindings to indicate SPI or PPI, so we
++	 * use different mappings from DT in ACPI.
++	 *
++	 * For FDT
++	 * PPI interrupt: in the range [0, 15];
++	 * SPI interrupt: in the range [0, 987];
++	 *
++	 * For ACPI, GSI should be unique so using
++	 * the hwirq directly for the mapping:
++	 * PPI interrupt: in the range [16, 31];
++	 * SPI interrupt: in the range [32, 1019];
++	 */
++
++	if (trigger == ACPI_EDGE_SENSITIVE &&
++				polarity == ACPI_ACTIVE_LOW)
++		irq_type = IRQ_TYPE_EDGE_FALLING;
++	else if (trigger == ACPI_EDGE_SENSITIVE &&
++				polarity == ACPI_ACTIVE_HIGH)
++		irq_type = IRQ_TYPE_EDGE_RISING;
++	else if (trigger == ACPI_LEVEL_SENSITIVE &&
++				polarity == ACPI_ACTIVE_LOW)
++		irq_type = IRQ_TYPE_LEVEL_LOW;
++	else if (trigger == ACPI_LEVEL_SENSITIVE &&
++				polarity == ACPI_ACTIVE_HIGH)
++		irq_type = IRQ_TYPE_LEVEL_HIGH;
++	else
++		irq_type = IRQ_TYPE_NONE;
++
++	/*
++	 * Since only one GIC is supported in ACPI 5.0, we can
++	 * create mapping refer to the default domain
++	 */
++	irq = irq_create_mapping(NULL, gsi);
++	if (!irq)
++		return irq;
++
++	/* Set irq type if specified and different than the current one */
++	if (irq_type != IRQ_TYPE_NONE &&
++		irq_type != irq_get_trigger_type(irq))
++		irq_set_irq_type(irq, irq_type);
++	return irq;
++}
++EXPORT_SYMBOL_GPL(acpi_register_gsi);
++
++void acpi_unregister_gsi(u32 gsi)
++{
++}
++EXPORT_SYMBOL_GPL(acpi_unregister_gsi);
++
++static int __init acpi_parse_fadt(struct acpi_table_header *table)
++{
++	struct acpi_table_fadt *fadt = (struct acpi_table_fadt *)table;
++
++	/*
++	 * Revision in table header is the FADT Major revision,
++	 * and there is a minor revision of FADT which was introduced
++	 * by ACPI 5.1, we only deal with ACPI 5.1 or higher revision
++	 * to get arm boot flags, or we will disable ACPI.
++	 */
++	if (table->revision > 5 ||
++	    (table->revision == 5 && fadt->minor_revision >= 1)) {
++		/*
++		 * ACPI 5.1 only has two explicit methods to boot up SMP,
++		 * PSCI and Parking protocol, but the Parking protocol is
++		 * only specified for ARMv7 now, so make PSCI as the only
++		 * way for the SMP boot protocol before some updates for
++		 * the ACPI spec or the Parking protocol spec.
++		 */
++		if (acpi_psci_present())
++			boot_method = "psci";
++		else if (IS_ENABLED(CONFIG_ARM_PARKING_PROTOCOL))
++			boot_method = "parking-protocol";
++
++		if (!boot_method)
++			pr_warn("has no boot support, will not bring up secondary CPUs\n");
++		return -EOPNOTSUPP;
++	}
++
++	pr_warn("Unsupported FADT revision %d.%d, should be 5.1+, will disable ACPI\n",
++		table->revision, fadt->minor_revision);
++	disable_acpi();
++
++	return -EINVAL;
++}
++
++/*
++ * acpi_boot_table_init() called from setup_arch(), always.
++ *	1. find RSDP and get its address, and then find XSDT
++ *	2. extract all tables and checksums them all
++ *	3. check ACPI FADT revisoin
++ *
++ * We can parse ACPI boot-time tables such as MADT after
++ * this function is called.
++ */
++void __init acpi_boot_table_init(void)
++{
++	/* If acpi_disabled, bail out */
++	if (acpi_disabled)
++		return;
++
++	/* Initialize the ACPI boot-time table parser. */
++	if (acpi_table_init()) {
++		disable_acpi();
++		return;
++	}
++
++	if (acpi_table_parse(ACPI_SIG_FADT, acpi_parse_fadt))
++		pr_err("Can't find FADT or error happened during parsing FADT\n");
++}
++
++void __init acpi_gic_init(void)
++{
++	struct acpi_table_header *table;
++	acpi_status status;
++	acpi_size tbl_size;
++	int err;
++
++	status = acpi_get_table_with_size(ACPI_SIG_MADT, 0, &table, &tbl_size);
++	if (ACPI_FAILURE(status)) {
++		const char *msg = acpi_format_exception(status);
++
++		pr_err("Failed to get MADT table, %s\n", msg);
++		return;
++	}
++
++	err = gic_v2_acpi_init(table);
++	if (err)
++		pr_err("Failed to initialize GIC IRQ controller");
++
++	early_acpi_os_unmap_memory((char *)table, tbl_size);
++}
++
++/*
++ * Parked Address in ACPI GIC structure will be used as the CPU
++ * release address
++ */
++int acpi_get_cpu_parked_address(int cpu, u64 *addr)
++{
++	if (!addr || !parked_address[cpu])
++		return -EINVAL;
++
++	*addr = parked_address[cpu];
++
++	return 0;
++}
++
++static int __init parse_acpi(char *arg)
++{
++	if (!arg)
++		return -EINVAL;
++
++	/* "acpi=off" disables both ACPI table parsing and interpreter */
++	if (strcmp(arg, "off") == 0)
++		acpi_disabled = 1;
++	else if (strcmp(arg, "on") == 0)
++		acpi_disabled = 0;
++	else
++		return -EINVAL;	/* Core will print when we return error */
++
++	return 0;
++}
++early_param("acpi", parse_acpi);
++
++int acpi_isa_irq_to_gsi(unsigned isa_irq, u32 *gsi)
++{
++	return -1;
++}
++
++int acpi_register_ioapic(acpi_handle handle, u64 phys_addr, u32 gsi_base)
++{
++	/* TBD */
++	return -EINVAL;
++}
++EXPORT_SYMBOL(acpi_register_ioapic);
++
++int acpi_unregister_ioapic(acpi_handle handle, u32 gsi_base)
++{
++	/* TBD */
++	return -EINVAL;
++}
++EXPORT_SYMBOL(acpi_unregister_ioapic);
++
+diff --git a/arch/arm64/kernel/cpu_ops.c b/arch/arm64/kernel/cpu_ops.c
+index cce9524..1d90f31 100644
+--- a/arch/arm64/kernel/cpu_ops.c
++++ b/arch/arm64/kernel/cpu_ops.c
+@@ -23,19 +23,23 @@
+ #include <linux/string.h>
+ 
+ extern const struct cpu_operations smp_spin_table_ops;
++extern const struct cpu_operations smp_parking_protocol_ops;
+ extern const struct cpu_operations cpu_psci_ops;
+ 
+ const struct cpu_operations *cpu_ops[NR_CPUS];
+ 
+-static const struct cpu_operations *supported_cpu_ops[] __initconst = {
++static const struct cpu_operations *supported_cpu_ops[] = {
+ #ifdef CONFIG_SMP
+ 	&smp_spin_table_ops,
++#ifdef CONFIG_ARM_PARKING_PROTOCOL
++	&smp_parking_protocol_ops,
++#endif
+ #endif
+ 	&cpu_psci_ops,
+ 	NULL,
+ };
+ 
+-static const struct cpu_operations * __init cpu_get_ops(const char *name)
++const struct cpu_operations *cpu_get_ops(const char *name)
+ {
+ 	const struct cpu_operations **ops = supported_cpu_ops;
+ 
 diff --git a/arch/arm64/kernel/efi-stub.c b/arch/arm64/kernel/efi-stub.c
 index 1317fef..d27dd98 100644
 --- a/arch/arm64/kernel/efi-stub.c
@@ -560,10 +1785,10 @@ index 1317fef..d27dd98 100644
  
  
 diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
-index e72f310..72ee260 100644
+index 03aaa99..6c4de44 100644
 --- a/arch/arm64/kernel/efi.c
 +++ b/arch/arm64/kernel/efi.c
-@@ -475,3 +475,14 @@ err_unmap:
+@@ -479,3 +479,14 @@ err_unmap:
  	return -1;
  }
  early_initcall(arm64_enter_virtual_mode);
@@ -579,7 +1804,7 @@ index e72f310..72ee260 100644
 +	return pm_power_off == NULL;
 +}
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 144f105..b6ca95a 100644
+index 8730690..0a6e4f9 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
 @@ -151,7 +151,7 @@ optional_header:
@@ -611,10 +1836,10 @@ index 144f105..b6ca95a 100644
  	.long	stext - efi_head	// PointerToRawData
 diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
 new file mode 100644
-index 0000000..955d6d1
+index 0000000..ce5836c
 --- /dev/null
 +++ b/arch/arm64/kernel/pci.c
-@@ -0,0 +1,38 @@
+@@ -0,0 +1,70 @@
 +/*
 + * Code borrowed from powerpc/kernel/pci-common.c
 + *
@@ -653,8 +1878,40 @@ index 0000000..955d6d1
 +{
 +	return res->start;
 +}
++
++/*
++ * Try to assign the IRQ number from DT when adding a new device
++ */
++int pcibios_add_device(struct pci_dev *dev)
++{
++	dev->irq = of_irq_parse_and_map_pci(dev, 0, 0);
++
++	return 0;
++}
++
++
++#ifdef CONFIG_PCI_DOMAINS_GENERIC
++static bool dt_domain_found = false;
++
++void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent)
++{
++	int domain = of_get_pci_domain_nr(parent->of_node);
++
++	if (domain >= 0) {
++		dt_domain_found = true;
++	} else if (dt_domain_found == true) {
++		dev_err(parent, "Node %s is missing \"linux,pci-domain\" property in DT\n",
++			parent->of_node->full_name);
++		return;
++	} else {
++		domain = pci_get_new_domain_nr();
++	}
++
++	bus->domain_nr = domain;
++}
++#endif
 diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 1309d64..8ff5208 100644
+index 29d4869..c0427bc 100644
 --- a/arch/arm64/kernel/process.c
 +++ b/arch/arm64/kernel/process.c
 @@ -43,6 +43,7 @@
@@ -677,8 +1934,345 @@ index 1309d64..8ff5208 100644
  	 * Whoops - the architecture was unable to reboot.
  	 */
  	printk("Reboot failed -- System halted\n");
+diff --git a/arch/arm64/kernel/psci.c b/arch/arm64/kernel/psci.c
+index 5539547..15ba470 100644
+--- a/arch/arm64/kernel/psci.c
++++ b/arch/arm64/kernel/psci.c
+@@ -15,6 +15,7 @@
+ 
+ #define pr_fmt(fmt) "psci: " fmt
+ 
++#include <linux/acpi.h>
+ #include <linux/init.h>
+ #include <linux/of.h>
+ #include <linux/smp.h>
+@@ -23,6 +24,7 @@
+ #include <linux/delay.h>
+ #include <uapi/linux/psci.h>
+ 
++#include <asm/acpi.h>
+ #include <asm/compiler.h>
+ #include <asm/cpu_ops.h>
+ #include <asm/errno.h>
+@@ -231,6 +233,33 @@ static void psci_sys_poweroff(void)
+ 	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
+ }
+ 
++static void psci_0_2_set_functions(void)
++{
++	pr_info("Using standard PSCI v0.2 function IDs\n");
++	psci_function_id[PSCI_FN_CPU_SUSPEND] = PSCI_0_2_FN64_CPU_SUSPEND;
++	psci_ops.cpu_suspend = psci_cpu_suspend;
++
++	psci_function_id[PSCI_FN_CPU_OFF] = PSCI_0_2_FN_CPU_OFF;
++	psci_ops.cpu_off = psci_cpu_off;
++
++	psci_function_id[PSCI_FN_CPU_ON] = PSCI_0_2_FN64_CPU_ON;
++	psci_ops.cpu_on = psci_cpu_on;
++
++	psci_function_id[PSCI_FN_MIGRATE] = PSCI_0_2_FN64_MIGRATE;
++	psci_ops.migrate = psci_migrate;
++
++	psci_function_id[PSCI_FN_AFFINITY_INFO] = PSCI_0_2_FN64_AFFINITY_INFO;
++	psci_ops.affinity_info = psci_affinity_info;
++
++	psci_function_id[PSCI_FN_MIGRATE_INFO_TYPE] =
++		PSCI_0_2_FN_MIGRATE_INFO_TYPE;
++	psci_ops.migrate_info_type = psci_migrate_info_type;
++
++	arm_pm_restart = psci_sys_reset;
++
++	pm_power_off = psci_sys_poweroff;
++}
++
+ /*
+  * PSCI Function IDs for v0.2+ are well defined so use
+  * standard values.
+@@ -264,29 +293,7 @@ static int __init psci_0_2_init(struct device_node *np)
+ 		}
+ 	}
+ 
+-	pr_info("Using standard PSCI v0.2 function IDs\n");
+-	psci_function_id[PSCI_FN_CPU_SUSPEND] = PSCI_0_2_FN64_CPU_SUSPEND;
+-	psci_ops.cpu_suspend = psci_cpu_suspend;
+-
+-	psci_function_id[PSCI_FN_CPU_OFF] = PSCI_0_2_FN_CPU_OFF;
+-	psci_ops.cpu_off = psci_cpu_off;
+-
+-	psci_function_id[PSCI_FN_CPU_ON] = PSCI_0_2_FN64_CPU_ON;
+-	psci_ops.cpu_on = psci_cpu_on;
+-
+-	psci_function_id[PSCI_FN_MIGRATE] = PSCI_0_2_FN64_MIGRATE;
+-	psci_ops.migrate = psci_migrate;
+-
+-	psci_function_id[PSCI_FN_AFFINITY_INFO] = PSCI_0_2_FN64_AFFINITY_INFO;
+-	psci_ops.affinity_info = psci_affinity_info;
+-
+-	psci_function_id[PSCI_FN_MIGRATE_INFO_TYPE] =
+-		PSCI_0_2_FN_MIGRATE_INFO_TYPE;
+-	psci_ops.migrate_info_type = psci_migrate_info_type;
+-
+-	arm_pm_restart = psci_sys_reset;
+-
+-	pm_power_off = psci_sys_poweroff;
++	psci_0_2_set_functions();
+ 
+ out_put_node:
+ 	of_node_put(np);
+@@ -339,7 +346,7 @@ static const struct of_device_id psci_of_match[] __initconst = {
+ 	{},
+ };
+ 
+-int __init psci_init(void)
++int __init psci_dt_init(void)
+ {
+ 	struct device_node *np;
+ 	const struct of_device_id *matched_np;
+@@ -354,6 +361,29 @@ int __init psci_init(void)
+ 	return init_fn(np);
+ }
+ 
++/*
++ * We use PSCI 0.2+ when ACPI is deployed on ARM64 and it's
++ * explicitly clarified in SBBR
++ */
++int __init psci_acpi_init(void)
++{
++	if (!acpi_psci_present()) {
++		pr_info("is not implemented in ACPI.\n");
++		return -EOPNOTSUPP;
++	}
++
++	pr_info("probing for conduit method from ACPI.\n");
++
++	if (acpi_psci_use_hvc())
++		invoke_psci_fn = __invoke_psci_fn_hvc;
++	else
++		invoke_psci_fn = __invoke_psci_fn_smc;
++
++	psci_0_2_set_functions();
++
++	return 0;
++}
++
+ #ifdef CONFIG_SMP
+ 
+ static int __init cpu_psci_cpu_init(struct device_node *dn, unsigned int cpu)
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index edb146d..4758443 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -43,6 +43,7 @@
+ #include <linux/of_fdt.h>
+ #include <linux/of_platform.h>
+ #include <linux/efi.h>
++#include <linux/acpi.h>
+ 
+ #include <asm/fixmap.h>
+ #include <asm/cpu.h>
+@@ -59,6 +60,10 @@
+ #include <asm/memblock.h>
+ #include <asm/psci.h>
+ #include <asm/efi.h>
++#include <asm/acpi.h>
++
++int acadia_kvm_acpi=0;
++EXPORT_SYMBOL(acadia_kvm_acpi);
+ 
+ unsigned int processor_id;
+ EXPORT_SYMBOL(processor_id);
+@@ -385,22 +390,34 @@ void __init setup_arch(char **cmdline_p)
+ 
+ 	parse_early_param();
+ 
++	if (acpi_disabled)
++		disable_acpi();
++
+ 	efi_init();
+ 	arm64_memblock_init();
+ 
++	/* Parse the ACPI tables for possible boot-time configuration */
++	acpi_boot_table_init();
++
+ 	paging_init();
+ 	request_standard_resources();
+ 
+ 	efi_idmap_init();
+ 
+-	unflatten_device_tree();
+-
+-	psci_init();
+-
+ 	cpu_logical_map(0) = read_cpuid_mpidr() & MPIDR_HWID_BITMASK;
+-	cpu_read_bootcpu_ops();
++	if (acpi_disabled) {
++		unflatten_device_tree();
++		psci_dt_init();
++		cpu_read_bootcpu_ops();
++#ifdef CONFIG_SMP
++		of_smp_init_cpus();
++#endif
++	} else {
++		psci_acpi_init();
++		acpi_smp_init_cpus();
++	}
++
+ #ifdef CONFIG_SMP
+-	smp_init_cpus();
+ 	smp_build_mpidr_hash();
+ #endif
+ 
+@@ -413,6 +430,19 @@ void __init setup_arch(char **cmdline_p)
+ #endif
+ }
+ 
++static int __init parse_kvm_acpi(char *arg)
++{
++	if (!arg)
++		return -EINVAL;
++	
++	if (strcmp(arg, "on") == 0) {
++		acadia_kvm_acpi = 1;
++	}
++
++	return 0;
++}
++early_param("kvmacpi", parse_kvm_acpi);
++
+ static int __init arm64_device_init(void)
+ {
+ 	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+index 4743397..4e390ac 100644
+--- a/arch/arm64/kernel/smp.c
++++ b/arch/arm64/kernel/smp.c
+@@ -321,7 +321,7 @@ void __init smp_prepare_boot_cpu(void)
+  * cpu logical map array containing MPIDR values related to logical
+  * cpus. Assumes that cpu_logical_map(0) has already been initialized.
+  */
+-void __init smp_init_cpus(void)
++void __init of_smp_init_cpus(void)
+ {
+ 	struct device_node *dn = NULL;
+ 	unsigned int i, cpu = 1;
+diff --git a/arch/arm64/kernel/smp_parking_protocol.c b/arch/arm64/kernel/smp_parking_protocol.c
+new file mode 100644
+index 0000000..e1153ce
+--- /dev/null
++++ b/arch/arm64/kernel/smp_parking_protocol.c
+@@ -0,0 +1,110 @@
++/*
++ * Parking Protocol SMP initialisation
++ *
++ * Based largely on spin-table method.
++ *
++ * Copyright (C) 2013 ARM Ltd.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
++ */
++#include <linux/delay.h>
++#include <linux/init.h>
++#include <linux/of.h>
++#include <linux/smp.h>
++#include <linux/types.h>
++#include <linux/acpi.h>
++
++#include <asm/cacheflush.h>
++#include <asm/cpu_ops.h>
++#include <asm/cputype.h>
++#include <asm/smp_plat.h>
++
++static phys_addr_t cpu_mailbox_addr[NR_CPUS];
++
++static void (*__smp_boot_wakeup)(int cpu);
++
++void set_smp_boot_wakeup_call(void (*fn)(int cpu))
++{
++	__smp_boot_wakeup = fn;
++}
++
++static int smp_parking_protocol_cpu_init(struct device_node *dn,
++					 unsigned int cpu)
++{
++	/*
++	 * Determine the mailbox address.
++	 */
++	if (!acpi_get_cpu_parked_address(cpu, &cpu_mailbox_addr[cpu])) {
++		pr_info("%s: ACPI parked addr=%llx\n",
++			__func__, cpu_mailbox_addr[cpu]);
++		return 0;
++	}
++
++	pr_err("CPU %d: missing or invalid parking protocol mailbox\n", cpu);
++
++	return -1;
++}
++
++static int smp_parking_protocol_cpu_prepare(unsigned int cpu)
++{
++	return 0;
++}
++
++struct parking_protocol_mailbox {
++	__le32 cpu_id;
++	__le32 reserved;
++	__le64 entry_point;
++};
++
++static int smp_parking_protocol_cpu_boot(unsigned int cpu)
++{
++	struct parking_protocol_mailbox __iomem *mailbox;
++
++	if (!cpu_mailbox_addr[cpu] || !__smp_boot_wakeup)
++		return -ENODEV;
++
++	/*
++	 * The mailbox may or may not be inside the linear mapping.
++	 * As ioremap_cache will either give us a new mapping or reuse the
++	 * existing linear mapping, we can use it to cover both cases. In
++	 * either case the memory will be MT_NORMAL.
++	 */
++	mailbox = ioremap_cache(cpu_mailbox_addr[cpu], sizeof(*mailbox));
++	if (!mailbox)
++		return -ENOMEM;
++
++	/*
++	 * We write the entry point and cpu id as LE regardless of the
++	 * native endianess of the kernel. Therefore, any boot-loaders
++	 * that read this address need to convert this address to the
++	 * Boot-Loader's endianess before jumping.
++	 */
++	writeq(__pa(secondary_entry), &mailbox->entry_point);
++	writel(cpu, &mailbox->cpu_id);
++	__flush_dcache_area(mailbox, sizeof(*mailbox));
++	__smp_boot_wakeup(cpu);
++
++	/* temp hack for broken firmware */
++	sev();
++
++	iounmap(mailbox);
++
++	return 0;
++}
++
++const struct cpu_operations smp_parking_protocol_ops = {
++	.name		= "parking-protocol",
++	.cpu_init	= smp_parking_protocol_cpu_init,
++	.cpu_prepare	= smp_parking_protocol_cpu_prepare,
++	.cpu_boot	= smp_parking_protocol_cpu_boot,
++};
 diff --git a/arch/arm64/kernel/smp_spin_table.c b/arch/arm64/kernel/smp_spin_table.c
-index 0347d38..70181c1 100644
+index 0347d38..4f93c67 100644
 --- a/arch/arm64/kernel/smp_spin_table.c
 +++ b/arch/arm64/kernel/smp_spin_table.c
 @@ -20,6 +20,7 @@
@@ -713,7 +2307,7 @@ index 0347d38..70181c1 100644
  
  	/*
  	 * We write the release address as LE regardless of the native
-@@ -79,15 +89,16 @@ static int smp_spin_table_cpu_prepare(unsigned int cpu)
+@@ -79,15 +89,17 @@ static int smp_spin_table_cpu_prepare(unsigned int cpu)
  	 * boot-loader's endianess before jumping. This is mandated by
  	 * the boot protocol.
  	 */
@@ -721,7 +2315,8 @@ index 0347d38..70181c1 100644
 -
 -	__flush_dcache_area(release_addr, sizeof(release_addr[0]));
 +	writeq_relaxed(__pa(secondary_holding_pen), release_addr);
-+	__flush_dcache_area(release_addr, sizeof(*release_addr));
++	__flush_dcache_area((__force void *)release_addr,
++			    sizeof(*release_addr));
  
  	/*
  	 * Send an event to wake up the secondary CPU.
@@ -733,11 +2328,702 @@ index 0347d38..70181c1 100644
  	return 0;
  }
  
+diff --git a/arch/arm64/kernel/time.c b/arch/arm64/kernel/time.c
+index 1a7125c..42f9195 100644
+--- a/arch/arm64/kernel/time.c
++++ b/arch/arm64/kernel/time.c
+@@ -35,6 +35,7 @@
+ #include <linux/delay.h>
+ #include <linux/clocksource.h>
+ #include <linux/clk-provider.h>
++#include <linux/acpi.h>
+ 
+ #include <clocksource/arm_arch_timer.h>
+ 
+@@ -72,6 +73,12 @@ void __init time_init(void)
+ 
+ 	tick_setup_hrtimer_broadcast();
+ 
++	/*
++	 * Since ACPI or FDT will only one be available in the system,
++	 * we can use acpi_generic_timer_init() here safely
++	 */
++	acpi_generic_timer_init();
++
+ 	arch_timer_rate = arch_timer_get_rate();
+ 	if (!arch_timer_rate)
+ 		panic("Unable to initialise architected timer.\n");
+diff --git a/arch/arm64/kvm/hyp-init.S b/arch/arm64/kvm/hyp-init.S
+index c319116..fa7e67e 100644
+--- a/arch/arm64/kvm/hyp-init.S
++++ b/arch/arm64/kvm/hyp-init.S
+@@ -63,17 +63,21 @@ __do_hyp_init:
+ 	mrs	x4, tcr_el1
+ 	ldr	x5, =TCR_EL2_MASK
+ 	and	x4, x4, x5
+-	ldr	x5, =TCR_EL2_FLAGS
+-	orr	x4, x4, x5
+-	msr	tcr_el2, x4
+-
+-	ldr	x4, =VTCR_EL2_FLAGS
+ 	/*
+ 	 * Read the PARange bits from ID_AA64MMFR0_EL1 and set the PS bits in
+-	 * VTCR_EL2.
++	 * TCR_EL2 and both PS bits and T0SZ bits in VTCR_EL2.
+ 	 */
+ 	mrs	x5, ID_AA64MMFR0_EL1
+ 	bfi	x4, x5, #16, #3
++	msr	tcr_el2, x4
++
++	ldr	x4, =VTCR_EL2_FLAGS
++	bfi	x4, x5, #16, #3
++	and	x5, x5, #0xf
++	adr	x6, t0sz
++	add	x6, x6, x5, lsl #2
++	ldr	w5, [x6]
++	orr	x4, x4, x5
+ 	msr	vtcr_el2, x4
+ 
+ 	mrs	x4, mair_el1
+@@ -113,6 +117,10 @@ target: /* We're now in the trampoline code, switch page tables */
+ 
+ 	/* Hello, World! */
+ 	eret
++
++t0sz:
++	.word	VTCR_EL2_T0SZ(32), VTCR_EL2_T0SZ(36), VTCR_EL2_T0SZ(40)
++	.word	VTCR_EL2_T0SZ(42), VTCR_EL2_T0SZ(44), VTCR_EL2_T0SZ(48)
+ ENDPROC(__kvm_hyp_init)
+ 
+ 	.ltorg
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index 4164c5a..b864a24 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -23,10 +23,13 @@
+ #include <linux/dma-mapping.h>
+ #include <linux/dma-contiguous.h>
+ #include <linux/of.h>
++#include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/vmalloc.h>
+ #include <linux/swiotlb.h>
+ #include <linux/amba/bus.h>
++#include <linux/acpi.h>
++#include <linux/pci.h>
+ 
+ #include <asm/cacheflush.h>
+ 
+@@ -319,6 +322,63 @@ static int dma_bus_notifier(struct notifier_block *nb,
+ 	if (of_property_read_bool(dev->of_node, "dma-coherent"))
+ 		set_dma_ops(dev, &coherent_swiotlb_dma_ops);
+ 
++#ifdef CONFIG_ACPI
++	else if (ACPI_HANDLE(dev)) {
++		acpi_status status;
++		int coherent;
++
++		/*
++		 * Kernel defaults to noncoherent ops but ACPI 5.1 spec says arm64
++		 * defaults to coherent. Set coherent ops if _CCA not found or _CCA
++		 * found and non-zero.
++		 */
++		status =  acpi_check_coherency(ACPI_HANDLE(dev), &coherent);
++		if (ACPI_FAILURE(status) || coherent)
++			set_dma_ops(dev, &coherent_swiotlb_dma_ops);
++	}
++#endif
++	return NOTIFY_OK;
++}
++
++static int dma_bus_notifier_pci(struct notifier_block *nb,
++				unsigned long event, void *_dev)
++{
++	struct device *dev = _dev;
++
++	if (event != BUS_NOTIFY_ADD_DEVICE)
++		return NOTIFY_DONE;
++
++	/*
++	 * PCI devices won't have an of_node but the bridge will.
++	 * Search up the device chain until we find an of_node
++	 * to check.
++	 */
++	while (dev) {
++		if (dev->of_node) {
++			if (of_dma_is_coherent(dev->of_node))
++				set_dma_ops(_dev, &coherent_swiotlb_dma_ops);
++			break;
++		}
++#ifdef CONFIG_ACPI
++		if (ACPI_HANDLE(dev)) {
++			acpi_status status;
++			int coherent;
++
++			/*
++			 * Kernel defaults to noncoherent ops but ACPI 5.1 spec says arm64
++			 * defaults to coherent. Set coherent ops if _CCA not found or _CCA
++			 * found and non-zero.
++			 */
++			status =  acpi_check_coherency(ACPI_HANDLE(dev), &coherent);
++			if (ACPI_FAILURE(status) || coherent) {
++				set_dma_ops(dev, &coherent_swiotlb_dma_ops);
++				break;
++			}
++		}
++#endif
++		dev = dev->parent;
++	}
++
+ 	return NOTIFY_OK;
+ }
+ 
+@@ -330,6 +390,10 @@ static struct notifier_block amba_bus_nb = {
+ 	.notifier_call = dma_bus_notifier,
+ };
+ 
++static struct notifier_block pci_bus_nb = {
++	.notifier_call = dma_bus_notifier_pci,
++};
++
+ extern int swiotlb_late_init_with_default_size(size_t default_size);
+ 
+ static int __init swiotlb_late_init(void)
+@@ -341,6 +405,7 @@ static int __init swiotlb_late_init(void)
+ 	 */
+ 	bus_register_notifier(&platform_bus_type, &platform_bus_nb);
+ 	bus_register_notifier(&amba_bustype, &amba_bus_nb);
++	bus_register_notifier(&pci_bus_type, &pci_bus_nb);
+ 
+ 	dma_ops = &noncoherent_swiotlb_dma_ops;
+ 
+diff --git a/arch/arm64/pci/Makefile b/arch/arm64/pci/Makefile
+new file mode 100644
+index 0000000..b8d5dbd
+--- /dev/null
++++ b/arch/arm64/pci/Makefile
+@@ -0,0 +1 @@
++obj-y                 += pci.o
+diff --git a/arch/arm64/pci/pci.c b/arch/arm64/pci/pci.c
+new file mode 100644
+index 0000000..b03b0eb
+--- /dev/null
++++ b/arch/arm64/pci/pci.c
+@@ -0,0 +1,28 @@
++#include <linux/acpi.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/pci.h>
++
++/**
++ * raw_pci_read - Platform-specific PCI config space access.
++ *
++ * Default empty implementation.  Replace with an architecture-specific setup
++ * routine, if necessary.
++ */
++int __weak raw_pci_read(unsigned int domain, unsigned int bus,
++			unsigned int devfn, int reg, int len, u32 *val)
++{
++	return -EINVAL;
++}
++
++int __weak raw_pci_write(unsigned int domain, unsigned int bus,
++			unsigned int devfn, int reg, int len, u32 val)
++{
++	return -EINVAL;
++}
++
++/* Root bridge scanning */
++struct pci_bus *pci_acpi_scan_root(struct acpi_pci_root *root)
++{
++	return NULL;
++}
+diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
+index d0f3265..3343080 100644
+--- a/drivers/acpi/Kconfig
++++ b/drivers/acpi/Kconfig
+@@ -5,8 +5,7 @@
+ menuconfig ACPI
+ 	bool "ACPI (Advanced Configuration and Power Interface) Support"
+ 	depends on !IA64_HP_SIM
+-	depends on IA64 || X86
+-	depends on PCI
++	depends on ((IA64 || X86) && PCI) || ARM64
+ 	select PNP
+ 	default y
+ 	help
+@@ -163,6 +162,7 @@ config ACPI_PROCESSOR
+ 	tristate "Processor"
+ 	select THERMAL
+ 	select CPU_IDLE
++	depends on X86 || IA64
+ 	default y
+ 	help
+ 	  This driver installs ACPI as the idle handler for Linux and uses
+@@ -263,7 +263,7 @@ config ACPI_DEBUG
+ 
+ config ACPI_PCI_SLOT
+ 	bool "PCI slot detection driver"
+-	depends on SYSFS
++	depends on SYSFS && PCI
+ 	default n
+ 	help
+ 	  This driver creates entries in /sys/bus/pci/slots/ for all PCI
+diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
+index 505d4d7..6f3a74d 100644
+--- a/drivers/acpi/Makefile
++++ b/drivers/acpi/Makefile
+@@ -23,7 +23,11 @@ acpi-y				+= nvs.o
+ 
+ # Power management related files
+ acpi-y				+= wakeup.o
++ifeq ($(ARCH), arm64)
++acpi-y				+= sleep-arm.o
++else # X86, IA64
+ acpi-y				+= sleep.o
++endif
+ acpi-y				+= device_pm.o
+ acpi-$(CONFIG_ACPI_SLEEP)	+= proc.o
+ 
+@@ -39,7 +43,7 @@ acpi-y				+= processor_core.o
+ acpi-$(CONFIG_ARCH_MIGHT_HAVE_ACPI_PDC) += processor_pdc.o
+ acpi-y				+= ec.o
+ acpi-$(CONFIG_ACPI_DOCK)	+= dock.o
+-acpi-y				+= pci_root.o pci_link.o pci_irq.o
++acpi-$(CONFIG_PCI)		+= pci_root.o pci_link.o pci_irq.o
+ acpi-y				+= acpi_lpss.o
+ acpi-y				+= acpi_platform.o
+ acpi-y				+= acpi_pnp.o
+diff --git a/drivers/acpi/acpica/utresrc.c b/drivers/acpi/acpica/utresrc.c
+index 14cb6c0..5cd017c 100644
+--- a/drivers/acpi/acpica/utresrc.c
++++ b/drivers/acpi/acpica/utresrc.c
+@@ -87,7 +87,9 @@ const char *acpi_gbl_io_decode[] = {
+ 
+ const char *acpi_gbl_ll_decode[] = {
+ 	"ActiveHigh",
+-	"ActiveLow"
++	"ActiveLow",
++	"ActiveBoth",
++	"Reserved"
+ };
+ 
+ const char *acpi_gbl_max_decode[] = {
+diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
+index 8b67bd0..c412fdb 100644
+--- a/drivers/acpi/bus.c
++++ b/drivers/acpi/bus.c
+@@ -448,6 +448,9 @@ static int __init acpi_bus_init_irq(void)
+ 	case ACPI_IRQ_MODEL_IOSAPIC:
+ 		message = "IOSAPIC";
+ 		break;
++	case ACPI_IRQ_MODEL_GIC:
++		message = "GIC";
++		break;
+ 	case ACPI_IRQ_MODEL_PLATFORM:
+ 		message = "platform specific model";
+ 		break;
+diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
+index 4c5cf77..e1e6487 100644
+--- a/drivers/acpi/internal.h
++++ b/drivers/acpi/internal.h
+@@ -26,8 +26,13 @@
+ acpi_status acpi_os_initialize1(void);
+ int init_acpi_device_notify(void);
+ int acpi_scan_init(void);
++#ifdef CONFIG_PCI
+ void acpi_pci_root_init(void);
+ void acpi_pci_link_init(void);
++#else
++static inline void acpi_pci_root_init(void) {}
++static inline void acpi_pci_link_init(void) {}
++#endif
+ void acpi_processor_init(void);
+ void acpi_platform_init(void);
+ void acpi_pnp_init(void);
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 3abe9b2..c50757b 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -326,11 +326,11 @@ acpi_map_lookup_virt(void __iomem *virt, acpi_size size)
+ 	return NULL;
+ }
+ 
+-#ifndef CONFIG_IA64
+-#define should_use_kmap(pfn)   page_is_ram(pfn)
+-#else
++#if defined(CONFIG_IA64) || defined(CONFIG_ARM) || defined(CONFIG_ARM64)
+ /* ioremap will take care of cache attributes */
+ #define should_use_kmap(pfn)   0
++#else
++#define should_use_kmap(pfn)   page_is_ram(pfn)
+ #endif
+ 
+ static void __iomem *acpi_map(acpi_physical_address pg_off, unsigned long pg_sz)
+diff --git a/drivers/acpi/processor_core.c b/drivers/acpi/processor_core.c
+index e32321c..4007313 100644
+--- a/drivers/acpi/processor_core.c
++++ b/drivers/acpi/processor_core.c
+@@ -64,6 +64,38 @@ static int map_lsapic_id(struct acpi_subtable_header *entry,
+ 	return 0;
+ }
+ 
++/*
++ * On ARM platform, MPIDR value is the hardware ID as apic ID
++ * on Intel platforms
++ */
++static int map_gicc_mpidr(struct acpi_subtable_header *entry,
++		int device_declaration, u32 acpi_id, int *mpidr)
++{
++	struct acpi_madt_generic_interrupt *gicc =
++	    container_of(entry, struct acpi_madt_generic_interrupt, header);
++
++	if (!(gicc->flags & ACPI_MADT_ENABLED))
++		return -ENODEV;
++
++	/* In the GIC interrupt model, logical processors are
++	 * required to have a Processor Device object in the DSDT,
++	 * so we should check device_declaration here
++	 */
++	if (device_declaration && (gicc->uid == acpi_id)) {
++		/*
++		 * Only bits [0:7] Aff0, bits [8:15] Aff1, bits [16:23] Aff2
++		 * and bits [32:39] Aff3 are meaningful, so pack the Affx
++		 * fields into a single 32 bit identifier to accommodate the
++		 * acpi processor drivers.
++		 */
++		*mpidr = ((gicc->arm_mpidr & 0xff00000000) >> 8)
++			 | gicc->arm_mpidr;
++		return 0;
++	}
++
++	return -EINVAL;
++}
++
+ static int map_madt_entry(int type, u32 acpi_id)
+ {
+ 	unsigned long madt_end, entry;
+@@ -99,6 +131,9 @@ static int map_madt_entry(int type, u32 acpi_id)
+ 		} else if (header->type == ACPI_MADT_TYPE_LOCAL_SAPIC) {
+ 			if (!map_lsapic_id(header, type, acpi_id, &apic_id))
+ 				break;
++		} else if (header->type == ACPI_MADT_TYPE_GENERIC_INTERRUPT) {
++			if (!map_gicc_mpidr(header, type, acpi_id, &apic_id))
++				break;
+ 		}
+ 		entry += header->length;
+ 	}
+@@ -131,6 +166,8 @@ static int map_mat_entry(acpi_handle handle, int type, u32 acpi_id)
+ 		map_lsapic_id(header, type, acpi_id, &apic_id);
+ 	} else if (header->type == ACPI_MADT_TYPE_LOCAL_X2APIC) {
+ 		map_x2apic_id(header, type, acpi_id, &apic_id);
++	} else if (header->type == ACPI_MADT_TYPE_GENERIC_INTERRUPT) {
++		map_gicc_mpidr(header, type, acpi_id, &apic_id);
+ 	}
+ 
+ exit:
+diff --git a/drivers/acpi/sleep-arm.c b/drivers/acpi/sleep-arm.c
+new file mode 100644
+index 0000000..54578ef
+--- /dev/null
++++ b/drivers/acpi/sleep-arm.c
+@@ -0,0 +1,28 @@
++/*
++ *  ARM64 Specific Sleep Functionality
++ *
++ *  Copyright (C) 2013-2014, Linaro Ltd.
++ *      Author: Graeme Gregory <graeme.gregory@linaro.org>
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License version 2 as
++ *  published by the Free Software Foundation.
++ */
++
++#include <linux/acpi.h>
++
++/*
++ * Currently the ACPI 5.1 standard does not define S states in a
++ * manner which is usable for ARM64. These two stubs are sufficient
++ * that system initialises and device PM works.
++ */
++u32 acpi_target_system_state(void)
++{
++	return ACPI_STATE_S0;
++}
++EXPORT_SYMBOL_GPL(acpi_target_system_state);
++
++int __init acpi_sleep_init(void)
++{
++	return -ENOSYS;
++}
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index 6d5a6cd..47f36d4 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -183,6 +183,49 @@ void acpi_table_print_madt_entry(struct acpi_subtable_header *header)
+ 		}
+ 		break;
+ 
++	case ACPI_MADT_TYPE_GENERIC_INTERRUPT:
++		{
++			struct acpi_madt_generic_interrupt *p =
++				(struct acpi_madt_generic_interrupt *)header;
++			pr_info("GICC (acpi_id[0x%04x] address[%p] MPDIR[0x%llx] %s)\n",
++				p->uid, (void *)(unsigned long)p->base_address,
++				p->arm_mpidr,
++				(p->flags & ACPI_MADT_ENABLED) ? "enabled" : "disabled");
++
++		}
++		break;
++
++	case ACPI_MADT_TYPE_GENERIC_DISTRIBUTOR:
++		{
++			struct acpi_madt_generic_distributor *p =
++				(struct acpi_madt_generic_distributor *)header;
++			pr_info("GIC Distributor (gic_id[0x%04x] address[%p] gsi_base[%d])\n",
++				p->gic_id,
++				(void *)(unsigned long)p->base_address,
++				p->global_irq_base);
++		}
++		break;
++
++	case ACPI_MADT_TYPE_GENERIC_MSI_FRAME:
++		{
++			struct acpi_madt_generic_msi_frame *p =
++				(struct acpi_madt_generic_msi_frame *)header;
++			pr_info("GIC MSI Frame (msi_fame_id[%d] address[%p])\n",
++				p->msi_frame_id,
++				(void *)(unsigned long)p->base_address);
++		}
++		break;
++
++	case ACPI_MADT_TYPE_GENERIC_REDISTRIBUTOR:
++		{
++			struct acpi_madt_generic_redistributor *p =
++				(struct acpi_madt_generic_redistributor *)header;
++			pr_info("GIC Redistributor (address[%p] region_size[0x%x])\n",
++				(void *)(unsigned long)p->base_address,
++				p->length);
++		}
++		break;
++
+ 	default:
+ 		pr_warn("Found unsupported MADT entry (type = 0x%x)\n",
+ 			header->type);
+@@ -192,17 +235,14 @@ void acpi_table_print_madt_entry(struct acpi_subtable_header *header)
+ 
+ 
+ int __init
+-acpi_table_parse_entries(char *id,
+-			     unsigned long table_size,
+-			     int entry_id,
+-			     acpi_tbl_entry_handler handler,
+-			     unsigned int max_entries)
++acpi_parse_entries(unsigned long table_size,
++		acpi_tbl_entry_handler handler,
++		struct acpi_table_header *table_header,
++		int entry_id, unsigned int max_entries)
+ {
+-	struct acpi_table_header *table_header = NULL;
+ 	struct acpi_subtable_header *entry;
+-	unsigned int count = 0;
++	int count = 0;
+ 	unsigned long table_end;
+-	acpi_size tbl_size;
+ 
+ 	if (acpi_disabled)
+ 		return -ENODEV;
+@@ -210,13 +250,11 @@ acpi_table_parse_entries(char *id,
+ 	if (!handler)
+ 		return -EINVAL;
+ 
+-	if (strncmp(id, ACPI_SIG_MADT, 4) == 0)
+-		acpi_get_table_with_size(id, acpi_apic_instance, &table_header, &tbl_size);
+-	else
+-		acpi_get_table_with_size(id, 0, &table_header, &tbl_size);
++	if (!table_size)
++		return -EINVAL;
+ 
+ 	if (!table_header) {
+-		pr_warn("%4.4s not present\n", id);
++		pr_warn("Table header not present\n");
+ 		return -ENODEV;
+ 	}
+ 
+@@ -230,32 +268,67 @@ acpi_table_parse_entries(char *id,
+ 	while (((unsigned long)entry) + sizeof(struct acpi_subtable_header) <
+ 	       table_end) {
+ 		if (entry->type == entry_id
+-		    && (!max_entries || count++ < max_entries))
++		    && (!max_entries || count < max_entries)) {
+ 			if (handler(entry, table_end))
+-				goto err;
++				return -EINVAL;
++
++			count++;
++		}
+ 
+ 		/*
+ 		 * If entry->length is 0, break from this loop to avoid
+ 		 * infinite loop.
+ 		 */
+ 		if (entry->length == 0) {
+-			pr_err("[%4.4s:0x%02x] Invalid zero length\n", id, entry_id);
+-			goto err;
++			pr_err("[0x%02x] Invalid zero length\n", entry_id);
++			return -EINVAL;
+ 		}
+ 
+ 		entry = (struct acpi_subtable_header *)
+ 		    ((unsigned long)entry + entry->length);
+ 	}
++
+ 	if (max_entries && count > max_entries) {
+ 		pr_warn("[%4.4s:0x%02x] ignored %i entries of %i found\n",
+-			id, entry_id, count - max_entries, count);
++			table_header->signature, entry_id, count - max_entries,
++			count);
+ 	}
+ 
+-	early_acpi_os_unmap_memory((char *)table_header, tbl_size);
+ 	return count;
+-err:
++}
++
++int __init
++acpi_table_parse_entries(char *id,
++			 unsigned long table_size,
++			 int entry_id,
++			 acpi_tbl_entry_handler handler,
++			 unsigned int max_entries)
++{
++	struct acpi_table_header *table_header = NULL;
++	acpi_size tbl_size;
++	int count;
++
++	if (acpi_disabled)
++		return -ENODEV;
++
++	if (!handler)
++		return -EINVAL;
++
++	if (strncmp(id, ACPI_SIG_MADT, 4) == 0)
++		acpi_get_table_with_size(id, acpi_apic_instance, &table_header, &tbl_size);
++	else
++		acpi_get_table_with_size(id, 0, &table_header, &tbl_size);
++
++	if (!table_header) {
++		pr_warn("%4.4s not present\n", id);
++		return -ENODEV;
++	}
++
++	count = acpi_parse_entries(table_size, handler, table_header,
++			entry_id, max_entries);
++
+ 	early_acpi_os_unmap_memory((char *)table_header, tbl_size);
+-	return -EINVAL;
++	return count;
+ }
+ 
+ int __init
+diff --git a/drivers/acpi/utils.c b/drivers/acpi/utils.c
+index 07c8c5a..aec9656 100644
+--- a/drivers/acpi/utils.c
++++ b/drivers/acpi/utils.c
+@@ -698,3 +698,29 @@ bool acpi_check_dsm(acpi_handle handle, const u8 *uuid, int rev, u64 funcs)
+ 	return false;
+ }
+ EXPORT_SYMBOL(acpi_check_dsm);
++
++/**
++ * acpi_check_coherency - check for memory coherency of a device
++ * @handle: ACPI device handle
++ * @val:    Pointer to returned value
++ *
++ * Search a device and its parents for a _CCA method and return
++ * its value.
++ */
++acpi_status acpi_check_coherency(acpi_handle handle, int *val)
++{
++	unsigned long long data;
++	acpi_status status;
++
++	do {
++		status = acpi_evaluate_integer(handle, "_CCA", NULL, &data);
++		if (!ACPI_FAILURE(status)) {
++			*val = data;
++			break;
++		}
++		status = acpi_get_parent(handle, &handle);
++	} while (!ACPI_FAILURE(status));
++
++	return status;
++}
++EXPORT_SYMBOL(acpi_check_coherency);
+diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
+index e1b9278..f2e6c9e 100644
+--- a/drivers/ata/Kconfig
++++ b/drivers/ata/Kconfig
+@@ -48,7 +48,7 @@ config ATA_VERBOSE_ERROR
+ 
+ config ATA_ACPI
+ 	bool "ATA ACPI Support"
+-	depends on ACPI && PCI
++	depends on ACPI
+ 	default y
+ 	help
+ 	  This option adds support for ATA-related ACPI objects.
+diff --git a/drivers/ata/ahci_platform.c b/drivers/ata/ahci_platform.c
+index f61ddb9..3499bab 100644
+--- a/drivers/ata/ahci_platform.c
++++ b/drivers/ata/ahci_platform.c
+@@ -20,6 +20,9 @@
+ #include <linux/platform_device.h>
+ #include <linux/libata.h>
+ #include <linux/ahci_platform.h>
++#ifdef CONFIG_ATA_ACPI
++#include <linux/acpi.h>
++#endif
+ #include "ahci.h"
+ 
+ static const struct ata_port_info ahci_port_info = {
+@@ -87,6 +90,13 @@ static const struct of_device_id ahci_of_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, ahci_of_match);
+ 
++#ifdef CONFIG_ATA_ACPI
++static const struct acpi_device_id ahci_acpi_match[] = {
++	{ "AMDI0600", 0 }, /* AMD Seattle AHCI */
++	{ },
++};
++#endif
++
+ static struct platform_driver ahci_driver = {
+ 	.probe = ahci_probe,
+ 	.remove = ata_platform_remove_one,
+@@ -94,6 +104,9 @@ static struct platform_driver ahci_driver = {
+ 		.name = "ahci",
+ 		.owner = THIS_MODULE,
+ 		.of_match_table = ahci_of_match,
++#ifdef CONFIG_ATA_ACPI
++		.acpi_match_table = ACPI_PTR(ahci_acpi_match),
++#endif
+ 		.pm = &ahci_pm_ops,
+ 	},
+ };
 diff --git a/drivers/ata/ahci_xgene.c b/drivers/ata/ahci_xgene.c
-index bc28111..00e5a0c 100644
+index f03aab1..b02ba9d 100644
 --- a/drivers/ata/ahci_xgene.c
 +++ b/drivers/ata/ahci_xgene.c
-@@ -134,7 +134,8 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
+@@ -28,6 +28,7 @@
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/phy/phy.h>
++#include <linux/acpi.h>
+ #include "ahci.h"
+ 
+ /* Max # of disk per a controller */
+@@ -137,7 +138,8 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
  	struct xgene_ahci_context *ctx = hpriv->plat_data;
  	int rc = 0;
  
@@ -747,165 +3033,445 @@ index bc28111..00e5a0c 100644
  		xgene_ahci_restart_engine(ap);
  
  	rc = ahci_qc_issue(qc);
+@@ -148,14 +150,6 @@ static unsigned int xgene_ahci_qc_issue(struct ata_queued_cmd *qc)
+ 	return rc;
+ }
+ 
+-static bool xgene_ahci_is_memram_inited(struct xgene_ahci_context *ctx)
+-{
+-	void __iomem *diagcsr = ctx->csr_diag;
+-
+-	return (readl(diagcsr + CFG_MEM_RAM_SHUTDOWN) == 0 &&
+-	        readl(diagcsr + BLOCK_MEM_RDY) == 0xFFFFFFFF);
+-}
+-
+ /**
+  * xgene_ahci_read_id - Read ID data from the specified device
+  * @dev: device
+@@ -495,11 +489,6 @@ static int xgene_ahci_probe(struct platform_device *pdev)
+ 		return -ENODEV;
+ 	}
+ 
+-	if (xgene_ahci_is_memram_inited(ctx)) {
+-		dev_info(dev, "skip clock and PHY initialization\n");
+-		goto skip_clk_phy;
+-	}
+-
+ 	/* Due to errata, HW requires full toggle transition */
+ 	rc = ahci_platform_enable_clks(hpriv);
+ 	if (rc)
+@@ -512,7 +501,7 @@ static int xgene_ahci_probe(struct platform_device *pdev)
+ 
+ 	/* Configure the host controller */
+ 	xgene_ahci_hw_init(hpriv);
+-skip_clk_phy:
++
+ 	hpriv->flags = AHCI_HFLAG_NO_PMP | AHCI_HFLAG_NO_NCQ;
+ 
+ 	rc = ahci_platform_init_host(pdev, hpriv, &xgene_ahci_port_info);
+@@ -527,6 +516,16 @@ disable_resources:
+ 	return rc;
+ }
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id xgene_ahci_acpi_match[] = {
++	{ "APMC0D00", },
++	{ "APMC0D0D", },
++	{ "APMC0D09", },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, xgene_ahci_acpi_match);
++#endif
++
+ static const struct of_device_id xgene_ahci_of_match[] = {
+ 	{.compatible = "apm,xgene-ahci"},
+ 	{},
+@@ -540,6 +539,7 @@ static struct platform_driver xgene_ahci_driver = {
+ 		.name = "xgene-ahci",
+ 		.owner = THIS_MODULE,
+ 		.of_match_table = xgene_ahci_of_match,
++		.acpi_match_table = ACPI_PTR(xgene_ahci_acpi_match),
+ 	},
+ };
+ 
+diff --git a/drivers/clocksource/arm_arch_timer.c b/drivers/clocksource/arm_arch_timer.c
+index 5163ec1..1bec05b 100644
+--- a/drivers/clocksource/arm_arch_timer.c
++++ b/drivers/clocksource/arm_arch_timer.c
+@@ -21,6 +21,7 @@
+ #include <linux/io.h>
+ #include <linux/slab.h>
+ #include <linux/sched_clock.h>
++#include <linux/acpi.h>
+ 
+ #include <asm/arch_timer.h>
+ #include <asm/virt.h>
+@@ -61,7 +62,8 @@ enum ppi_nr {
+ 	MAX_TIMER_PPI
+ };
+ 
+-static int arch_timer_ppi[MAX_TIMER_PPI];
++int arch_timer_ppi[MAX_TIMER_PPI];
++EXPORT_SYMBOL(arch_timer_ppi);
+ 
+ static struct clock_event_device __percpu *arch_timer_evt;
+ 
+@@ -338,8 +340,12 @@ arch_timer_detect_rate(void __iomem *cntbase, struct device_node *np)
+ 	if (arch_timer_rate)
+ 		return;
+ 
+-	/* Try to determine the frequency from the device tree or CNTFRQ */
+-	if (of_property_read_u32(np, "clock-frequency", &arch_timer_rate)) {
++	/*
++	 * Try to determine the frequency from the device tree or CNTFRQ,
++	 * if ACPI is enabled, get the frequency from CNTFRQ ONLY.
++	 */
++	if (!acpi_disabled ||
++	    of_property_read_u32(np, "clock-frequency", &arch_timer_rate)) {
+ 		if (cntbase)
+ 			arch_timer_rate = readl_relaxed(cntbase + CNTFRQ);
+ 		else
+@@ -635,20 +641,8 @@ static void __init arch_timer_common_init(void)
+ 	arch_timer_arch_init();
+ }
+ 
+-static void __init arch_timer_init(struct device_node *np)
++static void __init arch_timer_init(void)
+ {
+-	int i;
+-
+-	if (arch_timers_present & ARCH_CP15_TIMER) {
+-		pr_warn("arch_timer: multiple nodes in dt, skipping\n");
+-		return;
+-	}
+-
+-	arch_timers_present |= ARCH_CP15_TIMER;
+-	for (i = PHYS_SECURE_PPI; i < MAX_TIMER_PPI; i++)
+-		arch_timer_ppi[i] = irq_of_parse_and_map(np, i);
+-	arch_timer_detect_rate(NULL, np);
+-
+ 	/*
+ 	 * If HYP mode is available, we know that the physical timer
+ 	 * has been configured to be accessible from PL1. Use it, so
+@@ -667,13 +661,31 @@ static void __init arch_timer_init(struct device_node *np)
+ 		}
+ 	}
+ 
+-	arch_timer_c3stop = !of_property_read_bool(np, "always-on");
+-
+ 	arch_timer_register();
+ 	arch_timer_common_init();
+ }
+-CLOCKSOURCE_OF_DECLARE(armv7_arch_timer, "arm,armv7-timer", arch_timer_init);
+-CLOCKSOURCE_OF_DECLARE(armv8_arch_timer, "arm,armv8-timer", arch_timer_init);
++
++static void __init arch_timer_of_init(struct device_node *np)
++{
++	int i;
++
++	if (arch_timers_present & ARCH_CP15_TIMER) {
++		pr_warn("arch_timer: multiple nodes in dt, skipping\n");
++		return;
++	}
++
++	arch_timers_present |= ARCH_CP15_TIMER;
++	for (i = PHYS_SECURE_PPI; i < MAX_TIMER_PPI; i++)
++		arch_timer_ppi[i] = irq_of_parse_and_map(np, i);
++
++	arch_timer_detect_rate(NULL, np);
++
++	arch_timer_c3stop = !of_property_read_bool(np, "always-on");
++
++	arch_timer_init();
++}
++CLOCKSOURCE_OF_DECLARE(armv7_arch_timer, "arm,armv7-timer", arch_timer_of_init);
++CLOCKSOURCE_OF_DECLARE(armv8_arch_timer, "arm,armv8-timer", arch_timer_of_init);
+ 
+ static void __init arch_timer_mem_init(struct device_node *np)
+ {
+@@ -740,3 +752,71 @@ static void __init arch_timer_mem_init(struct device_node *np)
+ }
+ CLOCKSOURCE_OF_DECLARE(armv7_arch_timer_mem, "arm,armv7-timer-mem",
+ 		       arch_timer_mem_init);
++
++#ifdef CONFIG_ACPI
++static int __init
++map_generic_timer_interrupt(u32 interrupt, u32 flags)
++{
++	int trigger, polarity;
++
++	if (!interrupt)
++		return 0;
++
++	trigger = (flags & ACPI_GTDT_INTERRUPT_MODE) ? ACPI_EDGE_SENSITIVE
++			: ACPI_LEVEL_SENSITIVE;
++
++	polarity = (flags & ACPI_GTDT_INTERRUPT_POLARITY) ? ACPI_ACTIVE_LOW
++			: ACPI_ACTIVE_HIGH;
++
++	return acpi_register_gsi(NULL, interrupt, trigger, polarity);
++}
++
++/* Initialize per-processor generic timer */
++static int __init arch_timer_acpi_init(struct acpi_table_header *table)
++{
++	struct acpi_table_gtdt *gtdt;
++
++	if (arch_timers_present & ARCH_CP15_TIMER) {
++		pr_warn("arch_timer: already initialized, skipping\n");
++		return -EINVAL;
++	}
++
++	gtdt = container_of(table, struct acpi_table_gtdt, header);
++
++	arch_timers_present |= ARCH_CP15_TIMER;
++
++	arch_timer_ppi[PHYS_SECURE_PPI] =
++		map_generic_timer_interrupt(gtdt->secure_el1_interrupt,
++		gtdt->secure_el1_flags);
++
++	arch_timer_ppi[PHYS_NONSECURE_PPI] =
++		map_generic_timer_interrupt(gtdt->non_secure_el1_interrupt,
++		gtdt->non_secure_el1_flags);
++
++	arch_timer_ppi[VIRT_PPI] =
++		map_generic_timer_interrupt(gtdt->virtual_timer_interrupt,
++		gtdt->virtual_timer_flags);
++
++	arch_timer_ppi[HYP_PPI] =
++		map_generic_timer_interrupt(gtdt->non_secure_el2_interrupt,
++		gtdt->non_secure_el2_flags);
++
++	/* Get the frequency from CNTFRQ */
++	arch_timer_detect_rate(NULL, NULL);
++
++	/* Always-on capability */
++	arch_timer_c3stop = !(gtdt->non_secure_el1_flags & ACPI_GTDT_ALWAYS_ON);
++
++	arch_timer_init();
++	return 0;
++}
++
++/* Initialize all the generic timers presented in GTDT */
++void __init acpi_generic_timer_init(void)
++{
++	if (acpi_disabled)
++		return;
++
++	acpi_table_parse(ACPI_SIG_GTDT, arch_timer_acpi_init);
++}
++#endif
+diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
+index a0698b4..d2da911 100644
+--- a/drivers/irqchip/irq-gic-v3.c
++++ b/drivers/irqchip/irq-gic-v3.c
+@@ -490,9 +490,19 @@ static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
+ 	isb();
+ }
+ 
++#ifdef CONFIG_ARM_PARKING_PROTOCOL
++static void gic_wakeup_parked_cpu(int cpu)
++{
++	gic_raise_softirq(cpumask_of(cpu), 0);
++}
++#endif
++
+ static void gic_smp_init(void)
+ {
+ 	set_smp_cross_call(gic_raise_softirq);
++#ifdef CONFIG_ARM_PARKING_PROTOCOL
++	set_smp_boot_wakeup_call(gic_wakeup_parked_cpu);
++#endif
+ 	register_cpu_notifier(&gic_cpu_notifier);
+ }
+ 
 diff --git a/drivers/irqchip/irq-gic.c b/drivers/irqchip/irq-gic.c
-index 4b959e6..c36c7ab55 100644
+index dda6dbc..5d9bdd3 100644
 --- a/drivers/irqchip/irq-gic.c
 +++ b/drivers/irqchip/irq-gic.c
-@@ -381,6 +381,7 @@ static void gic_cpu_init(struct gic_chip_data *gic)
- 	void __iomem *dist_base = gic_data_dist_base(gic);
- 	void __iomem *base = gic_data_cpu_base(gic);
- 	unsigned int cpu_mask, cpu = smp_processor_id();
-+	unsigned int ctrl_mask;
- 	int i;
+@@ -33,12 +33,14 @@
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
++#include <linux/acpi.h>
+ #include <linux/irqdomain.h>
+ #include <linux/interrupt.h>
+ #include <linux/percpu.h>
+ #include <linux/slab.h>
+ #include <linux/irqchip/chained_irq.h>
+ #include <linux/irqchip/arm-gic.h>
++#include <linux/irqchip/arm-gic-acpi.h>
  
- 	/*
-@@ -401,13 +402,29 @@ static void gic_cpu_init(struct gic_chip_data *gic)
- 	gic_cpu_config(dist_base, NULL);
+ #include <asm/cputype.h>
+ #include <asm/irq.h>
+@@ -622,6 +624,13 @@ static void gic_raise_softirq(const struct cpumask *mask, unsigned int irq)
  
- 	writel_relaxed(0xf0, base + GIC_CPU_PRIMASK);
--	writel_relaxed(1, base + GIC_CPU_CTRL);
-+
-+	ctrl_mask = readl(base + GIC_CPU_CTRL);
-+
-+	/* Mask out the gic v2 bypass bits */
-+	ctrl_mask &= 0x1e0;
-+
-+	/* Enable group 0 */
-+	ctrl_mask |= 0x1;
-+	writel_relaxed(ctrl_mask, base + GIC_CPU_CTRL);
+ 	raw_spin_unlock_irqrestore(&irq_controller_lock, flags);
  }
- 
- void gic_cpu_if_down(void)
- {
-+	unsigned int ctrl_mask;
- 	void __iomem *cpu_base = gic_data_cpu_base(&gic_data[0]);
--	writel_relaxed(0, cpu_base + GIC_CPU_CTRL);
 +
-+	ctrl_mask = readl(cpu_base + GIC_CPU_CTRL);
++#ifdef CONFIG_ARM_PARKING_PROTOCOL
++static void gic_wakeup_parked_cpu(int cpu)
++{
++	gic_raise_softirq(cpumask_of(cpu), GIC_DIST_SOFTINT_NSATT);
++}
++#endif
+ #endif
+ 
+ #ifdef CONFIG_BL_SWITCHER
+@@ -977,6 +986,9 @@ void __init gic_init_bases(unsigned int gic_nr, int irq_start,
+ #ifdef CONFIG_SMP
+ 		set_smp_cross_call(gic_raise_softirq);
+ 		register_cpu_notifier(&gic_cpu_notifier);
++#ifdef CONFIG_ARM_PARKING_PROTOCOL
++		set_smp_boot_wakeup_call(gic_wakeup_parked_cpu);
++#endif
+ #endif
+ 		set_handle_irq(gic_handle_irq);
+ 	}
+@@ -1029,3 +1041,107 @@ IRQCHIP_DECLARE(msm_8660_qgic, "qcom,msm-8660-qgic", gic_of_init);
+ IRQCHIP_DECLARE(msm_qgic2, "qcom,msm-qgic2", gic_of_init);
+ 
+ #endif
++
++#ifdef CONFIG_ACPI
++static phys_addr_t dist_phy_base, cpu_phy_base;
++static int cpu_base_assigned;
++
++static int __init
++gic_acpi_parse_madt_cpu(struct acpi_subtable_header *header,
++			const unsigned long end)
++{
++	struct acpi_madt_generic_interrupt *processor;
++	phys_addr_t gic_cpu_base;
++
++	processor = (struct acpi_madt_generic_interrupt *)header;
++
++	if (BAD_MADT_ENTRY(processor, end))
++		return -EINVAL;
++
 +	/*
-+	 * Disable grp enable bit, leave the bypass bits alone as changing
-+	 * them could leave the system unstable
++	 * There is no support for non-banked GICv1/2 register in ACPI spec.
++	 * All CPU interface addresses have to be the same.
 +	 */
-+	ctrl_mask &= 0x1e0;
-+	writel_relaxed(ctrl_mask, cpu_base + GIC_CPU_CTRL);
- }
++	gic_cpu_base = processor->base_address;
++	if (cpu_base_assigned && gic_cpu_base != cpu_phy_base)
++		return -EFAULT;
++
++	cpu_phy_base = gic_cpu_base;
++	cpu_base_assigned = 1;
++	return 0;
++}
++
++static int __init
++gic_acpi_parse_madt_distributor(struct acpi_subtable_header *header,
++				const unsigned long end)
++{
++	struct acpi_madt_generic_distributor *dist;
++
++	dist = (struct acpi_madt_generic_distributor *)header;
++
++	if (BAD_MADT_ENTRY(dist, end))
++		return -EINVAL;
++
++	dist_phy_base = dist->base_address;
++	return 0;
++}
++
++int __init
++gic_v2_acpi_init(struct acpi_table_header *table)
++{
++	void __iomem *cpu_base, *dist_base;
++	int count;
++
++	/* Collect CPU base addresses */
++	count = acpi_parse_entries(sizeof(struct acpi_table_madt),
++				   gic_acpi_parse_madt_cpu, table,
++				   ACPI_MADT_TYPE_GENERIC_INTERRUPT, 0);
++	if (count < 0) {
++		pr_err("Error during GICC entries parsing\n");
++		return -EFAULT;
++	} else if (!count) {
++		pr_err("No valid GICC entries exist\n");
++		return -EINVAL;
++	}
++
++	/*
++	 * Find distributor base address. We expect one distributor entry since
++	 * ACPI 5.1 spec neither support multi-GIC instances nor GIC cascade.
++	 */
++	count = acpi_parse_entries(sizeof(struct acpi_table_madt),
++				   gic_acpi_parse_madt_distributor, table,
++				   ACPI_MADT_TYPE_GENERIC_DISTRIBUTOR, 0);
++	if (count <= 0) {
++		pr_err("Error during GICD entries parsing\n");
++		return -EFAULT;
++	} else if (!count) {
++		pr_err("No valid GICD entries exist\n");
++		return -EINVAL;
++	} else if (count > 1) {
++		pr_err("More than one GICD entry detected\n");
++		return -EINVAL;
++	}
++
++	cpu_base = ioremap(cpu_phy_base, ACPI_GIC_CPU_IF_MEM_SIZE);
++	if (!cpu_base) {
++		pr_err("Unable to map GICC registers\n");
++		return -ENOMEM;
++	}
++
++	dist_base = ioremap(dist_phy_base, ACPI_GICV2_DIST_MEM_SIZE);
++	if (!dist_base) {
++		pr_err("Unable to map GICD registers\n");
++		iounmap(cpu_base);
++		return -ENOMEM;
++	}
++
++	/*
++	 * Initialize zero GIC instance (no multi-GIC support). Also, set GIC
++	 * as default IRQ domain to allow for GSI registration and GSI to IRQ
++	 * number translation (see acpi_register_gsi() and acpi_gsi_to_irq()).
++	 */
++	gic_init_bases(0, -1, dist_base, cpu_base, 0, NULL);
++	irq_set_default_host(gic_data[0].domain);
++	return 0;
++}
++#endif
+diff --git a/drivers/irqchip/irqchip.c b/drivers/irqchip/irqchip.c
+index 0fe2f71..9106c6d 100644
+--- a/drivers/irqchip/irqchip.c
++++ b/drivers/irqchip/irqchip.c
+@@ -11,6 +11,7 @@
+ #include <linux/init.h>
+ #include <linux/of_irq.h>
+ #include <linux/irqchip.h>
++#include <linux/irqchip/arm-gic-acpi.h>
  
- #ifdef CONFIG_CPU_PM
-@@ -518,6 +535,7 @@ static void gic_cpu_restore(unsigned int gic_nr)
+ /*
+  * This special of_device_id is the sentinel at the end of the
+@@ -26,4 +27,6 @@ extern struct of_device_id __irqchip_of_table[];
+ void __init irqchip_init(void)
  {
- 	int i;
- 	u32 *ptr;
-+	unsigned int ctrl_mask;
- 	void __iomem *dist_base;
- 	void __iomem *cpu_base;
- 
-@@ -542,7 +560,15 @@ static void gic_cpu_restore(unsigned int gic_nr)
- 		writel_relaxed(0xa0a0a0a0, dist_base + GIC_DIST_PRI + i * 4);
- 
- 	writel_relaxed(0xf0, cpu_base + GIC_CPU_PRIMASK);
--	writel_relaxed(1, cpu_base + GIC_CPU_CTRL);
+ 	of_irq_init(__irqchip_of_table);
 +
-+	ctrl_mask = readl(cpu_base + GIC_CPU_CTRL);
-+
-+	/* Mask out the gic v2 bypass bits */
-+	ctrl_mask &= 0x1e0;
-+
-+	/* Enable group 0 */
-+	ctrl_mask |= 0x1;
-+	writel_relaxed(ctrl_mask, cpu_base + GIC_CPU_CTRL);
++	acpi_gic_init();
  }
- 
- static int gic_notifier(struct notifier_block *self, unsigned long cmd,	void *v)
 diff --git a/drivers/of/address.c b/drivers/of/address.c
-index e371825..5eaadae 100644
+index e371825..afdb782 100644
 --- a/drivers/of/address.c
 +++ b/drivers/of/address.c
-@@ -5,6 +5,7 @@
+@@ -5,6 +5,8 @@
  #include <linux/module.h>
  #include <linux/of_address.h>
  #include <linux/pci_regs.h>
++#include <linux/sizes.h>
 +#include <linux/slab.h>
  #include <linux/string.h>
  
  /* Max address size we deal with */
-@@ -601,12 +602,72 @@ const __be32 *of_get_address(struct device_node *dev, int index, u64 *size,
+@@ -293,6 +295,51 @@ struct of_pci_range *of_pci_range_parser_one(struct of_pci_range_parser *parser,
  }
- EXPORT_SYMBOL(of_get_address);
+ EXPORT_SYMBOL_GPL(of_pci_range_parser_one);
  
-+struct io_range {
-+	struct list_head list;
-+	phys_addr_t start;
-+	resource_size_t size;
-+};
-+
-+static LIST_HEAD(io_range_list);
-+
-+/*
-+ * Record the PCI IO range (expressed as CPU physical address + size).
-+ * Return a negative value if an error has occured, zero otherwise
-+ */
-+int __weak pci_register_io_range(phys_addr_t addr, resource_size_t size)
-+{
-+#ifdef PCI_IOBASE
-+	struct io_range *res;
-+	resource_size_t allocated_size = 0;
-+
-+	/* check if the range hasn't been previously recorded */
-+	list_for_each_entry(res, &io_range_list, list) {
-+		if (addr >= res->start && addr + size <= res->start + size)
-+			return 0;
-+		allocated_size += res->size;
-+	}
-+
-+	/* range not registed yet, check for available space */
-+	if (allocated_size + size - 1 > IO_SPACE_LIMIT)
-+		return -E2BIG;
-+
-+	/* add the range to the list */
-+	res = kzalloc(sizeof(*res), GFP_KERNEL);
-+	if (!res)
-+		return -ENOMEM;
-+
-+	res->start = addr;
-+	res->size = size;
-+
-+	list_add_tail(&res->list, &io_range_list);
-+
-+	return 0;
-+#else
-+	return -EINVAL;
-+#endif
-+}
-+
- unsigned long __weak pci_address_to_pio(phys_addr_t address)
- {
-+#ifdef PCI_IOBASE
-+	struct io_range *res;
-+	resource_size_t offset = 0;
-+
-+	list_for_each_entry(res, &io_range_list, list) {
-+		if (address >= res->start &&
-+			address < res->start + res->size) {
-+			return res->start - address + offset;
-+		}
-+		offset += res->size;
-+	}
-+
-+	return (unsigned long)-1;
-+#else
- 	if (address > IO_SPACE_LIMIT)
- 		return (unsigned long)-1;
- 
- 	return (unsigned long) address;
-+#endif
- }
- 
- static int __of_address_to_resource(struct device_node *dev,
-@@ -847,3 +908,50 @@ bool of_dma_is_coherent(struct device_node *np)
- 	return false;
- }
- EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-+
 +/*
 + * of_pci_range_to_resource - Create a resource from an of_pci_range
 + * @range:	the PCI range that describes the resource
@@ -922,7 +3488,7 @@ index e371825..5eaadae 100644
 + * If that fails we know that pci_address_to_pio() will do too.
 + */
 +int of_pci_range_to_resource(struct of_pci_range *range,
-+	struct device_node *np, struct resource *res)
++			     struct device_node *np, struct resource *res)
 +{
 +	int err;
 +	res->flags = range->flags;
@@ -930,7 +3496,7 @@ index e371825..5eaadae 100644
 +	res->name = np->full_name;
 +
 +	if (res->flags & IORESOURCE_IO) {
-+		unsigned long port = -1;
++		unsigned long port;
 +		err = pci_register_io_range(range->cpu_addr, range->size);
 +		if (err)
 +			goto invalid_range;
@@ -951,61 +3517,242 @@ index e371825..5eaadae 100644
 +	res->end = (resource_size_t)OF_BAD_ADDR;
 +	return err;
 +}
+ #endif /* CONFIG_PCI */
+ 
+ /*
+@@ -601,12 +648,119 @@ const __be32 *of_get_address(struct device_node *dev, int index, u64 *size,
+ }
+ EXPORT_SYMBOL(of_get_address);
+ 
++#ifdef PCI_IOBASE
++struct io_range {
++	struct list_head list;
++	phys_addr_t start;
++	resource_size_t size;
++};
 +
++static LIST_HEAD(io_range_list);
++static DEFINE_SPINLOCK(io_range_lock);
++#endif
++
++/*
++ * Record the PCI IO range (expressed as CPU physical address + size).
++ * Return a negative value if an error has occured, zero otherwise
++ */
++int __weak pci_register_io_range(phys_addr_t addr, resource_size_t size)
++{
++	int err = 0;
++
++#ifdef PCI_IOBASE
++	struct io_range *range;
++	resource_size_t allocated_size = 0;
++
++	/* check if the range hasn't been previously recorded */
++	spin_lock(&io_range_lock);
++	list_for_each_entry(range, &io_range_list, list) {
++		if (addr >= range->start && addr + size <= range->start + size) {
++			/* range already registered, bail out */
++			goto end_register;
++		}
++		allocated_size += range->size;
++	}
++
++	/* range not registed yet, check for available space */
++	if (allocated_size + size - 1 > IO_SPACE_LIMIT) {
++		/* if it's too big check if 64K space can be reserved */
++		if (allocated_size + SZ_64K - 1 > IO_SPACE_LIMIT) {
++			err = -E2BIG;
++			goto end_register;
++		}
++
++		size = SZ_64K;
++		pr_warn("Requested IO range too big, new size set to 64K\n");
++	}
++
++	/* add the range to the list */
++	range = kzalloc(sizeof(*range), GFP_KERNEL);
++	if (!range) {
++		err = -ENOMEM;
++		goto end_register;
++	}
++
++	range->start = addr;
++	range->size = size;
++
++	list_add_tail(&range->list, &io_range_list);
++
++end_register:
++	spin_unlock(&io_range_lock);
++#endif
++
++	return err;
++}
++
++phys_addr_t pci_pio_to_address(unsigned long pio)
++{
++	phys_addr_t address = (phys_addr_t)OF_BAD_ADDR;
++
++#ifdef PCI_IOBASE
++	struct io_range *range;
++	resource_size_t allocated_size = 0;
++
++	if (pio > IO_SPACE_LIMIT)
++		return address;
++
++	spin_lock(&io_range_lock);
++	list_for_each_entry(range, &io_range_list, list) {
++		if (pio >= allocated_size && pio < allocated_size + range->size) {
++			address = range->start + pio - allocated_size;
++			break;
++		}
++		allocated_size += range->size;
++	}
++	spin_unlock(&io_range_lock);
++#endif
++
++	return address;
++}
++
+ unsigned long __weak pci_address_to_pio(phys_addr_t address)
+ {
++#ifdef PCI_IOBASE
++	struct io_range *res;
++	resource_size_t offset = 0;
++	unsigned long addr = -1;
++
++	spin_lock(&io_range_lock);
++	list_for_each_entry(res, &io_range_list, list) {
++		if (address >= res->start && address < res->start + res->size) {
++			addr = res->start - address + offset;
++			break;
++		}
++		offset += res->size;
++	}
++	spin_unlock(&io_range_lock);
++
++	return addr;
++#else
+ 	if (address > IO_SPACE_LIMIT)
+ 		return (unsigned long)-1;
+ 
+ 	return (unsigned long) address;
++#endif
+ }
+ 
+ static int __of_address_to_resource(struct device_node *dev,
 diff --git a/drivers/of/of_pci.c b/drivers/of/of_pci.c
-index 8481996..e81402a 100644
+index 8481996..8882b46 100644
 --- a/drivers/of/of_pci.c
 +++ b/drivers/of/of_pci.c
-@@ -1,6 +1,7 @@
+@@ -1,7 +1,9 @@
  #include <linux/kernel.h>
  #include <linux/export.h>
  #include <linux/of.h>
 +#include <linux/of_address.h>
  #include <linux/of_pci.h>
++#include <linux/slab.h>
  
  static inline int __of_pci_pci_compare(struct device_node *node,
-@@ -89,6 +90,141 @@ int of_pci_parse_bus_range(struct device_node *node, struct resource *res)
+ 				       unsigned int data)
+@@ -89,6 +91,146 @@ int of_pci_parse_bus_range(struct device_node *node, struct resource *res)
  }
  EXPORT_SYMBOL_GPL(of_pci_parse_bus_range);
  
 +/**
-+ * pci_host_bridge_of_get_ranges - Parse PCI host bridge resources from DT
-+ * @dev: device node of the host bridge having the range property
-+ * @resources: list where the range of resources will be added after DT parsing
-+ * @io_base: pointer to a variable that will contain the physical address for
-+ * the start of the I/O range.
++ * This function will try to obtain the host bridge domain number by
++ * finding a property called "linux,pci-domain" of the given device node.
 + *
-+ * It is the callers job to free the @resources list if an error is returned.
++ * @node: device tree node with the domain information
++ *
++ * Returns the associated domain number from DT in the range [0-0xffff], or
++ * a negative value if the required property is not found.
++ */
++int of_get_pci_domain_nr(struct device_node *node)
++{
++	const __be32 *value;
++	int len;
++	u16 domain;
++
++	value = of_get_property(node, "linux,pci-domain", &len);
++	if (!value || len < sizeof(*value))
++		return -EINVAL;
++
++	domain = (u16)be32_to_cpup(value);
++
++	return domain;
++}
++EXPORT_SYMBOL_GPL(of_get_pci_domain_nr);
++
++#if defined(CONFIG_OF_ADDRESS)
++/**
++ * of_pci_get_host_bridge_resources - Parse PCI host bridge resources from DT
++ * @dev: device node of the host bridge having the range property
++ * @busno: bus number associated with the bridge root bus
++ * @bus_max: maximum number of buses for this bridge
++ * @resources: list where the range of resources will be added after DT parsing
++ * @io_base: pointer to a variable that will contain on return the physical
++ * address for the start of the I/O range. Can be NULL if the caller doesn't
++ * expect IO ranges to be present in the device tree.
++ *
++ * It is the caller's job to free the @resources list.
 + *
 + * This function will parse the "ranges" property of a PCI host bridge device
 + * node and setup the resource mapping based on its content. It is expected
 + * that the property conforms with the Power ePAPR document.
 + *
-+ * Each architecture is then offered the chance of applying their own
-+ * filtering of pci_host_bridge_windows based on their own restrictions by
-+ * calling pcibios_fixup_bridge_ranges(). The filtered list of windows
-+ * can then be used when creating a pci_host_bridge structure.
++ * It returns zero if the range parsing has been successful or a standard error
++ * value if it failed.
 + */
-+static int pci_host_bridge_of_get_ranges(struct device_node *dev,
-+		struct list_head *resources, resource_size_t *io_base)
++int of_pci_get_host_bridge_resources(struct device_node *dev,
++			unsigned char busno, unsigned char bus_max,
++			struct list_head *resources, resource_size_t *io_base)
 +{
 +	struct resource *res;
++	struct resource *bus_range;
 +	struct of_pci_range range;
 +	struct of_pci_range_parser parser;
++	char range_type[4];
 +	int err;
 +
++	if (io_base)
++		*io_base = (resource_size_t)OF_BAD_ADDR;
++
++	bus_range = kzalloc(sizeof(*bus_range), GFP_KERNEL);
++	if (!bus_range)
++		return -ENOMEM;
++
 +	pr_info("PCI host bridge %s ranges:\n", dev->full_name);
++
++	err = of_pci_parse_bus_range(dev, bus_range);
++	if (err) {
++		bus_range->start = busno;
++		bus_range->end = bus_max;
++		bus_range->flags = IORESOURCE_BUS;
++		pr_info("  No bus range found for %s, using %pR\n",
++			dev->full_name, bus_range);
++	} else {
++		if (bus_range->end > bus_range->start + bus_max)
++			bus_range->end = bus_range->start + bus_max;
++	}
++	pci_add_resource(resources, bus_range);
 +
 +	/* Check for ranges property */
 +	err = of_pci_range_parser_init(&parser, dev);
 +	if (err)
-+		return err;
++		goto parse_failed;
 +
 +	pr_debug("Parsing ranges property...\n");
 +	for_each_of_pci_range(&parser, &range) {
 +		/* Read next ranges element */
-+		pr_debug("pci_space: 0x%08x pci_addr:0x%016llx cpu_addr:0x%016llx size:0x%016llx\n",
-+			range.pci_space, range.pci_addr, range.cpu_addr, range.size);
++		if ((range.flags & IORESOURCE_TYPE_BITS) == IORESOURCE_IO)
++			snprintf(range_type, 4, " IO");
++		else if ((range.flags & IORESOURCE_TYPE_BITS) == IORESOURCE_MEM)
++			snprintf(range_type, 4, "MEM");
++		else
++			snprintf(range_type, 4, "err");
++		pr_info("  %s %#010llx..%#010llx -> %#010llx\n", range_type,
++			range.cpu_addr, range.cpu_addr + range.size - 1,
++			range.pci_addr);
 +
 +		/*
 +		 * If we failed translation or got a zero-sized region
@@ -1015,140 +3762,50 @@ index 8481996..e81402a 100644
 +			continue;
 +
 +		res = kzalloc(sizeof(struct resource), GFP_KERNEL);
-+		if (!res)
-+			return -ENOMEM;
++		if (!res) {
++			err = -ENOMEM;
++			goto parse_failed;
++		}
 +
 +		err = of_pci_range_to_resource(&range, dev, res);
 +		if (err)
-+			return err;
++			goto conversion_failed;
 +
-+		if (resource_type(res) == IORESOURCE_IO)
++		if (resource_type(res) == IORESOURCE_IO) {
++			if (!io_base) {
++				pr_err("I/O range found for %s. Please provide an io_base pointer to save CPU base address\n",
++					dev->full_name);
++				err = -EINVAL;
++				goto conversion_failed;
++			}
++			if (*io_base != (resource_size_t)OF_BAD_ADDR)
++				pr_warn("More than one I/O resource converted for %s. CPU base address for old range lost!\n",
++					dev->full_name);
 +			*io_base = range.cpu_addr;
++		}
 +
-+		pci_add_resource_offset(resources, res,
-+				res->start - range.pci_addr);
++		pci_add_resource_offset(resources, res,	res->start - range.pci_addr);
 +	}
 +
-+	/* Apply architecture specific fixups for the ranges */
-+	return pcibios_fixup_bridge_ranges(resources);
++	return 0;
++
++conversion_failed:
++	kfree(res);
++parse_failed:
++	pci_free_resource_list(resources);
++	return err;
 +}
-+
-+static atomic_t domain_nr = ATOMIC_INIT(-1);
-+
-+/**
-+ * of_create_pci_host_bridge - Create a PCI host bridge structure using
-+ * information passed in the DT.
-+ * @parent: device owning this host bridge
-+ * @ops: pci_ops associated with the host controller
-+ * @host_data: opaque data structure used by the host controller.
-+ *
-+ * returns a pointer to the newly created pci_host_bridge structure, or
-+ * NULL if the call failed.
-+ *
-+ * This function will try to obtain the host bridge domain number by
-+ * using of_alias_get_id() call with "pci-domain" as a stem. If that
-+ * fails, a local allocator will be used that will put each host bridge
-+ * in a new domain.
-+ */
-+struct pci_host_bridge *
-+of_create_pci_host_bridge(struct device *parent, struct pci_ops *ops, void *host_data)
-+{
-+	int err, domain, busno;
-+	struct resource *bus_range;
-+	struct pci_bus *root_bus;
-+	struct pci_host_bridge *bridge;
-+	resource_size_t io_base = 0;
-+	LIST_HEAD(res);
-+
-+	bus_range = kzalloc(sizeof(*bus_range), GFP_KERNEL);
-+	if (!bus_range)
-+		return ERR_PTR(-ENOMEM);
-+
-+	domain = of_alias_get_id(parent->of_node, "pci-domain");
-+	if (domain == -ENODEV)
-+		domain = atomic_inc_return(&domain_nr);
-+
-+	err = of_pci_parse_bus_range(parent->of_node, bus_range);
-+	if (err) {
-+		dev_info(parent, "No bus range for %s, using default [0-255]\n",
-+			parent->of_node->full_name);
-+		bus_range->start = 0;
-+		bus_range->end = 255;
-+		bus_range->flags = IORESOURCE_BUS;
-+	}
-+	busno = bus_range->start;
-+	pci_add_resource(&res, bus_range);
-+
-+	/* now parse the rest of host bridge bus ranges */
-+	err = pci_host_bridge_of_get_ranges(parent->of_node, &res, &io_base);
-+	if (err)
-+		goto err_create;
-+
-+	/* then create the root bus */
-+	root_bus = pci_create_root_bus_in_domain(parent, domain, busno,
-+						ops, host_data, &res);
-+	if (IS_ERR(root_bus)) {
-+		err = PTR_ERR(root_bus);
-+		goto err_create;
-+	}
-+
-+	bridge = to_pci_host_bridge(root_bus->bridge);
-+	bridge->io_base = io_base;
-+
-+	return bridge;
-+
-+err_create:
-+	pci_free_resource_list(&res);
-+	return ERR_PTR(err);
-+}
-+EXPORT_SYMBOL_GPL(of_create_pci_host_bridge);
++EXPORT_SYMBOL_GPL(of_pci_get_host_bridge_resources);
++#endif /* CONFIG_OF_ADDRESS */
 +
  #ifdef CONFIG_PCI_MSI
  
  static LIST_HEAD(of_pci_msi_chip_list);
-diff --git a/drivers/pci/host-bridge.c b/drivers/pci/host-bridge.c
-index 0e5f3c9..54ceafd 100644
---- a/drivers/pci/host-bridge.c
-+++ b/drivers/pci/host-bridge.c
-@@ -16,12 +16,13 @@ static struct pci_bus *find_pci_root_bus(struct pci_bus *bus)
- 	return bus;
- }
- 
--static struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
-+struct pci_host_bridge *find_pci_host_bridge(struct pci_bus *bus)
- {
- 	struct pci_bus *root_bus = find_pci_root_bus(bus);
- 
- 	return to_pci_host_bridge(root_bus->bridge);
- }
-+EXPORT_SYMBOL_GPL(find_pci_host_bridge);
- 
- void pci_set_host_bridge_release(struct pci_host_bridge *bridge,
- 				 void (*release_fn)(struct pci_host_bridge *),
-@@ -82,3 +83,18 @@ void pcibios_bus_to_resource(struct pci_bus *bus, struct resource *res,
- 	res->end = region->end + offset;
- }
- EXPORT_SYMBOL(pcibios_bus_to_resource);
-+
-+/**
-+ * Simple version of the platform specific code for filtering the list
-+ * of resources obtained from the ranges declaration in DT.
-+ *
-+ * Platforms can override this function in order to impose stronger
-+ * constraints onto the list of resources that a host bridge can use.
-+ * The filtered list will then be used to create a root bus and associate
-+ * it with the host bridge.
-+ *
-+ */
-+int __weak pcibios_fixup_bridge_ranges(struct list_head *resources)
-+{
-+	return 0;
-+}
 diff --git a/drivers/pci/host/Kconfig b/drivers/pci/host/Kconfig
-index 2d8a4d0..e17a28e 100644
+index 90f5cca..382fd3d 100644
 --- a/drivers/pci/host/Kconfig
 +++ b/drivers/pci/host/Kconfig
-@@ -54,4 +54,14 @@ config PCIE_SPEAR13XX
+@@ -63,4 +63,14 @@ config PCIE_SPEAR13XX
  	help
  	  Say Y here if you want PCIe support on SPEAr13XX SoCs.
  
@@ -1164,24 +3821,72 @@ index 2d8a4d0..e17a28e 100644
 +
  endmenu
 diff --git a/drivers/pci/host/Makefile b/drivers/pci/host/Makefile
-index 0daec79..7600482 100644
+index d0e88f1..845611f 100644
 --- a/drivers/pci/host/Makefile
 +++ b/drivers/pci/host/Makefile
-@@ -7,3 +7,4 @@ obj-$(CONFIG_PCI_RCAR_GEN2) += pci-rcar-gen2.o
+@@ -8,3 +8,4 @@ obj-$(CONFIG_PCI_RCAR_GEN2) += pci-rcar-gen2.o
  obj-$(CONFIG_PCI_RCAR_GEN2_PCIE) += pcie-rcar.o
  obj-$(CONFIG_PCI_HOST_GENERIC) += pci-host-generic.o
  obj-$(CONFIG_PCIE_SPEAR13XX) += pcie-spear13xx.o
 +obj-$(CONFIG_PCI_XGENE) += pci-xgene.o
+diff --git a/drivers/pci/host/pci-tegra.c b/drivers/pci/host/pci-tegra.c
+index 0fb0fdb..946935d 100644
+--- a/drivers/pci/host/pci-tegra.c
++++ b/drivers/pci/host/pci-tegra.c
+@@ -626,13 +626,14 @@ DECLARE_PCI_FIXUP_FINAL(PCI_ANY_ID, PCI_ANY_ID, tegra_pcie_relax_enable);
+ static int tegra_pcie_setup(int nr, struct pci_sys_data *sys)
+ {
+ 	struct tegra_pcie *pcie = sys_to_pcie(sys);
++	phys_addr_t io_start = pci_pio_to_address(pcie->io.start);
+ 
+ 	pci_add_resource_offset(&sys->resources, &pcie->mem, sys->mem_offset);
+ 	pci_add_resource_offset(&sys->resources, &pcie->prefetch,
+ 				sys->mem_offset);
+ 	pci_add_resource(&sys->resources, &pcie->busn);
+ 
+-	pci_ioremap_io(nr * SZ_64K, pcie->io.start);
++	pci_ioremap_io(nr * SZ_64K, io_start);
+ 
+ 	return 1;
+ }
+@@ -737,6 +738,7 @@ static irqreturn_t tegra_pcie_isr(int irq, void *arg)
+ static void tegra_pcie_setup_translations(struct tegra_pcie *pcie)
+ {
+ 	u32 fpci_bar, size, axi_address;
++	phys_addr_t io_start = pci_pio_to_address(pcie->io.start);
+ 
+ 	/* Bar 0: type 1 extended configuration space */
+ 	fpci_bar = 0xfe100000;
+@@ -749,7 +751,7 @@ static void tegra_pcie_setup_translations(struct tegra_pcie *pcie)
+ 	/* Bar 1: downstream IO bar */
+ 	fpci_bar = 0xfdfc0000;
+ 	size = resource_size(&pcie->io);
+-	axi_address = pcie->io.start;
++	axi_address = io_start;
+ 	afi_writel(pcie, axi_address, AFI_AXI_BAR1_START);
+ 	afi_writel(pcie, size >> 12, AFI_AXI_BAR1_SZ);
+ 	afi_writel(pcie, fpci_bar, AFI_FPCI_BAR1);
+@@ -1520,7 +1522,9 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
+ 	}
+ 
+ 	for_each_of_pci_range(&parser, &range) {
+-		of_pci_range_to_resource(&range, np, &res);
++		err = of_pci_range_to_resource(&range, np, &res);
++		if (err < 0)
++			return err;
+ 
+ 		switch (res.flags & IORESOURCE_TYPE_BITS) {
+ 		case IORESOURCE_IO:
 diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
 new file mode 100644
-index 0000000..7bf4ac7
+index 0000000..dae61a6
 --- /dev/null
 +++ b/drivers/pci/host/pci-xgene.c
-@@ -0,0 +1,725 @@
+@@ -0,0 +1,646 @@
 +/**
 + * APM X-Gene PCIe Driver
 + *
-+ * Copyright (c) 2013 Applied Micro Circuits Corporation.
++ * Copyright (c) 2014 Applied Micro Circuits Corporation.
 + *
 + * Author: Tanmay Inamdar <tinamdar@apm.com>.
 + *
@@ -1210,9 +3915,7 @@ index 0000000..7bf4ac7
 +#include <linux/platform_device.h>
 +#include <linux/slab.h>
 +
-+#define PCIECORE_LTSSM			0x4c
 +#define PCIECORE_CTLANDSTATUS		0x50
-+#define INTXSTATUSMASK			0x6c
 +#define PIM1_1L				0x80
 +#define IBAR2				0x98
 +#define IR2MSK				0x9c
@@ -1227,37 +3930,16 @@ index 0000000..7bf4ac7
 +#define CFGBARH				0x158
 +#define CFGCTL				0x15c
 +#define RTDID				0x160
-+#define BRIDGE_CFG_0			0x2000
-+#define BRIDGE_CFG_1			0x2004
 +#define BRIDGE_CFG_4			0x2010
-+#define BRIDGE_CFG_32			0x2030
-+#define BRIDGE_CFG_14			0x2038
-+#define BRIDGE_CTRL_1			0x2204
-+#define BRIDGE_CTRL_2			0x2208
-+#define BRIDGE_CTRL_5			0x2214
 +#define BRIDGE_STATUS_0			0x2600
-+#define MEM_RAM_SHUTDOWN                0xd070
-+#define BLOCK_MEM_RDY                   0xd074
 +
-+#define DEVICE_PORT_TYPE_MASK		0x03c00000
-+#define PM_FORCE_RP_MODE_MASK		0x00000400
-+#define SWITCH_PORT_MODE_MASK		0x00000800
-+#define CLASS_CODE_MASK			0xffffff00
 +#define LINK_UP_MASK			0x00000100
-+#define AER_OPTIONAL_ERROR_EN		0xffc00000
-+#define XGENE_PCIE_DEV_CTRL		0x2f0f
 +#define AXI_EP_CFG_ACCESS		0x10000
-+#define ENABLE_ASPM			0x08000000
-+#define XGENE_PORT_TYPE_RC		0x05000000
-+#define BLOCK_MEM_RDY_VAL               0xFFFFFFFF
 +#define EN_COHERENCY			0xF0000000
 +#define EN_REG				0x00000001
 +#define OB_LO_IO			0x00000002
-+#define XGENE_PCIE_VENDORID		0xE008
++#define XGENE_PCIE_VENDORID		0x10E8
 +#define XGENE_PCIE_DEVICEID		0xE004
-+#define XGENE_PCIE_ECC_TIMEOUT		10 /* ms */
-+#define XGENE_LTSSM_DETECT_WAIT		20 /* ms */
-+#define XGENE_LTSSM_L0_WAIT		4  /* ms */
 +#define SZ_1T				(SZ_1G*1024ULL)
 +#define PIPE_PHY_RATE_RD(src)		((0xc000 & (u32)(src)) >> 0xe)
 +
@@ -1267,7 +3949,8 @@ index 0000000..7bf4ac7
 +	struct clk		*clk;
 +	void __iomem		*csr_base;
 +	void __iomem		*cfg_base;
-+	u8			link_up;
++	unsigned long		cfg_addr;
++	bool			link_up;
 +};
 +
 +static inline u32 pcie_bar_low_val(u32 addr, u32 flags)
@@ -1444,6 +4127,7 @@ index 0000000..7bf4ac7
 +		xgene_pcie_cfg_out32(addr, offset, val);
 +		break;
 +	}
++
 +	return PCIBIOS_SUCCESSFUL;
 +}
 +
@@ -1451,19 +4135,6 @@ index 0000000..7bf4ac7
 +	.read = xgene_pcie_read_config,
 +	.write = xgene_pcie_write_config
 +};
-+
-+static void xgene_pcie_program_core(void __iomem *csr_base)
-+{
-+	u32 val;
-+
-+	val = readl(csr_base + BRIDGE_CFG_0);
-+	val |= AER_OPTIONAL_ERROR_EN;
-+	writel(val, csr_base + BRIDGE_CFG_0);
-+	writel(0x0, csr_base + INTXSTATUSMASK);
-+	val = readl(csr_base + BRIDGE_CTRL_1);
-+	val = (val & ~0xffff) | XGENE_PCIE_DEV_CTRL;
-+	writel(val, csr_base + BRIDGE_CTRL_1);
-+}
 +
 +static u64 xgene_pcie_set_ib_mask(void __iomem *csr_base, u32 addr,
 +				  u32 flags, u64 size)
@@ -1491,84 +4162,20 @@ index 0000000..7bf4ac7
 +	return mask;
 +}
 +
-+static void xgene_pcie_poll_linkup(struct xgene_pcie_port *port,
++static void xgene_pcie_linkup(struct xgene_pcie_port *port,
 +				   u32 *lanes, u32 *speed)
 +{
 +	void __iomem *csr_base = port->csr_base;
-+	ulong timeout;
 +	u32 val32;
 +
-+	/*
-+	 * A component enters the LTSSM Detect state within
-+	 * 20ms of the end of fundamental core reset.
-+	 */
-+	msleep(XGENE_LTSSM_DETECT_WAIT);
-+	port->link_up = 0;
-+	timeout = jiffies + msecs_to_jiffies(XGENE_LTSSM_L0_WAIT);
-+	while (time_before(jiffies, timeout)) {
-+		val32 = readl(csr_base + PCIECORE_CTLANDSTATUS);
-+		if (val32 & LINK_UP_MASK) {
-+			port->link_up = 1;
-+			*speed = PIPE_PHY_RATE_RD(val32);
-+			val32 = readl(csr_base + BRIDGE_STATUS_0);
-+			*lanes = val32 >> 26;
-+			break;
-+		}
-+		msleep(1);
++	port->link_up = false;
++	val32 = readl(csr_base + PCIECORE_CTLANDSTATUS);
++	if (val32 & LINK_UP_MASK) {
++		port->link_up = true;
++		*speed = PIPE_PHY_RATE_RD(val32);
++		val32 = readl(csr_base + BRIDGE_STATUS_0);
++		*lanes = val32 >> 26;
 +	}
-+}
-+
-+static void xgene_pcie_setup_root_complex(struct xgene_pcie_port *port)
-+{
-+	void __iomem *csr_base = port->csr_base;
-+	u32 val;
-+
-+	val = (XGENE_PCIE_DEVICEID << 16) | XGENE_PCIE_VENDORID;
-+	writel(val, csr_base + BRIDGE_CFG_0);
-+
-+	val = readl(csr_base + BRIDGE_CFG_1);
-+	val &= ~CLASS_CODE_MASK;
-+	val |= PCI_CLASS_BRIDGE_PCI << 16;
-+	writel(val, csr_base + BRIDGE_CFG_1);
-+
-+	val = readl(csr_base + BRIDGE_CFG_14);
-+	val |= SWITCH_PORT_MODE_MASK;
-+	val &= ~PM_FORCE_RP_MODE_MASK;
-+	writel(val, csr_base + BRIDGE_CFG_14);
-+
-+	val = readl(csr_base + BRIDGE_CTRL_5);
-+	val &= ~DEVICE_PORT_TYPE_MASK;
-+	val |= XGENE_PORT_TYPE_RC;
-+	writel(val, csr_base + BRIDGE_CTRL_5);
-+
-+	val = readl(csr_base + BRIDGE_CTRL_2);
-+	val |= ENABLE_ASPM;
-+	writel(val, csr_base + BRIDGE_CTRL_2);
-+
-+	val = readl(csr_base + BRIDGE_CFG_32);
-+	writel(val | (1 << 19), csr_base + BRIDGE_CFG_32);
-+}
-+
-+/* Return 0 on success */
-+static int xgene_pcie_init_ecc(struct xgene_pcie_port *port)
-+{
-+	void __iomem *csr_base = port->csr_base;
-+	ulong timeout;
-+	u32 val;
-+
-+	val = readl(csr_base + MEM_RAM_SHUTDOWN);
-+	if (!val)
-+		return 0;
-+	writel(0x0, csr_base + MEM_RAM_SHUTDOWN);
-+	timeout = jiffies + msecs_to_jiffies(XGENE_PCIE_ECC_TIMEOUT);
-+	while (time_before(jiffies, timeout)) {
-+		val = readl(csr_base + BLOCK_MEM_RDY);
-+		if (val == BLOCK_MEM_RDY_VAL)
-+			return 0;
-+		msleep(1);
-+	}
-+
-+	return 1;
 +}
 +
 +static int xgene_pcie_init_port(struct xgene_pcie_port *port)
@@ -1584,12 +4191,6 @@ index 0000000..7bf4ac7
 +	rc = clk_prepare_enable(port->clk);
 +	if (rc) {
 +		dev_err(port->dev, "clock enable failed\n");
-+		return rc;
-+	}
-+
-+	rc = xgene_pcie_init_ecc(port);
-+	if (rc) {
-+		dev_err(port->dev, "memory init failed\n");
 +		return rc;
 +	}
 +
@@ -1614,7 +4215,7 @@ index 0000000..7bf4ac7
 +			 xgene_pcie_fixup_bridge);
 +
 +static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
-+			      struct platform_device *pdev, u64 *cfg_addr)
++			      struct platform_device *pdev)
 +{
 +	struct resource *res;
 +
@@ -1627,37 +4228,35 @@ index 0000000..7bf4ac7
 +	port->cfg_base = devm_ioremap_resource(port->dev, res);
 +	if (IS_ERR(port->cfg_base))
 +		return PTR_ERR(port->cfg_base);
-+	*cfg_addr = res->start;
++	port->cfg_addr = res->start;
 +
 +	return 0;
 +}
 +
 +static void xgene_pcie_setup_ob_reg(struct xgene_pcie_port *port,
-+				    struct resource *res, u32 offset, u64 addr)
++				    struct resource *res, u32 offset,
++				    u64 cpu_addr, u64 pci_addr)
 +{
 +	void __iomem *base = port->csr_base + offset;
 +	resource_size_t size = resource_size(res);
 +	u64 restype = resource_type(res);
-+	u64 cpu_addr, pci_addr;
 +	u64 mask = 0;
 +	u32 min_size;
 +	u32 flag = EN_REG;
 +
 +	if (restype == IORESOURCE_MEM) {
-+		cpu_addr = res->start;
-+		pci_addr = addr;
 +		min_size = SZ_128M;
 +	} else {
-+		cpu_addr = addr;
-+		pci_addr = res->start;
 +		min_size = 128;
 +		flag |= OB_LO_IO;
 +	}
++
 +	if (size >= min_size)
 +		mask = ~(size - 1) | flag;
 +	else
 +		dev_warn(port->dev, "res size 0x%llx less than minimum 0x%x\n",
 +			 (u64)size, min_size);
++
 +	writel(lower_32_bits(cpu_addr), base);
 +	writel(upper_32_bits(cpu_addr), base + 0x04);
 +	writel(lower_32_bits(mask), base + 0x08);
@@ -1674,29 +4273,30 @@ index 0000000..7bf4ac7
 +}
 +
 +static int xgene_pcie_map_ranges(struct xgene_pcie_port *port,
-+				 struct pci_host_bridge *bridge,
-+				 u64 cfg_addr)
++				 struct list_head *res,
++				 resource_size_t io_base)
 +{
-+	struct device *dev = port->dev;
 +	struct pci_host_bridge_window *window;
++	struct device *dev = port->dev;
 +	int ret;
 +
-+	list_for_each_entry(window, &bridge->windows, list) {
++	list_for_each_entry(window, res, list) {
 +		struct resource *res = window->res;
 +		u64 restype = resource_type(res);
++
 +		dev_dbg(port->dev, "0x%08lx 0x%016llx...0x%016llx\n",
 +			res->flags, res->start, res->end);
 +
 +		switch (restype) {
 +		case IORESOURCE_IO:
-+			xgene_pcie_setup_ob_reg(port, res, OMR2BARL,
-+						bridge->io_base);
-+			ret = pci_remap_iospace(res, bridge->io_base);
++			xgene_pcie_setup_ob_reg(port, res, OMR3BARL, io_base,
++						res->start - window->offset);
++			ret = pci_remap_iospace(res, io_base);
 +			if (ret < 0)
 +				return ret;
 +			break;
 +		case IORESOURCE_MEM:
-+			xgene_pcie_setup_ob_reg(port, res, OMR3BARL,
++			xgene_pcie_setup_ob_reg(port, res, OMR1BARL, res->start,
 +						res->start - window->offset);
 +			break;
 +		case IORESOURCE_BUS:
@@ -1706,7 +4306,8 @@ index 0000000..7bf4ac7
 +			return -EINVAL;
 +		}
 +	}
-+	xgene_pcie_setup_cfg_reg(port->csr_base, cfg_addr);
++	xgene_pcie_setup_cfg_reg(port->csr_base, port->cfg_addr);
++
 +	return 0;
 +}
 +
@@ -1738,6 +4339,7 @@ index 0000000..7bf4ac7
 +		*ib_reg_mask |= (1 << 2);
 +		return 2;
 +	}
++
 +	return -EINVAL;
 +}
 +
@@ -1748,7 +4350,6 @@ index 0000000..7bf4ac7
 +	void __iomem *cfg_base = port->cfg_base;
 +	void *bar_addr;
 +	void *pim_addr;
-+	u64 restype = range->flags & IORESOURCE_TYPE_BITS;
 +	u64 cpu_addr = range->cpu_addr;
 +	u64 pci_addr = range->pci_addr;
 +	u64 size = range->size;
@@ -1763,7 +4364,7 @@ index 0000000..7bf4ac7
 +		return;
 +	}
 +
-+	if (restype == PCI_BASE_ADDRESS_MEM_PREFETCH)
++	if (range->flags & IORESOURCE_PREFETCH)
 +		flags |= PCI_BASE_ADDRESS_MEM_PREFETCH;
 +
 +	bar_low = pcie_bar_low_val((u32)cpu_addr, flags);
@@ -1791,7 +4392,7 @@ index 0000000..7bf4ac7
 +		break;
 +	}
 +
-+	xgene_pcie_setup_pims(pim_addr, pci_addr, size);
++	xgene_pcie_setup_pims(pim_addr, pci_addr, ~(size - 1));
 +}
 +
 +static int pci_dma_range_parser_init(struct of_pci_range_parser *parser,
@@ -1807,8 +4408,8 @@ index 0000000..7bf4ac7
 +	parser->range = of_get_property(node, "dma-ranges", &rlen);
 +	if (!parser->range)
 +		return -ENOENT;
-+
 +	parser->end = parser->range + rlen / sizeof(__be32);
++
 +	return 0;
 +}
 +
@@ -1828,6 +4429,7 @@ index 0000000..7bf4ac7
 +	/* Get the dma-ranges from DT */
 +	for_each_of_pci_range(&parser, &range) {
 +		u64 end = range.cpu_addr + range.size - 1;
++
 +		dev_dbg(port->dev, "0x%08x 0x%016llx..0x%016llx -> 0x%016llx\n",
 +			range.flags, range.cpu_addr, end, range.pci_addr);
 +		xgene_pcie_setup_ib_reg(port, &range, &ib_reg_mask);
@@ -1835,37 +4437,25 @@ index 0000000..7bf4ac7
 +	return 0;
 +}
 +
-+static int xgene_pcie_probe_bridge(struct platform_device *pdev)
++/* clear bar configuration which was done by firmware */
++static void xgene_pcie_clear_config(struct xgene_pcie_port *port)
 +{
-+	struct device_node *np = of_node_get(pdev->dev.of_node);
-+	struct xgene_pcie_port *port;
-+	struct pci_host_bridge *bridge;
-+	resource_size_t lastbus;
++	int i;
++
++	for (i = PIM1_1L; i <= CFGCTL; i += 4)
++		writel(0x0, port->csr_base + i);
++}
++
++static int xgene_pcie_setup(struct xgene_pcie_port *port,
++			    struct list_head *res,
++			    resource_size_t io_base)
++{
 +	u32 lanes = 0, speed = 0;
-+	u64 cfg_addr = 0;
 +	int ret;
 +
-+	port = devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
-+	if (!port)
-+		return -ENOMEM;
-+	port->node = np;
-+	port->dev = &pdev->dev;
++	xgene_pcie_clear_config(port);
 +
-+	ret = xgene_pcie_map_reg(port, pdev, &cfg_addr);
-+	if (ret)
-+		return ret;
-+
-+	ret = xgene_pcie_init_port(port);
-+	if (ret)
-+		return ret;
-+	xgene_pcie_program_core(port->csr_base);
-+	xgene_pcie_setup_root_complex(port);
-+
-+	bridge = of_create_pci_host_bridge(&pdev->dev, &xgene_pcie_ops, port);
-+	if (IS_ERR_OR_NULL(bridge))
-+		return PTR_ERR(bridge);
-+
-+	ret = xgene_pcie_map_ranges(port, bridge, cfg_addr);
++	ret = xgene_pcie_map_ranges(port, res, io_base);
 +	if (ret)
 +		return ret;
 +
@@ -1873,15 +4463,51 @@ index 0000000..7bf4ac7
 +	if (ret)
 +		return ret;
 +
-+	xgene_pcie_poll_linkup(port, &lanes, &speed);
++	xgene_pcie_linkup(port, &lanes, &speed);
 +	if (!port->link_up)
 +		dev_info(port->dev, "(rc) link down\n");
 +	else
 +		dev_info(port->dev, "(rc) x%d gen-%d link up\n",
 +				lanes, speed + 1);
++	return 0;
++}
++
++static int xgene_pcie_probe_bridge(struct platform_device *pdev)
++{
++	struct device_node *dn = pdev->dev.of_node;
++	struct xgene_pcie_port *port;
++	resource_size_t iobase = 0;
++	struct pci_bus *bus;
++	int ret;
++	LIST_HEAD(res);
++
++	port = devm_kzalloc(&pdev->dev, sizeof(*port), GFP_KERNEL);
++	if (!port)
++		return -ENOMEM;
++	port->node = of_node_get(pdev->dev.of_node);
++	port->dev = &pdev->dev;
++
++	ret = xgene_pcie_map_reg(port, pdev);
++	if (ret)
++		return ret;
++
++	ret = xgene_pcie_init_port(port);
++	if (ret)
++		return ret;
++
++	ret = of_pci_get_host_bridge_resources(dn, 0, 0xff, &res, &iobase);
++	if (ret)
++		return ret;
++
++	ret = xgene_pcie_setup(port, &res, iobase);
++	if (ret)
++		return ret;
++
++	bus = pci_scan_root_bus(&pdev->dev, 0, &xgene_pcie_ops, port, &res);
++	if (!bus)
++		return -ENOMEM;
++
 +	platform_set_drvdata(pdev, port);
-+	lastbus = pci_rescan_bus(bridge->bus);
-+	pci_bus_update_busn_res_end(bridge->bus, lastbus);
 +	return 0;
 +}
 +
@@ -1903,73 +4529,143 @@ index 0000000..7bf4ac7
 +MODULE_AUTHOR("Tanmay Inamdar <tinamdar@apm.com>");
 +MODULE_DESCRIPTION("APM X-Gene PCIe driver");
 +MODULE_LICENSE("GPL v2");
+diff --git a/drivers/pci/host/pcie-rcar.c b/drivers/pci/host/pcie-rcar.c
+index 4884ee5..61158e0 100644
+--- a/drivers/pci/host/pcie-rcar.c
++++ b/drivers/pci/host/pcie-rcar.c
+@@ -323,6 +323,7 @@ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie)
+ 
+ 	/* Setup PCIe address space mappings for each resource */
+ 	resource_size_t size;
++	resource_size_t res_start;
+ 	u32 mask;
+ 
+ 	rcar_pci_write_reg(pcie, 0x00000000, PCIEPTCTLR(win));
+@@ -335,8 +336,13 @@ static void rcar_pcie_setup_window(int win, struct rcar_pcie *pcie)
+ 	mask = (roundup_pow_of_two(size) / SZ_128) - 1;
+ 	rcar_pci_write_reg(pcie, mask << 7, PCIEPAMR(win));
+ 
+-	rcar_pci_write_reg(pcie, upper_32_bits(res->start), PCIEPARH(win));
+-	rcar_pci_write_reg(pcie, lower_32_bits(res->start), PCIEPARL(win));
++	if (res->flags & IORESOURCE_IO)
++		res_start = pci_pio_to_address(res->start);
++	else
++		res_start = res->start;
++
++	rcar_pci_write_reg(pcie, upper_32_bits(res_start), PCIEPARH(win));
++	rcar_pci_write_reg(pcie, lower_32_bits(res_start), PCIEPARL(win));
+ 
+ 	/* First resource is for IO */
+ 	mask = PAR_ENABLE;
+@@ -363,9 +369,10 @@ static int rcar_pcie_setup(int nr, struct pci_sys_data *sys)
+ 
+ 		rcar_pcie_setup_window(i, pcie);
+ 
+-		if (res->flags & IORESOURCE_IO)
+-			pci_ioremap_io(nr * SZ_64K, res->start);
+-		else
++		if (res->flags & IORESOURCE_IO) {
++			phys_addr_t io_start = pci_pio_to_address(res->start);
++			pci_ioremap_io(nr * SZ_64K, io_start);
++		} else
+ 			pci_add_resource(&sys->resources, res);
+ 	}
+ 	pci_add_resource(&sys->resources, &pcie->busn);
+@@ -935,8 +942,10 @@ static int rcar_pcie_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	for_each_of_pci_range(&parser, &range) {
+-		of_pci_range_to_resource(&range, pdev->dev.of_node,
++		err = of_pci_range_to_resource(&range, pdev->dev.of_node,
+ 						&pcie->res[win++]);
++		if (err < 0)
++			return err;
+ 
+ 		if (win > RCAR_PCI_MAX_RESOURCES)
+ 			break;
 diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index 2c9ac70..7bae0f9 100644
+index 2c9ac70..6e994fc 100644
 --- a/drivers/pci/pci.c
 +++ b/drivers/pci/pci.c
-@@ -17,6 +17,7 @@
- #include <linux/spinlock.h>
- #include <linux/string.h>
- #include <linux/log2.h>
-+#include <linux/of_pci.h>
- #include <linux/pci-aspm.h>
- #include <linux/pm_wakeup.h>
- #include <linux/interrupt.h>
-@@ -1453,6 +1454,9 @@ EXPORT_SYMBOL(pcim_pin_device);
-  */
- int __weak pcibios_add_device(struct pci_dev *dev)
- {
-+#ifdef CONFIG_OF
-+	dev->irq = of_irq_parse_and_map_pci(dev, 0, 0);
-+#endif
- 	return 0;
- }
- 
-@@ -2704,6 +2708,39 @@ int pci_request_regions_exclusive(struct pci_dev *pdev, const char *res_name)
+@@ -2704,6 +2704,37 @@ int pci_request_regions_exclusive(struct pci_dev *pdev, const char *res_name)
  }
  EXPORT_SYMBOL(pci_request_regions_exclusive);
  
 +/**
 + *	pci_remap_iospace - Remap the memory mapped I/O space
 + *	@res: Resource describing the I/O space
-+ *	@phys_addr: physical address where the range will be mapped.
++ *	@phys_addr: physical address of range to be mapped
 + *
 + *	Remap the memory mapped I/O space described by the @res
-+ *	into the CPU physical address space. Only architectures
-+ *	that have memory mapped IO defined (and hence PCI_IOBASE)
-+ *	should call this function.
++ *	and the CPU physical address @phys_addr into virtual address space.
++ *	Only architectures that have memory mapped IO functions defined
++ *	(and the PCI_IOBASE value defined) should call this function.
 + */
 +int __weak pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
 +{
-+	int err = -ENODEV;
++#if defined(PCI_IOBASE) && defined(CONFIG_MMU)
++	unsigned long vaddr = (unsigned long)PCI_IOBASE + res->start;
 +
-+#ifdef PCI_IOBASE
 +	if (!(res->flags & IORESOURCE_IO))
 +		return -EINVAL;
 +
 +	if (res->end > IO_SPACE_LIMIT)
 +		return -EINVAL;
 +
-+	err = ioremap_page_range(res->start + (unsigned long)PCI_IOBASE,
-+				res->end + 1 + (unsigned long)PCI_IOBASE,
-+				phys_addr, __pgprot(PROT_DEVICE_nGnRE));
++	return ioremap_page_range(vaddr, vaddr + resource_size(res), phys_addr,
++				  pgprot_device(PAGE_KERNEL));
 +#else
 +	/* this architecture does not have memory mapped I/O space,
 +	   so this function should never be called */
-+	WARN_ON(1);
++	WARN_ONCE(1, "This architecture does not support memory mapped I/O\n");
++	return -ENODEV;
 +#endif
-+
-+	return err;
 +}
 +
  static void __pci_set_master(struct pci_dev *dev, bool enable)
  {
  	u16 old_cmd, cmd;
+@@ -4406,6 +4437,15 @@ static void pci_no_domains(void)
+ #endif
+ }
+ 
++#ifdef CONFIG_PCI_DOMAINS
++static atomic_t __domain_nr = ATOMIC_INIT(-1);
++
++int pci_get_new_domain_nr(void)
++{
++	return atomic_inc_return(&__domain_nr);
++}
++#endif
++
+ /**
+  * pci_ext_cfg_avail - can we access extended PCI config space?
+  *
 diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
-index e3cf8a2..abf5e82 100644
+index 4170113..c3cec34 100644
 --- a/drivers/pci/probe.c
 +++ b/drivers/pci/probe.c
-@@ -515,7 +515,7 @@ static void pci_release_host_bridge_dev(struct device *dev)
+@@ -485,7 +485,7 @@ void pci_read_bridge_bases(struct pci_bus *child)
+ 	}
+ }
+ 
+-static struct pci_bus *pci_alloc_bus(void)
++static struct pci_bus *pci_alloc_bus(struct pci_bus *parent)
+ {
+ 	struct pci_bus *b;
+ 
+@@ -500,6 +500,10 @@ static struct pci_bus *pci_alloc_bus(void)
+ 	INIT_LIST_HEAD(&b->resources);
+ 	b->max_bus_speed = PCI_SPEED_UNKNOWN;
+ 	b->cur_bus_speed = PCI_SPEED_UNKNOWN;
++#ifdef CONFIG_PCI_DOMAINS_GENERIC
++	if (parent)
++		b->domain_nr = parent->domain_nr;
++#endif
+ 	return b;
+ }
+ 
+@@ -515,7 +519,7 @@ static void pci_release_host_bridge_dev(struct device *dev)
  	kfree(bridge);
  }
  
@@ -1978,56 +4674,50 @@ index e3cf8a2..abf5e82 100644
  {
  	struct pci_host_bridge *bridge;
  
-@@ -524,7 +524,6 @@ static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
+@@ -524,7 +528,8 @@ static struct pci_host_bridge *pci_alloc_host_bridge(struct pci_bus *b)
  		return NULL;
  
  	INIT_LIST_HEAD(&bridge->windows);
 -	bridge->bus = b;
++	bridge->dev.release = pci_release_host_bridge_dev;
++
  	return bridge;
  }
  
-@@ -1749,8 +1748,9 @@ void __weak pcibios_remove_bus(struct pci_bus *bus)
- {
- }
+@@ -671,7 +676,7 @@ static struct pci_bus *pci_alloc_child_bus(struct pci_bus *parent,
+ 	/*
+ 	 * Allocate a new bus, and inherit stuff from the parent..
+ 	 */
+-	child = pci_alloc_bus();
++	child = pci_alloc_bus(parent);
+ 	if (!child)
+ 		return NULL;
  
--struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
--		struct pci_ops *ops, void *sysdata, struct list_head *resources)
-+struct pci_bus *pci_create_root_bus_in_domain(struct device *parent,
-+		int domain, int bus, struct pci_ops *ops, void *sysdata,
-+		struct list_head *resources)
- {
- 	int error;
- 	struct pci_host_bridge *bridge;
-@@ -1761,37 +1761,41 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+@@ -1751,37 +1756,37 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
  	char bus_addr[64];
  	char *fmt;
  
+-	b = pci_alloc_bus();
+-	if (!b)
 +	bridge = pci_alloc_host_bridge();
 +	if (!bridge)
-+		return ERR_PTR(-ENOMEM);
-+
-+	bridge->dev.parent = parent;
-+	bridge->dev.release = pci_release_host_bridge_dev;
-+	bridge->domain_nr = domain;
-+
- 	b = pci_alloc_bus();
--	if (!b)
--		return NULL;
-+	if (!b) {
-+		error = -ENOMEM;
-+		goto err_out;
-+	}
+ 		return NULL;
  
++	bridge->dev.parent = parent;
++
++	b = pci_alloc_bus(NULL);
++	if (!b)
++		goto err_out;
++
  	b->sysdata = sysdata;
  	b->ops = ops;
  	b->number = b->busn_res.start = bus;
--	b2 = pci_find_bus(pci_domain_nr(b), bus);
-+	b2 = pci_find_bus(bridge->domain_nr, bus);
++	pci_bus_assign_domain_nr(b, parent);
+ 	b2 = pci_find_bus(pci_domain_nr(b), bus);
  	if (b2) {
  		/* If we already got to this bus through a different bridge, ignore it */
  		dev_dbg(&b2->dev, "bus already known\n");
 -		goto err_out;
-+		error = -EEXIST;
 +		goto err_bus_out;
  	}
  
@@ -2037,9 +4727,8 @@ index e3cf8a2..abf5e82 100644
 -
 -	bridge->dev.parent = parent;
 -	bridge->dev.release = pci_release_host_bridge_dev;
--	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
 +	bridge->bus = b;
-+	dev_set_name(&bridge->dev, "pci%04x:%02x", bridge->domain_nr, bus);
+ 	dev_set_name(&bridge->dev, "pci%04x:%02x", pci_domain_nr(b), bus);
  	error = pcibios_root_bridge_prepare(bridge);
 -	if (error) {
 -		kfree(bridge);
@@ -2055,48 +4744,595 @@ index e3cf8a2..abf5e82 100644
  	}
  	b->bridge = get_device(&bridge->dev);
  	device_enable_async_suspend(b->bridge);
-@@ -1802,7 +1806,7 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
- 
- 	b->dev.class = &pcibus_class;
- 	b->dev.parent = b->bridge;
--	dev_set_name(&b->dev, "%04x:%02x", pci_domain_nr(b), bus);
-+	dev_set_name(&b->dev, "%04x:%02x", bridge->domain_nr, bus);
- 	error = device_register(&b->dev);
- 	if (error)
- 		goto class_dev_reg_err;
-@@ -1848,9 +1852,31 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
+@@ -1838,8 +1843,10 @@ struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
  class_dev_reg_err:
  	put_device(&bridge->dev);
  	device_unregister(&bridge->dev);
+-err_out:
 +err_bus_out:
-+	kfree(b);
- err_out:
-+	kfree(bridge);
-+	return ERR_PTR(error);
-+}
-+
-+struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
-+		struct pci_ops *ops, void *sysdata, struct list_head *resources)
-+{
-+	int domain_nr;
-+	struct pci_bus *b = pci_alloc_bus();
-+	if (!b)
-+		return NULL;
-+
-+	b->sysdata = sysdata;
-+	domain_nr = pci_domain_nr(b);
  	kfree(b);
--	return NULL;
-+
-+	b = pci_create_root_bus_in_domain(parent, domain_nr, bus,
-+				ops, sysdata, resources);
-+	if (IS_ERR(b))
-+		return NULL;
-+
-+	return b;
++err_out:
++	kfree(bridge);
+ 	return NULL;
  }
  
- int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int bus_max)
+@@ -1936,6 +1943,9 @@ struct pci_bus *pci_scan_root_bus(struct device *parent, int bus,
+ 	if (!found)
+ 		pci_bus_update_busn_res_end(b, max);
+ 
++	if (!pci_has_flag(PCI_PROBE_ONLY))
++		pci_assign_unassigned_bus_resources(b);
++
+ 	pci_bus_add_devices(b);
+ 	return b;
+ }
+diff --git a/drivers/pnp/resource.c b/drivers/pnp/resource.c
+index 782e822..d952462 100644
+--- a/drivers/pnp/resource.c
++++ b/drivers/pnp/resource.c
+@@ -313,6 +313,7 @@ static int pci_dev_uses_irq(struct pnp_dev *pnp, struct pci_dev *pci,
+ 	progif = class & 0xff;
+ 	class >>= 8;
+ 
++#ifdef HAVE_ARCH_PCI_GET_LEGACY_IDE_IRQ
+ 	if (class == PCI_CLASS_STORAGE_IDE) {
+ 		/*
+ 		 * Unless both channels are native-PCI mode only,
+@@ -326,6 +327,7 @@ static int pci_dev_uses_irq(struct pnp_dev *pnp, struct pci_dev *pci,
+ 				return 1;
+ 			}
+ 	}
++#endif /* HAVE_ARCH_PCI_GET_LEGACY_IDE_IRQ */
+ 
+ 	return 0;
+ }
+diff --git a/drivers/tty/Kconfig b/drivers/tty/Kconfig
+index b24aa01..50fe279 100644
+--- a/drivers/tty/Kconfig
++++ b/drivers/tty/Kconfig
+@@ -419,4 +419,10 @@ config DA_CONSOLE
+ 	help
+ 	  This enables a console on a Dash channel.
+ 
++config SBSAUART_TTY
++	tristate "SBSA UART TTY Driver"
++	help
++	  Console and system TTY driver for the SBSA UART which is defined
++	  in the Server Base System Architecure document for ARM64 servers.
++
+ endif # TTY
+diff --git a/drivers/tty/Makefile b/drivers/tty/Makefile
+index 58ad1c0..c3211c0 100644
+--- a/drivers/tty/Makefile
++++ b/drivers/tty/Makefile
+@@ -29,5 +29,6 @@ obj-$(CONFIG_SYNCLINK)		+= synclink.o
+ obj-$(CONFIG_PPC_EPAPR_HV_BYTECHAN) += ehv_bytechan.o
+ obj-$(CONFIG_GOLDFISH_TTY)	+= goldfish.o
+ obj-$(CONFIG_DA_TTY)		+= metag_da.o
++obj-$(CONFIG_SBSAUART_TTY)	+= sbsauart.o
+ 
+ obj-y += ipwireless/
+diff --git a/drivers/tty/sbsauart.c b/drivers/tty/sbsauart.c
+new file mode 100644
+index 0000000..402f168
+--- /dev/null
++++ b/drivers/tty/sbsauart.c
+@@ -0,0 +1,355 @@
++/*
++ * SBSA (Server Base System Architecture) Compatible UART driver
++ *
++ * Copyright (C) 2014 Linaro Ltd
++ *
++ * Author: Graeme Gregory <graeme.gregory@linaro.org>
++ *
++ * This software is licensed under the terms of the GNU General Public
++ * License version 2, as published by the Free Software Foundation, and
++ * may be copied, distributed, and modified under those terms.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ */
++
++#include <linux/acpi.h>
++#include <linux/amba/serial.h>
++#include <linux/console.h>
++#include <linux/delay.h>
++#include <linux/interrupt.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/serial_core.h>
++#include <linux/tty.h>
++#include <linux/tty_flip.h>
++
++struct sbsa_tty {
++	struct tty_port port;
++	spinlock_t lock;
++	void __iomem *base;
++	u32 irq;
++	int opencount;
++	struct console console;
++};
++
++static struct tty_driver *sbsa_tty_driver;
++static struct sbsa_tty *sbsa_tty;
++
++#define SBSAUART_CHAR_MASK	0xFF
++
++static void sbsa_raw_putc(struct uart_port *port, int c)
++{
++	while (readw(port->membase + UART01x_FR) & UART01x_FR_TXFF)
++		;
++	writew(c & 0xFF, port->membase + UART01x_DR);
++}
++
++static void sbsa_uart_early_write(struct console *con, const char *buf,
++				  unsigned count)
++{
++	struct earlycon_device *dev = con->data;
++
++	uart_console_write(&dev->port, buf, count, sbsa_raw_putc);
++}
++
++static int __init sbsa_uart_early_console_setup(struct earlycon_device *device,
++						const char *opt)
++{
++	if (!device->port.membase)
++		return -ENODEV;
++
++	device->con->write = sbsa_uart_early_write;
++	return 0;
++}
++EARLYCON_DECLARE(sbsauart, sbsa_uart_early_console_setup);
++
++static void sbsa_tty_do_write(const char *buf, unsigned count)
++{
++	unsigned long irq_flags;
++	struct sbsa_tty *qtty = sbsa_tty;
++	void __iomem *base = qtty->base;
++	unsigned n;
++
++	spin_lock_irqsave(&qtty->lock, irq_flags);
++	for (n = 0; n < count; n++) {
++		while (readw(base + UART01x_FR) & UART01x_FR_TXFF)
++			;
++		writew(buf[n], base + UART01x_DR);
++	}
++	spin_unlock_irqrestore(&qtty->lock, irq_flags);
++}
++
++static void sbsauart_fifo_to_tty(struct sbsa_tty *qtty)
++{
++	void __iomem *base = qtty->base;
++	unsigned int flag, max_count = 32;
++	u16 status, ch;
++
++	while (max_count--) {
++		status = readw(base + UART01x_FR);
++		if (status & UART01x_FR_RXFE)
++			break;
++
++		/* Take chars from the FIFO and update status */
++		ch = readw(base + UART01x_DR);
++		flag = TTY_NORMAL;
++
++		if (ch & UART011_DR_BE)
++			flag = TTY_BREAK;
++		else if (ch & UART011_DR_PE)
++			flag = TTY_PARITY;
++		else if (ch & UART011_DR_FE)
++			flag = TTY_FRAME;
++		else if (ch & UART011_DR_OE)
++			flag = TTY_OVERRUN;
++
++		ch &= SBSAUART_CHAR_MASK;
++
++		tty_insert_flip_char(&qtty->port, ch, flag);
++	}
++
++	tty_schedule_flip(&qtty->port);
++
++	/* Clear the RX IRQ */
++	writew(UART011_RXIC | UART011_RXIC, base + UART011_ICR);
++}
++
++static irqreturn_t sbsa_tty_interrupt(int irq, void *dev_id)
++{
++	struct sbsa_tty *qtty = sbsa_tty;
++	unsigned long irq_flags;
++
++	spin_lock_irqsave(&qtty->lock, irq_flags);
++	sbsauart_fifo_to_tty(qtty);
++	spin_unlock_irqrestore(&qtty->lock, irq_flags);
++
++	return IRQ_HANDLED;
++}
++
++static int sbsa_tty_open(struct tty_struct *tty, struct file *filp)
++{
++	struct sbsa_tty *qtty = sbsa_tty;
++
++	return tty_port_open(&qtty->port, tty, filp);
++}
++
++static void sbsa_tty_close(struct tty_struct *tty, struct file *filp)
++{
++	tty_port_close(tty->port, tty, filp);
++}
++
++static void sbsa_tty_hangup(struct tty_struct *tty)
++{
++	tty_port_hangup(tty->port);
++}
++
++static int sbsa_tty_write(struct tty_struct *tty, const unsigned char *buf,
++								int count)
++{
++	sbsa_tty_do_write(buf, count);
++	return count;
++}
++
++static int sbsa_tty_write_room(struct tty_struct *tty)
++{
++	return 32;
++}
++
++static void sbsa_tty_console_write(struct console *co, const char *b,
++								unsigned count)
++{
++	sbsa_tty_do_write(b, count);
++
++	if (b[count - 1] == '\n')
++		sbsa_tty_do_write("\r", 1);
++}
++
++static struct tty_driver *sbsa_tty_console_device(struct console *c,
++								int *index)
++{
++	*index = c->index;
++	return sbsa_tty_driver;
++}
++
++static int sbsa_tty_console_setup(struct console *co, char *options)
++{
++	if ((unsigned)co->index > 0)
++		return -ENODEV;
++	if (sbsa_tty->base == NULL)
++		return -ENODEV;
++	return 0;
++}
++
++static struct tty_port_operations sbsa_port_ops = {
++};
++
++static const struct tty_operations sbsa_tty_ops = {
++	.open = sbsa_tty_open,
++	.close = sbsa_tty_close,
++	.hangup = sbsa_tty_hangup,
++	.write = sbsa_tty_write,
++	.write_room = sbsa_tty_write_room,
++};
++
++static int sbsa_tty_create_driver(void)
++{
++	int ret;
++	struct tty_driver *tty;
++
++	sbsa_tty = kzalloc(sizeof(*sbsa_tty), GFP_KERNEL);
++	if (sbsa_tty == NULL) {
++		ret = -ENOMEM;
++		goto err_alloc_sbsa_tty_failed;
++	}
++	tty = alloc_tty_driver(1);
++	if (tty == NULL) {
++		ret = -ENOMEM;
++		goto err_alloc_tty_driver_failed;
++	}
++	tty->driver_name = "sbsauart";
++	tty->name = "ttySBSA";
++	tty->type = TTY_DRIVER_TYPE_SERIAL;
++	tty->subtype = SERIAL_TYPE_NORMAL;
++	tty->init_termios = tty_std_termios;
++	tty->flags = TTY_DRIVER_RESET_TERMIOS | TTY_DRIVER_REAL_RAW |
++						TTY_DRIVER_DYNAMIC_DEV;
++	tty_set_operations(tty, &sbsa_tty_ops);
++	ret = tty_register_driver(tty);
++	if (ret)
++		goto err_tty_register_driver_failed;
++
++	sbsa_tty_driver = tty;
++	return 0;
++
++err_tty_register_driver_failed:
++	put_tty_driver(tty);
++err_alloc_tty_driver_failed:
++	kfree(sbsa_tty);
++	sbsa_tty = NULL;
++err_alloc_sbsa_tty_failed:
++	return ret;
++}
++
++static void sbsa_tty_delete_driver(void)
++{
++	tty_unregister_driver(sbsa_tty_driver);
++	put_tty_driver(sbsa_tty_driver);
++	sbsa_tty_driver = NULL;
++	kfree(sbsa_tty);
++	sbsa_tty = NULL;
++}
++
++static int sbsa_tty_probe(struct platform_device *pdev)
++{
++	struct sbsa_tty *qtty;
++	int ret = -EINVAL;
++	int i;
++	struct resource *r;
++	struct device *ttydev;
++	void __iomem *base;
++	u32 irq;
++
++	r = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (r == NULL)
++		return -EINVAL;
++
++	base = ioremap(r->start, r->end - r->start);
++	if (base == NULL)
++		pr_err("sbsa_tty: unable to remap base\n");
++
++	r = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (r == NULL)
++		goto err_unmap;
++
++	irq = r->start;
++
++	if (pdev->id > 0)
++		goto err_unmap;
++
++	ret = sbsa_tty_create_driver();
++	if (ret)
++		goto err_unmap;
++
++	qtty = sbsa_tty;
++	spin_lock_init(&qtty->lock);
++	tty_port_init(&qtty->port);
++	qtty->port.ops = &sbsa_port_ops;
++	qtty->base = base;
++	qtty->irq = irq;
++
++	/* Clear and Mask all IRQs */
++	writew(0, base + UART011_IMSC);
++	writew(0xFFFF, base + UART011_ICR);
++
++	ret = request_irq(irq, sbsa_tty_interrupt, IRQF_SHARED,
++						"sbsa_tty", pdev);
++	if (ret)
++		goto err_request_irq_failed;
++
++	/* Unmask the RX IRQ */
++	writew(UART011_RXIM | UART011_RTIM, base + UART011_IMSC);
++
++	ttydev = tty_port_register_device(&qtty->port, sbsa_tty_driver,
++							0, &pdev->dev);
++	if (IS_ERR(ttydev)) {
++		ret = PTR_ERR(ttydev);
++		goto err_tty_register_device_failed;
++	}
++
++	strcpy(qtty->console.name, "ttySBSA");
++	qtty->console.write = sbsa_tty_console_write;
++	qtty->console.device = sbsa_tty_console_device;
++	qtty->console.setup = sbsa_tty_console_setup;
++	qtty->console.flags = CON_PRINTBUFFER;
++	qtty->console.index = pdev->id;
++	register_console(&qtty->console);
++
++	return 0;
++
++	tty_unregister_device(sbsa_tty_driver, i);
++err_tty_register_device_failed:
++	free_irq(irq, pdev);
++err_request_irq_failed:
++	sbsa_tty_delete_driver();
++err_unmap:
++	iounmap(base);
++	return ret;
++}
++
++static int sbsa_tty_remove(struct platform_device *pdev)
++{
++	struct sbsa_tty *qtty;
++
++	qtty = sbsa_tty;
++	unregister_console(&qtty->console);
++	tty_unregister_device(sbsa_tty_driver, pdev->id);
++	iounmap(qtty->base);
++	qtty->base = 0;
++	free_irq(qtty->irq, pdev);
++	sbsa_tty_delete_driver();
++	return 0;
++}
++
++static const struct acpi_device_id sbsa_acpi_match[] = {
++	{ "ARMH0011", 0 },
++	{ }
++};
++
++static struct platform_driver sbsa_tty_platform_driver = {
++	.probe = sbsa_tty_probe,
++	.remove = sbsa_tty_remove,
++	.driver = {
++		.name = "sbsa_tty",
++		.acpi_match_table = ACPI_PTR(sbsa_acpi_match),
++	}
++};
++
++module_platform_driver(sbsa_tty_platform_driver);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+index 57d9df8..e075437 100644
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -313,10 +313,18 @@ static int dw8250_probe_of(struct uart_port *p,
+ static int dw8250_probe_acpi(struct uart_8250_port *up,
+ 			     struct dw8250_data *data)
+ {
++	const struct acpi_device_id *id;
+ 	struct uart_port *p = &up->port;
+ 
+ 	dw8250_setup_port(up);
+ 
++	id = acpi_match_device(p->dev->driver->acpi_match_table, p->dev);
++	if (!id)
++		return -ENODEV;
++
++	if (!p->uartclk)
++		p->uartclk = (unsigned int)id->driver_data;
++
+ 	p->iotype = UPIO_MEM32;
+ 	p->serial_in = dw8250_serial_in32;
+ 	p->serial_out = dw8250_serial_out32;
+@@ -541,6 +549,7 @@ static const struct acpi_device_id dw8250_acpi_match[] = {
+ 	{ "INT3435", 0 },
+ 	{ "80860F0A", 0 },
+ 	{ "8086228A", 0 },
++	{ "APMC0D08", 50000000},
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(acpi, dw8250_acpi_match);
+diff --git a/include/acpi/acnames.h b/include/acpi/acnames.h
+index c728113..f97804b 100644
+--- a/include/acpi/acnames.h
++++ b/include/acpi/acnames.h
+@@ -59,6 +59,10 @@
+ #define METHOD_NAME__PRS        "_PRS"
+ #define METHOD_NAME__PRT        "_PRT"
+ #define METHOD_NAME__PRW        "_PRW"
++#define METHOD_NAME__PS0        "_PS0"
++#define METHOD_NAME__PS1        "_PS1"
++#define METHOD_NAME__PS2        "_PS2"
++#define METHOD_NAME__PS3        "_PS3"
+ #define METHOD_NAME__REG        "_REG"
+ #define METHOD_NAME__SB_        "_SB_"
+ #define METHOD_NAME__SEG        "_SEG"
+diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+index d91e59b..68d5ade 100644
+--- a/include/acpi/acpi_bus.h
++++ b/include/acpi/acpi_bus.h
+@@ -68,6 +68,8 @@ bool acpi_check_dsm(acpi_handle handle, const u8 *uuid, int rev, u64 funcs);
+ union acpi_object *acpi_evaluate_dsm(acpi_handle handle, const u8 *uuid,
+ 			int rev, int func, union acpi_object *argv4);
+ 
++acpi_status acpi_check_coherency(acpi_handle handle, int *val);
++
+ static inline union acpi_object *
+ acpi_evaluate_dsm_typed(acpi_handle handle, const u8 *uuid, int rev, int func,
+ 			union acpi_object *argv4, acpi_object_type type)
+diff --git a/include/acpi/acpi_io.h b/include/acpi/acpi_io.h
+index 444671e..9d573db 100644
+--- a/include/acpi/acpi_io.h
++++ b/include/acpi/acpi_io.h
+@@ -1,11 +1,17 @@
+ #ifndef _ACPI_IO_H_
+ #define _ACPI_IO_H_
+ 
++#include <linux/mm.h>
+ #include <linux/io.h>
+ 
+ static inline void __iomem *acpi_os_ioremap(acpi_physical_address phys,
+ 					    acpi_size size)
+ {
++#ifdef CONFIG_ARM64
++	if (!page_is_ram(phys >> PAGE_SHIFT))
++		return ioremap(phys, size);
++#endif
++
+        return ioremap_cache(phys, size);
+ }
+ 
+diff --git a/include/acpi/acpixf.h b/include/acpi/acpixf.h
+index b7c89d4..dc9d037 100644
+--- a/include/acpi/acpixf.h
++++ b/include/acpi/acpixf.h
+@@ -46,7 +46,7 @@
+ 
+ /* Current ACPICA subsystem version in YYYYMMDD format */
+ 
+-#define ACPI_CA_VERSION                 0x20140724
++#define ACPI_CA_VERSION                 0x20140828
+ 
+ #include <acpi/acconfig.h>
+ #include <acpi/actypes.h>
+diff --git a/include/acpi/actbl1.h b/include/acpi/actbl1.h
+index 7626bfe..29e7937 100644
+--- a/include/acpi/actbl1.h
++++ b/include/acpi/actbl1.h
+@@ -952,7 +952,8 @@ enum acpi_srat_type {
+ 	ACPI_SRAT_TYPE_CPU_AFFINITY = 0,
+ 	ACPI_SRAT_TYPE_MEMORY_AFFINITY = 1,
+ 	ACPI_SRAT_TYPE_X2APIC_CPU_AFFINITY = 2,
+-	ACPI_SRAT_TYPE_RESERVED = 3	/* 3 and greater are reserved */
++	ACPI_SRAT_TYPE_GICC_AFFINITY = 3,
++	ACPI_SRAT_TYPE_RESERVED = 4	/* 4 and greater are reserved */
+ };
+ 
+ /*
+@@ -968,7 +969,7 @@ struct acpi_srat_cpu_affinity {
+ 	u32 flags;
+ 	u8 local_sapic_eid;
+ 	u8 proximity_domain_hi[3];
+-	u32 reserved;		/* Reserved, must be zero */
++	u32 clock_domain;
+ };
+ 
+ /* Flags */
+@@ -1010,6 +1011,20 @@ struct acpi_srat_x2apic_cpu_affinity {
+ 
+ #define ACPI_SRAT_CPU_ENABLED       (1)	/* 00: Use affinity structure */
+ 
++/* 3: GICC Affinity (ACPI 5.1) */
++
++struct acpi_srat_gicc_affinity {
++	struct acpi_subtable_header header;
++	u32 proximity_domain;
++	u32 acpi_processor_uid;
++	u32 flags;
++	u32 clock_domain;
++};
++
++/* Flags for struct acpi_srat_gicc_affinity */
++
++#define ACPI_SRAT_GICC_ENABLED     (1)	/* 00: Use affinity structure */
++
+ /* Reset to default packing */
+ 
+ #pragma pack()
+diff --git a/include/acpi/actbl3.h b/include/acpi/actbl3.h
+index 787bcc8..5480cb2 100644
+--- a/include/acpi/actbl3.h
++++ b/include/acpi/actbl3.h
+@@ -310,10 +310,15 @@ struct acpi_gtdt_timer_entry {
+ 	u32 common_flags;
+ };
+ 
++/* Flag Definitions: timer_flags and virtual_timer_flags above */
++
++#define ACPI_GTDT_GT_IRQ_MODE               (1)
++#define ACPI_GTDT_GT_IRQ_POLARITY           (1<<1)
++
+ /* Flag Definitions: common_flags above */
+ 
+-#define ACPI_GTDT_GT_IS_SECURE_TIMER    (1)
+-#define ACPI_GTDT_GT_ALWAYS_ON          (1<<1)
++#define ACPI_GTDT_GT_IS_SECURE_TIMER        (1)
++#define ACPI_GTDT_GT_ALWAYS_ON              (1<<1)
+ 
+ /* 1: SBSA Generic Watchdog Structure */
+ 
 diff --git a/include/asm-generic/io.h b/include/asm-generic/io.h
 index 975e1cc..2e2161b 100644
 --- a/include/asm-generic/io.h
@@ -2110,11 +5346,147 @@ index 975e1cc..2e2161b 100644
  }
  
  static inline void ioport_unmap(void __iomem *p)
+diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
+index 53b2acc..977e545 100644
+--- a/include/asm-generic/pgtable.h
++++ b/include/asm-generic/pgtable.h
+@@ -249,6 +249,10 @@ static inline int pmd_same(pmd_t pmd_a, pmd_t pmd_b)
+ #define pgprot_writecombine pgprot_noncached
+ #endif
+ 
++#ifndef pgprot_device
++#define pgprot_device pgprot_noncached
++#endif
++
+ /*
+  * When walking page tables, get the address of the next boundary,
+  * or the end address of the range if that comes earlier.  Although no
+diff --git a/include/kvm/arm_vgic.h b/include/kvm/arm_vgic.h
+index 35b0c12..d98e96b 100644
+--- a/include/kvm/arm_vgic.h
++++ b/include/kvm/arm_vgic.h
+@@ -237,17 +237,19 @@ bool vgic_handle_mmio(struct kvm_vcpu *vcpu, struct kvm_run *run,
+ #define irqchip_in_kernel(k)	(!!((k)->arch.vgic.in_kernel))
+ #define vgic_initialized(k)	((k)->arch.vgic.ready)
+ 
+-int vgic_v2_probe(struct device_node *vgic_node,
+-		  const struct vgic_ops **ops,
+-		  const struct vgic_params **params);
++int vgic_v2_dt_probe(struct device_node *vgic_node,
++		     const struct vgic_ops **ops,
++		     const struct vgic_params **params);
++int vgic_v2_acpi_probe(const struct vgic_ops **ops,
++		       const struct vgic_params **params);
+ #ifdef CONFIG_ARM_GIC_V3
+-int vgic_v3_probe(struct device_node *vgic_node,
+-		  const struct vgic_ops **ops,
+-		  const struct vgic_params **params);
++int vgic_v3_dt_probe(struct device_node *vgic_node,
++		     const struct vgic_ops **ops,
++		     const struct vgic_params **params);
+ #else
+-static inline int vgic_v3_probe(struct device_node *vgic_node,
+-				const struct vgic_ops **ops,
+-				const struct vgic_params **params)
++static inline int vgic_v3_dt_probe(struct device_node *vgic_node,
++				   const struct vgic_ops **ops,
++				   const struct vgic_params **params)
+ {
+ 	return -ENODEV;
+ }
+diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+index 807cbc4..4615eb1 100644
+--- a/include/linux/acpi.h
++++ b/include/linux/acpi.h
+@@ -71,6 +71,7 @@ enum acpi_irq_model_id {
+ 	ACPI_IRQ_MODEL_IOAPIC,
+ 	ACPI_IRQ_MODEL_IOSAPIC,
+ 	ACPI_IRQ_MODEL_PLATFORM,
++	ACPI_IRQ_MODEL_GIC,
+ 	ACPI_IRQ_MODEL_COUNT
+ };
+ 
+@@ -123,6 +124,10 @@ int acpi_numa_init (void);
+ 
+ int acpi_table_init (void);
+ int acpi_table_parse(char *id, acpi_tbl_table_handler handler);
++int __init acpi_parse_entries(unsigned long table_size,
++			      acpi_tbl_entry_handler handler,
++			      struct acpi_table_header *table_header,
++			      int entry_id, unsigned int max_entries);
+ int __init acpi_table_parse_entries(char *id, unsigned long table_size,
+ 				    int entry_id,
+ 				    acpi_tbl_entry_handler handler,
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 653f0e2..5839f98 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -346,4 +346,10 @@ extern void clocksource_of_init(void);
+ static inline void clocksource_of_init(void) {}
+ #endif
+ 
++#ifdef CONFIG_ACPI
++void acpi_generic_timer_init(void);
++#else
++static inline void acpi_generic_timer_init(void) {}
++#endif
++
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/include/linux/irqchip/arm-gic-acpi.h b/include/linux/irqchip/arm-gic-acpi.h
+new file mode 100644
+index 0000000..ad5b577
+--- /dev/null
++++ b/include/linux/irqchip/arm-gic-acpi.h
+@@ -0,0 +1,31 @@
++/*
++ * Copyright (C) 2014, Linaro Ltd.
++ *	Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#ifndef ARM_GIC_ACPI_H_
++#define ARM_GIC_ACPI_H_
++
++#ifdef CONFIG_ACPI
++
++/*
++ * Hard code here, we can not get memory size from MADT (but FDT does),
++ * Actually no need to do that, because this size can be inferred
++ * from GIC spec.
++ */
++#define ACPI_GICV2_DIST_MEM_SIZE	(SZ_4K)
++#define ACPI_GIC_CPU_IF_MEM_SIZE	(SZ_8K)
++
++struct acpi_table_header;
++
++void acpi_gic_init(void);
++int gic_v2_acpi_init(struct acpi_table_header *table);
++#else
++static inline void acpi_gic_init(void) { }
++#endif
++
++#endif /* ARM_GIC_ACPI_H_ */
+diff --git a/include/linux/irqchip/arm-gic.h b/include/linux/irqchip/arm-gic.h
+index 45e2d8c..2b0f246 100644
+--- a/include/linux/irqchip/arm-gic.h
++++ b/include/linux/irqchip/arm-gic.h
+@@ -39,6 +39,8 @@
+ #define GIC_DIST_SGI_PENDING_CLEAR	0xf10
+ #define GIC_DIST_SGI_PENDING_SET	0xf20
+ 
++#define GIC_DIST_SOFTINT_NSATT		0x8000
++
+ #define GICH_HCR			0x0
+ #define GICH_VTR			0x4
+ #define GICH_VMCR			0x8
 diff --git a/include/linux/of_address.h b/include/linux/of_address.h
-index fb7b722..cb9479e4 100644
+index fb7b722..7ebb877 100644
 --- a/include/linux/of_address.h
 +++ b/include/linux/of_address.h
-@@ -23,17 +23,8 @@ struct of_pci_range {
+@@ -23,17 +23,6 @@ struct of_pci_range {
  #define for_each_of_pci_range(parser, range) \
  	for (; of_pci_range_parser_one(parser, range);)
  
@@ -2129,71 +5501,96 @@ index fb7b722..cb9479e4 100644
 -	res->name = np->full_name;
 -}
 -
-+extern int of_pci_range_to_resource(struct of_pci_range *range,
-+		struct device_node *np, struct resource *res);
  /* Translate a DMA address from device space to CPU space */
  extern u64 of_translate_dma_address(struct device_node *dev,
  				    const __be32 *in_addr);
-@@ -55,6 +46,7 @@ extern void __iomem *of_iomap(struct device_node *device, int index);
+@@ -55,7 +44,9 @@ extern void __iomem *of_iomap(struct device_node *device, int index);
  extern const __be32 *of_get_address(struct device_node *dev, int index,
  			   u64 *size, unsigned int *flags);
  
 +extern int pci_register_io_range(phys_addr_t addr, resource_size_t size);
  extern unsigned long pci_address_to_pio(phys_addr_t addr);
++extern phys_addr_t pci_pio_to_address(unsigned long pio);
  
  extern int of_pci_range_parser_init(struct of_pci_range_parser *parser,
+ 			struct device_node *node);
+@@ -138,6 +129,9 @@ extern const __be32 *of_get_pci_address(struct device_node *dev, int bar_no,
+ 			       u64 *size, unsigned int *flags);
+ extern int of_pci_address_to_resource(struct device_node *dev, int bar,
+ 				      struct resource *r);
++extern int of_pci_range_to_resource(struct of_pci_range *range,
++				    struct device_node *np,
++				    struct resource *res);
+ #else /* CONFIG_OF_ADDRESS && CONFIG_PCI */
+ static inline int of_pci_address_to_resource(struct device_node *dev, int bar,
+ 				             struct resource *r)
+@@ -153,4 +147,3 @@ static inline const __be32 *of_get_pci_address(struct device_node *dev,
+ #endif /* CONFIG_OF_ADDRESS && CONFIG_PCI */
+ 
+ #endif /* __OF_ADDRESS_H */
+-
 diff --git a/include/linux/of_pci.h b/include/linux/of_pci.h
-index dde3a4a..71e36d0 100644
+index dde3a4a..1fd207e 100644
 --- a/include/linux/of_pci.h
 +++ b/include/linux/of_pci.h
-@@ -15,6 +15,9 @@ struct device_node *of_pci_find_child_device(struct device_node *parent,
+@@ -15,6 +15,7 @@ struct device_node *of_pci_find_child_device(struct device_node *parent,
  int of_pci_get_devfn(struct device_node *np);
  int of_irq_parse_and_map_pci(const struct pci_dev *dev, u8 slot, u8 pin);
  int of_pci_parse_bus_range(struct device_node *node, struct resource *res);
-+struct pci_host_bridge *of_create_pci_host_bridge(struct device *parent,
-+					struct pci_ops *ops, void *host_data);
-+
++int of_get_pci_domain_nr(struct device_node *node);
  #else
  static inline int of_irq_parse_pci(const struct pci_dev *pdev, struct of_phandle_args *out_irq)
  {
-@@ -43,6 +46,13 @@ of_pci_parse_bus_range(struct device_node *node, struct resource *res)
+@@ -43,6 +44,18 @@ of_pci_parse_bus_range(struct device_node *node, struct resource *res)
  {
  	return -EINVAL;
  }
 +
-+static inline struct pci_host_bridge *
-+of_create_pci_host_bridge(struct device *parent, struct pci_ops *ops,
-+			void *host_data)
++static inline int
++of_get_pci_domain_nr(struct device_node *node)
 +{
-+	return NULL;
++	return -1;
 +}
++#endif
++
++#if defined(CONFIG_OF_ADDRESS)
++int of_pci_get_host_bridge_resources(struct device_node *dev,
++			unsigned char busno, unsigned char bus_max,
++			struct list_head *resources, resource_size_t *io_base);
  #endif
  
  #if defined(CONFIG_OF) && defined(CONFIG_PCI_MSI)
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 61978a4..f582746 100644
+index 96453f9..6d540b9 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
-@@ -401,6 +401,8 @@ struct pci_host_bridge_window {
- struct pci_host_bridge {
- 	struct device dev;
- 	struct pci_bus *bus;		/* root bus */
-+	int domain_nr;
-+	resource_size_t io_base;	/* physical address for the start of I/O area */
- 	struct list_head windows;	/* pci_host_bridge_windows */
- 	void (*release_fn)(struct pci_host_bridge *);
- 	void *release_data;
-@@ -769,6 +771,9 @@ struct pci_bus *pci_scan_bus(int bus, struct pci_ops *ops, void *sysdata);
- struct pci_bus *pci_create_root_bus(struct device *parent, int bus,
- 				    struct pci_ops *ops, void *sysdata,
- 				    struct list_head *resources);
-+struct pci_bus *pci_create_root_bus_in_domain(struct device *parent,
-+			int domain, int bus, struct pci_ops *ops,
-+			void *sysdata, struct list_head *resources);
- int pci_bus_insert_busn_res(struct pci_bus *b, int bus, int busmax);
- int pci_bus_update_busn_res_end(struct pci_bus *b, int busmax);
- void pci_bus_release_busn_res(struct pci_bus *b);
-@@ -1097,6 +1102,9 @@ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
+@@ -457,6 +457,9 @@ struct pci_bus {
+ 	unsigned char	primary;	/* number of primary bridge */
+ 	unsigned char	max_bus_speed;	/* enum pci_bus_speed */
+ 	unsigned char	cur_bus_speed;	/* enum pci_bus_speed */
++#ifdef CONFIG_PCI_DOMAINS_GENERIC
++	int		domain_nr;
++#endif
+ 
+ 	char		name[48];
+ 
+@@ -559,15 +562,6 @@ struct pci_ops {
+ 	int (*write)(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 val);
+ };
+ 
+-/*
+- * ACPI needs to be able to access PCI config space before we've done a
+- * PCI bus scan and created pci_bus structures.
+- */
+-int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn,
+-		 int reg, int len, u32 *val);
+-int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn,
+-		  int reg, int len, u32 val);
+-
+ struct pci_bus_region {
+ 	dma_addr_t start;
+ 	dma_addr_t end;
+@@ -1103,6 +1097,9 @@ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
  						  resource_size_t),
  			void *alignf_data);
  
@@ -2203,22 +5600,89 @@ index 61978a4..f582746 100644
  static inline dma_addr_t pci_bus_address(struct pci_dev *pdev, int bar)
  {
  	struct pci_bus_region region;
-@@ -1815,8 +1823,15 @@ static inline void pci_set_of_node(struct pci_dev *dev) { }
- static inline void pci_release_of_node(struct pci_dev *dev) { }
- static inline void pci_set_bus_of_node(struct pci_bus *bus) { }
- static inline void pci_release_bus_of_node(struct pci_bus *bus) { }
-+
- #endif  /* CONFIG_OF */
+@@ -1288,17 +1285,47 @@ void pci_cfg_access_unlock(struct pci_dev *dev);
+  */
+ #ifdef CONFIG_PCI_DOMAINS
+ extern int pci_domains_supported;
++int pci_get_new_domain_nr(void);
+ #else
+ enum { pci_domains_supported = 0 };
+ static inline int pci_domain_nr(struct pci_bus *bus) { return 0; }
+ static inline int pci_proc_domain(struct pci_bus *bus) { return 0; }
++static inline int pci_get_new_domain_nr(void) { return -ENOSYS; }
+ #endif /* CONFIG_PCI_DOMAINS */
  
-+/* Used by architecture code to apply any quirks to the list of
-+ * pci_host_bridge resource ranges before they are being used
-+ * by of_create_pci_host_bridge()
++/*
++ * Generic implementation for PCI domain support. If your
++ * architecture does not need custom management of PCI
++ * domains then this implementation will be used
 + */
-+extern int pcibios_fixup_bridge_ranges(struct list_head *resources);
++#ifdef CONFIG_PCI_DOMAINS_GENERIC
++static inline int pci_domain_nr(struct pci_bus *bus)
++{
++	return bus->domain_nr;
++}
++void pci_bus_assign_domain_nr(struct pci_bus *bus, struct device *parent);
++#else
++static inline void pci_bus_assign_domain_nr(struct pci_bus *bus,
++					struct device *parent)
++{
++}
++#endif
 +
- #ifdef CONFIG_EEH
- static inline struct eeh_dev *pci_dev_to_eeh_dev(struct pci_dev *pdev)
- {
+ /* some architectures require additional setup to direct VGA traffic */
+ typedef int (*arch_set_vga_state_t)(struct pci_dev *pdev, bool decode,
+ 		      unsigned int command_bits, u32 flags);
+ void pci_register_set_vga_state(arch_set_vga_state_t func);
+ 
++/*
++ * ACPI needs to be able to access PCI config space before we've done a
++ * PCI bus scan and created pci_bus structures.
++ */
++int raw_pci_read(unsigned int domain, unsigned int bus, unsigned int devfn,
++		 int reg, int len, u32 *val);
++int raw_pci_write(unsigned int domain, unsigned int bus, unsigned int devfn,
++		  int reg, int len, u32 val);
++void pcibios_penalize_isa_irq(int irq, int active);
++
+ #else /* CONFIG_PCI is not enabled */
+ 
+ /*
+@@ -1400,8 +1427,26 @@ static inline struct pci_dev *pci_get_bus_and_slot(unsigned int bus,
+ 						unsigned int devfn)
+ { return NULL; }
+ 
++static inline struct pci_bus *pci_find_bus(int domain, int busnr)
++{ return NULL; }
++
++static inline int pci_bus_write_config_byte(struct pci_bus *bus,
++				unsigned int devfn, int where, u8 val)
++{ return -ENOSYS; }
++
++static inline int raw_pci_read(unsigned int domain, unsigned int bus,
++			unsigned int devfn, int reg, int len, u32 *val)
++{ return -ENOSYS; }
++
++static inline int raw_pci_write(unsigned int domain, unsigned int bus,
++			unsigned int devfn, int reg, int len, u32 val)
++{ return -ENOSYS; }
++
++static inline void pcibios_penalize_isa_irq(int irq, int active) { }
++
+ static inline int pci_domain_nr(struct pci_bus *bus) { return 0; }
+ static inline struct pci_dev *pci_dev_get(struct pci_dev *dev) { return NULL; }
++static inline int pci_get_new_domain_nr(void) { return -ENOSYS; }
+ 
+ #define dev_is_pci(d) (false)
+ #define dev_is_pf(d) (false)
+@@ -1613,7 +1658,6 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev,
+ 				 enum pcie_reset_state state);
+ int pcibios_add_device(struct pci_dev *dev);
+ void pcibios_release_device(struct pci_dev *dev);
+-void pcibios_penalize_isa_irq(int irq, int active);
+ 
+ #ifdef CONFIG_HIBERNATE_CALLBACKS
+ extern struct dev_pm_ops pcibios_pm_ops;
 diff --git a/tools/perf/arch/arm64/include/perf_regs.h b/tools/perf/arch/arm64/include/perf_regs.h
 index e9441b9..1d3f39c 100644
 --- a/tools/perf/arch/arm64/include/perf_regs.h
@@ -2232,3 +5696,353 @@ index e9441b9..1d3f39c 100644
  #define PERF_REG_IP	PERF_REG_ARM64_PC
  #define PERF_REG_SP	PERF_REG_ARM64_SP
  
+diff --git a/virt/kvm/arm/arch_timer.c b/virt/kvm/arm/arch_timer.c
+index 22fa819..9cd5dbd 100644
+--- a/virt/kvm/arm/arch_timer.c
++++ b/virt/kvm/arm/arch_timer.c
+@@ -21,9 +21,11 @@
+ #include <linux/kvm.h>
+ #include <linux/kvm_host.h>
+ #include <linux/interrupt.h>
++#include <linux/acpi.h>
+ 
+ #include <clocksource/arm_arch_timer.h>
+ #include <asm/arch_timer.h>
++#include <asm/acpi.h>
+ 
+ #include <kvm/arm_vgic.h>
+ #include <kvm/arm_arch_timer.h>
+@@ -244,60 +246,92 @@ static const struct of_device_id arch_timer_of_match[] = {
+ 	{},
+ };
+ 
+-int kvm_timer_hyp_init(void)
++static int kvm_timer_ppi_parse_dt(unsigned int *ppi)
+ {
+ 	struct device_node *np;
+-	unsigned int ppi;
+-	int err;
+-
+-	timecounter = arch_timer_get_timecounter();
+-	if (!timecounter)
+-		return -ENODEV;
+ 
+ 	np = of_find_matching_node(NULL, arch_timer_of_match);
+ 	if (!np) {
+-		kvm_err("kvm_arch_timer: can't find DT node\n");
+ 		return -ENODEV;
+ 	}
+ 
+-	ppi = irq_of_parse_and_map(np, 2);
+-	if (!ppi) {
+-		kvm_err("kvm_arch_timer: no virtual timer interrupt\n");
+-		err = -EINVAL;
+-		goto out;
++	*ppi = irq_of_parse_and_map(np, 2);
++	if (*ppi == 0) {
++		of_node_put(np);
++		return -EINVAL;
+ 	}
+ 
+-	err = request_percpu_irq(ppi, kvm_arch_timer_handler,
+-				 "kvm guest timer", kvm_get_running_vcpus());
+-	if (err) {
+-		kvm_err("kvm_arch_timer: can't request interrupt %d (%d)\n",
+-			ppi, err);
+-		goto out;
+-	}
++	return 0;
++}
+ 
+-	host_vtimer_irq = ppi;
++extern int acadia_kvm_acpi;
++extern int arch_timer_ppi[];
+ 
+-	err = __register_cpu_notifier(&kvm_timer_cpu_nb);
+-	if (err) {
+-		kvm_err("Cannot register timer CPU notifier\n");
+-		goto out_free;
+-	}
++static int kvm_timer_ppi_parse_acpi(unsigned int *ppi)
+ 
+-	wqueue = create_singlethread_workqueue("kvm_arch_timer");
+-	if (!wqueue) {
+-		err = -ENOMEM;
+-		goto out_free;
+-	}
++{
++	/* retrieve VIRT_PPI info */
++	*ppi = arch_timer_ppi[2];
+ 
+-	kvm_info("%s IRQ%d\n", np->name, ppi);
+-	on_each_cpu(kvm_timer_init_interrupt, NULL, 1);
++	if (*ppi == 0)
++		return -EINVAL;
++	else
++		return 0;
++}
++
++int kvm_timer_hyp_init(void)
++{
++	unsigned int ppi;
++	int err;
++
++        timecounter = arch_timer_get_timecounter();
++        if (!timecounter)
++		return -ENODEV;
++
++	/* PPI DT parsing */
++	err = kvm_timer_ppi_parse_dt(&ppi);
+ 
+-	goto out;
++	/* if DT parsing fails, try ACPI next */
++	if (err && !acpi_disabled && acadia_kvm_acpi )
++		err = kvm_timer_ppi_parse_acpi(&ppi);
++
++	if (err) {
++		kvm_err("kvm_timer_hyp_init: can't find virtual timer info or "
++			"config virtual timer interrupt\n");
++		return err;
++	}
++
++	/* configure IRQ handler */
++	err = request_percpu_irq(ppi, kvm_arch_timer_handler,
++                                 "kvm guest timer", kvm_get_running_vcpus());
++        if (err) {
++                kvm_err("kvm_arch_timer: can't request interrupt %d (%d)\n",
++                        ppi, err);
++                goto out;
++        }
++
++        host_vtimer_irq = ppi;
++
++        err = __register_cpu_notifier(&kvm_timer_cpu_nb);
++        if (err) {
++                kvm_err("Cannot register timer CPU notifier\n");
++                goto out_free;
++        }
++
++        wqueue = create_singlethread_workqueue("kvm_arch_timer");
++        if (!wqueue) {
++                err = -ENOMEM;
++                goto out_free;
++        }
++
++        kvm_info("timer IRQ%d\n", ppi);
++        on_each_cpu(kvm_timer_init_interrupt, NULL, 1);
++
++        goto out;
+ out_free:
+-	free_percpu_irq(ppi, kvm_get_running_vcpus());
++        free_percpu_irq(ppi, kvm_get_running_vcpus());
+ out:
+-	of_node_put(np);
+-	return err;
++        return err;
+ }
+ 
+ void kvm_timer_vcpu_terminate(struct kvm_vcpu *vcpu)
+diff --git a/virt/kvm/arm/vgic-v2.c b/virt/kvm/arm/vgic-v2.c
+index 416baed..53bdd33 100644
+--- a/virt/kvm/arm/vgic-v2.c
++++ b/virt/kvm/arm/vgic-v2.c
+@@ -19,6 +19,7 @@
+ #include <linux/kvm.h>
+ #include <linux/kvm_host.h>
+ #include <linux/interrupt.h>
++#include <linux/acpi.h>
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/of_address.h>
+@@ -26,6 +27,7 @@
+ 
+ #include <linux/irqchip/arm-gic.h>
+ 
++#include <asm/acpi.h>
+ #include <asm/kvm_emulate.h>
+ #include <asm/kvm_arm.h>
+ #include <asm/kvm_mmu.h>
+@@ -177,7 +179,7 @@ static const struct vgic_ops vgic_v2_ops = {
+ static struct vgic_params vgic_v2_params;
+ 
+ /**
+- * vgic_v2_probe - probe for a GICv2 compatible interrupt controller in DT
++ * vgic_v2_dt_probe - probe for a GICv2 compatible interrupt controller in DT
+  * @node:	pointer to the DT node
+  * @ops: 	address of a pointer to the GICv2 operations
+  * @params:	address of a pointer to HW-specific parameters
+@@ -186,7 +188,7 @@ static struct vgic_params vgic_v2_params;
+  * in *ops and the HW parameters in *params. Returns an error code
+  * otherwise.
+  */
+-int vgic_v2_probe(struct device_node *vgic_node,
++int vgic_v2_dt_probe(struct device_node *vgic_node,
+ 		  const struct vgic_ops **ops,
+ 		  const struct vgic_params **params)
+ {
+@@ -263,3 +265,72 @@ out:
+ 	of_node_put(vgic_node);
+ 	return ret;
+ }
++
++struct acpi_madt_generic_interrupt *vgic_acpi;
++static void gic_get_acpi_header(struct acpi_subtable_header *header)
++{
++	vgic_acpi = (struct acpi_madt_generic_interrupt *)header;
++}
++
++int vgic_v2_acpi_probe(const struct vgic_ops **ops,
++		       const struct vgic_params **params)
++{
++	struct vgic_params *vgic = &vgic_v2_params;
++	int irq_mode, ret;
++
++	/* MADT table */
++	ret = acpi_table_parse_madt(ACPI_MADT_TYPE_GENERIC_INTERRUPT,
++			(acpi_tbl_entry_handler)gic_get_acpi_header, 0);
++	if (!ret) {
++		pr_err("Failed to get MADT VGIC CPU entry\n");
++		ret = -ENODEV;
++		goto out;
++	}
++
++	/* IRQ trigger mode */
++	irq_mode = (vgic_acpi->flags & ACPI_MADT_VGIC_IRQ_MODE) ?
++		ACPI_EDGE_SENSITIVE : ACPI_LEVEL_SENSITIVE;
++	/* According to GIC-400 manual, all PPIs are active-LOW, level
++	 *  sensative. We register IRQ as active-low.
++	 */
++	vgic->maint_irq = acpi_register_gsi(NULL, vgic_acpi->vgic_interrupt,
++					    irq_mode, ACPI_ACTIVE_LOW);
++	if (!vgic->maint_irq) {
++		pr_err("Cannot register VGIC ACPI maintenance irq\n");
++		ret = -ENXIO;
++		goto out;
++	}
++
++	/* GICH resource */
++	vgic->vctrl_base = ioremap(vgic_acpi->gich_base_address, SZ_8K);
++	if (!vgic->vctrl_base) {
++		pr_err("cannot ioremap GICH memory\n");
++		ret = -ENOMEM;
++		goto out;
++	}
++
++        vgic->nr_lr = readl_relaxed(vgic->vctrl_base + GICH_VTR);
++        vgic->nr_lr = (vgic->nr_lr & 0x3f) + 1;
++
++        ret = create_hyp_io_mappings(vgic->vctrl_base,
++                                     vgic->vctrl_base + SZ_8K,
++                                     vgic_acpi->gich_base_address);
++        if (ret) {
++                kvm_err("Cannot map GICH into hyp\n");
++		goto out;
++        }
++
++	vgic->vcpu_base = vgic_acpi->gicv_base_address;
++
++	kvm_info("GICH base=0x%llx, GICV base=0x%llx, IRQ=%d\n",
++		 (unsigned long long)vgic_acpi->gich_base_address,
++		 (unsigned long long)vgic_acpi->gicv_base_address,
++		 vgic->maint_irq);
++
++	vgic->type = VGIC_V2;
++	*ops = &vgic_v2_ops;
++	*params = vgic;
++
++out:
++	return ret;
++}
+diff --git a/virt/kvm/arm/vgic-v3.c b/virt/kvm/arm/vgic-v3.c
+index 1c2c8ee..8b56920 100644
+--- a/virt/kvm/arm/vgic-v3.c
++++ b/virt/kvm/arm/vgic-v3.c
+@@ -173,7 +173,7 @@ static const struct vgic_ops vgic_v3_ops = {
+ static struct vgic_params vgic_v3_params;
+ 
+ /**
+- * vgic_v3_probe - probe for a GICv3 compatible interrupt controller in DT
++ * vgic_v3_dt_probe - probe for a GICv3 compatible interrupt controller in DT
+  * @node:	pointer to the DT node
+  * @ops: 	address of a pointer to the GICv3 operations
+  * @params:	address of a pointer to HW-specific parameters
+@@ -182,9 +182,9 @@ static struct vgic_params vgic_v3_params;
+  * in *ops and the HW parameters in *params. Returns an error code
+  * otherwise.
+  */
+-int vgic_v3_probe(struct device_node *vgic_node,
+-		  const struct vgic_ops **ops,
+-		  const struct vgic_params **params)
++int vgic_v3_dt_probe(struct device_node *vgic_node,
++		     const struct vgic_ops **ops,
++		     const struct vgic_params **params)
+ {
+ 	int ret = 0;
+ 	u32 gicv_idx;
+diff --git a/virt/kvm/arm/vgic.c b/virt/kvm/arm/vgic.c
+index 73eba79..ca98a3b 100644
+--- a/virt/kvm/arm/vgic.c
++++ b/virt/kvm/arm/vgic.c
+@@ -25,9 +25,11 @@
+ #include <linux/of_address.h>
+ #include <linux/of_irq.h>
+ #include <linux/uaccess.h>
++#include <linux/acpi.h>
+ 
+ #include <linux/irqchip/arm-gic.h>
+ 
++#include <asm/acpi.h>
+ #include <asm/kvm_emulate.h>
+ #include <asm/kvm_arm.h>
+ #include <asm/kvm_mmu.h>
+@@ -1549,31 +1551,39 @@ static struct notifier_block vgic_cpu_nb = {
+ };
+ 
+ static const struct of_device_id vgic_ids[] = {
+-	{ .compatible = "arm,cortex-a15-gic", .data = vgic_v2_probe, },
+-	{ .compatible = "arm,gic-v3", .data = vgic_v3_probe, },
++	{ .compatible = "arm,cortex-a15-gic", .data = vgic_v2_dt_probe, },
++	{ .compatible = "arm,gic-v3", .data = vgic_v3_dt_probe, },
+ 	{},
+ };
+ 
++extern int acadia_kvm_acpi;
++
+ int kvm_vgic_hyp_init(void)
+ {
+ 	const struct of_device_id *matched_id;
+ 	int (*vgic_probe)(struct device_node *,const struct vgic_ops **,
+ 			  const struct vgic_params **);
+ 	struct device_node *vgic_node;
+-	int ret;
++	int ret = -ENODEV;
+ 
+-	vgic_node = of_find_matching_node_and_match(NULL,
+-						    vgic_ids, &matched_id);
+-	if (!vgic_node) {
+-		kvm_err("error: no compatible GIC node found\n");
+-		return -ENODEV;
++	/* probe VGIC */
++	if (vgic_node = of_find_matching_node_and_match(NULL,
++				vgic_ids, &matched_id)) {
++		/* probe VGIC in DT */
++		vgic_probe = matched_id->data;
++		ret = vgic_probe(vgic_node, &vgic_ops, &vgic);
++	}
++	else if (!acpi_disabled && acadia_kvm_acpi) {
++		/* probe VGIC in ACPI */
++		ret = vgic_v2_acpi_probe(&vgic_ops, &vgic);
+ 	}
+ 
+-	vgic_probe = matched_id->data;
+-	ret = vgic_probe(vgic_node, &vgic_ops, &vgic);
+-	if (ret)
++	if (ret) {
++		kvm_err("error: no compatible GIC info found\n");
+ 		return ret;
++	}
+ 
++	/* configuration */
+ 	ret = request_percpu_irq(vgic->maint_irq, vgic_maintenance_handler,
+ 				 "vgic", kvm_get_running_vcpus());
+ 	if (ret) {
