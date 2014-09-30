@@ -581,6 +581,7 @@ Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
+Patch21029: arm-dts-sun7i-bananapi.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -1202,6 +1203,7 @@ ApplyPatch ppc64-fixtools.patch
 # ARM
 #
 ApplyPatch ARM-tegra-usb-no-reset.patch
+
 ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
 ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
@@ -1210,6 +1212,7 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
+ApplyPatch arm-dts-sun7i-bananapi.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2223,6 +2226,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 30 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Don't build Exynos4 on lpae kernel
+- Add dts for BananaPi
+- Minor ARM updates
+- Build 6lowpan modules
+
 * Mon Sep 29 2014 Kyle McMartin <kyle@fedoraproject.org>
 - Update kernel-arm64.patch from git.
 
