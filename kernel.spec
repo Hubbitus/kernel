@@ -583,6 +583,8 @@ Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 Patch21029: arm-dts-sun7i-bananapi.patch
 
+Patch21100: arm-highbank-l2-reverts.patch
+
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -1213,6 +1215,8 @@ ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
 ApplyPatch arm-dts-sun7i-bananapi.patch
+
+ApplyPatch arm-highbank-l2-reverts.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -2226,6 +2230,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Sep 30 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Revert some v3.16 changes to mach-highbank which broke L2 cache enablement.
+  Will debug upstream separately, but we need F22/21 running there. (#1139762)
+
 * Tue Sep 30 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Don't build Exynos4 on lpae kernel
 - Add dts for BananaPi
