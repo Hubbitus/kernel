@@ -1,3 +1,1232 @@
+commit 87257d3e584fad0b47e6304da54a1932f42b11bb
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Sep 30 17:19:24 2014 -0400
+
+    arm64: avoid need for console= to enable serial console
+    
+    Tell kernel to prefer one of the serial ports on platforms
+    pl011, 8250, or sbsa uarts. console= on command line will
+    override these assumed preferences.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 56db24589d311ea3590527030ede007ec339e2d7
+Author: Tom Lendacky <thomas.lendacky@amd.com>
+Date:   Tue Sep 9 23:33:17 2014 -0400
+
+    drivers: net: AMD Seattle XGBE PHY support for A0 silicon
+    
+    This patch modifies the upstream AMD XGBE PHY driver to support
+    A0 Seattle silicon in currently shipping systems. The upstream
+    Linux driver is targetted for Seattle B0 silicon.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 75554bb2e3c433a47e172d81a0b59df58810dc01
+Author: Tom Lendacky <thomas.lendacky@amd.com>
+Date:   Tue Sep 9 23:34:07 2014 -0400
+
+    drivers: net: AMD Seattle XGBE 10GbE support for A0 silicon
+    
+    This patch modifies the upstream AMD 10GbE XGBE Ethernet driver to
+    support A0 Seattle silicon in currently shipping systems. The
+    upstream Linux driver is targetted for Seattle B0 silicon.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 41cb1b3c9e62256b8a4e92c50cd51b2a68d0c9c6
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Fri Jul 26 17:55:02 2013 +0100
+
+    virtio-mmio: add ACPI probing
+    
+    Added the match table and pointers for ACPI probing to the driver.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+
+commit c06502fb4f00c6996c1f55cd342288508808c678
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Wed Jul 24 11:29:48 2013 +0100
+
+    net: smc91x: add ACPI probing support.
+    
+    Add device ID LINA0003 for this device and add the match table.
+    
+    As its a platform device it needs no other code and will be probed in by
+    acpi_platform once device ID is added.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+
+commit aad559613ff05a13f940129675659297e7125979
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Sep 23 12:48:48 2014 -0400
+
+    arm64/pci: add coherency inheritance for pci devices
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 8d2a4226d96ccae17fbc0ef7d7d9c5a07ad8b31f
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Sep 23 12:35:17 2014 -0400
+
+    arm64/acpi: make acpi disabled by default
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 0553f2b9fc94bfb0f9038003ad6f150cca196aad
+Author: Wei Huang <wei@redhat.com>
+Date:   Thu Sep 18 20:32:03 2014 -0400
+
+    KVM: fix VTTBR_BADDR_MASK
+    
+    The following is patch from AMD to fix VTTBR_BADDR_MASK. According to
+    AMD, this patch is required to enable KVM on Seattle.
+    
+      The current VTTBR_BADDR_MASK only masks 39 bits, which is broken on current
+      systems.  Rather than just add a bit it seems like a good time to also set
+      things at run-time instead of compile time to accomodate more hardware.
+    
+      This patch sets TCR_EL2.PS, VTCR_EL2.T0SZ and vttbr_baddr_mask in runtime,
+      not compile time.
+    
+      In ARMv8, EL2 physical address size (TCR_EL2.PS) and stage2 input address
+      size (VTCR_EL2.T0SZE) cannot be determined in compile time since they
+      depend on hardware capability.
+    
+      According to Table D4-23 and Table D4-25 in ARM DDI 0487A.b document,
+      vttbr_x is calculated using different fixed values with consideration
+      of T0SZ, granule size and the level of translation tables. Therefore,
+      vttbr_baddr_mask should be determined dynamically.
+    
+      Changes since v5:
+      Fixed declaration of vttbr_baddr_mask to not create multiple instances
+      Refactored return codes based on feedback
+      For 32 bit included kvm_arm.h in kvm_mmu.h to explictly pick up
+      VTTBR_BADDR_MASK
+    
+      Changes since v4:
+      More minor cleanups from review
+      Moved some functions into headers
+      Added runtime check in kvm_alloc_stage2_pgd
+    
+      Changes since v3:
+      Another rebase
+      Addressed minor comments from v2
+    
+      Changes since v2:
+      Rebased on https://git.kernel.org/pub/scm/linux/kernel/git/kvmarm/kvmarm.git next branch
+    
+      Changes since v1:
+      Rebased fix on Jungseok Lee's patch https://lkml.org/lkml/2014/5/12/189 to
+      provide better long term fix.  Updated that patch to log error instead of
+      silently fail on unaligned vttbr.
+    
+      Cc: Marc Zyngier <marc.zyngier@arm.com>
+      Cc: Christoffer Dall <christoffer.dall@linaro.org>
+      Cc: Sungjinn Chung <sungjinn.chung@samsung.com>
+      Signed-off-by: Jungseok Lee <jays.lee@samsung.com>
+      Signed-off-by: Joel Schopp <joel.schopp@amd.com>
+    
+    Signed-off-by: Wei Huang <wei@redhat.com>
+
+commit f53d1278fe445b7130f1ff76b2f453b453368284
+Author: Wei Huang <wei@redhat.com>
+Date:   Thu Sep 18 20:02:57 2014 -0400
+
+    KVM/ACPI: Enable ACPI support for KVM virt GIC
+    
+    This patches enables ACPI support for KVM virtual GIC. KVM parses
+    ACPI table for virt GIC related information when DT table is not
+    present. This is done by retrieving the information defined in
+    generic_interrupt entry of MADT table.
+    
+    Note: Alexander Spyridakis from Virtual Open System posts a
+    _very_ similar patch to enable acpi-kvm. This patch borrows some
+    ideas from his patch.
+    
+    Signed-off-by: Wei Huang <wei@redhat.com>
+
+commit ba63e452ff5b09cc0314f94e163a51c3279b9ca7
+Author: Wei Huang <wei@redhat.com>
+Date:   Thu Sep 18 20:02:56 2014 -0400
+
+    KVM/ACPI: Enable ACPI support for virt arch timer
+    
+    This patches enables ACPI support for KVM virtual arch_timer. It
+    allows KVM to parse ACPI table for virt arch_timer PPI when DT table
+    is not present. This is done by retrieving the information from
+    arch_timer_ppi array in arm_arch_timer driver.
+    
+    Signed-off-by: Wei Huang <wei@redhat.com>
+
+commit dd3f6094c2142786f40a3bc4d69c60b430ecc675
+Author: Wei Huang <wei@redhat.com>
+Date:   Thu Sep 18 20:02:55 2014 -0400
+
+    KVM/ACPI: Add kernel parameter kvmacpi to enable KVM ACPI support
+    
+    This patch addes a new kernel parameter, kvmacpi, to turn on ACPI
+    support for KVM. Users can enable it using "kvmacpi=on" in command
+    line. When it is on, KVM will will parse ACPI tables to configure related
+    components. By default this option is off.
+    
+    Note that DT will be probed first, no matter kvmacpi is ON or OFF.
+    This is because many platforms, such qemu/kvm, still supports
+    DT only. We still want to support Acadia kernel on such platforms.
+    
+    Signed-off-by: Wei Huang <wei@redhat.com>
+
+commit cdfc19f1fbe88c1610db790ad55318d55ab00ee9
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Sep 18 21:13:05 2014 -0400
+
+    arm64/pci: fix dma coherency inheritance for PCI devices
+    
+    The default dma_ops for devices on arm64 systems are noncoherent in
+    nature and rely upon special operations and bounce buffers to
+    perform a device DMA operation to/from memory. Some drivers rely
+    upon coherent operations involving suitably capable hardware. In
+    this case, a "dma-coherent" property will exist on the corresponding
+    Device Tree node for the bridge device, or one of its ancestors.
+    This patch adds support for applying a DMA coherent dma_ops for
+    PCI devices in the case of such a property.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit c8a62324eba5718fb43a94a168de7a81787aa94d
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Sep 18 15:05:23 2014 -0400
+
+    arm64: add sev to parking protocol
+    
+    Parking protocol wakes secondary cores with an interrupt.
+    This patch adds an additional sev() to send an event. This
+    is a temporary hack for APM Mustang board and not intended
+    for upstream.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit e5f4ba1223515c46f1875597e77d5c32a37829ee
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sun Sep 14 09:44:44 2014 -0400
+
+    Revert "ahci_xgene: Skip the PHY and clock initialization if already configured by the firmware."
+    
+    This reverts commit 0bed13bebd6c99d097796d2ca6c4f10fb5b2eabc.
+    
+    Temporarily revert for backwards compatibility with rh-0.12-1 firmware
+
+commit aeff595a5d57264e5f01add5c43f584d88be6a92
+Author: Mark Salter <msalter@redhat.com>
+Date:   Mon Aug 11 13:46:43 2014 -0400
+
+    xgene: add support for ACPI-probed serial port
+
+commit 02429d239f5ae917d870a7611a9d838b7822df1a
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sat Aug 9 12:01:20 2014 -0400
+
+    sata/xgene: support acpi probing
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 774385f250ebb7448ca3eeb344a064ac989c4988
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Thu Aug 28 14:26:16 2014 -0400
+
+    ARM64 / ACPI: Introduce some PCI functions when PCI is enabled
+    
+    Introduce some PCI functions to make ACPI can be compiled when
+    CONFIG_PCI is enabled, these functions should be revisited when
+    implemented on ARM64.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    [fixed up for 3.17-rc]
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 6f711c98b37f1b0a42c4a523d0380d47ed2f95b9
+Author: Al Stone <ahs3@redhat.com>
+Date:   Thu Aug 28 13:14:16 2014 -0400
+
+    Fix arm64 compilation error in PNP code
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit f874873b7cb10f827bb7f8e08fa282878f740e77
+Author: Bob Moore <robert.moore@intel.com>
+Date:   Tue Sep 2 08:27:40 2014 +0800
+
+    ACPICA: Update version to 20140828.
+    
+    Version 20140828.
+    
+    Signed-off-by: Bob Moore <robert.moore@intel.com>
+    Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+
+commit 26f9b7b90576cf808a50edf1ec86ceece9349c9f
+Author: Bob Moore <robert.moore@intel.com>
+Date:   Tue Sep 2 08:27:27 2014 +0800
+
+    ACPICA: Disassembler: Fix for gpio_int interrupt polarity flags.
+    
+    The field is actually 2 bits, not 1.
+    
+    Signed-off-by: Bob Moore <robert.moore@intel.com>
+    Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+
+commit 6e1eddc48f6f9b948be4126dd38841f6f70da080
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Tue Sep 2 08:27:19 2014 +0800
+
+    ACPICA: Headers: Add GTDT flag definitions for the timer subtable.
+    
+    Mostly by Hanjun Guo <hanjun.guo@linaro.org>
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    Signed-off-by: Bob Moore <robert.moore@intel.com>
+    Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+
+commit 1091460efb5542ba87f40ef20daff44215587f26
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Tue Sep 2 08:27:12 2014 +0800
+
+    ACPICA: ACPI 5.1/Disassembler: Add GICC affinity subtable to SRAT table.
+    
+    Update template for SRAT.
+    Add clock_domain to standard CPU affinity subtable.
+    
+    Mostly by Hanjun Guo <hanjun.guo@linaro.org>
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    Signed-off-by: Bob Moore <robert.moore@intel.com>
+    Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+
+commit 02ba5e067dbb83b0f481db821d05851e9623c401
+Author: Bob Moore <robert.moore@intel.com>
+Date:   Tue Sep 2 08:27:05 2014 +0800
+
+    ACPICA: Add _PSx names to the METHOD_NAME list.
+    
+    Will be used by iASL.
+    
+    Signed-off-by: Bob Moore <robert.moore@intel.com>
+    Signed-off-by: Lv Zheng <lv.zheng@intel.com>
+
+commit f2ecef6608a1f74b236df4f93da9b7b5aba4d3fd
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Sep 9 22:59:48 2014 -0400
+
+    arm64: add parking protocol support
+    
+    This is a first-cut effort at parking protocol support. It is
+    very much a work in progress (as is the spec it is based on).
+    This code deviates from the current spec in a number of ways
+    to work around current firmware issues and issues with kernels
+    using 64K page sizes.
+    
+    caveat utilitor
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 63e220c94f072f10bfae2e1ed375af9dbc017571
+Author: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
+Date:   Tue Sep 9 15:37:15 2014 -0500
+
+    ata: ahci_platform: Add ACPI support for AMD Seattle SATA controller
+    
+    This patch adds ACPI support for non-PCI SATA contoller in ahci_platform driver.
+    It adds ACPI matching table in ahci_platform to support AMD Seattle SATA controller
+    with following ASL structure in DSDT:
+    
+        Device (SATA0)
+        {
+          Name(_HID, "AMDI0600")	// Seattle AHSATA
+          Name (_CCA, 1)		// Cache-coherent controller
+          Name (_CRS, ResourceTemplate ()
+          {
+            Memory32Fixed (ReadWrite, 0xE0300000, 0x00010000)
+            Interrupt (ResourceConsumer, Level, ActiveHigh, Exclusive,,,) { 387 }
+          })
+        }
+    
+    Since ATA driver should not require PCI support for ATA_ACPI,
+    this patch also removes dependency in the driver/ata/Kconfig.
+    
+    Signed-off-by: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
+
+commit d9d7224bd65fb3c1490f06d635b7aceb035acb1e
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Wed Aug 13 13:47:18 2014 +0100
+
+    tty: SBSA compatible UART
+    
+    This is a subset of pl011 UART which does not supprt DMA or baud rate
+    changing.  It does, however, provide earlycon support (i.e., using
+    "earlycon=ttySBSA" on the kernel command line).
+    
+    It is specified in the Server Base System Architecture document from
+    ARM.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+
+commit 4c67296fce53fed671a78b698d4552636f499b7f
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Aug 14 13:17:37 2014 -0400
+
+    arm64: set dma coherency ops for ACPI probed devices
+    
+    Search for a _CCA object and set the correct dma ops based
+    on device coherency attribute and architecture default.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 959c571815c440150b2f290bf3d13b2fbadbee70
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Aug 14 12:32:13 2014 -0400
+
+    acpi: add utility to test for device dma coherency
+    
+    ACPI 5.1 adds a _CCA object to indicate memory coherency
+    of a bus master device. It is an integer with zero meaning
+    non-coherent and one meaning coherent. This attribute may
+    be inherited from a parent device. It may also be missing
+    entirely, in which case, an architecture-specific default
+    is assumed.
+    
+    This patch adds a utility function to parse a device handle
+    (and its parents) for a _CCA object and return the coherency
+    attribute if found.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 0dbac48379d3aace2fd7468d83044116f176b4c9
+Author: Mark Salter <msalter@redhat.com>
+Date:   Mon Sep 8 11:58:46 2014 -0400
+
+    acpi: fix acpi_os_ioremap for arm64
+    
+    The acpi_os_ioremap() function may be used to map normal RAM or IO
+    regions. The current implementation simply uses ioremap_cache(). This
+    will work for some architectures, but arm64 ioremap_cache() cannot be
+    used to map IO regions which don't support caching. So for arm64, use
+    ioremap() for non-RAM regions.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit c9eab819c2107e0c95cf57233de4de5404851ab6
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Mon Sep 8 10:36:44 2014 -0400
+
+    acpi: add arm to the platforms that use ioremap
+    
+    Now with the base changes to the arm memory mapping it is safe
+    to convert to using ioremap to map in the tables.
+    
+    Signed-off-by: Al Stone <al.stone@linaro.org>
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+
+commit 7e772a485f980b826a58ecd9c39fbe82085c55fa
+Author: Mark Salter <msalter@redhat.com>
+Date:   Mon Sep 8 17:04:28 2014 -0400
+
+    acpi/arm64: NOT FOR UPSTREAM - remove EXPERT dependency
+    
+    For convenience to keep existing configs working, remove
+    CONFIG_EXPERT dependency from ACPI for ARM64. This shouldn't
+    go upstream just yet.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit b42e8f7901e58b86a1cb3ffdf14cb2455fd91ede
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Fri Sep 12 22:00:16 2014 +0800
+
+    Documentation: ACPI for ARM64
+    
+    Add documentation for the guidelines of how to use ACPI
+    on ARM64.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 57dc75b87d5663181e1c19802297e72e51a324ba
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Fri Sep 12 22:00:15 2014 +0800
+
+    ARM64 / ACPI: Enable ARM64 in Kconfig
+    
+    Add Kconfigs to build ACPI on ARM64, and make ACPI available on ARM64.
+    
+    acpi_idle driver is x86/IA64 dependent now, so make CONFIG_ACPI_PROCESSOR
+    depend on X86 || IA64, and implement it on ARM64 in the future.
+    
+    Reviewed-by: Grant Likely <grant.likely@linaro.org>
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Al Stone <al.stone@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 106c5cb3caff13c91cb6056f88a1c0e710b8e0eb
+Author: Al Stone <al.stone@linaro.org>
+Date:   Fri Sep 12 22:00:14 2014 +0800
+
+    ARM64 / ACPI: Select ACPI_REDUCED_HARDWARE_ONLY if ACPI is enabled on ARM64
+    
+    ACPI reduced hardware mode is disabled by default, but ARM64
+    can only run properly in ACPI hardware reduced mode, so select
+    ACPI_REDUCED_HARDWARE_ONLY if ACPI is enabled on ARM64.
+    
+    Reviewed-by: Grant Likely <grant.likely@linaro.org>
+    Signed-off-by: Al Stone <al.stone@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 73f4aca21985ace8989b6fc8af503940c469f1d7
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:13 2014 +0800
+
+    ARM64 / ACPI: Parse GTDT to initialize arch timer
+    
+    Using the information presented by GTDT to initialize the arch
+    timer (not memory-mapped).
+    
+    Originally-by: Amit Daniel Kachhap <amit.daniel@samsung.com>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 5efba15fb24c25139dd621a417f2b9cbe2e675f5
+Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+Date:   Fri Sep 12 22:00:12 2014 +0800
+
+    ARM64 / ACPI: Add GICv2 specific ACPI boot support
+    
+    ACPI kernel uses MADT table for proper GIC initialization. It needs to
+    parse GIC related subtables, collect CPU interface and distributor
+    addresses and call driver initialization function (which is hardware
+    abstraction agnostic). In a similar way, FDT initialize GICv1/2.
+    
+    NOTE: This commit allow to initialize GICv1/2 basic functionality.
+    GICv2 vitalization extension, GICv3/4 and ITS are considered as next
+    steps.
+    
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit e060d9d74cecff59ea96d6124ffb1c9c044a4f9d
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:11 2014 +0800
+
+    ARM64 / ACPI: Introduce ACPI_IRQ_MODEL_GIC and register device's gsi
+    
+    Introduce ACPI_IRQ_MODEL_GIC which is needed for ARM64 as GIC is
+    used, and then register device's gsi with the core IRQ subsystem.
+    
+    acpi_register_gsi() is similar to DT based irq_of_parse_and_map(),
+    since gsi is unique in the system, so use hwirq number directly
+    for the mapping.
+    
+    Originally-by: Amit Daniel Kachhap <amit.daniel@samsung.com>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit c25e8f66c630713107967076933b5f349655ea6a
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:10 2014 +0800
+
+    ACPI / processor: Make it possible to get CPU hardware ID via GICC
+    
+    Introduce a new function map_gicc_mpidr() to allow MPIDRs to be obtained
+    from the GICC Structure introduced by ACPI 5.1.
+    
+    MPIDR is the CPU hardware ID as local APIC ID on x86 platform, so we use
+    MPIDR not the GIC CPU interface ID to identify CPUs.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 5ce1c3ff91aa9d8012324518789363bb4ded33d4
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:09 2014 +0800
+
+    ARM64 / ACPI: Parse MADT for SMP initialization
+    
+    MADT contains the information for MPIDR which is essential for
+    SMP initialization, parse the GIC cpu interface structures to
+    get the MPIDR value and map it to cpu_logical_map(), and add
+    enabled cpu with valid MPIDR into cpu_possible_map.
+    
+    ACPI 5.1 only has two explicit methods to boot up SMP, PSCI and
+    Parking protocol, but the Parking protocol is only specified for
+    ARMv7 now, so make PSCI as the only way for the SMP boot protocol
+    before some updates for the ACPI spec or the Parking protocol spec.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+
+commit 8634cf0fcc8294c355d7cecb55da017ba9ff3ff7
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:08 2014 +0800
+
+    ACPI / table: Print GIC information when MADT is parsed
+    
+    When MADT is parsed, print GIC information to make the boot
+    log look pretty.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+
+commit 05facef9c824235c82d8d9c2ae03fe7a729ceef8
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:07 2014 +0800
+
+    ARM64 / ACPI: Parse FADT table to get PSCI flags for PSCI init
+    
+    There are two flags: PSCI_COMPLIANT and PSCI_USE_HVC. When set,
+    the former signals to the OS that the firmware is PSCI compliant.
+    The latter selects the appropriate conduit for PSCI calls by
+    toggling between Hypervisor Calls (HVC) and Secure Monitor Calls
+    (SMC).
+    
+    FADT table contains such information, parse FADT to get the flags
+    for PSCI init. Since ACPI 5.1 doesn't support self defined PSCI
+    function IDs, which means that only PSCI 0.2+ is supported in ACPI.
+    
+    At the same time, only ACPI 5.1 or higher verison supports PSCI,
+    and FADT Major.Minor version was introduced in ACPI 5.1, so we
+    will check the version and only parse FADT table with version >= 5.1.
+    
+    If firmware provides ACPI tables with ACPI version less than 5.1,
+    OS will be messed up with those information and have no way to init
+    smp and GIC, so disable ACPI if we get an FADT table with version
+    less that 5.1.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+
+commit a13a8c748b6170a8a3f4876163ff74e460bd889f
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 22:00:06 2014 +0800
+
+    ARM64 / ACPI: Make PCI optional for ACPI on ARM64
+    
+    As PCI for ARM64 is not ready, so introduce some stub functions
+    to make PCI optional for ACPI, and make ACPI core run without
+    CONFIG_PCI on ARM64.
+    
+    Since ACPI on X86 and IA64 depends on PCI and this patch only makes
+    PCI optional for ARM64, it will not break anything on X86 and IA64.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit a6bf98355490142fc3f6e9c0839af128e326f16d
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Fri Sep 12 22:00:05 2014 +0800
+
+    ARM64 / ACPI: If we chose to boot from acpi then disable FDT
+    
+    If the early boot methods of acpi are happy that we have valid ACPI
+    tables and acpi=off has not been passed. Then do not unflat
+    devicetree effectively disabling further hardware probing from DT.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit e3b9886532d1e13ddb68e4955ad776a8623f9766
+Author: Al Stone <al.stone@linaro.org>
+Date:   Fri Sep 12 22:00:04 2014 +0800
+
+    ARM64 / ACPI: Introduce early_param for "acpi"
+    
+    Introduce one early parameters "off" for "acpi" to disable ACPI on
+    ARM64.
+    
+    This ensures the kernel uses the DT on a platform that provides both
+    ACPI tables and DT.
+    
+    Signed-off-by: Al Stone <al.stone@linaro.org>
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit cf1cbe39385d417286a98e3abd7ea3456be2e88c
+Author: Graeme Gregory <graeme.gregory@linaro.org>
+Date:   Fri Sep 12 22:00:03 2014 +0800
+
+    ARM64 / ACPI: Introduce sleep-arm.c
+    
+    ACPI 5.1 does not currently support S states for ARM64 hardware but
+    ACPI code will call acpi_target_system_state() for device power
+    managment, so introduce sleep-arm.c to allow other drivers to function
+    until S states are defined.
+    
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 90e5cfbaf183d0eb92f1977c24da20c4e0a2f6be
+Author: Al Stone <al.stone@linaro.org>
+Date:   Fri Sep 12 22:00:02 2014 +0800
+
+    ARM64 / ACPI: Get RSDP and ACPI boot-time tables
+    
+    As we want to get ACPI tables to parse and then use the information
+    for system initialization, we should get the RSDP (Root System
+    Description Pointer) first, it then locates Extended Root Description
+    Table (XSDT) which contains all the 64-bit physical address that
+    pointer to other boot-time tables.
+    
+    Introduce acpi.c and its related head file in this patch to provide
+    fundamental needs of extern variables and functions for ACPI core,
+    and then get boot-time tables as needed.
+      - asm/acenv.h for arch specific ACPICA environments and
+        implementation, It is needed unconditionally by ACPI core;
+      - asm/acpi.h for arch specific variables and functions needed by
+        ACPI driver core;
+      - acpi.c for ARM64 related ACPI implementation for ACPI driver
+        core;
+    
+    acpi_boot_table_init() is introduced to get RSDP and boot-time tables,
+    it will be called in setup_arch() before paging_init(), so we should
+    use eary_memremap() mechanism here to get the RSDP and all the table
+    pointers.
+    
+    Signed-off-by: Al Stone <al.stone@linaro.org>
+    Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 2fe5d24887dea3f1bffabf04e364fa9f355ed553
+Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+Date:   Fri Sep 12 22:00:01 2014 +0800
+
+    ACPI / table: Count matched and successfully parsed entries without specifying max entries
+    
+    It is very useful to traverse all available table entries without max
+    number of expected entries type. Current acpi_parse_entries()
+    implementation gives that feature but it does not count those entries,
+    it returns 0 instead, so fix it to count matched and successfully
+    entries and return it.
+    
+    NOTE: This change has no impact to x86 and ia64 archs since existing code
+    checks for error occurrence only (acpi_parse_entries(...,0) < 0).
+    
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 8c278c76231f0ba0110e755678eefdd6d077f5da
+Author: Ashwin Chaugule <ashwin.chaugule@linaro.org>
+Date:   Fri Sep 12 22:00:00 2014 +0800
+
+    ACPI / table: Add new function to get table entries
+    
+    The acpi_table_parse() function has a callback that
+    passes a pointer to a table_header. Add a new function
+    which takes this pointer and parses its entries. This
+    eliminates the need to re-traverse all the tables for
+    each call. e.g. as in acpi_table_parse_madt() which is
+    normally called after acpi_table_parse().
+    
+    Signed-off-by: Ashwin Chaugule <ashwin.chaugule@linaro.org>
+    Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit 651ab5ff6804fa0f516715b4d47399e587944de0
+Author: Hanjun Guo <hanjun.guo@linaro.org>
+Date:   Fri Sep 12 21:59:59 2014 +0800
+
+    ARM64: Move the init of cpu_logical_map(0) before unflatten_device_tree()
+    
+    It always make sense to initialize CPU0's logical map entry from the
+    hardware values, so move the initialization of cpu_logical_map(0)
+    before unflatten_device_tree() which is needed by ACPI code later.
+    
+    Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
+
+commit b91246f1a7120de6de8fe630ed01e9a0d0415e88
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Fri Sep 26 14:08:27 2014 -0700
+
+    MAINTAINERS: entry for APM X-Gene PCIe host driver
+    
+    Add entry for AppliedMicro X-Gene PCIe host driver.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit d20b104083718058b599a5ca1a925d8c5243e2e1
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Fri Sep 26 14:08:26 2014 -0700
+
+    dt-bindings: pci: xgene pcie device tree bindings
+    
+    This patch adds the bindings for X-Gene PCIe driver. The driver resides
+    under 'drivers/pci/host/pci-xgene.c' file.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 9c429c919b77a3a63ac2843e9e0e2e50e59d28f3
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Fri Sep 26 14:08:25 2014 -0700
+
+    arm64: dts: APM X-Gene PCIe device tree nodes
+    
+    This patch adds the device tree nodes for APM X-Gene PCIe host controller and
+    PCIe clock interface. Since X-Gene SOC supports maximum 5 ports, 5 dts
+    nodes are added.
+    
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit 3aa4f71932b67e648aff4ae0dc5ace7162d74c1c
+Author: Tanmay Inamdar <tinamdar@apm.com>
+Date:   Fri Sep 26 14:08:24 2014 -0700
+
+    pci:host: APM X-Gene PCIe host controller driver
+    
+    This patch adds the AppliedMicro X-Gene SOC PCIe host controller driver.
+    X-Gene PCIe controller supports maximum up to 8 lanes and GEN3 speed.
+    X-Gene SOC supports maximum 5 PCIe ports.
+    
+    Reviewed-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Tested-by: Ming Lei <ming.lei@canonical.com>
+    Tested-by: Dann Frazier <dann.frazier@canonical.com>
+    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
+
+commit f3c00bd4ae49b19923049f0f4f9d6a95eaa61b1e
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:14 2014 +0100
+
+    arm64: Add architectural support for PCI
+    
+    Use the generic PCI domain and OF functions to provide support for PCI
+    on arm64.
+    
+    [bhelgaas: Change comments to use generic PCI, not just PCIe.  Nothing at
+    this level is PCIe-specific.]
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+
+commit 497220defa08534526ad7b20a9c7eb2d0d903ca4
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:13 2014 +0100
+
+    PCI: Add pci_remap_iospace() to map bus I/O resources
+    
+    Add pci_remap_iospace() to map bus I/O resources into the CPU virtual
+    address space.  Architectures with special needs may provide their own
+    version, but most should be able to use this one.
+    
+    This function is useful for PCI host bridge drivers that need to map the
+    PCI I/O resources into virtual memory space.
+    
+    [bhelgaas: phys_addr description, drop temporary "err" variable]
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Rob Herring <robh@kernel.org>
+    Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+    CC: Arnd Bergmann <arnd@arndb.de>
+
+commit 7a46ace11cf09b3713dcdc2ef4a17130a738f856
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:12 2014 +0100
+
+    PCI: Assign unassigned bus resources in pci_scan_root_bus()
+    
+    If the firmware has not assigned all the bus resources and we are not just
+    probing the PCI buses, it makes sense to assign the unassigned resources
+    in pci_scan_root_bus().
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    CC: Arnd Bergmann <arnd@arndb.de>
+    CC: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+    CC: Rob Herring <robh+dt@kernel.org>
+
+commit fe33bc876010c3ef700c863099f2c3c1a5e2c18b
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Wed Sep 24 11:27:33 2014 -0600
+
+    of/pci: Add support for parsing PCI host bridge resources from DT
+    
+    Provide a function to parse the PCI DT ranges that can be used to create a
+    pci_host_bridge structure together with its associated bus.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    [make io_base parameter optional]
+    Signed-off-by: Robert Richter <rrichter@cavium.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    CC: Arnd Bergmann <arnd@arndb.de>
+    CC: Grant Likely <grant.likely@linaro.org>
+    CC: Rob Herring <robh+dt@kernel.org>
+    CC: Catalin Marinas <catalin.marinas@arm.com>
+
+commit 71094afda69ac873bb3d6486307e3048e21e912c
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:10 2014 +0100
+
+    of/pci: Add of_pci_get_domain_nr() and of_get_pci_domain_nr()
+    
+    Add pci_get_new_domain_nr() to allocate a new domain number and
+    of_get_pci_domain_nr() to retrieve the PCI domain number of a given device
+    from DT.  Host bridge drivers or architecture-specific code can choose to
+    implement their PCI domain number policy using these two functions.
+    
+    Using of_get_pci_domain_nr() guarantees a stable PCI domain number on every
+    boot provided that all host bridge controllers are assigned a number in the
+    device tree using "linux,pci-domain" property.  Mixing use of
+    pci_get_new_domain_nr() and of_get_pci_domain_nr() is not recommended as it
+    can lead to potentially conflicting domain numbers being assigned to root
+    buses behind different host bridges.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    CC: Arnd Bergmann <arnd@arndb.de>
+    CC: Grant Likely <grant.likely@linaro.org>
+    CC: Rob Herring <robh+dt@kernel.org>
+    CC: Catalin Marinas <catalin.marinas@arm.com>
+
+commit 6b385455f18d15da6b5d60a3b67fdb846ae1a3b1
+Author: Catalin Marinas <catalin.marinas@arm.com>
+Date:   Tue Sep 23 20:01:09 2014 +0100
+
+    PCI: Add generic domain handling
+    
+    The handling of PCI domains (or PCI segments in ACPI speak) is usually a
+    straightforward affair but its implementation is currently left to the
+    architectural code, with pci_domain_nr(b) querying the value of the domain
+    associated with bus b.
+    
+    This patch introduces CONFIG_PCI_DOMAINS_GENERIC as an option that can be
+    selected if an architecture wants a simple implementation where the value
+    of the domain associated with a bus is stored in struct pci_bus.
+    
+    The architectures that select CONFIG_PCI_DOMAINS_GENERIC will then have to
+    implement pci_bus_assign_domain_nr() as a way of setting the domain number
+    associated with a root bus.  All child buses except the root bus will
+    inherit the domain_nr value from their parent.
+    
+    Signed-off-by: Catalin Marinas <Catalin.Marinas@arm.com>
+    [Renamed pci_set_domain_nr() to pci_bus_assign_domain_nr()]
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    CC: Arnd Bergmann <arnd@arndb.de>
+
+commit 04b36e0e1da5a96a58dec4f1b393090f00e5b635
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:08 2014 +0100
+
+    PCI: Create pci_host_bridge before root bus
+    
+    Before 7b5436635800 ("PCI: add generic device into pci_host_bridge
+    struct"), the pci_host_bridge was created before the root bus.  Revert the
+    order of creation as we are going to depend on the pci_host_bridge
+    structure to retrieve the domain number of the root bus.
+    
+    [bhelgaas: changelog]
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+    Acked-by: Grant Likely <grant.likely@linaro.org>
+
+commit 7569c510218798bd7e5216bf14a42c656f14e891
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:07 2014 +0100
+
+    of/pci: Fix the conversion of IO ranges into IO resources
+    
+    The ranges property for a host bridge controller in DT describes the
+    mapping between the PCI bus address and the CPU physical address.  The
+    resources framework however expects that the IO resources start at a pseudo
+    "port" address 0 (zero) and have a maximum size of IO_SPACE_LIMIT.  The
+    conversion from PCI ranges to resources failed to take that into account,
+    returning a CPU physical address instead of a port number.
+    
+    Also fix all the drivers that depend on the old behaviour by fetching the
+    CPU physical address based on the port number where it is being needed.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Acked-by: Linus Walleij <linus.walleij@linaro.org>
+    CC: Grant Likely <grant.likely@linaro.org>
+    CC: Rob Herring <robh+dt@kernel.org>
+    CC: Arnd Bergmann <arnd@arndb.de>
+    CC: Thierry Reding <thierry.reding@gmail.com>
+    CC: Simon Horman <horms@verge.net.au>
+    CC: Catalin Marinas <catalin.marinas@arm.com>
+
+commit 1b381671c9dd2c82cd6f04bc1588d0fc4e1aea59
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:06 2014 +0100
+
+    of/pci: Move of_pci_range_to_resources() to of/address.c
+    
+    We need to enhance of_pci_range_to_resources() enough that it won't make
+    sense for it to be inline anymore.  Move it to drivers/of/address.c,
+    keeping it under #ifdef CONFIG_PCI.
+    
+    [bhelgaas: drop extra detail from changelog, move def under CONFIG_PCI]
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    CC: Grant Likely <grant.likely@linaro.org>
+    CC: Rob Herring <robh+dt@kernel.org>
+    CC: Arnd Bergmann <arnd@arndb.de>
+    CC: Catalin Marinas <catalin.marinas@arm.com>
+
+commit eedd8f88d4895d5c6bc46cf3ddeb114a0fafb7c3
+Author: Bjorn Helgaas <bhelgaas@google.com>
+Date:   Tue Sep 23 17:27:42 2014 -0600
+
+    of/pci: Define of_pci_range_to_resource() only when CONFIG_PCI=y
+    
+    of_pci_range_to_resource() was previously defined always, but it's only
+    used by PCI code, so move the definition inside the CONFIG_OF_ADDRESS &&
+    CONFIG_PCI block.
+    
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+
+commit 4ac73f8ded507537318717bb2b5b6c765db633cd
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:05 2014 +0100
+
+    ARM: Define PCI_IOBASE as the base of virtual PCI IO space
+    
+    This is needed for calls into OF code that parses PCI ranges.  It signals
+    support for memory mapped PCI I/O accesses that are described by device
+    trees.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+    Acked-by: Arnd Bergmann <arnd@arndb.de>
+    CC: Russell King <linux@arm.linux.org.uk>
+    CC: Rob Herring <robh+dt@kernel.org>
+
+commit ce7af33b6db857c95ac3b65fef37e589e839cc79
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:04 2014 +0100
+
+    of/pci: Add pci_register_io_range() and pci_pio_to_address()
+    
+    Some architectures do not have a simple view of the PCI I/O space and
+    instead use a range of CPU addresses that map to bus addresses.  For some
+    architectures these ranges will be expressed by OF bindings in a device
+    tree file.
+    
+    This patch introduces a pci_register_io_range() helper function with a
+    generic implementation that can be used by such architectures to keep track
+    of the I/O ranges described by the PCI bindings.  If the PCI_IOBASE macro
+    is not defined, that signals lack of support for PCI and we return an
+    error.
+    
+    In order to retrieve the CPU address associated with an I/O port, a new
+    helper function pci_pio_to_address() is introduced.  This will search in
+    the list of ranges registered with pci_register_io_range() and return the
+    CPU address that corresponds to the given port.
+    
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+    Acked-by: Rob Herring <robh@kernel.org>
+    CC: Grant Likely <grant.likely@linaro.org>
+    CC: Arnd Bergmann <arnd@arndb.de>
+
+commit c5d57f95901af49149ebf6dfc3d7518157e41bfa
+Author: Liviu Dudau <Liviu.Dudau@arm.com>
+Date:   Tue Sep 23 20:01:03 2014 +0100
+
+    asm-generic/io.h: Fix ioport_map() for !CONFIG_GENERIC_IOMAP
+    
+    The !CONFIG_GENERIC_IOMAP version of ioport_map() is wrong.  It returns a
+    mapped, i.e., virtual, address that can start from zero and completely
+    ignores the PCI_IOBASE and IO_SPACE_LIMIT that most architectures that use
+    !CONFIG_GENERIC_MAP define.
+    
+    Tested-by: Tanmay Inamdar <tinamdar@apm.com>
+    Signed-off-by: Liviu Dudau <Liviu.Dudau@arm.com>
+    Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+    Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
+    Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+commit a65e51156bec2c8d690b924bbddf1a740309e543
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Jun 24 09:50:28 2014 -0400
+
+    arm64: use EFI as last resort for reboot and poweroff
+    
+    Wire in support for EFI reboot and poweroff functions. We use these
+    only if no other mechanism has been registered with arm_pm_reboot
+    and/or pm_power_off respectively.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit c6b81122978c39e52021cc7308edafff88c8b87a
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed Jul 30 11:59:04 2014 +0100
+
+    arm64/efi: efistub: don't abort if base of DRAM is occupied
+    
+    If we cannot relocate the kernel Image to its preferred offset of base of DRAM
+    plus TEXT_OFFSET, instead relocate it to the lowest available 2 MB boundary plus
+    TEXT_OFFSET. We may lose a bit of memory at the low end, but we can still
+    proceed normally otherwise.
+    
+    Acked-by: Mark Salter <msalter@redhat.com>
+    Acked-by: Mark Rutland <mark.rutland@arm.com>
+    Acked-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Tested-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    Signed-off-by: Will Deacon <will.deacon@arm.com>
+
+commit 81fd1d315f3c5b13f9dcf71cce51dfd3a10331c3
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Wed Jul 30 11:59:03 2014 +0100
+
+    arm64/efi: efistub: cover entire static mem footprint in PE/COFF .text
+    
+    The static memory footprint of a kernel Image at boot is larger than the
+    Image file itself. Things like .bss data and initial page tables are allocated
+    statically but populated dynamically so their content is not contained in the
+    Image file.
+    
+    However, if EFI (or GRUB) has loaded the Image at precisely the desired offset
+    of base of DRAM + TEXT_OFFSET, the Image will be booted in place, and we have
+    to make sure that the allocation done by the PE/COFF loader is large enough.
+    
+    Fix this by growing the PE/COFF .text section to cover the entire static
+    memory footprint. The part of the section that is not covered by the payload
+    will be zero initialised by the PE/COFF loader.
+    
+    Acked-by: Mark Salter <msalter@redhat.com>
+    Acked-by: Mark Rutland <mark.rutland@arm.com>
+    Acked-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Tested-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    Signed-off-by: Will Deacon <will.deacon@arm.com>
+
+commit 8f5f73c2117c2dc4e8903d162023c34177327ae3
+Author: Mark Rutland <mark.rutland@arm.com>
+Date:   Wed Jul 30 11:59:02 2014 +0100
+
+    arm64: spin-table: handle unmapped cpu-release-addrs
+    
+    In certain cases the cpu-release-addr of a CPU may not fall in the
+    linear mapping (e.g. when the kernel is loaded above this address due to
+    the presence of other images in memory). This is problematic for the
+    spin-table code as it assumes that it can trivially convert a
+    cpu-release-addr to a valid VA in the linear map.
+    
+    This patch modifies the spin-table code to use a temporary cached
+    mapping to write to a given cpu-release-addr, enabling us to support
+    addresses regardless of whether they are covered by the linear mapping.
+    
+    Acked-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Tested-by: Leif Lindholm <leif.lindholm@linaro.org>
+    Tested-by: Mark Salter <msalter@redhat.com>
+    Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+    [ardb: added (__force void *) cast]
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    Signed-off-by: Will Deacon <will.deacon@arm.com>
+
+commit b00c56bff1ffb6c77655479fb350ee3d5c8bcf63
+Author: Mark Salter <msalter@redhat.com>
+Date:   Tue Jun 24 23:16:45 2014 -0400
+
+    perf: fix arm64 build error
+    
+    I'm seeing the following build error on arm64:
+    
+      In file included from util/event.c:3:0:
+      util/event.h:95:17: error: 'PERF_REGS_MAX' undeclared here (not in a function)
+        u64 cache_regs[PERF_REGS_MAX];
+                     ^
+    
+    This patch adds a PEFF_REGS_MAX definition for arm64.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit f440dcb067bf1367719e8a41b96a2a83c1232690
+Author: Mark Salter <msalter@redhat.com>
+Date:   Thu Jul 17 13:34:50 2014 -0400
+
+    ahci_xgene: add errata workaround for ATA_CMD_SMART
+    
+    commit 2a0bdff6b958d1b2:
+    
+     ahci_xgene: fix the dma state machine lockup for the IDENTIFY DEVICE PIO mode command.
+    
+    added a workaround for X-Gene AHCI controller errata. This was done
+    for all ATA_CMD_ID_ATA commands. The errata also appears to affect
+    ATA_CMD_SMART commands as well. This was discovered when running
+    smartd or just smartctl -x. This patch adds a dma engine restart for
+    ATA_CMD_SMART commands which clears up the issues seen with smartd.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 93b44dc9e1d73d4864a9350888509792f25e4210
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Tue May 13 22:25:26 2014 -0400
+
+    arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
+    
+    Message-id: <20140513222526.GC26038@redacted.bos.redhat.com>
+    Patchwork-id: 79789
+    O-Subject: [ACADIA PATCH] arm64: don't set READ_IMPLIES_EXEC for EM_AARCH64 ELF objects
+    Bugzilla: 1085528
+    
+    BZ: https://bugzilla.redhat.com/show_bug.cgi?id=1085528
+    Upstream: submitted soon
+    
+    [Sadly this isn't (yet) sufficient... but it fixes at least one issue
+     here... cat /proc/$$/personality shows READ_IMPLIES_EXEC before. I'll
+     try to figure the rest out tomorrow.]
+    
+    Currently, we're accidentally ending up with executable stacks on
+    AArch64 when the ABI says we shouldn't be, and relying on glibc to fix
+    things up for us when we're loaded. However, SELinux will deny us
+    mucking with the stack, and hit us with execmem AVCs.
+    
+    The reason this is happening is somewhat complex:
+    
+    fs/binfmt_elf.c:load_elf_binary()
+     - initializes executable_stack = EXSTACK_DEFAULT implying the
+       architecture should make up its mind.
+     - does a pile of loading goo
+     - runs through the program headers, looking for PT_GNU_STACK
+       and setting (or unsetting) executable_stack if it finds it.
+    
+       This is our first problem, we won't generate these unless an
+       executable stack is explicitly requested.
+    
+     - more ELF loading goo
+     - sets whether we're a compat task or not (TIF_32BIT) based on compat.h
+     - for compat reasons (pre-GNU_STACK) checks if the READ_IMPLIES_EXEC
+       flag should be set for ancient toolchains
+    
+       Here's our second problem, we test if read_implies_exec based on
+       stk != EXSTACK_DISABLE_X, which is true since stk == EXSTACK_DEFAULT.
+    
+       So we set current->personality |= READ_IMPLIES_EXEC like a broken
+       legacy toolchain would want.
+    
+     - Now we call setup_arg_pages to set up the stack...
+    
+    fs/exec.c:setup_arg_pages()
+     - lots of magic happens here
+     - vm_flags gets initialized to VM_STACK_FLAGS
+    
+       Here's our third problem, VM_STACK_FLAGS on arm64 is
+       VM_DEFAULT_DATA_FLAG which tests READ_IMPLIES_EXEC and sets VM_EXEC
+       if it's true. So we end up with an executable stack mapping, since we
+       don't have executable_stack set (it's still EXSTACK_DEFAULT at this
+       point) to unset it anywhere.
+    
+    Bang. execstack AVC when the program starts running.
+    
+    The easiest way I can see to fix this is to test if we're a legacy task
+    and fix it up there. But that's not as simple as it sounds, because
+    the 32-bit ABI depends on what revision of the CPU we've enabled (not
+    that it matters since we're ARMv8...) Regardless, in the compat case,
+    set READ_IMPLIES_EXEC if we've found a GNU_STACK header which explicitly
+    requested it as in arch/arm/kernel/elf.c:arm_elf_read_implies_exec().
+    
+    Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
+    Signed-off-by: Donald Dutile <ddutile@redhat.com>
+
  Documentation/arm64/arm-acpi.txt                   | 218 +++++++
  .../devicetree/bindings/pci/xgene-pci.txt          |  57 ++
  Documentation/kernel-parameters.txt                |   3 +-
@@ -31,13 +1260,13 @@
  arch/arm64/kernel/pci.c                            |  70 +++
  arch/arm64/kernel/process.c                        |   6 +
  arch/arm64/kernel/psci.c                           |  78 ++-
- arch/arm64/kernel/setup.c                          |  42 +-
+ arch/arm64/kernel/setup.c                          |  64 +-
  arch/arm64/kernel/smp.c                            |   2 +-
  arch/arm64/kernel/smp_parking_protocol.c           | 110 ++++
  arch/arm64/kernel/smp_spin_table.c                 |  22 +-
  arch/arm64/kernel/time.c                           |   7 +
  arch/arm64/kvm/hyp-init.S                          |  20 +-
- arch/arm64/mm/dma-mapping.c                        |  65 +++
+ arch/arm64/mm/dma-mapping.c                        |  65 ++
  arch/arm64/pci/Makefile                            |   1 +
  arch/arm64/pci/pci.c                               |  28 +
  drivers/acpi/Kconfig                               |   6 +-
@@ -57,12 +1286,18 @@
  drivers/irqchip/irq-gic-v3.c                       |  10 +
  drivers/irqchip/irq-gic.c                          | 116 ++++
  drivers/irqchip/irqchip.c                          |   3 +
+ drivers/net/ethernet/amd/xgbe/xgbe-dev.c           |  12 +
+ drivers/net/ethernet/amd/xgbe/xgbe-drv.c           |   3 +
+ drivers/net/ethernet/amd/xgbe/xgbe-main.c          |   1 +
+ drivers/net/ethernet/amd/xgbe/xgbe.h               |   3 +
+ drivers/net/ethernet/smsc/smc91x.c                 |  10 +
+ drivers/net/phy/amd-xgbe-phy.c                     | 408 +++++++------
  drivers/of/address.c                               | 154 +++++
  drivers/of/of_pci.c                                | 142 +++++
  drivers/pci/host/Kconfig                           |  10 +
  drivers/pci/host/Makefile                          |   1 +
  drivers/pci/host/pci-tegra.c                       |  10 +-
- drivers/pci/host/pci-xgene.c                       | 646 +++++++++++++++++++++
+ drivers/pci/host/pci-xgene.c                       | 659 +++++++++++++++++++++
  drivers/pci/host/pcie-rcar.c                       |  21 +-
  drivers/pci/pci.c                                  |  40 ++
  drivers/pci/probe.c                                |  46 +-
@@ -71,6 +1306,7 @@
  drivers/tty/Makefile                               |   1 +
  drivers/tty/sbsauart.c                             | 355 +++++++++++
  drivers/tty/serial/8250/8250_dw.c                  |   9 +
+ drivers/virtio/virtio_mmio.c                       |  12 +-
  include/acpi/acnames.h                             |   4 +
  include/acpi/acpi_bus.h                            |   2 +
  include/acpi/acpi_io.h                             |   6 +
@@ -92,7 +1328,7 @@
  virt/kvm/arm/vgic-v2.c                             |  75 ++-
  virt/kvm/arm/vgic-v3.c                             |   8 +-
  virt/kvm/arm/vgic.c                                |  32 +-
- 94 files changed, 3840 insertions(+), 275 deletions(-)
+ 101 files changed, 4112 insertions(+), 487 deletions(-)
 
 diff --git a/Documentation/arm64/arm-acpi.txt b/Documentation/arm64/arm-acpi.txt
 new file mode 100644
@@ -403,10 +1639,10 @@ index 10d51c2..9464c6d 100644
  			See also Documentation/power/runtime_pm.txt, pci=noacpi
  
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 670b3dc..b18bc49 100644
+index 3705430..f6b49e4 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -6942,6 +6942,14 @@ L:	linux-pci@vger.kernel.org
+@@ -6940,6 +6940,14 @@ L:	linux-pci@vger.kernel.org
  S:	Maintained
  F:	drivers/pci/host/*spear*
  
@@ -2059,7 +3295,7 @@ index 5539547..15ba470 100644
  
  static int __init cpu_psci_cpu_init(struct device_node *dn, unsigned int cpu)
 diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index edb146d..4758443 100644
+index edb146d..a793a20 100644
 --- a/arch/arm64/kernel/setup.c
 +++ b/arch/arm64/kernel/setup.c
 @@ -43,6 +43,7 @@
@@ -2142,6 +3378,32 @@ index edb146d..4758443 100644
  static int __init arm64_device_init(void)
  {
  	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
+@@ -505,3 +535,25 @@ const struct seq_operations cpuinfo_op = {
+ 	.stop	= c_stop,
+ 	.show	= c_show
+ };
++
++/*
++ * Temporary hack to avoid need for console= on command line
++ */
++static int __init arm64_console_setup(void)
++{
++	/* Allow cmdline to override our assumed preferences */
++	if (console_set_on_cmdline)
++		return 0;
++
++	if (IS_ENABLED(CONFIG_SBSAUART_TTY))
++		add_preferred_console("ttySBSA", 0, "115200");
++
++	if (IS_ENABLED(CONFIG_SERIAL_AMBA_PL011))
++		add_preferred_console("ttyAMA", 0, "115200");
++
++	if (IS_ENABLED(CONFIG_SERIAL_8250))
++		add_preferred_console("ttyS", 0, "115200");
++
++	return 0;
++}
++early_initcall(arm64_console_setup);
 diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
 index 4743397..4e390ac 100644
 --- a/arch/arm64/kernel/smp.c
@@ -3455,6 +4717,690 @@ index 0fe2f71..9106c6d 100644
 +
 +	acpi_gic_init();
  }
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-dev.c b/drivers/net/ethernet/amd/xgbe/xgbe-dev.c
+index ea27383..d0d3ab5 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-dev.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-dev.c
+@@ -696,6 +696,18 @@ static int xgbe_read_mmd_regs(struct xgbe_prv_data *pdata, int prtad,
+ 	else
+ 		mmd_address = (pdata->mdio_mmd << 16) | (mmd_reg & 0xffff);
+ 
++	if (XGBE_SEATTLE_A0) {
++		/* The PCS implementation has reversed the devices in
++		 * package registers so we need to change 05 to 06 and
++		 * 06 to 05 if being read (these registers are readonly
++		 * so no need to do this in the write function)
++		 */
++		if ((mmd_address & 0xffff) == 0x05)
++			mmd_address = (mmd_address & ~0xffff) | 0x06;
++		else if ((mmd_address & 0xffff) == 0x06)
++			mmd_address = (mmd_address & ~0xffff) | 0x05;
++	}
++
+ 	/* The PCS registers are accessed using mmio. The underlying APB3
+ 	 * management interface uses indirect addressing to access the MMD
+ 	 * register sets. This requires accessing of the PCS register in two
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+index b26d758..ca7895c 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
+@@ -426,6 +426,9 @@ void xgbe_get_all_hw_features(struct xgbe_prv_data *pdata)
+ 	hw_feat->rx_ch_cnt++;
+ 	hw_feat->tx_ch_cnt++;
+ 
++	/* A0 does not support NUMTC, hardcode it for now */
++	hw_feat->tc_cnt = XGBE_TC_CNT;
++
+ 	DBGPR("<--xgbe_get_all_hw_features\n");
+ }
+ 
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-main.c b/drivers/net/ethernet/amd/xgbe/xgbe-main.c
+index bdf9cfa..ba53e41 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe-main.c
++++ b/drivers/net/ethernet/amd/xgbe/xgbe-main.c
+@@ -533,6 +533,7 @@ static int xgbe_resume(struct device *dev)
+ #endif /* CONFIG_PM */
+ 
+ static const struct of_device_id xgbe_of_match[] = {
++	{ .compatible = "amd,xgbe-seattle-v0a", },
+ 	{ .compatible = "amd,xgbe-seattle-v1a", },
+ 	{},
+ };
+diff --git a/drivers/net/ethernet/amd/xgbe/xgbe.h b/drivers/net/ethernet/amd/xgbe/xgbe.h
+index e9fe6e6..389bfec 100644
+--- a/drivers/net/ethernet/amd/xgbe/xgbe.h
++++ b/drivers/net/ethernet/amd/xgbe/xgbe.h
+@@ -187,8 +187,11 @@
+ #define XGBE_FIFO_SIZE_B(x)	(x)
+ #define XGBE_FIFO_SIZE_KB(x)	(x * 1024)
+ 
++#define XGBE_TC_CNT		2
+ #define XGBE_TC_MIN_QUANTUM	10
+ 
++#define XGBE_SEATTLE_A0		((read_cpuid_id() & 0x00f0000f) == 0)
++
+ /* Helper macro for descriptor handling
+  *  Always use XGBE_GET_DESC_DATA to access the descriptor data
+  *  since the index is free-running and needs to be and-ed
+diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
+index bcaa41a..ebad872 100644
+--- a/drivers/net/ethernet/smsc/smc91x.c
++++ b/drivers/net/ethernet/smsc/smc91x.c
+@@ -81,6 +81,7 @@ static const char version[] =
+ #include <linux/workqueue.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/acpi.h>
+ 
+ #include <linux/netdevice.h>
+ #include <linux/etherdevice.h>
+@@ -2408,6 +2409,14 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+ 	.resume		= smc_drv_resume,
+ };
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id smc91x_acpi_match[] = {
++	{ "LNRO0003", },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, smc91x_acpi_match);
++#endif
++
+ static struct platform_driver smc_driver = {
+ 	.probe		= smc_drv_probe,
+ 	.remove		= smc_drv_remove,
+@@ -2416,6 +2425,7 @@ static struct platform_driver smc_driver = {
+ 		.owner	= THIS_MODULE,
+ 		.pm	= &smc_drv_pm_ops,
+ 		.of_match_table = of_match_ptr(smc91x_match),
++		.acpi_match_table = ACPI_PTR(smc91x_acpi_match),
+ 	},
+ };
+ 
+diff --git a/drivers/net/phy/amd-xgbe-phy.c b/drivers/net/phy/amd-xgbe-phy.c
+index f3230ee..90145d9 100644
+--- a/drivers/net/phy/amd-xgbe-phy.c
++++ b/drivers/net/phy/amd-xgbe-phy.c
+@@ -78,12 +78,14 @@
+ 
+ MODULE_AUTHOR("Tom Lendacky <thomas.lendacky@amd.com>");
+ MODULE_LICENSE("Dual BSD/GPL");
+-MODULE_VERSION("1.0.0-a");
++MODULE_VERSION("0.0.0-a");
+ MODULE_DESCRIPTION("AMD 10GbE (amd-xgbe) PHY driver");
+ 
+-#define XGBE_PHY_ID	0x000162d0
++#define XGBE_PHY_ID	0x7996ced0
+ #define XGBE_PHY_MASK	0xfffffff0
+ 
++#define XGBE_PHY_SERDES_RETRY		32
++#define XGBE_PHY_CHANNEL_PROPERTY	"amd,serdes-channel"
+ #define XGBE_PHY_SPEEDSET_PROPERTY	"amd,speed-set"
+ 
+ #define XGBE_AN_INT_CMPLT		0x01
+@@ -118,77 +120,6 @@ MODULE_DESCRIPTION("AMD 10GbE (amd-xgbe) PHY driver");
+ #define MDIO_CTRL1_SPEED1G		(MDIO_CTRL1_SPEED10G & ~BMCR_SPEED100)
+ #endif
+ 
+-/* SerDes integration register offsets */
+-#define SIR0_KR_RT_1			0x002c
+-#define SIR0_STATUS			0x0040
+-#define SIR1_SPEED			0x0000
+-
+-/* SerDes integration register entry bit positions and sizes */
+-#define SIR0_KR_RT_1_RESET_INDEX	11
+-#define SIR0_KR_RT_1_RESET_WIDTH	1
+-#define SIR0_STATUS_RX_READY_INDEX	0
+-#define SIR0_STATUS_RX_READY_WIDTH	1
+-#define SIR0_STATUS_TX_READY_INDEX	8
+-#define SIR0_STATUS_TX_READY_WIDTH	1
+-#define SIR1_SPEED_DATARATE_INDEX	4
+-#define SIR1_SPEED_DATARATE_WIDTH	2
+-#define SIR1_SPEED_PI_SPD_SEL_INDEX	12
+-#define SIR1_SPEED_PI_SPD_SEL_WIDTH	4
+-#define SIR1_SPEED_PLLSEL_INDEX		3
+-#define SIR1_SPEED_PLLSEL_WIDTH		1
+-#define SIR1_SPEED_RATECHANGE_INDEX	6
+-#define SIR1_SPEED_RATECHANGE_WIDTH	1
+-#define SIR1_SPEED_TXAMP_INDEX		8
+-#define SIR1_SPEED_TXAMP_WIDTH		4
+-#define SIR1_SPEED_WORDMODE_INDEX	0
+-#define SIR1_SPEED_WORDMODE_WIDTH	3
+-
+-#define SPEED_10000_CDR			0x7
+-#define SPEED_10000_PLL			0x1
+-#define SPEED_10000_RATE		0x0
+-#define SPEED_10000_TXAMP		0xa
+-#define SPEED_10000_WORD		0x7
+-
+-#define SPEED_2500_CDR			0x2
+-#define SPEED_2500_PLL			0x0
+-#define SPEED_2500_RATE			0x1
+-#define SPEED_2500_TXAMP		0xf
+-#define SPEED_2500_WORD			0x1
+-
+-#define SPEED_1000_CDR			0x2
+-#define SPEED_1000_PLL			0x0
+-#define SPEED_1000_RATE			0x3
+-#define SPEED_1000_TXAMP		0xf
+-#define SPEED_1000_WORD			0x1
+-
+-
+-/* SerDes RxTx register offsets */
+-#define RXTX_REG20			0x0050
+-#define RXTX_REG114			0x01c8
+-
+-/* SerDes RxTx register entry bit positions and sizes */
+-#define RXTX_REG20_BLWC_ENA_INDEX	2
+-#define RXTX_REG20_BLWC_ENA_WIDTH	1
+-#define RXTX_REG114_PQ_REG_INDEX	9
+-#define RXTX_REG114_PQ_REG_WIDTH	7
+-
+-#define RXTX_10000_BLWC			0
+-#define RXTX_10000_PQ			0x1e
+-
+-#define RXTX_2500_BLWC			1
+-#define RXTX_2500_PQ			0xa
+-
+-#define RXTX_1000_BLWC			1
+-#define RXTX_1000_PQ			0xa
+-
+-/* Bit setting and getting macros
+- *  The get macro will extract the current bit field value from within
+- *  the variable
+- *
+- *  The set macro will clear the current bit field value within the
+- *  variable and then set the bit field of the variable to the
+- *  specified value
+- */
+ #define GET_BITS(_var, _index, _width)					\
+ 	(((_var) >> (_index)) & ((0x1 << (_width)) - 1))
+ 
+@@ -198,71 +129,12 @@ do {									\
+ 	(_var) |= (((_val) & ((0x1 << (_width)) - 1)) << (_index));	\
+ } while (0)
+ 
+-#define XSIR_GET_BITS(_var, _prefix, _field)				\
+-	GET_BITS((_var),						\
+-		 _prefix##_##_field##_INDEX,				\
+-		 _prefix##_##_field##_WIDTH)
+-
+-#define XSIR_SET_BITS(_var, _prefix, _field, _val)			\
+-	SET_BITS((_var),						\
+-		 _prefix##_##_field##_INDEX,				\
+-		 _prefix##_##_field##_WIDTH, (_val))
++#define XCMU_IOREAD(_priv, _reg)					\
++	ioread16((_priv)->cmu_regs + _reg)
+ 
+-/* Macros for reading or writing SerDes integration registers
+- *  The ioread macros will get bit fields or full values using the
+- *  register definitions formed using the input names
+- *
+- *  The iowrite macros will set bit fields or full values using the
+- *  register definitions formed using the input names
+- */
+-#define XSIR0_IOREAD(_priv, _reg)					\
+-	ioread16((_priv)->sir0_regs + _reg)
++#define XCMU_IOWRITE(_priv, _reg, _val)					\
++	iowrite16((_val), (_priv)->cmu_regs + _reg)
+ 
+-#define XSIR0_IOREAD_BITS(_priv, _reg, _field)				\
+-	GET_BITS(XSIR0_IOREAD((_priv), _reg),				\
+-		 _reg##_##_field##_INDEX,				\
+-		 _reg##_##_field##_WIDTH)
+-
+-#define XSIR0_IOWRITE(_priv, _reg, _val)				\
+-	iowrite16((_val), (_priv)->sir0_regs + _reg)
+-
+-#define XSIR0_IOWRITE_BITS(_priv, _reg, _field, _val)			\
+-do {									\
+-	u16 reg_val = XSIR0_IOREAD((_priv), _reg);			\
+-	SET_BITS(reg_val,						\
+-		 _reg##_##_field##_INDEX,				\
+-		 _reg##_##_field##_WIDTH, (_val));			\
+-	XSIR0_IOWRITE((_priv), _reg, reg_val);				\
+-} while (0)
+-
+-#define XSIR1_IOREAD(_priv, _reg)					\
+-	ioread16((_priv)->sir1_regs + _reg)
+-
+-#define XSIR1_IOREAD_BITS(_priv, _reg, _field)				\
+-	GET_BITS(XSIR1_IOREAD((_priv), _reg),				\
+-		 _reg##_##_field##_INDEX,				\
+-		 _reg##_##_field##_WIDTH)
+-
+-#define XSIR1_IOWRITE(_priv, _reg, _val)				\
+-	iowrite16((_val), (_priv)->sir1_regs + _reg)
+-
+-#define XSIR1_IOWRITE_BITS(_priv, _reg, _field, _val)			\
+-do {									\
+-	u16 reg_val = XSIR1_IOREAD((_priv), _reg);			\
+-	SET_BITS(reg_val,						\
+-		 _reg##_##_field##_INDEX,				\
+-		 _reg##_##_field##_WIDTH, (_val));			\
+-	XSIR1_IOWRITE((_priv), _reg, reg_val);				\
+-} while (0)
+-
+-
+-/* Macros for reading or writing SerDes RxTx registers
+- *  The ioread macros will get bit fields or full values using the
+- *  register definitions formed using the input names
+- *
+- *  The iowrite macros will set bit fields or full values using the
+- *  register definitions formed using the input names
+- */
+ #define XRXTX_IOREAD(_priv, _reg)					\
+ 	ioread16((_priv)->rxtx_regs + _reg)
+ 
+@@ -283,6 +155,77 @@ do {									\
+ 	XRXTX_IOWRITE((_priv), _reg, reg_val);				\
+ } while (0)
+ 
++/* SerDes CMU register offsets */
++#define CMU_REG15			0x003c
++#define CMU_REG16			0x0040
++
++/* SerDes CMU register entry bit positions and sizes */
++#define CMU_REG16_TX_RATE_CHANGE_BASE	15
++#define CMU_REG16_RX_RATE_CHANGE_BASE	14
++#define CMU_REG16_RATE_CHANGE_DECR	2
++
++
++/* SerDes RxTx register offsets */
++#define RXTX_REG2			0x0008
++#define RXTX_REG3			0x000c
++#define RXTX_REG5			0x0014
++#define RXTX_REG6			0x0018
++#define RXTX_REG20			0x0050
++#define RXTX_REG53			0x00d4
++#define RXTX_REG114			0x01c8
++#define RXTX_REG115			0x01cc
++#define RXTX_REG142			0x0238
++
++/* SerDes RxTx register entry bit positions and sizes */
++#define RXTX_REG2_RESETB_INDEX			15
++#define RXTX_REG2_RESETB_WIDTH			1
++#define RXTX_REG3_TX_DATA_RATE_INDEX		14
++#define RXTX_REG3_TX_DATA_RATE_WIDTH		2
++#define RXTX_REG3_TX_WORD_MODE_INDEX		11
++#define RXTX_REG3_TX_WORD_MODE_WIDTH		3
++#define RXTX_REG5_TXAMP_CNTL_INDEX		7
++#define RXTX_REG5_TXAMP_CNTL_WIDTH		4
++#define RXTX_REG6_RX_DATA_RATE_INDEX		9
++#define RXTX_REG6_RX_DATA_RATE_WIDTH		2
++#define RXTX_REG6_RX_WORD_MODE_INDEX		11
++#define RXTX_REG6_RX_WORD_MODE_WIDTH		3
++#define RXTX_REG20_BLWC_ENA_INDEX		2
++#define RXTX_REG20_BLWC_ENA_WIDTH		1
++#define RXTX_REG53_RX_PLLSELECT_INDEX		15
++#define RXTX_REG53_RX_PLLSELECT_WIDTH		1
++#define RXTX_REG53_TX_PLLSELECT_INDEX		14
++#define RXTX_REG53_TX_PLLSELECT_WIDTH		1
++#define RXTX_REG53_PI_SPD_SEL_CDR_INDEX		10
++#define RXTX_REG53_PI_SPD_SEL_CDR_WIDTH		4
++#define RXTX_REG114_PQ_REG_INDEX		9
++#define RXTX_REG114_PQ_REG_WIDTH		7
++#define RXTX_REG115_FORCE_LAT_CAL_START_INDEX	2
++#define RXTX_REG115_FORCE_LAT_CAL_START_WIDTH	1
++#define RXTX_REG115_FORCE_SUM_CAL_START_INDEX	1
++#define RXTX_REG115_FORCE_SUM_CAL_START_WIDTH	1
++#define RXTX_REG142_SUM_CALIB_DONE_INDEX	15
++#define RXTX_REG142_SUM_CALIB_DONE_WIDTH	1
++#define RXTX_REG142_SUM_CALIB_ERR_INDEX		14
++#define RXTX_REG142_SUM_CALIB_ERR_WIDTH		1
++#define RXTX_REG142_LAT_CALIB_DONE_INDEX	11
++#define RXTX_REG142_LAT_CALIB_DONE_WIDTH	1
++
++#define RXTX_FULL_RATE				0x0
++#define RXTX_HALF_RATE				0x1
++#define RXTX_FIFTH_RATE				0x3
++#define RXTX_66BIT_WORD				0x7
++#define RXTX_10BIT_WORD				0x1
++#define RXTX_10G_TX_AMP				0xa
++#define RXTX_1G_TX_AMP				0xf
++#define RXTX_10G_CDR				0x7
++#define RXTX_1G_CDR				0x2
++#define RXTX_10G_PLL				0x1
++#define RXTX_1G_PLL				0x0
++#define RXTX_10G_PQ				0x1e
++#define RXTX_1G_PQ				0xa
++
++
++DEFINE_SPINLOCK(cmu_lock);
+ 
+ enum amd_xgbe_phy_an {
+ 	AMD_XGBE_AN_READY = 0,
+@@ -321,18 +264,18 @@ struct amd_xgbe_phy_priv {
+ 
+ 	/* SerDes related mmio resources */
+ 	struct resource *rxtx_res;
+-	struct resource *sir0_res;
+-	struct resource *sir1_res;
++	struct resource *cmu_res;
+ 
+ 	/* SerDes related mmio registers */
+ 	void __iomem *rxtx_regs;	/* SerDes Rx/Tx CSRs */
+-	void __iomem *sir0_regs;	/* SerDes integration registers (1/2) */
+-	void __iomem *sir1_regs;	/* SerDes integration registers (2/2) */
++	void __iomem *cmu_regs;		/* SerDes CMU CSRs */
++
++	unsigned int serdes_channel;
++	unsigned int speed_set;
+ 
+ 	/* Maintain link status for re-starting auto-negotiation */
+ 	unsigned int link;
+ 	enum amd_xgbe_phy_mode mode;
+-	unsigned int speed_set;
+ 
+ 	/* Auto-negotiation state machine support */
+ 	struct mutex an_mutex;
+@@ -394,33 +337,51 @@ static int amd_xgbe_phy_pcs_power_cycle(struct phy_device *phydev)
+ static void amd_xgbe_phy_serdes_start_ratechange(struct phy_device *phydev)
+ {
+ 	struct amd_xgbe_phy_priv *priv = phydev->priv;
++	u16 val, mask;
++
++	/* Assert Rx and Tx ratechange in CMU_reg16 */
++	val = XCMU_IOREAD(priv, CMU_REG16);
+ 
+-	/* Assert Rx and Tx ratechange */
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, RATECHANGE, 1);
++	mask = (1 << (CMU_REG16_TX_RATE_CHANGE_BASE -
++		      (priv->serdes_channel * CMU_REG16_RATE_CHANGE_DECR))) |
++	       (1 << (CMU_REG16_RX_RATE_CHANGE_BASE -
++		      (priv->serdes_channel * CMU_REG16_RATE_CHANGE_DECR)));
++	val |= mask;
++
++	XCMU_IOWRITE(priv, CMU_REG16, val);
+ }
+ 
+ static void amd_xgbe_phy_serdes_complete_ratechange(struct phy_device *phydev)
+ {
+ 	struct amd_xgbe_phy_priv *priv = phydev->priv;
++	u16 val, mask;
+ 	unsigned int wait;
+-	u16 status;
+ 
+-	/* Release Rx and Tx ratechange */
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, RATECHANGE, 0);
++	/* Release Rx and Tx ratechange for proper channel in CMU_reg16 */
++	val = XCMU_IOREAD(priv, CMU_REG16);
++
++	mask = (1 << (CMU_REG16_TX_RATE_CHANGE_BASE -
++		      (priv->serdes_channel * CMU_REG16_RATE_CHANGE_DECR))) |
++	       (1 << (CMU_REG16_RX_RATE_CHANGE_BASE -
++		      (priv->serdes_channel * CMU_REG16_RATE_CHANGE_DECR)));
++	val &= ~mask;
+ 
+-	/* Wait for Rx and Tx ready */
++	XCMU_IOWRITE(priv, CMU_REG16, val);
++
++	/* Wait for Rx and Tx ready in CMU_reg15 */
++	mask = (1 << priv->serdes_channel) |
++	       (1 << (priv->serdes_channel + 8));
+ 	wait = XGBE_PHY_RATECHANGE_COUNT;
+ 	while (wait--) {
+-		usleep_range(50, 75);
++		udelay(50);
+ 
+-		status = XSIR0_IOREAD(priv, SIR0_STATUS);
+-		if (XSIR_GET_BITS(status, SIR0_STATUS, RX_READY) &&
+-		    XSIR_GET_BITS(status, SIR0_STATUS, TX_READY))
++		val = XCMU_IOREAD(priv, CMU_REG15);
++		if ((val & mask) == mask)
+ 			return;
+ 	}
+ 
+ 	netdev_dbg(phydev->attached_dev, "SerDes rx/tx not ready (%#hx)\n",
+-		   status);
++		   val);
+ }
+ 
+ static int amd_xgbe_phy_xgmii_mode(struct phy_device *phydev)
+@@ -428,8 +389,8 @@ static int amd_xgbe_phy_xgmii_mode(struct phy_device *phydev)
+ 	struct amd_xgbe_phy_priv *priv = phydev->priv;
+ 	int ret;
+ 
+-	/* Enable KR training */
+-	ret = amd_xgbe_an_enable_kr_training(phydev);
++	/* Disable KR training */
++	ret = amd_xgbe_an_disable_kr_training(phydev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -455,19 +416,30 @@ static int amd_xgbe_phy_xgmii_mode(struct phy_device *phydev)
+ 		return ret;
+ 
+ 	/* Set SerDes to 10G speed */
++	spin_lock(&cmu_lock);
++
+ 	amd_xgbe_phy_serdes_start_ratechange(phydev);
+ 
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, DATARATE, SPEED_10000_RATE);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, WORDMODE, SPEED_10000_WORD);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, TXAMP, SPEED_10000_TXAMP);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PLLSEL, SPEED_10000_PLL);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PI_SPD_SEL, SPEED_10000_CDR);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_DATA_RATE, RXTX_FULL_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_WORD_MODE, RXTX_66BIT_WORD);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG5, TXAMP_CNTL, RXTX_10G_TX_AMP);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_DATA_RATE, RXTX_FULL_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_WORD_MODE, RXTX_66BIT_WORD);
+ 
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, RXTX_10000_BLWC);
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_10000_PQ);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, 0);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, RX_PLLSELECT, RXTX_10G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, TX_PLLSELECT, RXTX_10G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, PI_SPD_SEL_CDR, RXTX_10G_CDR);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_10G_PQ);
+ 
+ 	amd_xgbe_phy_serdes_complete_ratechange(phydev);
+ 
++	spin_unlock(&cmu_lock);
++
+ 	priv->mode = AMD_XGBE_MODE_KR;
+ 
+ 	return 0;
+@@ -505,19 +477,30 @@ static int amd_xgbe_phy_gmii_2500_mode(struct phy_device *phydev)
+ 		return ret;
+ 
+ 	/* Set SerDes to 2.5G speed */
++	spin_lock(&cmu_lock);
++
+ 	amd_xgbe_phy_serdes_start_ratechange(phydev);
+ 
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, DATARATE, SPEED_2500_RATE);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, WORDMODE, SPEED_2500_WORD);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, TXAMP, SPEED_2500_TXAMP);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PLLSEL, SPEED_2500_PLL);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PI_SPD_SEL, SPEED_2500_CDR);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_DATA_RATE, RXTX_HALF_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_WORD_MODE, RXTX_10BIT_WORD);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG5, TXAMP_CNTL, RXTX_1G_TX_AMP);
+ 
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, RXTX_2500_BLWC);
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_2500_PQ);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_DATA_RATE, RXTX_HALF_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_WORD_MODE, RXTX_10BIT_WORD);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, 1);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, RX_PLLSELECT, RXTX_1G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, TX_PLLSELECT, RXTX_1G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, PI_SPD_SEL_CDR, RXTX_1G_CDR);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_1G_PQ);
+ 
+ 	amd_xgbe_phy_serdes_complete_ratechange(phydev);
+ 
++	spin_unlock(&cmu_lock);
++
+ 	priv->mode = AMD_XGBE_MODE_KX;
+ 
+ 	return 0;
+@@ -555,19 +538,30 @@ static int amd_xgbe_phy_gmii_mode(struct phy_device *phydev)
+ 		return ret;
+ 
+ 	/* Set SerDes to 1G speed */
++	spin_lock(&cmu_lock);
++
+ 	amd_xgbe_phy_serdes_start_ratechange(phydev);
+ 
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, DATARATE, SPEED_1000_RATE);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, WORDMODE, SPEED_1000_WORD);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, TXAMP, SPEED_1000_TXAMP);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PLLSEL, SPEED_1000_PLL);
+-	XSIR1_IOWRITE_BITS(priv, SIR1_SPEED, PI_SPD_SEL, SPEED_1000_CDR);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_DATA_RATE, RXTX_FIFTH_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG3, TX_WORD_MODE, RXTX_10BIT_WORD);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG5, TXAMP_CNTL, RXTX_1G_TX_AMP);
+ 
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, RXTX_1000_BLWC);
+-	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_1000_PQ);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_DATA_RATE, RXTX_FIFTH_RATE);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG6, RX_WORD_MODE, RXTX_10BIT_WORD);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG20, BLWC_ENA, 1);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, RX_PLLSELECT, RXTX_1G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, TX_PLLSELECT, RXTX_1G_PLL);
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG53, PI_SPD_SEL_CDR, RXTX_1G_CDR);
++
++	XRXTX_IOWRITE_BITS(priv, RXTX_REG114, PQ_REG, RXTX_1G_PQ);
+ 
+ 	amd_xgbe_phy_serdes_complete_ratechange(phydev);
+ 
++	spin_unlock(&cmu_lock);
++
+ 	priv->mode = AMD_XGBE_MODE_KX;
+ 
+ 	return 0;
+@@ -639,13 +633,9 @@ static enum amd_xgbe_phy_an amd_xgbe_an_tx_training(struct phy_device *phydev,
+ 	if (ret < 0)
+ 		return AMD_XGBE_AN_ERROR;
+ 
+-	XSIR0_IOWRITE_BITS(priv, SIR0_KR_RT_1, RESET, 1);
+-
+ 	ret |= 0x01;
+ 	phy_write_mmd(phydev, MDIO_MMD_PMAPMD, MDIO_PMA_10GBR_PMD_CTRL, ret);
+ 
+-	XSIR0_IOWRITE_BITS(priv, SIR0_KR_RT_1, RESET, 0);
+-
+ 	return AMD_XGBE_AN_EVENT;
+ }
+ 
+@@ -1291,21 +1281,33 @@ static int amd_xgbe_phy_probe(struct phy_device *phydev)
+ 		goto err_priv;
+ 	}
+ 
+-	priv->sir0_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
+-	priv->sir0_regs = devm_ioremap_resource(dev, priv->sir0_res);
+-	if (IS_ERR(priv->sir0_regs)) {
+-		dev_err(dev, "sir0 ioremap failed\n");
+-		ret = PTR_ERR(priv->sir0_regs);
++	/* All xgbe phy devices share the CMU registers so retrieve
++	 * the resource and do the ioremap directly rather than
++	 * the devm_ioremap_resource call
++	 */
++	priv->cmu_res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	if (!priv->cmu_res) {
++		dev_err(dev, "cmu invalid resource\n");
++		ret = -EINVAL;
++		goto err_rxtx;
++	}
++	priv->cmu_regs = devm_ioremap_nocache(dev, priv->cmu_res->start,
++					      resource_size(priv->cmu_res));
++	if (!priv->cmu_regs) {
++		dev_err(dev, "cmu ioremap failed\n");
++		ret = -ENOMEM;
+ 		goto err_rxtx;
+ 	}
+ 
+-	priv->sir1_res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
+-	priv->sir1_regs = devm_ioremap_resource(dev, priv->sir1_res);
+-	if (IS_ERR(priv->sir1_regs)) {
+-		dev_err(dev, "sir1 ioremap failed\n");
+-		ret = PTR_ERR(priv->sir1_regs);
+-		goto err_sir0;
++	/* Get the device serdes channel property */
++	property = of_get_property(dev->of_node, XGBE_PHY_CHANNEL_PROPERTY,
++				   NULL);
++	if (!property) {
++		dev_err(dev, "unable to obtain serdes_channel property\n");
++		ret = -EINVAL;
++		goto err_cmu;
+ 	}
++	priv->serdes_channel = be32_to_cpu(*property);
+ 
+ 	/* Get the device speed set property */
+ 	speed_set = 0;
+@@ -1324,14 +1326,14 @@ static int amd_xgbe_phy_probe(struct phy_device *phydev)
+ 	default:
+ 		dev_err(dev, "invalid amd,speed-set property\n");
+ 		ret = -EINVAL;
+-		goto err_sir1;
++		goto err_cmu;
+ 	}
+ 
+ 	priv->link = 1;
+ 
+ 	ret = phy_read_mmd(phydev, MDIO_MMD_PCS, MDIO_CTRL2);
+ 	if (ret < 0)
+-		goto err_sir1;
++		goto err_cmu;
+ 	if ((ret & MDIO_PCS_CTRL2_TYPE) == MDIO_PCS_CTRL2_10GBR)
+ 		priv->mode = AMD_XGBE_MODE_KR;
+ 	else
+@@ -1342,7 +1344,7 @@ static int amd_xgbe_phy_probe(struct phy_device *phydev)
+ 	priv->an_workqueue = create_singlethread_workqueue(wq_name);
+ 	if (!priv->an_workqueue) {
+ 		ret = -ENOMEM;
+-		goto err_sir1;
++		goto err_cmu;
+ 	}
+ 
+ 	phydev->priv = priv;
+@@ -1352,15 +1354,8 @@ static int amd_xgbe_phy_probe(struct phy_device *phydev)
+ 
+ 	return 0;
+ 
+-err_sir1:
+-	devm_iounmap(dev, priv->sir1_regs);
+-	devm_release_mem_region(dev, priv->sir1_res->start,
+-				resource_size(priv->sir1_res));
+-
+-err_sir0:
+-	devm_iounmap(dev, priv->sir0_regs);
+-	devm_release_mem_region(dev, priv->sir0_res->start,
+-				resource_size(priv->sir0_res));
++err_cmu:
++	devm_iounmap(dev, priv->cmu_regs);
+ 
+ err_rxtx:
+ 	devm_iounmap(dev, priv->rxtx_regs);
+@@ -1392,14 +1387,7 @@ static void amd_xgbe_phy_remove(struct phy_device *phydev)
+ 	flush_workqueue(priv->an_workqueue);
+ 	destroy_workqueue(priv->an_workqueue);
+ 
+-	/* Release resources */
+-	devm_iounmap(dev, priv->sir1_regs);
+-	devm_release_mem_region(dev, priv->sir1_res->start,
+-				resource_size(priv->sir1_res));
+-
+-	devm_iounmap(dev, priv->sir0_regs);
+-	devm_release_mem_region(dev, priv->sir0_res->start,
+-				resource_size(priv->sir0_res));
++	devm_iounmap(dev, priv->cmu_regs);
+ 
+ 	devm_iounmap(dev, priv->rxtx_regs);
+ 	devm_release_mem_region(dev, priv->rxtx_res->start,
 diff --git a/drivers/of/address.c b/drivers/of/address.c
 index e371825..afdb782 100644
 --- a/drivers/of/address.c
@@ -3879,10 +5825,10 @@ index 0fb0fdb..946935d 100644
  		case IORESOURCE_IO:
 diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
 new file mode 100644
-index 0000000..dae61a6
+index 0000000..41c76b8
 --- /dev/null
 +++ b/drivers/pci/host/pci-xgene.c
-@@ -0,0 +1,646 @@
+@@ -0,0 +1,659 @@
 +/**
 + * APM X-Gene PCIe Driver
 + *
@@ -3930,6 +5876,7 @@ index 0000000..dae61a6
 +#define CFGBARH				0x158
 +#define CFGCTL				0x15c
 +#define RTDID				0x160
++#define BRIDGE_CFG_0			0x2000
 +#define BRIDGE_CFG_4			0x2010
 +#define BRIDGE_STATUS_0			0x2600
 +
@@ -4013,8 +5960,7 @@ index 0000000..dae61a6
 +	*val = readl(addr + offset);
 +}
 +
-+static inline void
-+xgene_pcie_cfg_in16(void __iomem *addr, int offset, u32 *val)
++static inline void xgene_pcie_cfg_in16(void __iomem *addr, int offset, u32 *val)
 +{
 +	*val = readl(addr + (offset & ~0x3));
 +
@@ -4027,8 +5973,7 @@ index 0000000..dae61a6
 +	*val &= 0xFFFF;
 +}
 +
-+static inline void
-+xgene_pcie_cfg_in8(void __iomem *addr, int offset, u32 *val)
++static inline void xgene_pcie_cfg_in8(void __iomem *addr, int offset, u32 *val)
 +{
 +	*val = readl(addr + (offset & ~0x3));
 +
@@ -4046,7 +5991,8 @@ index 0000000..dae61a6
 +	*val &= 0xFF;
 +}
 +
-+/* When the address bit [17:16] is 2'b01, the Configuration access will be
++/*
++ * When the address bit [17:16] is 2'b01, the Configuration access will be
 + * treated as Type 1 and it will be forwarded to external PCIe device.
 + */
 +static void __iomem *xgene_pcie_get_cfg_base(struct pci_bus *bus)
@@ -4059,7 +6005,8 @@ index 0000000..dae61a6
 +	return port->cfg_base;
 +}
 +
-+/* For Configuration request, RTDID register is used as Bus Number,
++/*
++ * For Configuration request, RTDID register is used as Bus Number,
 + * Device Number and Function number of the header fields.
 + */
 +static void xgene_pcie_set_rtdid_reg(struct pci_bus *bus, uint devfn)
@@ -4080,6 +6027,23 @@ index 0000000..dae61a6
 +	readl(port->csr_base + RTDID);
 +}
 +
++/*
++ * X-Gene PCIe port uses BAR0-BAR1 of RC's configuration space as
++ * the translation between PCI bus to native BUS. Entire DDR region
++ * is mapped on to PCIe space using these registers, so that it is
++ * accessible for EP devices for DMA. The BAR0/1 of bridge should be
++ * hidden during enumeration to avoid the sizing and resource allocation
++ * by PCIe core.
++ */
++static bool xgene_pcie_hide_rc_bars(struct pci_bus *bus, int offset)
++{
++	if (pci_is_root_bus(bus) && ((offset == PCI_BASE_ADDRESS_0) ||
++				     (offset == PCI_BASE_ADDRESS_1)))
++		return true;
++
++	return false;
++}
++
 +static int xgene_pcie_read_config(struct pci_bus *bus, unsigned int devfn,
 +				  int offset, int len, u32 *val)
 +{
@@ -4088,6 +6052,11 @@ index 0000000..dae61a6
 +
 +	if ((pci_is_root_bus(bus) && devfn != 0) || !port->link_up)
 +		return PCIBIOS_DEVICE_NOT_FOUND;
++
++	if (xgene_pcie_hide_rc_bars(bus, offset)) {
++		*val = 0;
++		return PCIBIOS_SUCCESSFUL;
++	}
 +
 +	xgene_pcie_set_rtdid_reg(bus, devfn);
 +	addr = xgene_pcie_get_cfg_base(bus);
@@ -4102,6 +6071,7 @@ index 0000000..dae61a6
 +		xgene_pcie_cfg_in32(addr, offset, val);
 +		break;
 +	}
++
 +	return PCIBIOS_SUCCESSFUL;
 +}
 +
@@ -4113,6 +6083,9 @@ index 0000000..dae61a6
 +
 +	if ((pci_is_root_bus(bus) && devfn != 0) || !port->link_up)
 +		return PCIBIOS_DEVICE_NOT_FOUND;
++
++	if (xgene_pcie_hide_rc_bars(bus, offset))
++		return PCIBIOS_SUCCESSFUL;
 +
 +	xgene_pcie_set_rtdid_reg(bus, devfn);
 +	addr = xgene_pcie_get_cfg_base(bus);
@@ -4197,23 +6170,6 @@ index 0000000..dae61a6
 +	return 0;
 +}
 +
-+static void xgene_pcie_fixup_bridge(struct pci_dev *dev)
-+{
-+	int i;
-+
-+	/* Hide the PCI host BARs from the kernel as their content doesn't
-+	 * fit well in the resource management
-+	 */
-+	for (i = 0; i < DEVICE_COUNT_RESOURCE; i++) {
-+		dev->resource[i].start = dev->resource[i].end = 0;
-+		dev->resource[i].flags = 0;
-+	}
-+	dev_info(&dev->dev, "Hiding X-Gene pci host bridge resources %s\n",
-+		 pci_name(dev));
-+}
-+DECLARE_PCI_FIXUP_HEADER(XGENE_PCIE_VENDORID, XGENE_PCIE_DEVICEID,
-+			 xgene_pcie_fixup_bridge);
-+
 +static int xgene_pcie_map_reg(struct xgene_pcie_port *port,
 +			      struct platform_device *pdev)
 +{
@@ -4284,8 +6240,7 @@ index 0000000..dae61a6
 +		struct resource *res = window->res;
 +		u64 restype = resource_type(res);
 +
-+		dev_dbg(port->dev, "0x%08lx 0x%016llx...0x%016llx\n",
-+			res->flags, res->start, res->end);
++		dev_dbg(port->dev, "%pR\n", res);
 +
 +		switch (restype) {
 +		case IORESOURCE_IO:
@@ -4302,7 +6257,7 @@ index 0000000..dae61a6
 +		case IORESOURCE_BUS:
 +			break;
 +		default:
-+			dev_err(dev, "invalid io resource!");
++			dev_err(dev, "invalid io resource - %pR\n", res);
 +			return -EINVAL;
 +		}
 +	}
@@ -4450,10 +6405,14 @@ index 0000000..dae61a6
 +			    struct list_head *res,
 +			    resource_size_t io_base)
 +{
-+	u32 lanes = 0, speed = 0;
++	u32 val, lanes = 0, speed = 0;
 +	int ret;
 +
 +	xgene_pcie_clear_config(port);
++
++	/* setup the vendor and device IDs correctly */
++	val = (XGENE_PCIE_DEVICEID << 16) | XGENE_PCIE_VENDORID;
++	writel(val, port->csr_base + BRIDGE_CFG_0);
 +
 +	ret = xgene_pcie_map_ranges(port, res, io_base);
 +	if (ret)
@@ -5204,6 +7163,43 @@ index 57d9df8..e075437 100644
  	{ },
  };
  MODULE_DEVICE_TABLE(acpi, dw8250_acpi_match);
+diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
+index c600ccf..10c4775 100644
+--- a/drivers/virtio/virtio_mmio.c
++++ b/drivers/virtio/virtio_mmio.c
+@@ -100,8 +100,7 @@
+ #include <linux/virtio_config.h>
+ #include <linux/virtio_mmio.h>
+ #include <linux/virtio_ring.h>
+-
+-
++#include <linux/acpi.h>
+ 
+ /* The alignment to use between consumer and producer parts of vring.
+  * Currently hardcoded to the page size. */
+@@ -637,6 +636,14 @@ static struct of_device_id virtio_mmio_match[] = {
+ };
+ MODULE_DEVICE_TABLE(of, virtio_mmio_match);
+ 
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id virtio_mmio_acpi_match[] = {
++	{ "LNRO0005", },
++	{ }
++};
++MODULE_DEVICE_TABLE(acpi, virtio_mmio_acpi_match);
++#endif
++
+ static struct platform_driver virtio_mmio_driver = {
+ 	.probe		= virtio_mmio_probe,
+ 	.remove		= virtio_mmio_remove,
+@@ -644,6 +651,7 @@ static struct platform_driver virtio_mmio_driver = {
+ 		.name	= "virtio-mmio",
+ 		.owner	= THIS_MODULE,
+ 		.of_match_table	= virtio_mmio_match,
++		.acpi_match_table = ACPI_PTR(virtio_mmio_acpi_match),
+ 	},
+ };
+ 
 diff --git a/include/acpi/acnames.h b/include/acpi/acnames.h
 index c728113..f97804b 100644
 --- a/include/acpi/acnames.h
@@ -5220,7 +7216,7 @@ index c728113..f97804b 100644
  #define METHOD_NAME__SB_        "_SB_"
  #define METHOD_NAME__SEG        "_SEG"
 diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-index d91e59b..68d5ade 100644
+index 57ee052..a483e61 100644
 --- a/include/acpi/acpi_bus.h
 +++ b/include/acpi/acpi_bus.h
 @@ -68,6 +68,8 @@ bool acpi_check_dsm(acpi_handle handle, const u8 *uuid, int rev, u64 funcs);

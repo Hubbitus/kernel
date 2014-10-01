@@ -2230,6 +2230,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 01 2014 Kyle McMartin <kyle@fedoraproject.org>
+- Update kernel-arm64.patch from git, again... enable AMD_XGBE on arm64.
+
 * Wed Oct 01 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc7.git1.1
 - Linux v3.17-rc7-6-gaad7fb916a10
 
