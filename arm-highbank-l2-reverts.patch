@@ -1,5 +1,16 @@
+From be2dabd3c534e7665e29b6a7fcf1cd82a3a1783b Mon Sep 17 00:00:00 2001
+From: Kyle McMartin <kmcmartin@redhat.com>
+Date: Tue, 30 Sep 2014 16:19:47 -0400
+Subject: [PATCH] arm: highbank l2 reverts
+
+Revert some v3.16 changes to mach-highbank which broke L2 cache enablement.
+Will debug upstream separately, but we need F22/21 running there. (#1139762)
+---
+ arch/arm/mach-highbank/highbank.c | 21 ++++++++++++---------
+ 1 file changed, 12 insertions(+), 9 deletions(-)
+
 diff --git a/arch/arm/mach-highbank/highbank.c b/arch/arm/mach-highbank/highbank.c
-index 8c35ae4..38e1dc3 100644
+index 8c35ae4ff176..38e1dc3b4c6e 100644
 --- a/arch/arm/mach-highbank/highbank.c
 +++ b/arch/arm/mach-highbank/highbank.c
 @@ -51,13 +51,11 @@ static void __init highbank_scu_map_io(void)
@@ -45,3 +56,6 @@ index 8c35ae4..38e1dc3 100644
  	.init_irq	= highbank_init_irq,
  	.init_machine	= highbank_init,
  	.dt_compat	= highbank_match,
+-- 
+1.9.3
+

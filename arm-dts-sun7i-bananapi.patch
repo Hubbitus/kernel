@@ -1,20 +1,24 @@
+From b74b4496e0ece6dea6b2d00adb6366f9cedb5d47 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Tue, 30 Sep 2014 14:29:26 +0100
+Subject: [PATCH] arm: dts sun7i bananapi
+
 The Banana Pi is an A20 based development board using Raspberry Pi compatible
 IO headers. It comes with 1 GB RAM, 1 Gb ethernet, 2x USB host, sata, hdmi
 and stereo audio out + various expenansion headers:
-
 
 Signed-off-by: Hans de Goede <hdegoede@xxxxxxxxxx>
 ---
  arch/arm/boot/dts/Makefile               |   1 +
  arch/arm/boot/dts/sun7i-a20-bananapi.dts | 177 +++++++++++++++++++++++++++++++
- 2 files changed, 184 insertions(+)
+ 2 files changed, 178 insertions(+)
  create mode 100644 arch/arm/boot/dts/sun7i-a20-bananapi.dts
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index bdbc84a..440e037 100644
+index b8c5cd3ddeb9..c3003a4460f5 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -379,6 +379,7 @@ dtb-$(CONFIG_MACH_SUN6I) += \
+@@ -414,6 +414,7 @@ dtb-$(CONFIG_MACH_SUN6I) += \
  	sun6i-a31-hummingbird.dtb \
  	sun6i-a31-m9.dtb
  dtb-$(CONFIG_MACH_SUN7I) += \
@@ -24,7 +28,7 @@ index bdbc84a..440e037 100644
  	sun7i-a20-i12-tvbox.dtb \
 diff --git a/arch/arm/boot/dts/sun7i-a20-bananapi.dts b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
 new file mode 100644
-index 0000000..0332b82
+index 000000000000..7214475a3c36
 --- /dev/null
 +++ b/arch/arm/boot/dts/sun7i-a20-bananapi.dts
 @@ -0,0 +1,177 @@
@@ -206,4 +210,5 @@ index 0000000..0332b82
 +	};
 +};
 -- 
-2.0.0
+1.9.3
+
