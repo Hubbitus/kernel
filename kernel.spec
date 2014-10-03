@@ -2231,6 +2231,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 06 2014 Kyle McMartin <kyle@fedoraproject.org>
+- enable 64K pages on arm64... (presently) needed to boot on amd seattle
+  platforms due to physical memory being unreachable.
+
 * Mon Oct 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-300
 - Linux v3.17
 
