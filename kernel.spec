@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2230,6 +2230,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc7.git3.1
+- Linux v3.17-rc7-76-g58586869599f
+- Various ppc64/ppc64le config changes
+
 * Thu Oct 02 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-0.rc7.git2.1
 - Linux v3.17-rc7-46-g50dddff3cb9a
 - Cleanup dead Kconfig symbols in config-* from Paul Bolle

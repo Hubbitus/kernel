@@ -1,4 +1,3 @@
-From 965dfac8b7d7e4c4b32046c482e4bbd6b9ee136e Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Wed, 30 Apr 2014 15:24:19 +0200
 Subject: [PATCH] acpi-video: Add 4 new models to the use_native_backlight dmi

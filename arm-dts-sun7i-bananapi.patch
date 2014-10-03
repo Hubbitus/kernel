@@ -1,4 +1,3 @@
-From 5c448ffefd4212aac7de1c45e9ee79b0539b94ed Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Tue, 30 Sep 2014 14:29:26 +0100
 Subject: [PATCH] arm: dts sun7i bananapi
