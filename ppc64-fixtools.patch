@@ -1,3 +1,9 @@
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Mon Oct 06 15:15:15 2014 +0100
+Subject: [Patch] ppc64-fixtools
+
+Build tools on ppc64le (rhbz 1138884), Some minor ppc64 cleanups
+
 diff --git a/tools/perf/arch/powerpc/util/skip-callchain-idx.c b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
 index a7c23a4..d73ef8b 100644
 --- a/tools/perf/arch/powerpc/util/skip-callchain-idx.c
