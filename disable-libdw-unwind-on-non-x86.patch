@@ -1,9 +1,19 @@
+From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
+Date: Fri, 18 Apr 2014 06:58:29 -0400
+Subject: [PATCH] disable libdw unwind on non-x86
+
+Bugzilla: 1025603
+Upstream-status: ??
+---
+ tools/perf/config/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
 diff --git a/tools/perf/config/Makefile b/tools/perf/config/Makefile
-index ee21fa9..19ee413 100644
+index 1f67aa02d240..86c21a24da46 100644
 --- a/tools/perf/config/Makefile
 +++ b/tools/perf/config/Makefile
-@@ -34,6 +34,10 @@ ifeq ($(ARCH),arm)
-   LIBUNWIND_LIBS = -lunwind -lunwind-arm
+@@ -52,6 +52,10 @@ ifeq ($(ARCH),powerpc)
+   CFLAGS += -DHAVE_SKIP_CALLCHAIN_IDX
  endif
  
 +ifneq ($(ARCH),x86)
@@ -13,3 +23,6 @@ index ee21fa9..19ee413 100644
  ifeq ($(LIBUNWIND_LIBS),)
    NO_LIBUNWIND := 1
  else
+-- 
+1.9.3
+

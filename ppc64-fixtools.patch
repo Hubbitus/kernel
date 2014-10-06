@@ -1,0 +1,12 @@
+diff --git a/tools/perf/arch/powerpc/util/skip-callchain-idx.c b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
+index a7c23a4..d73ef8b 100644
+--- a/tools/perf/arch/powerpc/util/skip-callchain-idx.c
++++ b/tools/perf/arch/powerpc/util/skip-callchain-idx.c
+@@ -15,6 +15,7 @@
+ 
+ #include "util/thread.h"
+ #include "util/callchain.h"
++#include "util/debug.h"
+ 
+ /*
+  * When saving the callchain on Power, the kernel conservatively saves

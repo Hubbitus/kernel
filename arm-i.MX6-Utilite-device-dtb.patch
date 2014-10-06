@@ -1,5 +1,13 @@
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Fri, 11 Jul 2014 00:10:56 +0100
+Subject: [PATCH] arm: i.MX6 Utilite device dtb
+
+---
+ arch/arm/boot/dts/imx6q-cm-fx6.dts | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+
 diff --git a/arch/arm/boot/dts/imx6q-cm-fx6.dts b/arch/arm/boot/dts/imx6q-cm-fx6.dts
-index 99b46f8..8b6ddd1 100644
+index 99b46f8030ad..8b6ddd16dcc5 100644
 --- a/arch/arm/boot/dts/imx6q-cm-fx6.dts
 +++ b/arch/arm/boot/dts/imx6q-cm-fx6.dts
 @@ -97,11 +97,49 @@
@@ -52,3 +60,6 @@ index 99b46f8..8b6ddd1 100644
 +	pinctrl-0 = <&pinctrl_usdhc3>;
 +	status = "okay";
 +};
+-- 
+1.9.3
+
