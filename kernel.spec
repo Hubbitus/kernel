@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -673,7 +673,6 @@ Patch21020: arm-tegra-usb-no-reset-linux33.patch
 Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
 # http://www.spinics.net/lists/linux-tegra/msg17948.html
-Patch21023: arm-tegra-drmdetection.patch
 Patch21024: arm-qemu-fixdisplay.patch
 
 #rhbz 754518
@@ -714,12 +713,6 @@ Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
-#CVE-2014-3181 rhbz 1141179 1141173
-Patch26024: HID-magicmouse-sanity-check-report-size-in-raw_event.patch
-
-#CVE-2014-3186 rhbz 1141407 1141410
-Patch26025: HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
 #CVE-2014-6410 rhbz 1141809 1141810
 Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
@@ -1285,7 +1278,6 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
 ApplyPatch arm-beagle.patch
 ApplyPatch arm-imx6-utilite.patch
-ApplyPatch arm-tegra-drmdetection.patch
 ApplyPatch arm-qemu-fixdisplay.patch
 
 #
@@ -1412,12 +1404,6 @@ ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
-#CVE-2014-3181 rhbz 1141179 1141173
-ApplyPatch HID-magicmouse-sanity-check-report-size-in-raw_event.patch
-
-#CVE-2014-3186 rhbz 1141407 1141410
-ApplyPatch HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
 #CVE-2014-6410 rhbz 1141809 1141810
 ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
@@ -2246,6 +2232,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.4-200
+- Linux v3.16.4
+
 * Tue Sep 23 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix XPS 13 touchpad issue (rhbz 1123584)
 
