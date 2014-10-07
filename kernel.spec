@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -722,6 +722,8 @@ Patch26027: HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 
 #rhbz 1123584
 Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
+
+Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1413,6 +1415,8 @@ ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 
 #rhbz 1123584
 ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
+
+ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2232,6 +2236,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Tue Oct 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix GFS2 regression (from Bob Peterson)
+
 * Mon Oct 06 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.4-200
 - Linux v3.16.4
 
