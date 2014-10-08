@@ -33,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 36327438caf0..61542c282e70 100644
+index e4b1f431c7ed..e12033b15d25 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1566,6 +1566,16 @@ config EFI_MIXED
+@@ -1578,6 +1578,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -163,7 +163,7 @@ index 341a73ecea2e..cca08ac450e2 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 1f7b4664300e..866417ecc76a 100644
+index d9b88208e6eb..96078ffc846a 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -3843,6 +3843,13 @@ void module_layout(struct module *mod,

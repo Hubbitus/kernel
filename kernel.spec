@@ -6,9 +6,9 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -609,18 +609,8 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1134969
-Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-#rhbz 1110011
-Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
-Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
-
-#rhbz 1123584
-Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
 
 #rhbz 1145318
 Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
@@ -1348,18 +1338,8 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
-#rhbz 1134969
-ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
-
-#rhbz 1110011
-ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
-ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
-
-#rhbz 1123584
-ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
 
 #rhbz 1145318
 ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
@@ -2234,6 +2214,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git1.1
+- Linux v3.17-2860-gef0625b70dac
+- Reenable debugging options.
+- Temporarily disable aarch64patches
+
 * Tue Oct 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix GFS2 regression (from Bob Peterson)
 

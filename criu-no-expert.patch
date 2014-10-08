@@ -9,7 +9,7 @@ Upstream-status: Fedora mustard
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/init/Kconfig b/init/Kconfig
-index 3c866db603a7..bfb3c54d5286 100644
+index 5e701ec1be55..abb2fc8f1b7a 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -1149,7 +1149,7 @@ config DEBUG_BLK_CGROUP
