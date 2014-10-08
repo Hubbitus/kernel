@@ -2239,7 +2239,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Wed Oct 08 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Oct 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-301
 - Add patch to fix ATA blacklist
 
 * Tue Oct 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
