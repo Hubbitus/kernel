@@ -2,6 +2,7 @@
 # added for those wanting to do custom rebuilds with altered config opts.
 
 CONFIG_IOSCHED_BFQ=y
+CONFIG_SMT_NICE=n
 CONFIG_CGROUP_BFQIO=y
 CONFIG_ZCACHE=y
 CONFIG_ZCACHE_WRITEBACK=y

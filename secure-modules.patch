@@ -1,7 +1,7 @@
 Bugzilla: N/A
 Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
 
-From 0f81a4461431941c17ff26fd3d5e284ede4a368a Mon Sep 17 00:00:00 2001
+From 952dbcbea4cffb1a05773af3b5f41e8ed477c5fe Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH 01/14] Add secure_modules() call
@@ -42,10 +42,10 @@ index f520a767c86c..fc9b54eb779e 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 11869408f79b..2b9204fe055f 100644
+index 81e727cf6df9..fc14f48915dd 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3835,3 +3835,13 @@ void module_layout(struct module *mod,
+@@ -3843,3 +3843,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif
@@ -60,10 +60,10 @@ index 11869408f79b..2b9204fe055f 100644
 +}
 +EXPORT_SYMBOL(secure_modules);
 -- 
-1.8.5.3
+1.9.3
 
 
-From 806c4ee0e6484b529b88b3d0ceb49f6edf96ae11 Mon Sep 17 00:00:00 2001
+From 3b451a12e60a47d152ecce1c02634c4d7320b024 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:10:38 -0500
 Subject: [PATCH 02/14] PCI: Lock down BAR access when module security is
@@ -83,20 +83,20 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  3 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 4e0acefb7565..01b56d13d021 100644
+index 9ff0a901ecf7..8d0d5d92b8d9 100644
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
-@@ -29,6 +29,7 @@
- #include <linux/slab.h>
+@@ -30,6 +30,7 @@
  #include <linux/vgaarb.h>
  #include <linux/pm_runtime.h>
+ #include <linux/of.h>
 +#include <linux/module.h>
  #include "pci.h"
  
  static int sysfs_initialized;	/* = 0 */
-@@ -652,6 +653,9 @@ pci_write_config(struct file* filp, struct kobject *kobj,
+@@ -704,6 +705,9 @@ static ssize_t pci_write_config(struct file *filp, struct kobject *kobj,
  	loff_t init_off = off;
- 	u8 *data = (u8*) buf;
+ 	u8 *data = (u8 *) buf;
  
 +	if (secure_modules())
 +		return -EPERM;
@@ -104,7 +104,7 @@ index 4e0acefb7565..01b56d13d021 100644
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -958,6 +962,9 @@ pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+@@ -998,6 +1002,9 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
  	resource_size_t start, end;
  	int i;
  
@@ -114,9 +114,9 @@ index 4e0acefb7565..01b56d13d021 100644
  	for (i = 0; i < PCI_ROM_RESOURCE; i++)
  		if (res == &pdev->resource[i])
  			break;
-@@ -1065,6 +1072,9 @@ pci_write_resource_io(struct file *filp, struct kobject *kobj,
- 		      struct bin_attribute *attr, char *buf,
- 		      loff_t off, size_t count)
+@@ -1099,6 +1106,9 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
+ 				     struct bin_attribute *attr, char *buf,
+ 				     loff_t off, size_t count)
  {
 +	if (secure_modules())
 +		return -EPERM;
@@ -125,10 +125,10 @@ index 4e0acefb7565..01b56d13d021 100644
  }
  
 diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 46d1378f2e9e..294fe7b34af0 100644
+index 3f155e78513f..4265ea07e3b0 100644
 --- a/drivers/pci/proc.c
 +++ b/drivers/pci/proc.c
-@@ -117,6 +117,9 @@ proc_bus_pci_write(struct file *file, const char __user *buf, size_t nbytes, lof
+@@ -116,6 +116,9 @@ static ssize_t proc_bus_pci_write(struct file *file, const char __user *buf,
  	int size = dev->cfg_size;
  	int cnt;
  
@@ -138,7 +138,7 @@ index 46d1378f2e9e..294fe7b34af0 100644
  	if (pos >= size)
  		return 0;
  	if (nbytes >= size)
-@@ -196,6 +199,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
+@@ -195,6 +198,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
  #endif /* HAVE_PCI_MMAP */
  	int ret = 0;
  
@@ -148,7 +148,7 @@ index 46d1378f2e9e..294fe7b34af0 100644
  	switch (cmd) {
  	case PCIIOC_CONTROLLER:
  		ret = pci_domain_nr(dev->bus);
-@@ -234,7 +240,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
+@@ -233,7 +239,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
  	struct pci_filp_private *fpriv = file->private_data;
  	int i, ret;
  
@@ -158,7 +158,7 @@ index 46d1378f2e9e..294fe7b34af0 100644
  
  	/* Make sure the caller is mapping a real resource for this device */
 diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
-index 24750a1b39b6..fa57896b97dd 100644
+index b91c4da68365..98f5637304d1 100644
 --- a/drivers/pci/syscall.c
 +++ b/drivers/pci/syscall.c
 @@ -10,6 +10,7 @@
@@ -179,10 +179,10 @@ index 24750a1b39b6..fa57896b97dd 100644
  
  	dev = pci_get_bus_and_slot(bus, dfn);
 -- 
-1.8.5.3
+1.9.3
 
 
-From 16ee82e2add8684e374451e6ba34be3ee41e4ef1 Mon Sep 17 00:00:00 2001
+From 42a620055ac873fb378ec69731c7a2200f6779cc Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
 Subject: [PATCH 03/14] x86: Lock down IO port access when module security is
@@ -252,10 +252,10 @@ index 917403fe10da..cdf839f9defe 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-1.8.5.3
+1.9.3
 
 
-From 2fd4b35393b19cde87e4770d3b85d12760e72f6a Mon Sep 17 00:00:00 2001
+From 8019fb7c7b5f18b19f7c980987953680ee218c9f Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:39:37 -0500
 Subject: [PATCH 04/14] ACPI: Limit access to custom_method
@@ -284,10 +284,10 @@ index c68e72414a67..4277938af700 100644
  		/* parse the table header to get the table length */
  		if (count <= sizeof(struct acpi_table_header))
 -- 
-1.8.5.3
+1.9.3
 
 
-From 543d64276237adb782ec30a5dab67d0b21afc1d4 Mon Sep 17 00:00:00 2001
+From bf84e9e1022b2d3d0c97ae48fb8b61e5336c50f8 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 08:46:50 -0500
 Subject: [PATCH 05/14] asus-wmi: Restrict debugfs interface when module
@@ -305,10 +305,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index c5e082fb82fa..03c57fc8de8a 100644
+index 3c6ccedc82b6..960c46536c65 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -1595,6 +1595,9 @@ static int show_dsts(struct seq_file *m, void *data)
+@@ -1592,6 +1592,9 @@ static int show_dsts(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -318,7 +318,7 @@ index c5e082fb82fa..03c57fc8de8a 100644
  	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
  
  	if (err < 0)
-@@ -1611,6 +1614,9 @@ static int show_devs(struct seq_file *m, void *data)
+@@ -1608,6 +1611,9 @@ static int show_devs(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -328,7 +328,7 @@ index c5e082fb82fa..03c57fc8de8a 100644
  	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
  				    &retval);
  
-@@ -1635,6 +1641,9 @@ static int show_call(struct seq_file *m, void *data)
+@@ -1632,6 +1638,9 @@ static int show_call(struct seq_file *m, void *data)
  	union acpi_object *obj;
  	acpi_status status;
  
@@ -339,10 +339,10 @@ index c5e082fb82fa..03c57fc8de8a 100644
  				     1, asus->debug.method_id,
  				     &input, &output);
 -- 
-1.8.5.3
+1.9.3
 
 
-From 6e2fec5547b597c43ca72e34729b8a402660a7c1 Mon Sep 17 00:00:00 2001
+From 9a56e8715d3b6dc84989997f34b6b5d407cabad2 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
 Subject: [PATCH 06/14] Restrict /dev/mem and /dev/kmem when module loading is
@@ -382,10 +382,10 @@ index cdf839f9defe..c63cf93b00eb 100644
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
 -- 
-1.8.5.3
+1.9.3
 
 
-From 358cea0a54f726fa61839b411f3f54284d4588bf Mon Sep 17 00:00:00 2001
+From 8d6faa19bbbaa4df411becda7e40c4ea0684c134 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
 Subject: [PATCH 07/14] acpi: Ignore acpi_rsdp kernel parameter when module
@@ -401,7 +401,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index f7fd72ac69cf..ccdae1c8c386 100644
+index bad25b070fe0..0606585e8b93 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -44,6 +44,7 @@
@@ -412,7 +412,7 @@ index f7fd72ac69cf..ccdae1c8c386 100644
  
  #include <asm/io.h>
  #include <asm/uaccess.h>
-@@ -244,7 +245,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
+@@ -245,7 +246,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
  acpi_physical_address __init acpi_os_get_root_pointer(void)
  {
  #ifdef CONFIG_KEXEC
@@ -422,10 +422,10 @@ index f7fd72ac69cf..ccdae1c8c386 100644
  #endif
  
 -- 
-1.8.5.3
+1.9.3
 
 
-From 89751b3ad4dea7cf5b806cd14126dd70657a9148 Mon Sep 17 00:00:00 2001
+From 1ff86ddea019f543f6668b56889f86811028f303 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH 08/14] kexec: Disable at runtime if the kernel enforces module
@@ -441,18 +441,18 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index c8380ad203bc..e6eb239f567a 100644
+index 4b8f0c925884..df14daa323a9 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
-@@ -33,6 +33,7 @@
- #include <linux/swap.h>
+@@ -34,6 +34,7 @@
  #include <linux/syscore_ops.h>
  #include <linux/compiler.h>
+ #include <linux/hugetlb.h>
 +#include <linux/module.h>
  
  #include <asm/page.h>
  #include <asm/uaccess.h>
-@@ -948,6 +949,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+@@ -947,6 +948,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
  		return -EPERM;
  
  	/*
@@ -467,53 +467,13 @@ index c8380ad203bc..e6eb239f567a 100644
  	 * This leaves us room for future extensions.
  	 */
 -- 
-1.8.5.3
+1.9.3
 
 
-From 31174421a7103571a1c3faf7ba27d4045e5fbc18 Mon Sep 17 00:00:00 2001
-From: Matthew Garrett <matthew.garrett@nebula.com>
-Date: Tue, 3 Sep 2013 11:23:29 -0400
-Subject: [PATCH 09/14] uswsusp: Disable when module loading is restricted
-
-uswsusp allows a user process to dump and then restore kernel state, which
-makes it possible to avoid module loading restrictions. Prevent this when
-any restrictions have been imposed on loading modules.
-
-Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
----
- kernel/power/user.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/power/user.c b/kernel/power/user.c
-index 98d357584cd6..efe99dee9510 100644
---- a/kernel/power/user.c
-+++ b/kernel/power/user.c
-@@ -24,6 +24,7 @@
- #include <linux/console.h>
- #include <linux/cpu.h>
- #include <linux/freezer.h>
-+#include <linux/module.h>
- 
- #include <asm/uaccess.h>
- 
-@@ -49,6 +50,9 @@ static int snapshot_open(struct inode *inode, struct file *filp)
- 	struct snapshot_data *data;
- 	int error;
- 
-+	if (secure_modules())
-+		return -EPERM;
-+
- 	lock_system_sleep();
- 
- 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
--- 
-1.8.5.3
-
-
-From ea5cf8801db979fa7d5f90ab3faf72eb22490f9b Mon Sep 17 00:00:00 2001
+From 4d56368f1364b45c18067bab1d6abc5ce0f67183 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 8 Feb 2013 11:12:13 -0800
-Subject: [PATCH 10/14] x86: Restrict MSR access when module loading is
+Subject: [PATCH 09/14] x86: Restrict MSR access when module loading is
  restricted
 
 Writing to MSRs should not be allowed if module loading is restricted,
@@ -552,13 +512,13 @@ index c9603ac80de5..8bef43fc3f40 100644
  			err = -EFAULT;
  			break;
 -- 
-1.8.5.3
+1.9.3
 
 
-From 2985684ff78972bde7ebf1e295b52afd9bea29e0 Mon Sep 17 00:00:00 2001
+From aab8ba85241a85a0b2ed622edd7874c74cafa496 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
-Subject: [PATCH 11/14] Add option to automatically enforce module signatures
+Subject: [PATCH 10/14] Add option to automatically enforce module signatures
  when in Secure Boot mode
 
 UEFI Secure Boot provides a mechanism for ensuring that the firmware will
@@ -591,10 +551,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 5b8ec0f53b57..085d5eb36361 100644
+index d24887b645dc..870aac9520b3 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1534,6 +1534,16 @@ config EFI_MIXED
+@@ -1557,6 +1557,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -612,7 +572,7 @@ index 5b8ec0f53b57..085d5eb36361 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 1e6146137f8e..b00745ff398a 100644
+index 0331d765c2bb..85defaf5a27c 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -634,7 +594,7 @@ index 1e6146137f8e..b00745ff398a 100644
 +	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
 +	efi_status_t status;
 +
-+	status = efi_call_phys5(sys_table->runtime->get_variable,
++	status = efi_early->call((unsigned long)sys_table->runtime->get_variable,
 +				L"SecureBoot", &var_guid, NULL, &datasize, &sb);
 +
 +	if (status != EFI_SUCCESS)
@@ -644,7 +604,7 @@ index 1e6146137f8e..b00745ff398a 100644
 +		return 0;
 +
 +
-+	status = efi_call_phys5(sys_table->runtime->get_variable,
++	status = efi_early->call((unsigned long)sys_table->runtime->get_variable,
 +				L"SetupMode", &var_guid, NULL, &datasize,
 +				&setup);
 +
@@ -687,7 +647,7 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 09c76d265550..5a61d732fd5c 100644
+index 78a0e6298922..8ecfec85e527 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1142,6 +1142,12 @@ void __init setup_arch(char **cmdline_p)
@@ -721,10 +681,10 @@ index fc9b54eb779e..7377bc851461 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 2b9204fe055f..2b8cc2d57c16 100644
+index fc14f48915dd..2d68d276f3b6 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3836,6 +3836,13 @@ void module_layout(struct module *mod,
+@@ -3844,6 +3844,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
@@ -739,13 +699,13 @@ index 2b9204fe055f..2b8cc2d57c16 100644
  {
  #ifdef CONFIG_MODULE_SIG
 -- 
-1.8.5.3
+1.9.3
 
 
-From b2e4ea728ccab2befbd5fe1bd834881a7dd8f34b Mon Sep 17 00:00:00 2001
-From: Josh Boyer <jwboyer@redhat.com>
+From eae8a80ddc185b3f233e2620dbfc6454b6f0c3a6 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
-Subject: [PATCH 12/14] efi: Disable secure boot if shim is in insecure mode
+Subject: [PATCH 11/14] efi: Disable secure boot if shim is in insecure mode
 
 A user can manually tell the shim boot loader to disable validation of
 images it loads.  When a user does this, it creates a UEFI variable called
@@ -753,13 +713,13 @@ MokSBState that does not have the runtime attribute set.  Given that the
 user explicitly disabled validation, we can honor that and not enable
 secure boot mode if that variable is set.
 
-Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
  arch/x86/boot/compressed/eboot.c | 20 +++++++++++++++++++-
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index b00745ff398a..bf42cc5f083d 100644
+index 85defaf5a27c..b4013a4ba005 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -812,8 +812,9 @@ out:
@@ -781,7 +741,7 @@ index b00745ff398a..bf42cc5f083d 100644
 +	 * doesn't have the runtime attribute set, we might as well honor that.
 +	 */
 +	var_guid = EFI_SHIM_LOCK_GUID;
-+	status = efi_call_phys5(sys_table->runtime->get_variable,
++	status = efi_early->call((unsigned long)sys_table->runtime->get_variable,
 +				L"MokSBState", &var_guid, &attr, &datasize,
 +				&moksbstate);
 +
@@ -798,13 +758,13 @@ index b00745ff398a..bf42cc5f083d 100644
  }
  
 -- 
-1.8.5.3
+1.9.3
 
 
-From fb418c682d01c447d30b5591a591fdbf33b1334e Mon Sep 17 00:00:00 2001
+From 9728a4f49b284b7354876e1d77174d5838306e21 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:28:43 -0400
-Subject: [PATCH 13/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
+Subject: [PATCH 12/14] efi: Make EFI_SECURE_BOOT_SIG_ENFORCE depend on EFI
 
 The functionality of the config option is dependent upon the platform being
 UEFI based.  Reflect this in the config deps.
@@ -815,10 +775,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 085d5eb36361..3e8d398a976d 100644
+index 870aac9520b3..7aecd3f9f8ee 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1535,7 +1535,8 @@ config EFI_MIXED
+@@ -1558,7 +1558,8 @@ config EFI_MIXED
  	   If unsure, say N.
  
  config EFI_SECURE_BOOT_SIG_ENFORCE
@@ -829,13 +789,13 @@ index 085d5eb36361..3e8d398a976d 100644
  	---help---
  	  UEFI Secure Boot provides a mechanism for ensuring that the
 -- 
-1.8.5.3
+1.9.3
 
 
-From 87bf357dd4589cfca043ec4b641b912a088b1234 Mon Sep 17 00:00:00 2001
+From 4211b4919b8ccecc4f4cdc0a46ead7294478b687 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 27 Aug 2013 13:33:03 -0400
-Subject: [PATCH 14/14] efi: Add EFI_SECURE_BOOT bit
+Subject: [PATCH 13/14] efi: Add EFI_SECURE_BOOT bit
 
 UEFI machines can be booted in Secure Boot mode.  Add a EFI_SECURE_BOOT bit
 for use with efi_enabled.
@@ -847,7 +807,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 5a61d732fd5c..23fe9bf3c401 100644
+index 8ecfec85e527..5ce785fc9f05 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1144,7 +1144,9 @@ void __init setup_arch(char **cmdline_p)
@@ -861,10 +821,10 @@ index 5a61d732fd5c..23fe9bf3c401 100644
  #endif
  
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6c100ff0cae4..3a77a70fff27 100644
+index 41bbf8ba4ba8..e73f391fd3c8 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -899,6 +899,7 @@ extern int __init efi_setup_pcdp_console(char *);
+@@ -917,6 +917,7 @@ extern int __init efi_setup_pcdp_console(char *);
  #define EFI_MEMMAP		4	/* Can we use EFI memory map? */
  #define EFI_64BIT		5	/* Is the firmware 64-bit? */
  #define EFI_ARCH_1		6	/* First arch-specific bit */
@@ -873,5 +833,45 @@ index 6c100ff0cae4..3a77a70fff27 100644
  #ifdef CONFIG_EFI
  /*
 -- 
-1.8.5.3
+1.9.3
+
+
+From 18b50c6f0597b606cb03cbd8a9fdef7478cb2b21 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Fri, 20 Jun 2014 08:53:24 -0400
+Subject: [PATCH 14/14] hibernate: Disable in a signed modules environment
+
+There is currently no way to verify the resume image when returning
+from hibernate.  This might compromise the signed modules trust model,
+so until we can work with signed hibernate images we disable it in
+a secure modules environment.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ kernel/power/hibernate.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index fcc2611d3f14..61711801a9c4 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -28,6 +28,7 @@
+ #include <linux/syscore_ops.h>
+ #include <linux/ctype.h>
+ #include <linux/genhd.h>
++#include <linux/module.h>
+ #include <trace/events/power.h>
+ 
+ #include "power.h"
+@@ -65,7 +66,7 @@ static const struct platform_hibernation_ops *hibernation_ops;
+ 
+ bool hibernation_available(void)
+ {
+-	return (nohibernate == 0);
++	return ((nohibernate == 0) && !secure_modules());
+ }
+ 
+ /**
+-- 
+1.9.3
 

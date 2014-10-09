@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.1.bfq.bfs.uksm
+%define buildid .hu.4.bfq.bfs.uksm
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -62,19 +62,19 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 15
+%define base_sublevel 16
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 10
+%define stable_update 3
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -621,12 +621,12 @@ Patch09: upstream-reverts.patch
 
 # Standalone patches
 
-Patch390: defaults-acpi-video.patch
-
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
 
 Patch470: die-floppy-die.patch
+
+Patch500: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 Patch510: silence-noise.patch
 Patch530: silence-fbcon-logo.patch
@@ -640,7 +640,7 @@ Patch800: crash-driver.patch
 # secure boot
 Patch1000: secure-modules.patch
 Patch1001: modsign-uefi.patch
-Patch1002: sb-hibernate.patch
+# atch1002: sb-hibernate.patch
 Patch1003: sysrq-secure-boot.patch
 
 # virt + ksm patches
@@ -650,6 +650,7 @@ Patch1003: sysrq-secure-boot.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1826: drm-i915-hush-check-crtc-state.patch
+
 # Quiet boot fixes
 
 # fs fixes
@@ -667,17 +668,13 @@ Patch15000: nowatchdog-on-virt.patch
 
 # ARM64
 
-# ARM
-
-# ARM tegra
+# ARMv7
 Patch21020: arm-tegra-usb-no-reset-linux33.patch
-
-# ARM i.MX6
 Patch21021: arm-beagle.patch
 Patch21022: arm-imx6-utilite.patch
-
-# ARM sunxi (AllWinner)
-Patch21025: 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
+# http://www.spinics.net/lists/linux-tegra/msg17948.html
+Patch21023: arm-tegra-drmdetection.patch
+Patch21024: arm-qemu-fixdisplay.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -692,10 +689,10 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 # Hubbitus patches
 # UKSM
-Patch30001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
+Patch30001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.16.ge.1.patch
 
 # BFS
-Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
+Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -711,9 +708,9 @@ Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
 Patch30007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.15.patch
-Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.15.patch
-Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.15.0.patch
+Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.16.patch
+Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.16.patch
+Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.16.0.patch
 
 # TuxOnIce
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
@@ -726,80 +723,42 @@ Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 1048314
-Patch25062: 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-
-#rhbz 1089583
-Patch25064: 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
-
-#rhbz 1090161
-Patch25072: HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
-
 #rhbz 983342 1093120
 Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-Patch25071: s390-appldata-add-slab.h-for-kzalloc-kfree.patch
+Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
-Patch26001: thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-Patch26003: ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-Patch26006: acpi-video-Don-t-register-acpi_video_resume-notifier.patch
-Patch26007: acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
-Patch26008: acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
-Patch26009: acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
-Patch26010: nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
-Patch26011: backlight-Add-backlight-device-un-registration-notif.patch
-Patch26012: acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-#rhbz 1064516
-Patch25098: e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 Patch25110: 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117942
-Patch25118: sched-fix-sched_setparam-policy-1-logic.patch
+#rhbz 1134969
+Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
-#rhbz 1060327
-Patch25123: drm-try-harder-to-avoid-regression-when-merging-mode.patch
+#rhbz 1110011
+Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
+Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
+Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1025690
-Patch25125: 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+#CVE-2014-3181 rhbz 1141179 1141173
+Patch26024: HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 
-#rhbz 1123565
-Patch25126: 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+#CVE-2014-3186 rhbz 1141407 1141410
+Patch26025: HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
-#rhbz 1121288
-Patch25127: 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+#CVE-2014-6410 rhbz 1141809 1141810
+Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
-#rhbz 1101386
-Patch25128: 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
-Patch25129: 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
-
-#CVE-2014-{5206,5207} rhbz 1129662 1129669
-Patch25130: namespaces-remount-fixes.patch
-
-#rhbz 1128472
-Patch25131: 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
-
-#rhbz 1131551
-Patch25132: nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
-
-#rhbz 1132666
-Patch26016: xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#CVE-2014-{5471,5472} rhbz 1134099 1134101
-Patch26017: isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
-
-#rhbz 1132786
-Patch26018: NFSv3-Fix-another-acl-regression.patch
+# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
+Patch30000: kernel-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1353,9 +1312,10 @@ ApplyPatch 0001-lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # ARM
 #
 ApplyPatch arm-tegra-usb-no-reset-linux33.patch
-ApplyPatch 0001-ARM-sunxi-Add-driver-for-SD-MMC-hosts-found-on-Allwi.patch
-ApplyPatch arm-imx6-utilite.patch
 ApplyPatch arm-beagle.patch
+ApplyPatch arm-imx6-utilite.patch
+ApplyPatch arm-tegra-drmdetection.patch
+ApplyPatch arm-qemu-fixdisplay.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1376,7 +1336,6 @@ ApplyPatch arm-beagle.patch
 # WMI
 
 # ACPI
-ApplyPatch defaults-acpi-video.patch
 
 #
 # PCI
@@ -1387,6 +1346,8 @@ ApplyPatch defaults-acpi-video.patch
 #
 
 # ACPI
+
+ApplyPatch Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 # ALSA
 
@@ -1417,7 +1378,7 @@ ApplyPatch crash-driver.patch
 # secure boot
 ApplyPatch secure-modules.patch
 ApplyPatch modsign-uefi.patch
-ApplyPatch sb-hibernate.patch
+# pplyPatch sb-hibernate.patch
 ApplyPatch sysrq-secure-boot.patch
 
 # Assorted Virt Fixes
@@ -1457,16 +1418,16 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #? ApplyPatch patch-3.14-pf1.xz --fuzz=2
 
 # UKSM
-ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.15.ge.3.patch
+ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.16.ge.1.patch
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.15/3.15-sched-bfs-449.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.15.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.15.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.15.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.16.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.16.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.16.0.patch
 
 # TuxOnIce
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
@@ -1474,82 +1435,49 @@ ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.15.0-v7r5/
 #? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #/Hubbitus patches
 
-#rhbz 1048314
-ApplyPatch 0001-HID-rmi-introduce-RMI-driver-for-Synaptics-touchpads.patch
-#rhbz 1089583
-
-ApplyPatch 0001-HID-rmi-do-not-handle-touchscreens-through-hid-rmi.patch
-#rhbz 1090161
-ApplyPatch HID-rmi-do-not-fetch-more-than-16-bytes-in-a-query.patch
-
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 #rhbz 983342 1093120
 ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
 
-ApplyPatch s390-appldata-add-slab.h-for-kzalloc-kfree.patch
+ApplyPatch perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
-ApplyPatch thinkpad_acpi-Add-mappings-for-F9-F12-hotkeys-on-X24.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-ApplyPatch ideapad-laptop-Blacklist-rfkill-control-on-the-Lenov.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-ApplyPatch acpi-video-Don-t-register-acpi_video_resume-notifier.patch
-ApplyPatch acpi-video-Add-an-acpi_video_unregister_backlight-fu.patch
-ApplyPatch acer-wmi-Switch-to-acpi_video_unregister_backlight.patch
-ApplyPatch acer-wmi-Add-Aspire-5741-to-video_vendor_dmi_table.patch
-ApplyPatch nouveau-Don-t-check-acpi_video_backlight_support-bef.patch
-ApplyPatch backlight-Add-backlight-device-un-registration-notif.patch
-ApplyPatch acpi-video-Unregister-the-backlight-device-if-a-raw-.patch
 ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
 ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
-
-#rhbz 1064516
-ApplyPatch e1000e-Failure-to-write-SHRA-turns-on-PROMISC-mode.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
 #rhbz 1021036, submitted upstream
 ApplyPatch 0001-ideapad-laptop-Change-Lenovo-Yoga-2-series-rfkill-ha.patch
 
-#rhbz 1117942
-ApplyPatch sched-fix-sched_setparam-policy-1-logic.patch
+#rhbz 1134969
+ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 
-#rhbz 1060327
-ApplyPatch drm-try-harder-to-avoid-regression-when-merging-mode.patch
+#rhbz 1110011
+ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
+ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
+ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1025690
-ApplyPatch 0001-ACPI-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
+#CVE-2014-3181 rhbz 1141179 1141173
+ApplyPatch HID-magicmouse-sanity-check-report-size-in-raw_event.patch
 
-#rhbz 1123565
-ApplyPatch 0001-acpi-video-Add-video.use_native_backlight-1-for-HP-E.patch
+#CVE-2014-3186 rhbz 1141407 1141410
+ApplyPatch HID-picolcd-sanity-check-report-size-in-raw_event-ca.patch
 
-#rhbz 1121288
-ApplyPatch 0001-xhci-Blacklist-using-streams-on-the-Etron-EJ168-cont.patch
+#CVE-2014-6410 rhbz 1141809 1141810
+ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
-#rhbz 1101386
-ApplyPatch 0001-ALSA-hda-Add-dock-pin-setups-for-Thinkpad-T440.patch
-ApplyPatch 0002-ALSA-hda-Add-a-fixup-for-Thinkpad-T540p.patch
-
-#CVE-2014-{5206,5207} rhbz 1129662 1129669
-ApplyPatch namespaces-remount-fixes.patch
-
-#rhbz 1128472
-ApplyPatch 0001-uas-Limit-qdepth-to-32-when-connected-over-usb-2.patch
-
-#rhbz 1131551
-ApplyPatch nfs3_list_one_acl-check-get_acl-result-with-IS_ERR_O.patch
-
-#rhbz 1132666
-ApplyPatch xhci-Disable-streams-on-Via-XHCI-with-device-id-0x34.patch
-
-#CVE-2014-{5471,5472} rhbz 1134099 1134101
-ApplyPatch isofs-Fix-unbounded-recursion-when-processing-relocated-directories.patch
-
-#rhbz 1132786
-ApplyPatch NFSv3-Fix-another-acl-regression.patch
+%if 0%{?aarch64patches}
+ApplyPatch kernel-arm64.patch
+%ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
+ApplyPatch kernel-arm64.patch -R
+%endif
+%endif
 
 # END OF PATCH APPLICATIONS
 
@@ -2366,6 +2294,47 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Sep 25 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.3-200.hu.4.bfq.bfs.uksm
+- Reenable uksm. CONFIG_SMT_NICE=n seams helps.
+
+* Thu Sep 25 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.3-200.hu.3.bfq.bfs
+- Try CONFIG_SMT_NICE=n
+
+* Tue Sep 23 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.3-200.hu.2.bfq.bfs
+- Kernel failed from start. Try build without uksm.
+
+* Fri Sep 19 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.3-200.hu.1.bfq.bfs.uksm
+- 3.16.3-200.hu.1.bfq.bfs.uksm
+- Update UKSM patch: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.16.ge.1.patch
+- Update BFQ patches:
+	Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r5-3.16.patch
+	Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0002-block-introduce-the-BFQ-v7r5-I-O-sched-for-3.16.patch
+	Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r5-for-3.16.0.patch
+- Update BFS patch: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
+- New option CONFIG_SMT_NICE=y
+
+* Wed Sep 17 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.3-200
+- Linux v3.16.3
+
+* Mon Sep 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.2-201
+- CVE-2014-6410 udf: avoid infinite loop on indirect ICBs (rhbz 1141809 1141810)
+- CVE-2014-3186 HID: memory corruption via OOB write (rhbz 1141407 1141410)
+
+* Fri Sep 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3181 HID: OOB write in magicmouse driver (rhbz 1141173 1141179)
+
+* Thu Sep 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for touchpad in Asus X450 and X550 (rhbz 1110011)
+
+* Wed Sep 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3631 Add patch to fix oops on keyring gc (rhbz 1116347)
+
+* Mon Sep 08 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.2-200
+- Linux v3.16.2
+
+* Thu Sep 04 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for Wacom Cintiq Companion from Benjamin Tissoires (rhbz 1134969)
+
 * Sat Aug 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.10-201.hu.1.bfq.bfs.uksm
 - 3.15.10-201.hu.1.bfq.bfs.uksm
 
