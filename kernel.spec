@@ -619,6 +619,8 @@ Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
 Patch26031: libata-Un-break-ATA-blacklist.patch
 
+Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1349,6 +1351,8 @@ ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
 ApplyPatch libata-Un-break-ATA-blacklist.patch
+
+ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
