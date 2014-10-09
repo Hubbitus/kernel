@@ -11,10 +11,10 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 13 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index 305975d3f531..bf5349165542 100644
+index 901739fcb85a..5dcdcd173572 100644
 --- a/arch/arm/boot/dts/am335x-boneblack.dts
 +++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -73,5 +73,18 @@
+@@ -78,5 +78,18 @@
  		pinctrl-0 = <&nxp_hdmi_bonelt_pins>;
  		pinctrl-1 = <&nxp_hdmi_bonelt_off_pins>;
  		status = "okay";
