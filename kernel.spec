@@ -689,17 +689,12 @@ Patch22000: weird-root-dentry-name-debug.patch
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -1379,17 +1374,12 @@ ApplyPatch ath9k_rx_dma_stop_check.patch
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 ApplyPatch perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -2230,6 +2220,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop doubly applied ACPI video quirk patches
+
 * Thu Oct 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.5-200
 - Linux v3.16.5
 
