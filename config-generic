@@ -5241,6 +5241,8 @@ CONFIG_FMC_CHARDEV=m
 # CONFIG_DEVFREQ_GOV_POWERSAVE is not set
 # CONFIG_DEVFREQ_GOV_USERSPACE is not set
 
+# CONFIG_CPUFREQ_DT is not set
+
 # CONFIG_MODULE_SIG is not set
 # FIXME: Revisit this to see if we can use it instead of the spec file stuff
 # CONFIG_MODULE_COMPRESS is not set

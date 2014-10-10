@@ -9,7 +9,7 @@ This reverts commit cf1fc187628913070c3e418ce0e205732435aa2f.
  1 file changed, 13 insertions(+), 18 deletions(-)
 
 diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-index d30dddd21323..d5ed1272b928 100644
+index e730935fa457..c57ca10bed20 100644
 --- a/drivers/pinctrl/qcom/pinctrl-msm.c
 +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
 @@ -27,7 +27,8 @@
@@ -79,8 +79,8 @@ index d30dddd21323..d5ed1272b928 100644
  
  int msm_pinctrl_probe(struct platform_device *pdev,
  		      const struct msm_pinctrl_soc_data *soc_data)
-@@ -946,8 +943,6 @@ int msm_pinctrl_remove(struct platform_device *pdev)
- 
+@@ -940,8 +937,6 @@ int msm_pinctrl_remove(struct platform_device *pdev)
+ 	gpiochip_remove(&pctrl->chip);
  	pinctrl_unregister(pctrl->pctrl);
  
 -	unregister_restart_handler(&pctrl->restart_nb);

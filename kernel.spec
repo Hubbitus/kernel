@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -599,15 +599,10 @@ Patch22000: weird-root-dentry-name-debug.patch
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-Patch25069: acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 Patch26000: perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
@@ -616,8 +611,6 @@ Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
 Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
-
-Patch26031: libata-Un-break-ATA-blacklist.patch
 
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
@@ -1332,15 +1325,10 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-ApplyPatch acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 ApplyPatch perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
@@ -1349,8 +1337,6 @@ ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
 ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
-
-ApplyPatch libata-Un-break-ATA-blacklist.patch
 
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
@@ -2222,6 +2208,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git4.1
+- Linux v3.17-6136-gc798360cd143
+
 * Thu Oct 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git3.1
 - Linux v3.17-5585-g782d59c5dfc5
 

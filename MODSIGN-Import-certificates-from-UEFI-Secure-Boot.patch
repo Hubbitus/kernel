@@ -42,10 +42,10 @@ index 41359e548bcb..db9e6118575e 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 2d90498c77d7..5e701ec1be55 100644
+index 4fcd7dd882c2..65ea201f38af 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1887,6 +1887,15 @@ config MODULE_SIG_ALL
+@@ -1876,6 +1876,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
