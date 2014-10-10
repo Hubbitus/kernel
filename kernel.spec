@@ -599,15 +599,10 @@ Patch22000: weird-root-dentry-name-debug.patch
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-Patch25069: acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 Patch26000: perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1134969
 Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
@@ -1341,15 +1336,10 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-ApplyPatch acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 ApplyPatch perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 #rhbz 1134969
 ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
@@ -2239,6 +2229,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop doubly applied ACPI video quirk patches
+
 * Wed Oct 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-301
 - Add patch to fix ATA blacklist
 
