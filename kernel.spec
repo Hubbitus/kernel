@@ -717,6 +717,9 @@ Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
 
 Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
+#CVE-2014-7970 rhbz 1151095 1151484
+Patch26032: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1401,6 +1404,9 @@ ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
 
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
+
+#CVE-2014-7970 rhbz 1151095 1151484
+ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2221,6 +2227,7 @@ fi
 #                 ||     ||
 %changelog
 * Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
 - Drop doubly applied ACPI video quirk patches
 
 * Thu Oct 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.5-200
