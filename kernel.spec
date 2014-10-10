@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -713,9 +713,6 @@ Patch26019: Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
-#CVE-2014-6410 rhbz 1141809 1141810
-Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
 #rhbz 1143812
 Patch26027: HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
@@ -1406,9 +1403,6 @@ ApplyPatch Input-wacom-Add-support-for-the-Cintiq-Companion.patch
 ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
-
-#CVE-2014-6410 rhbz 1141809 1141810
-ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
 
 #rhbz 1143812
 ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
@@ -2236,6 +2230,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.5-200
+- Linux v3.16.5
+
 * Tue Oct 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix GFS2 regression (from Bob Peterson)
 
