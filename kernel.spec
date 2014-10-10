@@ -614,6 +614,9 @@ Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
+#CVE-2014-7970 rhbz 1151095 1151484
+Patch26033: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1339,6 +1342,9 @@ ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
+
+#CVE-2014-7970 rhbz 1151095 1151484
+ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2208,6 +2214,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
+
 * Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git4.1
 - Linux v3.17-6136-gc798360cd143
 
