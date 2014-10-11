@@ -723,6 +723,16 @@ Patch26032: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 #rhbz 1149414
 Patch26033: bcache-Make-sure-to-pass-GFP_WAIT-to-mempool_alloc.patch
 
+#rhbz 1149509
+Patch26034: USB-core-add-device-qualifier-quirk.patch
+Patch26035: USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
+Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
+Patch26037: HID-usbhid-add-always-poll-quirk.patch
+Patch26038: HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
+Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1413,6 +1423,16 @@ ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 #rhbz 1149414
 ApplyPatch bcache-Make-sure-to-pass-GFP_WAIT-to-mempool_alloc.patch
+
+#rhbz 1149509
+ApplyPatch USB-core-add-device-qualifier-quirk.patch
+ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
+ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
+ApplyPatch HID-usbhid-add-always-poll-quirk.patch
+ApplyPatch HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2232,6 +2252,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Oct 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix elantech touchscreens (rhbz 1149509)
+
 * Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix bcache NULL ptr deref (rhbz 1149414)
 - CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
