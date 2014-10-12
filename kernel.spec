@@ -2255,6 +2255,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable CONFIG_I2C_DESIGNWARE_PCI (rhbz 1045821)
+
 * Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to fix elantech touchscreens (rhbz 1149509)
 - CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
