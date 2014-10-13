@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -609,8 +609,6 @@ Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
 
 #rhbz 1145318
 Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
-Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
@@ -1338,8 +1336,6 @@ ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
 
 #rhbz 1145318
 ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
-ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
@@ -2214,6 +2210,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git5.1
+- Linux v3.17-7639-g90eac7eee2f4
+
 * Sun Oct 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable CONFIG_I2C_DESIGNWARE_PCI (rhbz 1045821)
 
