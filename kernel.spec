@@ -2214,6 +2214,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 13 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update armv7/aarch64 config options
+
 * Mon Oct 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git6.1
 - Linux v3.17-7872-g5ff0b9e1a1da
 
