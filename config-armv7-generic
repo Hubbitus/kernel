@@ -806,9 +806,6 @@ CONFIG_MFD_CROS_EC_SPI=m
 CONFIG_KEYBOARD_CROS_EC=m
 CONFIG_I2C_CROS_EC_TUNNEL=m
 
-# Should be in generic
-CONFIG_BPF_JIT=y
-
 # Needs work/investigation
 # CONFIG_ARM_KPROBES_TEST is not set
 

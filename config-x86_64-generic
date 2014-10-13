@@ -153,8 +153,6 @@ CONFIG_FUNCTION_GRAPH_TRACER=y
 
 CONFIG_I7300_IDLE=m
 
-CONFIG_BPF_JIT=y
-
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 CONFIG_CHECKPOINT_RESTORE=y
 
