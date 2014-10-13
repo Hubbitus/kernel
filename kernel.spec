@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -607,13 +607,15 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
 
-#rhbz 1145318
-Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 #CVE-2014-7970 rhbz 1151095 1151484
 Patch26033: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
+#CVE-2014-7975 rhbz 1151108 1152025
+Patch26034: fs-Add-a-missing-permission-check-to-do_umount.patch
+
+Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1334,13 +1336,15 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
 
-#rhbz 1145318
-ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 #CVE-2014-7970 rhbz 1151095 1151484
 ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
+#CVE-2014-7975 rhbz 1151108 1152025
+ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
+
+ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2210,6 +2214,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git6.1
+- Linux v3.17-7872-g5ff0b9e1a1da
+
 * Sun Oct 12 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git5.1
 - Linux v3.17-7639-g90eac7eee2f4
 

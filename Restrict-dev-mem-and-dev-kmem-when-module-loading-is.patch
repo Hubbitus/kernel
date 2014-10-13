@@ -13,7 +13,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index cdf839f9defe..c63cf93b00eb 100644
+index c268e2581ed6..fb9ea1172ba8 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -164,6 +164,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
