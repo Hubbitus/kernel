@@ -733,6 +733,9 @@ Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
+#CVE-2014-7975 rhbz 1151108 1152025
+Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1433,6 +1436,9 @@ ApplyPatch HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
+#CVE-2014-7975 rhbz 1151108 1152025
+ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2252,6 +2258,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Mon Oct 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7975 fs: umount DoS (rhbz 1151108 1152025)
+
 * Sat Oct 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to fix elantech touchscreens (rhbz 1149509)
 
