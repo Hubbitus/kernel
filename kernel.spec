@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -568,7 +568,7 @@ Patch14010: lis3-improve-handling-of-null-rate.patch
 Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 # PPC
-Patch18000: ppc64-fixtools.patch
+
 # ARM64
 
 # ARMv7
@@ -595,11 +595,6 @@ Patch21242: criu-no-expert.patch
 Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
-
-#rhbz 1025603
-Patch25063: disable-libdw-unwind-on-non-x86.patch
-
-Patch26000: perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
@@ -1190,7 +1185,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # PPC
-ApplyPatch ppc64-fixtools.patch
+
 # ARM64
 
 #
@@ -1324,11 +1319,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
-
-#rhbz 1025603
-ApplyPatch disable-libdw-unwind-on-non-x86.patch
-
-ApplyPatch perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
@@ -1883,7 +1873,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT MULTILIBDIR=%{_lib} install-bin install-traceevent-plugins
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT lib=%{_lib} install-bin install-traceevent-plugins
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -2214,6 +2204,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git7.1
+- Linux v3.17-8307-gf1d0d14120a8
+
 * Mon Oct 13 2014 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update armv7/aarch64 config options
 
