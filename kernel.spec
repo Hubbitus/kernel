@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -599,16 +599,10 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#rhbz 1138759
-Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
-
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 #CVE-2014-7970 rhbz 1151095 1151484
 Patch26033: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
-
-#CVE-2014-7975 rhbz 1151108 1152025
-Patch26034: fs-Add-a-missing-permission-check-to-do_umount.patch
 
 Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
@@ -1323,16 +1317,10 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#rhbz 1138759
-ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
-
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 #CVE-2014-7970 rhbz 1151095 1151484
 ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
-
-#CVE-2014-7975 rhbz 1151108 1152025
-ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
 
 ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
@@ -2204,6 +2192,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git8.1
+- Linux v3.17-9283-g2d65a9f48fcd
+
 * Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git7.1
 - Linux v3.17-8307-gf1d0d14120a8
 

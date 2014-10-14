@@ -15,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index fb282ff6a802..d291d16ba257 100644
+index fbae2bf99a47..f3960a8c2627 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -30,7 +30,7 @@ index fb282ff6a802..d291d16ba257 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1268,6 +1273,37 @@ void __init i386_reserve_resources(void)
+@@ -1277,6 +1282,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
  

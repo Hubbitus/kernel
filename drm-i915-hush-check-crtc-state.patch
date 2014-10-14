@@ -14,10 +14,10 @@ Upstream-status: http://lists.freedesktop.org/archives/intel-gfx/2013-November/0
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index d8324c69fa86..ee0ca36930f8 100644
+index 507370513f3d..fa5bc89a4c93 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -10656,7 +10656,7 @@ check_crtc_state(struct drm_device *dev)
+@@ -10966,7 +10966,7 @@ check_crtc_state(struct drm_device *dev)
  
  		if (active &&
  		    !intel_pipe_config_compare(dev, &crtc->config, &pipe_config)) {

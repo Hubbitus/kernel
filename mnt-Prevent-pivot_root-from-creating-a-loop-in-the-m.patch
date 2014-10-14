@@ -26,10 +26,10 @@ Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
  1 file changed, 3 insertions(+)
 
 diff --git a/fs/namespace.c b/fs/namespace.c
-index 348562f14e93..c8e3034ff4b2 100644
+index 2651328d1790..fbba8b17330d 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
-@@ -2913,6 +2913,9 @@ SYSCALL_DEFINE2(pivot_root, const char __user *, new_root,
+@@ -2915,6 +2915,9 @@ SYSCALL_DEFINE2(pivot_root, const char __user *, new_root,
  	/* make sure we can reach put_old from new_root */
  	if (!is_path_reachable(old_mnt, old.dentry, &new))
  		goto out4;
