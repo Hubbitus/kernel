@@ -606,6 +606,12 @@ Patch26033: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
+#rhbz 1149509
+Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
+Patch26037: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1323,6 +1329,12 @@ ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
+
+#rhbz 1149509
+ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2192,6 +2204,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix elantech touchscreens (rhbz 1149509)
+
 * Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git8.1
 - Linux v3.17-9283-g2d65a9f48fcd
 
