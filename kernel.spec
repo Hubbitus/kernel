@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -600,9 +600,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
 Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
-
-#CVE-2014-7970 rhbz 1151095 1151484
-Patch26033: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
@@ -1324,9 +1321,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
 ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
-
-#CVE-2014-7970 rhbz 1151095 1151484
-ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
 ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
@@ -2204,6 +2198,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.1
+- Linux v3.17-9670-g0429fbc0bdc2
+
 * Tue Oct 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to fix elantech touchscreens (rhbz 1149509)
 
