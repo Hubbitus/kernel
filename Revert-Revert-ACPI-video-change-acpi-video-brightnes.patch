@@ -15,10 +15,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index 10d51c2f10d7..5b6ebe8b519e 100644
+index 1edd5fdc629d..17a82652ac03 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
-@@ -3596,7 +3596,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
+@@ -3600,7 +3600,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
  			the allocated input device; If set to 0, video driver
  			will only send out the event without touching backlight
  			brightness level.

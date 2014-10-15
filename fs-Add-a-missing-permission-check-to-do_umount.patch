@@ -14,10 +14,10 @@ Signed-off-by: Andy Lutomirski <luto@amacapital.net>
  1 file changed, 2 insertions(+)
 
 diff --git a/fs/namespace.c b/fs/namespace.c
-index c8e3034ff4b2..fbba8b17330d 100644
+index 74647c2fe69c..550dbff08677 100644
 --- a/fs/namespace.c
 +++ b/fs/namespace.c
-@@ -1439,6 +1439,8 @@ static int do_umount(struct mount *mnt, int flags)
+@@ -1356,6 +1356,8 @@ static int do_umount(struct mount *mnt, int flags)
  		 * Special case for "unmounting" root ...
  		 * we just try to remount it readonly.
  		 */

@@ -27,7 +27,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index bae636e2a1a3..a342a783d496 100644
+index 814e712655e4..5ae883dc21f5 100644
 --- a/drivers/usb/core/quirks.c
 +++ b/drivers/usb/core/quirks.c
 @@ -93,6 +93,10 @@ static const struct usb_device_id usb_quirk_list[] = {

@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -622,8 +622,6 @@ Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
-Patch26031: libata-Un-break-ATA-blacklist.patch
-
 #CVE-2014-7970 rhbz 1151095 1151484
 Patch26032: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
@@ -639,6 +637,8 @@ Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-7975 rhbz 1151108 1152025
 Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
+
+Patch26043: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1375,8 +1375,6 @@ ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
-ApplyPatch libata-Un-break-ATA-blacklist.patch
-
 #CVE-2014-7970 rhbz 1151095 1151484
 ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
 
@@ -1392,6 +1390,8 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-7975 rhbz 1151108 1152025
 ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
+
+ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2261,6 +2261,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-300
+- Linux v3.17.1
+- Revert Btrfs ro snapshot commit that causes filesystem corruption
+
 * Mon Oct 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-7975 fs: umount DoS (rhbz 1151108 1152025)
 
