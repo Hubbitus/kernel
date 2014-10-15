@@ -609,6 +609,8 @@ Patch26037: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
+Patch26040: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1329,6 +1331,8 @@ ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
+ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2198,6 +2202,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert Btrfs ro snapshot commit that causes filesystem corruption
+
 * Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.1
 - Linux v3.17-9670-g0429fbc0bdc2
 
