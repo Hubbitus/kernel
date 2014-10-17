@@ -2287,7 +2287,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Oct 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-301
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-301
 - Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)
 - Add even more btrfs corruption/error fixes
 
