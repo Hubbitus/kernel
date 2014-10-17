@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -652,6 +652,9 @@ Patch26052: Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
 Patch26053: btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
 Patch26054: Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
 Patch26055: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1418,6 +1421,9 @@ ApplyPatch Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
 ApplyPatch btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
 ApplyPatch Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
 ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2287,6 +2293,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-302
+- CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
+
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-301
 - Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)
 - Add even more btrfs corruption/error fixes
