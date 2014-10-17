@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -610,6 +610,9 @@ Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 Patch26040: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1333,6 +1336,9 @@ ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2203,6 +2209,7 @@ fi
 #                                    ||     ||
 %changelog
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
 - Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)
 
 * Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.3
