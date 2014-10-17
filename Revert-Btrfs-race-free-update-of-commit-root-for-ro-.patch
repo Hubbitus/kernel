@@ -1,19 +1,37 @@
-From: Josh Boyer <jwboyer@fedoraproject.org>
-Date: Wed, 15 Oct 2014 10:09:50 -0400
+From: Chris Mason <clm@fb.com>
+Date: Wed, 15 Oct 2014 13:50:56 -0700
 Subject: [PATCH] Revert "Btrfs: race free update of commit root for ro
  snapshots"
 
 This reverts commit 9c3b306e1c9e6be4be09e99a8fe2227d1005effc.
+
+(cherry picked from commit d37973082b453ba6b89ec07eb7b84305895d35e1)
+
+Switching only one commit root during a transaction is wrong because it
+leads the fs into an inconsistent state. All commit roots should be
+switched at once, at transaction commit time, otherwise backref walking
+can often miss important references that were only accessible through
+the old commit root.  Plus, the root item for the snapshot's root wasn't
+getting updated and preventing the next transaction commit to do it.
+
+This made several users get into random corruption issues after creation
+of readonly snapshots.
+
+A regression test for xfstests will follow soon.
+
+Cc: stable@vger.kernel.org # 3.17
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Chris Mason <clm@fb.com>
 ---
  fs/btrfs/inode.c | 36 ------------------------------------
  fs/btrfs/ioctl.c | 33 +++++++++++++++++++++++++++++++++
  2 files changed, 33 insertions(+), 36 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 016c403bfe7e..46bd0303fadd 100644
+index 16454b6efc55..886d8d42640d 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -5202,42 +5202,6 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
+@@ -5203,42 +5203,6 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
  			iput(inode);
  			inode = ERR_PTR(ret);
  		}
@@ -57,10 +75,10 @@ index 016c403bfe7e..46bd0303fadd 100644
  
  	return inode;
 diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 8a8e29878c34..f99f15e5e8cd 100644
+index 91269bd9ad05..b765d412cbb6 100644
 --- a/fs/btrfs/ioctl.c
 +++ b/fs/btrfs/ioctl.c
-@@ -711,6 +711,39 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
+@@ -714,6 +714,39 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
  	if (ret)
  		goto fail;
  

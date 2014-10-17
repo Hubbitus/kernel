@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -638,7 +638,20 @@ Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 #CVE-2014-7975 rhbz 1151108 1152025
 Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
 
-Patch26043: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
+# btrfs fixes queued for 3.17.y
+Patch26043: btrfs-wake-up-transaction-thread-from-SYNC_FS-ioctl.patch
+Patch26044: btrfs-don-t-go-readonly-on-existing-qgroup-items.patch
+Patch26045: btrfs-Fix-a-deadlock-in-btrfs_dev_replace_finishing.patch
+Patch26046: Btrfs-add-missing-compression-property-remove-in-btr.patch
+Patch26047: Btrfs-fix-up-bounds-checking-in-lseek.patch
+Patch26048: btrfs-Fix-and-enhance-merge_extent_mapping-to-insert.patch
+Patch26049: Btrfs-don-t-do-async-reclaim-during-log-replay.patch
+Patch26050: Btrfs-try-not-to-ENOSPC-on-log-replay.patch
+Patch26051: Btrfs-cleanup-error-handling-in-build_backref_tree.patch
+Patch26052: Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
+Patch26053: btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
+Patch26054: Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
+Patch26055: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1391,6 +1404,19 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 #CVE-2014-7975 rhbz 1151108 1152025
 ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
 
+# btrfs fixes queued for 3.17.y
+ApplyPatch btrfs-wake-up-transaction-thread-from-SYNC_FS-ioctl.patch
+ApplyPatch btrfs-don-t-go-readonly-on-existing-qgroup-items.patch
+ApplyPatch btrfs-Fix-a-deadlock-in-btrfs_dev_replace_finishing.patch
+ApplyPatch Btrfs-add-missing-compression-property-remove-in-btr.patch
+ApplyPatch Btrfs-fix-up-bounds-checking-in-lseek.patch
+ApplyPatch btrfs-Fix-and-enhance-merge_extent_mapping-to-insert.patch
+ApplyPatch Btrfs-don-t-do-async-reclaim-during-log-replay.patch
+ApplyPatch Btrfs-try-not-to-ENOSPC-on-log-replay.patch
+ApplyPatch Btrfs-cleanup-error-handling-in-build_backref_tree.patch
+ApplyPatch Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
+ApplyPatch btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
+ApplyPatch Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
 ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 %if 0%{?aarch64patches}
@@ -2261,6 +2287,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 18 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-301
+- Add even more btrfs corruption/error fixes
+
 * Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-300
 - Linux v3.17.1
 - Revert Btrfs ro snapshot commit that causes filesystem corruption
