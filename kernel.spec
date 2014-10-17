@@ -2208,7 +2208,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.4
 - CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
 - Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)
 
