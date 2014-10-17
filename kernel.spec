@@ -62,7 +62,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -735,6 +735,9 @@ Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-7975 rhbz 1151108 1152025
 Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1439,6 +1442,9 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-7975 rhbz 1151108 1152025
 ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2258,6 +2264,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
+
 * Wed Oct 15 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.6-200
 - Linux v3.16.6
 
