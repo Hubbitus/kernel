@@ -2202,6 +2202,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)
+
 * Wed Oct 15 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.3
 - Revert Btrfs ro snapshot commit that causes filesystem corruption
 
