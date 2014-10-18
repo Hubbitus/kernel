@@ -31,7 +31,7 @@ Summary: The Linux kernel
 #
 # (Uncomment the '#' and both spaces below to set the buildid.)
 #
-%define buildid .hu.4.bfq.bfs.uksm
+%define buildid .hu.1.bfq.bfs.uksm
 ###################################################################
 
 # The buildid can also be specified on the rpmbuild command line
@@ -2296,6 +2296,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Thu Oct 9 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.4-200.hu.1.bfq.bfs.uksm
+- 3.16.4-200.hu.1.bfq.bfs.uksm
+
 * Tue Oct 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix GFS2 regression (from Bob Peterson)
 
