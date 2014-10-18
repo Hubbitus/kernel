@@ -74,7 +74,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 6
 # Is it a -stable RC?
 %define stable_rc 0
 # Set rpm version accordingly
@@ -722,17 +722,12 @@ Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-Patch25069: 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 Patch26000: perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 Patch26004: asus-wmi-Add-a-no-backlight-quirk.patch
 Patch26005: eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-Patch26013: acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-Patch26014: acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 Patch25109: revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -747,9 +742,6 @@ Patch26021: i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 Patch26022: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26023: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#CVE-2014-6410 rhbz 1141809 1141810
-Patch26026: udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
-
 #rhbz 1143812
 Patch26027: HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 
@@ -757,6 +749,28 @@ Patch26027: HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
 
 Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
+
+#CVE-2014-7970 rhbz 1151095 1151484
+Patch26032: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
+#rhbz 1149414
+Patch26033: bcache-Make-sure-to-pass-GFP_WAIT-to-mempool_alloc.patch
+
+#rhbz 1149509
+Patch26034: USB-core-add-device-qualifier-quirk.patch
+Patch26035: USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
+Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
+Patch26037: HID-usbhid-add-always-poll-quirk.patch
+Patch26038: HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
+Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
+#CVE-2014-7975 rhbz 1151108 1152025
+Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1438,17 +1452,12 @@ ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.16.0-v7r5/
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
-#rhbz 983342 1093120
-ApplyPatch 0001-acpi-video-Add-4-new-models-to-the-use_native_backli.patch
-
 ApplyPatch perf-lib64.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 ApplyPatch asus-wmi-Add-a-no-backlight-quirk.patch
 ApplyPatch eeepc-wmi-Add-no-backlight-quirk-for-Asus-H87I-PLUS-.patch
-ApplyPatch acpi-video-Add-use-native-backlight-quirk-for-the-Th.patch
-ApplyPatch acpi-video-Add-use_native_backlight-quirk-for-HP-Pro.patch
 
 ApplyPatch revert-input-wacom-testing-result-shows-get_report-is-unnecessary.patch
 
@@ -1463,9 +1472,6 @@ ApplyPatch i8042-Also-store-the-aux-firmware-id-in-multi-plexed.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#CVE-2014-6410 rhbz 1141809 1141810
-ApplyPatch udf-Avoid-infinite-loop-when-processing-indirect-ICB.patch
-
 #rhbz 1143812
 ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 
@@ -1473,6 +1479,28 @@ ApplyPatch HID-i2c-hid-call-the-hid-driver-s-suspend-and-resume.patch
 ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
 
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
+
+#CVE-2014-7970 rhbz 1151095 1151484
+ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
+
+#rhbz 1149414
+ApplyPatch bcache-Make-sure-to-pass-GFP_WAIT-to-mempool_alloc.patch
+
+#rhbz 1149509
+ApplyPatch USB-core-add-device-qualifier-quirk.patch
+ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
+ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
+ApplyPatch HID-usbhid-add-always-poll-quirk.patch
+ApplyPatch HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
+ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
+ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
+
+#CVE-2014-7975 rhbz 1151108 1152025
+ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
+
+#CVE-2014-8086 rhbz 1151353 1152608
+ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2296,6 +2324,26 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
+
+* Wed Oct 15 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.6-200
+- Linux v3.16.6
+
+* Mon Oct 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7975 fs: umount DoS (rhbz 1151108 1152025)
+
+* Sat Oct 11 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix elantech touchscreens (rhbz 1149509)
+
+* Fri Oct 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix bcache NULL ptr deref (rhbz 1149414)
+- CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
+- Drop doubly applied ACPI video quirk patches
+
+* Thu Oct 09 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.16.5-200
+- Linux v3.16.5
+
 * Thu Oct 9 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.4-200.hu.1.bfq.bfs.uksm
 - 3.16.4-200.hu.1.bfq.bfs.uksm
 

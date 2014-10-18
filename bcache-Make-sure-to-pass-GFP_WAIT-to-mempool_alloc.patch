@@ -1,0 +1,33 @@
+From bcf090e0040e30f8409e6a535a01e6473afb096f Mon Sep 17 00:00:00 2001
+From: Kent Overstreet <kmo@daterainc.com>
+Date: Mon, 19 May 2014 08:57:55 -0700
+Subject: [PATCH] bcache: Make sure to pass GFP_WAIT to mempool_alloc()
+
+this was very wrong - mempool_alloc() only guarantees success with GFP_WAIT.
+bcache uses GFP_NOWAIT in various other places where we have a fallback,
+circuits must've gotten crossed when writing this code or something.
+
+Upstream-status: 3.17
+Bugzilla: 1149414
+
+Signed-off-by: Kent Overstreet <kmo@daterainc.com>
+---
+ drivers/md/bcache/btree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/md/bcache/btree.c b/drivers/md/bcache/btree.c
+index 9dd9f1c4d0d9..e538d45fa65a 100644
+--- a/drivers/md/bcache/btree.c
++++ b/drivers/md/bcache/btree.c
+@@ -202,7 +202,7 @@ void bch_btree_node_read_done(struct btree *b)
+ 	struct bset *i = btree_bset_first(b);
+ 	struct btree_iter *iter;
+ 
+-	iter = mempool_alloc(b->c->fill_iter, GFP_NOWAIT);
++	iter = mempool_alloc(b->c->fill_iter, GFP_NOIO);
+ 	iter->size = b->c->sb.bucket_size / b->c->sb.block_size;
+ 	iter->used = 0;
+ 
+-- 
+1.9.3
+
