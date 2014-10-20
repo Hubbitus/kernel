@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 4
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 9
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -609,10 +609,10 @@ Patch26037: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
-Patch26040: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
-
 #CVE-2014-8086 rhbz 1151353 1152608
 Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
+
+Patch26057: virtio_console-move-early-VQ-enablement.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1335,10 +1335,10 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
-ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
-
 #CVE-2014-8086 rhbz 1151353 1152608
 ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
+
+ApplyPatch virtio_console-move-early-VQ-enablement.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2208,6 +2208,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Oct 20 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git0.1
+- Linux v3.18-rc1
+- Disable debugging options.
+
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc0.git9.4
 - CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
 - Enable B43_PHY_G to fix b43 driver regression (rhbz 1152502)

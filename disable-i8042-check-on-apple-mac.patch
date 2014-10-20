@@ -17,7 +17,7 @@ Signed-off-by: Bastien Nocera <hadess@hadess.net>
  1 file changed, 22 insertions(+)
 
 diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index 9bb95eab6926..4b5015f27f9e 100644
+index 1160aa081d21..d75d0dcda6fb 100644
 --- a/drivers/input/serio/i8042.c
 +++ b/drivers/input/serio/i8042.c
 @@ -1471,6 +1471,22 @@ static struct platform_driver i8042_driver = {

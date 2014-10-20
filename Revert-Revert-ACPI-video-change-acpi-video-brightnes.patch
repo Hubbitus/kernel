@@ -15,7 +15,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/Documentation/kernel-parameters.txt b/Documentation/kernel-parameters.txt
-index b62bdcb1eb39..f74464c06826 100644
+index 7dbe5ec9d9cd..ad59dd188c5b 100644
 --- a/Documentation/kernel-parameters.txt
 +++ b/Documentation/kernel-parameters.txt
 @@ -3695,7 +3695,7 @@ bytes respectively. Such letter suffixes can also be entirely omitted.
