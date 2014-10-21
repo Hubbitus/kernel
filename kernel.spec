@@ -599,8 +599,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-Patch26032: Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
-
 Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
 #rhbz 1149509
@@ -1324,8 +1322,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-ApplyPatch Revert-pinctrl-qcom-use-restart_notifier-mechanism-f.patch
 
 ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
@@ -2208,6 +2204,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop pinctrl qcom revert now that it's dependencies should be merged
+
 * Tue Oct 21 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.18.0-0.rc1.git1.2
 - Re-enable kernel-arm64.patch after updating.
 - CONFIG_SERIAL_8250_FINTEK moved to generic since it appears on x86-generic
