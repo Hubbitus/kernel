@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 0
+%global aarch64patches 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2208,6 +2208,13 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 21 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.18.0-0.rc1.git1.2
+- Re-enable kernel-arm64.patch after updating.
+- CONFIG_SERIAL_8250_FINTEK moved to generic since it appears on x86-generic
+  and arm64 now.
+- CONFIG_IMX_THERMAL=n added to config-arm64.
+- arm64: disable BPF_JIT temporarily
+
 * Tue Oct 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git1.1
 - Linux v3.18-rc1-68-gc2661b806092
 - Make LOG_BUF_SHIFT on arm64 the same as the rest of the arches (rhbz 1123327)
