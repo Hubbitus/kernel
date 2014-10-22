@@ -6019,19 +6019,19 @@ index 57ff20f..681efd5 100644
 --- a/drivers/leds/leds-gpio.c
 +++ b/drivers/leds/leds-gpio.c
 @@ -13,22 +13,20 @@
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
+ #include <linux/err.h>
  #include <linux/gpio.h>
 +#include <linux/gpio/consumer.h>
+ #include <linux/kernel.h>
  #include <linux/leds.h>
+ #include <linux/module.h>
 -#include <linux/of.h>
--#include <linux/of_platform.h>
 -#include <linux/of_gpio.h>
+-#include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
  #include <linux/slab.h>
  #include <linux/workqueue.h>
- #include <linux/module.h>
- #include <linux/err.h>
-+#include <linux/property.h>
  
  struct gpio_led_data {
  	struct led_classdev cdev;
@@ -6293,7 +6293,7 @@ index 57ff20f..681efd5 100644
  }
  
  static const struct of_device_id of_gpio_leds_match[] = {
-@@ -228,13 +230,13 @@ static const struct of_device_id of_gpio_leds_match[] = {
+@@ -228,12 +228,13 @@ static const struct of_device_id of_gpio_leds_match[] = {
  };
  
  MODULE_DEVICE_TABLE(of, of_gpio_leds_match);
@@ -6303,10 +6303,10 @@ index 57ff20f..681efd5 100644
 -	return ERR_PTR(-ENODEV);
 -}
 -#endif /* CONFIG_OF_GPIO */
- 
++
 +static const struct acpi_device_id acpi_gpio_leds_match[] = {
-+	{ "PRP0001" }, /* Device Tree shoehorned into ACPI */
-+	{},
++       { "PRP0001" }, /* Device Tree shoehorned into ACPI */
++       {},
 +};
 +
 +MODULE_DEVICE_TABLE(acpi, acpi_gpio_leds_match);

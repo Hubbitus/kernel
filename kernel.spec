@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -611,6 +611,8 @@ Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 Patch26057: virtio_console-move-early-VQ-enablement.patch
+
+Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1335,6 +1337,8 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 ApplyPatch virtio_console-move-early-VQ-enablement.patch
+
+ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2204,6 +2208,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git2.1
+- Linux v3.18-rc1-221-gc3351dfabf5c
+- Add patch to fix wifi on X550VB machines (rhbz 1089731)
+
 * Tue Oct 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Drop pinctrl qcom revert now that it's dependencies should be merged
 

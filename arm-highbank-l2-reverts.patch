@@ -9,7 +9,7 @@ Will debug upstream separately, but we need F22/21 running there. (#1139762)
  1 file changed, 12 insertions(+), 9 deletions(-)
 
 diff --git a/arch/arm/mach-highbank/highbank.c b/arch/arm/mach-highbank/highbank.c
-index 8c35ae4ff176..38e1dc3b4c6e 100644
+index 07a09570175d..5db6d14fcd67 100644
 --- a/arch/arm/mach-highbank/highbank.c
 +++ b/arch/arm/mach-highbank/highbank.c
 @@ -51,13 +51,11 @@ static void __init highbank_scu_map_io(void)
