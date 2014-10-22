@@ -659,6 +659,9 @@ Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 #rhbz 1089731
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
+#rhbz 1153381
+Patch26059: Input-synaptics-gate-forcepad-support-by-DMI-check.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1430,6 +1433,9 @@ ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 #rhbz 1089731
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
+
+#rhbz 1153381
+ApplyPatch Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2300,6 +2306,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix synaptics forcepad issues (rhbz 1153381)
 - Add patch to fix wifi on X550VB machines (rhbz 1089731)
 
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-302
