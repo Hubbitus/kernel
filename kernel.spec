@@ -665,6 +665,15 @@ Patch26059: Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 # CVE-2014-3690 rhbz 1153322 1155372
 Patch26060: x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
 
+#CVE-2014-3688 rhbz 1155745 1155751
+Patch26061: net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
+
+#CVE-2014-3687 rhbz 1155731 1155738
+Patch26062: net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
+
+#CVE-2014-3673 rhbz 1147850 1155727
+Patch26063: net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1440,9 +1449,17 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1153381
 ApplyPatch Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 
-# CVE-2014-3690 rhbz 1153322 1155372
+#CVE-2014-3690 rhbz 1153322 1155372
 ApplyPatch x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
 
+#CVE-2014-3688 rhbz 1155745 1155751
+ApplyPatch net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
+
+#CVE-2014-3687 rhbz 1155731 1155738
+ApplyPatch net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
+
+#CVE-2014-3673 rhbz 1147850 1155727
+ApplyPatch net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2313,6 +2330,9 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3688 sctp: remote memory pressure from excessive queuing (rhbz 1155745 1155751)
+- CVE-2014-3687 sctp: panic on duplicate ASCONF chunks (rhbz 1155731 1155738)
+- CVE-2014-3673 sctp: panic with malformed ASCONF chunks (rhbz 1147850 1155727)
 - CVE-2014-3690 kvm: invalid host cr4 handling (rhbz 1153322 1155372)
 - Add patch to fix synaptics forcepad issues (rhbz 1153381)
 - Add patch to fix wifi on X550VB machines (rhbz 1089731)
