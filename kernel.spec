@@ -656,6 +656,9 @@ Patch26055: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 #CVE-2014-8086 rhbz 1151353 1152608
 Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
+#rhbz 1089731
+Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1424,6 +1427,9 @@ ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
 
 #CVE-2014-8086 rhbz 1151353 1152608
 ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
+
+#rhbz 1089731
+ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2293,6 +2299,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix wifi on X550VB machines (rhbz 1089731)
+
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-302
 - CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
 
