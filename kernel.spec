@@ -662,6 +662,9 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1153381
 Patch26059: Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 
+# CVE-2014-3690 rhbz 1153322 1155372
+Patch26060: x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1436,6 +1439,10 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1153381
 ApplyPatch Input-synaptics-gate-forcepad-support-by-DMI-check.patch
+
+# CVE-2014-3690 rhbz 1153322 1155372
+ApplyPatch x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
+
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2306,6 +2313,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-3690 kvm: invalid host cr4 handling (rhbz 1153322 1155372)
 - Add patch to fix synaptics forcepad issues (rhbz 1153381)
 - Add patch to fix wifi on X550VB machines (rhbz 1089731)
 
