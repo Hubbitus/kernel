@@ -1,0 +1,38 @@
+From: Nadav Amit <namit@cs.technion.ac.il>
+Date: Fri, 24 Oct 2014 17:07:20 +0200
+Subject: [PATCH] KVM: x86: Decoding guest instructions which cross page
+ boundary may fail
+
+Once an instruction crosses a page boundary, the size read from the second page
+disregards the common case that part of the operand resides on the first page.
+As a result, fetch of long insturctions may fail, and thereby cause the
+decoding to fail as well.
+
+Cc: stable@vger.kernel.org
+Fixes: 5cfc7e0f5e5e1adf998df94f8e36edaf5d30d38e
+Signed-off-by: Nadav Amit <namit@cs.technion.ac.il>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/emulate.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/emulate.c b/arch/x86/kvm/emulate.c
+index 1ac496349f39..a0a04090d2ff 100644
+--- a/arch/x86/kvm/emulate.c
++++ b/arch/x86/kvm/emulate.c
+@@ -777,8 +777,10 @@ static int __do_insn_fetch_bytes(struct x86_emulate_ctxt *ctxt, int op_size)
+ static __always_inline int do_insn_fetch_bytes(struct x86_emulate_ctxt *ctxt,
+ 					       unsigned size)
+ {
+-	if (unlikely(ctxt->fetch.end - ctxt->fetch.ptr < size))
+-		return __do_insn_fetch_bytes(ctxt, size);
++	unsigned done_size = ctxt->fetch.end - ctxt->fetch.ptr;
++
++	if (unlikely(done_size < size))
++		return __do_insn_fetch_bytes(ctxt, size - done_size);
+ 	else
+ 		return X86EMUL_CONTINUE;
+ }
+-- 
+1.9.3
+
