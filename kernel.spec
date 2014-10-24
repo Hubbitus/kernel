@@ -674,6 +674,9 @@ Patch26062: net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
 #CVE-2014-3673 rhbz 1147850 1155727
 Patch26063: net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
 
+#rhbz 1111138
+Patch26064: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1460,6 +1463,9 @@ ApplyPatch net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
 
 #CVE-2014-3673 rhbz 1147850 1155727
 ApplyPatch net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
+
+#rhbz 1111138
+ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2329,6 +2335,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Oct 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add touchpad quirk for Fujitsu Lifebook A544/AH544 models (rhbz 1111138)
+
 * Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-303
 - CVE-2014-3688 sctp: remote memory pressure from excessive queuing (rhbz 1155745 1155751)
 - CVE-2014-3687 sctp: panic on duplicate ASCONF chunks (rhbz 1155731 1155738)
