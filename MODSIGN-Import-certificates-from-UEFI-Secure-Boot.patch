@@ -25,10 +25,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 41359e548bcb..db9e6118575e 100644
+index b1d686e9175e..4d41f4532127 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -587,6 +587,12 @@ void efi_native_runtime_setup(void);
+@@ -592,6 +592,12 @@ void efi_native_runtime_setup(void);
  #define EFI_CERT_X509_GUID \
      EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
  

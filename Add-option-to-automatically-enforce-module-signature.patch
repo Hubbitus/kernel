@@ -54,7 +54,7 @@ index f2327e88e07c..4ba047a782fd 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index de8eebd6f67c..975d11bfaf5b 100644
+index 1acf605a646d..6da2da7ac9c3 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -65,7 +65,7 @@ index de8eebd6f67c..975d11bfaf5b 100644
  
  #undef memcpy			/* Use memcpy from misc.c */
  
-@@ -814,6 +815,37 @@ out:
+@@ -828,6 +829,37 @@ out:
  	return status;
  }
  
@@ -103,7 +103,7 @@ index de8eebd6f67c..975d11bfaf5b 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1389,6 +1421,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1407,6 +1439,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  

@@ -14,10 +14,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 975d11bfaf5b..94bf7819857a 100644
+index 6da2da7ac9c3..ba3cf70c7d5a 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
-@@ -817,8 +817,9 @@ out:
+@@ -831,8 +831,9 @@ out:
  
  static int get_secure_boot(void)
  {
@@ -28,7 +28,7 @@ index 975d11bfaf5b..94bf7819857a 100644
  	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
  	efi_status_t status;
  
-@@ -842,6 +843,23 @@ static int get_secure_boot(void)
+@@ -856,6 +857,23 @@ static int get_secure_boot(void)
  	if (setup == 1)
  		return 0;
  
