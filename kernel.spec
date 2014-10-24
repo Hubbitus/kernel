@@ -386,7 +386,7 @@ BuildRequires: sparse
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
-%ifnarch s390 s390x
+%ifnarch s390 s390x %{arm}
 BuildRequires: numactl-devel
 %endif
 %endif
