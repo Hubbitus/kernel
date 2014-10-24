@@ -617,6 +617,9 @@ Patch26057: virtio_console-move-early-VQ-enablement.patch
 
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
+#rhbz 1111138
+Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1342,6 +1345,9 @@ ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 ApplyPatch virtio_console-move-early-VQ-enablement.patch
 
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
+
+#rhbz 1111138
+ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2213,6 +2219,7 @@ fi
 %changelog
 * Fri Oct 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git3.1
 - Linux v3.18-rc1-280-g816fb4175c29
+- Add touchpad quirk for Fujitsu Lifebook A544/AH544 models (rhbz 1111138)
 
 * Wed Oct 22 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git2.1
 - Linux v3.18-rc1-221-gc3351dfabf5c
