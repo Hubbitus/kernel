@@ -2324,6 +2324,9 @@ fi
 #                 ||----w |
 #                 ||     ||
 %changelog
+* Sat Oct 18 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.6-200.hu.1.bfq.bfs.uksm
+- 3.16.6-200.hu.1.bfq.bfs.uksm
+
 * Fri Oct 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-8086 ext4: race condition (rhbz 1151353 1152608)
 
