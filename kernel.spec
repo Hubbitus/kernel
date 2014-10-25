@@ -2373,7 +2373,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Oct 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Oct 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-304.fc21
 - CVE-2014-3610 kvm: noncanonical MSR writes (rhbz 1144883 1156543)
 - CVE-2014-3611 kvm: PIT timer race condition (rhbz 1144878 1156537)
 - CVE-2014-3646 kvm: vmx: invvpid vm exit not handled (rhbz 1144825 1156534)
