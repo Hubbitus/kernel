@@ -1853,9 +1853,9 @@ index ac9afde..14423f3 100644
  config ARM64
  	def_bool y
 +	select ACPI_REDUCED_HARDWARE_ONLY if ACPI
+ 	select ARCH_BINFMT_ELF_RANDOMIZE_PIE
  	select ARCH_HAS_ATOMIC64_DEC_IF_POSITIVE
  	select ARCH_HAS_SG_CHAIN
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
 @@ -267,6 +268,9 @@ config SMP
  
  	  If you don't know what to do here, say N.
@@ -3194,13 +3194,13 @@ index 505d4d7..252d0ff 100644
  acpi-y				+= acpi_lpss.o
  acpi-y				+= acpi_platform.o
  acpi-y				+= acpi_pnp.o
+ acpi-y				+= int340x_thermal.o
  acpi-y				+= power.o
  acpi-y				+= event.o
  acpi-y				+= sysfs.o
 +acpi-y				+= property.o
  acpi-$(CONFIG_X86)		+= acpi_cmos_rtc.o
  acpi-$(CONFIG_DEBUG_FS)		+= debugfs.o
- acpi-$(CONFIG_ACPI_NUMA)	+= numa.o
 diff --git a/drivers/acpi/bus.c b/drivers/acpi/bus.c
 index 8b67bd0..c412fdb 100644
 --- a/drivers/acpi/bus.c
