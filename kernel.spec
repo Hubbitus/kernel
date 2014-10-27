@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Oct 26 2014 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update ARM config options, some minor cleanups
+
 * Sun Oct 26 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc1.git4.1
 - Linux v3.18-rc1-422-g2cc91884b6b3
 

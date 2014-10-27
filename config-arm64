@@ -95,12 +95,6 @@ CONFIG_RTC_DRV_XGENE=m
 CONFIG_HW_RANDOM_XGENE=m
 CONFIG_GPIO_XGENE=y
 
-# not arm64
-# CONFIG_GPIO_ADNP is not set
-# CONFIG_GPIO_MCP23S08 is not set
-# CONFIG_MDIO_BUS_MUX_GPIO is not set
-# CONFIG_MDIO_BUS_MUX_MMIOREG is not set
-
 # busted build for various reasons
 #  uses pci_* for some reason to allocate DMA buffers
 # CONFIG_DVB_B2C2_FLEXCOP_USB is not set

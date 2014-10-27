@@ -378,7 +378,6 @@ CONFIG_LPC_ICH=m
 
 CONFIG_GPIO_ICH=m
 # CONFIG_GPIO_LYNXPOINT is not set
-# CONFIG_GPIO_MCP23S08 is not set
 # CONFIG_GPIO_F7188X is not set
 
 # These should all go away with IC2_ACPI is fixed
