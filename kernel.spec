@@ -696,6 +696,9 @@ Patch26080: KVM-x86-Emulator-does-not-decode-clflush-well.patch
 Patch26081: KVM-x86-PREFETCH-and-HINT_NOP-should-have-SrcMem-fla.patch
 Patch26082: kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
 
+#rhbz 1157327
+Patch26083: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1504,6 +1507,9 @@ ApplyPatch KVM-emulate-avoid-accessing-NULL-ctxt-memopp.patch
 ApplyPatch KVM-x86-Emulator-does-not-decode-clflush-well.patch
 ApplyPatch KVM-x86-PREFETCH-and-HINT_NOP-should-have-SrcMem-fla.patch
 ApplyPatch kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
+
+#rhbz 1157327
+ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2373,6 +2379,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for rfkill on Yoga 3 machines (rhbz 1157327)
+
 * Fri Oct 24 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.1-304.fc21
 - CVE-2014-3610 kvm: noncanonical MSR writes (rhbz 1144883 1156543)
 - CVE-2014-3611 kvm: PIT timer race condition (rhbz 1144878 1156537)
