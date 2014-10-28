@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.8.1.el7
+%define pkgrelease 123.9.2.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,10 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
+Source13: securebootca.cer
 Source14: secureboot.cer
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -369,9 +369,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -524,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1483,8 +1474,27 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Mon Sep 22 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.8.1.el7
-- Apply debranding changes
+* Wed Sep 24 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.2.el7]
+- [virt] kvm: fix PIT timer race condition (Petr  Matousek) [1144879 1144880] {CVE-2014-3611}
+- [virt] kvm/vmx: handle invept and invvpid vm exits gracefully (Petr  Matousek) [1145449 1116936] [1144828 1144829] {CVE-2014-3645 CVE-2014-3646}
+
+* Tue Sep 23 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.1.el7]
+- [md] raid6: avoid data corruption during recovery of double-degraded RAID6 (Jes Sorensen) [1143850 1130905]
+- [fs] ext4: fix type declaration of ext4_validate_block_bitmap (Lukas Czerner) [1140978 1091055]
+- [fs] ext4: error out if verifying the block bitmap fails (Lukas Czerner) [1140978 1091055]
+- [powerpc] sched: stop updating inside arch_update_cpu_topology() when nothing to be update (Gustavo Duarte) [1140300 1098372]
+- [powerpc] 64bit sendfile is capped at 2GB (Gustavo Duarte) [1139126 1107774]
+- [s390] fix restore of invalid floating-point-control (Hendrik Brueckner) [1138733 1121965]
+- [kernel] sched/fair: Rework sched_fair time accounting (Rik van Riel) [1134717 1123731]
+- [kernel] math64: Add mul_u64_u32_shr() (Rik van Riel) [1134717 1123731]
+- [kernel] workqueue: zero cpumask of wq_numa_possible_cpumask on init (Motohiro Kosaki) [1134715 1117184]
+- [cpufreq] acpi-cpufreq: skip loading acpi_cpufreq after intel_pstate (Motohiro Kosaki) [1134716 1123250]
+- [security] selinux: Increase ebitmap_node size for 64-bit configuration (Paul Moore) [1132076 922752]
+- [security] selinux: Reduce overhead of mls_level_isvalid() function call (Paul Moore) [1132076 922752]
+- [ethernet] cxgb4: allow large buffer size to have page size (Gustavo Duarte) [1130548 1078977]
+- [kernel] sched/autogroup: Fix race with task_groups list (Gustavo Duarte) [1129990 1081406]
+- [net] sctp: inherit auth_capable on INIT collisions (Daniel Borkmann) [1124337 1123763] {CVE-2014-5077}
+- [sound] alsa/control: Don't access controls outside of protected regions (Radomir Vrbovsky) [1117330 1117331] {CVE-2014-4653}
 
 * Mon Aug 11 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.8.1.el7]
 - [scsi] fnic: fix broken FIP discovery by initializing multicast address (Chris Leech) [1119727 1100078]
