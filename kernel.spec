@@ -623,6 +623,9 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 Patch26060: rcu-More-on-deadlock-between-CPU-hotplug-and-expedit.patch
 Patch26061: rcu-Make-rcu_barrier-understand-about-missing-rcuo-k.patch
 
+#rhbz 1157327
+Patch26062: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1354,6 +1357,9 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 ApplyPatch rcu-More-on-deadlock-between-CPU-hotplug-and-expedit.patch
 ApplyPatch rcu-Make-rcu_barrier-understand-about-missing-rcuo-k.patch
+
+#rhbz 1157327
+ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2223,6 +2229,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Oct 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for rfkill on Yoga 3 machines (rhbz 1157327)
+
 * Tue Oct 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc2.git1.1
 - Linux v3.18-rc2-43-gf7e87a44ef60
 - Add two RCU patches to fix a deadlock and a hang
