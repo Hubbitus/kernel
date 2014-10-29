@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2229,6 +2229,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Oct 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc2.git2.1
+- Linux v3.18-rc2-53-g9f76628da20f
+
 * Tue Oct 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add quirk for rfkill on Yoga 3 machines (rhbz 1157327)
 
