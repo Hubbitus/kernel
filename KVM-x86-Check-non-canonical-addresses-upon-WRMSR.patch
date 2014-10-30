@@ -43,10 +43,10 @@ Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
  4 files changed, 42 insertions(+), 3 deletions(-)
 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 7c492ed9087b..78d014c83ae3 100644
+index 92d3486a6196..fec4421b6cac 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -990,6 +990,20 @@ static inline void kvm_inject_gp(struct kvm_vcpu *vcpu, u32 error_code)
+@@ -991,6 +991,20 @@ static inline void kvm_inject_gp(struct kvm_vcpu *vcpu, u32 error_code)
  	kvm_queue_exception_e(vcpu, GP_VECTOR, error_code);
  }
  

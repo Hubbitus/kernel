@@ -17,10 +17,10 @@ Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
  3 files changed, 14 insertions(+), 6 deletions(-)
 
 diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 78d014c83ae3..d16311f4099e 100644
+index fec4421b6cac..0d47ae116a36 100644
 --- a/arch/x86/include/asm/kvm_host.h
 +++ b/arch/x86/include/asm/kvm_host.h
-@@ -1062,7 +1062,7 @@ int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
+@@ -1063,7 +1063,7 @@ int kvm_cpu_get_interrupt(struct kvm_vcpu *v);
  void kvm_vcpu_reset(struct kvm_vcpu *vcpu);
  
  void kvm_define_shared_msr(unsigned index, u32 msr);

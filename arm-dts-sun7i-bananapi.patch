@@ -14,7 +14,7 @@ Signed-off-by: Hans de Goede <hdegoede@xxxxxxxxxx>
  create mode 100644 arch/arm/boot/dts/sun7i-a20-bananapi.dts
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index b8c5cd3ddeb9..c3003a4460f5 100644
+index e6aa6e77a3ec..0e858ebdad9e 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
 @@ -414,6 +414,7 @@ dtb-$(CONFIG_MACH_SUN6I) += \

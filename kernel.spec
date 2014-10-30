@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 304
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -614,9 +614,6 @@ Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 #rhbz 1138759
 Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
 
-#rhbz 1123584
-Patch26028: HID-rmi-check-sanity-of-incoming-report.patch
-
 #rhbz 1145318
 Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
@@ -635,24 +632,6 @@ Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
-#CVE-2014-7975 rhbz 1151108 1152025
-Patch26042: fs-Add-a-missing-permission-check-to-do_umount.patch
-
-# btrfs fixes queued for 3.17.y
-Patch26043: btrfs-wake-up-transaction-thread-from-SYNC_FS-ioctl.patch
-Patch26044: btrfs-don-t-go-readonly-on-existing-qgroup-items.patch
-Patch26045: btrfs-Fix-a-deadlock-in-btrfs_dev_replace_finishing.patch
-Patch26046: Btrfs-add-missing-compression-property-remove-in-btr.patch
-Patch26047: Btrfs-fix-up-bounds-checking-in-lseek.patch
-Patch26048: btrfs-Fix-and-enhance-merge_extent_mapping-to-insert.patch
-Patch26049: Btrfs-don-t-do-async-reclaim-during-log-replay.patch
-Patch26050: Btrfs-try-not-to-ENOSPC-on-log-replay.patch
-Patch26051: Btrfs-cleanup-error-handling-in-build_backref_tree.patch
-Patch26052: Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
-Patch26053: btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
-Patch26054: Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
-Patch26055: Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
-
 #CVE-2014-8086 rhbz 1151353 1152608
 Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
@@ -661,9 +640,6 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1153381
 Patch26059: Input-synaptics-gate-forcepad-support-by-DMI-check.patch
-
-# CVE-2014-3690 rhbz 1153322 1155372
-Patch26060: x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
 
 #CVE-2014-3688 rhbz 1155745 1155751
 Patch26061: net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
@@ -1426,9 +1402,6 @@ ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 #rhbz 1138759
 ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
 
-#rhbz 1123584
-ApplyPatch HID-rmi-check-sanity-of-incoming-report.patch
-
 #rhbz 1145318
 ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
@@ -1447,24 +1420,6 @@ ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
-#CVE-2014-7975 rhbz 1151108 1152025
-ApplyPatch fs-Add-a-missing-permission-check-to-do_umount.patch
-
-# btrfs fixes queued for 3.17.y
-ApplyPatch btrfs-wake-up-transaction-thread-from-SYNC_FS-ioctl.patch
-ApplyPatch btrfs-don-t-go-readonly-on-existing-qgroup-items.patch
-ApplyPatch btrfs-Fix-a-deadlock-in-btrfs_dev_replace_finishing.patch
-ApplyPatch Btrfs-add-missing-compression-property-remove-in-btr.patch
-ApplyPatch Btrfs-fix-up-bounds-checking-in-lseek.patch
-ApplyPatch btrfs-Fix-and-enhance-merge_extent_mapping-to-insert.patch
-ApplyPatch Btrfs-don-t-do-async-reclaim-during-log-replay.patch
-ApplyPatch Btrfs-try-not-to-ENOSPC-on-log-replay.patch
-ApplyPatch Btrfs-cleanup-error-handling-in-build_backref_tree.patch
-ApplyPatch Btrfs-fix-build_backref_tree-issue-with-multiple-sha.patch
-ApplyPatch btrfs-Fix-the-wrong-condition-judgment-about-subset-.patch
-ApplyPatch Btrfs-fix-race-in-WAIT_SYNC-ioctl.patch
-ApplyPatch Revert-Btrfs-race-free-update-of-commit-root-for-ro-.patch
-
 #CVE-2014-8086 rhbz 1151353 1152608
 ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
@@ -1473,9 +1428,6 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1153381
 ApplyPatch Input-synaptics-gate-forcepad-support-by-DMI-check.patch
-
-#CVE-2014-3690 rhbz 1153322 1155372
-ApplyPatch x86-kvm-vmx-Preserve-CR4-across-VM-entry.patch
 
 #CVE-2014-3688 rhbz 1155745 1155751
 ApplyPatch net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
@@ -2379,6 +2331,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.2-300
+- Linux v3.17.2
+
 * Tue Oct 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add quirk for rfkill on Yoga 3 machines (rhbz 1157327)
 

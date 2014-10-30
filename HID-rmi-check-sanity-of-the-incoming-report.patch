@@ -2,6 +2,8 @@ From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Date: Wed, 10 Sep 2014 18:02:37 -0700
 Subject: [PATCH] HID: rmi: check sanity of the incoming report
 
+commit 5b65c2a0296644dd3dbdd590d6f00174d18c96b3 upstream.
+
 In the Dell XPS 13 9333, it appears that sometimes the bus get confused
 and corrupts the incoming data. It fills the input report with the
 sentinel value "ff". Synaptics told us that such behavior does not comes
@@ -18,6 +20,7 @@ https://bugzilla.redhat.com/show_bug.cgi?id=1123584
 Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
 Signed-off-by: Andrew Duggan <aduggan@synaptics.com>
 Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
  drivers/hid/hid-rmi.c | 44 ++++++++++++++++++++++++++++++++++++++------
  1 file changed, 38 insertions(+), 6 deletions(-)
