@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -606,9 +606,7 @@ Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
 #rhbz 1149509
 Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
-Patch26037: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-8086 rhbz 1151353 1152608
 Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
@@ -1341,9 +1339,7 @@ ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
 
 #rhbz 1149509
 ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
-ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-8086 rhbz 1151353 1152608
 ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
@@ -2229,6 +2225,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Oct 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc2.git3.1
+- Linux v3.18-rc2-106-ga7ca10f263d7
+
 * Wed Oct 29 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc2.git2.1
 - Linux v3.18-rc2-53-g9f76628da20f
 
