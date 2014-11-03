@@ -675,6 +675,9 @@ Patch26082: kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
 #rhbz 1157327
 Patch26083: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
+#rhbz 1159592
+Patch26084: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1462,6 +1465,9 @@ ApplyPatch kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
 
 #rhbz 1157327
 ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
+
+#rhbz 1159592
+ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2331,6 +2337,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix early ucode crash on 32-bit AMD machines (rhbz 1159592)
+
 * Thu Oct 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.2-300
 - Linux v3.17.2
 
