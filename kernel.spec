@@ -2226,6 +2226,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable CONFIG_KXCJK1013
 - Add driver for goodix touchscreen from Bastien Nocera
 
 * Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git0.1
