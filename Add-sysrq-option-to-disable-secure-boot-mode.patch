@@ -15,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index fbae2bf99a47..f3960a8c2627 100644
+index bc31a43b31a0..5f80d12a55cb 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@

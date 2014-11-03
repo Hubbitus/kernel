@@ -13,7 +13,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index a9dfa79b6bab..14c7356ff53a 100644
+index 1f35a3478f3c..5e2472fc3dda 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
 @@ -28,6 +28,7 @@

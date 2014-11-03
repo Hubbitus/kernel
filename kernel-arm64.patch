@@ -1,26 +1,3 @@
-commit fb3aa1c1644a73bc36a47a6844c3ee6414787e9e
-Author: Mark Salter <msalter@redhat.com>
-Date:   Sun Oct 19 11:11:08 2014 -0400
-
-    clocksource: arm_arch_timer: fix system hang
-    
-    Arm allows for two possible architectural clock sources. One memory mapped
-    and the other coprocessor based. If both timers exist, then the driver waits
-    for both to be probed before registering a clocksource.
-    
-    Commit c387f07e6205 ("clocksource: arm_arch_timer: Discard unavailable timers
-    correctly") attempted to fix a hang occurring when one of the two possible
-    timers had a device node, but was disabled. In that case, the second probe
-    would never occur and the system would hang without a clocksource being
-    registered.
-    
-    Unfortunately, incorrect logic in that commit made things worse such that
-    a hang would occur unless both timers had a device node and were enabled.
-    This patch fixes the logic so that we don't wait to probe a second timer
-    unless it exists and is enabled.
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
 commit 798bcf9c5057f0acd54154d09abf6fc4fc044e41
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Oct 14 13:51:54 2014 -0400
@@ -4706,25 +4683,6 @@ index 2133f9d..b73392b 100644
  		if (cntbase)
  			arch_timer_rate = readl_relaxed(cntbase + CNTFRQ);
  		else
-@@ -660,13 +666,14 @@ static bool __init
- arch_timer_probed(int type, const struct of_device_id *matches)
- {
- 	struct device_node *dn;
--	bool probed = false;
-+	bool probed = true;
- 
- 	dn = of_find_matching_node(NULL, matches);
--	if (dn && of_device_is_available(dn) && (arch_timers_present & type))
--		probed = true;
--	of_node_put(dn);
--
-+	if (dn) {
-+		if (of_device_is_available(dn) && !(arch_timers_present & type))
-+			probed = false;
-+		of_node_put(dn);
-+	}
- 	return probed;
- }
  
 @@ -687,20 +694,8 @@ static void __init arch_timer_common_init(void)
  	arch_timer_arch_init();
@@ -7318,9 +7276,9 @@ index 5e94d00..a6131a9 100644
 --- a/drivers/net/ethernet/smsc/smc91x.c
 +++ b/drivers/net/ethernet/smsc/smc91x.c
 @@ -81,6 +81,7 @@ static const char version[] =
- #include <linux/workqueue.h>
  #include <linux/of.h>
  #include <linux/of_device.h>
+ #include <linux/of_gpio.h>
 +#include <linux/acpi.h>
  
  #include <linux/netdevice.h>

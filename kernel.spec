@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -602,8 +602,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-Patch26035: nf_reject_ipv4-module-license-unspecified-taints-ker.patch
-
 #rhbz 1149509
 Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
 Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
@@ -618,11 +616,11 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-Patch26060: rcu-More-on-deadlock-between-CPU-hotplug-and-expedit.patch
-Patch26061: rcu-Make-rcu_barrier-understand-about-missing-rcuo-k.patch
-
 #rhbz 1157327
 Patch26062: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
+
+#rhbz 1158204 1157157
+Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1335,8 +1333,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-ApplyPatch nf_reject_ipv4-module-license-unspecified-taints-ker.patch
-
 #rhbz 1149509
 ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
@@ -1351,11 +1347,11 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-ApplyPatch rcu-More-on-deadlock-between-CPU-hotplug-and-expedit.patch
-ApplyPatch rcu-Make-rcu_barrier-understand-about-missing-rcuo-k.patch
-
 #rhbz 1157327
 ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
+
+#rhbz 1158204 1157157
+ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2225,6 +2221,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git0.1
+- Linux v3.18-rc3
+- Disable debugging options.
+
 * Thu Oct 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc2.git3.1
 - Linux v3.18-rc2-106-ga7ca10f263d7
 
