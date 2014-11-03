@@ -622,6 +622,8 @@ Patch26062: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 #rhbz 1158204 1157157
 Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
+Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1352,6 +1354,8 @@ ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
 #rhbz 1158204 1157157
 ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
+
+ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2221,6 +2225,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add driver for goodix touchscreen from Bastien Nocera
+
 * Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git0.1
 - Linux v3.18-rc3
 - Disable debugging options.
