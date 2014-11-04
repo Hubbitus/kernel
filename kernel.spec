@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2225,6 +2225,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Nov 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git1.1
+- Linux v3.18-rc3-31-g980d0d51b1c9
+- Reenable debugging options.
+
 * Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable CONFIG_KXCJK1013
 - Add driver for goodix touchscreen from Bastien Nocera
