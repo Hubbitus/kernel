@@ -14,10 +14,10 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 10 insertions(+)
 
 diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index 5a5966512277..0d7954e0fc74 100644
+index ff765d8e1a09..864290243e46 100644
 --- a/drivers/platform/x86/samsung-laptop.c
 +++ b/drivers/platform/x86/samsung-laptop.c
-@@ -1568,6 +1568,16 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
+@@ -1578,6 +1578,16 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
  		},
  	 .driver_data = &samsung_np740u3e,
  	},

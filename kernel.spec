@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -616,13 +616,12 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1157327
-Patch26062: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
-
 #rhbz 1158204 1157157
 Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
 Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
+
+Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1349,13 +1348,12 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1157327
-ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
-
 #rhbz 1158204 1157157
 ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
+
+ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2225,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 05 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git2.1
+- Linux v3.18-rc3-61-ga1cff6e25e6e
+
 * Tue Nov 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git1.1
 - Linux v3.18-rc3-31-g980d0d51b1c9
 - Reenable debugging options.
