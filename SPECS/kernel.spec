@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.9.2.el7
+%define pkgrelease 123.9.3.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,10 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
+Source13: securebootca.cer
 Source14: secureboot.cer
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -369,9 +369,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -524,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1483,8 +1474,8 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Tue Oct 28 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.9.2.el7
-- Apply debranding changes
+* Wed Oct 29 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.3.el7]
+- [block] blkcg: fix use-after-free in __blkg_release_rcu() by making blkcg_gq refcnt an atomic_t (Vivek Goyal) [1158313 1118436]
 
 * Wed Sep 24 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.2.el7]
 - [virt] kvm: fix PIT timer race condition (Petr  Matousek) [1144879 1144880] {CVE-2014-3611}
