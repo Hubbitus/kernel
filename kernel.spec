@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -605,9 +605,6 @@ Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 #rhbz 1149509
 Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
 Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-
-#CVE-2014-8086 rhbz 1151353 1152608
-Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 Patch26057: virtio_console-move-early-VQ-enablement.patch
 
@@ -1337,9 +1334,6 @@ ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 #rhbz 1149509
 ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
 ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-
-#CVE-2014-8086 rhbz 1151353 1152608
-ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
 
 ApplyPatch virtio_console-move-early-VQ-enablement.patch
 
@@ -2223,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git4.1
+- Linux v3.18-rc3-82-ged78bb846e8b
+
 * Thu Nov 06 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git3.1
 - Linux v3.18-rc3-68-g20f3963d8f48
 
