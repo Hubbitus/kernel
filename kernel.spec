@@ -633,7 +633,7 @@ Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-8086 rhbz 1151353 1152608
-Patch26056: ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
+Patch26056: ext4-prevent-bugon-on-race-between-write-fcntl.patch
 
 #rhbz 1089731
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
@@ -1424,7 +1424,7 @@ ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
 ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
 
 #CVE-2014-8086 rhbz 1151353 1152608
-ApplyPatch ext4-fix-race-between-write-and-fcntl-F_SETFL.patch
+ApplyPatch ext4-prevent-bugon-on-race-between-write-fcntl.patch
 
 #rhbz 1089731
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
