@@ -644,6 +644,9 @@ Patch31012: soc_button_use_leftmeta.patch
 # from Jan-Michael Brummer
 Patch31013: rt5640_enable_mic.patch
 
+# Fix wifi on V8P(?) from Jan-Michael Brummer
+Patch31014: sdhci-pm.patch
+
 # END OF AWB PATCH DEFINITIONS
 
 # END OF PATCH DEFINITIONS
@@ -1386,6 +1389,7 @@ ApplyPatch RFC-V2-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-bat
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 #ApplyPatch rt5640_enable_mic.patch
 ApplyPatch soc_button_use_leftmeta.patch
+ApplyPatch sdhci-pm.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
 
