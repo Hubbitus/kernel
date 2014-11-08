@@ -1,4 +1,3 @@
-From d2d1a4dc3994ccdb4d82d1d5310fc2c49279fa43 Mon Sep 17 00:00:00 2001
 From: Dave Jones <davej@redhat.com>
 Date: Tue, 24 Jun 2014 08:43:34 -0400
 Subject: [PATCH] watchdog: Disable watchdog on virtual machines.
@@ -21,10 +20,10 @@ Signed-off-by: Dave Jones <davej@redhat.com>
  1 file changed, 29 insertions(+)
 
 diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index a8d6914030fe..d0a8c308170d 100644
+index 70bf11815f84..4eeb9923472b 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
-@@ -24,6 +24,7 @@
+@@ -19,6 +19,7 @@
  #include <linux/sysctl.h>
  #include <linux/smpboot.h>
  #include <linux/sched/rt.h>
@@ -32,7 +31,7 @@ index a8d6914030fe..d0a8c308170d 100644
  
  #include <asm/irq_regs.h>
  #include <linux/kvm_para.h>
-@@ -112,6 +113,32 @@ static int __init softlockup_all_cpu_backtrace_setup(char *str)
+@@ -135,6 +136,32 @@ static int __init softlockup_all_cpu_backtrace_setup(char *str)
  __setup("softlockup_all_cpu_backtrace=", softlockup_all_cpu_backtrace_setup);
  #endif
  
@@ -65,7 +64,7 @@ index a8d6914030fe..d0a8c308170d 100644
  /*
   * Hard-lockup warnings should be triggered after just a few seconds. Soft-
   * lockups can have false positives under extreme conditions. So we generally
-@@ -644,6 +671,8 @@ out:
+@@ -704,6 +731,8 @@ out:
  
  void __init lockup_detector_init(void)
  {

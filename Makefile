@@ -47,7 +47,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_FAULT_INJECTION_STACKTRACE_FILTER is not set/CONFIG_FAULT_INJECTION_STACKTRACE_FILTER=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_SG is not set/CONFIG_DEBUG_SG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_PI_LIST is not set/CONFIG_DEBUG_PI_LIST=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_WRITECOUNT is not set/CONFIG_DEBUG_WRITECOUNT=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS is not set/CONFIG_DEBUG_OBJECTS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_FREE is not set/CONFIG_DEBUG_OBJECTS_FREE=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_TIMERS is not set/CONFIG_DEBUG_OBJECTS_TIMERS=y/' config-nodebug
@@ -58,7 +57,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_EFI_PGT_DUMP is not set/CONFIG_EFI_PGT_DUMP=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_CAN_DEBUG_DEVICES is not set/CONFIG_CAN_DEBUG_DEVICES=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_MODULE_FORCE_UNLOAD is not set/CONFIG_MODULE_FORCE_UNLOAD=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_SYSCTL_SYSCALL_CHECK is not set/CONFIG_SYSCTL_SYSCALL_CHECK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_NOTIFIERS is not set/CONFIG_DEBUG_NOTIFIERS=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DMA_API_DEBUG is not set/CONFIG_DMA_API_DEBUG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_PM_TEST_SUSPEND is not set/CONFIG_PM_TEST_SUSPEND=y/' config-generic

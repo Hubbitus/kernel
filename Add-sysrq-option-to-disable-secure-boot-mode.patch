@@ -1,4 +1,3 @@
-From 2c6e707e281b5bd3277b10cdfb9fdde74df97561 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
 Date: Fri, 30 Aug 2013 09:28:51 -0400
 Subject: [PATCH] Add sysrq option to disable secure boot mode
@@ -16,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index fb282ff6a802..d291d16ba257 100644
+index bc31a43b31a0..5f80d12a55cb 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -31,7 +30,7 @@ index fb282ff6a802..d291d16ba257 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1268,6 +1273,37 @@ void __init i386_reserve_resources(void)
+@@ -1277,6 +1282,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
  
@@ -229,7 +228,7 @@ index 379650b984f8..070f29fefdc2 100644
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index 866417ecc76a..d7ca95c5a349 100644
+index cace4bd04956..a33be993df25 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -108,9 +108,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */

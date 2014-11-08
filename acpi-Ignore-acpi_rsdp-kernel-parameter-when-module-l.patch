@@ -1,4 +1,3 @@
-From 66632f74336e8698f99a8e5b58bf9965b4582e6c Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@redhat.com>
 Date: Mon, 25 Jun 2012 19:57:30 -0400
 Subject: [PATCH] acpi: Ignore acpi_rsdp kernel parameter when module loading
@@ -14,7 +13,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 3abe9b223ba7..ee8f11cf65da 100644
+index 9964f70be98d..d95d258f606c 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -44,6 +44,7 @@
@@ -25,7 +24,7 @@ index 3abe9b223ba7..ee8f11cf65da 100644
  
  #include <asm/io.h>
  #include <asm/uaccess.h>
-@@ -245,7 +246,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
+@@ -255,7 +256,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
  acpi_physical_address __init acpi_os_get_root_pointer(void)
  {
  #ifdef CONFIG_KEXEC

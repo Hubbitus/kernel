@@ -1,4 +1,3 @@
-From 1dce5d85f095caf419aad8ef67f694f42648b1db Mon Sep 17 00:00:00 2001
 From: "kernel-team@fedoraproject.org" <kernel-team@fedoraproject.org>
 Date: Wed, 30 Jan 2013 10:55:31 -0500
 Subject: [PATCH] criu: no expert
@@ -10,10 +9,10 @@ Upstream-status: Fedora mustard
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/init/Kconfig b/init/Kconfig
-index 3bad458f1c68..aee58b9fedfc 100644
+index 9ef459bb44b2..cc096e258a4a 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1147,7 +1147,7 @@ config DEBUG_BLK_CGROUP
+@@ -1149,7 +1149,7 @@ config DEBUG_BLK_CGROUP
  endif # CGROUPS
  
  config CHECKPOINT_RESTORE
@@ -22,7 +21,7 @@ index 3bad458f1c68..aee58b9fedfc 100644
  	default n
  	help
  	  Enables additional kernel features in a sake of checkpoint/restore.
-@@ -1158,7 +1158,7 @@ config CHECKPOINT_RESTORE
+@@ -1160,7 +1160,7 @@ config CHECKPOINT_RESTORE
  	  If unsure, say N here.
  
  menuconfig NAMESPACES

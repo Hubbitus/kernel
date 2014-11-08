@@ -1,4 +1,3 @@
-From c33f1163a808514d13b7f5c21dfe9776ff744ef4 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
 Subject: [PATCH] Add option to automatically enforce module signatures when in
@@ -34,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 36327438caf0..61542c282e70 100644
+index ded8a6774ac9..750d32268fb1 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1566,6 +1566,16 @@ config EFI_MIXED
+@@ -1611,6 +1611,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -55,7 +54,7 @@ index 36327438caf0..61542c282e70 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index dca9842d8f91..baab83bcec44 100644
+index 1acf605a646d..6da2da7ac9c3 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -66,7 +65,7 @@ index dca9842d8f91..baab83bcec44 100644
  
  #undef memcpy			/* Use memcpy from misc.c */
  
-@@ -803,6 +804,37 @@ out:
+@@ -828,6 +829,37 @@ out:
  	return status;
  }
  
@@ -104,7 +103,7 @@ index dca9842d8f91..baab83bcec44 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1378,6 +1410,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1407,6 +1439,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -114,7 +113,7 @@ index dca9842d8f91..baab83bcec44 100644
 +
  	setup_graphics(boot_params);
  
- 	status = setup_efi_pci(boot_params);
+ 	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
 index 225b0988043a..90dbfb73e11f 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
@@ -130,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 41ead8d3bc0b..5a5cf7395724 100644
+index ab08aa2276fb..f4eb99432db1 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1142,6 +1142,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1150,6 +1150,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -164,10 +163,10 @@ index 341a73ecea2e..cca08ac450e2 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 1f7b4664300e..866417ecc76a 100644
+index 6507ffcb5445..cace4bd04956 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3843,6 +3843,13 @@ void module_layout(struct module *mod,
+@@ -3845,6 +3845,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  

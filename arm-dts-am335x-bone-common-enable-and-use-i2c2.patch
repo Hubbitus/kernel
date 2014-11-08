@@ -1,4 +1,3 @@
-From a37eef827de2081fb2fcf6e21f4688c08ec1360c Mon Sep 17 00:00:00 2001
 From: Robert Nelson <robertcnelson@gmail.com>
 Date: Tue, 31 Dec 2013 11:17:45 -0600
 Subject: [PATCH] arm: dts: am335x-bone-common: enable and use i2c2
@@ -9,10 +8,10 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 39 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index bde1777b62be..c7357bcc7d5c 100644
+index 6cc25ed912ee..754b96c5dbb1 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -84,6 +84,13 @@
+@@ -81,6 +81,13 @@
  		>;
  	};
  
@@ -26,7 +25,7 @@ index bde1777b62be..c7357bcc7d5c 100644
  	uart0_pins: pinmux_uart0_pins {
  		pinctrl-single,pins = <
  			0x170 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart0_rxd.uart0_rxd */
-@@ -220,6 +227,38 @@
+@@ -217,6 +224,38 @@
  		reg = <0x24>;
  	};
  

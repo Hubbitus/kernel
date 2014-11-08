@@ -1,4 +1,3 @@
-From cb7bff00e9f4c7c6fb2cbe96b9083db9eb3394f0 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Thu, 25 Sep 2008 16:23:33 -0400
 Subject: [PATCH] input: silence i8042 noise
@@ -17,7 +16,7 @@ Upstream-status: Fedora mustard
  3 files changed, 2 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index b67d9aef9fe4..dd58b0fdaafd 100644
+index 9717d5f20139..a3101d2fd936 100644
 --- a/drivers/base/power/main.c
 +++ b/drivers/base/power/main.c
 @@ -122,8 +122,6 @@ void device_pm_unlock(void)
