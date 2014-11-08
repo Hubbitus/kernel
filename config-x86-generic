@@ -258,6 +258,11 @@ CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH=m
 # CONFIG_SND_SOC_TAS2552 is not set
 # CONFIG_SND_SOC_TLV320AIC31XX is not set
 # CONFIG_SND_SOC_WM8770 is not set
+# CONFIG_SND_SOC_CS35L32 is not set
+# CONFIG_SND_SOC_ES8328 is not set
+# CONFIG_SND_SOC_SSM2602_I2C is not set
+# CONFIG_SND_SOC_SSM4567 is not set
+# CONFIG_SND_SOC_WM8978 is not set
 
 
 # Baytrail other (from pbrobinson)
