@@ -21,10 +21,10 @@ Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
  create mode 100644 drivers/input/touchscreen/goodix.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 5d6136b8959e..cf7a1a5d2ac9 100644
+index ea4d0058fd1b..b9fb1cdad014 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -4139,6 +4139,12 @@ L:	linux-media@vger.kernel.org
+@@ -4140,6 +4140,12 @@ L:	linux-media@vger.kernel.org
  S:	Maintained
  F:	drivers/media/usb/go7007/
  
