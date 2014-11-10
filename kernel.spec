@@ -684,6 +684,8 @@ Patch26085: tracing-syscalls-Ignore-numbers-outside-NR_syscalls-.patch
 #rhbz 1151836
 Patch26086: Revert-iwlwifi-mvm-treat-EAPOLs-like-mgmt-frames-wrt.patch
 
+Patch26087: crypto-algif-avoid-excessive-use-of-socket-buffer-in.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1480,6 +1482,8 @@ ApplyPatch tracing-syscalls-Ignore-numbers-outside-NR_syscalls-.patch
 
 #rhbz 1151836
 ApplyPatch Revert-iwlwifi-mvm-treat-EAPOLs-like-mgmt-frames-wrt.patch
+
+ApplyPatch crypto-algif-avoid-excessive-use-of-socket-buffer-in.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2349,6 +2353,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix crypto allocation issues on PAGE_SIZE > 4k
+
 * Fri Nov 07 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix iwlwifi oops (rhbz 1151836)
 - CVE-2014-7826 CVE-2014-7825 insufficient syscall number validation in perf and ftrace subsystems (rhbz 1161565 1161572)
