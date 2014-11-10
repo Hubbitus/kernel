@@ -616,6 +616,9 @@ Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 
 Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
 
+#rhbz 1161805
+Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1340,6 +1343,9 @@ ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
+
+#rhbz 1161805
+ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2209,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Samsung pci-e SSD handling on some macbooks (rhbz 1161805)
+
 * Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git0.1
 - Linux v3.18-rc4
 - Temporarily disable aarch64patches
