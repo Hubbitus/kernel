@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -603,10 +603,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#rhbz 1149509
-Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
-Patch26038: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-
 Patch26057: virtio_console-move-early-VQ-enablement.patch
 
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
@@ -620,6 +616,9 @@ Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 
 Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
+
+#rhbz 1161805
+Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1357,10 +1356,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-#rhbz 1149509
-ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
-ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-
 ApplyPatch virtio_console-move-early-VQ-enablement.patch
 
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
@@ -1374,6 +1369,9 @@ ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
+
+#rhbz 1161805
+ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2254,6 +2252,14 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Samsung pci-e SSD handling on some macbooks (rhbz 1161805)
+
+* Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git0.1
+- Linux v3.18-rc4
+- Temporarily disable aarch64patches
+- Disable debugging options.
+
 * Fri Nov 07 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc3.git4.1
 - Linux v3.18-rc3-82-ged78bb846e8b
 
