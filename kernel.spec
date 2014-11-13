@@ -698,6 +698,9 @@ Patch26068: KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
 #CVE-2014-7843 rhbz 1163744 1163745
 Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
 
+#rhbz 1135338
+Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1508,6 +1511,9 @@ ApplyPatch KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
 
 #CVE-2014-7843 rhbz 1163744 1163745
 ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
+
+#rhbz 1135338
+ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2378,6 +2384,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for MS Surface Pro 3 Type Cover (rhbz 1135338)
 - CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)
 - CVE-2014-7842 kvm: reporting emulation failures to userspace (rhbz 1163762 1163767)
 
