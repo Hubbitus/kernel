@@ -622,6 +622,9 @@ Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
 #CVE-2014-7841 rhbz 1163087 1163095
 Patch26067: net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
 
+#CVE-2014-7843 rhbz 1163744 1163745
+Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1352,6 +1355,9 @@ ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
 
 #CVE-2014-7841 rhbz 1163087 1163095
 ApplyPatch net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
+
+#CVE-2014-7843 rhbz 1163744 1163745
+ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2221,6 +2227,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)
+
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git1.1
 - Linux v3.18-rc4-52-g04689e749b7e
 - Reenable debugging options.
