@@ -695,6 +695,9 @@ Patch26067: net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
 #CVE-2014-7842 rhbz 1163762 1163767
 Patch26068: KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
 
+#CVE-2014-7843 rhbz 1163744 1163745
+Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1502,6 +1505,9 @@ ApplyPatch net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
 
 #CVE-2014-7842 rhbz 1163762 1163767
 ApplyPatch KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
+
+#CVE-2014-7843 rhbz 1163744 1163745
+ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2372,6 +2378,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)
 - CVE-2014-7842 kvm: reporting emulation failures to userspace (rhbz 1163762 1163767)
 
 * Wed Nov 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
