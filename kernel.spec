@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -602,8 +602,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-Patch26057: virtio_console-move-early-VQ-enablement.patch
-
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
@@ -618,9 +616,6 @@ Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
 
 #rhbz 1161805
 Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7841 rhbz 1163087 1163095
-Patch26067: net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
 
 #CVE-2014-7843 rhbz 1163744 1163745
 Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
@@ -1339,8 +1334,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-ApplyPatch virtio_console-move-early-VQ-enablement.patch
-
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
@@ -1355,9 +1348,6 @@ ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
 
 #rhbz 1161805
 ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7841 rhbz 1163087 1163095
-ApplyPatch net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
 
 #CVE-2014-7843 rhbz 1163744 1163745
 ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
@@ -2233,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git2.1
+- Linux v3.18-rc4-184-gb23dc5a7cc6e
+
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch for MS Surface Pro 3 Type Cover (rhbz 1135338)
 - CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)

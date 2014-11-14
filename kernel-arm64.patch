@@ -91,28 +91,6 @@ Date:   Mon Nov 10 16:31:05 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ae7850d2b972ee1258878ccc16824aba9d35b653
-Author: Guenter Roeck <linux@roeck-us.net>
-Date:   Sun Nov 2 18:19:15 2014 -0800
-
-    netfilter: nft_reject_bridge: Fix powerpc build error
-    
-    Fix:
-    net/bridge/netfilter/nft_reject_bridge.c:
-    In function 'nft_reject_br_send_v6_unreach':
-    net/bridge/netfilter/nft_reject_bridge.c:240:3:
-    	error: implicit declaration of function 'csum_ipv6_magic'
-       csum_ipv6_magic(&nip6h->saddr, &nip6h->daddr,
-       ^
-    make[3]: *** [net/bridge/netfilter/nft_reject_bridge.o] Error 1
-    
-    Seen with powerpc:allmodconfig.
-    
-    Fixes: 523b929d5446 ("netfilter: nft_reject_bridge: don't use IP stack to reject traffic")
-    Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-    Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
 commit e2992498e4b2aad3ceac52bfb6faccfd18332236
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 21:35:11 2014 -0500
@@ -1867,7 +1845,6 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  include/linux/of.h                               |  34 +
  include/linux/pci.h                              |  37 +-
  include/linux/property.h                         | 143 +++++
- net/bridge/netfilter/nft_reject_bridge.c         |   1 +
  net/rfkill/rfkill-gpio.c                         |  18 +-
  virt/kvm/arm/arch_timer.c                        | 108 ++--
  virt/kvm/arm/vgic-v2.c                           |  75 ++-
@@ -9793,12 +9770,12 @@ index 789957d..59498eb 100644
  	/* Timestamp support */
  	spinlock_t tstamp_lock;
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-index 63ea194..bb059b4 100644
+index 7ba83ffb08ac..3abbbd492a2c 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-@@ -579,9 +579,11 @@ static void xgene_enet_reset(struct xgene_enet_pdata *pdata)
- {
- 	u32 val;
+@@ -593,9 +593,11 @@ static int xgene_enet_reset(struct xgene_enet_pdata *pdata)
+ 	if (!xgene_ring_mgr_init(pdata))
+ 		return -ENODEV;
  
 -	clk_prepare_enable(pdata->clk);
 -	clk_disable_unprepare(pdata->clk);
@@ -9811,7 +9788,7 @@ index 63ea194..bb059b4 100644
  	xgene_enet_ecc_init(pdata);
  	xgene_enet_config_ring_if_assoc(pdata);
  
-@@ -647,15 +649,20 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+@@ -663,15 +665,21 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
  	struct phy_device *phy_dev;
  	struct device *dev = &pdata->pdev->dev;
  
@@ -9822,7 +9799,7 @@ index 63ea194..bb059b4 100644
 +	if (dev->of_node) {
 +		phy_np = of_parse_phandle(dev->of_node, "phy-handle", 0);
 +		if (!phy_np) {
-+			netdev_dbg(ndev, "No phy-handle found in DT\n");
++			netdev_dbg(ndev, "No phy-handle found\n");
 +			return -ENODEV;
 +		}
 +		pdata->phy_dev = of_phy_find_device(phy_np);
@@ -9834,12 +9811,13 @@ index 63ea194..bb059b4 100644
 +	phy_dev = pdata->phy_dev;
 +
 +	if (phy_dev == NULL ||
-+	    phy_connect_direct(ndev, phy_dev, &xgene_enet_adjust_link,
-+			       pdata->phy_mode)) {
++			phy_connect_direct(ndev, phy_dev, &xgene_enet_adjust_link,
++				pdata->phy_mode)) {
++		0, pdata->phy_mode);
  		netdev_err(ndev, "Could not connect to PHY\n");
  		return  -ENODEV;
  	}
-@@ -665,11 +672,52 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+@@ -681,11 +689,52 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
  			      ~SUPPORTED_100baseT_Half &
  			      ~SUPPORTED_1000baseT_Half;
  	phy_dev->advertising = phy_dev->supported;
@@ -9893,7 +9871,7 @@ index 63ea194..bb059b4 100644
  int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  {
  	struct net_device *ndev = pdata->ndev;
-@@ -686,7 +734,7 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+@@ -702,7 +751,7 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  		}
  	}
  
@@ -9902,7 +9880,7 @@ index 63ea194..bb059b4 100644
  		netdev_dbg(ndev, "No mdio node in the dts\n");
  		return -ENXIO;
  	}
-@@ -704,7 +752,10 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+@@ -720,7 +769,10 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  	mdio_bus->priv = pdata;
  	mdio_bus->parent = &ndev->dev;
  
@@ -12810,16 +12788,6 @@ index 0000000..a6a3d98
 +#endif /* _LINUX_PROPERTY_H_ */
 diff --git a/net/bridge/netfilter/nft_reject_bridge.c b/net/bridge/netfilter/nft_reject_bridge.c
 index 654c901..48da2c5 100644
---- a/net/bridge/netfilter/nft_reject_bridge.c
-+++ b/net/bridge/netfilter/nft_reject_bridge.c
-@@ -18,6 +18,7 @@
- #include <net/netfilter/ipv6/nf_reject.h>
- #include <linux/ip.h>
- #include <net/ip.h>
-+#include <net/ip6_checksum.h>
- #include <linux/netfilter_bridge.h>
- #include "../br_private.h"
- 
 diff --git a/net/rfkill/rfkill-gpio.c b/net/rfkill/rfkill-gpio.c
 index 0f62326..2a47179 100644
 --- a/net/rfkill/rfkill-gpio.c
