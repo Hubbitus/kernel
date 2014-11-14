@@ -2383,6 +2383,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable I40EVF driver (rhbz 1164029)
+
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch for MS Surface Pro 3 Type Cover (rhbz 1135338)
 - CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)
