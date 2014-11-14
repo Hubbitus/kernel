@@ -1,4 +1,3 @@
-From c6f69fa54729350d1e3be454739993197255fd40 Mon Sep 17 00:00:00 2001
 From: Tejun Heo <tj@kernel.org>
 Date: Mon, 27 Oct 2014 10:30:52 -0400
 Subject: [PATCH] ahci: disable MSI instead of NCQ on Samsung pci-e SSDs on

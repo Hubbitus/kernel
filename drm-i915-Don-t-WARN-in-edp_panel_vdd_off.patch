@@ -1,4 +1,3 @@
-From 267eb54f9e4be5e78a1375553f3ea0f5768cd117 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 14 Nov 2014 09:17:39 -0500
 Subject: [PATCH] drm/i915: Don't WARN in edp_panel_vdd_off
@@ -9,22 +8,22 @@ larger than we want to backport.  Just shut it up for now.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- drivers/gpu/drm/i915/intel_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/i915/intel_dp.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
-index fdff1d420c14..37d576141a36 100644
+index 9222e20e230c..952d7dcf9c3f 100644
 --- a/drivers/gpu/drm/i915/intel_dp.c
 +++ b/drivers/gpu/drm/i915/intel_dp.c
-@@ -1303,7 +1303,7 @@ static void edp_panel_vdd_off(struct intel_dp *intel_dp, bool sync)
+@@ -1303,8 +1303,6 @@ static void edp_panel_vdd_off(struct intel_dp *intel_dp, bool sync)
  	if (!is_edp(intel_dp))
  		return;
  
 -	WARN(!intel_dp->want_panel_vdd, "eDP VDD not forced on");
-+	DRM_DEBUG_KMS(!intel_dp->want_panel_vdd, "eDP VDD not forced on");
- 
+-
  	intel_dp->want_panel_vdd = false;
  
+ 	if (sync)
 -- 
 1.9.3
 

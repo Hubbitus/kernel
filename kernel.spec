@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -612,35 +612,13 @@ Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1138759
-Patch26021: drm-vmwgfx-Fix-drm.h-include.patch
-
 #rhbz 1145318
 Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
 
-#CVE-2014-7970 rhbz 1151095 1151484
-Patch26032: mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
-
-#rhbz 1149509
-Patch26034: USB-core-add-device-qualifier-quirk.patch
-Patch26035: USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
-Patch26036: USB-quirks-enable-device-qualifier-quirk-for-another.patch
-Patch26037: HID-usbhid-add-always-poll-quirk.patch
-Patch26038: HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
-Patch26039: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
-Patch26040: USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-Patch26041: HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
-
-#CVE-2014-8086 rhbz 1151353 1152608
-Patch26056: ext4-prevent-bugon-on-race-between-write-fcntl.patch
-
 #rhbz 1089731
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1153381
-Patch26059: Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 
 #CVE-2014-3688 rhbz 1155745 1155751
 Patch26061: net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
@@ -654,38 +632,11 @@ Patch26063: net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
 #rhbz 1111138
 Patch26064: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-# CVE-2014-3610 kvm: noncanonical MSR writes (rhbz 1144883 1156543)
-# CVE-2014-3611 kvm: PIT timer race condition (rhbz 1144878 1156537)
-# CVE-2014-3646 kvm: vmx: invvpid vm exit not handled (rhbz 1144825 1156534)
-# CVE-2014-8369 kvm: excessive pages un-pinning in kvm_iommu_map error path (rhbz 1156518 1156522)
-# CVE-2014-8480 CVE-2014-8481 kvm: NULL pointer dereference during rip relative instruction emulation (rhbz 1156615 1156616)
-Patch26070: KVM-x86-Check-non-canonical-addresses-upon-WRMSR.patch
-Patch26071: KVM-x86-Prevent-host-from-panicking-on-shared-MSR-wr.patch
-Patch26072: KVM-x86-Improve-thread-safety-in-pit.patch
-Patch26073: KVM-x86-Fix-wrong-masking-on-relative-jump-call.patch
-Patch26074: KVM-x86-Emulator-fixes-for-eip-canonical-checks-on-n.patch
-Patch26075: KVM-x86-Handle-errors-when-RIP-is-set-during-far-jum.patch
-Patch26076: kvm-vmx-handle-invvpid-vm-exit-gracefully.patch
-Patch26077: kvm-x86-don-t-kill-guest-on-unknown-exit-reason.patch
-Patch26078: KVM-x86-Decoding-guest-instructions-which-cross-page.patch
-Patch26079: KVM-emulate-avoid-accessing-NULL-ctxt-memopp.patch
-Patch26080: KVM-x86-Emulator-does-not-decode-clflush-well.patch
-Patch26081: KVM-x86-PREFETCH-and-HINT_NOP-should-have-SrcMem-fla.patch
-Patch26082: kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
-
 #rhbz 1157327
 Patch26083: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
 #rhbz 1159592
 Patch26084: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
-# CVE-2014-7826 CVE-2014-7825 rhbz 1161565 1161572
-Patch26085: tracing-syscalls-Ignore-numbers-outside-NR_syscalls-.patch
-
-#rhbz 1151836
-Patch26086: Revert-iwlwifi-mvm-treat-EAPOLs-like-mgmt-frames-wrt.patch
-
-Patch26087: crypto-algif-avoid-excessive-use-of-socket-buffer-in.patch
 
 #rhbz 1161805
 Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
@@ -1427,35 +1378,13 @@ ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1138759
-ApplyPatch drm-vmwgfx-Fix-drm.h-include.patch
-
 #rhbz 1145318
 ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
 
 ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
 
-#CVE-2014-7970 rhbz 1151095 1151484
-ApplyPatch mnt-Prevent-pivot_root-from-creating-a-loop-in-the-m.patch
-
-#rhbz 1149509
-ApplyPatch USB-core-add-device-qualifier-quirk.patch
-ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-Elan-To.patch
-ApplyPatch USB-quirks-enable-device-qualifier-quirk-for-another.patch
-ApplyPatch HID-usbhid-add-always-poll-quirk.patch
-ApplyPatch HID-usbhid-enable-always-poll-quirk-for-Elan-Touchsc.patch
-ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-00.patch
-ApplyPatch USB-quirks-device-qualifier-quirk-for-another-Elan-t.patch
-ApplyPatch HID-usbhid-always-poll-quirk-for-Elan-Touchscreen-01.patch
-
-#CVE-2014-8086 rhbz 1151353 1152608
-ApplyPatch ext4-prevent-bugon-on-race-between-write-fcntl.patch
-
 #rhbz 1089731
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1153381
-ApplyPatch Input-synaptics-gate-forcepad-support-by-DMI-check.patch
 
 #CVE-2014-3688 rhbz 1155745 1155751
 ApplyPatch net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
@@ -1469,38 +1398,11 @@ ApplyPatch net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-# CVE-2014-3610 kvm: noncanonical MSR writes (rhbz 1144883 1156543)
-# CVE-2014-3611 kvm: PIT timer race condition (rhbz 1144878 1156537)
-# CVE-2014-3646 kvm: vmx: invvpid vm exit not handled (rhbz 1144825 1156534)
-# CVE-2014-8369 kvm: excessive pages un-pinning in kvm_iommu_map error path (rhbz 1156518 1156522)
-# CVE-2014-8480 CVE-2014-8481 kvm: NULL pointer dereference during rip relative instruction emulation (rhbz 1156615 1156616)
-ApplyPatch KVM-x86-Check-non-canonical-addresses-upon-WRMSR.patch
-ApplyPatch KVM-x86-Prevent-host-from-panicking-on-shared-MSR-wr.patch
-ApplyPatch KVM-x86-Improve-thread-safety-in-pit.patch
-ApplyPatch KVM-x86-Fix-wrong-masking-on-relative-jump-call.patch
-ApplyPatch KVM-x86-Emulator-fixes-for-eip-canonical-checks-on-n.patch
-ApplyPatch KVM-x86-Handle-errors-when-RIP-is-set-during-far-jum.patch
-ApplyPatch kvm-vmx-handle-invvpid-vm-exit-gracefully.patch
-ApplyPatch kvm-x86-don-t-kill-guest-on-unknown-exit-reason.patch
-ApplyPatch KVM-x86-Decoding-guest-instructions-which-cross-page.patch
-ApplyPatch KVM-emulate-avoid-accessing-NULL-ctxt-memopp.patch
-ApplyPatch KVM-x86-Emulator-does-not-decode-clflush-well.patch
-ApplyPatch KVM-x86-PREFETCH-and-HINT_NOP-should-have-SrcMem-fla.patch
-ApplyPatch kvm-fix-excessive-pages-un-pinning-in-kvm_iommu_map-.patch
-
 #rhbz 1157327
 ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
 #rhbz 1159592
 ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
-# CVE-2014-7826 CVE-2014-7825 rhbz 1161565 1161572
-ApplyPatch tracing-syscalls-Ignore-numbers-outside-NR_syscalls-.patch
-
-#rhbz 1151836
-ApplyPatch Revert-iwlwifi-mvm-treat-EAPOLs-like-mgmt-frames-wrt.patch
-
-ApplyPatch crypto-algif-avoid-excessive-use-of-socket-buffer-in.patch
 
 #rhbz 1161805
 ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
@@ -2385,7 +2287,8 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-300
+- Linux v3.17.3
 - Quiet WARN in i915 edp VDD handling
 - Enable I40EVF driver (rhbz 1164029)
 

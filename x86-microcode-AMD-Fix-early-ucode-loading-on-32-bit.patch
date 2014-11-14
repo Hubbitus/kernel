@@ -1,4 +1,3 @@
-From 4232c1bb6b7ed45b96d2112e6f151cf5c9c28470 Mon Sep 17 00:00:00 2001
 From: Borislav Petkov <bp@alien8.de>
 Date: Sat, 1 Nov 2014 11:01:00 +0100
 Subject: [PATCH] x86, microcode, AMD: Fix early ucode loading on 32-bit
