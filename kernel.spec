@@ -2223,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable I40EVF driver (rhbz 1164029)
+
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git2.1
 - Linux v3.18-rc4-184-gb23dc5a7cc6e
 
