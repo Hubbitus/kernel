@@ -551,6 +551,7 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1826: drm-i915-hush-check-crtc-state.patch
+Patch1827: drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
 
 # Quiet boot fixes
 
@@ -1385,6 +1386,7 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Intel DRM
 ApplyPatch drm-i915-hush-check-crtc-state.patch
+ApplyPatch drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
 
 # Radeon DRM
 
@@ -2384,6 +2386,7 @@ fi
 #                                    ||     ||
 %changelog
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Quiet WARN in i915 edp VDD handling
 - Enable I40EVF driver (rhbz 1164029)
 
 * Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
