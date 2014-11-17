@@ -1772,7 +1772,6 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  arch/arm64/kernel/vmlinux.lds.S                  |  17 +
  arch/arm64/kvm/hyp.S                             |   4 +-
  arch/arm64/mm/dma-mapping.c                      | 103 +++
- arch/arm64/mm/mmu.c                              |   2 +-
  arch/arm64/pci/Makefile                          |   2 +
  arch/arm64/pci/mmconfig.c                        | 292 +++++++++
  arch/arm64/pci/pci.c                             | 461 ++++++++++++++
@@ -4750,17 +4749,6 @@ index d920942..705a9ce 100644
  	return swiotlb_late_init_with_default_size(swiotlb_size);
 diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
 index 0bf90d2..f4f8b50 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -202,7 +202,7 @@ static void __init alloc_init_pmd(pud_t *pud, unsigned long addr,
- }
- 
- static void __init alloc_init_pud(pgd_t *pgd, unsigned long addr,
--				  unsigned long end, unsigned long phys,
-+				  unsigned long end, phys_addr_t phys,
- 				  int map_io)
- {
- 	pud_t *pud;
 diff --git a/arch/arm64/pci/Makefile b/arch/arm64/pci/Makefile
 new file mode 100644
 index 0000000..7038b51

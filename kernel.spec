@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -607,18 +607,9 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1158204 1157157
-Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
 Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 
 Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
-
-#rhbz 1161805
-Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7843 rhbz 1163744 1163745
-Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
 
 #rhbz 1135338
 Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
@@ -1339,18 +1330,9 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1158204 1157157
-ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
-
-#rhbz 1161805
-ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7843 rhbz 1163744 1163745
-ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
 
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
@@ -2223,6 +2205,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc5.git0.1
+- Linux v3.18-rc5
+- Disable debugging options.
+
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable I40EVF driver (rhbz 1164029)
 
