@@ -1,3 +1,15 @@
+commit ffbe9c488b747686ebfbb35e7c87aec80b183193
+Merge: ccdf75c fc14f9c
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Mon Nov 17 11:34:47 2014 -0500
+
+    Merge tag 'v3.18-rc5' into devel
+    
+    Linux 3.18-rc5
+    
+    Conflicts:
+    	drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
+
 commit ccdf75caa6a1165b8199930983596ef64cf09bd3
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 17:09:29 2014 -0500
@@ -90,6 +102,28 @@ Date:   Mon Nov 10 16:31:05 2014 -0500
     is the case.
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit ae7850d2b972ee1258878ccc16824aba9d35b653
+Author: Guenter Roeck <linux@roeck-us.net>
+Date:   Sun Nov 2 18:19:15 2014 -0800
+
+    netfilter: nft_reject_bridge: Fix powerpc build error
+    
+    Fix:
+    net/bridge/netfilter/nft_reject_bridge.c:
+    In function 'nft_reject_br_send_v6_unreach':
+    net/bridge/netfilter/nft_reject_bridge.c:240:3:
+    	error: implicit declaration of function 'csum_ipv6_magic'
+       csum_ipv6_magic(&nip6h->saddr, &nip6h->daddr,
+       ^
+    make[3]: *** [net/bridge/netfilter/nft_reject_bridge.o] Error 1
+    
+    Seen with powerpc:allmodconfig.
+    
+    Fixes: 523b929d5446 ("netfilter: nft_reject_bridge: don't use IP stack to reject traffic")
+    Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+    Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
 
 commit e2992498e4b2aad3ceac52bfb6faccfd18332236
 Author: Mark Salter <msalter@redhat.com>
@@ -1814,7 +1848,7 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  drivers/net/ethernet/amd/xgbe/xgbe-mdio.c        |  20 +-
  drivers/net/ethernet/amd/xgbe/xgbe-ptp.c         |   4 +-
  drivers/net/ethernet/amd/xgbe/xgbe.h             |  13 +
- drivers/net/ethernet/apm/xgene/xgene_enet_hw.c   |  77 ++-
+ drivers/net/ethernet/apm/xgene/xgene_enet_hw.c   |  78 ++-
  drivers/net/ethernet/apm/xgene/xgene_enet_main.c |  68 +-
  drivers/net/ethernet/apm/xgene/xgene_enet_main.h |   1 +
  drivers/net/ethernet/smsc/smc91x.c               |  10 +
@@ -1849,7 +1883,7 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  virt/kvm/arm/vgic-v2.c                           |  75 ++-
  virt/kvm/arm/vgic-v3.c                           |   8 +-
  virt/kvm/arm/vgic.c                              |  32 +-
- 123 files changed, 6825 insertions(+), 1116 deletions(-)
+ 121 files changed, 6824 insertions(+), 1115 deletions(-)
 
 diff --git a/Documentation/acpi/gpio-properties.txt b/Documentation/acpi/gpio-properties.txt
 new file mode 100644
@@ -2404,7 +2438,7 @@ index c3f2682..1d35ff3 100644
  
  	switch (gpio) {
 diff --git a/arch/arm/plat-orion/gpio.c b/arch/arm/plat-orion/gpio.c
-index b61a3bc..b357053 100644
+index e048f61..e53fc8d 100644
 --- a/arch/arm/plat-orion/gpio.c
 +++ b/arch/arm/plat-orion/gpio.c
 @@ -306,9 +306,10 @@ EXPORT_SYMBOL(orion_gpio_set_blink);
@@ -3706,7 +3740,7 @@ index cce9524..1d90f31 100644
  	const struct cpu_operations **ops = supported_cpu_ops;
  
 diff --git a/arch/arm64/kernel/efi-entry.S b/arch/arm64/kernel/efi-entry.S
-index 619b1dd..a0016d3 100644
+index d18a449..8ce9b05 100644
 --- a/arch/arm64/kernel/efi-entry.S
 +++ b/arch/arm64/kernel/efi-entry.S
 @@ -61,7 +61,8 @@ ENTRY(efi_stub_entry)
@@ -3718,7 +3752,7 @@ index 619b1dd..a0016d3 100644
 +	add	x21, x0, x21
  
  	/*
- 	 * Flush dcache covering current runtime addresses
+ 	 * Calculate size of the kernel Image (same for original and copy).
 diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
 index 95c49eb..f9de195 100644
 --- a/arch/arm64/kernel/efi.c
@@ -4747,8 +4781,6 @@ index d920942..705a9ce 100644
  	dma_ops = &noncoherent_swiotlb_dma_ops;
  
  	return swiotlb_late_init_with_default_size(swiotlb_size);
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 0bf90d2..f4f8b50 100644
 diff --git a/arch/arm64/pci/Makefile b/arch/arm64/pci/Makefile
 new file mode 100644
 index 0000000..7038b51
@@ -9758,10 +9790,10 @@ index 789957d..59498eb 100644
  	/* Timestamp support */
  	spinlock_t tstamp_lock;
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-index 7ba83ffb08ac..3abbbd492a2c 100644
+index 7ba83ff..dbbd661 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-@@ -593,9 +593,11 @@ static int xgene_enet_reset(struct xgene_enet_pdata *pdata)
+@@ -593,9 +593,12 @@ static int xgene_enet_reset(struct xgene_enet_pdata *pdata)
  	if (!xgene_ring_mgr_init(pdata))
  		return -ENODEV;
  
@@ -9773,10 +9805,11 @@ index 7ba83ffb08ac..3abbbd492a2c 100644
 +		clk_disable_unprepare(pdata->clk);
 +		clk_prepare_enable(pdata->clk);
 +	}
++
  	xgene_enet_ecc_init(pdata);
  	xgene_enet_config_ring_if_assoc(pdata);
  
-@@ -663,15 +665,21 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+@@ -663,15 +666,20 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
  	struct phy_device *phy_dev;
  	struct device *dev = &pdata->pdev->dev;
  
@@ -9787,7 +9820,7 @@ index 7ba83ffb08ac..3abbbd492a2c 100644
 +	if (dev->of_node) {
 +		phy_np = of_parse_phandle(dev->of_node, "phy-handle", 0);
 +		if (!phy_np) {
-+			netdev_dbg(ndev, "No phy-handle found\n");
++			netdev_dbg(ndev, "No phy-handle found in DT\n");
 +			return -ENODEV;
 +		}
 +		pdata->phy_dev = of_phy_find_device(phy_np);
@@ -9799,9 +9832,8 @@ index 7ba83ffb08ac..3abbbd492a2c 100644
 +	phy_dev = pdata->phy_dev;
 +
 +	if (phy_dev == NULL ||
-+			phy_connect_direct(ndev, phy_dev, &xgene_enet_adjust_link,
-+				pdata->phy_mode)) {
-+		0, pdata->phy_mode);
++	    phy_connect_direct(ndev, phy_dev, &xgene_enet_adjust_link,
++			       pdata->phy_mode)) {
  		netdev_err(ndev, "Could not connect to PHY\n");
  		return  -ENODEV;
  	}
@@ -9881,7 +9913,7 @@ index 7ba83ffb08ac..3abbbd492a2c 100644
  		netdev_err(ndev, "Failed to register MDIO bus\n");
  		mdiobus_free(mdio_bus);
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-index 3c208cc..6370ff4 100644
+index 1236696..f66598a 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
 @@ -746,6 +746,42 @@ static const struct net_device_ops xgene_ndev_ops = {
@@ -9986,7 +10018,7 @@ index 3c208cc..6370ff4 100644
  	}
  
  	base_addr = pdata->base_addr;
-@@ -873,7 +918,7 @@ static int xgene_enet_init_hw(struct xgene_enet_pdata *pdata)
+@@ -875,7 +920,7 @@ static int xgene_enet_init_hw(struct xgene_enet_pdata *pdata)
  	pdata->port_ops->cle_bypass(pdata, dst_ring_num, buf_pool->id);
  	pdata->mac_ops->init(pdata);
  
@@ -9995,7 +10027,7 @@ index 3c208cc..6370ff4 100644
  }
  
  static void xgene_enet_setup_ops(struct xgene_enet_pdata *pdata)
-@@ -934,7 +979,7 @@ static int xgene_enet_probe(struct platform_device *pdev)
+@@ -936,7 +981,7 @@ static int xgene_enet_probe(struct platform_device *pdev)
  		goto err;
  	}
  
@@ -10004,7 +10036,7 @@ index 3c208cc..6370ff4 100644
  	if (ret) {
  		netdev_err(ndev, "No usable DMA configuration\n");
  		goto err;
-@@ -981,6 +1026,14 @@ static int xgene_enet_remove(struct platform_device *pdev)
+@@ -984,6 +1029,14 @@ static int xgene_enet_remove(struct platform_device *pdev)
  	return 0;
  }
  
@@ -10019,7 +10051,7 @@ index 3c208cc..6370ff4 100644
  static struct of_device_id xgene_enet_match[] = {
  	{.compatible = "apm,xgene-enet",},
  	{},
-@@ -992,6 +1045,7 @@ static struct platform_driver xgene_enet_driver = {
+@@ -995,6 +1048,7 @@ static struct platform_driver xgene_enet_driver = {
  	.driver = {
  		   .name = "xgene-enet",
  		   .of_match_table = xgene_enet_match,
@@ -10028,7 +10060,7 @@ index 3c208cc..6370ff4 100644
  	.probe = xgene_enet_probe,
  	.remove = xgene_enet_remove,
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.h b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
-index 874e5a0..8b7e2cf 100644
+index f9958fa..0e06cad 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
 @@ -31,6 +31,7 @@
@@ -10040,7 +10072,7 @@ index 874e5a0..8b7e2cf 100644
  
  #define XGENE_DRV_VERSION	"v1.0"
 diff --git a/drivers/net/ethernet/smsc/smc91x.c b/drivers/net/ethernet/smsc/smc91x.c
-index 2c62208..98e22544 100644
+index 6cc3cf6..91c36a2 100644
 --- a/drivers/net/ethernet/smsc/smc91x.c
 +++ b/drivers/net/ethernet/smsc/smc91x.c
 @@ -82,6 +82,7 @@ static const char version[] =
@@ -10051,7 +10083,7 @@ index 2c62208..98e22544 100644
  
  #include <linux/netdevice.h>
  #include <linux/etherdevice.h>
-@@ -2463,6 +2464,14 @@ static struct dev_pm_ops smc_drv_pm_ops = {
+@@ -2467,6 +2468,14 @@ static struct dev_pm_ops smc_drv_pm_ops = {
  	.resume		= smc_drv_resume,
  };
  
@@ -10066,7 +10098,7 @@ index 2c62208..98e22544 100644
  static struct platform_driver smc_driver = {
  	.probe		= smc_drv_probe,
  	.remove		= smc_drv_remove,
-@@ -2471,6 +2480,7 @@ static struct platform_driver smc_driver = {
+@@ -2475,6 +2484,7 @@ static struct platform_driver smc_driver = {
  		.owner	= THIS_MODULE,
  		.pm	= &smc_drv_pm_ops,
  		.of_match_table = of_match_ptr(smc91x_match),
@@ -12774,8 +12806,6 @@ index 0000000..a6a3d98
 +}
 +
 +#endif /* _LINUX_PROPERTY_H_ */
-diff --git a/net/bridge/netfilter/nft_reject_bridge.c b/net/bridge/netfilter/nft_reject_bridge.c
-index 654c901..48da2c5 100644
 diff --git a/net/rfkill/rfkill-gpio.c b/net/rfkill/rfkill-gpio.c
 index 0f62326..2a47179 100644
 --- a/net/rfkill/rfkill-gpio.c
