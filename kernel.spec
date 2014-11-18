@@ -629,9 +629,6 @@ Patch26062: net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
 #CVE-2014-3673 rhbz 1147850 1155727
 Patch26063: net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
 
-#rhbz 1111138
-Patch26064: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
-
 #rhbz 1157327
 Patch26083: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
 
@@ -1394,9 +1391,6 @@ ApplyPatch net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
 
 #CVE-2014-3673 rhbz 1147850 1155727
 ApplyPatch net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
-
-#rhbz 1111138
-ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 #rhbz 1157327
 ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
