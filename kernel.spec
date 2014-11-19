@@ -2281,6 +2281,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable SERIAL_8250 on s390x (rhbz 1158848)
+
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-300
 - Linux v3.17.3
 - Quiet WARN in i915 edp VDD handling
