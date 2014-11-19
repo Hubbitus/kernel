@@ -233,6 +233,7 @@ CONFIG_HOTPLUG_PCI_S390=y
 # CONFIG_HID is not set
 # CONFIG_MTD is not set
 
+# CONFIG_SERIAL_8250 is not set
 # CONFIG_PARPORT is not set
 # CONFIG_UWB is not set
 # CONFIG_MMC is not set
