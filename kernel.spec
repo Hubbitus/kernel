@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -612,40 +612,8 @@ Patch26016: HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 Patch26019: psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 Patch26020: psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1145318
-Patch26029: KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
-Patch26030: GFS2-Make-rename-not-save-dirent-location.patch
-
 #rhbz 1089731
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#CVE-2014-3688 rhbz 1155745 1155751
-Patch26061: net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
-
-#CVE-2014-3687 rhbz 1155731 1155738
-Patch26062: net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
-
-#CVE-2014-3673 rhbz 1147850 1155727
-Patch26063: net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
-
-#rhbz 1157327
-Patch26083: quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
-
-#rhbz 1159592
-Patch26084: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
-#rhbz 1161805
-Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7841 rhbz 1163087 1163095
-Patch26067: net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
-
-#CVE-2014-7842 rhbz 1163762 1163767
-Patch26068: KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
-
-#CVE-2014-7843 rhbz 1163744 1163745
-Patch26069: arm64-__clear_user-handle-exceptions-on-strb.patch
 
 #rhbz 1135338
 Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
@@ -1375,40 +1343,8 @@ ApplyPatch HID-wacom-Add-support-for-the-Cintiq-Companion.patch
 ApplyPatch psmouse-Add-psmouse_matches_pnp_id-helper-function.patch
 ApplyPatch psmouse-Add-support-for-detecting-FocalTech-PS-2-tou.patch
 
-#rhbz 1145318
-ApplyPatch KEYS-Reinstate-EPERM-for-a-key-type-name-beginning-w.patch
-
-ApplyPatch GFS2-Make-rename-not-save-dirent-location.patch
-
 #rhbz 1089731
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#CVE-2014-3688 rhbz 1155745 1155751
-ApplyPatch net-sctp-fix-skb_over_panic-when-receiving-malformed.patch
-
-#CVE-2014-3687 rhbz 1155731 1155738
-ApplyPatch net-sctp-fix-panic-on-duplicate-ASCONF-chunks.patch
-
-#CVE-2014-3673 rhbz 1147850 1155727
-ApplyPatch net-sctp-fix-remote-memory-pressure-from-excessive-q.patch
-
-#rhbz 1157327
-ApplyPatch quirk-for-Lenovo-Yoga-3-no-rfkill-switch.patch
-
-#rhbz 1159592
-ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
-#rhbz 1161805
-ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
-
-#CVE-2014-7841 rhbz 1163087 1163095
-ApplyPatch net-sctp-fix-NULL-pointer-dereference-in-af-from_add.patch
-
-#CVE-2014-7842 rhbz 1163762 1163767
-ApplyPatch KVM-x86-Don-t-report-guest-userspace-emulation-error.patch
-
-#CVE-2014-7843 rhbz 1163744 1163745
-ApplyPatch arm64-__clear_user-handle-exceptions-on-strb.patch
 
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
@@ -2281,7 +2217,8 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.4-300
+- Linux v3.17.4
 - Move TPM drivers to main kernel package (rhbz 1164937)
 
 * Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-301

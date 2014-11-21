@@ -12,7 +12,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/intel_dp.c b/drivers/gpu/drm/i915/intel_dp.c
-index 9222e20e230c..952d7dcf9c3f 100644
+index 4b3c09636990..cff7f2e04de2 100644
 --- a/drivers/gpu/drm/i915/intel_dp.c
 +++ b/drivers/gpu/drm/i915/intel_dp.c
 @@ -1303,8 +1303,6 @@ static void edp_panel_vdd_off(struct intel_dp *intel_dp, bool sync)
