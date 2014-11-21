@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2281,7 +2281,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-301
 - Disable SERIAL_8250 on s390x (rhbz 1158848)
 
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-300
