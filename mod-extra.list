@@ -164,10 +164,6 @@ ksdazzle-sir.ko
 ma600-sir.ko
 mcp2120-sir.ko
 toim3232-sir.ko
-tpm_atmel.ko
-tpm_infineon.ko
-tpm_nsc.ko
-tpm_tis.ko
 slip.ko
 nilfs2.ko
 batman-adv.ko
