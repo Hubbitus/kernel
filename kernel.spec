@@ -8,7 +8,7 @@ Summary: The Linux kernel
 # be 0.
 %global released_kernel 0
 
-%global aarch64patches 0
+%global aarch64patches 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -43,7 +43,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -603,22 +603,17 @@ Patch22000: weird-root-dentry-name-debug.patch
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-Patch26057: virtio_console-move-early-VQ-enablement.patch
-
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1158204 1157157
-Patch26063: x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
 Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 
 Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
 
-#rhbz 1161805
-Patch26066: ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
+#rhbz 1135338
+Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1356,22 +1351,17 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
 
-ApplyPatch virtio_console-move-early-VQ-enablement.patch
-
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1158204 1157157
-ApplyPatch x86-microcode-AMD-Fix-early-ucode-loading-on-32-bit.patch
-
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
 
-#rhbz 1161805
-ApplyPatch ahci-disable-MSI-instead-of-NCQ-on-Samsung-pci-e-SSD.patch
+#rhbz 1135338
+ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2252,6 +2242,39 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Move TPM drivers to main kernel package (rhbz 1164937)
+
+* Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable SERIAL_8250 on s390x (rhbz 1158848)
+
+* Mon Nov 17 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.18.0-0.rc5.git0.2
+- Re-merge kernel-arm64.patch
+
+* Mon Nov 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc5.git0.1
+- Linux v3.18-rc5
+- Disable debugging options.
+
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable I40EVF driver (rhbz 1164029)
+
+* Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git2.1
+- Linux v3.18-rc4-184-gb23dc5a7cc6e
+
+* Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for MS Surface Pro 3 Type Cover (rhbz 1135338)
+- CVE-2014-7843 aarch64: copying from /dev/zero causes local DoS (rhbz 1163744 1163745)
+
+* Thu Nov 13 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc4.git1.1
+- Linux v3.18-rc4-52-g04689e749b7e
+- Reenable debugging options.
+
+* Wed Nov 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-7841 sctp: NULL ptr deref on malformed packet (rhbz 1163087 1163095)
+
+* Tue Nov 11 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.18.0-0.rc4.git0.2
+- Re-enable kernel-arm64.patch, and fix up merge conflicts with 3.18-rc4
+
 * Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix Samsung pci-e SSD handling on some macbooks (rhbz 1161805)
 

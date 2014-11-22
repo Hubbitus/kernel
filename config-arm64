@@ -134,5 +134,9 @@ CONFIG_AMD_XGBE_PHY=m
 
 # CONFIG_IMX_THERMAL is not set
 
-# temporary 2014-10-21
+# still? 2014-11-11
 # CONFIG_BPF_JIT is not set
+
+CONFIG_DMI=y
+CONFIG_DMIID=y
+CONFIG_DMI_SYSFS=y
