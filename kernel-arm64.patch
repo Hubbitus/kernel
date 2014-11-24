@@ -11507,23 +11507,6 @@ index 9ecabfa..9029d59c 100644
  static int xgene_pcie_probe_bridge(struct platform_device *pdev)
  {
  	struct device_node *dn = pdev->dev.of_node;
-@@ -631,10 +798,15 @@ static int xgene_pcie_probe_bridge(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	bus = pci_scan_root_bus(&pdev->dev, 0, &xgene_pcie_ops, port, &res);
-+	bus = pci_create_root_bus(&pdev->dev, 0,
-+					&xgene_pcie_ops, port, &res);
- 	if (!bus)
- 		return -ENOMEM;
- 
-+	pci_scan_child_bus(bus);
-+	pci_assign_unassigned_bus_resources(bus);
-+	pci_bus_add_devices(bus);
-+
- 	platform_set_drvdata(pdev, port);
- 	return 0;
- }
 diff --git a/drivers/pnp/resource.c b/drivers/pnp/resource.c
 index 782e822..d952462 100644
 --- a/drivers/pnp/resource.c
