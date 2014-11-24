@@ -618,6 +618,9 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1135338
 Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
+#rhbz 1165206
+Patch26071: usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1348,6 +1351,9 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
+#rhbz 1165206
+ApplyPatch usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2217,6 +2223,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for Laser Mouse 6000 (rhbz 1165206)
+
 * Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.4-300
 - Linux v3.17.4
 - Move TPM drivers to main kernel package (rhbz 1164937)
