@@ -1,0 +1,31 @@
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 20 Nov 2014 15:16:01 +0100
+Subject: [PATCH] usb-quirks: Add reset-resume quirk for MS Wireless Laser
+ Mouse 6000
+
+This wireless mouse receiver needs a reset-resume quirk to properly come
+out of reset.
+
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1165206
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/usb/core/quirks.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
+index 39b4081b632d..96fafed92b76 100644
+--- a/drivers/usb/core/quirks.c
++++ b/drivers/usb/core/quirks.c
+@@ -44,6 +44,9 @@ static const struct usb_device_id usb_quirk_list[] = {
+ 	/* Creative SB Audigy 2 NX */
+ 	{ USB_DEVICE(0x041e, 0x3020), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
++	/* Microsoft Wireless Laser Mouse 6000 Receiver */
++	{ USB_DEVICE(0x045e, 0x00e1), .driver_info = USB_QUIRK_RESET_RESUME },
++
+ 	/* Microsoft LifeCam-VX700 v2.0 */
+ 	{ USB_DEVICE(0x045e, 0x0770), .driver_info = USB_QUIRK_RESET_RESUME },
+ 
+-- 
+1.9.3
+

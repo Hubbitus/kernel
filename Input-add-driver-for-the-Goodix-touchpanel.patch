@@ -21,7 +21,7 @@ Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
  create mode 100644 drivers/input/touchscreen/goodix.c
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index c444907ccd69..766848ecf8f5 100644
+index 0ff630de8a6d..e4b643f22336 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
 @@ -4154,6 +4154,12 @@ L:	linux-media@vger.kernel.org

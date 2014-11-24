@@ -11,7 +11,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 750d32268fb1..f560653b8c4f 100644
+index 7b8969db8398..d1f4a3d88dfc 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -1612,7 +1612,8 @@ config EFI_MIXED

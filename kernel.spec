@@ -43,7 +43,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -610,10 +610,11 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 
-Patch26065: sched-Remove-lockdep-check-in-sched_move_task.patch
-
 #rhbz 1135338
 Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
+#rhbz 1165206
+Patch26071: usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1358,10 +1359,11 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
-ApplyPatch sched-Remove-lockdep-check-in-sched_move_task.patch
-
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
+#rhbz 1165206
+ApplyPatch usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2242,6 +2244,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Nov 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Linux v3.18-rc6
+- Add quirk for Laser Mouse 6000 (rhbz 1165206)
+
 * Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Move TPM drivers to main kernel package (rhbz 1164937)
 
