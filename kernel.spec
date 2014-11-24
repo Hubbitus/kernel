@@ -612,6 +612,9 @@ Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
 #rhbz 1135338
 Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
+#rhbz 1165206
+Patch26071: usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1332,6 +1335,9 @@ ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
 
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
+#rhbz 1165206
+ApplyPatch usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2203,6 +2209,7 @@ fi
 %changelog
 * Mon Nov 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.18-rc6
+- Add quirk for Laser Mouse 6000 (rhbz 1165206)
 
 * Fri Nov 21 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Move TPM drivers to main kernel package (rhbz 1164937)
