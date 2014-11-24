@@ -83,7 +83,6 @@ CONFIG_TN3270_FS=m
 #
 CONFIG_S390_TAPE_34XX=m
 
-# CONFIG_PPP is not set
 # CONFIG_SLIP is not set
 
 #
