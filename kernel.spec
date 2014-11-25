@@ -642,6 +642,13 @@ Patch31013: rt5640_enable_mic.patch
 # Fix wifi on V8P(?) from Jan-Michael Brummer
 Patch31014: sdhci-pm.patch
 
+# https://bugs.freedesktop.org/show_bug.cgi?id=85977
+# Hacky implementation of backlight support for (at least) Dell Venue 8 Pro
+# This is the patch attached to the bug plus a further change sent by email
+# by J-M which makes the hack optional, enabled only if
+# i915.force_backlight_pmic=1 is passed on the cmdline
+Patch31015: baytrail-backlight.patch
+
 # END OF AWB PATCH DEFINITIONS
 
 # END OF PATCH DEFINITIONS
@@ -1380,6 +1387,7 @@ ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 #ApplyPatch rt5640_enable_mic.patch
 ApplyPatch soc_button_use_leftmeta.patch
 ApplyPatch sdhci-pm.patch
+ApplyPatch baytrail-backlight.patch
 
 # END OF AWB (BAYTRAIL) PATCH APPLICATIONS
 
