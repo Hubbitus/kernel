@@ -635,10 +635,6 @@ Patch31011: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
 # from Jan-Michael Brummer
 Patch31012: soc_button_use_leftmeta.patch
 
-# Enable mic on RT5640 (i.e. lots of Baytrail hardware, we hope)
-# from Jan-Michael Brummer
-Patch31013: rt5640_enable_mic.patch
-
 # Fix wifi on V8P(?) from Jan-Michael Brummer
 Patch31014: sdhci-pm.patch
 
@@ -1384,7 +1380,6 @@ ApplyPatch kernel-arm64.patch -R
 # AWB (BAYTRAIL) PATCH APPLICATIONS
 ApplyPatch V2-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
 ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
-#ApplyPatch rt5640_enable_mic.patch
 ApplyPatch soc_button_use_leftmeta.patch
 ApplyPatch sdhci-pm.patch
 ApplyPatch baytrail-backlight.patch
