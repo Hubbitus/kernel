@@ -24,8 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%global dist awb
-%define buildid .1
+# % define buildid .local
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -618,38 +617,6 @@ Patch26071: usb-quirks-Add-reset-resume-quirk-for-MS-Wireless-La.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-
-# END OF FEDORA PATCH DEFINITIONS
-
-# AWB PATCH DEFINITIONS (BAYTRAIL)
-
-# https://patchwork.kernel.org/patch/5161621/(minor rediff required)
-# https://bugzilla.kernel.org/show_bug.cgi?id=69011
-# Fixes battery status
-Patch31010: V2-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
-
-# Add SDIO ID for the V8P wireless adapter to ath6kl driver
-Patch31011: support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
-
-# Map 'Home' button on Venue 8 Pro to left meta key (i.e. "Start")
-# from Jan-Michael Brummer
-Patch31012: soc_button_use_leftmeta.patch
-
-# Enable mic on RT5640 (i.e. lots of Baytrail hardware, we hope)
-# from Jan-Michael Brummer
-Patch31013: rt5640_enable_mic.patch
-
-# Fix wifi on V8P(?) from Jan-Michael Brummer
-Patch31014: sdhci-pm.patch
-
-# https://bugs.freedesktop.org/show_bug.cgi?id=85977
-# Hacky implementation of backlight support for (at least) Dell Venue 8 Pro
-# This is the patch attached to the bug plus a further change sent by email
-# by J-M which makes the hack optional, enabled only if
-# i915.force_backlight_pmic=1 is passed on the cmdline
-Patch31015: baytrail-backlight.patch
-
-# END OF AWB PATCH DEFINITIONS
 
 # END OF PATCH DEFINITIONS
 
@@ -1378,18 +1345,6 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
-
-# END OF FEDORA PATCH APPLICATIONS
-
-# AWB (BAYTRAIL) PATCH APPLICATIONS
-ApplyPatch V2-ACPI-Add-_DEP-Operation-Region-Dependencies-support-to-fix-battery-issue-on-the-Asus-T100TA.patch
-ApplyPatch support-Dell-OEM-chipset-found-in-Venue-8-Pro-SDIO-I.patch
-#ApplyPatch rt5640_enable_mic.patch
-ApplyPatch soc_button_use_leftmeta.patch
-ApplyPatch sdhci-pm.patch
-ApplyPatch baytrail-backlight.patch
-
-# END OF AWB (BAYTRAIL) PATCH APPLICATIONS
 
 # END OF PATCH APPLICATIONS
 
@@ -2243,12 +2198,12 @@ fi
 #
 # 
 #                        ___________________________________________________________
-#                       / This branch is for Fedora 21. You probably want to commit \
-#  _____ ____  _        \ to the F-20 branch instead, or in addition to this one.   /
-# |  ___|___ \/ |        -----------------------------------------------------------
-# | |_    __) | |             \   ^__^
-# |  _|  / __/| |              \  (@@)\_______
-# |_|   |_____|_|                 (__)\       )\/\
+#                       / This branch is for Fedora 22. You probably want to commit \
+#  _____ ____  ____     \ to the f21 branch instead, or in addition to this one.    /
+# |  ___|___ \|___ \     -----------------------------------------------------------
+# | |_    __) | __) |        \   ^__^
+# |  _|  / __/ / __/          \  (@@)\_______
+# |_|   |_____|_____|            (__)\       )\/\
 #                                    ||----w |
 #                                    ||     ||
 %changelog
