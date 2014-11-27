@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2207,6 +2207,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Nov 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-0.rc6.git1.1
+- Linux v3.18-rc6-28-g3314bf6ba2ac
+- Gobble Gobble
+
 * Mon Nov 24 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.18-rc6
 - Add quirk for Laser Mouse 6000 (rhbz 1165206)
