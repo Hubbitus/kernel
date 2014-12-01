@@ -1,4 +1,3 @@
-From 83d04c39f9048807a8500e575ae3f1718a3f45bb Mon Sep 17 00:00:00 2001
 From: Alex Deucher <alexander.deucher@amd.com>
 Date: Mon, 13 Oct 2014 13:23:48 -0400
 Subject: [PATCH] drm/radeon: initialize sadb to NULL in the audio code
@@ -13,7 +12,7 @@ Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
  3 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/radeon/dce3_1_afmt.c b/drivers/gpu/drm/radeon/dce3_1_afmt.c
-index 950af153f30e..6b1dbecdd36d 100644
+index 71f4d26669cd..13a27d971d35 100644
 --- a/drivers/gpu/drm/radeon/dce3_1_afmt.c
 +++ b/drivers/gpu/drm/radeon/dce3_1_afmt.c
 @@ -32,7 +32,7 @@ static void dce3_2_afmt_write_speaker_allocation(struct drm_encoder *encoder)
@@ -26,7 +25,7 @@ index 950af153f30e..6b1dbecdd36d 100644
  
  	list_for_each_entry(connector, &encoder->dev->mode_config.connector_list, head) {
 diff --git a/drivers/gpu/drm/radeon/dce6_afmt.c b/drivers/gpu/drm/radeon/dce6_afmt.c
-index c0bbf68dbc27..960a5f0f042f 100644
+index 790d8cafdb87..88dd17955db3 100644
 --- a/drivers/gpu/drm/radeon/dce6_afmt.c
 +++ b/drivers/gpu/drm/radeon/dce6_afmt.c
 @@ -155,7 +155,7 @@ void dce6_afmt_write_speaker_allocation(struct drm_encoder *encoder)
@@ -39,10 +38,10 @@ index c0bbf68dbc27..960a5f0f042f 100644
  
  	if (!dig || !dig->afmt || !dig->afmt->pin)
 diff --git a/drivers/gpu/drm/radeon/evergreen_hdmi.c b/drivers/gpu/drm/radeon/evergreen_hdmi.c
-index 2514d659b1ba..f6a5c3026f85 100644
+index 71ebdf89fd76..993978051ede 100644
 --- a/drivers/gpu/drm/radeon/evergreen_hdmi.c
 +++ b/drivers/gpu/drm/radeon/evergreen_hdmi.c
-@@ -133,7 +133,7 @@ static void dce4_afmt_write_speaker_allocation(struct drm_encoder *encoder)
+@@ -102,7 +102,7 @@ static void dce4_afmt_write_speaker_allocation(struct drm_encoder *encoder)
  	struct drm_connector *connector;
  	struct radeon_connector *radeon_connector = NULL;
  	u32 tmp;
