@@ -631,6 +631,9 @@ Patch26073: Input-xpad-use-proper-endpoint-type.patch
 
 Patch26074: drm-i915-Ignore-long-hpds-on-eDP-ports.patch
 
+#CVE-2014-9090 rhbz 1170691
+Patch26075: x86_64-traps-Stop-using-IST-for-SS.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1372,6 +1375,9 @@ ApplyPatch drm-radeon-initialize-sadb-to-NULL-in-the-audio-code.patch
 ApplyPatch Input-xpad-use-proper-endpoint-type.patch
 
 ApplyPatch drm-i915-Ignore-long-hpds-on-eDP-ports.patch
+
+#CVE-2014-9090 rhbz 1170691
+ApplyPatch x86_64-traps-Stop-using-IST-for-SS.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2246,7 +2252,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu Dec 04 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.17.4-302
+* Thu Dec 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.4-302
+- CVE-2014-9090 local DoS via do_double_fault due to improper SS faults (rhbz 1170691)
+
+* Thu Dec 04 2014 Kyle McMartin <kyle@fedoraproject.org>
 - kernel-arm64.patch: update.
 - arm64-force-serial-to-be-active-consdev.patch: force serial consoles
   to be the primary console device instead of defaulting to tty0. No
