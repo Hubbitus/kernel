@@ -23,7 +23,7 @@ index 416baed..f43488c 100644
  	}
  
  	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
-+#ifdef 0 /* not for upstream, firmware fix */
++#if 0 /* not for upstream, firmware fix */
  		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
  			(unsigned long long)resource_size(&vcpu_res),
  			PAGE_SIZE);
