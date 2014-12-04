@@ -1,0 +1,84 @@
+From rharm-kernel-patches-bounces@redhat.com Fri Nov 21 18:21:38 2014
+From: Mark Salter <msalter@redhat.com>
+To: rharm-kernel-patches@redhat.com
+Subject: [PATCH] tty/pl011: make ttyAMA0 the active console device
+Date: Fri, 21 Nov 2014 18:21:30 -0500
+Message-Id: <1416612090-31594-1-git-send-email-msalter@redhat.com>
+
+Upstream: No. Temporary workaround to avoid console=
+Testing: Seattle booting with devicetree
+
+The pl011 uart driver doesn't register itself as a console
+until device_initcall time. This allows the virtual console
+driver to register the active console if no console= is
+given on the cmdline. This patch allows ttyAMA0 to take
+over the active console device role from any existing
+console device if no console= is given on the cmdline.
+
+Signed-off-by: Mark Salter <msalter@redhat.com>
+---
+ drivers/tty/serial/amba-pl011.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+index 8572f2a..454aa26 100644
+--- a/drivers/tty/serial/amba-pl011.c
++++ b/drivers/tty/serial/amba-pl011.c
+@@ -2182,7 +2182,15 @@ static int pl011_probe(struct amba_device *dev, const struct amba_id *id)
+ 		}
+ 	}
+ 
++	/*
++	 * temp hack to avoid need for console= on cmdline
++	 * this can go away when we switch completely to acpi
++	 */
++	if (amba_reg.cons && !console_set_on_cmdline && uap->port.line == 0)
++		amba_reg.cons->flags |= CON_CONSDEV;
+ 	ret = uart_add_one_port(&amba_reg, &uap->port);
++	if (amba_reg.cons && !console_set_on_cmdline && uap->port.line == 0)
++		amba_reg.cons->flags &= ~CON_CONSDEV;
+ 	if (ret) {
+ 		amba_ports[i] = NULL;
+ 		uart_unregister_driver(&amba_reg);
+-- 
+1.9.3
+
+From rharm-kernel-patches-bounces@redhat.com Tue Nov 18 22:09:42 2014
+From: Mark Salter <msalter@redhat.com>
+To: rharm-kernel-patches@redhat.com
+Subject: [PATCH v2] tty/sbsauart: make ttySBSA the active console device
+Date: Tue, 18 Nov 2014 22:09:04 -0500
+Message-Id: <1416366544-31116-2-git-send-email-msalter@redhat.com>
+
+The sbsauart driver doesn't register itself as a console
+until module_initcall time. This allows the virtual console
+driver to register the active console if no console= is
+given on the cmdline. This patch allows ttySBSA to take
+over the active console device role from any existing
+console device if no console= is given on the cmdline.
+
+Upstream: No
+Testing: Seattle and Foundation Model
+
+Signed-off-by: Mark Salter <msalter@redhat.com>
+---
+ drivers/tty/sbsauart.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/tty/sbsauart.c b/drivers/tty/sbsauart.c
+index 3a3ff88..e7d35d5 100644
+--- a/drivers/tty/sbsauart.c
++++ b/drivers/tty/sbsauart.c
+@@ -280,6 +280,9 @@ static int sbsa_tty_probe(struct platform_device *pdev)
+ 	qtty->console.device = sbsa_tty_console_device;
+ 	qtty->console.setup = sbsa_tty_console_setup;
+ 	qtty->console.flags = CON_PRINTBUFFER;
++	/* if no console= on cmdline, make this the console device */
++	if (!console_set_on_cmdline)
++		qtty->console.flags |= CON_CONSDEV;
+ 	qtty->console.index = pdev->id;
+ 	register_console(&qtty->console);
+ 
+-- 
+1.9.3
+

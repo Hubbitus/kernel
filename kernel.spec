@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -571,6 +571,7 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 # PPC
 Patch18000: ppc64-fixtools.patch
 # ARM64
+Patch20000: arm64-force-serial-to-be-active-consdev.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1375,6 +1376,10 @@ ApplyPatch drm-i915-Ignore-long-hpds-on-eDP-ports.patch
 ApplyPatch kernel-arm64.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
+%else
+# arm64-force-serial-to-be-active-consdev.patch: not for upstream
+#  solved with SPCR in future
+ApplyPatch arm64-force-serial-to-be-active-consdev.patch
 %endif
 %endif
 
@@ -2239,6 +2244,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 04 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.17.4-302
+- kernel-arm64.patch: update.
+- arm64-force-serial-to-be-active-consdev.patch: force serial consoles
+  to be the primary console device instead of defaulting to tty0. No
+  changes to drivers outside of ARM-land.
+
 * Mon Dec 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to quiet i915 driver on long hdps
 - Add patch to fix oops when using xpad (rhbz 1094048)
