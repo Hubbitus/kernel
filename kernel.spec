@@ -572,6 +572,7 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 Patch18000: ppc64-fixtools.patch
 # ARM64
 Patch20000: arm64-force-serial-to-be-active-consdev.patch
+Patch20001: arm64-vgic-error-to-info.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1380,6 +1381,7 @@ ApplyPatch kernel-arm64.patch -R
 # arm64-force-serial-to-be-active-consdev.patch: not for upstream
 #  solved with SPCR in future
 ApplyPatch arm64-force-serial-to-be-active-consdev.patch
+ApplyPatch arm64-vgic-error-to-info.patch
 %endif
 %endif
 
@@ -2249,6 +2251,8 @@ fi
 - arm64-force-serial-to-be-active-consdev.patch: force serial consoles
   to be the primary console device instead of defaulting to tty0. No
   changes to drivers outside of ARM-land.
+- arm64-vgic-error-to-info.patch: change an error to a warning so that
+  kvm will work.
 
 * Mon Dec 01 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to quiet i915 driver on long hdps
