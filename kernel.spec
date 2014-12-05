@@ -573,6 +573,7 @@ Patch18000: ppc64-fixtools.patch
 # ARM64
 Patch20000: arm64-force-serial-to-be-active-consdev.patch
 Patch20001: arm64-vgic-error-to-info.patch
+Patch20002: arm64-fix-xgene_enet_process_ring.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1388,6 +1389,7 @@ ApplyPatch kernel-arm64.patch -R
 #  solved with SPCR in future
 ApplyPatch arm64-force-serial-to-be-active-consdev.patch
 ApplyPatch arm64-vgic-error-to-info.patch
+ApplyPatch arm64-fix-xgene_enet_process_ring.patch
 %endif
 %endif
 
@@ -2252,6 +2254,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 05 2014 Kyle McMartin <kyle@fedoraproject.org> - 3.17.4-303
+- arm64-fix-xgene_enet_process_ring.patch: fix a panic under load.
+
 * Thu Dec 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.4-302
 - CVE-2014-9090 local DoS via do_double_fault due to improper SS faults (rhbz 1170691)
 
