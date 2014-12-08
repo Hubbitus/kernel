@@ -2280,6 +2280,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable USBIP in modules-extra from Johnathan Dieter (rhbz 1169478)
 - CVE-2014-XXXX isofs: infinite loop in CE record entries (rhbz 1175235 1175250)
 
 * Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org>

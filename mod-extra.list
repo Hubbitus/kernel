@@ -189,3 +189,6 @@ orinoco_plx.ko
 orinoco_pci.ko
 orinoco_nortel.ko
 orinoco_usb.ko
+usbip-core.ko
+vhci-hcd.ko
+usbip-host.ko
