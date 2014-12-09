@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.9.3.el7
+%define pkgrelease 123.13.1.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,10 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
+Source13: securebootca.cer
 Source14: secureboot.cer
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -369,9 +369,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -524,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1483,15 +1474,54 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Thu Nov 06 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.9.3.el7
-- Apply debranding changes
+* Tue Nov 04 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.13.1.el7]
+- [powerpc] mm: Make sure a local_irq_disable prevent a parallel THP split (Don Zickus) [1151057 1083296]
+- [powerpc] Implement __get_user_pages_fast() (Don Zickus) [1151057 1083296]
+- [scsi] vmw_pvscsi: Some improvements in pvscsi driver (Ewan Milne) [1144016 1075090]
+- [scsi] vmw_pvscsi: Add support for I/O requests coalescing (Ewan Milne) [1144016 1075090]
+- [scsi] vmw_pvscsi: Fix pvscsi_abort() function (Ewan Milne) [1144016 1075090]
 
-* Wed Oct 29 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.3.el7]
+* Mon Nov 03 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.12.1.el7]
+- [alsa] control: Make sure that id->index does not overflow (Jaroslav Kysela) [1117313 1117314] {CVE-2014-4656}
+- [alsa] control: Handle numid overflow (Jaroslav Kysela) [1117313 1117314] {CVE-2014-4656}
+- [alsa] control: Protect user controls against concurrent access (Jaroslav Kysela) [1117338 1117339] {CVE-2014-4652}
+- [alsa] control: Fix replacing user controls (Jaroslav Kysela) [1117323 1117324] {CVE-2014-4654 CVE-2014-4655}
+- [net] sctp: fix remote memory pressure from excessive queueing (Daniel Borkmann) [1155750 1152755] {CVE-2014-3688}
+- [net] sctp: fix panic on duplicate ASCONF chunks (Daniel Borkmann) [1155737 1152755] {CVE-2014-3687}
+- [net] sctp: fix skb_over_panic when receiving malformed ASCONF chunks (Daniel Borkmann) [1147856 1152755] {CVE-2014-3673}
+- [net] sctp: handle association restarts when the socket is closed (Daniel Borkmann) [1147856 1152755] [1155737 1152755] [1155750 1152755]
+- [pci] Add ACS quirk for Intel 10G NICs (Alex Williamson) [1156447 1141399]
+- [pci] Add ACS quirk for Solarflare SFC9120 & SFC9140 (Alex Williamson) [1158316 1131552]
+- [lib] assoc_array: Fix termination condition in assoc array garbage collection (David Howells) [1155136 1139431] {CVE-2014-3631}
+- [block] cfq-iosched: Add comments on update timing of weight (Vivek Goyal) [1152874 1116126]
+- [block] cfq-iosched: Fix wrong children_weight calculation (Vivek Goyal) [1152874 1116126]
+- [powerpc] mm: Check paca psize is up to date for huge mappings (Gustavo Duarte) [1151927 1107337]
+- [x86] perf/intel: ignore CondChgd bit to avoid false NMI handling (Don Zickus) [1146819 1110264]
+- [x86] smpboot: initialize secondary CPU only if master CPU will wait for it (Phillip Lougher) [1144295 968147]
+- [x86] smpboot: Log error on secondary CPU wakeup failure at ERR level (Igor Mammedov) [1144295 968147]
+- [x86] smpboot: Fix list/memory corruption on CPU hotplug (Igor Mammedov) [1144295 968147]
+- [acpi] processor: do not mark present at boot but not onlined CPU as onlined (Igor Mammedov) [1144295 968147]
+- [fs] udf: Avoid infinite loop when processing indirect ICBs (Jacob Tanenbaum) [1142321 1142322] {CVE-2014-6410}
+- [hid] picolcd: fix memory corruption via OOB write (Jacob Tanenbaum) [1141408 1141409] {CVE-2014-3186}
+- [usb] serial/whiteheat: fix memory corruption flaw (Jacob Tanenbaum) [1141403 1141404] {CVE-2014-3185}
+- [hid] fix off by one error in various _report_fixup routines (Jacob Tanenbaum) [1141393 1141394] {CVE-2014-3184}
+- [hid] logitech-dj: fix OOB array access (Jacob Tanenbaum) [1141211 1141212] {CVE-2014-3182}
+- [hid] fix OOB write in magicmouse driver (Jacob Tanenbaum) [1141176 1141177] {CVE-2014-3181}
+- [acpi] Fix bug when ACPI reset register is implemented in system memory (Nigel Croxon) [1136525 1109971]
+- [fs] vfs: fix ref count leak in path_mountpoint() (Ian Kent) [1122481 1122376] {CVE-2014-5045}
+- [kernel] ptrace: get_dumpable() incorrect tests (Jacob Tanenbaum) [1111605 1111606] {CVE-2013-2929}
+- [media] media-device: fix an information leakage (Jacob Tanenbaum) [1109776 1109777] {CVE-2014-1739}
+- [target] rd: Refactor rd_build_device_space + rd_release_device_space (Denys Vlasenko) [1108754 1108755] {CVE-2014-4027}
 - [block] blkcg: fix use-after-free in __blkg_release_rcu() by making blkcg_gq refcnt an atomic_t (Vivek Goyal) [1158313 1118436]
-
-* Wed Sep 24 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.2.el7]
 - [virt] kvm: fix PIT timer race condition (Petr  Matousek) [1144879 1144880] {CVE-2014-3611}
 - [virt] kvm/vmx: handle invept and invvpid vm exits gracefully (Petr  Matousek) [1145449 1116936] [1144828 1144829] {CVE-2014-3645 CVE-2014-3646}
+
+* Wed Oct 22 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.11.1.el7]
+- [net] fix UDP tunnel GSO of frag_list GRO packets (Phillip Lougher) [1149661 1119392]
+
+* Thu Oct 16 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.10.1.el7]
+- [pci] hotplug: Prevent NULL dereference during pciehp probe (Myron Stowe) [1142393 1133107]
+- [kernel] workqueue: apply __WQ_ORDERED to create_singlethread_workqueue() (Tomas Henzl) [1151314 1131563]
 
 * Tue Sep 23 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.9.1.el7]
 - [md] raid6: avoid data corruption during recovery of double-degraded RAID6 (Jes Sorensen) [1143850 1130905]
