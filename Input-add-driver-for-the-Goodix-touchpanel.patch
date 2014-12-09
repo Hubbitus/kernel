@@ -475,5 +475,5 @@ index 000000000000..ca196689f025
 +MODULE_DESCRIPTION("Goodix touchscreen driver");
 +MODULE_LICENSE("GPL v2");
 -- 
-1.9.3
+2.1.0
 

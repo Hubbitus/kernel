@@ -37,5 +37,5 @@ index 5dcdcd173572..38439e097b26 100644
  		compatible = "ti,tilcdc,slave";
  		i2c = <&i2c0>;
 -- 
-1.9.3
+2.1.0
 

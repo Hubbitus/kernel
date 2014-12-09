@@ -27,5 +27,5 @@ index b649fef2e35d..fb89290710ad 100644
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
 -- 
-1.9.3
+2.1.0
 

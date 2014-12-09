@@ -35,5 +35,5 @@ index ff765d8e1a09..864290243e46 100644
  };
  MODULE_DEVICE_TABLE(dmi, samsung_dmi_table);
 -- 
-1.9.3
+2.1.0
 

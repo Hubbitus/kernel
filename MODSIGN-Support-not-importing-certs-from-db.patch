@@ -79,5 +79,5 @@ index 94b0eb38a284..ae28b974d49a 100644
  
  	mok = get_cert_list(L"MokListRT", &mok_var, &moksize);
 -- 
-1.9.3
+2.1.0
 
