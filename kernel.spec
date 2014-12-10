@@ -629,6 +629,9 @@ Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
+#rhbz 1084928
+Patch26095: ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1367,6 +1370,9 @@ ApplyPatch x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
 ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
+
+#rhbz 1084928
+ApplyPatch ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2243,6 +2249,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Dec 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix MSI issues on another Samsung pci-e SSD (rhbz 1084928)
 - Fix UAS crashes with Seagate and Fresco Logic drives (rhbz 1164945)
 - CVE-2014-8134 fix espfix for 32-bit KVM paravirt guests (rhbz 1172765 1172769)
 

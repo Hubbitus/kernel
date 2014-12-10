@@ -1,0 +1,32 @@
+From 905ef98a83d3782207c0bda8d093e8f654884a94 Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Thu, 4 Dec 2014 13:13:28 -0500
+Subject: [PATCH] ahci: disable MSI on SAMSUNG 0xa800 SSD
+
+Just like 0x1600 which got blacklisted by 66a7cbc303f4 ("ahci: disable
+MSI instead of NCQ on Samsung pci-e SSDs on macbooks"), 0xa800 chokes
+on NCQ commands if MSI is enabled.  Disable MSI.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Dominik Mierzejewski <dominik@greysector.net>
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=89171
+Cc: stable@vger.kernel.org
+---
+ drivers/ata/ahci.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
+index 597b15e7f6e5..ec5d57c152fa 100644
+--- a/drivers/ata/ahci.c
++++ b/drivers/ata/ahci.c
+@@ -492,6 +492,7 @@ static const struct pci_device_id ahci_pci_tbl[] = {
+ 	 * enabled.  https://bugzilla.kernel.org/show_bug.cgi?id=60731
+ 	 */
+ 	{ PCI_VDEVICE(SAMSUNG, 0x1600), board_ahci_nomsi },
++	{ PCI_VDEVICE(SAMSUNG, 0xa800), board_ahci_nomsi },
+ 
+ 	/* Enmotus */
+ 	{ PCI_DEVICE(0x1c44, 0x8000), board_ahci },
+-- 
+2.1.0
+
