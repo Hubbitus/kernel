@@ -621,6 +621,9 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1135338
 Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
+#CVE-2014-8134 rhbz 1172765 1172769
+Patch26091: x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1351,6 +1354,9 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+
+#CVE-2014-8134 rhbz 1172765 1172769
+ApplyPatch x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2226,6 +2232,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8134 fix espfix for 32-bit KVM paravirt guests (rhbz 1172765 1172769)
+
 * Mon Dec 08 2014 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.6-300
 - Linux v3.17.6
 
