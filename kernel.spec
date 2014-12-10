@@ -615,6 +615,11 @@ Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 #CVE-2014-8134 rhbz 1172765 1172769
 Patch26091: x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
 
+#rhbz 1164945
+Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
+Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
+Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1338,6 +1343,11 @@ ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
 #CVE-2014-8134 rhbz 1172765 1172769
 ApplyPatch x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
+
+#rhbz 1164945
+ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
+ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
+ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2208,6 +2218,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Dec 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix UAS crashes with Seagate and Fresco Logic drives (rhbz 1164945)
 - CVE-2014-8134 fix espfix for 32-bit KVM paravirt guests (rhbz 1172765 1172769)
 
 * Tue Dec 09 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-1
