@@ -1,16 +1,12 @@
-commit ffbe9c488b747686ebfbb35e7c87aec80b183193
-Merge: ccdf75c fc14f9c
-Author: Kyle McMartin <kmcmarti@redhat.com>
-Date:   Mon Nov 17 11:34:47 2014 -0500
+commit 0335b5034b998e978bf9343da77246bcbad33981
+Author: Mark Salter <msalter@redhat.com>
+Date:   Wed Nov 19 10:32:11 2014 -0500
 
-    Merge tag 'v3.18-rc5' into devel
+    arm64: explicitly set noncoherent ops for _CCA handling
     
-    Linux 3.18-rc5
-    
-    Conflicts:
-    	drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
+    Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ccdf75caa6a1165b8199930983596ef64cf09bd3
+commit 4a2d43442e20a24b78594d12914706deddc119de
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 17:09:29 2014 -0500
 
@@ -25,7 +21,7 @@ Date:   Mon Nov 10 17:09:29 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 4421965a8ea7caae3f50760abce1094e0186c05e
+commit b93f804830d9ef6d572dd6be9734108199141b87
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 17:33:18 2014 -0500
 
@@ -38,7 +34,7 @@ Date:   Mon Nov 10 17:33:18 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit dcaeb407c91845739a64fb719a8c8d34474371e8
+commit 2d76cb937a6c0010d1de181d0142f0822df5071d
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 17:30:25 2014 -0500
 
@@ -46,7 +42,7 @@ Date:   Mon Nov 10 17:30:25 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 68c8ee5c1ab7b899401750cc359912efbeb40676
+commit a438ff7be0140738b1224d5ade6345a9febad279
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 17:23:57 2014 -0500
 
@@ -58,7 +54,7 @@ Date:   Mon Nov 10 17:23:57 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit fada05b28e93c24e8932539d94a679ce55ff332f
+commit 814b22167d35b18fc3de745277a2190ff0841585
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 16:42:14 2014 -0500
 
@@ -70,27 +66,7 @@ Date:   Mon Nov 10 16:42:14 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit e917d30f3febf6d88cc5001ad236ca367a211cef
-Author: Duc Dang <dhdang@apm.com>
-Date:   Thu Nov 6 17:14:18 2014 -0800
-
-    PCI: X-Gene: assign resource to bus before adding new devices
-    
-    X-Gene PCIE driver currently depends on Liviu Dudau's patch
-    https://lkml.org/lkml/2014/9/30/166 in order to assign resource
-    to root bus and endpoint devices. The patch was dropped because
-    it will break x86, powerpc and probably others. So X-Gene PCIE
-    host functionality is currently broken.
-    
-    This patch adds function calls to create and scan root_bus as well
-    as assign unassigned bus resource (similar to Liviu Dudau's patch
-    above). This will help resolve the dependency to Liviu Dudau's patch
-    and make X-Gene PCIE work in latest open-source kernel.
-    
-    Signed-off-by: Duc Dang <dhdang@apm.com>
-    Signed-off-by: Tanmay Inamdar <tinamdar@apm.com>
-
-commit 6581c0591cafe4fa3b0bd9a25a84a5bf830209fd
+commit b90d000000801b473ed4c69757d3be9e433b6c5e
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 16:31:05 2014 -0500
 
@@ -103,29 +79,7 @@ Date:   Mon Nov 10 16:31:05 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ae7850d2b972ee1258878ccc16824aba9d35b653
-Author: Guenter Roeck <linux@roeck-us.net>
-Date:   Sun Nov 2 18:19:15 2014 -0800
-
-    netfilter: nft_reject_bridge: Fix powerpc build error
-    
-    Fix:
-    net/bridge/netfilter/nft_reject_bridge.c:
-    In function 'nft_reject_br_send_v6_unreach':
-    net/bridge/netfilter/nft_reject_bridge.c:240:3:
-    	error: implicit declaration of function 'csum_ipv6_magic'
-       csum_ipv6_magic(&nip6h->saddr, &nip6h->daddr,
-       ^
-    make[3]: *** [net/bridge/netfilter/nft_reject_bridge.o] Error 1
-    
-    Seen with powerpc:allmodconfig.
-    
-    Fixes: 523b929d5446 ("netfilter: nft_reject_bridge: don't use IP stack to reject traffic")
-    Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-    Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit e2992498e4b2aad3ceac52bfb6faccfd18332236
+commit 243e5c1dc198958ce862e39d33efc798a47b339a
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Nov 10 21:35:11 2014 -0500
 
@@ -141,7 +95,7 @@ Date:   Mon Nov 10 21:35:11 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ceb5533cf5a6b68b68dc4b8ad61f5671576bdaf2
+commit 612eea3ae291b28f7ed50ccf50bd1685a2a7f753
 Author: Mark Salter <msalter@redhat.com>
 Date:   Thu Aug 14 12:32:13 2014 -0400
 
@@ -160,9 +114,26 @@ Date:   Thu Aug 14 12:32:13 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 21fef5d50bb3d4465c6b644bc451c1d219967a81
+commit 3d509a508c6fd70eb0fb2f0e82d08d92cc96568c
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sat Nov 22 12:08:53 2014 -0500
+
+    DO NOT UPSTREAM - arm64: kvm: Change vgic resource size error to info
+    
+    From: Donald Dutile <ddutile@redhat.com>
+    
+    A new check was added to upstream to ensure a full
+    kernel page was allocated to the vgic.  The check failed
+    kvm configuration if the condition wasn't met. An arm64
+    kernel with 64K pagesize and certain early firmware will
+    fail this test. Change error to info & continue configuration
+    for now.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 2b5dd4609e947b418afbbeae95da7f34594bc048
 Author: Wei Huang <wei@redhat.com>
-Date:   Thu Sep 18 20:02:57 2014 -0400
+Date:   Sat Nov 22 10:38:45 2014 -0500
 
     KVM/ACPI: Enable ACPI support for KVM virt GIC
     
@@ -176,10 +147,12 @@ Date:   Thu Sep 18 20:02:57 2014 -0400
     ideas from his patch.
     
     Signed-off-by: Wei Huang <wei@redhat.com>
+    [combined with subsequent patch to use acpi_disabled]
+    Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 3357db72822a2c9bc012528c6be3cf861fb3f35c
+commit 756fc31666a4a3094727da5274fc0705a05f13a3
 Author: Wei Huang <wei@redhat.com>
-Date:   Thu Sep 18 20:02:56 2014 -0400
+Date:   Sat Nov 22 10:18:57 2014 -0500
 
     KVM/ACPI: Enable ACPI support for virt arch timer
     
@@ -189,25 +162,107 @@ Date:   Thu Sep 18 20:02:56 2014 -0400
     arch_timer_ppi array in arm_arch_timer driver.
     
     Signed-off-by: Wei Huang <wei@redhat.com>
+    [combined with subsequent patch to use acpi_disabled]
+    Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit dc62803a26a34bb3190c9c1b5e3639ca6ebbf788
-Author: Wei Huang <wei@redhat.com>
-Date:   Thu Sep 18 20:02:55 2014 -0400
+commit b189108603f6db4a11e0c30050e840e8bb36f098
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue Nov 18 21:52:34 2014 +0100
 
-    KVM/ACPI: Add kernel parameter kvmacpi to enable KVM ACPI support
+    arm, arm64: KVM: handle potential incoherency of readonly memslots
     
-    This patch addes a new kernel parameter, kvmacpi, to turn on ACPI
-    support for KVM. Users can enable it using "kvmacpi=on" in command
-    line. When it is on, KVM will will parse ACPI tables to configure related
-    components. By default this option is off.
+    Upstream posting:
+    http://thread.gmane.org/gmane.comp.emulators.kvm.devel/129475/focus=129477
     
-    Note that DT will be probed first, no matter kvmacpi is ON or OFF.
-    This is because many platforms, such qemu/kvm, still supports
-    DT only. We still want to support Acadia kernel on such platforms.
+    Readonly memslots are often used to implement emulation of ROMs and
+    NOR flashes, in which case the guest may legally map these regions as
+    uncached.
+    To deal with the incoherency associated with uncached guest mappings,
+    treat all readonly memslots as incoherent, and ensure that pages that
+    belong to regions tagged as such are flushed to DRAM before being passed
+    to the guest.
     
-    Signed-off-by: Wei Huang <wei@redhat.com>
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    
+    Acadia backport notes:
+    
+    - we have a few more conflicts here. The main thing is that our
+      kvm_arch_prepare_memory_region() is "empty" at the moment; in upstream
+      Ard introduced performance related, host device related code there, in
+      commit 8eef91239.
+    
+      What we certainly need to grab from commit 8eef91239 is the acquiring of
+      "kvm->mmu_lock" (which is visible in the upstream patch context too),
+      and the filtering against
+    
+        (change != KVM_MR_CREATE && change != KVM_MR_MOVE)
+    
+      near the top of the function (which is not visible in the upstream patch
+      context). (If (change == KVM_MR_DELETE), then the caller has set up
+      "memslot" in such a way that calling stage2_flush_memslot() on it is
+      invalid, and it would actually crash the host -- speaking from
+      experience. :))
+    
+    - The hunk that seems to matter in practice, in my testing on Mustang, is
+      the "fault_ipa_uncached" assignment one (which  affects the the
+      demand-paged case, ie. the coherent_cache_guest_page() function,
+      modified in the previous patch).
+    
+      The kvm_arch_prepare_memory_region() hunk exists for completeness of
+      implementation, and while it could certainly make a difference, I've
+      never seen it make one, in my testing. We should pick it up nonetheless.
+    
+    Signed-off-by: Laszlo Ersek <lersek@redhat.com>
 
-commit 18099d49d96bfac5096b8ad1d3d5c6d14f92e0a1
+commit 8ab19d68b49c2f6a9f0e6226c51bf9b2fe553022
+Author: Laszlo Ersek <lersek@redhat.com>
+Date:   Tue Nov 18 21:52:33 2014 +0100
+
+    arm, arm64: KVM: allow forced dcache flush on page faults
+    
+    Upstream posting:
+    http://thread.gmane.org/gmane.comp.emulators.kvm.devel/129475/focus=129476
+    
+    From: Laszlo Ersek <lersek@redhat.com>
+    
+    To allow handling of incoherent memslots in a subsequent patch, this
+    patch adds a paramater 'ipa_uncached' to cache_coherent_guest_page()
+    so that we can instruct it to flush the page's contents to DRAM even
+    if the guest has caching globally enabled.
+    
+    Signed-off-by: Laszlo Ersek <lersek@redhat.com>
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    
+    Acadia backport notes:
+    - minimal context conflict in user_mem_abort(): upstream passes
+    
+        pgprot_val(mem_type) == pgprot_val(PAGE_S2_DEVICE)
+    
+      as last parameter of stage2_set_pte(), while we do a direct comparison.
+    
+      (See upstream commit 3d08c629, "arm: kvm: STRICT_MM_TYPECHECKS fix for
+      user_mem_abort".)
+    
+    Signed-off-by: Laszlo Ersek <lersek@redhat.com>
+
+commit 1ac87393dff5d6fb10edfba84dfff89f57a7224a
+Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date:   Tue Nov 18 21:52:32 2014 +0100
+
+    kvm: add a memslot flag for incoherent memory regions
+    
+    Upstream posting:
+    http://thread.gmane.org/gmane.comp.emulators.kvm.devel/129475
+    
+    Memory regions may be incoherent with the caches, typically when the
+    guest has mapped a host system RAM backed memory region as uncached.
+    Add a flag KVM_MEMSLOT_INCOHERENT so that we can tag these memslots
+    and handle them appropriately when mapping them.
+    
+    Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+    Signed-off-by: Laszlo Ersek <lersek@redhat.com>
+
+commit 2a0a5cbf98c94e2906d9a357a63fbbb153488e1c
 Author: Tom Lendacky <thomas.lendacky@amd.com>
 Date:   Mon Sep 15 17:02:52 2014 -0600
 
@@ -218,13 +273,13 @@ Date:   Mon Sep 15 17:02:52 2014 -0600
     
     Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-commit 7f208a9dffd58379f2e42e226052386e93d4b2dd
+commit 807e95abb96e7868e1c8e863a92298937a69d437
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Oct 7 12:54:08 2014 -0400
 
     xgene acpi network - first cut
 
-commit e3ce87d3414a845f8cbf71f0d80f3f3136995ce6
+commit bdecd2af5d4234ed50042ab28a21736edcec6d41
 Author: Geert Uytterhoeven <geert+renesas@glider.be>
 Date:   Thu Nov 6 12:23:23 2014 +0100
 
@@ -245,7 +300,7 @@ Date:   Thu Nov 6 12:23:23 2014 +0100
     Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit f22bf3eef963c9fc4e58e9e96dc7e9d243042b5a
+commit 42b0d1b64cdf1c8d37e69ff7cff45852f7a16f65
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Wed Nov 5 00:29:07 2014 +0100
 
@@ -275,7 +330,7 @@ Date:   Wed Nov 5 00:29:07 2014 +0100
     Tested-by: Mika Westerberg <mika.westerberg@linux.intel.com>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 1bb8c08673f0ca7951c0583665d2496e19368a56
+commit c3f29cda7420da6a721d40d116f369cfc1533d38
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Fri Oct 31 13:40:58 2014 +0200
 
@@ -302,7 +357,7 @@ Date:   Fri Oct 31 13:40:58 2014 +0200
     Acked-by: Alexandre Courbot <acourbot@nvidia.com>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 1b8f83503e4b9b7168c5d81cabce5b66e4063607
+commit 4117b39d39f59d2497ceac1091ec54aa3056cb4f
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Mon Nov 3 23:39:57 2014 +0100
 
@@ -315,7 +370,7 @@ Date:   Mon Nov 3 23:39:57 2014 +0100
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
     Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 
-commit 49b5f3126e722dd0266d22a2866bb056ede2cf0a
+commit d9345c86ad290bb4ca98b37520f94fc8075b2b94
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Mon Oct 27 12:15:14 2014 +0200
 
@@ -345,7 +400,7 @@ Date:   Mon Oct 27 12:15:14 2014 +0200
     Acked-by: Linus Walleij <linus.walleij@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit c9accb22ace8c3318e75fc0bbbca91336dab270d
+commit 22cb8c44e198b7e3f3299324edbcaa1389016d52
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Mon Nov 3 23:39:41 2014 +0100
 
@@ -382,7 +437,7 @@ Date:   Mon Nov 3 23:39:41 2014 +0100
     Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 872e3713eb734e43d3001a6ef957cb67ba2349a3
+commit c70e2807a8bacbdfed992b58ca24eb152a778a01
 Author: Aaron Lu <aaron.lu@intel.com>
 Date:   Tue Oct 21 13:34:00 2014 +0200
 
@@ -397,7 +452,7 @@ Date:   Tue Oct 21 13:34:00 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit ac8ab45966dc9e98cdb44d0ca833c25772eb4745
+commit 29257e751014d0d43f78bcfecd9a56a603096c95
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Mon Oct 27 23:30:10 2014 +0100
 
@@ -413,7 +468,7 @@ Date:   Mon Oct 27 23:30:10 2014 +0100
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit d48dca7d09f36535c2f6dba340e796b54aa6667d
+commit 08ddbc9678ce8465f17acc8e1b1b67442593d1b5
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Tue Oct 21 13:33:59 2014 +0200
 
@@ -436,7 +491,7 @@ Date:   Tue Oct 21 13:33:59 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit fcca136c38aa18deec3ddd3b872ea49e6d082e5a
+commit 880614f83402ae8b408f33cb252505da0760f3e5
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Tue Nov 4 14:03:59 2014 +0100
 
@@ -479,7 +534,7 @@ Date:   Tue Nov 4 14:03:59 2014 +0100
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 4ac0bb216349cce71aea75f6156d44c59fc18086
+commit b5923f9dc379c1861a70d8836c7d9976d9521390
 Author: Aaron Lu <aaron.lu@intel.com>
 Date:   Tue Oct 21 23:30:25 2014 +0200
 
@@ -498,7 +553,7 @@ Date:   Tue Oct 21 23:30:25 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 17907d91fb1bd542b9503cc5223a070039b8d031
+commit 5c3c4fe36a05672113646f8fb839e4c91256ef5d
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Mon Oct 27 23:29:32 2014 +0100
 
@@ -516,7 +571,7 @@ Date:   Mon Oct 27 23:29:32 2014 +0100
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 2781ab92fd33f2270c7b5e1628db0a180ed3ab03
+commit 8105c03352f32060c765837cbb7d619e075289d9
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Tue Oct 21 13:33:56 2014 +0200
 
@@ -535,7 +590,7 @@ Date:   Tue Oct 21 13:33:56 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 732feab25f90c338e9ef36457a3591f322f53264
+commit ce0e2672808ce2805d0aadfd12d94e2dd6be5ab9
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Wed Oct 29 15:41:01 2014 +0100
 
@@ -598,7 +653,7 @@ Date:   Wed Oct 29 15:41:01 2014 +0100
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 6b23a29f06a006a48d7fb94eef42452552144fb9
+commit e072a051ef3a5d612949dc22ca71e40dbe978ed1
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Tue Oct 21 13:33:56 2014 +0200
 
@@ -616,7 +671,7 @@ Date:   Tue Oct 21 13:33:56 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit c901445ec7d1f37d9fd2250dd4390f395b954ef3
+commit e176d66bf1a8e613e501dae1fc6798e1a42b7062
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Tue Oct 21 13:33:56 2014 +0200
 
@@ -635,7 +690,7 @@ Date:   Tue Oct 21 13:33:56 2014 +0200
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 7eace032b0201dfb110586080dd0628ec48c0d5c
+commit e30b98eab5645fa42d372cc1be44e22db5f5e9b8
 Author: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Date:   Tue Nov 4 01:28:56 2014 +0100
 
@@ -677,7 +732,7 @@ Date:   Tue Nov 4 01:28:56 2014 +0100
     Acked-by: Grant Likely <grant.likely@linaro.org>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit c2d6966e876bb42c76d03d3eb207bfa754657d8b
+commit a8762c178234b62dce5e55df8de8528857a47bb7
 Author: Mika Westerberg <mika.westerberg@linux.intel.com>
 Date:   Tue Oct 21 13:33:55 2014 +0200
 
@@ -735,11 +790,11 @@ Date:   Tue Oct 21 13:33:55 2014 +0200
     Signed-off-by: Mika Westerberg <mika.westerberg@linux.intel.com>
     Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-commit 3f675aef809d3f82bf1aa0700065ddf798d1eb86
+commit a9240791b83abd372e4efb77f20444c27a56ebae
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Sep 30 17:19:24 2014 -0400
 
-    [NOT FOR UPSTREAM] arm64: avoid need for console= to enable serial console
+    arm64: avoid need for console= to enable serial console
     
     Tell kernel to prefer one of the serial ports on platforms
     pl011, 8250, or sbsa uarts. console= on command line will
@@ -749,7 +804,7 @@ Date:   Tue Sep 30 17:19:24 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 20d7a3414d18cea0ed8982a5c538e7548bc3bb0a
+commit 6fee3b2bd2ad6349e7bb3082393bf6355e01ce6f
 Author: Tom Lendacky <thomas.lendacky@amd.com>
 Date:   Tue Sep 9 23:33:17 2014 -0400
 
@@ -761,7 +816,7 @@ Date:   Tue Sep 9 23:33:17 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 286f94e27659e7eb45e4b54b4e3c0f9a3b9f9fd4
+commit 0a0eea6d358d51ab381e2945c0e9db2f6cc06157
 Author: Tom Lendacky <thomas.lendacky@amd.com>
 Date:   Tue Sep 9 23:34:07 2014 -0400
 
@@ -773,7 +828,7 @@ Date:   Tue Sep 9 23:34:07 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 7e7eade04b5fe90bb30a68aa52f0881b354e7d1d
+commit ff93b53f3ca8748529855d421bf79329086544cd
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Fri Jul 26 17:55:02 2013 +0100
 
@@ -783,7 +838,7 @@ Date:   Fri Jul 26 17:55:02 2013 +0100
     
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
 
-commit a1b37e75322dfbd359c86e51ee624511811c93b6
+commit 5315cb5a532e900612ac1202507551761e8bd13c
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Wed Jul 24 11:29:48 2013 +0100
 
@@ -796,7 +851,31 @@ Date:   Wed Jul 24 11:29:48 2013 +0100
     
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
 
-commit 29fe31c2a0e6ce57695c1341351c2579d159e446
+commit 640f607f1fa10c7c0cd6025dde8883d02fc9b411
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sun Sep 14 09:44:44 2014 -0400
+
+    Revert "ahci_xgene: Skip the PHY and clock initialization if already configured by the firmware."
+    
+    This reverts commit 0bed13bebd6c99d097796d2ca6c4f10fb5b2eabc.
+    
+    Temporarily revert for backwards compatibility with rh-0.12-1 firmware
+
+commit e8afbea7e3e11f37c234770d72725894f92de415
+Author: Mark Salter <msalter@redhat.com>
+Date:   Mon Aug 11 13:46:43 2014 -0400
+
+    xgene: add support for ACPI-probed serial port
+
+commit 3d0ad3e452a81a32842d85dbb88078b74582efb5
+Author: Mark Salter <msalter@redhat.com>
+Date:   Sat Aug 9 12:01:20 2014 -0400
+
+    sata/xgene: support acpi probing
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit a42353df5a2f741e8d2e356c3f053aac8d3eff0e
 Author: Mark Salter <msalter@redhat.com>
 Date:   Thu Sep 18 15:05:23 2014 -0400
 
@@ -809,31 +888,7 @@ Date:   Thu Sep 18 15:05:23 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 0875f7e4b6b078859a3765aac54c345980b2748c
-Author: Mark Salter <msalter@redhat.com>
-Date:   Sun Sep 14 09:44:44 2014 -0400
-
-    Revert "ahci_xgene: Skip the PHY and clock initialization if already configured by the firmware."
-    
-    This reverts commit 0bed13bebd6c99d097796d2ca6c4f10fb5b2eabc.
-    
-    Temporarily revert for backwards compatibility with rh-0.12-1 firmware
-
-commit 31bf2a5577ffb5b318bb9f5d80a9f26224674521
-Author: Mark Salter <msalter@redhat.com>
-Date:   Mon Aug 11 13:46:43 2014 -0400
-
-    xgene: add support for ACPI-probed serial port
-
-commit f099d9ceac69d7fda70e5d3ee8200f8585f4ff88
-Author: Mark Salter <msalter@redhat.com>
-Date:   Sat Aug 9 12:01:20 2014 -0400
-
-    sata/xgene: support acpi probing
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
-
-commit 7020f9dda064514d58da5701a351d4773a1d274f
+commit d81f088880b9d763a7006e40dff6bb526c534255
 Author: Mark Salter <msalter@redhat.com>
 Date:   Tue Sep 9 22:59:48 2014 -0400
 
@@ -849,7 +904,7 @@ Date:   Tue Sep 9 22:59:48 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 17b60c76da131d5fb9c401ec43404c911fe57f39
+commit 475b6ce1555e1146761b53c550f2ac019311739f
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Thu Aug 28 14:26:16 2014 -0400
 
@@ -863,7 +918,7 @@ Date:   Thu Aug 28 14:26:16 2014 -0400
     [fixed up for 3.17-rc]
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit fc47393ae2927cb1069c2e15a7b142998702b05d
+commit cb6ebe40936adc5c3154abbec6f89ccb8a0536b7
 Author: Al Stone <ahs3@redhat.com>
 Date:   Thu Aug 28 13:14:16 2014 -0400
 
@@ -871,7 +926,7 @@ Date:   Thu Aug 28 13:14:16 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 7100a707311becfd1cbfc26ad8298cc290877db5
+commit b7fc0378e13207a53a3e8466ba6329cfbcaa0526
 Author: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
 Date:   Tue Sep 9 15:37:15 2014 -0500
 
@@ -897,7 +952,22 @@ Date:   Tue Sep 9 15:37:15 2014 -0500
     
     Signed-off-by: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
 
-commit 397bc93ab853400f7146b8be14bd6cc044df9830
+commit c5b655e6af273a61e7ec3653deb3550ae4f7abf1
+Author: Mark Salter <msalter@redhat.com>
+Date:   Wed Nov 19 10:08:29 2014 -0500
+
+    tty/sbsauart: make ttySBSA the active console device
+    
+    The sbsauart driver doesn't register itself as a console
+    until module_initcall time. This allows the virtual console
+    driver to register the active console if no console= is
+    given on the cmdline. This patch allows ttySBSA to take
+    over the active console device role from any existing
+    console device if no console= is given on the cmdline.
+    
+    Signed-off-by: Mark Salter <msalter@redhat.com>
+
+commit 6bee52af3d281d91b871f6876138fa51a41f0472
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Wed Aug 13 13:47:18 2014 +0100
 
@@ -912,7 +982,7 @@ Date:   Wed Aug 13 13:47:18 2014 +0100
     
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
 
-commit 1e6ba230a5e0c03916b0134d846204e64c477972
+commit a66f13e7c17cf7283b9987da2349c0a5c204fa4b
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Sep 8 11:58:46 2014 -0400
 
@@ -926,7 +996,7 @@ Date:   Mon Sep 8 11:58:46 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit b3ae15f9e484bab186a5ed697bb25f0244b5aa50
+commit b00f36975b651c0afbddee49e84109694e610f43
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Mon Sep 8 10:36:44 2014 -0400
 
@@ -938,7 +1008,7 @@ Date:   Mon Sep 8 10:36:44 2014 -0400
     Signed-off-by: Al Stone <al.stone@linaro.org>
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
 
-commit 4b29bf89ba430787509cb06a6aa38fafeb910b56
+commit 4f6ca522fc13d8c13c844a2c2f9eafe091a336a9
 Author: Mark Salter <msalter@redhat.com>
 Date:   Mon Sep 8 17:04:28 2014 -0400
 
@@ -950,7 +1020,7 @@ Date:   Mon Sep 8 17:04:28 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 58bb9299b1b2a87bd8002ee1bd6eb90138cc4f30
+commit 91eaa3c5387ebcf698b070a4c21e39e5240699ba
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Fri Oct 17 21:37:14 2014 +0800
 
@@ -963,7 +1033,7 @@ Date:   Fri Oct 17 21:37:14 2014 +0800
     Signed-off-by: Al Stone <al.stone@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 47e5e8a11d7d0f4930c2e98671a973f3edac313f
+commit ef17919599275fd58edb255ecf69807653cdd763
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Fri Oct 17 21:37:13 2014 +0800
 
@@ -979,7 +1049,7 @@ Date:   Fri Oct 17 21:37:13 2014 +0800
     Signed-off-by: Al Stone <al.stone@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 3738397b4a8e91102db2af9ad29919a19425b3f0
+commit 7d78ff059af78cc5a80576314c38584834557fc1
 Author: Al Stone <al.stone@linaro.org>
 Date:   Fri Oct 17 21:37:12 2014 +0800
 
@@ -993,7 +1063,7 @@ Date:   Fri Oct 17 21:37:12 2014 +0800
     Signed-off-by: Al Stone <al.stone@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 77476629347ec5b72b13e0f3d2cf71604286298c
+commit 8a387ea5071c9d8bdaf5305320130022ec1d4f7d
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:11 2014 +0800
 
@@ -1005,7 +1075,7 @@ Date:   Fri Oct 17 21:37:11 2014 +0800
     Originally-by: Amit Daniel Kachhap <amit.daniel@samsung.com>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 1386d5f6353e7a13d34df5302bc7e4bd1c6aae28
+commit 7523c8b3b0d23629781c4581272c0647fa543af5
 Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
 Date:   Fri Oct 17 21:37:10 2014 +0800
 
@@ -1023,7 +1093,7 @@ Date:   Fri Oct 17 21:37:10 2014 +0800
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 5213320ccc37374bbf6facc7f7e3c9246bc933c3
+commit 743691994f2fb03bc05f539a42ba6ccccb5d18b8
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:09 2014 +0800
 
@@ -1039,7 +1109,7 @@ Date:   Fri Oct 17 21:37:09 2014 +0800
     Originally-by: Amit Daniel Kachhap <amit.daniel@samsung.com>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit d1c5a9cdd33f04d4ca5f8ef1b8aed16552fc4f2d
+commit 0c4d9983cb7b50351aad0aa32e8b6134adaabb0d
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:08 2014 +0800
 
@@ -1053,7 +1123,7 @@ Date:   Fri Oct 17 21:37:08 2014 +0800
     
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 9db9a0235e80b8a80af1a000fac4127333b2a2e6
+commit cb6b980abe388e25e357f73c5780aa1cf1b2e337
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:07 2014 +0800
 
@@ -1072,7 +1142,7 @@ Date:   Fri Oct 17 21:37:07 2014 +0800
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
 
-commit 1a5a392de06147924052458a6c2fd182dcd4d509
+commit 74a72e003ae388f460294a0910a536aced8ce93c
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:06 2014 +0800
 
@@ -1092,7 +1162,7 @@ Date:   Fri Oct 17 21:37:06 2014 +0800
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
 
-commit dbb10ccb37b11731a79bc004da46e482a7152be4
+commit 059facbd0f0664aaaf6d732ce02b2f56ea6ad98f
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:05 2014 +0800
 
@@ -1121,7 +1191,7 @@ Date:   Fri Oct 17 21:37:05 2014 +0800
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
 
-commit f367d6c84f50ad7e1944ef6ec7aca8b01fd82051
+commit 7ec63267bb1630c62e5f7fd2eb75a9a31131c89a
 Author: Hanjun Guo <hanjun.guo@linaro.org>
 Date:   Fri Oct 17 21:37:04 2014 +0800
 
@@ -1136,7 +1206,7 @@ Date:   Fri Oct 17 21:37:04 2014 +0800
     
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 2926fd3502c857db06ab41caa8f628089287d6f4
+commit 2f1dd91e7866f2b617af29e9973b88b2cc2e00d6
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Fri Oct 17 21:37:03 2014 +0800
 
@@ -1149,7 +1219,7 @@ Date:   Fri Oct 17 21:37:03 2014 +0800
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit d40d81475b41044935ee4eb455a58308e0f070ac
+commit 6941a3cced9ca3d29e6e9c8b0f43917526b74789
 Author: Al Stone <al.stone@linaro.org>
 Date:   Fri Oct 17 21:37:02 2014 +0800
 
@@ -1167,7 +1237,7 @@ Date:   Fri Oct 17 21:37:02 2014 +0800
     Signed-off-by: Graeme Gregory <graeme.gregory@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 19ddd869d20be9d05e37a3e867f3c1c379bc0a07
+commit 8764d6bd07827a2a29eaaa382fc397527ad1ba19
 Author: Graeme Gregory <graeme.gregory@linaro.org>
 Date:   Fri Oct 17 21:37:01 2014 +0800
 
@@ -1182,7 +1252,7 @@ Date:   Fri Oct 17 21:37:01 2014 +0800
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit b2247b541995418caafcfc9f12e57b444fdee75d
+commit 37144fd61ca68e9d542e875187739c982c8d3662
 Author: Al Stone <al.stone@linaro.org>
 Date:   Fri Oct 17 21:37:00 2014 +0800
 
@@ -1214,7 +1284,7 @@ Date:   Fri Oct 17 21:37:00 2014 +0800
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit ff7fee61b5c51bc24b358a6521ee9ac0c81c4ae6
+commit a4f035d2876b41b6f224321da6b6278de577d4c5
 Author: Tomasz Nowicki <tomasz.nowicki@linaro.org>
 Date:   Fri Oct 17 21:36:59 2014 +0800
 
@@ -1233,7 +1303,7 @@ Date:   Fri Oct 17 21:36:59 2014 +0800
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 77a4d1f4423591c4f0bed7d580afb7fc7cacb082
+commit b3055f38d52f5be0103b436a1b04fbf3947aaa39
 Author: Ashwin Chaugule <ashwin.chaugule@linaro.org>
 Date:   Fri Oct 17 21:36:58 2014 +0800
 
@@ -1251,7 +1321,7 @@ Date:   Fri Oct 17 21:36:58 2014 +0800
     Signed-off-by: Tomasz Nowicki <tomasz.nowicki@linaro.org>
     Signed-off-by: Hanjun Guo <hanjun.guo@linaro.org>
 
-commit 17a565aba814f8cb39d27afb0dbf3834be83ac41
+commit fff62dfc1d7ab6ad3d528b008413fd116d208150
 Author: Mark Salter <msalter@redhat.com>
 Date:   Sat Nov 8 22:25:48 2014 -0500
 
@@ -1262,7 +1332,7 @@ Date:   Sat Nov 8 22:25:48 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit c66bae4dfb9dbf577e4692fd034cb80703f687a6
+commit 997a0488adb3f525aedb678b584f2733f43e248e
 Author: Mark Salter <msalter@redhat.com>
 Date:   Sat Nov 8 15:25:41 2014 -0500
 
@@ -1272,7 +1342,7 @@ Date:   Sat Nov 8 15:25:41 2014 -0500
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit ddc5d1b9a52d9c17fd975fd6ee22be7d6ce5e496
+commit 5b823d4bf52286f97dc76683b533ae5c08763897
 Author: Mark Salter <msalter@redhat.com>
 Date:   Thu Jul 17 13:34:50 2014 -0400
 
@@ -1290,7 +1360,7 @@ Date:   Thu Jul 17 13:34:50 2014 -0400
     
     Signed-off-by: Mark Salter <msalter@redhat.com>
 
-commit 8675c7685ea64e0fda9cebbed08e3f30a71589cf
+commit f866806e1ca75a0efc62cda59559286faa7c9926
 Author: Kyle McMartin <kmcmarti@redhat.com>
 Date:   Tue May 13 22:25:26 2014 -0400
 
@@ -1360,7 +1430,7 @@ Date:   Tue May 13 22:25:26 2014 -0400
     Signed-off-by: Kyle McMartin <kmcmarti@redhat.com>
     Signed-off-by: Donald Dutile <ddutile@redhat.com>
 
-commit ff46d52dc804aeff783ff55b4b6dc489da20bc11
+commit a68d368ceb495cabafe82cdd0b83ec1e271a7f9d
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Fri Nov 7 14:12:34 2014 +0000
 
@@ -1374,7 +1444,7 @@ Date:   Fri Nov 7 14:12:34 2014 +0000
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit 6ddb6f9d2fe1ecab0b812b3adc4ba4bc0cf19ad8
+commit 246a31b3a8f065e831a6d8d9fd96f3a8e17dbdb9
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Fri Nov 7 14:12:33 2014 +0000
 
@@ -1386,7 +1456,7 @@ Date:   Fri Nov 7 14:12:33 2014 +0000
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit 35939bd2c847d742ab82049b2cc79c086e0e7130
+commit ecd0f8e21514e8ac758ed16a188faaa4c5ef75c7
 Author: Mark Rutland <mark.rutland@arm.com>
 Date:   Tue Nov 4 10:50:16 2014 +0000
 
@@ -1408,7 +1478,7 @@ Date:   Tue Nov 4 10:50:16 2014 +0000
     Signed-off-by: Mark Rutland <mark.rutland@arm.com>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit aea6f516118cedb6f9e8d2ab23ab5a09c275e68d
+commit 2899d6ea451eb0037427bbf430069f73cb76becc
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Mon Nov 3 16:50:01 2014 +0000
 
@@ -1424,7 +1494,7 @@ Date:   Mon Nov 3 16:50:01 2014 +0000
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit 0844cddfa0ad22093ef94fdf203fe50cb92222db
+commit 67b1122c25f0c7a9a126ebabcd2085ef99640c13
 Author: Geoff Levand <geoff@infradead.org>
 Date:   Fri Oct 31 23:06:47 2014 +0000
 
@@ -1445,7 +1515,7 @@ Date:   Fri Oct 31 23:06:47 2014 +0000
     Signed-off-by: Geoff Levand <geoff@infradead.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit 94141ed36a5e0a2159deadfcc29a504b55bb352d
+commit 6a3c07e9aa03b7fbec14ab8bc21fce8590f12d83
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Tue Oct 28 12:24:20 2014 +0000
 
@@ -1468,7 +1538,7 @@ Date:   Tue Oct 28 12:24:20 2014 +0000
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit a3b3b6027369ce53251bb381c9b87031bbd75464
+commit 7c0569a739d0f1dd8ffd709cf37c53bb42143687
 Author: Steve Capper <steve.capper@linaro.org>
 Date:   Fri Oct 24 13:22:20 2014 +0100
 
@@ -1501,7 +1571,7 @@ Date:   Fri Oct 24 13:22:20 2014 +0100
     Signed-off-by: Steve Capper <steve.capper@linaro.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit e21d5b44cf03b31feac7854a5953d17ef94d76d9
+commit 7acf53bfb80c2823d233c14d33cfd2d119713b89
 Author: Joonwoo Park <joonwoop@codeaurora.org>
 Date:   Tue Oct 21 01:59:03 2014 +0100
 
@@ -1519,20 +1589,7 @@ Date:   Tue Oct 21 01:59:03 2014 +0100
     Signed-off-by: Joonwoo Park <joonwoop@codeaurora.org>
     Signed-off-by: Will Deacon <will.deacon@arm.com>
 
-commit c8f2e7e08d50c4adb77a0fac4a2871c100ef2f51
-Author: Min-Hua Chen <orca.chen@gmail.com>
-Date:   Thu Oct 9 16:53:10 2014 +0100
-
-    arm64: fix data type for physical address
-    
-    Use phys_addr_t for physical address in alloc_init_pud. Although
-    phys_addr_t and unsigned long are 64 bit in arm64, it is better
-    to use phys_addr_t to describe physical addresses.
-    
-    Signed-off-by: Min-Hua Chen <orca.chen@gmail.com>
-    Signed-off-by: Will Deacon <will.deacon@arm.com>
-
-commit 674f32f5ef38c93af7a273a725a0a89b4b8a38a1
+commit 1971c19fb2a38a1d94cedada404760a917c36cd4
 Author: Mark Rutland <mark.rutland@arm.com>
 Date:   Thu Oct 23 16:33:33 2014 +0100
 
@@ -1572,7 +1629,7 @@ Date:   Thu Oct 23 16:33:33 2014 +0100
     Acked-by: Matt Fleming <matt.fleming@intel.com>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit 872cf856a3fc4cff5190af2f79cfc3ac410eae17
+commit 7652016ff98e614ed2e3abac19b996af02434293
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Wed Oct 15 09:36:50 2014 +0200
 
@@ -1587,7 +1644,7 @@ Date:   Wed Oct 15 09:36:50 2014 +0200
     Acked-by: Leif Lindholm <leif.lindholm@linaro.org>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit 2a2978d3748379bb9a0889c866b210f288c45160
+commit 2586f232bd388d2223f3c7bcba446b2bd25d8e3d
 Author: Yi Li <yi.li@linaro.org>
 Date:   Sat Oct 4 23:46:43 2014 +0800
 
@@ -1602,7 +1659,7 @@ Date:   Sat Oct 4 23:46:43 2014 +0800
     Tested-by: Leif Lindholm <leif.lindholm@linaro.org>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit c0f06f02f228ca722a2b850363c342f63e6214a6
+commit 16b52b24f3d7a4f1555e4233398172b32306c1e4
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Tue Oct 14 16:41:27 2014 +0200
 
@@ -1637,7 +1694,7 @@ Date:   Tue Oct 14 16:41:27 2014 +0200
     Acked-by: Matt Fleming <matt.fleming@intel.com>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit 4ebf40f890ebad9458abc56e00d4814bc881fb9d
+commit 016f4b4f5cee9ddd8c243a36c220a65bdfb82dc8
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Tue Oct 14 16:34:47 2014 +0200
 
@@ -1657,7 +1714,7 @@ Date:   Tue Oct 14 16:34:47 2014 +0200
     Acked-by: Matt Fleming <matt.fleming@intel.com>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit 90c66a6923311d477c68543f945f543558b91eec
+commit ac627ea950e853f0a3f91607fb16cb9477f434d7
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Fri Oct 17 12:44:11 2014 +0200
 
@@ -1670,7 +1727,7 @@ Date:   Fri Oct 17 12:44:11 2014 +0200
     Acked-by: Will Deacon <will.deacon@arm.com>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit bbc705f61c1aebddb5bf80f75964b6da40c55ca9
+commit 850ba08a3f4756a8340edadd4fdeccd881813ba5
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Mon Oct 20 15:31:57 2014 +0200
 
@@ -1696,7 +1753,7 @@ Date:   Mon Oct 20 15:31:57 2014 +0200
     Acked-by: Roy Franz <roy.franz@linaro.org>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit d6e4e04244cb7b4670759bd83679ead21df55a8a
+commit 2787807ca4f5f7df82a5c54312753b157e8c052e
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Fri Oct 10 18:42:55 2014 +0200
 
@@ -1712,7 +1769,7 @@ Date:   Fri Oct 10 18:42:55 2014 +0200
     Acked-by: Roy Franz <roy.franz@linaro.org>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit e9e7422d7035c64a16771d47dcd9f907adc5070d
+commit 7bd0585d9ab62d9787c389d3b62141b76319e5f7
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Fri Oct 10 11:25:24 2014 +0200
 
@@ -1731,7 +1788,7 @@ Date:   Fri Oct 10 11:25:24 2014 +0200
     Acked-by: Mark Rutland <mark.rutland@arm.com>
     Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 
-commit 2d2346a11e6ac9be30ac5590a7ec4b47bda35870
+commit 5a0edb2dbdf9327322ae57e8e16d162c2a371318
 Author: Ard Biesheuvel <ard.biesheuvel@linaro.org>
 Date:   Wed Oct 8 16:11:27 2014 +0200
 
@@ -1766,6 +1823,8 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  Documentation/arm64/arm-acpi.txt                 | 323 ++++++++++
  Documentation/gpio/consumer.txt                  |  18 +
  Documentation/kernel-parameters.txt              |   3 +-
+ arch/arm/include/asm/kvm_mmu.h                   |   5 +-
+ arch/arm/kvm/mmu.c                               |  22 +-
  arch/arm/mach-s3c24xx/h1940-bluetooth.c          |   4 +-
  arch/arm/mach-s3c24xx/h1940.h                    |   4 +-
  arch/arm/mach-s3c24xx/mach-h1940.c               |   3 +-
@@ -1786,6 +1845,7 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  arch/arm64/include/asm/dmi.h                     |  31 +
  arch/arm64/include/asm/elf.h                     |   3 +-
  arch/arm64/include/asm/kvm_arm.h                 |  21 +-
+ arch/arm64/include/asm/kvm_mmu.h                 |   5 +-
  arch/arm64/include/asm/pci.h                     |  51 ++
  arch/arm64/include/asm/psci.h                    |   3 +-
  arch/arm64/include/asm/smp.h                     |  10 +-
@@ -1799,13 +1859,13 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  arch/arm64/kernel/io.c                           |  66 +-
  arch/arm64/kernel/pci.c                          |  97 ++-
  arch/arm64/kernel/psci.c                         |  78 ++-
- arch/arm64/kernel/setup.c                        |  67 +-
+ arch/arm64/kernel/setup.c                        |  51 +-
  arch/arm64/kernel/smp.c                          |   2 +-
  arch/arm64/kernel/smp_parking_protocol.c         | 110 ++++
  arch/arm64/kernel/time.c                         |   7 +
  arch/arm64/kernel/vmlinux.lds.S                  |  17 +
  arch/arm64/kvm/hyp.S                             |   4 +-
- arch/arm64/mm/dma-mapping.c                      | 103 +++
+ arch/arm64/mm/dma-mapping.c                      | 112 ++++
  arch/arm64/pci/Makefile                          |   2 +
  arch/arm64/pci/mmconfig.c                        | 292 +++++++++
  arch/arm64/pci/pci.c                             | 461 ++++++++++++++
@@ -1848,18 +1908,18 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  drivers/net/ethernet/amd/xgbe/xgbe-mdio.c        |  20 +-
  drivers/net/ethernet/amd/xgbe/xgbe-ptp.c         |   4 +-
  drivers/net/ethernet/amd/xgbe/xgbe.h             |  13 +
- drivers/net/ethernet/apm/xgene/xgene_enet_hw.c   |  78 ++-
+ drivers/net/ethernet/apm/xgene/xgene_enet_hw.c   |  69 +-
  drivers/net/ethernet/apm/xgene/xgene_enet_main.c |  68 +-
  drivers/net/ethernet/apm/xgene/xgene_enet_main.h |   1 +
  drivers/net/ethernet/smsc/smc91x.c               |  10 +
  drivers/net/phy/Kconfig                          |   2 +-
  drivers/net/phy/amd-xgbe-phy.c                   | 777 ++++++++++++-----------
  drivers/of/base.c                                |  33 +
- drivers/pci/host/pci-xgene.c                     | 174 ++++-
+ drivers/pci/host/pci-xgene.c                     | 167 +++++
  drivers/pnp/resource.c                           |   2 +
  drivers/tty/Kconfig                              |   6 +
  drivers/tty/Makefile                             |   1 +
- drivers/tty/sbsauart.c                           | 355 +++++++++++
+ drivers/tty/sbsauart.c                           | 358 +++++++++++
  drivers/tty/serial/8250/8250_dw.c                |   9 +
  drivers/virtio/virtio_mmio.c                     |  12 +-
  drivers/xen/efi.c                                |   1 +
@@ -1874,16 +1934,17 @@ Date:   Wed Oct 8 16:11:27 2014 +0200
  include/linux/gpio_keys.h                        |   3 +
  include/linux/irqchip/arm-gic-acpi.h             |  31 +
  include/linux/irqchip/arm-gic.h                  |   2 +
+ include/linux/kvm_host.h                         |   1 +
  include/linux/leds.h                             |   3 +-
  include/linux/of.h                               |  34 +
  include/linux/pci.h                              |  37 +-
  include/linux/property.h                         | 143 +++++
  net/rfkill/rfkill-gpio.c                         |  18 +-
- virt/kvm/arm/arch_timer.c                        | 108 ++--
- virt/kvm/arm/vgic-v2.c                           |  75 ++-
+ virt/kvm/arm/arch_timer.c                        | 107 ++--
+ virt/kvm/arm/vgic-v2.c                           |  86 ++-
  virt/kvm/arm/vgic-v3.c                           |   8 +-
- virt/kvm/arm/vgic.c                              |  32 +-
- 121 files changed, 6824 insertions(+), 1115 deletions(-)
+ virt/kvm/arm/vgic.c                              |  30 +-
+ 125 files changed, 6843 insertions(+), 1117 deletions(-)
 
 diff --git a/Documentation/acpi/gpio-properties.txt b/Documentation/acpi/gpio-properties.txt
 new file mode 100644
@@ -2365,6 +2426,91 @@ index 479f332..6187d9b 100644
 +			For ARM64, ONLY "acpi=off" or "acpi=force" are available
  
  			See also Documentation/power/runtime_pm.txt, pci=noacpi
+ 
+diff --git a/arch/arm/include/asm/kvm_mmu.h b/arch/arm/include/asm/kvm_mmu.h
+index acb0d57..f867060 100644
+--- a/arch/arm/include/asm/kvm_mmu.h
++++ b/arch/arm/include/asm/kvm_mmu.h
+@@ -161,9 +161,10 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu *vcpu)
+ }
+ 
+ static inline void coherent_cache_guest_page(struct kvm_vcpu *vcpu, hva_t hva,
+-					     unsigned long size)
++					     unsigned long size,
++					     bool ipa_uncached)
+ {
+-	if (!vcpu_has_cache_enabled(vcpu))
++	if (!vcpu_has_cache_enabled(vcpu) || ipa_uncached)
+ 		kvm_flush_dcache_to_poc((void *)hva, size);
+ 	
+ 	/*
+diff --git a/arch/arm/kvm/mmu.c b/arch/arm/kvm/mmu.c
+index 8664ff1..8fa2060 100644
+--- a/arch/arm/kvm/mmu.c
++++ b/arch/arm/kvm/mmu.c
+@@ -853,6 +853,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	struct vm_area_struct *vma;
+ 	pfn_t pfn;
+ 	pgprot_t mem_type = PAGE_S2;
++	bool fault_ipa_uncached;
+ 
+ 	write_fault = kvm_is_write_fault(vcpu);
+ 	if (fault_status == FSC_PERM && !write_fault) {
+@@ -919,6 +920,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	if (!hugetlb && !force_pte)
+ 		hugetlb = transparent_hugepage_adjust(&pfn, &fault_ipa);
+ 
++	fault_ipa_uncached = memslot->flags & KVM_MEMSLOT_INCOHERENT;
++
+ 	if (hugetlb) {
+ 		pmd_t new_pmd = pfn_pmd(pfn, mem_type);
+ 		new_pmd = pmd_mkhuge(new_pmd);
+@@ -926,7 +929,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 			kvm_set_s2pmd_writable(&new_pmd);
+ 			kvm_set_pfn_dirty(pfn);
+ 		}
+-		coherent_cache_guest_page(vcpu, hva & PMD_MASK, PMD_SIZE);
++		coherent_cache_guest_page(vcpu, hva & PMD_MASK, PMD_SIZE,
++					  fault_ipa_uncached);
+ 		ret = stage2_set_pmd_huge(kvm, memcache, fault_ipa, &new_pmd);
+ 	} else {
+ 		pte_t new_pte = pfn_pte(pfn, mem_type);
+@@ -934,7 +938,8 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 			kvm_set_s2pte_writable(&new_pte);
+ 			kvm_set_pfn_dirty(pfn);
+ 		}
+-		coherent_cache_guest_page(vcpu, hva, PAGE_SIZE);
++		coherent_cache_guest_page(vcpu, hva, PAGE_SIZE,
++					  fault_ipa_uncached);
+ 		ret = stage2_set_pte(kvm, memcache, fault_ipa, &new_pte,
+ 			pgprot_val(mem_type) == pgprot_val(PAGE_S2_DEVICE));
+ 	}
+@@ -1245,6 +1250,10 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 	    (KVM_PHYS_SIZE >> PAGE_SHIFT))
+ 		return -EFAULT;
+ 
++	spin_lock(&kvm->mmu_lock);
++	stage2_flush_memslot(kvm, memslot);
++	spin_unlock(&kvm->mmu_lock);
++
+ 	/*
+ 	 * A memory region could potentially cover multiple VMAs, and any holes
+ 	 * between them, so iterate over all of them to find out if we can map
+@@ -1310,6 +1319,15 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *free,
+ int kvm_arch_create_memslot(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 			    unsigned long npages)
+ {
++	/*
++	 * Readonly memslots are not incoherent with the caches by definition,
++	 * but in practice, they are used mostly to emulate ROMs or NOR flashes
++	 * that the guest may consider devices and hence map as uncached.
++	 * To prevent incoherency issues in these cases, tag all readonly
++	 * regions as incoherent.
++	 */
++	if (slot->flags & KVM_MEM_READONLY)
++		slot->flags |= KVM_MEMSLOT_INCOHERENT;
+ 	return 0;
+ }
  
 diff --git a/arch/arm/mach-s3c24xx/h1940-bluetooth.c b/arch/arm/mach-s3c24xx/h1940-bluetooth.c
 index b4d14b8..9c8b127 100644
@@ -3180,6 +3326,23 @@ index 7fd3e27..8afb863 100644
  
  #define ESR_EL2_EC_UNKNOWN	(0x00)
  #define ESR_EL2_EC_WFI		(0x01)
+diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
+index 0caf7a5..123b521 100644
+--- a/arch/arm64/include/asm/kvm_mmu.h
++++ b/arch/arm64/include/asm/kvm_mmu.h
+@@ -243,9 +243,10 @@ static inline bool vcpu_has_cache_enabled(struct kvm_vcpu *vcpu)
+ }
+ 
+ static inline void coherent_cache_guest_page(struct kvm_vcpu *vcpu, hva_t hva,
+-					     unsigned long size)
++					     unsigned long size,
++					     bool ipa_uncached)
+ {
+-	if (!vcpu_has_cache_enabled(vcpu))
++	if (!vcpu_has_cache_enabled(vcpu) || ipa_uncached)
+ 		kvm_flush_dcache_to_poc((void *)hva, size);
+ 
+ 	if (!icache_is_aliasing()) {		/* PIPT */
 diff --git a/arch/arm64/include/asm/pci.h b/arch/arm64/include/asm/pci.h
 index 872ba93..2f287a6 100644
 --- a/arch/arm64/include/asm/pci.h
@@ -4312,7 +4475,7 @@ index 663da77..2d0deda 100644
  
  static int __init cpu_psci_cpu_init(struct device_node *dn, unsigned int cpu)
 diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 2437196..4c7029d 100644
+index 2437196..914287d 100644
 --- a/arch/arm64/kernel/setup.c
 +++ b/arch/arm64/kernel/setup.c
 @@ -43,6 +43,7 @@
@@ -4323,18 +4486,15 @@ index 2437196..4c7029d 100644
  
  #include <asm/fixmap.h>
  #include <asm/cpu.h>
-@@ -59,6 +60,10 @@
+@@ -59,6 +60,7 @@
  #include <asm/memblock.h>
  #include <asm/psci.h>
  #include <asm/efi.h>
 +#include <asm/acpi.h>
-+
-+int acadia_kvm_acpi=0;
-+EXPORT_SYMBOL(acadia_kvm_acpi);
  
  unsigned int processor_id;
  EXPORT_SYMBOL(processor_id);
-@@ -116,12 +121,16 @@ void __init early_print(const char *str, ...)
+@@ -116,12 +118,16 @@ void __init early_print(const char *str, ...)
  
  void __init smp_setup_processor_id(void)
  {
@@ -4351,7 +4511,7 @@ index 2437196..4c7029d 100644
  }
  
  bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
-@@ -312,6 +321,7 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
+@@ -312,6 +318,7 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
  	}
  
  	machine_name = of_flat_dt_get_machine_name();
@@ -4359,7 +4519,7 @@ index 2437196..4c7029d 100644
  }
  
  /*
-@@ -378,6 +388,8 @@ void __init setup_arch(char **cmdline_p)
+@@ -378,6 +385,8 @@ void __init setup_arch(char **cmdline_p)
  
  	early_ioremap_init();
  
@@ -4368,7 +4528,7 @@ index 2437196..4c7029d 100644
  	parse_early_param();
  
  	/*
-@@ -389,19 +401,27 @@ void __init setup_arch(char **cmdline_p)
+@@ -389,19 +398,27 @@ void __init setup_arch(char **cmdline_p)
  	efi_init();
  	arm64_memblock_init();
  
@@ -4402,27 +4562,7 @@ index 2437196..4c7029d 100644
  	smp_build_mpidr_hash();
  #endif
  
-@@ -414,6 +434,19 @@ void __init setup_arch(char **cmdline_p)
- #endif
- }
- 
-+static int __init parse_kvm_acpi(char *arg)
-+{
-+	if (!arg)
-+		return -EINVAL;
-+	
-+	if (strcmp(arg, "on") == 0) {
-+		acadia_kvm_acpi = 1;
-+	}
-+
-+	return 0;
-+}
-+early_param("kvmacpi", parse_kvm_acpi);
-+
- static int __init arm64_device_init(void)
- {
- 	of_platform_populate(NULL, of_default_bus_match_table, NULL, NULL);
-@@ -506,3 +539,25 @@ const struct seq_operations cpuinfo_op = {
+@@ -506,3 +523,25 @@ const struct seq_operations cpuinfo_op = {
  	.stop	= c_stop,
  	.show	= c_show
  };
@@ -4655,7 +4795,7 @@ index b72aa9f..fbe909f 100644
  
  	mrs	x2, mdcr_el2
 diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
-index d920942..705a9ce 100644
+index d920942..cf890e3 100644
 --- a/arch/arm64/mm/dma-mapping.c
 +++ b/arch/arm64/mm/dma-mapping.c
 @@ -23,8 +23,14 @@
@@ -4673,7 +4813,7 @@ index d920942..705a9ce 100644
  
  #include <asm/cacheflush.h>
  
-@@ -423,10 +429,107 @@ out:
+@@ -423,10 +429,116 @@ out:
  	return -ENOMEM;
  }
  
@@ -4708,10 +4848,13 @@ index d920942..705a9ce 100644
 +
 +	/*
 +	 * Kernel defaults to noncoherent ops but ACPI 5.1 spec says arm64
-+	 * defaults to coherent. Set coherent ops if _CCA not found or _CCA
-+	 * found and non-zero.
++	 * defaults to coherent. For PCI devices, the _CCA is only a default
++	 * setting. Individual devices on a PCIe bus may set transaction
++	 * ordering and caching attributes individually. Such drivers will
++	 * also be resonsible for using the correct DMA ops for the cache
++	 * conherence used.
 +	 *
-+	 * PCI devices won't have an of_node but the bridge will.
++	 * PCI devices won't have a handle but the bridge will.
 +	 * Search up the device chain until we find an ACPI handle
 +	 * to check.
 +	 */
@@ -4719,10 +4862,16 @@ index d920942..705a9ce 100644
 +		if (ACPI_HANDLE(dev)) {
 +			acpi_status status;
 +			int coherent;
++			struct dma_map_ops *ops;
++
 +			status =  acpi_check_coherency(ACPI_HANDLE(dev),
 +						       &coherent);
 +			if (ACPI_FAILURE(status) || coherent)
-+				set_dma_ops(_dev, &coherent_swiotlb_dma_ops);
++				ops = &coherent_swiotlb_dma_ops;
++			else
++				ops = &noncoherent_swiotlb_dma_ops;
++
++			set_dma_ops(_dev, ops);
 +			break;
 +		}
 +		dev = dev->parent;
@@ -9790,26 +9939,10 @@ index 789957d..59498eb 100644
  	/* Timestamp support */
  	spinlock_t tstamp_lock;
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-index 7ba83ff..dbbd661 100644
+index 7ba83ff..29aad5e 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
-@@ -593,9 +593,12 @@ static int xgene_enet_reset(struct xgene_enet_pdata *pdata)
- 	if (!xgene_ring_mgr_init(pdata))
- 		return -ENODEV;
- 
--	clk_prepare_enable(pdata->clk);
--	clk_disable_unprepare(pdata->clk);
--	clk_prepare_enable(pdata->clk);
-+	if (pdata->clk) {
-+		clk_prepare_enable(pdata->clk);
-+		clk_disable_unprepare(pdata->clk);
-+		clk_prepare_enable(pdata->clk);
-+	}
-+
- 	xgene_enet_ecc_init(pdata);
- 	xgene_enet_config_ring_if_assoc(pdata);
- 
-@@ -663,15 +666,20 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+@@ -663,15 +663,20 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
  	struct phy_device *phy_dev;
  	struct device *dev = &pdata->pdev->dev;
  
@@ -9837,7 +9970,7 @@ index 7ba83ff..dbbd661 100644
  		netdev_err(ndev, "Could not connect to PHY\n");
  		return  -ENODEV;
  	}
-@@ -681,11 +689,52 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+@@ -681,11 +686,52 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
  			      ~SUPPORTED_100baseT_Half &
  			      ~SUPPORTED_1000baseT_Half;
  	phy_dev->advertising = phy_dev->supported;
@@ -9891,7 +10024,7 @@ index 7ba83ff..dbbd661 100644
  int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  {
  	struct net_device *ndev = pdata->ndev;
-@@ -702,7 +751,7 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+@@ -702,7 +748,7 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  		}
  	}
  
@@ -9900,7 +10033,7 @@ index 7ba83ff..dbbd661 100644
  		netdev_dbg(ndev, "No mdio node in the dts\n");
  		return -ENXIO;
  	}
-@@ -720,7 +769,10 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+@@ -720,7 +766,10 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
  	mdio_bus->priv = pdata;
  	mdio_bus->parent = &ndev->dev;
  
@@ -11316,7 +11449,7 @@ index 3823edf..4c2ccde 100644
   * @np:		device node from which the property value is to be read.
   * @propname:	name of the property to be searched.
 diff --git a/drivers/pci/host/pci-xgene.c b/drivers/pci/host/pci-xgene.c
-index 9ecabfa..9029d59c 100644
+index 2988fe1..9029d59c 100644
 --- a/drivers/pci/host/pci-xgene.c
 +++ b/drivers/pci/host/pci-xgene.c
 @@ -29,6 +29,7 @@
@@ -11555,10 +11688,10 @@ index 58ad1c0..c3211c0 100644
  obj-y += ipwireless/
 diff --git a/drivers/tty/sbsauart.c b/drivers/tty/sbsauart.c
 new file mode 100644
-index 0000000..402f168
+index 0000000..0f44624
 --- /dev/null
 +++ b/drivers/tty/sbsauart.c
-@@ -0,0 +1,355 @@
+@@ -0,0 +1,358 @@
 +/*
 + * SBSA (Server Base System Architecture) Compatible UART driver
 + *
@@ -11868,6 +12001,9 @@ index 0000000..402f168
 +	qtty->console.device = sbsa_tty_console_device;
 +	qtty->console.setup = sbsa_tty_console_setup;
 +	qtty->console.flags = CON_PRINTBUFFER;
++	/* if no console= on cmdline, make this the console device */
++	if (!console_set_on_cmdline)
++		qtty->console.flags |= CON_CONSDEV;
 +	qtty->console.index = pdev->id;
 +	register_console(&qtty->console);
 +
@@ -12463,6 +12599,18 @@ index 13eed92..dc9cb5f 100644
  #define GICH_HCR			0x0
  #define GICH_VTR			0x4
  #define GICH_VMCR			0x8
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index a6059bd..e4d8f70 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -43,6 +43,7 @@
+  * include/linux/kvm_h.
+  */
+ #define KVM_MEMSLOT_INVALID	(1UL << 16)
++#define KVM_MEMSLOT_INCOHERENT	(1UL << 17)
+ 
+ /* Two fragments for cross MMIO pages. */
+ #define KVM_MAX_MMIO_FRAGMENTS	2
 diff --git a/include/linux/leds.h b/include/linux/leds.h
 index a57611d..361101f 100644
 --- a/include/linux/leds.h
@@ -12572,10 +12720,10 @@ index 29f0adc..cf79be1 100644
  					  const char *propname,
  					  const char **out_string)
 diff --git a/include/linux/pci.h b/include/linux/pci.h
-index 5be8db4..6afba72 100644
+index 4c8ac5f..ea663d8 100644
 --- a/include/linux/pci.h
 +++ b/include/linux/pci.h
-@@ -562,15 +562,6 @@ struct pci_ops {
+@@ -563,15 +563,6 @@ struct pci_ops {
  	int (*write)(struct pci_bus *bus, unsigned int devfn, int where, int size, u32 val);
  };
  
@@ -12591,7 +12739,7 @@ index 5be8db4..6afba72 100644
  struct pci_bus_region {
  	dma_addr_t start;
  	dma_addr_t end;
-@@ -1325,6 +1316,16 @@ typedef int (*arch_set_vga_state_t)(struct pci_dev *pdev, bool decode,
+@@ -1326,6 +1317,16 @@ typedef int (*arch_set_vga_state_t)(struct pci_dev *pdev, bool decode,
  		      unsigned int command_bits, u32 flags);
  void pci_register_set_vga_state(arch_set_vga_state_t func);
  
@@ -12608,7 +12756,7 @@ index 5be8db4..6afba72 100644
  #else /* CONFIG_PCI is not enabled */
  
  /*
-@@ -1426,6 +1427,23 @@ static inline struct pci_dev *pci_get_bus_and_slot(unsigned int bus,
+@@ -1427,6 +1428,23 @@ static inline struct pci_dev *pci_get_bus_and_slot(unsigned int bus,
  						unsigned int devfn)
  { return NULL; }
  
@@ -12632,7 +12780,7 @@ index 5be8db4..6afba72 100644
  static inline int pci_domain_nr(struct pci_bus *bus) { return 0; }
  static inline struct pci_dev *pci_dev_get(struct pci_dev *dev) { return NULL; }
  static inline int pci_get_new_domain_nr(void) { return -ENOSYS; }
-@@ -1635,7 +1653,6 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev,
+@@ -1636,7 +1654,6 @@ int pcibios_set_pcie_reset_state(struct pci_dev *dev,
  				 enum pcie_reset_state state);
  int pcibios_add_device(struct pci_dev *dev);
  void pcibios_release_device(struct pci_dev *dev);
@@ -12847,7 +12995,7 @@ index 0f62326..2a47179 100644
  }
  
 diff --git a/virt/kvm/arm/arch_timer.c b/virt/kvm/arm/arch_timer.c
-index 22fa819..9cd5dbd 100644
+index 22fa819..642dad4 100644
 --- a/virt/kvm/arm/arch_timer.c
 +++ b/virt/kvm/arm/arch_timer.c
 @@ -21,9 +21,11 @@
@@ -12862,7 +13010,7 @@ index 22fa819..9cd5dbd 100644
  
  #include <kvm/arm_vgic.h>
  #include <kvm/arm_arch_timer.h>
-@@ -244,60 +246,92 @@ static const struct of_device_id arch_timer_of_match[] = {
+@@ -244,60 +246,91 @@ static const struct of_device_id arch_timer_of_match[] = {
  	{},
  };
  
@@ -12905,7 +13053,6 @@ index 22fa819..9cd5dbd 100644
 +}
  
 -	host_vtimer_irq = ppi;
-+extern int acadia_kvm_acpi;
 +extern int arch_timer_ppi[];
  
 -	err = __register_cpu_notifier(&kvm_timer_cpu_nb);
@@ -12946,7 +13093,7 @@ index 22fa819..9cd5dbd 100644
  
 -	goto out;
 +	/* if DT parsing fails, try ACPI next */
-+	if (err && !acpi_disabled && acadia_kvm_acpi )
++	if (err && !acpi_disabled)
 +		err = kvm_timer_ppi_parse_acpi(&ppi);
 +
 +	if (err) {
@@ -12993,7 +13140,7 @@ index 22fa819..9cd5dbd 100644
  
  void kvm_timer_vcpu_terminate(struct kvm_vcpu *vcpu)
 diff --git a/virt/kvm/arm/vgic-v2.c b/virt/kvm/arm/vgic-v2.c
-index 2935405..196f49e 100644
+index 2935405..510049c 100644
 --- a/virt/kvm/arm/vgic-v2.c
 +++ b/virt/kvm/arm/vgic-v2.c
 @@ -19,6 +19,7 @@
@@ -13030,7 +13177,30 @@ index 2935405..196f49e 100644
  		  const struct vgic_ops **ops,
  		  const struct vgic_params **params)
  {
-@@ -245,3 +247,72 @@ out:
+@@ -222,11 +224,22 @@ int vgic_v2_probe(struct device_node *vgic_node,
+ 	}
+ 
+ 	if (!PAGE_ALIGNED(resource_size(&vcpu_res))) {
++#if 0
+ 		kvm_err("GICV size 0x%llx not a multiple of page size 0x%lx\n",
+ 			(unsigned long long)resource_size(&vcpu_res),
+ 			PAGE_SIZE);
+ 		ret = -ENXIO;
+ 		goto out_unmap;
++#else
++		/*
++		 * The check fails for arm64 with 64K pagesize and certain firmware.
++		 * Ignore for now until firmware takes care of the problem.
++		 */
++		kvm_info("GICV size 0x%llx not a multiple of page size 0x%lx\n",
++			(unsigned long long)resource_size(&vcpu_res),
++			PAGE_SIZE);
++		kvm_info("Update DT to assign GICV a multiple of kernel page size \n");
++#endif
+ 	}
+ 
+ 	vgic->vcpu_base = vcpu_res.start;
+@@ -245,3 +258,72 @@ out:
  	of_node_put(vgic_node);
  	return ret;
  }
@@ -13130,7 +13300,7 @@ index 1c2c8ee..8b56920 100644
  	int ret = 0;
  	u32 gicv_idx;
 diff --git a/virt/kvm/arm/vgic.c b/virt/kvm/arm/vgic.c
-index 3aaca49..f6e9922 100644
+index aacdb59..d972d63 100644
 --- a/virt/kvm/arm/vgic.c
 +++ b/virt/kvm/arm/vgic.c
 @@ -25,9 +25,11 @@
@@ -13145,7 +13315,7 @@ index 3aaca49..f6e9922 100644
  #include <asm/kvm_emulate.h>
  #include <asm/kvm_arm.h>
  #include <asm/kvm_mmu.h>
-@@ -2427,31 +2429,39 @@ static struct notifier_block vgic_cpu_nb = {
+@@ -2427,8 +2429,8 @@ static struct notifier_block vgic_cpu_nb = {
  };
  
  static const struct of_device_id vgic_ids[] = {
@@ -13156,11 +13326,7 @@ index 3aaca49..f6e9922 100644
  	{},
  };
  
-+extern int acadia_kvm_acpi;
-+
- int kvm_vgic_hyp_init(void)
- {
- 	const struct of_device_id *matched_id;
+@@ -2438,20 +2440,26 @@ int kvm_vgic_hyp_init(void)
  	const int (*vgic_probe)(struct device_node *,const struct vgic_ops **,
  				const struct vgic_params **);
  	struct device_node *vgic_node;
@@ -13173,13 +13339,13 @@ index 3aaca49..f6e9922 100644
 -		kvm_err("error: no compatible GIC node found\n");
 -		return -ENODEV;
 +	/* probe VGIC */
-+	if (vgic_node = of_find_matching_node_and_match(NULL,
-+				vgic_ids, &matched_id)) {
++	if ((vgic_node = of_find_matching_node_and_match(NULL,
++				vgic_ids, &matched_id))) {
 +		/* probe VGIC in DT */
 +		vgic_probe = matched_id->data;
 +		ret = vgic_probe(vgic_node, &vgic_ops, &vgic);
 +	}
-+	else if (!acpi_disabled && acadia_kvm_acpi) {
++	else if (!acpi_disabled) {
 +		/* probe VGIC in ACPI */
 +		ret = vgic_v2_acpi_probe(&vgic_ops, &vgic);
  	}

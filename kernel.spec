@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 11 2014 Kyle McMartin <kyle@fedoraproject.org>
+- kernel-arm64.patch: update from git.
+
 * Wed Dec 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix UAS crashes with Seagate and Fresco Logic drives (rhbz 1164945)
 - CVE-2014-8134 fix espfix for 32-bit KVM paravirt guests (rhbz 1172765 1172769)
