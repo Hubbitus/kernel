@@ -2254,6 +2254,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 12 2014 Kyle McMartin <kyle@fedoraproject.org>
+- build in ahci_platform on aarch64 temporarily.
+
 * Fri Dec 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Remove pointless warning in cfg80211 (rhbz 1172543)
 
