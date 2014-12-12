@@ -632,6 +632,9 @@ Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 #rhbz 1084928
 Patch26095: ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
 
+#rhbz 1172543
+Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1373,6 +1376,9 @@ ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
 #rhbz 1084928
 ApplyPatch ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
+
+#rhbz 1172543
+ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2248,6 +2254,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Dec 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Remove pointless warning in cfg80211 (rhbz 1172543)
+
 * Wed Dec 10 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix MSI issues on another Samsung pci-e SSD (rhbz 1084928)
 - Fix UAS crashes with Seagate and Fresco Logic drives (rhbz 1164945)
