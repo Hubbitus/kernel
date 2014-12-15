@@ -623,6 +623,10 @@ Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 #rhbz 1172543
 Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
 
+#CVE-2014-8559 rhbz 1159313 1173814
+Patch26098: move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
+Patch26099: deal-with-deadlock-in-d_walk.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1354,6 +1358,10 @@ ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
 #rhbz 1172543
 ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
+
+#CVE-2014-8559 rhbz 1159313 1173814
+ApplyPatch move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
+ApplyPatch deal-with-deadlock-in-d_walk.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2223,6 +2231,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Dec 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8559 deadlock due to incorrect usage of rename_lock (rhbz 1159313 1173814)
+
 * Fri Dec 12 2014 Kyle McMartin <kyle@fedoraproject.org>
 - build in ahci_platform on aarch64 temporarily.
 
