@@ -1,0 +1,46 @@
+From: Greg Kurz <gkurz@linux.vnet.ibm.com>
+Date: Fri, 12 Dec 2014 12:37:40 +0100
+Subject: [PATCH] powerpc/powernv: force all CPUs to be bootable
+
+The subcore logic needs all the CPUs declared in the DT to be bootable,
+otherwise the kernel hangs at boot time. Since subcore support starts
+with POWER8, we can keep the current behaviour for older CPUs.
+
+Signed-off-by: Greg Kurz <gkurz@linux.vnet.ibm.com>
+---
+ arch/powerpc/platforms/powernv/smp.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/platforms/powernv/smp.c b/arch/powerpc/platforms/powernv/smp.c
+index 5fcfcf44e3a9..52552e60df36 100644
+--- a/arch/powerpc/platforms/powernv/smp.c
++++ b/arch/powerpc/platforms/powernv/smp.c
+@@ -185,13 +185,24 @@ static void pnv_smp_cpu_kill_self(void)
+ 
+ #endif /* CONFIG_HOTPLUG_CPU */
+ 
++static int pnv_cpu_bootable(unsigned int nr)
++{
++	/* Starting with POWER8, all CPUs need to be booted to avoid hangs
++	 * during subcore init.
++	 */
++	if (cpu_has_feature(CPU_FTR_ARCH_207S))
++		return 1;
++
++	return smp_generic_cpu_bootable(nr);
++}
++
+ static struct smp_ops_t pnv_smp_ops = {
+ 	.message_pass	= smp_muxed_ipi_message_pass,
+ 	.cause_ipi	= NULL,	/* Filled at runtime by xics_smp_probe() */
+ 	.probe		= xics_smp_probe,
+ 	.kick_cpu	= pnv_smp_kick_cpu,
+ 	.setup_cpu	= pnv_smp_setup_cpu,
+-	.cpu_bootable	= smp_generic_cpu_bootable,
++	.cpu_bootable	= pnv_cpu_bootable,
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	.cpu_disable	= pnv_smp_cpu_disable,
+ 	.cpu_die	= generic_cpu_die,
+-- 
+2.1.0
+
