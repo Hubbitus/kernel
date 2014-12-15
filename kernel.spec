@@ -644,6 +644,10 @@ Patch26100: x86-tls-Validate-TLS-entries-to-protect-espfix.patch
 #rhbz 1173806
 Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
+#CVE-2014-8559 rhbz 1159313 1173814
+Patch26098: move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
+Patch26099: deal-with-deadlock-in-d_walk.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1396,6 +1400,10 @@ ApplyPatch x86-tls-Validate-TLS-entries-to-protect-espfix.patch
 
 #rhbz 1173806
 ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
+
+#CVE-2014-8559 rhbz 1159313 1173814
+ApplyPatch move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
+ApplyPatch deal-with-deadlock-in-d_walk.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2272,6 +2280,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8559 deadlock due to incorrect usage of rename_lock (rhbz 1159313 1173814)
 - Add patch from Josh Stone to restore var-tracking via Kconfig (rhbz 1126580)
 
 * Mon Dec 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
