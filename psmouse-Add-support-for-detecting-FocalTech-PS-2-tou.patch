@@ -153,5 +153,5 @@ index 02e68c3008a3..2c8c8e2172a2 100644
   * Reset to defaults in case the device got confused by extended
   * protocol probes. Note that we follow up with full reset because
 -- 
-1.9.3
+2.1.0
 

@@ -635,6 +635,9 @@ Patch26095: ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
 #rhbz 1172543
 Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
 
+#CVE-2014-8133 rhbz 1172797 1174374
+Patch26100: x86-tls-Validate-TLS-entries-to-protect-espfix.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1379,6 +1382,9 @@ ApplyPatch ahci-disable-MSI-on-SAMSUNG-0xa800-SSD.patch
 
 #rhbz 1172543
 ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
+
+#CVE-2014-8133 rhbz 1172797 1174374
+ApplyPatch x86-tls-Validate-TLS-entries-to-protect-espfix.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2254,6 +2260,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Dec 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8133 x86: espfix(64) bypass via set_thread_area and CLONE_SETTLS (rhbz 1172797 1174374)
+
 * Fri Dec 12 2014 Kyle McMartin <kyle@fedoraproject.org>
 - build in ahci_platform on aarch64 temporarily.
 

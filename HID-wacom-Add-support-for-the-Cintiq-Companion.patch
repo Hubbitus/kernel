@@ -42,5 +42,5 @@ index aa6a08eb7ad6..c3cbbfb5811f 100644
  	{ USB_DEVICE_WACOM(0x314) },
  	{ USB_DEVICE_WACOM(0x315) },
 -- 
-1.9.3
+2.1.0
 

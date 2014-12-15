@@ -1,4 +1,3 @@
-From 0fdb006a5af7f391a6de4ce810aba4af46c427e4 Mon Sep 17 00:00:00 2001
 From: Andy Lutomirski <luto@amacapital.net>
 Date: Fri, 5 Dec 2014 19:03:28 -0800
 Subject: [PATCH] x86, kvm: Clear paravirt_enabled on KVM guests for espfix32's

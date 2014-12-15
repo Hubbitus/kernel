@@ -1,4 +1,3 @@
-From 905ef98a83d3782207c0bda8d093e8f654884a94 Mon Sep 17 00:00:00 2001
 From: Tejun Heo <tj@kernel.org>
 Date: Thu, 4 Dec 2014 13:13:28 -0500
 Subject: [PATCH] ahci: disable MSI on SAMSUNG 0xa800 SSD

@@ -26,5 +26,5 @@ index c68e72414a67..4277938af700 100644
  		/* parse the table header to get the table length */
  		if (count <= sizeof(struct acpi_table_header))
 -- 
-1.9.3
+2.1.0
 

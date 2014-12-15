@@ -1,4 +1,3 @@
-From e95a7085483366d52dd93b9fe8258ea77b99b89a Mon Sep 17 00:00:00 2001
 From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
 Date: Tue, 2 Dec 2014 09:53:25 +0200
 Subject: [PATCH] cfg80211: don't WARN about two consecutive Country IE hint
@@ -20,10 +19,10 @@ Acked-by: Luis R. Rodriguez <mcgrof@suse.com>
  1 file changed, 2 insertions(+), 5 deletions(-)
 
 diff --git a/net/wireless/reg.c b/net/wireless/reg.c
-index b725a31a4751..695f12b2c176 100644
+index 1afdf45db38f..e676723e29e2 100644
 --- a/net/wireless/reg.c
 +++ b/net/wireless/reg.c
-@@ -1839,11 +1839,8 @@ __reg_process_hint_country_ie(struct wiphy *wiphy,
+@@ -1799,11 +1799,8 @@ __reg_process_hint_country_ie(struct wiphy *wiphy,
  			return REG_REQ_IGNORE;
  		return REG_REQ_ALREADY_SET;
  	}
