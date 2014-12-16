@@ -516,6 +516,9 @@ Patch530: silence-fbcon-logo.patch
 
 Patch600: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
+#rhbz 1126580
+Patch601: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
+
 Patch800: crash-driver.patch
 
 # crypto/
@@ -1287,6 +1290,8 @@ ApplyPatch input-silence-i8042-noise.patch
 ApplyPatch silence-fbcon-logo.patch
 
 # Changes to upstream defaults.
+#rhbz 1126580
+ApplyPatch Kbuild-Add-an-option-to-enable-GCC-VTA.patch
 
 # /dev/crash driver.
 ApplyPatch crash-driver.patch
@@ -2266,6 +2271,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Josh Stone to restore var-tracking via Kconfig (rhbz 1126580)
+
 * Mon Dec 15 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix ppc64 boot with smt-enabled=off (rhbz 1173806)
 - CVE-2014-8133 x86: espfix(64) bypass via set_thread_area and CLONE_SETTLS (rhbz 1172797 1174374)
