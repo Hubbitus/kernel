@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -625,10 +625,6 @@ Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
 #rhbz 1172543
 Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
-#CVE-2014-8559 rhbz 1159313 1173814
-Patch26098: move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
-Patch26099: deal-with-deadlock-in-d_walk.patch
 
 #CVE-2014-8133 rhbz 1172797 1174374
 Patch26100: x86-tls-Validate-TLS-entries-to-protect-espfix.patch
@@ -1369,10 +1365,6 @@ ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
 #rhbz 1172543
 ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
-#CVE-2014-8559 rhbz 1159313 1173814
-ApplyPatch move-d_rcu-from-overlapping-d_child-to-overlapping-d.patch
-ApplyPatch deal-with-deadlock-in-d_walk.patch
 
 #CVE-2014-8133 rhbz 1172797 1174374
 ApplyPatch x86-tls-Validate-TLS-entries-to-protect-espfix.patch
@@ -2248,6 +2240,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.1-1
+- Linux v3.18.1
+
 * Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-2
 - Add patch from Josh Stone to restore var-tracking via Kconfig (rhbz 1126580)
 
