@@ -2249,6 +2249,7 @@ fi
 * Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.1-1
 - Linux v3.18.1
 - CVE-2014-XXXX isofs: infinite loop in CE record entries (rhbz 1175235 1175250)
+- Enable TCM_USER (rhbz 1174986)
 
 * Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-2
 - Add patch from Josh Stone to restore var-tracking via Kconfig (rhbz 1126580)
