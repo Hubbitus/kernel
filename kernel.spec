@@ -632,6 +632,9 @@ Patch26100: x86-tls-Validate-TLS-entries-to-protect-espfix.patch
 #rhbz 1173806
 Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
+#CVE-2014-XXXX rhbz 1175235 1175250
+Patch26102: isofs-Fix-infinite-looping-over-CE-entries.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1371,6 +1374,9 @@ ApplyPatch x86-tls-Validate-TLS-entries-to-protect-espfix.patch
 
 #rhbz 1173806
 ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
+
+#CVE-2014-XXXX rhbz 1175235 1175250
+ApplyPatch isofs-Fix-infinite-looping-over-CE-entries.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2242,6 +2248,7 @@ fi
 %changelog
 * Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.1-1
 - Linux v3.18.1
+- CVE-2014-XXXX isofs: infinite loop in CE record entries (rhbz 1175235 1175250)
 
 * Tue Dec 16 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.0-2
 - Add patch from Josh Stone to restore var-tracking via Kconfig (rhbz 1126580)
