@@ -1,0 +1,33 @@
+From: "Eric W. Biederman" <ebiederm@xmission.com>
+Date: Sat, 4 Oct 2014 14:44:03 -0700
+Subject: [PATCH] umount: Disallow unprivileged mount force
+
+Forced unmount affects not just the mount namespace but the underlying
+superblock as well.  Restrict forced unmount to the global root user
+for now.  Otherwise it becomes possible a user in a less privileged
+mount namespace to force the shutdown of a superblock of a filesystem
+in a more privileged mount namespace, allowing a DOS attack on root.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+---
+ fs/namespace.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/fs/namespace.c b/fs/namespace.c
+index 3a1a87dc33df..43b16af8af30 100644
+--- a/fs/namespace.c
++++ b/fs/namespace.c
+@@ -1544,6 +1544,9 @@ SYSCALL_DEFINE2(umount, char __user *, name, int, flags)
+ 		goto dput_and_out;
+ 	if (mnt->mnt.mnt_flags & MNT_LOCKED)
+ 		goto dput_and_out;
++	retval = -EPERM;
++	if (flags & MNT_FORCE && !capable(CAP_SYS_ADMIN))
++		goto dput_and_out;
+ 
+ 	retval = do_umount(mnt, flags);
+ dput_and_out:
+-- 
+2.1.0
+

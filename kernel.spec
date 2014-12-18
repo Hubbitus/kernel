@@ -645,6 +645,23 @@ Patch26106: dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
 
 Patch26107: uapi-linux-target_core_user.h-fix-headers_install.sh.patch
 
+#mount fixes for stable
+Patch26108: mnt-Implicitly-add-MNT_NODEV-on-remount-when-it-was-.patch
+Patch26109: mnt-Update-unprivileged-remount-test.patch
+Patch26110: umount-Disallow-unprivileged-mount-force.patch
+
+#CVE-2014-8989 rhbz 1170684 1170688
+Patch26111: groups-Consolidate-the-setgroups-permission-checks.patch
+Patch26112: userns-Document-what-the-invariant-required-for-safe.patch
+Patch26113: userns-Don-t-allow-setgroups-until-a-gid-mapping-has.patch
+Patch26114: userns-Don-t-allow-unprivileged-creation-of-gid-mapp.patch
+Patch26115: userns-Check-euid-no-fsuid-when-establishing-an-unpr.patch
+Patch26116: userns-Only-allow-the-creator-of-the-userns-unprivil.patch
+Patch26117: userns-Rename-id_map_mutex-to-userns_state_mutex.patch
+Patch26118: userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
+Patch26119: userns-Allow-setting-gid_maps-without-privilege-when.patch
+Patch26120: userns-Unbreak-the-unprivileged-remount-tests.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1397,6 +1414,23 @@ ApplyPatch dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
 ApplyPatch dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
 
 ApplyPatch uapi-linux-target_core_user.h-fix-headers_install.sh.patch
+
+#mount fixes for stable
+ApplyPatch mnt-Implicitly-add-MNT_NODEV-on-remount-when-it-was-.patch
+ApplyPatch mnt-Update-unprivileged-remount-test.patch
+ApplyPatch umount-Disallow-unprivileged-mount-force.patch
+
+#CVE-2014-8989 rhbz 1170684 1170688
+ApplyPatch groups-Consolidate-the-setgroups-permission-checks.patch
+ApplyPatch userns-Document-what-the-invariant-required-for-safe.patch
+ApplyPatch userns-Don-t-allow-setgroups-until-a-gid-mapping-has.patch
+ApplyPatch userns-Don-t-allow-unprivileged-creation-of-gid-mapp.patch
+ApplyPatch userns-Check-euid-no-fsuid-when-establishing-an-unpr.patch
+ApplyPatch userns-Only-allow-the-creator-of-the-userns-unprivil.patch
+ApplyPatch userns-Rename-id_map_mutex-to-userns_state_mutex.patch
+ApplyPatch userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
+ApplyPatch userns-Allow-setting-gid_maps-without-privilege-when.patch
+ApplyPatch userns-Unbreak-the-unprivileged-remount-tests.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2267,6 +2301,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Dec 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8989 userns can bypass group restrictions (rhbz 1170684 1170688)
 - Fix from Kyle McMartin for target_core_user uapi issue since it's enabled
 - Fix dm-cache crash (rhbz 1168434)
 - Fix blk-mq crash on CPU hotplug (rhbz 1175261)
