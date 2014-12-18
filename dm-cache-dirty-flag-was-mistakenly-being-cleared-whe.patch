@@ -1,0 +1,42 @@
+From: Joe Thornber <ejt@redhat.com>
+Date: Thu, 27 Nov 2014 12:26:46 +0000
+Subject: [PATCH] dm cache: dirty flag was mistakenly being cleared when
+ promoting via overwrite
+
+If the incoming bio is a WRITE and completely covers a block then we
+don't bother to do any copying for a promotion operation.  Once this is
+done the cache block and origin block will be different, so we need to
+set it to 'dirty'.
+
+Signed-off-by: Joe Thornber <ejt@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/md/dm-cache-target.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
+index 6f7086355691..387b93d81138 100644
+--- a/drivers/md/dm-cache-target.c
++++ b/drivers/md/dm-cache-target.c
+@@ -951,10 +951,14 @@ static void migration_success_post_commit(struct dm_cache_migration *mg)
+ 		}
+ 
+ 	} else {
+-		clear_dirty(cache, mg->new_oblock, mg->cblock);
+-		if (mg->requeue_holder)
++		if (mg->requeue_holder) {
++			clear_dirty(cache, mg->new_oblock, mg->cblock);
+ 			cell_defer(cache, mg->new_ocell, true);
+-		else {
++		} else {
++			/*
++			 * The block was promoted via an overwrite, so it's dirty.
++			 */
++			set_dirty(cache, mg->new_oblock, mg->cblock);
+ 			bio_endio(mg->new_ocell->holder, 0);
+ 			cell_defer(cache, mg->new_ocell, false);
+ 		}
+-- 
+2.1.0
+
