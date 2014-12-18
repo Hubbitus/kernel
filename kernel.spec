@@ -643,6 +643,8 @@ Patch26104: dm-cache-only-use-overwrite-optimisation-for-promoti.patch
 Patch26105: dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
 Patch26106: dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
 
+Patch26107: uapi-linux-target_core_user.h-fix-headers_install.sh.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1393,6 +1395,8 @@ ApplyPatch blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
 ApplyPatch dm-cache-only-use-overwrite-optimisation-for-promoti.patch
 ApplyPatch dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
 ApplyPatch dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
+
+ApplyPatch uapi-linux-target_core_user.h-fix-headers_install.sh.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2263,6 +2267,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Dec 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix from Kyle McMartin for target_core_user uapi issue since it's enabled
 - Fix dm-cache crash (rhbz 1168434)
 - Fix blk-mq crash on CPU hotplug (rhbz 1175261)
 
