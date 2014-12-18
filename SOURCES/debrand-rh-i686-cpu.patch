@@ -1,0 +1,11 @@
+--- a/arch/x86/boot/main.c	2014-06-04 10:05:04.000000000 -0700
++++ b/arch/x86/boot/main.c	2014-07-09 12:54:40.000000000 -0700
+@@ -146,7 +146,7 @@ void main(void)
+ 
+ 	/* Make sure we have all the proper CPU support */
+ 	if (validate_cpu()) {
+-		puts("This processor is unsupported in RHEL7.\n");
++		puts("This processor is unsupported in CentOS 7.\n");
+ 		die();
+ 	}
+ 
