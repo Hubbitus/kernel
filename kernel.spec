@@ -638,6 +638,11 @@ Patch26102: isofs-Fix-infinite-looping-over-CE-entries.patch
 #rhbz 1175261
 Patch26103: blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
 
+#rhbz 1168434
+Patch26104: dm-cache-only-use-overwrite-optimisation-for-promoti.patch
+Patch26105: dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
+Patch26106: dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1383,6 +1388,11 @@ ApplyPatch isofs-Fix-infinite-looping-over-CE-entries.patch
 
 #rhbz 1175261
 ApplyPatch blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
+
+#rhbz 1168434
+ApplyPatch dm-cache-only-use-overwrite-optimisation-for-promoti.patch
+ApplyPatch dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
+ApplyPatch dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2253,6 +2263,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Dec 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix dm-cache crash (rhbz 1168434)
 - Fix blk-mq crash on CPU hotplug (rhbz 1175261)
 
 * Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.1-1
