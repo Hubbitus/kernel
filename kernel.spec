@@ -648,6 +648,9 @@ Patch26099: deal-with-deadlock-in-d_walk.patch
 #CVE-2014-XXXX rhbz 1175235 1175250
 Patch26102: isofs-Fix-infinite-looping-over-CE-entries.patch
 
+#rhbz 1175261
+Patch26103: blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1404,6 +1407,9 @@ ApplyPatch deal-with-deadlock-in-d_walk.patch
 
 #CVE-2014-XXXX rhbz 1175235 1175250
 ApplyPatch isofs-Fix-infinite-looping-over-CE-entries.patch
+
+#rhbz 1175261
+ApplyPatch blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2279,6 +2285,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Dec 18 2014 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blk-mq crash on CPU hotplug (rhbz 1175261)
+
 * Wed Dec 17 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable USBIP in modules-extra from Johnathan Dieter (rhbz 1169478)
 - CVE-2014-XXXX isofs: infinite loop in CE record entries (rhbz 1175235 1175250)
