@@ -33,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 41a503c15862..7b8969db8398 100644
+index ba397bde7948..d4c55ee9f1ac 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1611,6 +1611,16 @@ config EFI_MIXED
+@@ -1656,6 +1656,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -54,7 +54,7 @@ index 41a503c15862..7b8969db8398 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 1acf605a646d..6da2da7ac9c3 100644
+index 92b9a5f2aed6..2192da755e34 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index ab08aa2276fb..f4eb99432db1 100644
+index ab4734e5411d..5d52d67d5097 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1150,6 +1150,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1152,6 +1152,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,7 +146,7 @@ index ab08aa2276fb..f4eb99432db1 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 341a73ecea2e..cca08ac450e2 100644
+index 089de6be8062..6a586a83ba7e 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
@@ -163,10 +163,10 @@ index 341a73ecea2e..cca08ac450e2 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 6507ffcb5445..cace4bd04956 100644
+index fd8c5495fdc6..5f8c11de61fe 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3845,6 +3845,13 @@ void module_layout(struct module *mod,
+@@ -3851,6 +3851,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  

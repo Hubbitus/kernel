@@ -6,9 +6,9 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
-%global aarch64patches 1
+%global aarch64patches 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 0
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 2
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -587,7 +587,6 @@ Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
-Patch21029: arm-dts-sun7i-bananapi.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
 
@@ -610,57 +609,10 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-Patch26064: Input-add-driver-for-the-Goodix-touchpanel.patch
-
-#rhbz 1135338
-Patch26070: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
-
-#CVE-2014-8134 rhbz 1172765 1172769
-Patch26091: x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
-
 #rhbz 1164945
 Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1172543
-Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
-#CVE-2014-8133 rhbz 1172797 1174374
-Patch26100: x86-tls-Validate-TLS-entries-to-protect-espfix.patch
-
-#rhbz 1173806
-Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#CVE-2014-XXXX rhbz 1175235 1175250
-Patch26102: isofs-Fix-infinite-looping-over-CE-entries.patch
-
-#rhbz 1175261
-Patch26103: blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
-
-#rhbz 1168434
-Patch26104: dm-cache-only-use-overwrite-optimisation-for-promoti.patch
-Patch26105: dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
-Patch26106: dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
-
-Patch26107: uapi-linux-target_core_user.h-fix-headers_install.sh.patch
-
-#mount fixes for stable
-Patch26108: mnt-Implicitly-add-MNT_NODEV-on-remount-when-it-was-.patch
-Patch26109: mnt-Update-unprivileged-remount-test.patch
-Patch26110: umount-Disallow-unprivileged-mount-force.patch
-
-#CVE-2014-8989 rhbz 1170684 1170688
-Patch26111: groups-Consolidate-the-setgroups-permission-checks.patch
-Patch26112: userns-Document-what-the-invariant-required-for-safe.patch
-Patch26113: userns-Don-t-allow-setgroups-until-a-gid-mapping-has.patch
-Patch26114: userns-Don-t-allow-unprivileged-creation-of-gid-mapp.patch
-Patch26115: userns-Check-euid-no-fsuid-when-establishing-an-unpr.patch
-Patch26116: userns-Only-allow-the-creator-of-the-userns-unprivil.patch
-Patch26117: userns-Rename-id_map_mutex-to-userns_state_mutex.patch
-Patch26118: userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
-Patch26119: userns-Allow-setting-gid_maps-without-privilege-when.patch
-Patch26120: userns-Unbreak-the-unprivileged-remount-tests.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1251,7 +1203,6 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-ApplyPatch arm-dts-sun7i-bananapi.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -1380,57 +1331,10 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-ApplyPatch Input-add-driver-for-the-Goodix-touchpanel.patch
-
-#rhbz 1135338
-ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
-
-#CVE-2014-8134 rhbz 1172765 1172769
-ApplyPatch x86-kvm-Clear-paravirt_enabled-on-KVM-guests-for-esp.patch
-
 #rhbz 1164945
 ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1172543
-ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
-#CVE-2014-8133 rhbz 1172797 1174374
-ApplyPatch x86-tls-Validate-TLS-entries-to-protect-espfix.patch
-
-#rhbz 1173806
-ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#CVE-2014-XXXX rhbz 1175235 1175250
-ApplyPatch isofs-Fix-infinite-looping-over-CE-entries.patch
-
-#rhbz 1175261
-ApplyPatch blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
-
-#rhbz 1168434
-ApplyPatch dm-cache-only-use-overwrite-optimisation-for-promoti.patch
-ApplyPatch dm-cache-dirty-flag-was-mistakenly-being-cleared-whe.patch
-ApplyPatch dm-cache-fix-spurious-cell_defer-when-dealing-with-p.patch
-
-ApplyPatch uapi-linux-target_core_user.h-fix-headers_install.sh.patch
-
-#mount fixes for stable
-ApplyPatch mnt-Implicitly-add-MNT_NODEV-on-remount-when-it-was-.patch
-ApplyPatch mnt-Update-unprivileged-remount-test.patch
-ApplyPatch umount-Disallow-unprivileged-mount-force.patch
-
-#CVE-2014-8989 rhbz 1170684 1170688
-ApplyPatch groups-Consolidate-the-setgroups-permission-checks.patch
-ApplyPatch userns-Document-what-the-invariant-required-for-safe.patch
-ApplyPatch userns-Don-t-allow-setgroups-until-a-gid-mapping-has.patch
-ApplyPatch userns-Don-t-allow-unprivileged-creation-of-gid-mapp.patch
-ApplyPatch userns-Check-euid-no-fsuid-when-establishing-an-unpr.patch
-ApplyPatch userns-Only-allow-the-creator-of-the-userns-unprivil.patch
-ApplyPatch userns-Rename-id_map_mutex-to-userns_state_mutex.patch
-ApplyPatch userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
-ApplyPatch userns-Allow-setting-gid_maps-without-privilege-when.patch
-ApplyPatch userns-Unbreak-the-unprivileged-remount-tests.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2300,6 +2204,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Linux v3.19-rc2
+- Temporarily disable aarch64patches
+- Happy New Year
+
 * Sun Dec 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable F2FS (rhbz 972446)
 

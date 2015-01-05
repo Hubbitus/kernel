@@ -13,10 +13,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 7 insertions(+)
 
 diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
-index c9603ac80de5..8bef43fc3f40 100644
+index 113e70784854..26c2f83fc470 100644
 --- a/arch/x86/kernel/msr.c
 +++ b/arch/x86/kernel/msr.c
-@@ -103,6 +103,9 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
+@@ -105,6 +105,9 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
  	int err = 0;
  	ssize_t bytes = 0;
  
@@ -26,7 +26,7 @@ index c9603ac80de5..8bef43fc3f40 100644
  	if (count % 8)
  		return -EINVAL;	/* Invalid chunk size */
  
-@@ -150,6 +153,10 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
+@@ -152,6 +155,10 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
  			err = -EBADF;
  			break;
  		}

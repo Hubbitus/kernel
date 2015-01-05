@@ -177,6 +177,8 @@ CONFIG_SFC_MTD=y
 # Override MTD stuff because SFC_MTD needs it
 CONFIG_MTD_BLOCK=m
 
+CONFIG_HSA_AMD=m
+
 CONFIG_NO_HZ_FULL=y
 # CONFIG_NO_HZ_IDLE is not set
 # CONFIG_NO_HZ_FULL_ALL is not set
