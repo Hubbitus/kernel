@@ -673,6 +673,9 @@ Patch26118: userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
 Patch26119: userns-Allow-setting-gid_maps-without-privilege-when.patch
 Patch26120: userns-Unbreak-the-unprivileged-remount-tests.patch
 
+#rhbz 1163927
+Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1454,6 +1457,9 @@ ApplyPatch userns-Rename-id_map_mutex-to-userns_state_mutex.patch
 ApplyPatch userns-Add-a-knob-to-disable-setgroups-on-a-per-user.patch
 ApplyPatch userns-Allow-setting-gid_maps-without-privilege-when.patch
 ApplyPatch userns-Unbreak-the-unprivileged-remount-tests.patch
+
+#rhbz 1163927
+ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2329,6 +2335,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix CIFS login issue (rhbz 1163927)
+
 * Mon Dec 29 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable F2FS (rhbz 972446)
 
