@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -2204,6 +2204,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Linux v3.19-rc3
+
 * Mon Jan 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v3.19-rc2
 - Temporarily disable aarch64patches
