@@ -679,6 +679,9 @@ Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 #CVE-2014-9428 rhbz 1178826,1178833
 Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
+#CVE-2014-9419 rhbz 1177260,1177263
+Patch26123: x86_64-switch_to-Load-TLS-descriptors-before-switchi.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1466,6 +1469,9 @@ ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
 #CVE-2014-9428 rhbz 1178826,1178833
 ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
+
+#CVE-2014-9419 rhbz 1177260,1177263
+ApplyPatch x86_64-switch_to-Load-TLS-descriptors-before-switchi.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2342,6 +2348,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-9419 partial ASLR bypass through TLS base addr leak (rhbz 1177260 1177263)
 - CVE-2014-9428 remote DoS via batman-adv (rhbz 1178826 1178833)
 - Fix CIFS login issue (rhbz 1163927)
 
