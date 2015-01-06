@@ -676,6 +676,9 @@ Patch26120: userns-Unbreak-the-unprivileged-remount-tests.patch
 #rhbz 1163927
 Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
+#CVE-2014-9428 rhbz 1178826,1178833
+Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1460,6 +1463,9 @@ ApplyPatch userns-Unbreak-the-unprivileged-remount-tests.patch
 
 #rhbz 1163927
 ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
+
+#CVE-2014-9428 rhbz 1178826,1178833
+ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2336,6 +2342,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-9428 remote DoS via batman-adv (rhbz 1178826 1178833)
 - Fix CIFS login issue (rhbz 1163927)
 
 * Mon Dec 29 2014 Josh Boyer <jwboyer@fedoraproject.org>
