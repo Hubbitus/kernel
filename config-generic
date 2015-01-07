@@ -5192,7 +5192,7 @@ CONFIG_FMC_CHARDEV=m
 
 # CONFIG_GENWQE is not set
 
-# CONFIG_POWERCAP is not set
+CONFIG_POWERCAP=y
 # CONFIG_THUNDERBOLT is not set
 
 # CONFIG_HSI is not set

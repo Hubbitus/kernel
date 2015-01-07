@@ -2347,6 +2347,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable POWERCAP and INTEL_RAPL
+
 * Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-9419 partial ASLR bypass through TLS base addr leak (rhbz 1177260 1177263)
 - CVE-2014-9428 remote DoS via batman-adv (rhbz 1178826 1178833)
