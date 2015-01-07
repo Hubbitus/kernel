@@ -614,6 +614,9 @@ Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
+#CVE-2014-9529 rhbz 1179813 1179853
+Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1335,6 +1338,9 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
+
+#CVE-2014-9529 rhbz 1179813 1179853
+ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2204,6 +2210,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-9529 memory corruption or panic during key gc (rhbz 1179813 1179853)
+
 * Wed Jan 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc3.git1.1
 - Linux v3.19-rc3-38-gbdec41963890
 - Enable POWERCAP and INTEL_RAPL options
