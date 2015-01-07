@@ -682,6 +682,9 @@ Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 #CVE-2014-9419 rhbz 1177260,1177263
 Patch26123: x86_64-switch_to-Load-TLS-descriptors-before-switchi.patch
 
+#CVE-2014-9529 rhbz 1179813 1179853
+Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1472,6 +1475,9 @@ ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9419 rhbz 1177260,1177263
 ApplyPatch x86_64-switch_to-Load-TLS-descriptors-before-switchi.patch
+
+#CVE-2014-9529 rhbz 1179813 1179853
+ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2348,6 +2354,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Jan 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-9529 memory corruption or panic during key gc (rhbz 1179813 1179853)
 - Enable POWERCAP and INTEL_RAPL
 
 * Tue Jan 06 2015 Josh Boyer <jwboyer@fedoraproject.org>
