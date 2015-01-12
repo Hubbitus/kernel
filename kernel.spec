@@ -656,6 +656,14 @@ Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
+#rhbz 1178975
+Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+#rhbz 1124119
+Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1431,6 +1439,14 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
+
+#rhbz 1178975
+ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+#rhbz 1124119
+ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2323,6 +2339,15 @@ fi
 
 * Fri Feb 06 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.6-200
 - Linux v3.18.6
+
+# In merge changed Hronology and versions. So leave it there just as comments (pf was not able to swith to 3.18 long time)
+#* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
+#- Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
+#- First push into github fork.
+
+#* Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+#- Add various UAS quirks (rhbz 1124119)
+#- Add patch to fix loop in VDSO (rhbz 1178975)
 
 * Mon Feb 02 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-201
 - Fixup adjtimex freq validation on 32bit systems (rhbz 1188074)
