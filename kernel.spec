@@ -651,6 +651,9 @@ Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 #CVE-2014-9529 rhbz 1179813 1179853
 Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
 
+#rhbz 1178975
+Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1410,6 +1413,9 @@ ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
+
+#rhbz 1178975
+ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2285,6 +2291,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix loop in VDSO (rhbz 1178975)
+
 * Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
 - Linux v3.17.8
 
