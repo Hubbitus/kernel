@@ -1,0 +1,107 @@
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Fri, 9 Jan 2015 14:51:21 +0100
+Subject: [PATCH] samsung-laptop: Add use_native_backlight quirk, and enable it
+ on some models
+
+Since kernel 3.14 the backlight control has been broken on various Samsung
+Atom based netbooks. This has been bisected and this problem happens since
+commit b35684b8fa94 ("drm/i915: do full backlight setup at enable time")
+
+This has been reported and discussed in detail here:
+http://lists.freedesktop.org/archives/intel-gfx/2014-July/049395.html
+
+Unfortunately no-one has been able to fix this. This only affects Samsung
+Atom netbooks, and the Linux kernel and the BIOS of those laptops have never
+worked well together. All affected laptops already have a quirk to avoid using
+the standard acpi-video interface and instead use the samsung specific SABI
+interface which samsung-laptop uses. It seems that recent fixes to the i915
+driver have also broken backlight control through the SABI interface.
+
+The intel_backlight driver OTOH works fine, and also allows for finer grained
+backlight control. So add a new use_native_backlight quirk, and replace the
+broken_acpi_video quirk with this quirk for affected models. This new quirk
+disables acpi-video as before and also stops samsung-laptop from registering
+the SABI based samsung_laptop backlight interface, leaving only the working
+intel_backlight interface.
+
+This commit enables this new quirk for 3 models which are known to be affected,
+chances are that it needs to be used on other models too.
+
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1094948 # N145P
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1115713 # N250P
+Reported-by: Bertrik Sikken <bertrik@sikken.nl> # N150P
+Cc: stable@vger.kernel.org # 3.16
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/platform/x86/samsung-laptop.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
+index 864290243e46..477de0a9e1ee 100644
+--- a/drivers/platform/x86/samsung-laptop.c
++++ b/drivers/platform/x86/samsung-laptop.c
+@@ -353,6 +353,7 @@ struct samsung_quirks {
+ 	bool broken_acpi_video;
+ 	bool four_kbd_backlight_levels;
+ 	bool enable_kbd_backlight;
++	bool use_native_backlight;
+ };
+ 
+ static struct samsung_quirks samsung_unknown = {};
+@@ -361,6 +362,10 @@ static struct samsung_quirks samsung_broken_acpi_video = {
+ 	.broken_acpi_video = true,
+ };
+ 
++static struct samsung_quirks samsung_use_native_backlight = {
++	.use_native_backlight = true,
++};
++
+ static struct samsung_quirks samsung_np740u3e = {
+ 	.four_kbd_backlight_levels = true,
+ 	.enable_kbd_backlight = true,
+@@ -1507,7 +1512,7 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "N150P"),
+ 		DMI_MATCH(DMI_BOARD_NAME, "N150P"),
+ 		},
+-	 .driver_data = &samsung_broken_acpi_video,
++	 .driver_data = &samsung_use_native_backlight,
+ 	},
+ 	{
+ 	 .callback = samsung_dmi_matched,
+@@ -1517,7 +1522,7 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "N145P/N250P/N260P"),
+ 		DMI_MATCH(DMI_BOARD_NAME, "N145P/N250P/N260P"),
+ 		},
+-	 .driver_data = &samsung_broken_acpi_video,
++	 .driver_data = &samsung_use_native_backlight,
+ 	},
+ 	{
+ 	 .callback = samsung_dmi_matched,
+@@ -1557,7 +1562,7 @@ static struct dmi_system_id __initdata samsung_dmi_table[] = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "N250P"),
+ 		DMI_MATCH(DMI_BOARD_NAME, "N250P"),
+ 		},
+-	 .driver_data = &samsung_broken_acpi_video,
++	 .driver_data = &samsung_use_native_backlight,
+ 	},
+ 	{
+ 	 .callback = samsung_dmi_matched,
+@@ -1626,6 +1631,15 @@ static int __init samsung_init(void)
+ 		pr_info("Disabling ACPI video driver\n");
+ 		acpi_video_unregister();
+ 	}
++
++	if (samsung->quirks->use_native_backlight) {
++		pr_info("Using native backlight driver\n");
++		/* Tell acpi-video to not handle the backlight */
++		acpi_video_dmi_promote_vendor();
++		acpi_video_unregister();
++		/* And also do not handle it ourselves */
++		samsung->handle_backlight = false;
++	}
+ #endif
+ 
+ 	ret = samsung_platform_init(samsung);
+-- 
+2.1.0
+
