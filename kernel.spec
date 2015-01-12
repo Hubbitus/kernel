@@ -666,6 +666,9 @@ Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
+#CVE-2014-9585 rhbz 1181054 1181056
+Patch26132: x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1440,6 +1443,9 @@ ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
+
+#CVE-2014-9585 rhbz 1181054 1181056
+ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2316,6 +2322,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-9585 ASLR brute-force possible for vdso (rhbz 1181054 1181056)
 - Backlight fixes for Samsung and Dell machines (rhbz 1094948 1115713 1163574)
 - Add various UAS quirks (rhbz 1124119)
 - Add patch to fix loop in VDSO (rhbz 1178975)
