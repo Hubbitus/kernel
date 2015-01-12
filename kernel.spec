@@ -614,6 +614,9 @@ Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
 
+#rhbz 1178975
+Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1335,6 +1338,9 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
+
+#rhbz 1178975
+ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2202,6 +2208,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix loop in VDSO (rhbz 1178975)
+
 * Fri Jan 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc3.git2.1
 - Linux v3.19-rc3-69-g11c8f01b423b
 
