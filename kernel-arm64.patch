@@ -1509,7 +1509,7 @@ index f1dbca7..dbb3945 100644
  
  static int __init cpu_psci_cpu_init(struct device_node *dn, unsigned int cpu)
 diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index b809911..e7bcbed 100644
+index 20fe2932ad0c..cf4ab5661088 100644
 --- a/arch/arm64/kernel/setup.c
 +++ b/arch/arm64/kernel/setup.c
 @@ -43,6 +43,7 @@
@@ -1537,7 +1537,7 @@ index b809911..e7bcbed 100644
  	parse_early_param();
  
  	/*
-@@ -398,18 +402,28 @@ void __init setup_arch(char **cmdline_p)
+@@ -398,19 +402,29 @@ void __init setup_arch(char **cmdline_p)
  	efi_init();
  	arm64_memblock_init();
  
@@ -1548,6 +1548,7 @@ index b809911..e7bcbed 100644
  	request_standard_resources();
  
  	efi_idmap_init();
+ 	early_ioremap_reset();
  
 -	unflatten_device_tree();
 -
@@ -1570,7 +1571,7 @@ index b809911..e7bcbed 100644
  	smp_build_mpidr_hash();
  #endif
  
-@@ -564,3 +578,25 @@ const struct seq_operations cpuinfo_op = {
+@@ -565,3 +579,25 @@ const struct seq_operations cpuinfo_op = {
  	.stop	= c_stop,
  	.show	= c_show
  };

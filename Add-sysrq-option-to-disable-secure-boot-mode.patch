@@ -215,15 +215,15 @@ index 387fa7d05c98..4b07e30b3279 100644
  int unregister_sysrq_key(int key, struct sysrq_key_op *op);
  struct sysrq_key_op *__sysrq_get_key_op(int key);
 diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 379650b984f8..070f29fefdc2 100644
+index f191bddf64b8..0cf8a7d49b91 100644
 --- a/kernel/debug/kdb/kdb_main.c
 +++ b/kernel/debug/kdb/kdb_main.c
-@@ -1924,7 +1924,7 @@ static int kdb_sr(int argc, const char **argv)
- 	if (argc != 1)
+@@ -1968,7 +1968,7 @@ static int kdb_sr(int argc, const char **argv)
  		return KDB_ARGCOUNT;
+ 
  	kdb_trap_printk++;
--	__handle_sysrq(*argv[1], false);
-+	__handle_sysrq(*argv[1], SYSRQ_FROM_KERNEL);
+-	__handle_sysrq(*argv[1], check_mask);
++	__handle_sysrq(*argv[1], check_mask & SYSRQ_FROM_KERNEL);
  	kdb_trap_printk--;
  
  	return 0;

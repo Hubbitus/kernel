@@ -37,7 +37,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/platform/x86/samsung-laptop.c b/drivers/platform/x86/samsung-laptop.c
-index 864290243e46..477de0a9e1ee 100644
+index ff765d8e1a09..ce364a41842a 100644
 --- a/drivers/platform/x86/samsung-laptop.c
 +++ b/drivers/platform/x86/samsung-laptop.c
 @@ -353,6 +353,7 @@ struct samsung_quirks {
@@ -86,7 +86,7 @@ index 864290243e46..477de0a9e1ee 100644
  	},
  	{
  	 .callback = samsung_dmi_matched,
-@@ -1626,6 +1631,15 @@ static int __init samsung_init(void)
+@@ -1616,6 +1621,15 @@ static int __init samsung_init(void)
  		pr_info("Disabling ACPI video driver\n");
  		acpi_video_unregister();
  	}

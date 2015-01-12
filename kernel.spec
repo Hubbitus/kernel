@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -601,9 +601,6 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-# Patch series from Hans for various backlight and platform driver fixes
-Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
@@ -613,9 +610,6 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1178975
-Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 #rhbz 1124119
 Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
@@ -1336,9 +1330,6 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
-# Patch series from Hans for various backlight and platform driver fixes
-ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
 #rhbz 1111138
@@ -1348,9 +1339,6 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
 ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1178975
-ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 #rhbz 1124119
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
@@ -2228,6 +2216,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc4.git0.1
+- Linux v3.19-rc4
+- Disable debugging options.
+
 * Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backlight fixes for Samsung and Dell machines (rhbz 1094948 1115713)
 - Add various UAS quirks (rhbz 1124119)
