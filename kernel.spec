@@ -654,6 +654,11 @@ Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
 #rhbz 1178975
 Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
+#rhbz 1124119
+Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1416,6 +1421,11 @@ ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
 
 #rhbz 1178975
 ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+#rhbz 1124119
+ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2292,6 +2302,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add various UAS quirks (rhbz 1124119)
 - Add patch to fix loop in VDSO (rhbz 1178975)
 
 * Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300

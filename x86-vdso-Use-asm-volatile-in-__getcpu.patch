@@ -1,7 +1,6 @@
-From 1ddf0b1b11aa8a90cef6706e935fc31c75c406ba Mon Sep 17 00:00:00 2001
 From: Andy Lutomirski <luto@amacapital.net>
 Date: Sun, 21 Dec 2014 08:57:46 -0800
-Subject: x86, vdso: Use asm volatile in __getcpu
+Subject: [PATCH] x86, vdso: Use asm volatile in __getcpu
 
 In Linux 3.18 and below, GCC hoists the lsl instructions in the
 pvclock code all the way to the beginning of __vdso_clock_gettime,
@@ -32,6 +31,9 @@ Cc: Marcelo Tosatti <mtosatti@redhat.com>
 Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Andy Lutomirski <luto@amacapital.net>
 (Backported to 3.17.8 by Josh Boyer <jwboyer@fedoraproject.org>)
+---
+ arch/x86/include/asm/vsyscall.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/x86/include/asm/vsyscall.h b/arch/x86/include/asm/vsyscall.h
 index 2a46ca720afc..3db1fa5fdceb 100644
@@ -46,3 +48,6 @@ index 2a46ca720afc..3db1fa5fdceb 100644
  	}
  
  	return p;
+-- 
+2.1.0
+
