@@ -695,6 +695,14 @@ Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 #CVE-2014-9529 rhbz 1179813 1179853
 Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
 
+#rhbz 1178975
+Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+#rhbz 1124119
+Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1457,6 +1465,14 @@ ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
+
+#rhbz 1178975
+ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+#rhbz 1124119
+ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
+ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
+ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2355,7 +2371,11 @@ fi
 %changelog
 * Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
 - Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
-- First pussh into github fork.
+- First push into github fork.
+
+* Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add various UAS quirks (rhbz 1124119)
+- Add patch to fix loop in VDSO (rhbz 1178975)
 
 #* Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
 #- Linux v3.17.8
