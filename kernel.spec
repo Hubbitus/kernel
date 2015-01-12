@@ -622,6 +622,11 @@ Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
+#rhbz 1115713
+Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
+#rhbz 1094948
+Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1351,6 +1356,11 @@ ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
+
+#rhbz 1115713
+ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
+#rhbz 1094948
+ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2219,6 +2229,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backlight fixes for Samsung and Dell machines (rhbz 1094948 1115713)
 - Add various UAS quirks (rhbz 1124119)
 - Add patch to fix loop in VDSO (rhbz 1178975)
 
