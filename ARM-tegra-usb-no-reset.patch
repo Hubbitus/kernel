@@ -9,23 +9,23 @@ Patch for disconnect issues with storage attached to a
  1 file changed, 7 insertions(+)
 
 diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index 674c262907d9..d3e4c73d56a2 100644
+index b649fef2e35d..fb89290710ad 100644
 --- a/drivers/usb/core/hub.c
 +++ b/drivers/usb/core/hub.c
-@@ -5041,6 +5041,13 @@ static void hub_events(void)
- 				(u16) hub->change_bits[0],
- 				(u16) hub->event_bits[0]);
+@@ -5023,6 +5023,13 @@ static void hub_event(struct work_struct *work)
+ 			(u16) hub->change_bits[0],
+ 			(u16) hub->event_bits[0]);
  
-+		/* Don't disconnect USB-SATA on TrimSlice */
-+		if (strcmp(dev_name(hdev->bus->controller), "tegra-ehci.0") == 0) {
-+			if ((hdev->state == 7) && (hub->change_bits[0] == 0) &&
-+			    (hub->event_bits[0] == 0x2))
-+				hub->event_bits[0] = 0;
-+		}
++	/* Don't disconnect USB-SATA on TrimSlice */
++	if (strcmp(dev_name(hdev->bus->controller), "tegra-ehci.0") == 0) {
++		if ((hdev->state == 7) && (hub->change_bits[0] == 0) &&
++				(hub->event_bits[0] == 0x2))
++			hub->event_bits[0] = 0;
++	}
 +
- 		/* Lock the device, then check to see if we were
- 		 * disconnected while waiting for the lock to succeed. */
- 		usb_lock_device(hdev);
+ 	/* Lock the device, then check to see if we were
+ 	 * disconnected while waiting for the lock to succeed. */
+ 	usb_lock_device(hdev);
 -- 
 2.1.0
 

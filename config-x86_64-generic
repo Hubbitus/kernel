@@ -57,6 +57,7 @@ CONFIG_INTEL_MIC_X100_DMA=m
 # SHPC has half-arsed PCI probing, which makes it load on too many systems
 CONFIG_HOTPLUG_PCI_SHPC=m
 
+# CONFIG_CRYPTO_SHA1_MB is not set
 CONFIG_CRYPTO_AES_X86_64=y
 CONFIG_CRYPTO_SERPENT_SSE2_X86_64=m
 CONFIG_CRYPTO_TWOFISH_X86_64=m
@@ -151,8 +152,6 @@ CONFIG_INTEL_TXT=y
 CONFIG_FUNCTION_GRAPH_TRACER=y
 
 CONFIG_I7300_IDLE=m
-
-CONFIG_BPF_JIT=y
 
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 CONFIG_CHECKPOINT_RESTORE=y

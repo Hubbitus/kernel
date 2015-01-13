@@ -32,7 +32,7 @@ netprots="appletalk atm ax25 batman-adv bluetooth dccp dsa ieee802154 irda l2tp 
 
 drmdrvs="ast gma500 mgag200 via nouveau"
 
-singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs iscsi_tcp megaraid pmcraid qla1280 9pnet_rdma svcrdma xprtrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub"
+singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs iscsi_tcp megaraid pmcraid qla1280 9pnet_rdma svcrdma xprtrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user"
 
 # Grab the arch-specific filter list overrides
 source ./filter-$2.sh
