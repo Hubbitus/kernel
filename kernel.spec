@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 13 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Checkpoint/Restore on ARMv7 (rhbz 1146995)
+
 * Tue Jan 13 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add installonlypkg(kernel) to kernel-devel subpackages (rhbz 1079906)
 
