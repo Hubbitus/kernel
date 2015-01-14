@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2217,6 +2217,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 14 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc4.git2.1
+- Linux v3.19-rc4-46-g188c901941ef
+- Enable I40E_VXLAN (rhbz 1182116)
+
 * Tue Jan 13 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable Checkpoint/Restore on ARMv7 (rhbz 1146995)
 
