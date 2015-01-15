@@ -655,6 +655,9 @@ Patch26132: x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
+# Fix for big-endian arches, already upstream
+Patch30001: mpssd-x86-only.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1415,6 +1418,9 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 #CVE-2014-9585 rhbz 1181054 1181056
 ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
+# Fix for big-endian arches, already upstream
+ApplyPatch mpssd-x86-only.patch
+
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
@@ -1954,7 +1960,7 @@ find $RPM_BUILD_ROOT/usr/include \
 
 %if %{with_perf}
 # perf tool binary and supporting scripts/binaries
-%{perf_make} DESTDIR=$RPM_BUILD_ROOT MULTILIBDIR=%{_lib} install-bin install-traceevent-plugins
+%{perf_make} DESTDIR=$RPM_BUILD_ROOT lib=%{_lib} install-bin install-traceevent-plugins
 # remove the 'trace' symlink.
 rm -f %{buildroot}%{_bindir}/trace
 
@@ -2285,6 +2291,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Build fixes for big-endian arches
+
 * Tue Jan 13 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.2-200
 - Linux v3.18.2
 
