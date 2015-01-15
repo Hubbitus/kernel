@@ -2217,6 +2217,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Re-enable BUILD_DOCSRC
+
 * Thu Jan 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc4.git3.1
 - Linux v3.19-rc4-141-gf800c25b7a76
 
