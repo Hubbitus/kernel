@@ -2272,10 +2272,10 @@ fi
 # |_|   |_____|_|                 (__)\       )\/\
 #                                    ||----w |
 #                                    ||     ||
+%changelog
 * Fri Jan 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-200
 - Linux v3.18.3
 
-%changelog
 * Thu Jan 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Build fixes for big-endian arches
 
