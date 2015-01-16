@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -620,9 +620,6 @@ Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
 #rhbz 1173806
 Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
-#rhbz 1175261
-Patch26103: blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
-
 Patch26107: uapi-linux-target_core_user.h-fix-headers_install.sh.patch
 
 #rhbz 1163927
@@ -633,9 +630,6 @@ Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
-
-#rhbz 1178975
-Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 #rhbz 1124119
 Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
@@ -648,9 +642,6 @@ Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2014-9585 rhbz 1181054 1181056
-Patch26132: x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1386,9 +1377,6 @@ ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
 #rhbz 1173806
 ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
-#rhbz 1175261
-ApplyPatch blk-mq-Fix-uninitialized-kobject-at-CPU-hotplugging.patch
-
 ApplyPatch uapi-linux-target_core_user.h-fix-headers_install.sh.patch
 
 #rhbz 1163927
@@ -1399,9 +1387,6 @@ ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
-
-#rhbz 1178975
-ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 #rhbz 1124119
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
@@ -1414,9 +1399,6 @@ ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2014-9585 rhbz 1181054 1181056
-ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
@@ -2290,6 +2272,9 @@ fi
 # |_|   |_____|_|                 (__)\       )\/\
 #                                    ||----w |
 #                                    ||     ||
+* Fri Jan 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-200
+- Linux v3.18.3
+
 %changelog
 * Thu Jan 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Build fixes for big-endian arches

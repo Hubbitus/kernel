@@ -4539,6 +4539,7 @@ index 2437196..914287d 100644
  	request_standard_resources();
  
  	efi_idmap_init();
+	early_ioremap_reset();
  
 -	unflatten_device_tree();
 -
