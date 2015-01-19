@@ -10,7 +10,6 @@ CONFIG_ARCH_VIRT=y
 # CONFIG_SOC_AM33XX is not set
 # CONFIG_SOC_AM43XX is not set
 # CONFIG_SOC_DRA7XX is not set
-# CONFIG_ARCH_ROCKCHIP is not set
 # CONFIG_ARCH_ZYNQ is not set
 # CONFIG_ARCH_AXXIA is not set
 

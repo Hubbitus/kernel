@@ -2217,6 +2217,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Jan 17 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Move Rockchip to ARMv7 generic to support rk32xx on LPAE
+- Enable Device Tree Overlays for dynamic DTB
+- ARM config updates
+
 * Fri Jan 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc4.git4.1
 - Linux v3.19-rc4-155-gcb59670870d9
 
