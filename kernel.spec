@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -124,7 +124,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -606,14 +606,7 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1164945
-Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
-Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
-Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
 #rhbz 1124119
-Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 #rhbz 1115713
@@ -1336,14 +1329,7 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1164945
-ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
-ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
 #rhbz 1124119
-ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 #rhbz 1115713
@@ -2217,6 +2203,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc5.git0.1
+- Linux v3.19-rc5
+- Disable debugging options.
+
 * Sat Jan 17 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Move Rockchip to ARMv7 generic to support rk32xx on LPAE
 - Enable Device Tree Overlays for dynamic DTB
