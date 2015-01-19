@@ -651,6 +651,7 @@ Patch30001: mpssd-x86-only.patch
 
 # Patches from 3.18.4 stable queue (should fix i915 issues)
 Patch30002: stable-3.18.4-queue.patch
+Patch30003: xhci-check-if-slot-is-already-in-default-state.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1407,7 +1408,8 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 ApplyPatch mpssd-x86-only.patch
 
 # Patches from 3.18.4 stable queue (should fix i915 issues)
-# ApplyPatch stable-3.18.4-queue.patch
+ApplyPatch stable-3.18.4-queue.patch
+ApplyPatch xhci-check-if-slot-is-already-in-default-state.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2281,6 +2283,7 @@ fi
 %changelog
 * Mon Jan 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-201
 - Add fixes from 3.18.4 queue to fix i915 issues (rhbz 1183232)
+- xhci: Check if slot is already in default state before moving it there (rhbz 1183289)
 
 * Fri Jan 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-200
 - Linux v3.18.3

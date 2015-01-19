@@ -1,0 +1,51 @@
+commit f161ead70fa6a62e432dff6e9dab8e3cfbeabea6
+Author: Mathias Nyman <mathias.nyman@linux.intel.com>
+Date:   Fri Jan 9 17:18:28 2015 +0200
+
+    xhci: Check if slot is already in default state before moving it there
+    
+    Solves xhci error cases with debug messages:
+    xhci_hcd 0000:00:14.0: Setup ERROR: setup context command for slot 1.
+    usb 1-6: hub failed to enable device, error -22
+    
+    xhci will give a context state error if we try to set a slot in default
+    state to the same default state with a special address device command.
+    
+    Turns out this happends in several cases:
+    - retry reading the device rescriptor in hub_port_init()
+    - usb_reset_device() is called for a slot in default state
+    - in resume path, usb_port_resume() calls hub_port_init()
+    
+    The default state is usually reached from most states with a reset device
+    command without any context state errors, but using the address device
+    command with BSA bit set (block set address) only works from the enabled
+    state and will otherwise cause context error.
+    
+    solve this by checking if we are already in the default state before issuing
+    a address device BSA=1 command.
+    
+    Fixes: 48fc7dbd52c0 ("usb: xhci: change enumeration scheme to 'new scheme'")
+    Cc: <stable@vger.kernel.org> # v3.14+
+    Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+    Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+index 01fcbb5..c50d8d2 100644
+--- a/drivers/usb/host/xhci.c
++++ b/drivers/usb/host/xhci.c
+@@ -3803,6 +3803,15 @@ static int xhci_setup_device(struct usb_hcd *hcd, struct usb_device *udev,
+ 		return -EINVAL;
+ 	}
+
++	if (setup == SETUP_CONTEXT_ONLY) {
++		slot_ctx = xhci_get_slot_ctx(xhci, virt_dev->out_ctx);
++		if (GET_SLOT_STATE(le32_to_cpu(slot_ctx->dev_state)) ==
++		    SLOT_STATE_DEFAULT) {
++			xhci_dbg(xhci, "Slot already in default state\n");
++			return 0;
++		}
++	}
++
+ 	command = xhci_alloc_command(xhci, false, false, GFP_KERNEL);
+ 	if (!command)
+ 		return -ENOMEM;
