@@ -1,0 +1,46 @@
+#!/bin/bash
+
+SOURCE1000=/home/pasha/SOFT/git_OTHERS/kernel/f21/config-local
+
+#mv .config test-current.config
+
+pushd /home/pasha/SOFT/git_OTHERS/kernel/f21/kernel-3.17.fc21/linux-3.17.2-300.hu.1.bfq.uksm.gccnative.fc21.x86_64/
+
+# Dynamically generate kernel .config files from config-* files
+#make -f %{SOURCE20} VERSION=%{version} configs
+# make -f /home/pasha/SOFT/git_OTHERS/kernel/f21/Makefile.config VERSION=3.17.2 configs
+
+# Merge in any user-provided local config option changes
+#for i in *.config
+#do
+#  mv $i $i.tmp
+#  ./merge.pl $SOURCE1000 $i.tmp > $i
+#  rm $i.tmp
+#done
+
+#exit 100
+set -x
+
+#./merge.pl /home/pasha/SOFT/git_OTHERS/kernel/f21/config-local kernel-3.17.2-x86_64.config | sponge kernel-3.17.2-x86_64.config
+
+#exit 101
+
+# now run oldconfig over all the config files
+for i in *.config
+do
+  mv $i .config
+  Arch=`head -1 .config | cut -b 3-`
+  make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
+  if [ -s .newoptions ]; then
+    echo "ERROR process [$i] new config options:"
+    cat .newoptions
+    exit 1
+  fi
+  rm -f .newoptions
+#  make ARCH=$Arch oldnoconfig
+#  echo "# $Arch" > configs/$i
+#  cat .config >> configs/$i
+done
+# end of kernel config
+
+popd
