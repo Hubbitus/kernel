@@ -24,7 +24,8 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-# % define buildid .local
+#%define buildid .hu.2.bfq.gccnative.uksm
+%define buildid .hu.1.pf3
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,7 +55,9 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+# %define stable_update 8
+# Pf v3.17-pf3 still 3.17.7: https://pf.natalenko.name/forum/index.php?topic=279.0
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -347,7 +350,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64 
+%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -360,7 +363,10 @@ Summary: The Linux kernel
 Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
-URL: http://www.kernel.org/
+#URL: http://www.kernel.org/
+# Hubbitus patched fork of Fedora Kernel
+# Binaries could be found at: http://hubbitus.info/wiki/Repository
+URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
@@ -468,7 +474,10 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
+#%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
+# https://pf.natalenko.name/forum/index.php?topic=279.0https://pf.natalenko.name/forum/index.php?topic=279.0
+# https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -602,6 +611,41 @@ Patch21242: criu-no-expert.patch
 Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
+
+################# Hubbitus patches
+# UKSM
+#? Patch30001: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch
+
+# BFS
+#? Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
+# My patch to resolve compile problem:
+#+ make -s ARCH=x86_64 V=1 -j3 bzImage
+#In file included from include/linux/srcu.h:33:0,
+#                 from include/linux/notifier.h:15,
+#                 from include/linux/memory_hotplug.h:6,
+#                 from include/linux/mmzone.h:800,
+#                 from include/linux/gfp.h:4,
+#                 from include/linux/slab.h:14,
+#                 from kernel/sched/stats.c:2:
+#kernel/sched/stats.c: In function 'show_schedstat':
+#kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
+#          lockdep_is_held(&sched_domains_mutex))
+Patch30007: BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+#? Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
+#? Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
+#? Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
+
+#? Patch30006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+#? Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
+
+# My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
+#? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#//////////////// end Hubbitus patches
 
 #rhbz 1025603
 Patch25063: disable-libdw-unwind-on-non-x86.patch
@@ -977,7 +1021,7 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package 
+%kernel_variant_package
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
@@ -1012,14 +1056,16 @@ fi 2>/dev/null
 patch_command='patch -p1 -F1 -s'
 ApplyPatch()
 {
-  local patch=$1
+#Hu basename to allow use URLs in patches
+  local patch=$( basename $1 )
+  local patchURL=$1
   shift
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-3." ] ; then
-      echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
+      echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
@@ -1221,6 +1267,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
+#Hu!!: This patch never should be disabled: + cat .newoptions: CONFIG_NR_CPUS
 ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # PPC
@@ -1361,7 +1408,7 @@ ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
-ApplyPatch ath9k-rx-dma-stop-check.patch
+#? ApplyPatch ath9k-rx-dma-stop-check.patch
 
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
@@ -1424,6 +1471,27 @@ ApplyPatch arm64-fix-xgene_enet_process_ring.patch
 %endif
 %endif
 
+################# Hubbitus patches
+# UKSM
+#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch --fuzz=2
+
+# BFS
+#? ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
+ApplyPatch BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
+#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
+
+#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+#? ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2 --fuzz=2
+#? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#//////////////// Hubbitus patches
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -1438,7 +1506,7 @@ touch .scmversion
 # only deal with configs if we are going to build for the arch
 %ifnarch %nobuildarches
 
-mkdir configs
+mkdir -p configs
 
 %if !%{debugbuildsenabled}
 rm -f kernel-%{version}-*debug.config
@@ -1447,7 +1515,7 @@ rm -f kernel-%{version}-*debug.config
 %define make make %{?cross_opts}
 
 # now run oldconfig over all the config files
-for i in *.config
+for i in %{all_arch_configs}
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
@@ -2274,7 +2342,7 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
-# 
+#
 #                        ___________________________________________________________
 #                       / This branch is for Fedora 21. You probably want to commit \
 #  _____ ____  _        \ to the F-20 branch instead, or in addition to this one.   /
@@ -2285,8 +2353,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
-- Linux v3.17.8
+* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
+- Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
+- First pussh into github fork.
+
+#* Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
+#- Linux v3.17.8
 
 * Wed Jan 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-9529 memory corruption or panic during key gc (rhbz 1179813 1179853)
@@ -2350,6 +2422,10 @@ fi
 - Add patch to quiet i915 driver on long hdps
 - Add patch to fix oops when using xpad (rhbz 1094048)
 
+* Sun Nov 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.4-301.hu.1.pf2
+- Pull upstream changes: kernel 3.17.4-301.
+- Update pf2 patch: https://pf.natalenko.name/forum/index.php?topic=277.msg1074#msg1074
+
 * Thu Nov 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.4-301
 - Add patch to fix radeon HDMI issues (rhbz 1167511)
 
@@ -2362,6 +2438,9 @@ fi
 
 * Wed Nov 19 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-301
 - Disable SERIAL_8250 on s390x (rhbz 1158848)
+
+* Mon Nov 17 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.3-300.hu.1.pf1
+- Merge (rebasing) upstream changes.
 
 * Fri Nov 14 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.3-300
 - Linux v3.17.3
@@ -2376,6 +2455,10 @@ fi
 * Wed Nov 12 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-7841 sctp: NULL ptr deref on malformed packet (rhbz 1163087 1163095)
 
+* Wed Nov 12 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.2-301.hu.3.pf1
+- Merge (rebasing) upstream changes.
+- Try REenabling Fedora patches on top of Pf1 kernel.
+
 * Mon Nov 10 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.2-301
 - Fix Samsung pci-e SSD handling on some macbooks (rhbz 1161805)
 - Add patch to fix crypto allocation issues on PAGE_SIZE > 4k
@@ -2386,6 +2469,29 @@ fi
 
 * Mon Nov 03 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix early ucode crash on 32-bit AMD machines (rhbz 1159592)
+
+* Mon Nov 03 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.2-300.hu.2.pf1
+- Try build pf1 kernel - https://pf.natalenko.name/forum/index.php?topic=273. Disable all KVM patches.
+	Change ( to workaround https://pf.natalenko.name/forum/index.php?topic=273.msg1064#msg1064 ) to try build as it may be reason of: ERROR: "follow_page_mask" [kernel/power/tuxonice_core.ko] undefined!:
+	CONFIG_TOI_CORE=y
+	CONFIG_TOI_FILE=y
+	CONFIG_TOI_SWAP=y
+	CONFIG_TOI_CRYPTO=y
+	CONFIG_TOI_USERUI=y
+- Add CONFIG_MNATIVE=y
+- Disable MOST of Fedora upstream matches including stable_patch_00!
+
+* Sun Nov 02 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.2-300.hu.1.bfq.gccnative
+- Update BFQ patches:
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
+	http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
+- Uksm patch update: ( https://aur.archlinux.org/packages/linux-uksm/ -> [http://pastebin.com/9z1rmKp3] -> http://www.gossamer-threads.com/lists/linux/kernel/2035927 -> https://github.com/Nefelim4ag/aur-linux-next-git/tree/master/Useful_patches ->> https://github.com/Nefelim4ag/aur-linux-next-git/blob/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch )
+	https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch
+	BUT DISABLE IT because it give error on linking: ERROR: "uksm_zero_pfn" [arch/x86/kvm/kvm.ko] undefined!
+- Add https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch (found at https://github.com/Nefelim4ag/aur-linux-next-git/tree/master/Useful_patches)
+- Not found BFS update yet - disable.
+- Add CONFIG_ZRAM_LZ4_COMPRESS=m as lz4 seams much faster than lzo: http://linuxaria.com/article/linux-compressors-comparison-on-centos-6-5-x86-64-lzo-vs-lz4-vs-gzip-vs-bzip2-vs-lzma
 
 * Thu Oct 30 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.2-300
 - Linux v3.17.2
@@ -2430,6 +2536,9 @@ fi
 - Add patches to fix elantech touchscreens (rhbz 1149509)
 - CVE-2014-7970 VFS: DoS with USER_NS (rhbz 1151095 1151484)
 - Drop doubly applied ACPI video quirk patches
+
+* Thu Oct 09 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.16.4-200.hu.1.bfq.bfs.uksm
+- 3.16.4-200.hu.1.bfq.bfs.uksm
 
 * Wed Oct 08 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.17.0-301
 - Add patch to fix ATA blacklist
@@ -2482,6 +2591,9 @@ fi
 
 * Tue Sep 02 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Remove with_extra switch
+
+* Sat Aug 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.15.10-201.hu.1.bfq.bfs.uksm
+- 3.15.10-201.hu.1.bfq.bfs.uksm
 
 * Thu Aug 28 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix NFSv3 ACL regression (rhbz 1132786)
@@ -2651,6 +2763,9 @@ fi
 - Enable USB rtsx drivers (rhbz 1114229)
 - Disable debugging options.
 
+* Sun Jun 29 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.9-200.hu.1.bfq.bfs.uksm.tuxonice
+
 * Fri Jun 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.16.0-0.rc2.git4.1
 - Linux v3.16-rc2-222-g3493860c76eb
 
@@ -2696,6 +2811,9 @@ fi
 - Enable Exynos now it's finally multi platform capable
 - Minor TI Keystone update
 - ARM config cleanups
+
+* Sat Jun 21 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
+- 3.14.8-200.hu.1.bfq.bfs.uksm.tuxonice
 
 * Fri Jun 20 2014 Josh Boyer <jwboyer@fedoraproject.org>
 - Bring in intel_pstate regression fixes for BayTrail (rhbz 1111920)
@@ -3081,6 +3199,9 @@ fi
 - Fix clicks getting lost with cypress_ps2 touchpads with recent
   xorg-x11-drv-synaptics versions (bfdo#76341)
 
+* Sun Mar 30 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.7-200.hu.1
+- 3.13.7-200.hu.1
+
 * Fri Mar 28 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc8.git1.1
 - CVE-2014-2580 xen: netback crash trying to disable due to malformed packet (rhbz 1080084 1080086)
 - CVE-2014-0077 vhost-net: insufficent big packet handling in handle_rx (rhbz 1064440 1081504)
@@ -3183,6 +3304,9 @@ fi
 
 * Thu Feb 27 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git2.1
 - Linux v3.14-rc4-45-gd2a0476
+
+* Thu Feb 27 2014 Pavel Alexeev <Pahan@Hubbitus.info> - 3.13.5-200.hu.1
+- 3.13.5-200.hu.1
 
 * Wed Feb 26 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc4.git1.1
 - Linux v3.14-rc4-34-g6dba6ec
