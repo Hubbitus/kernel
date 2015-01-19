@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -648,6 +648,9 @@ Patch30000: kernel-arm64.patch
 
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
+
+# Patches from 3.18.4 stable queue (should fix i915 issues)
+Patch30002: stable-3.18.4-queue.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1402,6 +1405,9 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
+
+# Patches from 3.18.4 stable queue (should fix i915 issues)
+# ApplyPatch stable-3.18.4-queue.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2273,6 +2279,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jan 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-201
+- Add fixes from 3.18.4 queue to fix i915 issues (rhbz 1183232)
+
 * Fri Jan 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-200
 - Linux v3.18.3
 
