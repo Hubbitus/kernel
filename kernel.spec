@@ -2203,6 +2203,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 20 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- More ARM config option cleanups
+
 * Mon Jan 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc5.git0.1
 - Linux v3.19-rc5
 - Disable debugging options.

@@ -1,6 +1,5 @@
 # ARM A15 lpae unified arch kernel
 CONFIG_ARCH_KEYSTONE=y
-CONFIG_ARCH_VIRT=y
 
 # CONFIG_ARCH_MVEBU is not set
 # CONFIG_ARCH_MXC is not set
