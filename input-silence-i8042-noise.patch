@@ -29,10 +29,10 @@ index 9717d5f20139..a3101d2fd936 100644
  	if (dev->parent && dev->parent->power.is_prepared)
  		dev_warn(dev, "parent %s should not be sleeping\n",
 diff --git a/drivers/input/serio/i8042.c b/drivers/input/serio/i8042.c
-index 924e4bf357fb..f91ed715b604 100644
+index 986a71c614b0..bfb0b2280df0 100644
 --- a/drivers/input/serio/i8042.c
 +++ b/drivers/input/serio/i8042.c
-@@ -857,7 +857,6 @@ static int __init i8042_check_aux(void)
+@@ -871,7 +871,6 @@ static int __init i8042_check_aux(void)
  static int i8042_controller_check(void)
  {
  	if (i8042_flush()) {
