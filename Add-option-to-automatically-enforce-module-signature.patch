@@ -146,7 +146,7 @@ index ab4734e5411d..5d52d67d5097 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 089de6be8062..6a586a83ba7e 100644
+index d4b96d6c926a..c47f75720dbd 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
@@ -163,10 +163,10 @@ index 089de6be8062..6a586a83ba7e 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index fd8c5495fdc6..5f8c11de61fe 100644
+index 98c3d7955a51..6244f24abe27 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3851,6 +3851,13 @@ void module_layout(struct module *mod,
+@@ -3896,6 +3896,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
