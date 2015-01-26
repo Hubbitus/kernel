@@ -1141,6 +1141,13 @@ cp -al vanilla-%{vanillaversion} linux-%{KVERREL}
 
 cd linux-%{KVERREL}
 
+#HACK for 3.19-rc6+patch-2.7.3 rbhz 1185928
+# make the symlink for arm64 dt-bindings.  sigh.
+mkdir -p arch/arm64/boot/dts/include
+pushd arch/arm64/boot/dts/include/
+ln -s ../../../../../include/dt-bindings
+popd
+
 # released_kernel with possible stable updates
 %if 0%{?stable_base}
 ApplyPatch %{stable_patch_00}
@@ -2205,6 +2212,7 @@ fi
 %changelog
 * Mon Jan 26 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc6.git0.1
 - Linux v3.19-rc6
+- Remove symbolic link hunk from patch-3.19-rc6 (rbhz 1185928)
 - Disable debugging options.
 
 * Thu Jan 22 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc5.git2.1
