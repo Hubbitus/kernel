@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -609,24 +609,11 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1135338
 Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
-#rhbz 1164945
-Patch26092: xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
-Patch26093: uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
-Patch26094: uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1172543
-Patch26096: cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
 #rhbz 1173806
 Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
-Patch26107: uapi-linux-target_core_user.h-fix-headers_install.sh.patch
-
 #rhbz 1163927
 Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-#CVE-2014-9428 rhbz 1178826,1178833
-Patch26122: batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
@@ -648,10 +635,6 @@ Patch30000: kernel-arm64.patch
 
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
-
-# Patches from 3.18.4 stable queue (should fix i915 issues)
-Patch30002: stable-3.18.4-queue.patch
-Patch30003: xhci-check-if-slot-is-already-in-default-state.patch
 
 #CVE-2015-0239 rhbz 1186448 1186453
 Patch30004: KVM-x86-SYSENTER-emulation-is-broken.patch
@@ -1374,24 +1357,11 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1135338
 ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
 
-#rhbz 1164945
-ApplyPatch xhci-Add-broken-streams-quirk-for-Fresco-Logic-FL100.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-Seagate-devices-with-usb.patch
-ApplyPatch uas-Add-US_FL_NO_REPORT_OPCODES-for-JMicron-JMS566-w.patch
-
-#rhbz 1172543
-ApplyPatch cfg80211-don-t-WARN-about-two-consecutive-Country-IE.patch
-
 #rhbz 1173806
 ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
-ApplyPatch uapi-linux-target_core_user.h-fix-headers_install.sh.patch
-
 #rhbz 1163927
 ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-#CVE-2014-9428 rhbz 1178826,1178833
-ApplyPatch batman-adv-Calculate-extra-tail-size-based-on-queued.patch
 
 #CVE-2014-9529 rhbz 1179813 1179853
 ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
@@ -1410,10 +1380,6 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
-
-# Patches from 3.18.4 stable queue (should fix i915 issues)
-ApplyPatch stable-3.18.4-queue.patch
-ApplyPatch xhci-check-if-slot-is-already-in-default-state.patch
 
 #CVE-2015-0239 rhbz 1186448 1186453
 ApplyPatch KVM-x86-SYSENTER-emulation-is-broken.patch
@@ -2288,6 +2254,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 27 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.4-200
+- Linux v3.18.4
+
 * Tue Jan 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-0239 kvm: insufficient sysenter emulation from 16-bit (rhbz 1186448 1186453)
 
