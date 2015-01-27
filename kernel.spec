@@ -653,6 +653,10 @@ Patch30001: mpssd-x86-only.patch
 Patch30002: stable-3.18.4-queue.patch
 Patch30003: xhci-check-if-slot-is-already-in-default-state.patch
 
+#CVE-2015-0239 rhbz 1186448 1186453
+Patch30004: KVM-x86-SYSENTER-emulation-is-broken.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1410,6 +1414,9 @@ ApplyPatch mpssd-x86-only.patch
 # Patches from 3.18.4 stable queue (should fix i915 issues)
 ApplyPatch stable-3.18.4-queue.patch
 ApplyPatch xhci-check-if-slot-is-already-in-default-state.patch
+
+#CVE-2015-0239 rhbz 1186448 1186453
+ApplyPatch KVM-x86-SYSENTER-emulation-is-broken.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2281,6 +2288,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-0239 kvm: insufficient sysenter emulation from 16-bit (rhbz 1186448 1186453)
+
 * Mon Jan 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.3-201
 - Add fixes from 3.18.4 queue to fix i915 issues (rhbz 1183232)
 - xhci: Check if slot is already in default state before moving it there (rhbz 1183289)
