@@ -2210,6 +2210,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jan 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable SND_SOC and the button array driver on x86 for Baytrail devices
+
 * Tue Jan 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc6.git1.1
 - Linux v3.19-rc6-21-g4adca1cbc4ce
 - Reenable debugging options.
