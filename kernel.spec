@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.bfq.gccnative.uksm
+%define buildid .hu.1.uksm.bfs.bfq
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -604,13 +604,12 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-<<<<<<< HEAD
 ################# Hubbitus patches
 # UKSM
-#? Patch30001: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch
+Patch40001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.18.patch
 
 # BFS
-#? Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
+Patch40002: http://ck.kolivas.org/patches/bfs/3.0/3.18/3.18-sched-bfs-460.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -623,27 +622,22 @@ Patch22000: weird-root-dentry-name-debug.patch
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch30007: BFS-3.13-compile-fix-hu.patch
+Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-#? Patch30003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
-#? Patch30004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
-#? Patch30005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-3.18.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-3.18.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-3.18.0.patch
 
-#? Patch30006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
+#? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
 # TuxOnIce
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
-#? Patch30006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
+#? Patch40006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
 
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
-#? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#? Patch40008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #//////////////// end Hubbitus patches
-
-#rhbz 1025603
-Patch25063: disable-libdw-unwind-on-non-x86.patch
-
-Patch26000: perf-install-trace-event-plugins.patch
 
 # Patch series from Hans for various backlight and platform driver fixes
 Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
@@ -1443,16 +1437,16 @@ ApplyPatch kernel-arm64.patch -R
 
 ################# Hubbitus patches
 # UKSM
-#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch --fuzz=2
+ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.18.patch
 
 # BFS
-#? ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.18/3.18-sched-bfs-460.patch
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-3.18.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-3.18.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-3.18.0.patch
 
 #? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -2323,6 +2317,17 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.4-200.hu.1.uksm.bfs.bfq
+- Add patches instead of pf-pack:
+	UKSM:
+		Patch40001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.18.patch
+	BFS:
+		Patch40002: http://ck.kolivas.org/patches/bfs/3.0/3.18/3.18-sched-bfs-460.patch
+	BFQ:
+		Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-3.18.patch
+		Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-3.18.patch
+		Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.18.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-3.18.0.patch
+
 * Tue Jan 27 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.4-200
 - Linux v3.18.4
 
@@ -2351,7 +2356,8 @@ fi
 * Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
 - Linux v3.17.8
 
-* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
+* Thu Jan 08 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
+#* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
 - Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
 - First pussh into github fork.
 
@@ -3397,7 +3403,7 @@ fi
 - Linux v3.14-rc1-13-g878a876
 
 * Tue Feb 04 2014 Kyle McMartin <kyle@fedoraproject.org>
-- Fix %all_arch_configs on aarch64.
+- Fix %%all_arch_configs on aarch64.
 
 * Tue Feb 04 2014 Josh Boyer <jwboyer@fedoraproject.org> - 3.14.0-0.rc1.git0.2
 - Add NUMA oops patches
