@@ -1,0 +1,10 @@
+git remote rename origin originFedora
+
+git remote add githubHubbitus git@github.com:Hubbitus/kernel.git
+git remote set-url --push originFedora DISABLE
+
+[pasha@hubbitus f20.DEL]$ git remote -v
+githubHubbitus  git@github.com:Hubbitus/kernel.git (fetch)
+githubHubbitus  git@github.com:Hubbitus/kernel.git (push)
+originFedora    ssh://hubbitus@pkgs.fedoraproject.org/kernel (fetch)
+originFedora    DISABLE (push)
