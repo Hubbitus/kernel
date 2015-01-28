@@ -1,0 +1,27 @@
+commit d47fb4ec7e101a63754939fa49d75fd7e81e94f8
+Author: Ashutosh Dixit <ashutosh.dixit@intel.com>
+Date:   Thu Dec 4 13:27:29 2014 -0800
+
+    Documentation: Build mic/mpssd only for x86_64
+    
+    mic/mpssd along with MIC drivers are currently only usable on
+    x86_64. So build mic/mpssd only for x86_64 to avoid build breaks on
+    big-endian systems.
+    
+    Reported-by: Daniel Borkmann <dborkman@redhat.com>
+    Reported-by: Dan Streetman <ddstreet@gmail.com>
+    Suggested-by: Peter Foley <pefoley2@pefoley.com>
+    Signed-off-by: Ashutosh Dixit <ashutosh.dixit@intel.com>
+    Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+
+diff --git a/Documentation/mic/mpssd/Makefile b/Documentation/mic/mpssd/Makefile
+index 0f31568..f47fe6b 100644
+--- a/Documentation/mic/mpssd/Makefile
++++ b/Documentation/mic/mpssd/Makefile
+@@ -1,5 +1,5 @@
+ # List of programs to build
+-hostprogs-y := mpssd
++hostprogs-$(CONFIG_X86_64) := mpssd
+
+ mpssd-objs := mpssd.o sysfs.o
+
