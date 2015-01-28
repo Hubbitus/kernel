@@ -11,7 +11,7 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 123.13.2.el7
+%define pkgrelease 123.20.1.el7
 
 %define pkg_release %{pkgrelease}%{?buildid}
 
@@ -338,10 +338,10 @@ Source10: sign-modules
 %define modsign_cmd %{SOURCE10}
 Source11: x509.genkey
 Source12: extra_certificates
-Source13: centos.cer
+Source13: securebootca.cer
 Source14: secureboot.cer
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -369,9 +369,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -524,11 +521,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n redhatsecureboot301
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1483,11 +1474,63 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Thu Dec 18 2014 CentOS Sources <bugs@centos.org> - 3.10.0-123.13.2.el7
-- Apply debranding changes
+* Wed Jan 21 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-123.20.1.el7]
+- [fs] seq_file: don't include mm.h in genksyms calculation (Ian Kent) [1184152 1183280]
 
-* Fri Dec 12 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.13.2.el7]
+* Mon Dec 15 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.19.1.el7]
+- [mm] shmem: fix splicing from a hole while it's punched (Denys Vlasenko) [1118244 1118245] {CVE-2014-4171}
+- [mm] shmem: fix faulting into a hole, not taking i_mutex (Denys Vlasenko) [1118244 1118245] {CVE-2014-4171}
+- [mm] shmem: fix faulting into a hole while it's punched (Denys Vlasenko) [118244 1118245] {CVE-2014-4171}
 - [x86] traps: stop using IST for #SS (Petr  Matousek) [1172812 1172813] {CVE-2014-9322}
+- [net] vxlan: fix incorrect initializer in union vxlan_addr (Daniel Borkmann) [1156611 1130643]
+- [net] vxlan: fix crash when interface is created with no group (Daniel Borkmann) [1156611 1130643]
+- [net] vxlan: fix nonfunctional neigh_reduce() (Daniel Borkmann) [1156611 1130643]
+- [net] vxlan: fix potential NULL dereference in arp_reduce() (Daniel Borkmann) [1156611 1130643]
+- [net] vxlan: remove unused port variable in vxlan_udp_encap_recv() (Daniel Borkmann) [1156611 1130643]
+- [net] vxlan: remove extra newline after function definition (Daniel Borkmann) [1156611 1130643]
+- [net] etherdevice: Use ether_addr_copy to copy an Ethernet address (Stefan Assmann) [1156611 1091126]
+- [fs] splice: perform generic write checks (Eric Sandeen) [1163799 1155907] {CVE-2014-7822}
+- [fs] eliminate BUG() call when there's an unexpected lock on file close (Frank Sorenson) [1172266 1148130]
+- [net] sctp: fix NULL pointer dereference in af->from_addr_param on malformed packet (Daniel Borkmann) [1163094 1154002] {CVE-2014-7841}
+- [fs] lockd: Try to reconnect if statd has moved (Benjamin Coddington) [1150889 1120850]
+- [fs] sunrpc: Don't wake tasks during connection abort (Benjamin Coddington) [1150889 1120850]
+- [fs] cifs: NULL pointer dereference in SMB2_tcon (Jacob Tanenbaum) [1147528 1147529] {CVE-2014-7145}
+- [net] ipv6: addrconf: implement address generation modes (Jiri Pirko) [1144876 1107369]
+- [net] gre: add link local route when local addr is any (Jiri Pirko) [1144876 1107369]
+- [net] gre6: don't try to add the same route two times (Jiri Pirko) [1144876 1107369]
+- [fs] isofs: unbound recursion when processing relocated directories (Jacob Tanenbaum) [1142270 1142271] {CVE-2014-5471 CVE-2014-5472}
+- [fs] fs: seq_file: fallback to vmalloc allocation (Ian Kent) [1140302 1095623]
+- [fs] fs: /proc/stat: convert to single_open_size() (Ian Kent) [1140302 1095623]
+- [fs] fs: seq_file: always clear m->count when we free m->buf (Ian Kent) [1140302 1095623]
+
+* Thu Dec 11 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.18.1.el7]
+- [net] ipv6: fib: fix fib dump restart (Panu Matilainen) [1172795 1163605]
+- [net] ipv6: drop unused fib6_clean_all_ro() function and rt6_proc_arg struct (Panu Matilainen) [1172795 1163605]
+- [net] ipv6: avoid high order memory allocations for /proc/net/ipv6_route (Panu Matilainen) [1172795 1163605]
+- [mm] numa: Remove BUG_ON() in __handle_mm_fault() (Rik van Riel) [1170662 1119439]
+- [fs] aio: fix race between aio event completion and reaping (Jeff Moyer) [1154172 1131312]
+
+* Tue Nov 18 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.17.1.el7]
+- [ethernet] mlx4: Protect port type setting by mutex (Amir Vadai) [1162733 1095345]
+
+* Mon Nov 17 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.16.1.el7]
+- [fs] aio: block exit_aio() until all context requests are completed (Jeff Moyer) [1163992 1122092]
+- [fs] aio: add missing smp_rmb() in read_events_ring (Jeff Moyer) [1154172 1131312]
+- [fs] aio: fix reqs_available handling (Jeff Moyer) [1163992 1122092]
+- [fs] aio: report error from io_destroy() when threads race in io_destroy() (Jeff Moyer) [1163992 1122092]
+- [fs] aio: block io_destroy() until all context requests are completed (Jeff Moyer) [1163992 1122092]
+- [fs] aio: v4 ensure access to ctx->ring_pages is correctly serialised for migration (Jeff Moyer) [1163992 1122092]
+- [fs] aio/migratepages: make aio migrate pages sane (Jeff Moyer) [1163992 1122092]
+- [fs] aio: clean up and fix aio_setup_ring page mapping (Jeff Moyer) [1163992 1122092]
+
+* Wed Nov 12 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.15.1.el7]
+- [scsi] ipr: wait for aborted command responses (Gustavo Duarte) [1162734 1156530]
+- [scsi] reintroduce scsi_driver.init_command (Ewan Milne) [1146983 1105204]
+- [block] implement an unprep function corresponding directly to prep (Ewan Milne) [1146983 1105204]
+- [scsi] Revert: reintroduce scsi_driver.init_command (Ewan Milne) [1146983 1105204]
+
+* Tue Nov 11 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.14.1.el7]
+- [fs] nfs: Fix another nfs4_sequence corruptor (Steve Dickson) [1162073 1111170]
 
 * Tue Nov 04 2014 Phillip Lougher <plougher@redhat.com> [3.10.0-123.13.1.el7]
 - [powerpc] mm: Make sure a local_irq_disable prevent a parallel THP split (Don Zickus) [1151057 1083296]
