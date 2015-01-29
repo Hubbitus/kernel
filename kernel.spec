@@ -727,7 +727,7 @@ This package provides debug information for the perf python bindings.
 %endif # with_perf
 
 %if %{with_tools}
-%package -n kernel-tools
+%package tools
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
@@ -739,19 +739,19 @@ Obsoletes: cpufreq-utils < 1:009-0.6.p1
 Obsoletes: cpufrequtils < 1:009-0.6.p1
 Obsoletes: cpuspeed < 1:1.5-16
 Requires: kernel-tools-libs = %{version}-%{release}
-%description -n kernel-tools
+%description tools
 This package contains the tools/ directory from the kernel source
 and the supporting documentation.
 
-%package -n kernel-tools-libs
+%package tools-libs
 Summary: Libraries for the kernels-tools
 Group: Development/System
 License: GPLv2
-%description -n kernel-tools-libs
+%description tools-libs
 This package contains the libraries built from the tools/ directory
 from the kernel source.
 
-%package -n kernel-tools-libs-devel
+%package tools-libs-devel
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
@@ -760,16 +760,16 @@ Provides:  cpupowerutils-devel = 1:009-0.6.p1
 Obsoletes: cpupowerutils-devel < 1:009-0.6.p1
 Requires: kernel-tools-libs = %{version}-%{release}
 Provides: kernel-tools-devel
-%description -n kernel-tools-libs-devel
+%description tools-libs-devel
 This package contains the development files for the tools/ directory from
 the kernel source.
 
-%package -n kernel-tools-debuginfo
+%package tools-debuginfo
 Summary: Debug information for package kernel-tools
 Group: Development/Debug
 Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
 AutoReqProv: no
-%description -n kernel-tools-debuginfo
+%description tools-debuginfo
 This package provides debug information for package kernel-tools.
 
 # Note that this pattern only works right to match the .build-id
@@ -2097,7 +2097,7 @@ fi
 %endif # with_perf
 
 %if %{with_tools}
-%files -n kernel-tools -f cpupower.lang
+%files tools -f cpupower.lang
 %defattr(-,root,root)
 %ifarch %{cpupowerarchs}
 %{_bindir}/cpupower
@@ -2118,16 +2118,16 @@ fi
 %endif
 
 %if %{with_debuginfo}
-%files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
+%files -f kernel-tools-debuginfo.list tools-debuginfo
 %defattr(-,root,root)
 %endif
 
 %ifarch %{cpupowerarchs}
-%files -n kernel-tools-libs
+%files tools-libs
 %{_libdir}/libcpupower.so.0
 %{_libdir}/libcpupower.so.0.0.0
 
-%files -n kernel-tools-libs-devel
+%files tools-libs-devel
 %{_libdir}/libcpupower.so
 %{_includedir}/cpufreq.h
 %endif
