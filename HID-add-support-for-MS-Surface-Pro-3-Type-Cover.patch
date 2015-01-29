@@ -19,7 +19,7 @@ Signed-off-by: Jiri Kosina <jkosina@suse.cz>
  4 files changed, 10 insertions(+)
 
 diff --git a/drivers/hid/hid-core.c b/drivers/hid/hid-core.c
-index 12b6e67d9de0..bcf13015409c 100644
+index dfaccfca0688..84e15038b2f9 100644
 --- a/drivers/hid/hid-core.c
 +++ b/drivers/hid/hid-core.c
 @@ -702,6 +702,11 @@ static void hid_scan_collection(struct hid_parser *parser, unsigned type)
@@ -34,7 +34,7 @@ index 12b6e67d9de0..bcf13015409c 100644
  }
  
  static int hid_scan_main(struct hid_parser *parser, struct hid_item *item)
-@@ -1857,6 +1862,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
+@@ -1863,6 +1868,7 @@ static const struct hid_device_id hid_have_special_driver[] = {
  	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_DIGITAL_MEDIA_3K) },
  	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_WIRELESS_OPTICAL_DESKTOP_3_0) },
  	{ HID_USB_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_OFFICE_KB) },
@@ -43,10 +43,10 @@ index 12b6e67d9de0..bcf13015409c 100644
  	{ HID_USB_DEVICE(USB_VENDOR_ID_MSI, USB_DEVICE_ID_MSI_GT683R_LED_PANEL) },
  	{ HID_USB_DEVICE(USB_VENDOR_ID_NTRIG, USB_DEVICE_ID_NTRIG_TOUCH_SCREEN) },
 diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-index c3a712c8c915..ac6c46c169a5 100644
+index 0e28190480d7..4b7e06fc35c5 100644
 --- a/drivers/hid/hid-ids.h
 +++ b/drivers/hid/hid-ids.h
-@@ -647,6 +647,7 @@
+@@ -651,6 +651,7 @@
  #define USB_DEVICE_ID_MS_SURFACE_PRO_2   0x0799
  #define USB_DEVICE_ID_MS_TOUCH_COVER_2   0x07a7
  #define USB_DEVICE_ID_MS_TYPE_COVER_2    0x07a9
@@ -68,10 +68,10 @@ index 8ba17a946f2a..cacda43f6a6f 100644
  	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_MICROSOFT, USB_DEVICE_ID_MS_PRESENTER_8K_BT),
  		.driver_data = MS_PRESENTER },
 diff --git a/drivers/hid/usbhid/hid-quirks.c b/drivers/hid/usbhid/hid-quirks.c
-index 5014bb567b29..cebfaf288bd3 100644
+index 4477eb7457de..b27b3d33ebab 100644
 --- a/drivers/hid/usbhid/hid-quirks.c
 +++ b/drivers/hid/usbhid/hid-quirks.c
-@@ -77,6 +77,7 @@ static const struct hid_blacklist {
+@@ -79,6 +79,7 @@ static const struct hid_blacklist {
  	{ USB_VENDOR_ID_FORMOSA, USB_DEVICE_ID_FORMOSA_IR_RECEIVER, HID_QUIRK_NO_INIT_REPORTS },
  	{ USB_VENDOR_ID_FREESCALE, USB_DEVICE_ID_FREESCALE_MX28, HID_QUIRK_NOGET },
  	{ USB_VENDOR_ID_MGE, USB_DEVICE_ID_MGE_UPS, HID_QUIRK_NOGET },

@@ -41,7 +41,7 @@ index 71f282a4e307..341a73ecea2e 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 1c47139d161c..f1d78afbe29f 100644
+index 88cec1ddb1e3..6507ffcb5445 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -3844,3 +3844,13 @@ void module_layout(struct module *mod,

@@ -9,10 +9,10 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 130 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index c7357bcc7d5c..86cdb52dbf8a 100644
+index 754b96c5dbb1..4991a1664773 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
-@@ -98,6 +98,13 @@
+@@ -95,6 +95,13 @@
  		>;
  	};
  
@@ -26,7 +26,7 @@ index c7357bcc7d5c..86cdb52dbf8a 100644
  	clkout2_pin: pinmux_clkout2_pin {
  		pinctrl-single,pins = <
  			0x1b4 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* xdma_event_intr1.clkout2 */
-@@ -178,6 +185,33 @@
+@@ -175,6 +182,33 @@
  			0x1c (PIN_INPUT_PULLUP | MUX_MODE1) /* gpmc_ad7.mmc1_dat7 */
  		>;
  	};
@@ -60,7 +60,7 @@ index c7357bcc7d5c..86cdb52dbf8a 100644
  };
  
  &uart0 {
-@@ -187,6 +221,13 @@
+@@ -184,6 +218,13 @@
  	status = "okay";
  };
  
@@ -74,7 +74,7 @@ index c7357bcc7d5c..86cdb52dbf8a 100644
  &usb {
  	status = "okay";
  };
-@@ -261,6 +302,56 @@
+@@ -258,6 +299,56 @@
  	};
  };
  
@@ -131,7 +131,7 @@ index c7357bcc7d5c..86cdb52dbf8a 100644
  /include/ "tps65217.dtsi"
  
  &tps {
-@@ -337,3 +428,42 @@
+@@ -339,3 +430,42 @@
  	cd-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
  	cd-inverted;
  };

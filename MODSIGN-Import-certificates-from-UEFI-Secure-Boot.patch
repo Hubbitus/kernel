@@ -25,10 +25,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 41359e548bcb..db9e6118575e 100644
+index b1d686e9175e..4d41f4532127 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -587,6 +587,12 @@ void efi_native_runtime_setup(void);
+@@ -592,6 +592,12 @@ void efi_native_runtime_setup(void);
  #define EFI_CERT_X509_GUID \
      EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
  
@@ -42,10 +42,10 @@ index 41359e548bcb..db9e6118575e 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index dfdd7f738247..3c866db603a7 100644
+index d99a519bb9ae..9ef459bb44b2 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1877,6 +1877,15 @@ config MODULE_SIG_ALL
+@@ -1901,6 +1901,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,7 +62,7 @@ index dfdd7f738247..3c866db603a7 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index dc5c77544fd6..95bdf3398880 100644
+index 17ea6d4a9a24..381fe2d56ed1 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
 @@ -45,6 +45,7 @@ obj-$(CONFIG_UID16) += uid16.o

@@ -29,10 +29,10 @@ index 72665eb80692..2c7b80d31366 100644
 +
  #endif /* _KEYS_SYSTEM_KEYRING_H */
 diff --git a/init/Kconfig b/init/Kconfig
-index 80a6907f91c5..dfdd7f738247 100644
+index 2081a4d3d917..d99a519bb9ae 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1723,6 +1723,15 @@ config SYSTEM_TRUSTED_KEYRING
+@@ -1747,6 +1747,15 @@ config SYSTEM_TRUSTED_KEYRING
  
  	  Keys in this keyring are used by module signature checking.
  
