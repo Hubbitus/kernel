@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -553,8 +553,8 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1826: drm-i915-hush-check-crtc-state.patch
-Patch1827: drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
+Patch1826: drm-i915-tame-the-chattermouth-v2.patch
+Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
 # Quiet boot fixes
 
@@ -1321,8 +1321,8 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 # Nouveau DRM
 
 # Intel DRM
-ApplyPatch drm-i915-hush-check-crtc-state.patch
-ApplyPatch drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
+ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch 
 
 # Radeon DRM
 
@@ -2254,6 +2254,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch from Rob Clark to toggle i915 state machine checks
+- Disable i915 state checks
+
 * Tue Jan 27 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.4-200
 - Linux v3.18.4
 
