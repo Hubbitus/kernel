@@ -2210,6 +2210,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jan 29 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- More ARMv7 updates
+- A few more sound config cleanups
+
 * Wed Jan 28 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc6.git2.1
 - Linux v3.19-rc6-105-gc59c961ca511
 
