@@ -13,10 +13,10 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 9 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index e109b2cfb5b3..a8b7ee312493 100644
+index 25863442b6ae..5c4e35bebd3b 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
-@@ -769,7 +769,15 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -505,7 +505,15 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  		DMI_MATCH(DMI_PRODUCT_NAME, "HP ENVY 15 Notebook PC"),
  		},
  	},
@@ -31,8 +31,8 @@ index e109b2cfb5b3..a8b7ee312493 100644
 +		},
 +	},
  	{
- 	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1163574 */
  	 .callback = video_disable_native_backlight,
+ 	 .ident = "SAMSUNG 870Z5E/880Z5E/680Z5E",
 -- 
 2.1.0
 

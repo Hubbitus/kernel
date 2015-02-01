@@ -7,10 +7,10 @@ Subject: [PATCH] ath9k: rx dma stop check
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/wireless/ath/ath9k/mac.c b/drivers/net/wireless/ath/ath9k/mac.c
-index 275205ab5f15..bb842623bdf6 100644
+index 3e58bfa0c1fd..406eea47256e 100644
 --- a/drivers/net/wireless/ath/ath9k/mac.c
 +++ b/drivers/net/wireless/ath/ath9k/mac.c
-@@ -700,7 +700,7 @@ bool ath9k_hw_stopdmarecv(struct ath_hw *ah, bool *reset)
+@@ -693,7 +693,7 @@ bool ath9k_hw_stopdmarecv(struct ath_hw *ah, bool *reset)
  {
  #define AH_RX_STOP_DMA_TIMEOUT 10000   /* usec */
  	struct ath_common *common = ath9k_hw_common(ah);
@@ -19,7 +19,7 @@ index 275205ab5f15..bb842623bdf6 100644
  	int i;
  
  	/* Enable access to the DMA observation bus */
-@@ -730,6 +730,16 @@ bool ath9k_hw_stopdmarecv(struct ath_hw *ah, bool *reset)
+@@ -723,6 +723,16 @@ bool ath9k_hw_stopdmarecv(struct ath_hw *ah, bool *reset)
  	}
  
  	if (i == 0) {

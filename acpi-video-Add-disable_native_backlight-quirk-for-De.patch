@@ -9,18 +9,17 @@ backlight control does not work properly when using the native interfaces.
 BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1163574
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- drivers/acpi/video.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/acpi/video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index a3d293806f96..e109b2cfb5b3 100644
+index 8a61e5dd397b..25863442b6ae 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
-@@ -769,6 +769,16 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
- 		DMI_MATCH(DMI_PRODUCT_NAME, "HP ENVY 15 Notebook PC"),
+@@ -522,6 +522,15 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "370R4E/370R4V/370R5E/3570RE/370R5V"),
  		},
  	},
-+
 +	{
 +	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1163574 */
 +	 .callback = video_disable_native_backlight,

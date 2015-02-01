@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -557,8 +557,8 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1826: drm-i915-hush-check-crtc-state.patch
-Patch1827: drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
+Patch1826: drm-i915-tame-the-chattermouth-v2.patch
+Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
 # Quiet boot fixes
 
@@ -654,9 +654,6 @@ Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 #rhbz 1163927
 Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
-#CVE-2014-9529 rhbz 1179813 1179853
-Patch26124: KEYS-close-race-between-key-lookup-and-freeing.patch
-
 #rhbz 1124119
 Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
@@ -674,10 +671,6 @@ Patch30000: kernel-arm64.patch
 
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
-
-#CVE-2015-0239 rhbz 1186448 1186453
-Patch30004: KVM-x86-SYSENTER-emulation-is-broken.patch
-
 
 # END OF PATCH DEFINITIONS
 
@@ -1363,8 +1356,8 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 # Nouveau DRM
 
 # Intel DRM
-ApplyPatch drm-i915-hush-check-crtc-state.patch
-ApplyPatch drm-i915-Don-t-WARN-in-edp_panel_vdd_off.patch
+ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch 
 
 # Radeon DRM
 
@@ -1405,9 +1398,6 @@ ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 #rhbz 1163927
 ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
-#CVE-2014-9529 rhbz 1179813 1179853
-ApplyPatch KEYS-close-race-between-key-lookup-and-freeing.patch
-
 #rhbz 1124119
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
@@ -1422,9 +1412,6 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
-
-#CVE-2015-0239 rhbz 1186448 1186453
-ApplyPatch KVM-x86-SYSENTER-emulation-is-broken.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2317,6 +2304,13 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-100
+- Linux v3.18.5
+
+* Thu Jan 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch from Rob Clark to toggle i915 state machine checks
+- Disable i915 state checks
+
 * Wed Jan 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.4-200.hu.1.uksm.bfs.bfq
 - Add patches instead of pf-pack:
 	UKSM:

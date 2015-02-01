@@ -16,7 +16,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  3 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 6d04771e4903..f8886fe74b9d 100644
+index 2c6643fdc0cf..56333630ab77 100644
 --- a/drivers/pci/pci-sysfs.c
 +++ b/drivers/pci/pci-sysfs.c
 @@ -30,6 +30,7 @@
@@ -27,7 +27,7 @@ index 6d04771e4903..f8886fe74b9d 100644
  #include "pci.h"
  
  static int sysfs_initialized;	/* = 0 */
-@@ -704,6 +705,9 @@ static ssize_t pci_write_config(struct file *filp, struct kobject *kobj,
+@@ -703,6 +704,9 @@ static ssize_t pci_write_config(struct file *filp, struct kobject *kobj,
  	loff_t init_off = off;
  	u8 *data = (u8 *) buf;
  
@@ -37,7 +37,7 @@ index 6d04771e4903..f8886fe74b9d 100644
  	if (off > dev->cfg_size)
  		return 0;
  	if (off + count > dev->cfg_size) {
-@@ -998,6 +1002,9 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+@@ -997,6 +1001,9 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
  	resource_size_t start, end;
  	int i;
  
@@ -47,7 +47,7 @@ index 6d04771e4903..f8886fe74b9d 100644
  	for (i = 0; i < PCI_ROM_RESOURCE; i++)
  		if (res == &pdev->resource[i])
  			break;
-@@ -1099,6 +1106,9 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
+@@ -1098,6 +1105,9 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
  				     struct bin_attribute *attr, char *buf,
  				     loff_t off, size_t count)
  {
