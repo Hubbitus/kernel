@@ -2250,7 +2250,7 @@ fi
 * Mon Feb 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-XXXX-XXX DoS due to routing packets to too many different dsts/too fast (rhbz 1183744 1188347)
 
-* Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-100
+* Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-200
 - Linux v3.18.5
 
 * Thu Jan 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
