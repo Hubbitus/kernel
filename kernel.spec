@@ -2304,6 +2304,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 02 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.5-100.hu.1.uksm.bfs.bfq
+- Merged originFedora f21 cahnges, step to 3.18.5-100 kernel.
+
 * Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-100
 - Linux v3.18.5
 
