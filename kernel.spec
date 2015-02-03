@@ -612,6 +612,9 @@ Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
+#rhbz 1188638
+Patch26132: nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1339,6 +1342,9 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
+
+#rhbz 1188638
+ApplyPatch nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2206,6 +2212,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix NFS backtrace (rhbz 1188638)
+
 * Mon Feb 02 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc7.git0.1
 - Linux v3.19-rc7
 - Disable debugging options.
