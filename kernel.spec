@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -671,6 +671,12 @@ Patch30000: kernel-arm64.patch
 
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
+
+# rhbz 1183744 1188347
+Patch30002: ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
+
+#rhbz 1188074
+Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1412,6 +1418,12 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
+
+# rhbz 1183744 1188347
+ApplyPatch ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
+
+#rhbz 1188074
+ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2304,10 +2316,16 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon Feb 02 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.5-100.hu.1.uksm.bfs.bfq
-- Merged originFedora f21 cahnges, step to 3.18.5-100 kernel.
+* Mon Feb 02 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-201
+- Fixup adjtimex freq validation on 32bit systems (rhbz 1188074)
 
-* Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-100
+* Mon Feb 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-XXXX-XXX DoS due to routing packets to too many different dsts/too fast (rhbz 1183744 1188347)
+
+* Mon Feb 02 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.5-200.hu.1.uksm.bfs.bfq
+- Merged originFedora f21 cahnges, step to 3.18.5-100 kernel (history changed in origin, 100 -> 200).
+
+* Fri Jan 30 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-200
 - Linux v3.18.5
 
 * Thu Jan 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
