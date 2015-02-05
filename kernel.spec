@@ -2213,6 +2213,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Feb  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Allwinner A23 (sun8i) SoC
 - Move ARM usb platform options to arm-generic
 
 * Thu Feb 05 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc7.git2.1
