@@ -2212,6 +2212,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Feb  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Move ARM usb platform options to arm-generic
+
 * Thu Feb 05 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc7.git2.1
 - Linux v3.19-rc7-32-g5ee0e962603e
 
