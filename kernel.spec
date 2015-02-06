@@ -2316,6 +2316,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Feb 04 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.5-201.hu.1.uksm.bfs.bfq
+- Merged originFedora f21 cahnges, step to 3.18.5-201 kernel.
+
 * Mon Feb 02 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-201
 - Fixup adjtimex freq validation on 32bit systems (rhbz 1188074)
 
