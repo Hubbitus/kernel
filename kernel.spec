@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -618,7 +618,6 @@ Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 #rhbz 1124119
 Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 #rhbz 1115713
 Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
@@ -1365,7 +1364,6 @@ ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 #rhbz 1124119
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 #rhbz 1115713
 ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
@@ -2253,6 +2251,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 06 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.6-200
+- Linux v3.18.6
+
 * Mon Feb 02 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.5-201
 - Fixup adjtimex freq validation on 32bit systems (rhbz 1188074)
 
