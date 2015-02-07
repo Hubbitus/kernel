@@ -3563,20 +3563,6 @@ index 53f5f66..3957e63 100644
  	/* The PCS registers are accessed using mmio. The underlying APB3
  	 * management interface uses indirect addressing to access the MMD
  	 * register sets. This requires accessing of the PCS register in two
-diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-index 7bb5f07..0ed3379 100644
---- a/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-+++ b/drivers/net/ethernet/amd/xgbe/xgbe-drv.c
-@@ -560,6 +560,9 @@ void xgbe_get_all_hw_features(struct xgbe_prv_data *pdata)
- 	hw_feat->rx_ch_cnt++;
- 	hw_feat->tx_ch_cnt++;
- 
-+	/* A0 does not support NUMTC, hardcode it for now */
-+	hw_feat->tc_cnt = XGBE_TC_CNT;
-+
- 	DBGPR("<--xgbe_get_all_hw_features\n");
- }
- 
 diff --git a/drivers/net/ethernet/amd/xgbe/xgbe-main.c b/drivers/net/ethernet/amd/xgbe/xgbe-main.c
 index dbd3850..74be78e 100644
 --- a/drivers/net/ethernet/amd/xgbe/xgbe-main.c

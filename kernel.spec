@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -2212,6 +2212,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sat Feb 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc7.git3.1
+- Linux v3.19-rc7-189-g26cdd1f76a88
+
 * Thu Feb  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Allwinner A23 (sun8i) SoC
 - Move ARM usb platform options to arm-generic
