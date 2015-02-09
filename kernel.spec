@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 %global aarch64patches 1
 
@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 18
+%define base_sublevel 19
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -615,6 +615,9 @@ Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 #rhbz 1188638
 Patch26132: nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 
+#rhbz 1188074
+Patch26133: ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1142,13 +1145,6 @@ cp -al vanilla-%{vanillaversion} linux-%{KVERREL}
 
 cd linux-%{KVERREL}
 
-#HACK for 3.19-rc6+patch-2.7.3 rbhz 1185928
-# make the symlink for arm64 dt-bindings.  sigh.
-mkdir -p arch/arm64/boot/dts/include
-pushd arch/arm64/boot/dts/include/
-ln -s ../../../../../include/dt-bindings
-popd
-
 # released_kernel with possible stable updates
 %if 0%{?stable_base}
 ApplyPatch %{stable_patch_00}
@@ -1345,6 +1341,9 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #rhbz 1188638
 ApplyPatch nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
+
+#rhbz 1188074
+ApplyPatch ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2212,6 +2211,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-1
+- Linux v3.19
+
 * Sat Feb 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.0-0.rc7.git3.1
 - Linux v3.19-rc7-189-g26cdd1f76a88
 
