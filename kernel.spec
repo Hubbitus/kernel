@@ -2314,6 +2314,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 09 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.6-200.hu.1.uksm.bfs.bfq
+- Merged originFedora f21 changes, step to 3.18.6-200 kernel.
+
 * Fri Feb 06 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.6-200
 - Linux v3.18.6
 
