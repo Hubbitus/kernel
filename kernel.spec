@@ -618,6 +618,8 @@ Patch26132: nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 #rhbz 1188074
 Patch26133: ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
+Patch26134: perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1344,6 +1346,8 @@ ApplyPatch nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 
 #rhbz 1188074
 ApplyPatch ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
+
+ApplyPatch perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
