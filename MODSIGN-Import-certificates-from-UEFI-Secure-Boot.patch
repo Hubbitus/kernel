@@ -62,10 +62,10 @@ index ac49b6e83436..5cdb1c323f62 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index a59481a3fa6c..04b4ba9e0c9d 100644
+index 616994f0a76f..43b9d7ba757f 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -45,6 +45,7 @@ obj-$(CONFIG_UID16) += uid16.o
+@@ -46,6 +46,7 @@ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -73,7 +73,7 @@ index a59481a3fa6c..04b4ba9e0c9d 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -98,6 +99,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+@@ -99,6 +100,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
  $(obj)/configs.o: $(obj)/config_data.h
  
