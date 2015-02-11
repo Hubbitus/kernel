@@ -25,7 +25,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index fb972b96959a..581878071c85 100644
+index f71d1700a187..9d3f61593d9a 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -595,6 +595,12 @@ void efi_native_runtime_setup(void);
@@ -42,10 +42,10 @@ index fb972b96959a..581878071c85 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index ea0dbdf29b75..dac9ed0f01f7 100644
+index ac49b6e83436..5cdb1c323f62 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1896,6 +1896,15 @@ config MODULE_SIG_ALL
+@@ -1904,6 +1904,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  

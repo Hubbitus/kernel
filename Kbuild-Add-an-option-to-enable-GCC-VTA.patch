@@ -59,7 +59,7 @@ index b15036b1890c..0fbc68ed4ce9 100644
  ifdef CONFIG_DEBUG_INFO
  ifdef CONFIG_DEBUG_INFO_SPLIT
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5f2ce616c046..6525e2a5619a 100644
+index a2ca213c71ca..032c4d549c49 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
 @@ -165,7 +165,23 @@ config DEBUG_INFO_DWARF4

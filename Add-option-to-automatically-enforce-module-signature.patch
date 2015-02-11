@@ -33,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0dc9d0144a27..58273956750d 100644
+index 5e28e2be3a41..aca51ef7f0db 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1660,6 +1660,16 @@ config EFI_MIXED
+@@ -1665,6 +1665,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index ab4734e5411d..5d52d67d5097 100644
+index c4648adadd7d..90de17f70b16 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1152,6 +1152,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1150,6 +1150,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
