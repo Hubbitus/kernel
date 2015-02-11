@@ -4483,9 +4483,9 @@ index 2437196..914287d 100644
  #include <linux/of_platform.h>
  #include <linux/efi.h>
 +#include <linux/acpi.h>
+ #include <linux/personality.h>
  
  #include <asm/fixmap.h>
- #include <asm/cpu.h>
 @@ -59,6 +60,7 @@
  #include <asm/memblock.h>
  #include <asm/psci.h>
@@ -4512,9 +4512,9 @@ index 2437196..914287d 100644
  
  bool arch_match_cpu_phys_id(int cpu, u64 phys_id)
 @@ -312,6 +318,7 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
+		while (true)
+ 			cpu_relax();
  	}
- 
- 	machine_name = of_flat_dt_get_machine_name();
 +	dump_stack_set_arch_desc("%s (DT)", machine_name);
  }
  
