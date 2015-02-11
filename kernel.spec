@@ -638,6 +638,9 @@ Patch30002: ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
 #rhbz 1188074
 Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
+#rhbz 1186097
+Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1380,6 +1383,9 @@ ApplyPatch ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
 
 #rhbz 1188074
 ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
+
+#rhbz 1186097
+ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2253,6 +2259,7 @@ fi
 %changelog
 * Wed Feb 11 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.7-200
 - Linux v3.18.7
+- Add disable_native_backlight quirk for Samsung 510R (rhbz 1186097)
 
 * Fri Feb 06 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.6-200
 - Linux v3.18.6
