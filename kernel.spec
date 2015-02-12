@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -611,9 +611,6 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#rhbz 1188638
-Patch26132: nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 
 #rhbz 1188074
 Patch26133: ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
@@ -1340,9 +1337,6 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#rhbz 1188638
-ApplyPatch nfs-don-t-call-blocking-operations-while-TASK_RUNNIN.patch
 
 #rhbz 1188074
 ApplyPatch ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
@@ -2215,6 +2209,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Feb 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git4.1
+- Linux v3.19-4542-g8cc748aa76c9
+
 * Thu Feb 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git3.1
 - Linux v3.19-4020-gce01e871a1d4
 

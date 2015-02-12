@@ -26,10 +26,10 @@ index 90de17f70b16..c5a7fe1c197c 100644
  #endif
  
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index b674837e2b98..33d555e5d8e7 100644
+index cf7e431cbc73..c74cbd892032 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -940,6 +940,7 @@ extern int __init efi_setup_pcdp_console(char *);
+@@ -942,6 +942,7 @@ extern int __init efi_setup_pcdp_console(char *);
  #define EFI_64BIT		5	/* Is the firmware 64-bit? */
  #define EFI_PARAVIRT		6	/* Access is via a paravirt interface */
  #define EFI_ARCH_1		7	/* First arch-specific bit */

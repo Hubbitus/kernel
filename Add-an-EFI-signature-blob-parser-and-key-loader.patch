@@ -159,10 +159,10 @@ index 000000000000..424896a0b169
 +	return 0;
 +}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 02068cc2883d..f71d1700a187 100644
+index 1293d0e0bf90..706b16fa6de8 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -923,6 +923,10 @@ extern bool efi_poweroff_required(void);
+@@ -925,6 +925,10 @@ extern bool efi_poweroff_required(void);
  char * __init efi_md_typeattr_format(char *buf, size_t size,
  				     const efi_memory_desc_t *md);
  
