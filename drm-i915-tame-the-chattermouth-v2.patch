@@ -28,7 +28,7 @@ Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
  4 files changed, 104 insertions(+), 69 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 9d7a7155bf02..d04ed2b2728e 100644
+index 24cc36a9f3ff..8e1ee6d56d6a 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
 @@ -60,6 +60,35 @@
@@ -67,7 +67,7 @@ index 9d7a7155bf02..d04ed2b2728e 100644
  enum pipe {
  	INVALID_PIPE = -1,
  	PIPE_A = 0,
-@@ -2309,6 +2338,7 @@ struct i915_params {
+@@ -2317,6 +2346,7 @@ struct i915_params {
  	bool disable_vtd_wa;
  	int use_mmio_flip;
  	bool mmio_debug;
