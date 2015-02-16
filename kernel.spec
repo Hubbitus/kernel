@@ -617,6 +617,9 @@ Patch26133: ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 Patch26134: perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 
+#CVE-2015-1593 rhbz 1192519 1192520
+Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1342,6 +1345,9 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 ApplyPatch ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 ApplyPatch perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
+
+#CVE-2015-1593 rhbz 1192519 1192520
+ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2209,6 +2215,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
+
 * Mon Feb 16 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor updates for ARMv7/ARM64
 
