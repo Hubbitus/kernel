@@ -620,6 +620,9 @@ Patch26134: perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 #CVE-2015-1593 rhbz 1192519 1192520
 Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
+#CVE-XXXX-XXXX rhbz 1189864 1192079
+Patch26136: vhost-scsi-potential-memory-corruption.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1348,6 +1351,9 @@ ApplyPatch perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 
 #CVE-2015-1593 rhbz 1192519 1192520
 ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
+
+#CVE-XXXX-XXXX rhbz 1189864 1192079
+ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2216,6 +2222,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
 - CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
 
 * Mon Feb 16 2015 Peter Robinson <pbrobinson@fedoraproject.org>
