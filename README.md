@@ -1,9 +1,10 @@
 # Hubbitus kernel
 
-
 My primary goal long time to build kernel for home desktop use. It should be preemptive. Speed and memory efficiency much more interesting what high stability.
 
-With that aim but being [Fedora maintainer](https://fedoraproject.org/wiki/PavelAlexeev) I want also use Fedora distribution kernel with their patches, support (although partial) and love.
+With that aim and being [Fedora package maintainer](https://fedoraproject.org/wiki/PavelAlexeev) I want also use Fedora distribution kernel with their patches, support (although partial) and love.
+
+***Be carefull it is not clone or fork of kernel.org (vanilla) kernel but Fedora kernel package instead with addon patches and configuration!***
 
 ## The most famous and interesting for me futures
 
@@ -25,15 +26,17 @@ For details and user space utilities please look at aforementioned package.
 
 ### What is here
 
-I'll try follow Fedora stable kernel releases in main stable release of distribution. Now it is Fedora 21.
-
-Binary builds (and src.rpm also) you could find in my repository: http://hubbitus.info/rpm/.
+* In ***f21-hubbitus*** (default) branch I'll try follow Fedora stable kernel releases in main stable release of distribution. Now it is Fedora 21. Plus mentioned before patches and settings.
+* In [***f21-pf*** branch](https://github.com/Hubbitus/kernel/tree/f21-pf) I try follow new releases of [post-factum kernels](http://pf.natalenko.name). [First build](https://pf.natalenko.name/forum/index.php?topic=273) was before that repo born.
+* Binary builds (and src.rpm also) you could find in my repository: http://hubbitus.info/rpm/.
 [Instructions](http://hubbitus.info/wiki/Main) to enable it for automatically install and update packages.
 
 Now it represent [Pf3 3.17 build](https://pf.natalenko.name/forum/index.php?topic=279.0).
 
-Questions, suggestions, bugreports always welcome!
-
 ## License
 
 As that repository forked from [Fedora kernel](http://pkgs.fedoraproject.org/cgit/kernel.git/) respect it [licensed under MIT](https://fedoraproject.org/wiki/Licensing:Main?rd=Licensing#License_of_Fedora_SPEC_Files).
+
+## Questions, suggestions, bugreports always welcome!
+
+Please create issues if you have questions or support request.
