@@ -2320,6 +2320,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Feb 15 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.7-200.hu.1.uksm.bfs.bfq
+- Linux v3.18.7
+
 * Wed Feb 11 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.7-200
 - Linux v3.18.7
 - Add disable_native_backlight quirk for Samsung 510R (rhbz 1186097)
