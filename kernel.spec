@@ -644,6 +644,9 @@ Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 #CVE-2015-1593 rhbz 1192519 1192520
 Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
+#CVE-XXXX-XXXX rhbz 1189864 1192079
+Patch26136: vhost-scsi-potential-memory-corruption.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1392,6 +1395,9 @@ ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
 #CVE-2015-1593 rhbz 1192519 1192520
 ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
+
+#CVE-XXXX-XXXX rhbz 1189864 1192079
+ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2264,6 +2270,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
 - CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
 
 * Wed Feb 11 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.7-200
