@@ -2209,6 +2209,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 16 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor updates for ARMv7/ARM64
+
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git6.1
 - Linux v3.19-6676-g1fa185ebcbce
 
