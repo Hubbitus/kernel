@@ -364,7 +364,7 @@ Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
 #URL: http://www.kernel.org/
-# Hubbitus patched fork of Fedora Kernel
+# Hubbitus patched fork of Fedora Kernel. Post-factum (https://pf.natalenko.name/) branch.
 # Binaries could be found at: http://hubbitus.info/wiki/Repository
 URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
@@ -475,9 +475,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=279.0https://pf.natalenko.name/forum/index.php?topic=279.0
-# https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
+# https://pf.natalenko.name/forum/index.php?topic=285
+%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf4.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -703,6 +702,10 @@ BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
 
 %description
 The kernel meta package
+
+Hubbitus patched fork of Fedora Kernel (https://github.com/Hubbitus/kernel/).
+Post-factum (https://pf.natalenko.name/) branch.
+Binaries could be found at: http://hubbitus.info/wiki/Repository
 
 #
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
