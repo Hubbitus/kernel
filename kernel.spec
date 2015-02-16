@@ -641,6 +641,9 @@ Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 #rhbz 1186097
 Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
+#CVE-2015-1593 rhbz 1192519 1192520
+Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1386,6 +1389,9 @@ ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 #rhbz 1186097
 ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+
+#CVE-2015-1593 rhbz 1192519 1192520
+ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2257,6 +2263,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
+
 * Wed Feb 11 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.7-200
 - Linux v3.18.7
 - Add disable_native_backlight quirk for Samsung 510R (rhbz 1186097)
