@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf3
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -55,9 +55,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-# %define stable_update 8
-# Pf v3.17-pf3 still 3.17.7: https://pf.natalenko.name/forum/index.php?topic=279.0
-%define stable_update 7
+%define stable_update 8
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -364,7 +362,7 @@ Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
 #URL: http://www.kernel.org/
-# Hubbitus patched fork of Fedora Kernel
+# Hubbitus patched fork of Fedora Kernel. Post-factum (https://pf.natalenko.name/) branch.
 # Binaries could be found at: http://hubbitus.info/wiki/Repository
 URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
@@ -475,9 +473,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=279.0https://pf.natalenko.name/forum/index.php?topic=279.0
-# https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf3.xz
+# https://pf.natalenko.name/forum/index.php?topic=285
+%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf4.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -724,6 +721,10 @@ BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
 
 %description
 The kernel meta package
+
+Hubbitus patched fork of Fedora Kernel (https://github.com/Hubbitus/kernel/).
+Post-factum (https://pf.natalenko.name/) branch.
+Binaries could be found at: http://hubbitus.info/wiki/Repository
 
 #
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
@@ -2389,6 +2390,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jan 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.8-300.hu.1.pf4
+- Post-pactum v3.17-pf4 kernel branch https://pf.natalenko.name/forum/index.php?topic=285 - promissed last for 3.17 kernel.
+	Hubbitus branch (https://github.com/Hubbitus/kernel/tree/f21-hubbitus) already 3.18.4.
+
 * Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
 - Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
 - First push into github fork.
