@@ -16,7 +16,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 17 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index b653d7c0a05a..d4b96d6c926a 100644
+index 42999fe2dbd0..0c86ec9e10ed 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -502,6 +502,8 @@ int unregister_module_notifier(struct notifier_block *nb);
@@ -41,10 +41,10 @@ index b653d7c0a05a..d4b96d6c926a 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index d856e96a3cce..98c3d7955a51 100644
+index 8426ad48362c..c641bc22d10b 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3895,3 +3895,13 @@ void module_layout(struct module *mod,
+@@ -3886,3 +3886,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif

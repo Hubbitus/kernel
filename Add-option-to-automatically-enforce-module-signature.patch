@@ -33,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 33ce9a344e38..f2d464b05bb9 100644
+index eb1cf898ed3c..a2a0a1636287 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1677,6 +1677,16 @@ config EFI_MIXED
+@@ -1678,6 +1678,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -54,7 +54,7 @@ index 33ce9a344e38..f2d464b05bb9 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 92b9a5f2aed6..2192da755e34 100644
+index ef17683484e9..105e7360d747 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -63,9 +63,9 @@ index 92b9a5f2aed6..2192da755e34 100644
  #include <asm/desc.h>
 +#include <asm/bootparam_utils.h>
  
- #undef memcpy			/* Use memcpy from misc.c */
- 
-@@ -828,6 +829,37 @@ out:
+ #include "../string.h"
+ #include "eboot.h"
+@@ -827,6 +828,37 @@ out:
  	return status;
  }
  
@@ -103,7 +103,7 @@ index 92b9a5f2aed6..2192da755e34 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1407,6 +1439,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1406,6 +1438,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index c4648adadd7d..90de17f70b16 100644
+index 27d200929864..ac83259928e6 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1150,6 +1150,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,7 +146,7 @@ index c4648adadd7d..90de17f70b16 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index d4b96d6c926a..c47f75720dbd 100644
+index 0c86ec9e10ed..b02dfaacc76c 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
@@ -163,10 +163,10 @@ index d4b96d6c926a..c47f75720dbd 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 98c3d7955a51..6244f24abe27 100644
+index c641bc22d10b..ad861480c8e4 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3896,6 +3896,13 @@ void module_layout(struct module *mod,
+@@ -3887,6 +3887,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  

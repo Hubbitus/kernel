@@ -44,7 +44,7 @@ index 4ddaf66ea35f..00b440307419 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 9a6b63783a94..bd117a1019f7 100644
+index 297110c12635..efe38c1bc234 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -27,6 +27,7 @@
@@ -53,9 +53,9 @@ index 9a6b63783a94..bd117a1019f7 100644
  #include <linux/aio.h>
 +#include <linux/module.h>
  
- #include <asm/uaccess.h>
+ #include <linux/uaccess.h>
  
-@@ -582,6 +583,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
+@@ -577,6 +578,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
  	unsigned long i = *ppos;
  	const char __user *tmp = buf;
  

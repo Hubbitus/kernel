@@ -13,7 +13,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index bd117a1019f7..b59b3eb6674e 100644
+index efe38c1bc234..16b8af1188e1 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -167,6 +167,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
@@ -26,7 +26,7 @@ index bd117a1019f7..b59b3eb6674e 100644
  	if (!valid_phys_addr_range(p, count))
  		return -EFAULT;
  
-@@ -516,6 +519,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+@@ -513,6 +516,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
  	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
  	int err = 0;
  

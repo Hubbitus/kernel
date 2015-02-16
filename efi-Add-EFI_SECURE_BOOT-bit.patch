@@ -12,10 +12,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 90de17f70b16..c5a7fe1c197c 100644
+index ac83259928e6..f96581df9c45 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1152,7 +1152,9 @@ void __init setup_arch(char **cmdline_p)
+@@ -1153,7 +1153,9 @@ void __init setup_arch(char **cmdline_p)
  
  #ifdef CONFIG_EFI_SECURE_BOOT_SIG_ENFORCE
  	if (boot_params.secure_boot) {

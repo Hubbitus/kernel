@@ -15,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index c5a7fe1c197c..f476de69248d 100644
+index f96581df9c45..495b30ab31d6 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -30,7 +30,7 @@ index c5a7fe1c197c..f476de69248d 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1275,6 +1280,37 @@ void __init i386_reserve_resources(void)
+@@ -1278,6 +1283,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
  
@@ -228,10 +228,10 @@ index 7b40c5f07dce..8a60477b96e1 100644
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index 6244f24abe27..b77554170d76 100644
+index ad861480c8e4..7f4745c58671 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -107,9 +107,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
+@@ -108,9 +108,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
  
  #ifdef CONFIG_MODULE_SIG
  #ifdef CONFIG_MODULE_SIG_FORCE
