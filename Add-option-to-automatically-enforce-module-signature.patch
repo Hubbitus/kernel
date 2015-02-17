@@ -129,7 +129,7 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 27d200929864..ac83259928e6 100644
+index 0a2421cca01f..a3d8174dedf9 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
