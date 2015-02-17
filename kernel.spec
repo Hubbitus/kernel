@@ -2211,15 +2211,6 @@ fi
 # and build.
 #
 # 
-#                        ___________________________________________________________
-#                       / This branch is for Fedora 23. You probably want to commit \
-#  _____ ____  _____    \ to the f22 branch instead, or in addition to this one.    /
-# |  ___|___ \|___ /     -----------------------------------------------------------
-# | |_    __) | |_ \        \   ^__^
-# |  _|  / __/ ___) |        \  (@@)\_______
-# |_|   |_____|____/            (__)\       )\/\
-#                                    ||----w |
-#                                    ||     ||
 %changelog
 * Tue Feb 17 2015 Kyle McMartin <kyle@fedoraproject.org> - 3.20.0-0.rc0.git7.3
 - kernel-arm64.patch turned on.
