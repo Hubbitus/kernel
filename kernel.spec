@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -624,6 +624,7 @@ Patch26136: vhost-scsi-potential-memory-corruption.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
+Patch30001: kernel-arm64-fix-psci-when-pg.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1359,6 +1360,7 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
+ApplyPatch kernel-arm64-fix-psci-when-pg.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2219,6 +2221,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 17 2015 Kyle McMartin <kyle@fedoraproject.org> - 3.20.0-0.rc0.git7.2
+- kernel-arm64.patch merge, but leave it off.
+- kernel-arm64-fix-psci-when-pg.patch: when -pg (because of ftrace) is enabled
+  we must explicitly annotate which registers should be assigned, otherwise
+  gcc will do unexpected things behind our backs. 
+
 * Tue Feb 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git7.1
 - Linux v3.19-7478-g796e1c55717e
 - DRM merge
