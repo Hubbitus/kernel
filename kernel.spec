@@ -56,7 +56,7 @@ Summary: The Linux kernel
 
 # Do we have a -stable update to apply?
 # %define stable_update 8
-# Pf v3.17-pf3 still 3.17.7: https://pf.natalenko.name/forum/index.php?topic=279.0
+# Pf v3.18-pf1 is 3.18.7: https://pf.natalenko.name/forum/index.php?topic=286.0
 %define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -475,8 +475,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=285
-%global stable_patch_00 https://pf.natalenko.name/sources/3.17/patch-3.17-pf4.xz
+# https://pf.natalenko.name/forum/index.php?topic=286.0
+%global stable_patch_00 https://pf.natalenko.name/sources/3.18/patch-3.18-pf1.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -643,17 +643,6 @@ Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 
 #rhbz 1163927
 Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-#rhbz 1124119
-Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-
-#rhbz 1115713
-Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
-#rhbz 1163574
-Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
-#rhbz 1094948
-Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #rhbz 1178975
 Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
@@ -1383,7 +1372,7 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Intel DRM
 ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
-ApplyPatch drm-i915-Disable-verbose-state-checks.patch 
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
 
@@ -1424,17 +1413,6 @@ ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
 #rhbz 1163927
 ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 
-#rhbz 1124119
-ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-
-#rhbz 1115713
-ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
-#rhbz 1163574
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
 
@@ -1445,7 +1423,7 @@ ApplyPatch ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
 ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
 #rhbz 1186097
-ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+#? ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch --fuzz=2
 
 #CVE-2015-1593 rhbz 1192519 1192520
 ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
@@ -1454,12 +1432,13 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
 #rhbz 1178975
-ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
+# Already in pf
+#? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
 
 #rhbz 1124119
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
+#? ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
 
 #rhbz 1115713
 ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
@@ -1469,7 +1448,7 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2014-9585 rhbz 1181054 1181056
-ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
+#? ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2352,6 +2331,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Feb 17 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.7-200.hu.1.pf1
+- Merge all Fedora f21 changes, step to 3.18.7-200 Linux.
+- Apply 3.18-pf1 (3.18.7) pf patch - https://pf.natalenko.name/forum/index.php?topic=286.0
+
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
 - CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
