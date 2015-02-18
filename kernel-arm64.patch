@@ -1,3 +1,9 @@
+commit fdd2bbd9e18e813faa3880f820c1b674267eec0c
+Author: Kyle McMartin <kmcmarti@redhat.com>
+Date:   Wed Feb 18 09:49:05 2015 -0500
+
+    fixes for xgene enet
+
 commit ac44fa9c24a21d78e8fff79c0dab3deea490d782
 Author: Kyle McMartin <kmcmarti@redhat.com>
 Date:   Tue Feb 17 12:04:33 2015 -0500
@@ -1336,8 +1342,9 @@ Date:   Tue May 13 22:25:26 2014 -0400
  drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c     |  312 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c      |  284 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe.h          |  868 +++++++
- drivers/net/ethernet/apm/xgene/xgene_enet_main.c |    2 +-
- drivers/net/ethernet/apm/xgene/xgene_enet_main.h |    1 +
+ drivers/net/ethernet/apm/xgene/xgene_enet_hw.c   |   69 +-
+ drivers/net/ethernet/apm/xgene/xgene_enet_main.c |  111 +-
+ drivers/net/ethernet/apm/xgene/xgene_enet_main.h |    4 +-
  drivers/net/ethernet/smsc/smc91x.c               |   10 +
  drivers/net/phy/Makefile                         |    1 +
  drivers/net/phy/amd-xgbe-phy-a0.c                | 1829 +++++++++++++
@@ -1374,7 +1381,7 @@ Date:   Tue May 13 22:25:26 2014 -0400
  virt/kvm/arm/vgic-v2.c                           |   86 +-
  virt/kvm/arm/vgic-v3.c                           |    8 +-
  virt/kvm/arm/vgic.c                              |   32 +-
- 109 files changed, 17297 insertions(+), 641 deletions(-)
+ 110 files changed, 17386 insertions(+), 733 deletions(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-firmware-dmi b/Documentation/ABI/testing/sysfs-firmware-dmi
 index c78f9ab..3a9ffe8 100644
@@ -17469,11 +17476,310 @@ index 0000000..dd8500d
 +#endif
 +
 +#endif
+diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
+index 869d97f..29aad5e 100644
+--- a/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
++++ b/drivers/net/ethernet/apm/xgene/xgene_enet_hw.c
+@@ -593,12 +593,10 @@ static int xgene_enet_reset(struct xgene_enet_pdata *pdata)
+ 	if (!xgene_ring_mgr_init(pdata))
+ 		return -ENODEV;
+ 
+-	if (!efi_enabled(EFI_BOOT)) {
+-		clk_prepare_enable(pdata->clk);
+-		clk_disable_unprepare(pdata->clk);
+-		clk_prepare_enable(pdata->clk);
+-		xgene_enet_ecc_init(pdata);
+-	}
++	clk_prepare_enable(pdata->clk);
++	clk_disable_unprepare(pdata->clk);
++	clk_prepare_enable(pdata->clk);
++	xgene_enet_ecc_init(pdata);
+ 	xgene_enet_config_ring_if_assoc(pdata);
+ 
+ 	/* Enable auto-incr for scanning */
+@@ -676,7 +674,7 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+ 
+ 	phy_dev = pdata->phy_dev;
+ 
+-	if (!phy_dev ||
++	if (phy_dev == NULL ||
+ 	    phy_connect_direct(ndev, phy_dev, &xgene_enet_adjust_link,
+ 			       pdata->phy_mode)) {
+ 		netdev_err(ndev, "Could not connect to PHY\n");
+@@ -692,37 +690,23 @@ static int xgene_enet_phy_connect(struct net_device *ndev)
+ 	return 0;
+ }
+ 
+-static int xgene_mdiobus_register(struct xgene_enet_pdata *pdata,
+-				  struct mii_bus *mdio)
++#ifdef CONFIG_ACPI
++static int xgene_acpi_mdiobus_register(struct xgene_enet_pdata *pdata,
++	struct mii_bus *mdio)
+ {
+ 	struct device *dev = &pdata->pdev->dev;
+-	struct net_device *ndev = pdata->ndev;
+ 	struct phy_device *phy;
+-	struct device_node *child_np;
+-	struct device_node *mdio_np = NULL;
+-	int ret;
++	int i, ret;
+ 	u32 phy_id;
+ 
+-	if (dev->of_node) {
+-		for_each_child_of_node(dev->of_node, child_np) {
+-			if (of_device_is_compatible(child_np,
+-						    "apm,xgene-mdio")) {
+-				mdio_np = child_np;
+-				break;
+-			}
+-		}
+-
+-		if (!mdio_np) {
+-			netdev_dbg(ndev, "No mdio node in the dts\n");
+-			return -ENXIO;
+-		}
+-
+-		return of_mdiobus_register(mdio, mdio_np);
+-	}
+-
+ 	/* Mask out all PHYs from auto probing. */
+ 	mdio->phy_mask = ~0;
+ 
++	/* Clear all the IRQ properties */
++	if (mdio->irq)
++		for (i = 0; i < PHY_MAX_ADDR; i++)
++			mdio->irq[i] = PHY_POLL;
++
+ 	/* Register the MDIO bus */
+ 	ret = mdiobus_register(mdio);
+ 	if (ret)
+@@ -730,8 +714,6 @@ static int xgene_mdiobus_register(struct xgene_enet_pdata *pdata,
+ 
+ 	ret = device_property_read_u32(dev, "phy-channel", &phy_id);
+ 	if (ret)
+-		ret = device_property_read_u32(dev, "phy-addr", &phy_id);
+-	if (ret)
+ 		return -EINVAL;
+ 
+ 	phy = get_phy_device(mdio, phy_id, true);
+@@ -746,13 +728,31 @@ static int xgene_mdiobus_register(struct xgene_enet_pdata *pdata,
+ 
+ 	return ret;
+ }
++#else
++#define xgene_acpi_mdiobus_register(a, b) -1
++#endif
+ 
+ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+ {
+ 	struct net_device *ndev = pdata->ndev;
++	struct device *dev = &pdata->pdev->dev;
++	struct device_node *child_np;
++	struct device_node *mdio_np = NULL;
+ 	struct mii_bus *mdio_bus;
+ 	int ret;
+ 
++	for_each_child_of_node(dev->of_node, child_np) {
++		if (of_device_is_compatible(child_np, "apm,xgene-mdio")) {
++			mdio_np = child_np;
++			break;
++		}
++	}
++
++	if (dev->of_node && !mdio_np) {
++		netdev_dbg(ndev, "No mdio node in the dts\n");
++		return -ENXIO;
++	}
++
+ 	mdio_bus = mdiobus_alloc();
+ 	if (!mdio_bus)
+ 		return -ENOMEM;
+@@ -766,7 +766,10 @@ int xgene_enet_mdio_config(struct xgene_enet_pdata *pdata)
+ 	mdio_bus->priv = pdata;
+ 	mdio_bus->parent = &ndev->dev;
+ 
+-	ret = xgene_mdiobus_register(pdata, mdio_bus);
++	if (dev->of_node)
++		ret = of_mdiobus_register(mdio_bus, mdio_np);
++	else
++		ret = xgene_acpi_mdiobus_register(pdata, mdio_bus);
+ 	if (ret) {
+ 		netdev_err(ndev, "Failed to register MDIO bus\n");
+ 		mdiobus_free(mdio_bus);
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-index 44b1537..37b318a 100644
+index 44b1537..a4a53a7 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.c
-@@ -913,7 +913,7 @@ static int xgene_enet_init_hw(struct xgene_enet_pdata *pdata)
+@@ -24,10 +24,6 @@
+ #include "xgene_enet_sgmac.h"
+ #include "xgene_enet_xgmac.h"
+ 
+-#define RES_ENET_CSR	0
+-#define RES_RING_CSR	1
+-#define RES_RING_CMD	2
+-
+ static void xgene_enet_init_bufpool(struct xgene_enet_desc_ring *buf_pool)
+ {
+ 	struct xgene_enet_raw_desc16 *raw_desc;
+@@ -752,40 +748,41 @@ static const struct net_device_ops xgene_ndev_ops = {
+ 	.ndo_set_mac_address = xgene_enet_set_mac_address,
+ };
+ 
+-static int xgene_get_mac_address(struct device *dev,
+-				 unsigned char *addr)
++#ifdef CONFIG_ACPI
++static int acpi_get_mac_address(struct device *dev,
++				unsigned char *addr)
+ {
+ 	int ret;
+ 
+-	ret = device_property_read_u8_array(dev, "local-mac-address", addr, 6);
+-	if (ret)
+-		ret = device_property_read_u8_array(dev, "mac-address",
+-						    addr, 6);
++	ret = device_property_read_u8_array(dev, "mac-address", addr, 6);
+ 	if (ret)
+-		return -ENODEV;
++		return 0;
+ 
+-	return ETH_ALEN;
++	return 6;
+ }
+ 
+-static int xgene_get_phy_mode(struct device *dev)
++static int acpi_get_phy_mode(struct device *dev)
+ {
+-	int i, ret;
++	int i, ret, phy_mode;
+ 	char *modestr;
+ 
+-	ret = device_property_read_string(dev, "phy-connection-type",
+-					  (const char **)&modestr);
+-	if (ret)
+-		ret = device_property_read_string(dev, "phy-mode",
+-						  (const char **)&modestr);
++	ret = device_property_read_string(dev, "phy-mode", &modestr);
+ 	if (ret)
+-		return -ENODEV;
++		return -1;
+ 
++	phy_mode = -1;
+ 	for (i = 0; i < PHY_INTERFACE_MODE_MAX; i++) {
+-		if (!strcasecmp(modestr, phy_modes(i)))
+-			return i;
++		if (!strcasecmp(modestr, phy_modes(i))) {
++			phy_mode = i;
++			break;
++		}
+ 	}
+-	return -ENODEV;
++	return phy_mode;
+ }
++#else
++#define acpi_get_mac_address(a, b, c) 0
++#define acpi_get_phy_mode(a) -1
++#endif
+ 
+ static int xgene_enet_get_resources(struct xgene_enet_pdata *pdata)
+ {
+@@ -794,45 +791,38 @@ static int xgene_enet_get_resources(struct xgene_enet_pdata *pdata)
+ 	struct device *dev;
+ 	struct resource *res;
+ 	void __iomem *base_addr;
++	const char *mac;
+ 	int ret;
+ 
+ 	pdev = pdata->pdev;
+ 	dev = &pdev->dev;
+ 	ndev = pdata->ndev;
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, RES_ENET_CSR);
+-	if (!res) {
+-		dev_err(dev, "Resource enet_csr not defined\n");
+-		return -ENODEV;
+-	}
+-	pdata->base_addr = devm_ioremap(dev, res->start, resource_size(res));
+-	if (!pdata->base_addr) {
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "enet_csr");
++	if (!res)
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	pdata->base_addr = devm_ioremap_resource(dev, res);
++	if (IS_ERR(pdata->base_addr)) {
+ 		dev_err(dev, "Unable to retrieve ENET Port CSR region\n");
+-		return -ENOMEM;
++		return PTR_ERR(pdata->base_addr);
+ 	}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, RES_RING_CSR);
+-	if (!res) {
+-		dev_err(dev, "Resource ring_csr not defined\n");
+-		return -ENODEV;
+-	}
+-	pdata->ring_csr_addr = devm_ioremap(dev, res->start,
+-							resource_size(res));
+-	if (!pdata->ring_csr_addr) {
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ring_csr");
++	if (!res)
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 1);
++	pdata->ring_csr_addr = devm_ioremap_resource(dev, res);
++	if (IS_ERR(pdata->ring_csr_addr)) {
+ 		dev_err(dev, "Unable to retrieve ENET Ring CSR region\n");
+-		return -ENOMEM;
++		return PTR_ERR(pdata->ring_csr_addr);
+ 	}
+ 
+-	res = platform_get_resource(pdev, IORESOURCE_MEM, RES_RING_CMD);
+-	if (!res) {
+-		dev_err(dev, "Resource ring_cmd not defined\n");
+-		return -ENODEV;
+-	}
+-	pdata->ring_cmd_addr = devm_ioremap(dev, res->start,
+-							resource_size(res));
+-	if (!pdata->ring_cmd_addr) {
++	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "ring_cmd");
++	if (!res)
++		res = platform_get_resource(pdev, IORESOURCE_MEM, 2);
++	pdata->ring_cmd_addr = devm_ioremap_resource(dev, res);
++	if (IS_ERR(pdata->ring_cmd_addr)) {
+ 		dev_err(dev, "Unable to retrieve ENET Ring command region\n");
+-		return -ENOMEM;
++		return PTR_ERR(pdata->ring_cmd_addr);
+ 	}
+ 
+ 	ret = platform_get_irq(pdev, 0);
+@@ -843,12 +833,16 @@ static int xgene_enet_get_resources(struct xgene_enet_pdata *pdata)
+ 	}
+ 	pdata->rx_irq = ret;
+ 
+-	if (xgene_get_mac_address(dev, ndev->dev_addr) != ETH_ALEN)
++	mac = of_get_mac_address(dev->of_node);
++	if (mac)
++		memcpy(ndev->dev_addr, mac, ndev->addr_len);
++	else if (!acpi_get_mac_address(dev, ndev->dev_addr))
+ 		eth_hw_addr_random(ndev);
+-
+ 	memcpy(ndev->perm_addr, ndev->dev_addr, ndev->addr_len);
+ 
+-	pdata->phy_mode = xgene_get_phy_mode(dev);
++	pdata->phy_mode = of_get_phy_mode(pdev->dev.of_node);
++	if (pdata->phy_mode < 0)
++		pdata->phy_mode = acpi_get_phy_mode(dev);
+ 	if (pdata->phy_mode < 0) {
+ 		dev_err(dev, "Unable to get phy-connection-type\n");
+ 		return pdata->phy_mode;
+@@ -862,7 +856,10 @@ static int xgene_enet_get_resources(struct xgene_enet_pdata *pdata)
+ 
+ 	pdata->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(pdata->clk)) {
+-		/* Firmware may have set up the clock already. */
++		/*
++		 * Not necessarily an error. Firmware may have
++		 * set up the clock already.
++		 */
+ 		pdata->clk = NULL;
+ 	}
+ 
+@@ -913,7 +910,7 @@ static int xgene_enet_init_hw(struct xgene_enet_pdata *pdata)
  	pdata->port_ops->cle_bypass(pdata, dst_ring_num, buf_pool->id);
  	pdata->mac_ops->init(pdata);
  
@@ -17482,11 +17788,43 @@ index 44b1537..37b318a 100644
  }
  
  static void xgene_enet_setup_ops(struct xgene_enet_pdata *pdata)
+@@ -1030,17 +1027,17 @@ static const struct acpi_device_id xgene_enet_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, xgene_enet_acpi_match);
+ #endif
+ 
+-static struct of_device_id xgene_enet_of_match[] = {
++static struct of_device_id xgene_enet_match[] = {
+ 	{.compatible = "apm,xgene-enet",},
+ 	{},
+ };
+ 
+-MODULE_DEVICE_TABLE(of, xgene_enet_of_match);
++MODULE_DEVICE_TABLE(of, xgene_enet_match);
+ 
+ static struct platform_driver xgene_enet_driver = {
+ 	.driver = {
+ 		   .name = "xgene-enet",
+-		   .of_match_table = of_match_ptr(xgene_enet_of_match),
++		   .of_match_table = xgene_enet_match,
+ 		   .acpi_match_table = ACPI_PTR(xgene_enet_acpi_match),
+ 	},
+ 	.probe = xgene_enet_probe,
 diff --git a/drivers/net/ethernet/apm/xgene/xgene_enet_main.h b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
-index c2d465c..9f50bd9 100644
+index c2d465c..0e06cad 100644
 --- a/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
 +++ b/drivers/net/ethernet/apm/xgene/xgene_enet_main.h
-@@ -34,6 +34,7 @@
+@@ -22,10 +22,7 @@
+ #ifndef __XGENE_ENET_MAIN_H__
+ #define __XGENE_ENET_MAIN_H__
+ 
+-#include <linux/acpi.h>
+ #include <linux/clk.h>
+-#include <linux/efi.h>
+-#include <linux/io.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_net.h>
+ #include <linux/of_mdio.h>
+@@ -34,6 +31,7 @@
  #include <linux/prefetch.h>
  #include <linux/if_vlan.h>
  #include <linux/phy.h>

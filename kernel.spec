@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2212,6 +2212,12 @@ fi
 #
 # 
 %changelog
+* Wed Feb 18 2015 Kyle McMartin <kyle@fedoraproject.org> - 3.20.0-0.rc0.git8.2
+- kernel-arm64.patch: Revert dropping some of the xgene fixes we carried
+  against upstream. (#1193875)
+- kernel-arm64-fix-psci-when-pg.patch: make it simpler.
+- config-arm64: turn on CONFIG_DEBUG_SECTION_MISMATCH.
+
 * Wed Feb 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git8.1
 - Linux v3.19-8217-gcc4f9c2a91b7
 
