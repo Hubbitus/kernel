@@ -72,6 +72,7 @@ CONFIG_ARCH_VIRT=y
 # CONFIG_ARCH_U8500 is not set
 # CONFIG_ARCH_VEXPRESS_SPC is not set
 # CONFIG_ARCH_WM8850 is not set
+# CONFIG_ARCH_DIGICOLOR is not set
 
 # errata
 # v5/v6

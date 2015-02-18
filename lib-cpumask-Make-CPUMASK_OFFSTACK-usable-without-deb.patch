@@ -19,7 +19,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/lib/Kconfig b/lib/Kconfig
-index cd177caf3876..c81dea0ae574 100644
+index cb9758e0ba0c..8687e26fd8c8 100644
 --- a/lib/Kconfig
 +++ b/lib/Kconfig
 @@ -391,7 +391,8 @@ config CHECK_SIGNATURE
