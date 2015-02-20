@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 3.%{upstream_sublevel}.0
 %endif
@@ -606,8 +606,6 @@ Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1115713
-Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
@@ -621,6 +619,8 @@ Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
+
+Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1338,8 +1338,6 @@ ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 #rhbz 1111138
 ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1115713
-ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
@@ -1353,6 +1351,8 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
+
+ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2212,6 +2212,11 @@ fi
 #
 # 
 %changelog
+* Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git10.1
+- Linux v3.19-8975-g3d883483dc0a
+- Add patch to fix intermittent hangs in nouveau driver
+- Move mtpspi and related mods to kernel-core for VMWare guests (rhbz 1194612)
+
 * Wed Feb 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git9.1
 - Linux v3.19-8784-gb2b89ebfc0f0
 

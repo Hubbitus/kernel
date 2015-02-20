@@ -42,7 +42,7 @@ index 706b16fa6de8..470e8dfcb517 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index ee83b7c6856c..3b9ecb2d12af 100644
+index eca8ab59ae7f..9a782b02e4d5 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -1888,6 +1888,15 @@ config MODULE_SIG_ALL
