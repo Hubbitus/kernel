@@ -9,6 +9,6 @@
 # modifications to the overrides below.  If something should be removed across
 # all arches, remove it in the default instead of per-arch.
 
-driverdirs="atm auxdisplay bcma bluetooth fmc infiniband isdn leds media memstick message mfd mmc mtd nfc ntb pcmcia platform power ssb staging uio uwb"
+driverdirs="atm auxdisplay bcma bluetooth fmc infiniband isdn leds media memstick mfd mmc mtd nfc ntb pcmcia platform power ssb staging uio uwb"
 
 singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs iscsi_tcp megaraid pmcraid qla1280 9pnet_rdma svcrdma xprtrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub hid-sensor-magn-3d hid-sensor-incl-3d hid-sensor-gyro-3d hid-sensor-iio-common hid-sensor-accel-3d hid-sensor-trigger hid-sensor-als hid-sensor-rotation target_core_user"

@@ -2269,6 +2269,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Move mtpspi and related mods to kernel-core for VMWare guests (rhbz 1194612)
+
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
 - CVE-2015-1593 stack ASLR integer overflow (rhbz 1192519 1192520)
