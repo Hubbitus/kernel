@@ -15,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 26c5d54124c1..dab298f03a9c 100644
+index 64a123acb97f..2964c69e7c8e 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -30,7 +30,7 @@ index 26c5d54124c1..dab298f03a9c 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1278,6 +1283,37 @@ void __init i386_reserve_resources(void)
+@@ -1292,6 +1297,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
  
@@ -215,7 +215,7 @@ index 387fa7d05c98..4b07e30b3279 100644
  int unregister_sysrq_key(int key, struct sysrq_key_op *op);
  struct sysrq_key_op *__sysrq_get_key_op(int key);
 diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 7b40c5f07dce..8a60477b96e1 100644
+index 4121345498e0..0ff3cef5df96 100644
 --- a/kernel/debug/kdb/kdb_main.c
 +++ b/kernel/debug/kdb/kdb_main.c
 @@ -1968,7 +1968,7 @@ static int kdb_sr(int argc, const char **argv)

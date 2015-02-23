@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 19
+%define base_sublevel 0
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -60,18 +60,19 @@ Summary: The Linux kernel
 %define stablerev %{stable_update}
 %define stable_base %{stable_update}
 %endif
-%define rpmversion 3.%{base_sublevel}.%{stable_update}
+%define rpmversion 4.%{base_sublevel}.%{stable_update}
 
 ## The not-released-kernel case ##
 %else
 # The next upstream release sublevel (base_sublevel+1)
-%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
+# define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
+%define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 10
+%define gitrev 0
 # Set rpm version accordingly
-%define rpmversion 3.%{upstream_sublevel}.0
+%define rpmversion 4.%{upstream_sublevel}.0
 %endif
 # Nb: The above rcrev and gitrev values automagically define Patch00 and Patch01 below.
 
@@ -124,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -152,7 +153,8 @@ Summary: The Linux kernel
 %endif
 
 # The kernel tarball/base version
-%define kversion 3.%{base_sublevel}
+# define kversion 4.%{base_sublevel}
+%define kversion 4.%{base_sublevel}-rc%rcrev
 
 %define make_target bzImage
 
@@ -409,7 +411,8 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
+#Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc1.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -471,7 +474,7 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
+%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -480,14 +483,14 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
+Patch00: patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
@@ -609,18 +612,12 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-#rhbz 1188074
-Patch26133: ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
 Patch26134: perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 
-#CVE-2015-1593 rhbz 1192519 1192520
-Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
-
-#CVE-XXXX-XXXX rhbz 1189864 1192079
-Patch26136: vhost-scsi-potential-memory-corruption.patch
-
 Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
+
+#CVE-2015-0275 rhbz 1193907 1195178
+Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1024,20 +1021,20 @@ ApplyOptionalPatch()
 
 # Update to latest upstream.
 %if 0%{?released_kernel}
-%define vanillaversion 3.%{base_sublevel}
+%define vanillaversion 4.%{base_sublevel}
 # non-released_kernel case
 %else
 %if 0%{?rcrev}
-%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}
+%define vanillaversion 4.%{upstream_sublevel}-rc%{rcrev}
 %if 0%{?gitrev}
-%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
+%define vanillaversion 4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-%define vanillaversion 3.%{base_sublevel}-git%{gitrev}
+%define vanillaversion 4.%{base_sublevel}-git%{gitrev}
 %else
-%define vanillaversion 3.%{base_sublevel}
+%define vanillaversion 4.%{base_sublevel}
 %endif
 %endif
 %endif
@@ -1050,7 +1047,7 @@ ApplyOptionalPatch()
 
 # Build a list of the other top-level kernel tree directories.
 # This will be used to hardlink identical vanilla subdirs.
-sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-3.*' \
+sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-4.*' \
             | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
 # Delete all old stale trees.
@@ -1121,14 +1118,14 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{base_sublevel}-git%{gitrev}.xz
+    ApplyPatch patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 
@@ -1341,18 +1338,12 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-#rhbz 1188074
-ApplyPatch ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
 ApplyPatch perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
 
-#CVE-2015-1593 rhbz 1192519 1192520
-ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
-
-#CVE-XXXX-XXXX rhbz 1189864 1192079
-ApplyPatch vhost-scsi-potential-memory-corruption.patch
-
 ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
+
+#CVE-2015-0275 rhbz 1193907 1195178
+ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2212,6 +2203,11 @@ fi
 #
 # 
 %changelog
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git0.1
+- Linux v4.0-rc1
+- CVE-2015-0275 ext4: fallocate zero range page size > block size BUG (rhbz 1193907 1195178)
+- Disable debugging options.
+
 * Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git10.1
 - Linux v3.19-8975-g3d883483dc0a
 - Add patch to fix intermittent hangs in nouveau driver

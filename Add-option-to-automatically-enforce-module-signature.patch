@@ -20,7 +20,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  7 files changed, 69 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
-index 199f453cb4de..ec38acf00b40 100644
+index 82fbdbc1e0b0..a811210ad486 100644
 --- a/Documentation/x86/zero-page.txt
 +++ b/Documentation/x86/zero-page.txt
 @@ -30,6 +30,8 @@ Offset	Proto	Name		Meaning
@@ -33,10 +33,10 @@ index 199f453cb4de..ec38acf00b40 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index eb1cf898ed3c..a2a0a1636287 100644
+index c2fb8a87dccb..0ec6272203e4 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1678,6 +1678,16 @@ config EFI_MIXED
+@@ -1694,6 +1694,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -115,10 +115,10 @@ index ef17683484e9..105e7360d747 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 225b0988043a..90dbfb73e11f 100644
+index 44e6dd7e36a2..3ddf4150bd9e 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -133,7 +133,8 @@ struct boot_params {
+@@ -134,7 +134,8 @@ struct boot_params {
  	__u8  eddbuf_entries;				/* 0x1e9 */
  	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
  	__u8  kbd_status;				/* 0x1eb */
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 0a2421cca01f..a3d8174dedf9 100644
+index 98dc9317286e..26741d24797e 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1165,6 +1165,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
