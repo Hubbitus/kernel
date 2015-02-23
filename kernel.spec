@@ -619,6 +619,9 @@ Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
+#rhbz 1188439
+Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
@@ -1344,6 +1347,9 @@ ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
+
+#rhbz 1188439
+ApplyPatch HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2203,6 +2209,9 @@ fi
 #
 # 
 %changelog
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for HID i2c from Seth Forshee (rhbz 1188439)
+
 * Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git0.1
 - Linux v4.0-rc1
 - CVE-2015-0275 ext4: fallocate zero range page size > block size BUG (rhbz 1193907 1195178)
