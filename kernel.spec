@@ -483,7 +483,8 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+### HAX we're using -rc$x tarballs to make transitioning easier
+# Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
 Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -2209,10 +2210,10 @@ fi
 #
 # 
 %changelog
-* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git0.1
 - Add patch for HID i2c from Seth Forshee (rhbz 1188439)
 
-* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git0.1
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v4.0-rc1
 - CVE-2015-0275 ext4: fallocate zero range page size > block size BUG (rhbz 1193907 1195178)
 - Disable debugging options.
