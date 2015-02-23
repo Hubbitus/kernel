@@ -647,6 +647,9 @@ Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
 
+#CVE-2015-0275 rhbz 1193907 1195178
+Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1398,6 +1401,9 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
+
+#CVE-2015-0275 rhbz 1193907 1195178
+ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2269,6 +2275,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-0275 ext4: fallocate zero range page size > block size BUG (rhbz 1193907 1195178)
+
 * Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Move mtpspi and related mods to kernel-core for VMWare guests (rhbz 1194612)
 
