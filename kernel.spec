@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -626,6 +626,9 @@ Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
+
+# Not yet upstream, for https://bugzilla.redhat.com/show_bug.cgi?id=1194366#c12
+Patch30002: 0001-arm64-Fix-text-patching-logic-when-using-fixmap.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1359,6 +1362,8 @@ ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
 ApplyPatch kernel-arm64-fix-psci-when-pg.patch
+# Not yet upstream, for https://bugzilla.redhat.com/show_bug.cgi?id=1194366#c12
+ApplyPatch 0001-arm64-Fix-text-patching-logic-when-using-fixmap.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2210,6 +2215,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb 24 2015 Richard W.M. Jones <rjones@redhat.com> - 4.0.0-0.rc1.git0.2
+- Add patch to fix aarch64 KVM bug with module loading (rhbz 1194366).
+
 * Tue Feb 24 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config update
 
