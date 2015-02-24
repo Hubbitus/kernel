@@ -2210,6 +2210,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb 24 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config update
+
 * Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git0.1
 - Add patch for HID i2c from Seth Forshee (rhbz 1188439)
 
