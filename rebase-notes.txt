@@ -1,7 +1,4 @@
-Linux 3.4 rebase notes:
+Linux 3.19 rebase notes:
 
-* Look at the CPU modalias patches from Andi.  See if they are sufficient to
-  build the cpufreq drivers as modules again (rhbz 713572 but mostly to just
-  make this person in IRC be quiet)
-
-* Make sure X32 stays disabled.  Preferably forever
+- ext4-ignore-journal-checksum-on-remount-don-t-fail.patch needs to stay applied
+  until it gets into stable
