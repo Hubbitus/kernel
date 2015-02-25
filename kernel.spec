@@ -656,6 +656,9 @@ Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
 #rhbz 1190933
 Patch26140: ext4-ignore-journal-checksum-on-remount-don-t-fail.patch
 
+#rhbz 1190947
+Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1416,6 +1419,9 @@ ApplyPatch HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
 
 #rhbz 1190933
 ApplyPatch ext4-ignore-journal-checksum-on-remount-don-t-fail.patch
+
+#rhbz 1190947
+ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2287,6 +2293,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Feb 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for AR5B195 devices from Alexander Ploumistos (rhbz 1190947)
+
 * Tue Feb 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix ext4 remount with journal_checksum option (rhbz 1190933)
 
