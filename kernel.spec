@@ -620,6 +620,9 @@ Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
+#rhbz 1190947
+Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
@@ -1348,6 +1351,9 @@ ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
+
+#rhbz 1190947
+ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2209,6 +2215,9 @@ fi
 #
 # 
 %changelog
+* Wed Feb 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for AR5B195 devices from Alexander Ploumistos (rhbz 1190947)
+
 * Tue Feb 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git1.1
 - Linux v4.0-rc1-22-gb24e2bdde4af
 - Reenable debugging options.
