@@ -659,6 +659,9 @@ Patch26140: ext4-ignore-journal-checksum-on-remount-don-t-fail.patch
 #rhbz 1190947
 Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
+#CVE-2015-1421 rhbz 1196581 1196595
+Patch26142: net-sctp-fix-slab-corruption-from-use-after-free-on-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1422,6 +1425,9 @@ ApplyPatch ext4-ignore-journal-checksum-on-remount-don-t-fail.patch
 
 #rhbz 1190947
 ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
+#CVE-2015-1421 rhbz 1196581 1196595
+ApplyPatch net-sctp-fix-slab-corruption-from-use-after-free-on-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2293,6 +2299,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Feb 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1421 sctp: slab corruption from use after free on INIT collisions (rhbz 1196581 1196595)
+
 * Wed Feb 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for AR5B195 devices from Alexander Ploumistos (rhbz 1190947)
 
