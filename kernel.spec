@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2281,7 +2281,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Fri Feb 27 2015 Josh Boyer <jwboyer@fedoraproject.org - 3.18.8-200
+* Fri Feb 27 2015 Kyle McMartin <kyle@fedoraproject.org> - 3.18.8-201
+- Fix up aarch64 build... mis-merge in kernel-arm64.patch.
+
+* Fri Feb 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.8-200
 - Linux v3.18.8
 
 * Thu Feb 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
