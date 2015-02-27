@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2215,6 +2215,9 @@ fi
 #
 # 
 %changelog
+* Fri Feb 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git2.1
+- Linux v4.0-rc1-36-g4f671fe2f952
+
 * Wed Feb 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for AR5B195 devices from Alexander Ploumistos (rhbz 1190947)
 
