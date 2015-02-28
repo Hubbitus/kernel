@@ -2215,6 +2215,9 @@ fi
 #
 # 
 %changelog
+* Sat Feb 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARMv7 OMAP updates, fix panda boot
+
 * Fri Feb 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git2.1
 - Linux v4.0-rc1-36-g4f671fe2f952
 
