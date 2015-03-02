@@ -626,6 +626,9 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
+#rhbz 1185519
+Patch26141: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
@@ -1360,6 +1363,9 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
+
+#rhbz 1185519
+ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2222,6 +2228,7 @@ fi
 # 
 %changelog
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix nfsd soft lockup (rhbz 1185519)
 - Enable ET131X driver (rhbz 1197842)
 - Enable YAMA (rhbz 1196825)
 
