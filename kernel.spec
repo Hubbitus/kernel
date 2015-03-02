@@ -2222,6 +2222,7 @@ fi
 # 
 %changelog
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable ET131X driver (rhbz 1197842)
 - Enable YAMA (rhbz 1196825)
 
 * Sat Feb 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
