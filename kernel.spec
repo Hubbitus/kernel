@@ -2281,6 +2281,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable ET131X driver (rhbz 1197842)
+
 * Sat Feb 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix Panda on ARMv7 crash on boot
 
