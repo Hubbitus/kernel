@@ -623,6 +623,9 @@ Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 #rhbz 1190947
 Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
+#rhbz 1196825
+Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
@@ -1354,6 +1357,9 @@ ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
 #rhbz 1190947
 ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
+#rhbz 1196825
+ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2215,6 +2221,9 @@ fi
 #
 # 
 %changelog
+* Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable YAMA (rhbz 1196825)
+
 * Sat Feb 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARMv7 OMAP updates, fix panda boot
 
