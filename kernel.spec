@@ -629,7 +629,6 @@ Patch26141: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-Patch30001: kernel-arm64-fix-psci-when-pg.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1366,7 +1365,6 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
-# pplyPatch kernel-arm64-fix-psci-when-pg.patch
 
 # END OF PATCH APPLICATIONS
 
