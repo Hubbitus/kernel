@@ -8,7 +8,7 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 39 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 6cc25ed912ee..754b96c5dbb1 100644
+index 2c6248d9a9ef..ec755eeb78ee 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
 @@ -81,6 +81,13 @@
@@ -25,7 +25,7 @@ index 6cc25ed912ee..754b96c5dbb1 100644
  	uart0_pins: pinmux_uart0_pins {
  		pinctrl-single,pins = <
  			0x170 (PIN_INPUT_PULLUP | MUX_MODE0)	/* uart0_rxd.uart0_rxd */
-@@ -217,6 +224,38 @@
+@@ -218,6 +225,38 @@
  		reg = <0x24>;
  	};
  

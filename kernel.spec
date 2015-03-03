@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -613,8 +613,6 @@ Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-Patch26134: perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
-
 Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
@@ -632,9 +630,6 @@ Patch26141: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: kernel-arm64-fix-psci-when-pg.patch
-
-# Not yet upstream, for https://bugzilla.redhat.com/show_bug.cgi?id=1194366#c12
-Patch30002: 0001-arm64-Fix-text-patching-logic-when-using-fixmap.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1351,8 +1346,6 @@ ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-ApplyPatch perf-tools-Define-_GNU_SOURCE-on-pthread_attr_setaff.patch
-
 ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
@@ -1373,9 +1366,7 @@ ApplyPatch kernel-arm64.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
-ApplyPatch kernel-arm64-fix-psci-when-pg.patch
-# Not yet upstream, for https://bugzilla.redhat.com/show_bug.cgi?id=1194366#c12
-ApplyPatch 0001-arm64-Fix-text-patching-logic-when-using-fixmap.patch
+# pplyPatch kernel-arm64-fix-psci-when-pg.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2227,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc1.git3.1
+- Linux v4.0-rc1-178-g023a6007a08d
+
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix nfsd soft lockup (rhbz 1185519)
 - Enable ET131X driver (rhbz 1197842)
