@@ -2216,6 +2216,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable MLX4_EN on ppc64/aarch64 (rhbz 1198719)
+
 * Tue Mar 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc2.git0.1
 - Linux v4.0-rc2
 - Enable CONFIG_CM32181 for ALS on Carbon X1
