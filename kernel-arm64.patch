@@ -4515,7 +4515,7 @@ index 2437196..914287d 100644
 		while (true)
  			cpu_relax();
  	}
-+	dump_stack_set_arch_desc("%s (DT)", machine_name);
++	dump_stack_set_arch_desc("%s (DT)", of_flat_dt_get_machine_name());
  }
  
  /*
@@ -4528,7 +4528,7 @@ index 2437196..914287d 100644
  	parse_early_param();
  
  	/*
-@@ -389,19 +398,27 @@ void __init setup_arch(char **cmdline_p)
+@@ -397,20 +397,28 @@ void __init setup_arch(char **cmdline_p)
  	efi_init();
  	arm64_memblock_init();
  
