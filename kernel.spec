@@ -43,7 +43,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -668,9 +668,6 @@ Patch30000: kernel-arm64.patch
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
 
-# rhbz 1183744 1188347
-Patch30002: ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
-
 #rhbz 1188074
 Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
@@ -682,6 +679,18 @@ Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
+
+#rhbz 1185519
+Patch26142: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
+
+#CVE-2015-0275 rhbz 1193907 1195178
+Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
+
+#rhbz 1188439
+Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
+
+#rhbz 1190947
+Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1424,9 +1433,6 @@ ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
 
-# rhbz 1183744 1188347
-ApplyPatch ipv4-try-to-cache-dst_entries-which-would-cause-a-re.patch
-
 #rhbz 1188074
 ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
@@ -1439,6 +1445,7 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
+<<<<<<< HEAD
 #rhbz 1178975
 # Already in pf
 #? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
@@ -1475,6 +1482,19 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2014-9585 rhbz 1181054 1181056
 ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
+=======
+#CVE-2015-0275 rhbz 1193907 1195178
+ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
+
+#rhbz 1188439
+ApplyPatch HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
+
+#rhbz 1190947
+ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
+#rhbz 1185519
+ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
+>>>>>>> ac91ae055e0f0c308b7df51d30623cece1266665
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2374,9 +2394,40 @@ fi
 #                                    ||     ||
 %changelog
 <<<<<<< HEAD
+<<<<<<< HEAD
 * Tue Feb 17 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.7-200.hu.1.pf1
 - Merge all Fedora f21 changes, step to 3.18.7-200 Linux.
 - Apply 3.18-pf1 (3.18.7) pf patch - https://pf.natalenko.name/forum/index.php?topic=286.0
+=======
+* Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix nfsd soft lockup (rhbz 1185519)
+- Enable ET131X driver (rhbz 1197842)
+
+* Sat Feb 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix Panda on ARMv7 crash on boot
+
+* Fri Feb 27 2015 Kyle McMartin <kyle@fedoraproject.org> - 3.18.8-201
+- Fix up aarch64 build... mis-merge in kernel-arm64.patch.
+
+* Fri Feb 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.18.8-200
+- Linux v3.18.8
+
+* Thu Feb 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1421 sctp: slab corruption from use after free on INIT collisions (rhbz 1196581 1196595)
+
+* Wed Feb 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for AR5B195 devices from Alexander Ploumistos (rhbz 1190947)
+
+* Tue Feb 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ext4 remount with journal_checksum option (rhbz 1190933)
+
+* Mon Feb 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for HID i2c from Seth Forshee (rhbz 1188439)
+- CVE-2015-0275 ext4: fallocate zero range page size > block size BUG (rhbz 1193907 1195178)
+
+* Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Move mtpspi and related mods to kernel-core for VMWare guests (rhbz 1194612)
+>>>>>>> ac91ae055e0f0c308b7df51d30623cece1266665
 
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
