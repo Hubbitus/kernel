@@ -55,7 +55,7 @@ index de4c8499cbac..288547a3c566 100644
  	{ USB_DEVICE(0x0CF3, 0x3002) },
  	{ USB_DEVICE(0x0CF3, 0xE019) },
 diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index b87688881143..2f9c9d8c0add 100644
+index 8bfc4c2bba87..2c527da668ae 100644
 --- a/drivers/bluetooth/btusb.c
 +++ b/drivers/bluetooth/btusb.c
 @@ -159,6 +159,7 @@ static const struct usb_device_id blacklist_table[] = {
