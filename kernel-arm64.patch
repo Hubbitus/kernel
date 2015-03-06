@@ -6433,7 +6433,7 @@ index c5f7b4e..d55c712 100644
 +static u8 smbios_header[32];
 +static int smbios_header_size;
  static phys_addr_t dmi_base;
- static u16 dmi_len;
+ static u32 dmi_len;
  static u16 dmi_num;
 @@ -474,6 +476,8 @@ static int __init dmi_present(const u8 *buf)
  	if (memcmp(buf, "_SM_", 4) == 0 &&

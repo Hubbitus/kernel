@@ -28,7 +28,7 @@ index bfcb1a62a7b4..a1d62e9ed29b 100644
  	virtio_mmio.device=
  			[VMMIO] Memory mapped virtio (platform) device.
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index debd30917010..eeb4cf627553 100644
+index 26eb70c8f518..db70d550f526 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -68,7 +68,7 @@ MODULE_AUTHOR("Bruno Ducrot");
