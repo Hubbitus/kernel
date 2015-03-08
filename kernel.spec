@@ -592,6 +592,11 @@ Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
+# IOMMU crash fixes - https://lists.linuxfoundation.org/pipermail/iommu/2015-February/012329.html
+Patch21030: arm-fix-iommu-omap.patch
+Patch21031: arm-fix-iommu-exynos.patch
+Patch21032: arm-fix-iommu-rockchip.patch
+
 Patch21100: arm-highbank-l2-reverts.patch
 
 #rhbz 754518
@@ -1214,6 +1219,10 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
+
+ApplyPatch arm-fix-iommu-omap.patch
+ApplyPatch arm-fix-iommu-exynos.patch
+ApplyPatch arm-fix-iommu-rockchip.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -2210,6 +2219,9 @@ fi
 #
 # 
 %changelog
+* Sun Mar  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARMv7: add patches to fix crash on boot for some devices on multiplatform
+
 * Fri Mar 06 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc2.git2.1
 - Linux v4.0-rc2-255-g5f237425f352
 

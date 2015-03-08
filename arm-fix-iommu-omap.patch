@@ -1,0 +1,48 @@
+From: Thierry Reding <treding at nvidia.com>
+
+The OMAP IOMMU driver unconditionally executes code and registers a
+struct iommu_ops with the platform bus irrespective of whether it runs
+on an OMAP SoC or not. This causes problems in multi-platform kernels
+where drivers for other SoCs will no longer be able to register their
+own struct iommu_ops or even try to use a struct iommu_ops for an IOMMU
+that obviously isn't there.
+
+The smallest fix I could think of is to check for the existence of any
+OMAP IOMMU devices in the device tree and skip initialization otherwise.
+
+This fixes a problem on Tegra20 where the DRM driver will try to use the
+obviously non-existent OMAP IOMMU.
+
+Reported-by: Nicolas Chauvet <kwizart at gmail.com>
+Cc: Tony Lindgren <tony at atomide.com>
+Cc: Suman Anna <s-anna at ti.com>
+Cc: Laurent Pinchart <laurent.pinchart at ideasonboard.com>
+Signed-off-by: Thierry Reding <treding at nvidia.com>
+---
+Changes in v2:
+- do not fix up module exit function since it's dead code
+- drop reference to struct device_node
+
+ drivers/iommu/omap-iommu.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/iommu/omap-iommu.c b/drivers/iommu/omap-iommu.c
+index f59f857b702e..a4ba851825c2 100644
+--- a/drivers/iommu/omap-iommu.c
++++ b/drivers/iommu/omap-iommu.c
+@@ -1376,6 +1376,13 @@ static int __init omap_iommu_init(void)
+ 	struct kmem_cache *p;
+ 	const unsigned long flags = SLAB_HWCACHE_ALIGN;
+ 	size_t align = 1 << 10; /* L2 pagetable alignement */
++	struct device_node *np;
++
++	np = of_find_matching_node(NULL, omap_iommu_of_match);
++	if (!np)
++		return 0;
++
++	of_node_put(np);
+ 
+ 	p = kmem_cache_create("iopte_cache", IOPTE_TABLE_SIZE, align, flags,
+ 			      iopte_cachep_ctor);
+-- 
+2.1.3
