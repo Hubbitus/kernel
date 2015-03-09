@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -412,7 +412,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %endif
 
 #Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc2.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc3.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -2219,6 +2219,10 @@ fi
 #
 # 
 %changelog
+* Mon Mar 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git0.1
+- Linux v4.0-rc3
+- Disable debugging options.
+
 * Sun Mar  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARMv7: add patches to fix crash on boot for some devices on multiplatform
 

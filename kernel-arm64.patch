@@ -20596,12 +20596,12 @@ index 8d94c19..04930e2 100644
  		amba_ports[i] = NULL;
  		uart_unregister_driver(&amba_reg);
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 08d402b..ac52698 100644
+index 0e11d61408ff..88ffbeee4d1c 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
-@@ -93,14 +93,13 @@ static int xhci_plat_probe(struct platform_device *pdev)
- 			return ret;
- 	}
+@@ -83,14 +83,13 @@ static int xhci_plat_probe(struct platform_device *pdev)
+ 	if (irq < 0)
+ 		return -ENODEV;
  
 -	/* Initialize dma_mask and coherent_dma_mask to 32-bits */
 -	ret = dma_set_coherent_mask(&pdev->dev, DMA_BIT_MASK(32));
