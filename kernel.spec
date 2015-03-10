@@ -629,6 +629,8 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
+Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1361,6 +1363,8 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
+
+ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
