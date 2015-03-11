@@ -667,6 +667,9 @@ Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
 
+#rhbz 1069027
+Patch26166: drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1438,6 +1441,9 @@ ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
+
+#rhbz 1069027
+ApplyPatch drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2310,6 +2316,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blank screen after resume with various radeon devices (rhbz 1069027)
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
 - Patch series to fix Lenovo *40 and Carbon X1 touchpads (rhbz 1200777 1200778)
 
