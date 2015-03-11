@@ -1,0 +1,56 @@
+From: Daniel Martin <consume.noise@gmail.com>
+Date: Sun, 8 Mar 2015 22:28:29 -0700
+Subject: [PATCH] Input: synaptics - log queried and quirked dimension values
+
+Logging the dimension values we queried and the values we use from a quirk
+to overwrite can be helpful for debugging.
+
+This partly relates to bug:
+    https://bugzilla.kernel.org/show_bug.cgi?id=91541
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Martin <consume.noise@gmail.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/synaptics.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index fc7e1db7530e..cc7909ecf38e 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -365,6 +365,9 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ 		} else {
+ 			priv->x_max = (resp[0] << 5) | ((resp[1] & 0x0f) << 1);
+ 			priv->y_max = (resp[2] << 5) | ((resp[1] & 0xf0) >> 3);
++			psmouse_info(psmouse,
++				     "queried max coordinates: x [..%d], y [..%d]\n",
++				     priv->x_max, priv->y_max);
+ 		}
+ 	}
+ 
+@@ -376,6 +379,9 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ 		} else {
+ 			priv->x_min = (resp[0] << 5) | ((resp[1] & 0x0f) << 1);
+ 			priv->y_min = (resp[2] << 5) | ((resp[1] & 0xf0) >> 3);
++			psmouse_info(psmouse,
++				     "queried min coordinates: x [%d..], y [%d..]\n",
++				     priv->x_min, priv->y_min);
+ 		}
+ 	}
+ 
+@@ -398,6 +404,10 @@ static void synaptics_apply_quirks(struct psmouse *psmouse)
+ 			priv->x_max = min_max_pnpid_table[i].x_max;
+ 			priv->y_min = min_max_pnpid_table[i].y_min;
+ 			priv->y_max = min_max_pnpid_table[i].y_max;
++			psmouse_info(psmouse,
++				     "quirked min/max coordinates: x [%d..%d], y [%d..%d]\n",
++				     priv->x_min, priv->x_max,
++				     priv->y_min, priv->y_max);
+ 			break;
+ 		}
+ 	}
+-- 
+2.1.0
+

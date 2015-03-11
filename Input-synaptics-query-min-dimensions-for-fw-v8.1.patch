@@ -1,0 +1,47 @@
+From: Daniel Martin <consume.noise@gmail.com>
+Date: Sun, 8 Mar 2015 22:28:40 -0700
+Subject: [PATCH] Input: synaptics - query min dimensions for fw v8.1
+
+Query the min dimensions even if the check
+SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 7 fails, but we know that the
+firmware version 8.1 is safe.
+
+With that we don't need quirks for post-2013 models anymore as they expose
+correct min and max dimensions.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=91541
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Martin <consume.noise@gmail.com>
+  re-order the tests to check SYN_CAP_MIN_DIMENSIONS even on FW 8.1
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/synaptics.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index cc7909ecf38e..7c80bd18613e 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -371,8 +371,14 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ 		}
+ 	}
+ 
+-	if (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 7 &&
+-	    SYN_CAP_MIN_DIMENSIONS(priv->ext_cap_0c)) {
++	if (SYN_CAP_MIN_DIMENSIONS(priv->ext_cap_0c) &&
++	    (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 7 ||
++	     /*
++	      * Firmware v8.1 does not report proper number of extended
++	      * capabilities, but has been proven to report correct min
++	      * coordinates.
++	      */
++	     SYN_ID_FULL(priv->identity) == 0x801)) {
+ 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_MIN_COORDS, resp)) {
+ 			psmouse_warn(psmouse,
+ 				     "device claims to have min coordinates query, but I'm not able to read it.\n");
+-- 
+2.1.0
+

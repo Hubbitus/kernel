@@ -634,6 +634,22 @@ Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
 #rhbz 1199312
 Patch26142: Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
 
+#rhbz 1200777 1200778
+Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
+Patch26151: Input-synaptics-log-queried-and-quirked-dimension-va.patch
+Patch26152: Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+Patch26153: Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+Patch26154: Input-synaptics-support-min-max-board-id-in-min_max_.patch
+Patch26155: Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+Patch26156: Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+Patch26157: Input-synaptics-handle-spurious-release-of-trackstic.patch
+Patch26158: Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
+Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1371,6 +1387,22 @@ ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
 
 #rhbz 1199312
 ApplyPatch Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
+
+#rhbz 1200777 1200778
+ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
+ApplyPatch Input-synaptics-log-queried-and-quirked-dimension-va.patch
+ApplyPatch Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+ApplyPatch Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+ApplyPatch Input-synaptics-support-min-max-board-id-in-min_max_.patch
+ApplyPatch Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+ApplyPatch Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+ApplyPatch Input-synaptics-handle-spurious-release-of-trackstic.patch
+ApplyPatch Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
+ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2231,6 +2263,7 @@ fi
 %changelog
 * Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git1.1
 - Linux v4.0-rc3-111-gaffb8172de39
+- Patch series to fix Lenovo *40 and Carbon X1 touchpads (rhbz 1200777 1200778)
 - Revert commit that added bad rpath to cpupower (rhbz 1199312)
 - Reenable debugging options.
 

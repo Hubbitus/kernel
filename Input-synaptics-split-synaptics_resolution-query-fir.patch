@@ -1,0 +1,87 @@
+From: Daniel Martin <consume.noise@gmail.com>
+Date: Sun, 8 Mar 2015 22:27:37 -0700
+Subject: [PATCH] Input: synaptics - split synaptics_resolution(), query first
+
+Split the function synaptics_resolution() into synaptics_resolution() and
+synaptics_quirks().  synaptics_resolution() will be called before
+synaptics_quirks() to query dimensions and resolutions before overwriting
+them with quirks.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Daniel Martin <consume.noise@gmail.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/synaptics.c | 35 +++++++++++++++++++++++------------
+ 1 file changed, 23 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index f2cceb6493a0..fc7e1db7530e 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -346,7 +346,6 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ {
+ 	struct synaptics_data *priv = psmouse->private;
+ 	unsigned char resp[3];
+-	int i;
+ 
+ 	if (SYN_ID_MAJOR(priv->identity) < 4)
+ 		return 0;
+@@ -358,17 +357,6 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ 		}
+ 	}
+ 
+-	for (i = 0; min_max_pnpid_table[i].pnp_ids; i++) {
+-		if (psmouse_matches_pnp_id(psmouse,
+-					   min_max_pnpid_table[i].pnp_ids)) {
+-			priv->x_min = min_max_pnpid_table[i].x_min;
+-			priv->x_max = min_max_pnpid_table[i].x_max;
+-			priv->y_min = min_max_pnpid_table[i].y_min;
+-			priv->y_max = min_max_pnpid_table[i].y_max;
+-			return 0;
+-		}
+-	}
+-
+ 	if (SYN_EXT_CAP_REQUESTS(priv->capabilities) >= 5 &&
+ 	    SYN_CAP_MAX_DIMENSIONS(priv->ext_cap_0c)) {
+ 		if (synaptics_send_cmd(psmouse, SYN_QUE_EXT_MAX_COORDS, resp)) {
+@@ -394,6 +382,27 @@ static int synaptics_resolution(struct psmouse *psmouse)
+ 	return 0;
+ }
+ 
++/*
++ * Apply quirk(s) if the hardware matches
++ */
++
++static void synaptics_apply_quirks(struct psmouse *psmouse)
++{
++	struct synaptics_data *priv = psmouse->private;
++	int i;
++
++	for (i = 0; min_max_pnpid_table[i].pnp_ids; i++) {
++		if (psmouse_matches_pnp_id(psmouse,
++					   min_max_pnpid_table[i].pnp_ids)) {
++			priv->x_min = min_max_pnpid_table[i].x_min;
++			priv->x_max = min_max_pnpid_table[i].x_max;
++			priv->y_min = min_max_pnpid_table[i].y_min;
++			priv->y_max = min_max_pnpid_table[i].y_max;
++			break;
++		}
++	}
++}
++
+ static int synaptics_query_hardware(struct psmouse *psmouse)
+ {
+ 	if (synaptics_identify(psmouse))
+@@ -409,6 +418,8 @@ static int synaptics_query_hardware(struct psmouse *psmouse)
+ 	if (synaptics_resolution(psmouse))
+ 		return -1;
+ 
++	synaptics_apply_quirks(psmouse);
++
+ 	return 0;
+ }
+ 
+-- 
+2.1.0
+
