@@ -17484,7 +17484,7 @@ index 869d97f..29aad5e 100644
  	if (!xgene_ring_mgr_init(pdata))
  		return -ENODEV;
  
--	if (!efi_enabled(EFI_BOOT)) {
+-	if (pdata->clk) {
 -		clk_prepare_enable(pdata->clk);
 -		clk_disable_unprepare(pdata->clk);
 -		clk_prepare_enable(pdata->clk);
@@ -17788,13 +17788,15 @@ index 44b1537..a4a53a7 100644
  }
  
  static void xgene_enet_setup_ops(struct xgene_enet_pdata *pdata)
-@@ -1031,18 +1031,18 @@ MODULE_DEVICE_TABLE(acpi, xgene_enet_acpi_match);
+@@ -1033,20 +1033,20 @@ MODULE_DEVICE_TABLE(acpi, xgene_enet_acpi_match);
  #endif
  
  #ifdef CONFIG_OF
 -static struct of_device_id xgene_enet_of_match[] = {
 +static struct of_device_id xgene_enet_match[] = {
  	{.compatible = "apm,xgene-enet",},
+ 	{.compatible = "apm,xgene1-sgenet",},
+ 	{.compatible = "apm,xgene1-xgenet",},
  	{},
  };
  
