@@ -631,6 +631,9 @@ Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
 
+#rhbz 1199312
+Patch26142: Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1365,6 +1368,9 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
+
+#rhbz 1199312
+ApplyPatch Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2225,6 +2231,7 @@ fi
 %changelog
 * Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git1.1
 - Linux v4.0-rc3-111-gaffb8172de39
+- Revert commit that added bad rpath to cpupower (rhbz 1199312)
 - Reenable debugging options.
 
 * Mon Mar 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git0.1
