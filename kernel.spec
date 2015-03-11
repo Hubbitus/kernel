@@ -649,6 +649,7 @@ Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
 Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+Patch26164: Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1403,6 +1404,7 @@ ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
 ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+ApplyPatch Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
