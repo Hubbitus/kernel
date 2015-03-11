@@ -651,6 +651,9 @@ Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 Patch26164: Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
+#CVE-2015-2150 rhbz 1196266 1200397
+Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1405,6 +1408,9 @@ ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 ApplyPatch Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2265,6 +2271,7 @@ fi
 %changelog
 * Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git1.1
 - Linux v4.0-rc3-111-gaffb8172de39
+- CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
 - Patch series to fix Lenovo *40 and Carbon X1 touchpads (rhbz 1200777 1200778)
 - Revert commit that added bad rpath to cpupower (rhbz 1199312)
 - Reenable debugging options.
