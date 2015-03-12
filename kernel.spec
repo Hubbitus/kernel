@@ -2350,6 +2350,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 05 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.8-201.hu.1.uksm.bfs.bfq
+- 3.18.8-201.hu.1.uksm.bfs.bfq
+
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix nfsd soft lockup (rhbz 1185519)
 - Enable ET131X driver (rhbz 1197842)
