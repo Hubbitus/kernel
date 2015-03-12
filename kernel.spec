@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -658,8 +658,6 @@ Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 
-#rhbz 1115713
-Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1163574
 Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
@@ -671,14 +669,8 @@ Patch30000: kernel-arm64.patch
 # Fix for big-endian arches, already upstream
 Patch30001: mpssd-x86-only.patch
 
-#rhbz 1188074
-Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
 #rhbz 1186097
 Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
-
-#CVE-2015-1593 rhbz 1192519 1192520
-Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
@@ -689,11 +681,36 @@ Patch26142: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1188439
-Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
-
 #rhbz 1190947
 Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
+#CVE-2015-2042 rhbz 1195355 1199365
+Patch26143: net-rds-use-correct-size-for-max-unacked-packets-and.patch
+
+#rhbz 1200777 1200778
+Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
+Patch26151: Input-synaptics-log-queried-and-quirked-dimension-va.patch
+Patch26152: Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+Patch26153: Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+Patch26154: Input-synaptics-support-min-max-board-id-in-min_max_.patch
+Patch26155: Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+Patch26156: Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+Patch26157: Input-synaptics-handle-spurious-release-of-trackstic.patch
+Patch26158: Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
+Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
+
+#rhbz 1069027
+Patch26166: drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
+
+#CVE-2014-8159 rhbz 1181166 1200950
+Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1425,8 +1442,6 @@ ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
 ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
 ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
 
-#rhbz 1115713
-ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
 #rhbz 1163574
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
@@ -1435,14 +1450,8 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 # Fix for big-endian arches, already upstream
 ApplyPatch mpssd-x86-only.patch
 
-#rhbz 1188074
-ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
 #rhbz 1186097
 ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
-
-#CVE-2015-1593 rhbz 1192519 1192520
-ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
@@ -1450,14 +1459,39 @@ ApplyPatch vhost-scsi-potential-memory-corruption.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1188439
-ApplyPatch HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
-
 #rhbz 1190947
 ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1185519
 ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
+
+#CVE-2015-2042 rhbz 1195355 1199365
+ApplyPatch net-rds-use-correct-size-for-max-unacked-packets-and.patch
+
+#rhbz 1200777 1200778
+ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
+ApplyPatch Input-synaptics-log-queried-and-quirked-dimension-va.patch
+ApplyPatch Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+ApplyPatch Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+ApplyPatch Input-synaptics-support-min-max-board-id-in-min_max_.patch
+ApplyPatch Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+ApplyPatch Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+ApplyPatch Input-synaptics-handle-spurious-release-of-trackstic.patch
+ApplyPatch Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
+ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
+
+#rhbz 1069027
+ApplyPatch drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
+
+#CVE-2014-8159 rhbz 1181166 1200950
+ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2350,6 +2384,20 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
+
+* Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blank screen after resume with various radeon devices (rhbz 1069027)
+- CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
+- Patch series to fix Lenovo *40 and Carbon X1 touchpads (rhbz 1200777 1200778)
+
+* Tue Mar 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2042 rds: information handling flaw in sysctl (rhbz 1195355 1199365)
+
+* Mon Mar 09 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.9-200
+- Linux v3.18.9
+
 * Thu Mar 05 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.8-201.hu.1.uksm.bfs.bfq
 - 3.18.8-201.hu.1.uksm.bfs.bfq
 

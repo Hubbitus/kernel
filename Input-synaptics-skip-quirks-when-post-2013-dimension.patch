@@ -1,0 +1,39 @@
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Sun, 8 Mar 2015 22:29:25 -0700
+Subject: [PATCH] Input: synaptics - skip quirks when post-2013 dimensions
+
+Post-2013 Lenovo laptops provide correct min/max dimensions, which are
+different with the ones currently quirked.  According to
+https://bugzilla.kernel.org/show_bug.cgi?id=91541 the following board ids
+are assigned in the post-2013 touchpads:
+
+t440p/t440s: LEN0036 -> 2964/2962
+t540p:       LEN0034 -> 2964
+
+Using 2961 as the common minimum makes these 3 laptops OK. We may need
+to update those values later if other pnp_ids has a lower board_id.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/synaptics.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index a900a385e5c3..9567a708aa64 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -144,7 +144,7 @@ static const struct min_max_quirk min_max_pnpid_table[] = {
+ 		(const char * const []){"LEN0034", "LEN0036", "LEN0037",
+ 					"LEN0039", "LEN2002", "LEN2004",
+ 					NULL},
+-		{ANY_BOARD_ID, ANY_BOARD_ID},
++		{ANY_BOARD_ID, 2961},
+ 		1024, 5112, 2024, 4832
+ 	},
+ 	{
+-- 
+2.1.0
+
