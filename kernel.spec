@@ -670,6 +670,9 @@ Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
 #rhbz 1069027
 Patch26166: drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
 
+#CVE-2014-8159 rhbz 1181166 1200950
+Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1444,6 +1447,9 @@ ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
 
 #rhbz 1069027
 ApplyPatch drm-radeon-dp-Set-EDP_CONFIGURATION_SET-for-bridge-c.patch
+
+#CVE-2014-8159 rhbz 1181166 1200950
+ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2315,6 +2321,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
+
 * Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix blank screen after resume with various radeon devices (rhbz 1069027)
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
