@@ -1427,6 +1427,8 @@ ApplyPatch arm64-revert-tlb-rcu_table_free.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
 ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
+%else
+ApplyPatch efi-Add-esrt-support.patch -R
 %endif
 %endif
 
@@ -2283,6 +2285,7 @@ fi
 * Fri Mar 13 2015 Kyle McMartin <kyle@fedoraproject.org>
 - arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which
   causes lockups on arm64 machines.
+- Also revert ESRT on AArch64 for now.
 
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git2.1
 - Linux v4.0-rc3-148-gc202baf017ae
