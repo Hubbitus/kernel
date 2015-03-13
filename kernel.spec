@@ -655,6 +655,9 @@ Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
 #CVE-2014-8159 rhbz 1181166 1200950
 Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
+#rhbz 1201532
+Patch26168: HID-multitouch-add-support-of-clickpads.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1413,6 +1416,9 @@ ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
 
 #CVE-2014-8159 rhbz 1181166 1200950
 ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
+
+#rhbz 1201532
+ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2273,6 +2279,7 @@ fi
 %changelog
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git2.1
 - Linux v4.0-rc3-148-gc202baf017ae
+- Add patch to support clickpads (rhbz 1201532)
 
 * Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
