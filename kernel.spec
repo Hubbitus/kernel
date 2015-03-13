@@ -660,6 +660,7 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
+Patch30001: arm64-revert-tlb-rcu_table_free.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1422,8 +1423,10 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
+ApplyPatch arm64-revert-tlb-rcu_table_free.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
+ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
 %endif
 %endif
 
@@ -2277,6 +2280,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 13 2015 Kyle McMartin <kyle@fedoraproject.org>
+- arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which
+  causes lockups on arm64 machines.
+
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git2.1
 - Linux v4.0-rc3-148-gc202baf017ae
 - Add patch to support clickpads (rhbz 1201532)
