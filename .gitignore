@@ -3,5 +3,5 @@ clog
 *.bz2
 *.rpm
 *.orig
-kernel-[23].*/
+kernel-[234].*/
 perf-man-*.tar.gz
