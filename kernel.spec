@@ -624,14 +624,11 @@ Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
-Patch30000: kernel-arm64.patch
-
 # Fix for big-endian arches, already upstream
-Patch30001: mpssd-x86-only.patch
+Patch26134: mpssd-x86-only.patch
 
 #rhbz 1186097
-Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+Patch26135: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
@@ -675,6 +672,10 @@ Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
+
+# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
+Patch30000: kernel-arm64.patch
+Patch30001: arm64-revert-tlb-rcu_table_free.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1459,8 +1460,10 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
+ApplyPatch arm64-revert-tlb-rcu_table_free.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
+ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
 %else
 #  solved with SPCR in future
 %endif
@@ -2327,6 +2330,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 13 2015 Kyle McMartin <kyle@fedoraproject.org>
+- arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which causes
+  lockups on arm64 machines.
+- Add kernel-4* to .gitignore.
+
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to support clickpads (rhbz 1201532)
 
