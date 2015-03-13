@@ -676,6 +676,7 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: arm64-revert-tlb-rcu_table_free.patch
+Patch30002: arm64-fix-ooo-descriptor-read.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1461,11 +1462,10 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
 ApplyPatch arm64-revert-tlb-rcu_table_free.patch
+ApplyPatch arm64-fix-ooo-descriptor-read.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
 ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
-%else
-#  solved with SPCR in future
 %endif
 %endif
 
@@ -2334,6 +2334,7 @@ fi
 - arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which causes
   lockups on arm64 machines.
 - Add kernel-4* to .gitignore.
+- arm64-fix-ooo-descriptor-read.patch: fix an xgene-enet crash.
 
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to support clickpads (rhbz 1201532)
