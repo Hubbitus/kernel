@@ -554,6 +554,9 @@ Patch1018: MODSIGN-Support-not-importing-certs-from-db.patch
 
 Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
+# esrt
+Patch1020: efi-Add-esrt-support.patch
+
 # virt + ksm patches
 
 # DRM
@@ -1328,6 +1331,8 @@ ApplyPatch MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 ApplyPatch MODSIGN-Support-not-importing-certs-from-db.patch
 
 ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
+
+ApplyPatch efi-Add-esrt-support.patch
 
 # Assorted Virt Fixes
 
