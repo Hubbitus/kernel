@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -591,11 +591,6 @@ Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
-
-# IOMMU crash fixes - https://lists.linuxfoundation.org/pipermail/iommu/2015-February/012329.html
-Patch21030: arm-fix-iommu-omap.patch
-Patch21031: arm-fix-iommu-exynos.patch
-Patch21032: arm-fix-iommu-rockchip.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
 
@@ -1247,10 +1242,6 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-
-ApplyPatch arm-fix-iommu-omap.patch
-ApplyPatch arm-fix-iommu-exynos.patch
-ApplyPatch arm-fix-iommu-rockchip.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -2275,6 +2266,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc3.git2.1
+- Linux v4.0-rc3-148-gc202baf017ae
+
 * Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
 
