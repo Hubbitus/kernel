@@ -2384,6 +2384,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 12 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.9-200.hu.1.uksm.bfs.bfq
+- 3.18.9-200.hu.1.uksm.bfs.bfq
+
 * Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
 
