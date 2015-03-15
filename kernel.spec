@@ -2174,7 +2174,7 @@ fi
 %endif # with_perf
 
 %if %{with_tools}
-%files tools -f cpupower.lang
+%files -n kernel-tools -f cpupower.lang
 %defattr(-,root,root)
 %ifarch %{cpupowerarchs}
 %{_bindir}/cpupower
@@ -2200,11 +2200,11 @@ fi
 %endif
 
 %ifarch %{cpupowerarchs}
-%files tools-libs
+%files -n kernel-tools-libs
 %{_libdir}/libcpupower.so.0
 %{_libdir}/libcpupower.so.0.0.0
 
-%files tools-libs-devel
+%files -n kernel-tools-libs-devel
 %{_libdir}/libcpupower.so
 %{_includedir}/cpufreq.h
 %endif
