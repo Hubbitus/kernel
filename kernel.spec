@@ -2195,7 +2195,7 @@ fi
 %endif
 
 %if %{with_debuginfo}
-%files -f kernel-tools-debuginfo.list tools-debuginfo
+%files -f kernel-tools-debuginfo.list -n kernel-tools-debuginfo
 %defattr(-,root,root)
 %endif
 
