@@ -771,7 +771,7 @@ This package provides debug information for the perf python bindings.
 %endif # with_perf
 
 %if %{with_tools}
-%package tools
+%package -n kernel-tools
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
@@ -783,19 +783,19 @@ Obsoletes: cpufreq-utils < 1:009-0.6.p1
 Obsoletes: cpufrequtils < 1:009-0.6.p1
 Obsoletes: cpuspeed < 1:1.5-16
 Requires: kernel-tools-libs = %{version}-%{release}
-%description tools
+%description -n kernel-tools
 This package contains the tools/ directory from the kernel source
 and the supporting documentation.
 
-%package tools-libs
+%package -n kernel-tools-libs
 Summary: Libraries for the kernels-tools
 Group: Development/System
 License: GPLv2
-%description tools-libs
+%description -n kernel-tools-libs
 This package contains the libraries built from the tools/ directory
 from the kernel source.
 
-%package tools-libs-devel
+%package -n kernel-tools-libs-devel
 Summary: Assortment of tools for the Linux kernel
 Group: Development/System
 License: GPLv2
@@ -804,16 +804,16 @@ Provides:  cpupowerutils-devel = 1:009-0.6.p1
 Obsoletes: cpupowerutils-devel < 1:009-0.6.p1
 Requires: kernel-tools-libs = %{version}-%{release}
 Provides: kernel-tools-devel
-%description tools-libs-devel
+%description -n kernel-tools-libs-devel
 This package contains the development files for the tools/ directory from
 the kernel source.
 
-%package tools-debuginfo
+%package -n kernel-tools-debuginfo
 Summary: Debug information for package kernel-tools
 Group: Development/Debug
 Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}
 AutoReqProv: no
-%description tools-debuginfo
+%description -n kernel-tools-debuginfo
 This package provides debug information for package kernel-tools.
 
 # Note that this pattern only works right to match the .build-id
@@ -2280,6 +2280,9 @@ fi
 #
 # 
 %changelog
+* Sun Mar 15 2015 Jarod Wilson <jwilson@fedoraproject.org>
+- Fix kernel-tools sub-packages for variant builds
+
 * Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix esrt build on aarch64
 
