@@ -48,13 +48,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 18
+%define base_sublevel 19
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -386,6 +386,9 @@ BuildRequires: sparse
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
+%ifnarch s390 s390x %{arm}
+BuildRequires: numactl-devel
+%endif
 %endif
 %if %{with_tools}
 BuildRequires: pciutils-devel gettext ncurses-devel
@@ -553,8 +556,8 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1826: drm-i915-tame-the-chattermouth-v2.patch
-Patch1827: drm-i915-Disable-verbose-state-checks.patch
+Patch1825: drm-i915-tame-the-chattermouth-v2.patch
+Patch1826: drm-i915-hush-check-crtc-state.patch
 
 # Quiet boot fixes
 
@@ -585,7 +588,6 @@ Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
-Patch21029: arm-dts-sun7i-bananapi.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
 
@@ -600,32 +602,13 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-# Patch series from Hans for various backlight and platform driver fixes
-Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1089731
 Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
-#rhbz 1135338
-Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+#rhbz 1111138
+Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1173806
-Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#rhbz 1163927
-Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-#rhbz 1124119
-Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-
-#rhbz 1163574
-Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-# Fix for big-endian arches, already upstream
-Patch26134: mpssd-x86-only.patch
 
 #rhbz 1186097
 Patch26135: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
@@ -641,9 +624,6 @@ Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
 #rhbz 1190947
 Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
-
-#CVE-2015-2042 rhbz 1195355 1199365
-Patch26143: net-rds-use-correct-size-for-max-unacked-packets-and.patch
 
 #rhbz 1200777 1200778
 Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
@@ -673,10 +653,9 @@ Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-Patch30001: arm64-revert-tlb-rcu_table_free.patch
-Patch30002: arm64-fix-ooo-descriptor-read.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1264,7 +1243,6 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-ApplyPatch arm-dts-sun7i-bananapi.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -1360,7 +1338,7 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Intel DRM
 ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
-ApplyPatch drm-i915-Disable-verbose-state-checks.patch 
+ApplyPatch drm-i915-hush-check-crtc-state.patch
 
 # Radeon DRM
 
@@ -1386,32 +1364,13 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
-# Patch series from Hans for various backlight and platform driver fixes
-ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1089731
 ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
 
-#rhbz 1135338
-ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
+#rhbz 1111138
+ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
-#rhbz 1173806
-ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#rhbz 1163927
-ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-#rhbz 1124119
-ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-
-#rhbz 1163574
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-# Fix for big-endian arches, already upstream
-ApplyPatch mpssd-x86-only.patch
 
 #rhbz 1186097
 ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
@@ -1427,9 +1386,6 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1185519
 ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
-
-#CVE-2015-2042 rhbz 1195355 1199365
-ApplyPatch net-rds-use-correct-size-for-max-unacked-packets-and.patch
 
 #rhbz 1200777 1200778
 ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
@@ -1461,11 +1417,8 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
-ApplyPatch arm64-revert-tlb-rcu_table_free.patch
-ApplyPatch arm64-fix-ooo-descriptor-read.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
-ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
 %endif
 %endif
 
@@ -2330,6 +2283,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-200
+- Linux v3.19.1
+
 * Fri Mar 13 2015 Kyle McMartin <kyle@fedoraproject.org>
 - arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which causes
   lockups on arm64 machines.
