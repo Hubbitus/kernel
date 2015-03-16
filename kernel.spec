@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -412,7 +412,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %endif
 
 #Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc3.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc4.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -629,9 +629,6 @@ Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
 
-#rhbz 1199312
-Patch26142: Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
-
 #rhbz 1200777 1200778
 Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
 Patch26151: Input-synaptics-log-queried-and-quirked-dimension-va.patch
@@ -649,9 +646,6 @@ Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 Patch26164: Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
-#CVE-2015-2150 rhbz 1196266 1200397
-Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
@@ -660,7 +654,6 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-Patch30001: arm64-revert-tlb-rcu_table_free.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1392,9 +1385,6 @@ ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
 
-#rhbz 1199312
-ApplyPatch Revert-cpupower-Makefile-change-to-help-run-the-tool.patch
-
 #rhbz 1200777 1200778
 ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
 ApplyPatch Input-synaptics-log-queried-and-quirked-dimension-va.patch
@@ -1412,9 +1402,6 @@ ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 ApplyPatch Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
-#CVE-2015-2150 rhbz 1196266 1200397
-ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
@@ -1423,10 +1410,8 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
-ApplyPatch arm64-revert-tlb-rcu_table_free.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
-ApplyPatch arm64-revert-tlb-rcu_table_free.patch -R
 %endif
 %endif
 
@@ -2280,6 +2265,11 @@ fi
 #
 # 
 %changelog
+* Mon Mar 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git0.1
+- Linux v4.0-rc4
+- Drop arm64 RCU revert patch.  Should be fixed properly upstream now.
+- Disable debugging options.
+
 * Sun Mar 15 2015 Jarod Wilson <jwilson@fedoraproject.org>
 - Fix kernel-tools sub-packages for variant builds
 

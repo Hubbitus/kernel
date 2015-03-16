@@ -3595,13 +3595,14 @@ index cce9524..c50ca8f 100644
  	const struct cpu_operations **ops = supported_cpu_ops;
  
 diff --git a/arch/arm64/kernel/efi.c b/arch/arm64/kernel/efi.c
-index b42c7b4..a92be8e 100644
+index 2b8d70164428..f5808cee51a2 100644
 --- a/arch/arm64/kernel/efi.c
 +++ b/arch/arm64/kernel/efi.c
-@@ -354,3 +354,40 @@ void efi_virtmap_unload(void)
- 	efi_set_pgd(current->active_mm);
- 	preempt_enable();
+@@ -363,3 +363,42 @@ bool efi_poweroff_required(void)
+ {
+ 	return efi_enabled(EFI_RUNTIME_SERVICES);
  }
++
 +
 +/*
 + * If nothing else is handling pm_power_off, use EFI
@@ -3639,6 +3640,7 @@ index b42c7b4..a92be8e 100644
 +	return ret;
 +}
 +late_initcall(arm64_register_efi_restart);
++
 diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
 index 6f93c24..c870fa4 100644
 --- a/arch/arm64/kernel/pci.c

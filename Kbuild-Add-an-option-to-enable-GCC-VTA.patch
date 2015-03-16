@@ -43,7 +43,7 @@ Signed-off-by: Josh Stone <jistone@redhat.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 1100ff3c77e3..b4f8a4909e4e 100644
+index e734965b1604..c724e72b238d 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -706,7 +706,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
