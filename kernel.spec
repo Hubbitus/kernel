@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -558,6 +558,7 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 # intel drm is all merged upstream
 Patch1825: drm-i915-tame-the-chattermouth-v2.patch
 Patch1826: drm-i915-hush-check-crtc-state.patch
+Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
 # Quiet boot fixes
 
@@ -1334,6 +1335,7 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 # Intel DRM
 ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
 ApplyPatch drm-i915-hush-check-crtc-state.patch
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
 
@@ -2273,6 +2275,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Mar 17 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Re-add patch to quiet i915 state machine
+
 * Mon Mar 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-200
 - Linux v3.19.1
 
