@@ -5124,7 +5124,6 @@ CONFIG_STAGING=y
 # CONFIG_ANDROID is not set
 CONFIG_STAGING_MEDIA=y
 # CONFIG_DVB_AS102 is not set
-# CONFIG_ET131X is not set
 # CONFIG_SLICOSS is not set
 # CONFIG_VIDEO_DT3155 is not set
 # CONFIG_TI_ST is not set
