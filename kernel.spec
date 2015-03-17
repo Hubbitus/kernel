@@ -2255,6 +2255,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 17 2015 Kyle McMartin <kmcmarti@redhat.com>
+- Update kernel-arm64.patch, move EDAC to arm-generic, add EDAC_XGENE on arm64.
+
 * Mon Mar 16 2015 Jarod Wilson <jwilson@fedoraproject.org>
 - Fix bad variant usage in kernel dependencies
 
