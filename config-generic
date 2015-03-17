@@ -5442,3 +5442,5 @@ CONFIG_POWERCAP=y
 
 # set in x86-generic presently
 # CONFIG_TOUCHSCREEN_GOODIX is not set
+
+CONFIG_PCI_ECAM=y
