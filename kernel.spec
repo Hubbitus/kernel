@@ -602,11 +602,6 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1111138
-Patch26059: i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
-
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
@@ -1363,11 +1358,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
-
-ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1111138
-ApplyPatch i8042-Add-notimeout-quirk-for-Fujitsu-Lifebook-A544-.patch
 
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
