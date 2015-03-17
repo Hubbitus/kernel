@@ -370,8 +370,8 @@ Release: %{pkg_release}
 ExclusiveArch: %{all_x86} x86_64 ppc64 ppc64p7 s390 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
-Requires: kernel-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}
-Requires: kernel-%{?variant:%{variant}-}modules-uname-r = %{KVERREL}%{?variant}
+Requires: kernel%{?variant}-core-uname-r = %{KVERREL}%{?variant}
+Requires: kernel%{?variant}-modules-uname-r = %{KVERREL}%{?variant}
 %endif
 
 
@@ -900,8 +900,8 @@ This package provides commonly used kernel modules for the %{?2:%{2}-}core kerne
 %package %{1}\
 summary: kernel meta-package for the %{1} kernel\
 group: system environment/kernel\
-Requires: kernel-%{1}-%{?variant:%{variant}-}core-uname-r = %{KVERREL}%{?variant}+%{1}\
-Requires: kernel-%{1}-%{?variant:%{variant}-}modules-uname-r = %{KVERREL}%{?variant}+%{1}\
+Requires: kernel-%{1}%{?variant}-core-uname-r = %{KVERREL}%{?variant}+%{1}\
+Requires: kernel-%{1}%{?variant}-modules-uname-r = %{KVERREL}%{?variant}+%{1}\
 %description %{1}\
 The meta-package for the %{1} kernel\
 %{nil}
@@ -2255,6 +2255,9 @@ fi
 #
 # 
 %changelog
+* Mon Mar 16 2015 Jarod Wilson <jwilson@fedoraproject.org>
+- Fix bad variant usage in kernel dependencies
+
 * Mon Mar 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git0.1
 - Linux v4.0-rc4
 - Drop arm64 RCU revert patch.  Should be fixed properly upstream now.
