@@ -689,7 +689,7 @@ Summary: Header files for the Linux kernel for use by glibc
 Group: Development/System
 Obsoletes: glibc-kernheaders < 3.0-46
 Provides: glibc-kernheaders = 3.0-46
-%if 0%{?variant}
+%if "0%{?variant}"
 Obsoletes: kernel-headers < %{rpmversion}-%{pkg_release}
 Provides: kernel-headers = %{rpmversion}-%{pkg_release}
 %endif
