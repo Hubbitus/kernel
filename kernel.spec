@@ -2275,7 +2275,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Tue Mar 17 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+* Tue Mar 17 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-201
 - Re-add patch to quiet i915 state machine
 
 * Mon Mar 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-200
