@@ -652,6 +652,7 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
+Patch30001: aarch64-fix-tlb-issues.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1409,6 +1410,8 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
+# Just needed for 3.19
+ApplyPatch aarch64-fix-tlb-issues.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
 %endif
@@ -1546,10 +1549,8 @@ BuildKernel() {
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
 %ifarch %{arm} aarch64
-    %{make} -s ARCH=$Arch V=1 dtbs
-    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer/
-    rm -f arch/$Arch/boot/dts/*.dtb
+    %{make} -s ARCH=$Arch V=1 dtbs dtbs_install INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
+    find arch/$Arch/boot/dts -name '*.dtb' -type f | xargs rm -f
 %endif
 
     # Start installing the results
@@ -2275,6 +2276,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Mar 18 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream aarch64 patch to fix hang due to cache invalidation bug
+- Fix aarch64 DTBs now they're in vendor sub dirs
+
 * Tue Mar 17 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-201
 - Re-add patch to quiet i915 state machine
 
