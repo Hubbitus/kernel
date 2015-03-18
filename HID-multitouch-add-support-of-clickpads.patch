@@ -12,10 +12,10 @@ Tested-by: Jason Ekstrand <jason@jlekstrand.net>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/hid/hid-multitouch.c b/drivers/hid/hid-multitouch.c
-index 51e25b9407f2..a8e738191625 100644
+index f65e78b46999..ef06dc30b9b1 100644
 --- a/drivers/hid/hid-multitouch.c
 +++ b/drivers/hid/hid-multitouch.c
-@@ -115,6 +115,7 @@ struct mt_device {
+@@ -116,6 +116,7 @@ struct mt_device {
  	__u8 touches_by_report;	/* how many touches are present in one report:
  				* 1 means we should use a serial protocol
  				* > 1 means hybrid (multitouch) protocol */
@@ -23,7 +23,7 @@ index 51e25b9407f2..a8e738191625 100644
  	bool serial_maybe;	/* need to check for serial protocol */
  	bool curvalid;		/* is the current contact valid? */
  	unsigned mt_flags;	/* flags to pass to input-mt */
-@@ -372,6 +373,10 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
+@@ -379,6 +380,10 @@ static int mt_touch_input_mapping(struct hid_device *hdev, struct hid_input *hi,
  		td->inputmode_value = MT_INPUTMODE_TOUCHPAD;
  	}
  
@@ -34,7 +34,7 @@ index 51e25b9407f2..a8e738191625 100644
  	if (usage->usage_index)
  		prev_usage = &field->usage[usage->usage_index - 1];
  
-@@ -721,6 +726,10 @@ static void mt_touch_input_configured(struct hid_device *hdev,
+@@ -728,6 +733,10 @@ static void mt_touch_input_configured(struct hid_device *hdev,
  	if (cls->quirks & MT_QUIRK_NOT_SEEN_MEANS_UP)
  		td->mt_flags |= INPUT_MT_DROP_UNUSED;
  

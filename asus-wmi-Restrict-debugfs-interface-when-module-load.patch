@@ -15,10 +15,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 21fc932da3a1..c6d42ad95c08 100644
+index 7543a56e0f45..93b5a6998371 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
-@@ -1590,6 +1590,9 @@ static int show_dsts(struct seq_file *m, void *data)
+@@ -1589,6 +1589,9 @@ static int show_dsts(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -28,7 +28,7 @@ index 21fc932da3a1..c6d42ad95c08 100644
  	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
  
  	if (err < 0)
-@@ -1606,6 +1609,9 @@ static int show_devs(struct seq_file *m, void *data)
+@@ -1605,6 +1608,9 @@ static int show_devs(struct seq_file *m, void *data)
  	int err;
  	u32 retval = -1;
  
@@ -38,7 +38,7 @@ index 21fc932da3a1..c6d42ad95c08 100644
  	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
  				    &retval);
  
-@@ -1630,6 +1636,9 @@ static int show_call(struct seq_file *m, void *data)
+@@ -1629,6 +1635,9 @@ static int show_call(struct seq_file *m, void *data)
  	union acpi_object *obj;
  	acpi_status status;
  

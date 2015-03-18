@@ -22,10 +22,10 @@ Signed-off-by: Lukas Czerner <lczerner@redhat.com>
  1 file changed, 19 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 0b16fb4c06d3..e3bf236a36ac 100644
+index bed43081720f..aa522429b751 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -4792,12 +4792,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+@@ -4803,12 +4803,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
  	else
  		max_blocks -= lblk;
  
@@ -38,7 +38,7 @@ index 0b16fb4c06d3..e3bf236a36ac 100644
  	mutex_lock(&inode->i_mutex);
  
  	/*
-@@ -4814,15 +4808,28 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+@@ -4825,15 +4819,28 @@ static long ext4_zero_range(struct file *file, loff_t offset,
  		ret = inode_newsize_ok(inode, new_size);
  		if (ret)
  			goto out_mutex;
