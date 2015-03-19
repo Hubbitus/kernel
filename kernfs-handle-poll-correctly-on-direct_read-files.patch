@@ -1,0 +1,38 @@
+From: NeilBrown <neilb@suse.de>
+Date: Mon, 16 Mar 2015 10:44:52 +1100
+Subject: [PATCH] kernfs: handle poll correctly on 'direct_read' files.
+
+Kernfs supports two styles of read: direct_read and seqfile_read.
+
+The latter supports 'poll' correctly thanks to the update of
+'->event' in kernfs_seq_show.
+The former does not as '->event' is never updated on a read.
+
+So add an appropriate update in kernfs_file_direct_read().
+
+This was noticed because some 'md' sysfs attributes were
+recently changed to use direct reads.
+
+Reported-by: Prakash Punnoor <prakash@punnoor.de>
+Reported-by: Torsten Kaiser <just.for.lkml@googlemail.com>
+Fixes: 750f199ee8b578062341e6ddfe36c59ac8ff2dcb
+Signed-off-by: NeilBrown <neilb@suse.de>
+---
+ fs/kernfs/file.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index b684e8a132e6..2bacb9988566 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -207,6 +207,7 @@ static ssize_t kernfs_file_direct_read(struct kernfs_open_file *of,
+ 		goto out_free;
+ 	}
+ 
++	of->event = atomic_read(&of->kn->attr.open->event);
+ 	ops = kernfs_ops(of->kn);
+ 	if (ops->read)
+ 		len = ops->read(of, buf, len, *ppos);
+-- 
+2.1.0
+

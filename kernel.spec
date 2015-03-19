@@ -647,6 +647,9 @@ Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
+#rhbz 1202362
+Patch26169: kernfs-handle-poll-correctly-on-direct_read-files.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
@@ -1401,6 +1404,9 @@ ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
+
+#rhbz 1202362
+ApplyPatch kernfs-handle-poll-correctly-on-direct_read-files.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2259,6 +2265,9 @@ fi
 #
 # 
 %changelog
+* Thu Mar 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix high cpu usage on direct_read kernfs files (rhbz 1202362)
+
 * Wed Mar 18 2015 Jarod Wilson <jwilson@fedoraproject.org>
 - Fix kernel-uname-r Requires/Provides variant mismatches
 
