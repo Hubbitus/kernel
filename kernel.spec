@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -583,7 +583,7 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 # PPC
 
 # ARM64
-Patch21000: arm64-xgbe-a0.patch
+Patch21000: net-amd-Add-xgbe-a0-driver.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1228,7 +1228,7 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # PPC
 
 # ARM64
-ApplyPatch arm64-xgbe-a0.patch
+ApplyPatch net-amd-Add-xgbe-a0-driver.patch
 
 #
 # ARM
@@ -2257,6 +2257,10 @@ fi
 #
 # 
 %changelog
+* Thu Mar 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git1.3
+- Linux v4.0-rc4-88-g7b09ac704bac
+- Rename arm64-xgbe-a0.patch
+
 * Thu Mar 19 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop arm64 non upstream patch
 

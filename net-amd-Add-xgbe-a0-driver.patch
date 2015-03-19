@@ -1,15 +1,41 @@
-commit b66e64d01c606a2033d4bbb3ca95f6506a9188f4
-Author: Tom Lendacky <thomas.lendacky@amd.com>
-Date:   Sat Feb 21 12:25:12 2015 -0500
+From: Tom Lendacky <thomas.lendacky@amd.com>
+Date: Sat, 21 Feb 2015 12:25:12 -0500
+Subject: [PATCH] net: amd: Add xgbe-a0 driver
 
-    net: amd: DO NOT UPSTREAM: Add xgbe-a0 driver
-    
-    Add support for A0 silicon xgbe driver
-    
-    Signed-off-by: Mark Salter <msalter@redhat.com>
+Add support for A0 silicon xgbe driver.  This won't be upstreamed because
+the HW is being replaced with a better version.
+
+Signed-off-by: Mark Salter <msalter@redhat.com>
+---
+ drivers/net/ethernet/amd/Makefile               |    1 +
+ drivers/net/ethernet/amd/xgbe-a0/Makefile       |    8 +
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h  | 1142 +++++++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c     |  269 ++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c |  373 +++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c    |  636 +++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c     | 2964 +++++++++++++++++++++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c     | 2204 +++++++++++++++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c |  616 +++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c    |  643 +++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c    |  312 +++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c     |  284 +++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe.h         |  868 +++++++
+ 13 files changed, 10320 insertions(+)
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/Makefile
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
+ create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 
 diff --git a/drivers/net/ethernet/amd/Makefile b/drivers/net/ethernet/amd/Makefile
-index a38a2dc..bf0cf2f 100644
+index a38a2dce3eb3..bf0cf2f8d2db 100644
 --- a/drivers/net/ethernet/amd/Makefile
 +++ b/drivers/net/ethernet/amd/Makefile
 @@ -18,3 +18,4 @@ obj-$(CONFIG_PCNET32) += pcnet32.o
@@ -19,7 +45,7 @@ index a38a2dc..bf0cf2f 100644
 +obj-$(CONFIG_AMD_XGBE) += xgbe-a0/
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/Makefile b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 new file mode 100644
-index 0000000..561116f
+index 000000000000..561116faadae
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 @@ -0,0 +1,8 @@
@@ -33,7 +59,7 @@ index 0000000..561116f
 +amd-xgbe-a0-$(CONFIG_DEBUG_FS) += xgbe-debugfs.o
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 new file mode 100644
-index 0000000..75b08c6
+index 000000000000..75b08c63d39f
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 @@ -0,0 +1,1142 @@
@@ -1181,7 +1207,7 @@ index 0000000..75b08c6
 +#endif
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 new file mode 100644
-index 0000000..343301c
+index 000000000000..343301cbf7b4
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 @@ -0,0 +1,269 @@
@@ -1456,7 +1482,7 @@ index 0000000..343301c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 new file mode 100644
-index 0000000..ecfa6f9
+index 000000000000..ecfa6f91da22
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 @@ -0,0 +1,373 @@
@@ -1835,7 +1861,7 @@ index 0000000..ecfa6f9
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 new file mode 100644
-index 0000000..5dd5777
+index 000000000000..5dd57779c82c
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 @@ -0,0 +1,636 @@
@@ -2477,7 +2503,7 @@ index 0000000..5dd5777
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
 new file mode 100644
-index 0000000..f6a3a58
+index 000000000000..f6a3a581cc21
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
 @@ -0,0 +1,2964 @@
@@ -5447,7 +5473,7 @@ index 0000000..f6a3a58
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
 new file mode 100644
-index 0000000..acaeaf5
+index 000000000000..acaeaf56b63f
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
 @@ -0,0 +1,2204 @@
@@ -7657,7 +7683,7 @@ index 0000000..acaeaf5
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 new file mode 100644
-index 0000000..165ff1c
+index 000000000000..165ff1ceedcc
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 @@ -0,0 +1,616 @@
@@ -8279,7 +8305,7 @@ index 0000000..165ff1c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 new file mode 100644
-index 0000000..a85fb49
+index 000000000000..a85fb4965835
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 @@ -0,0 +1,643 @@
@@ -8928,7 +8954,7 @@ index 0000000..a85fb49
 +module_platform_driver(xgbe_a0_driver);
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 new file mode 100644
-index 0000000..b84d048
+index 000000000000..b84d0481bed8
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 @@ -0,0 +1,312 @@
@@ -9246,7 +9272,7 @@ index 0000000..b84d048
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
 new file mode 100644
-index 0000000..c53c7b2
+index 000000000000..c53c7b2a4b08
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
 @@ -0,0 +1,284 @@
@@ -9536,7 +9562,7 @@ index 0000000..c53c7b2
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 new file mode 100644
-index 0000000..dd8500d
+index 000000000000..dd8500da98a6
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 @@ -0,0 +1,868 @@
@@ -10408,3 +10434,6 @@ index 0000000..dd8500d
 +#endif
 +
 +#endif
+-- 
+2.1.0
+

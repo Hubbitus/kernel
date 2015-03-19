@@ -115,10 +115,10 @@ index ef17683484e9..105e7360d747 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 44e6dd7e36a2..3ddf4150bd9e 100644
+index 225b0988043a..90dbfb73e11f 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -134,7 +134,8 @@ struct boot_params {
+@@ -133,7 +133,8 @@ struct boot_params {
  	__u8  eddbuf_entries;				/* 0x1e9 */
  	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
  	__u8  kbd_status;				/* 0x1eb */
@@ -129,10 +129,10 @@ index 44e6dd7e36a2..3ddf4150bd9e 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 98dc9317286e..26741d24797e 100644
+index 0a2421cca01f..a3d8174dedf9 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1165,6 +1165,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,7 +146,7 @@ index 98dc9317286e..26741d24797e 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 0c86ec9e10ed..b02dfaacc76c 100644
+index b033dab5c8bf..f526b6e02f59 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
