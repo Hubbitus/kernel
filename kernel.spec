@@ -583,6 +583,7 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 # PPC
 
 # ARM64
+Patch21000: arm64-xgbe-a0.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -649,9 +650,6 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1202362
 Patch26169: kernfs-handle-poll-correctly-on-direct_read-files.patch
-
-# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
-Patch30000: kernel-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1230,6 +1228,7 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # PPC
 
 # ARM64
+ApplyPatch arm64-xgbe-a0.patch
 
 #
 # ARM
@@ -1407,13 +1406,6 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1202362
 ApplyPatch kernfs-handle-poll-correctly-on-direct_read-files.patch
-
-%if 0%{?aarch64patches}
-ApplyPatch kernel-arm64.patch
-%ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
-ApplyPatch kernel-arm64.patch -R
-%endif
-%endif
 
 # END OF PATCH APPLICATIONS
 
@@ -2265,6 +2257,9 @@ fi
 #
 # 
 %changelog
+* Thu Mar 19 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop arm64 non upstream patch
+
 * Thu Mar 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix high cpu usage on direct_read kernfs files (rhbz 1202362)
 
