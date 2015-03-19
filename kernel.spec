@@ -831,7 +831,7 @@ Group: Development/Debug\
 Requires: %{name}-debuginfo-common-%{_target_cpu} = %{version}-%{release}\
 Provides: %{name}%{?1:-%{1}}-debuginfo-%{_target_cpu} = %{version}-%{release}\
 AutoReqProv: no\
-%description -n %{name}%{?1:-%{1}}-debuginfo\
+%description %{?1:%{1}-}debuginfo\
 This package provides debug information for package %{name}%{?1:-%{1}}.\
 This is required to use SystemTap with %{name}%{?1:-%{1}}-%{KVERREL}.\
 %{expand:%%global debuginfo_args %{?debuginfo_args} -p '/.*/%%{KVERREL}%{?1:[+]%{1}}/.*|/.*%%{KVERREL}%{?1:\+%{1}}(\.debug)?' -o debuginfo%{?1}.list}\
@@ -853,7 +853,7 @@ Provides: installonlypkg(kernel)\
 AutoReqProv: no\
 Requires(pre): /usr/bin/find\
 Requires: perl\
-%description -n kernel%{?variant}%{?1:-%{1}}-devel\
+%description %{?1:%{1}-}devel\
 This package provides kernel headers and makefiles sufficient to build modules\
 against the %{?2:%{2} }kernel package.\
 %{nil}
@@ -875,7 +875,7 @@ Requires: kernel-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 Requires: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 AutoReq: no\
 AutoProv: yes\
-%description -n kernel%{?variant}%{?1:-%{1}}-modules-extra\
+%description %{?1:%{1}-}modules-extra\
 This package provides less commonly used kernel modules for the %{?2:%{2} }kernel package.\
 %{nil}
 
@@ -895,7 +895,7 @@ Provides: kernel%{?1:-%{1}}-modules-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 Requires: kernel-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 AutoReq: no\
 AutoProv: yes\
-%description -n kernel%{?variant}%{?1:-%{1}}-modules\
+%description %{?1:%{1}-}modules\
 This package provides commonly used kernel modules for the %{?2:%{2}-}core kernel package.\
 %{nil}
 
