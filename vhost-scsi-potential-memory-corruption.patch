@@ -21,10 +21,10 @@ Signed-off-by: Nicholas Bellinger <nab@linux-iscsi.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/vhost/scsi.c b/drivers/vhost/scsi.c
-index cb84f69f76ad..28cf2510d33b 100644
+index d695b1673ae5..f5c98e6f7b58 100644
 --- a/drivers/vhost/scsi.c
 +++ b/drivers/vhost/scsi.c
-@@ -1251,7 +1251,7 @@ tcm_vhost_send_evt(struct vhost_scsi *vs,
+@@ -1253,7 +1253,7 @@ tcm_vhost_send_evt(struct vhost_scsi *vs,
  		 * lun[4-7] need to be zero according to virtio-scsi spec.
  		 */
  		evt->event.lun[0] = 0x01;
@@ -33,7 +33,7 @@ index cb84f69f76ad..28cf2510d33b 100644
  		if (lun->unpacked_lun >= 256)
  			evt->event.lun[2] = lun->unpacked_lun >> 8 | 0x40 ;
  		evt->event.lun[3] = lun->unpacked_lun & 0xFF;
-@@ -2122,12 +2122,12 @@ tcm_vhost_make_tpg(struct se_wwn *wwn,
+@@ -2124,12 +2124,12 @@ tcm_vhost_make_tpg(struct se_wwn *wwn,
  			struct tcm_vhost_tport, tport_wwn);
  
  	struct tcm_vhost_tpg *tpg;

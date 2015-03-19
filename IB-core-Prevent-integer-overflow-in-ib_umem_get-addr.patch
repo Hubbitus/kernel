@@ -24,10 +24,10 @@ Signed-off-by: Or Gerlitz <ogerlitz@mellanox.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/drivers/infiniband/core/umem.c b/drivers/infiniband/core/umem.c
-index df0c4f605a21..dfa4286f98a4 100644
+index aec7a6aa2951..8c014b5dab4c 100644
 --- a/drivers/infiniband/core/umem.c
 +++ b/drivers/infiniband/core/umem.c
-@@ -94,6 +94,14 @@ struct ib_umem *ib_umem_get(struct ib_ucontext *context, unsigned long addr,
+@@ -99,6 +99,14 @@ struct ib_umem *ib_umem_get(struct ib_ucontext *context, unsigned long addr,
  	if (dmasync)
  		dma_set_attr(DMA_ATTR_WRITE_BARRIER, &attrs);
  
