@@ -16,10 +16,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 17 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 42999fe2dbd0..0c86ec9e10ed 100644
+index b03485bcb82a..b033dab5c8bf 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -502,6 +502,8 @@ int unregister_module_notifier(struct notifier_block *nb);
+@@ -506,6 +506,8 @@ int unregister_module_notifier(struct notifier_block *nb);
  
  extern void print_modules(void);
  
@@ -28,7 +28,7 @@ index 42999fe2dbd0..0c86ec9e10ed 100644
  #else /* !CONFIG_MODULES... */
  
  /* Given an address, look for it in the exception tables. */
-@@ -612,6 +614,11 @@ static inline int unregister_module_notifier(struct notifier_block *nb)
+@@ -616,6 +618,11 @@ static inline int unregister_module_notifier(struct notifier_block *nb)
  static inline void print_modules(void)
  {
  }
