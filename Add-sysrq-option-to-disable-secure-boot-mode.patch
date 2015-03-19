@@ -15,7 +15,7 @@ Upstream-status: Fedora mustard
  7 files changed, 65 insertions(+), 10 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index bc31a43b31a0..5f80d12a55cb 100644
+index b40d6174242f..0ee7749bad74 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -215,23 +215,23 @@ index 387fa7d05c98..4b07e30b3279 100644
  int unregister_sysrq_key(int key, struct sysrq_key_op *op);
  struct sysrq_key_op *__sysrq_get_key_op(int key);
 diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-index 379650b984f8..070f29fefdc2 100644
+index 60f6bb817f70..c0a20ee0ad96 100644
 --- a/kernel/debug/kdb/kdb_main.c
 +++ b/kernel/debug/kdb/kdb_main.c
-@@ -1924,7 +1924,7 @@ static int kdb_sr(int argc, const char **argv)
- 	if (argc != 1)
+@@ -1968,7 +1968,7 @@ static int kdb_sr(int argc, const char **argv)
  		return KDB_ARGCOUNT;
+ 
  	kdb_trap_printk++;
--	__handle_sysrq(*argv[1], false);
-+	__handle_sysrq(*argv[1], SYSRQ_FROM_KERNEL);
+-	__handle_sysrq(*argv[1], check_mask);
++	__handle_sysrq(*argv[1], check_mask & SYSRQ_FROM_KERNEL);
  	kdb_trap_printk--;
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index cace4bd04956..a33be993df25 100644
+index 6244f24abe27..b77554170d76 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -108,9 +108,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
+@@ -107,9 +107,9 @@ struct list_head *kdb_modules = &modules; /* kdb needs the list of modules */
  
  #ifdef CONFIG_MODULE_SIG
  #ifdef CONFIG_MODULE_SIG_FORCE

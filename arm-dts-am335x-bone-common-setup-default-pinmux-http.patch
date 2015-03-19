@@ -9,7 +9,7 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 130 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 754b96c5dbb1..4991a1664773 100644
+index ec755eeb78ee..db880bf46135 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
 @@ -95,6 +95,13 @@
@@ -74,7 +74,7 @@ index 754b96c5dbb1..4991a1664773 100644
  &usb {
  	status = "okay";
  };
-@@ -258,6 +299,56 @@
+@@ -259,6 +300,56 @@
  	};
  };
  
@@ -131,7 +131,7 @@ index 754b96c5dbb1..4991a1664773 100644
  /include/ "tps65217.dtsi"
  
  &tps {
-@@ -339,3 +430,42 @@
+@@ -340,3 +431,42 @@
  	cd-gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
  	cd-inverted;
  };

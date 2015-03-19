@@ -16,10 +16,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 17 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 71f282a4e307..341a73ecea2e 100644
+index b653d7c0a05a..d4b96d6c926a 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -516,6 +516,8 @@ int unregister_module_notifier(struct notifier_block *nb);
+@@ -502,6 +502,8 @@ int unregister_module_notifier(struct notifier_block *nb);
  
  extern void print_modules(void);
  
@@ -28,7 +28,7 @@ index 71f282a4e307..341a73ecea2e 100644
  #else /* !CONFIG_MODULES... */
  
  /* Given an address, look for it in the exception tables. */
-@@ -626,6 +628,11 @@ static inline int unregister_module_notifier(struct notifier_block *nb)
+@@ -612,6 +614,11 @@ static inline int unregister_module_notifier(struct notifier_block *nb)
  static inline void print_modules(void)
  {
  }
@@ -41,10 +41,10 @@ index 71f282a4e307..341a73ecea2e 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 88cec1ddb1e3..6507ffcb5445 100644
+index d856e96a3cce..98c3d7955a51 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3844,3 +3844,13 @@ void module_layout(struct module *mod,
+@@ -3895,3 +3895,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif

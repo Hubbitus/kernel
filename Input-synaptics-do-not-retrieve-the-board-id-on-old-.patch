@@ -1,0 +1,33 @@
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Sun, 8 Mar 2015 22:33:36 -0700
+Subject: [PATCH] Input: synaptics - do not retrieve the board id on old
+ firmwares
+
+The board id capability has been added in firmware 7.5.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Acked-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+---
+ drivers/input/mouse/synaptics.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index 2f42a712f3e0..2176874a41b1 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -250,6 +250,10 @@ static int synaptics_board_id(struct psmouse *psmouse)
+ 	struct synaptics_data *priv = psmouse->private;
+ 	unsigned char bid[3];
+ 
++	/* firmwares prior 7.5 have no board_id encoded */
++	if (SYN_ID_FULL(priv->identity) < 0x705)
++		return 0;
++
+ 	if (synaptics_send_cmd(psmouse, SYN_QUE_MODES, bid))
+ 		return -1;
+ 	priv->board_id = ((bid[0] & 0xfc) << 6) | bid[1];
+-- 
+2.1.0
+

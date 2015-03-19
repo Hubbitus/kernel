@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf4
+%define buildid .hu.1.pf2
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -43,13 +43,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 18
+%define base_sublevel 19
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -57,7 +57,7 @@ Summary: The Linux kernel
 # Do we have a -stable update to apply?
 # %define stable_update 8
 # Pf v3.18-pf1 is 3.18.7: https://pf.natalenko.name/forum/index.php?topic=286.0
-%define stable_update 7
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -392,6 +392,9 @@ BuildRequires: sparse
 %if %{with_perf}
 BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
 BuildRequires: audit-libs-devel
+%ifnarch s390 s390x %{arm}
+BuildRequires: numactl-devel
+%endif
 %endif
 %if %{with_tools}
 BuildRequires: pciutils-devel gettext ncurses-devel
@@ -561,7 +564,8 @@ Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1826: drm-i915-tame-the-chattermouth-v2.patch
+Patch1825: drm-i915-tame-the-chattermouth-v2.patch
+Patch1826: drm-i915-hush-check-crtc-state.patch
 Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
 # Quiet boot fixes
@@ -593,7 +597,6 @@ Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
-Patch21029: arm-dts-sun7i-bananapi.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
 
@@ -608,6 +611,7 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
+<<<<<<< HEAD
 ################# Hubbitus patches
 # BFS
 #? Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
@@ -671,26 +675,52 @@ Patch30001: mpssd-x86-only.patch
 #rhbz 1188074
 Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
 
-#rhbz 1186097
-Patch30004: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+=======
+#rhbz 1094948
+Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-#CVE-2015-1593 rhbz 1192519 1192520
-Patch26135: ASLR-fix-stack-randomization-on-64-bit-systems.patch
+>>>>>>> c41099298bb46a0d454e85201045129a0b83c575
+#rhbz 1186097
+Patch26135: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 Patch26136: vhost-scsi-potential-memory-corruption.patch
 
-#rhbz 1185519
-Patch26142: NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1188439
-Patch26139: HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
-
 #rhbz 1190947
 Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
+
+#rhbz 1200777 1200778
+Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
+Patch26151: Input-synaptics-log-queried-and-quirked-dimension-va.patch
+Patch26152: Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+Patch26153: Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+Patch26154: Input-synaptics-support-min-max-board-id-in-min_max_.patch
+Patch26155: Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+Patch26156: Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+Patch26157: Input-synaptics-handle-spurious-release-of-trackstic.patch
+Patch26158: Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
+Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
+
+#CVE-2014-8159 rhbz 1181166 1200950
+Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
+
+#rhbz 1201532
+Patch26168: HID-multitouch-add-support-of-clickpads.patch
+
+
+# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
+Patch30000: kernel-arm64.patch
+Patch30001: aarch64-fix-tlb-issues.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1285,7 +1315,6 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-ApplyPatch arm-dts-sun7i-bananapi.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -1381,6 +1410,10 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Intel DRM
 ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
+<<<<<<< HEAD
+=======
+ApplyPatch drm-i915-hush-check-crtc-state.patch
+>>>>>>> c41099298bb46a0d454e85201045129a0b83c575
 ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
@@ -1407,6 +1440,7 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
+<<<<<<< HEAD
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
@@ -1478,25 +1512,54 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2014-9585 rhbz 1181054 1181056
 ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
+=======
+#rhbz 1094948
+ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
+
+#rhbz 1186097
+ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+
+#CVE-XXXX-XXXX rhbz 1189864 1192079
+ApplyPatch vhost-scsi-potential-memory-corruption.patch
+>>>>>>> c41099298bb46a0d454e85201045129a0b83c575
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1188439
-ApplyPatch HID-i2c-hid-Limit-reads-to-wMaxInputLength-bytes-for.patch
-
 #rhbz 1190947
 ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
-#rhbz 1185519
-ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
+#rhbz 1200777 1200778
+ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
+ApplyPatch Input-synaptics-log-queried-and-quirked-dimension-va.patch
+ApplyPatch Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
+ApplyPatch Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
+ApplyPatch Input-synaptics-support-min-max-board-id-in-min_max_.patch
+ApplyPatch Input-synaptics-skip-quirks-when-post-2013-dimension.patch
+ApplyPatch Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
+ApplyPatch Input-synaptics-handle-spurious-release-of-trackstic.patch
+ApplyPatch Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
+ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
+ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
+ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
+ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
+ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
+
+#CVE-2014-8159 rhbz 1181166 1200950
+ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
+
+#rhbz 1201532
+ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
+# Just needed for 3.19
+ApplyPatch aarch64-fix-tlb-issues.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
-%else
-#  solved with SPCR in future
 %endif
 %endif
 
@@ -1632,10 +1695,8 @@ BuildKernel() {
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
 %ifarch %{arm} aarch64
-    %{make} -s ARCH=$Arch V=1 dtbs
-    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    install -m 644 arch/$Arch/boot/dts/*.dtb $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer/
-    rm -f arch/$Arch/boot/dts/*.dtb
+    %{make} -s ARCH=$Arch V=1 dtbs dtbs_install INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
+    find arch/$Arch/boot/dts -name '*.dtb' -type f | xargs rm -f
 %endif
 
     # Start installing the results
@@ -2361,6 +2422,42 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.2-200
+- Linux v3.19.2
+
+* Wed Mar 18 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream aarch64 patch to fix hang due to cache invalidation bug
+- Fix aarch64 DTBs now they're in vendor sub dirs
+
+* Tue Mar 17 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-201
+- Re-add patch to quiet i915 state machine
+
+* Mon Mar 16 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.1-200
+- Linux v3.19.1
+
+* Fri Mar 13 2015 Kyle McMartin <kyle@fedoraproject.org>
+- arm64-revert-tlb-rcu_table_free.patch: revert 5e5f6dc1 which causes
+  lockups on arm64 machines.
+- Add kernel-4* to .gitignore.
+- arm64-fix-ooo-descriptor-read.patch: fix an xgene-enet crash.
+
+* Fri Mar 13 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to support clickpads (rhbz 1201532)
+
+* Thu Mar 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2014-8159 infiniband: uverbs: unprotected physical memory access (rhbz 1181166 1200950)
+
+* Wed Mar 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blank screen after resume with various radeon devices (rhbz 1069027)
+- CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
+- Patch series to fix Lenovo *40 and Carbon X1 touchpads (rhbz 1200777 1200778)
+
+* Tue Mar 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2042 rds: information handling flaw in sysctl (rhbz 1195355 1199365)
+
+* Mon Mar 09 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.9-200
+- Linux v3.18.9
+
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix nfsd soft lockup (rhbz 1185519)
 - Enable ET131X driver (rhbz 1197842)
