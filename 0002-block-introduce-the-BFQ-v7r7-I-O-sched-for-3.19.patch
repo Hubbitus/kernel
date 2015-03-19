@@ -1,9 +1,9 @@
-From df04e0bc0d8b72775a74d45e355af9433f8e420e Mon Sep 17 00:00:00 2001
+From 5bfaaa91a51940efaccb66bc5cd562ba3b9d4053 Mon Sep 17 00:00:00 2001
 From: Paolo Valente <paolo.valente@unimore.it>
 Date: Thu, 9 May 2013 19:10:02 +0200
-Subject: [PATCH 2/3] block: introduce the BFQ-v7r7 I/O sched for 3.18
+Subject: [PATCH 2/3] block: introduce the BFQ-v7r7 I/O sched for 3.19
 
-Add the BFQ-v7r7 I/O scheduler to 3.18.
+Add the BFQ-v7r7 I/O scheduler to 3.19.
 The general structure is borrowed from CFQ, as much of the code for
 handling I/O contexts. Over time, several useful features have been
 ported from CFQ as well (details in the changelog in README.BFQ). A
@@ -6182,12 +6182,12 @@ index 0000000..2931563
 +}
 diff --git a/block/bfq.h b/block/bfq.h
 new file mode 100644
-index 0000000..649afe9
+index 0000000..3c5d85e
 --- /dev/null
 +++ b/block/bfq.h
 @@ -0,0 +1,775 @@
 +/*
-+ * BFQ-v7r7 for 3.18.0: data structures and common functions prototypes.
++ * BFQ-v7r7 for 3.19.0: data structures and common functions prototypes.
 + *
 + * Based on ideas and code from CFQ:
 + * Copyright (C) 2003 Jens Axboe <axboe@kernel.dk>
@@ -6962,5 +6962,5 @@ index 0000000..649afe9
 +
 +#endif /* _BFQ_H */
 -- 
-2.1.3
+2.3.0
 
