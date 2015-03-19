@@ -1405,15 +1405,12 @@ ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
-#? ApplyPatch ath9k-rx-dma-stop-check.patch
-<<<<<<< HEAD
-=======
+ApplyPatch ath9k-rx-dma-stop-check.patch
 
 #rhbz 1025603
 ApplyPatch disable-libdw-unwind-on-non-x86.patch
 
 ApplyPatch perf-install-trace-event-plugins.patch
->>>>>>> ab6aebb6b6ce5dc2f90f1a2531bd4fa99600bd56
 
 # Patch series from Hans for various backlight and platform driver fixes
 ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
@@ -1445,7 +1442,6 @@ ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
-<<<<<<< HEAD
 #rhbz 1178975
 # Already in pf
 #? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
@@ -1482,7 +1478,7 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2014-9585 rhbz 1181054 1181056
 ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
-=======
+
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -1494,7 +1490,6 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1185519
 ApplyPatch NFS-fix-clp-cl_revoked-list-deletion-causing-softloc.patch
->>>>>>> ac91ae055e0f0c308b7df51d30623cece1266665
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -1504,33 +1499,6 @@ ApplyPatch kernel-arm64.patch -R
 #  solved with SPCR in future
 %endif
 %endif
-
-################# Hubbitus patches
-<<<<<<< HEAD
-=======
-# UKSM
-#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0002-uksm-0.1.2.3-for-linux-next-20141016.ge.1.patch --fuzz=2
-
->>>>>>> ab6aebb6b6ce5dc2f90f1a2531bd4fa99600bd56
-# BFS
-#? ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
-ApplyPatch BFS-3.13-compile-fix-hu.patch
-
-<<<<<<< HEAD
-=======
-# BFQ
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r6-3.17.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0002-block-introduce-the-BFQ-v7r6-I-O-sched-for-3.17.patch
-#? ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/3.17.0-v7r6/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r6-for-3.17.0.patch
-
-#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
-
->>>>>>> ab6aebb6b6ce5dc2f90f1a2531bd4fa99600bd56
-# TuxOnIce
-# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
-#? ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2 --fuzz=2
-#? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
-#//////////////// Hubbitus patches
 
 # END OF PATCH APPLICATIONS
 
@@ -2393,12 +2361,6 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-<<<<<<< HEAD
-<<<<<<< HEAD
-* Tue Feb 17 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.7-200.hu.1.pf1
-- Merge all Fedora f21 changes, step to 3.18.7-200 Linux.
-- Apply 3.18-pf1 (3.18.7) pf patch - https://pf.natalenko.name/forum/index.php?topic=286.0
-=======
 * Mon Mar 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix nfsd soft lockup (rhbz 1185519)
 - Enable ET131X driver (rhbz 1197842)
@@ -2427,7 +2389,10 @@ fi
 
 * Fri Feb 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Move mtpspi and related mods to kernel-core for VMWare guests (rhbz 1194612)
->>>>>>> ac91ae055e0f0c308b7df51d30623cece1266665
+
+* Tue Feb 17 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.18.7-200.hu.1.pf1
+- Merge all Fedora f21 changes, step to 3.18.7-200 Linux.
+- Apply 3.18-pf1 (3.18.7) pf patch - https://pf.natalenko.name/forum/index.php?topic=286.0
 
 * Mon Feb 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-XXXX-XXXX potential memory corruption in vhost/scsi driver (rhbz 1189864 1192079)
@@ -2480,15 +2445,14 @@ fi
 
 * Tue Jan 13 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.18.2-200
 - Linux v3.18.2
-=======
-* Wed Jan 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.8-300.hu.1.pf4
-- Post-pactum v3.17-pf4 kernel branch https://pf.natalenko.name/forum/index.php?topic=285 - promissed last for 3.17 kernel.
-	Hubbitus branch (https://github.com/Hubbitus/kernel/tree/f21-hubbitus) already 3.18.4.
 
-* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
-- Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
-- First push into github fork.
->>>>>>> ab6aebb6b6ce5dc2f90f1a2531bd4fa99600bd56
+#* Wed Jan 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.8-300.hu.1.pf4
+#- Post-pactum v3.17-pf4 kernel branch https://pf.natalenko.name/forum/index.php?topic=285 - promissed last for 3.17 kernel.
+#	Hubbitus branch (https://github.com/Hubbitus/kernel/tree/f21-hubbitus) already 3.18.4.
+
+#* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
+#- Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
+#- First push into github fork.
 
 * Mon Jan 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2014-9585 ASLR brute-force possible for vdso (rhbz 1181054 1181056)
@@ -2496,13 +2460,8 @@ fi
 - Add various UAS quirks (rhbz 1124119)
 - Add patch to fix loop in VDSO (rhbz 1178975)
 
-<<<<<<< HEAD
-* Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
-- Linux v3.17.8
-=======
 #* Thu Jan 08 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.17.8-300
 #- Linux v3.17.8
->>>>>>> ab6aebb6b6ce5dc2f90f1a2531bd4fa99600bd56
 
 #* Tue Jan 20 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.17.7-300.hu.1.pf3
 #- Hubbitus Linux kernel with post-factum pf3 patch (released https://pf.natalenko.name/forum/index.php?topic=279.0)
