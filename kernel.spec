@@ -634,6 +634,10 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 #rhbz 1202362
 Patch26169: kernfs-handle-poll-correctly-on-direct_read-files.patch
 
+#rhbz 1187004
+Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1372,6 +1376,10 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1202362
 ApplyPatch kernfs-handle-poll-correctly-on-direct_read-files.patch
+
+#rhbz 1187004
+ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2225,6 +2233,7 @@ fi
 %changelog
 * Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git2.1
 - Linux v4.0-rc4-199-gb314acaccd7e
+- Fix brightness on Lenovo Ideapad Z570 (rhbz 1187004)
 
 * Thu Mar 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git1.3
 - Linux v4.0-rc4-88-g7b09ac704bac
