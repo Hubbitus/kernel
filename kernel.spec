@@ -643,6 +643,9 @@ Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
+#rhbz 1187004
+Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
@@ -1395,6 +1398,10 @@ ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
+
+#rhbz 1187004
+ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2264,6 +2271,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix brightness on Lenovo Ideapad Z570 (rhbz 1187004)
+
 * Thu Mar 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.2-200
 - Linux v3.19.2
 
