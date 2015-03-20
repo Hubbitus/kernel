@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -70,7 +70,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -624,23 +624,6 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
-
-#rhbz 1200777 1200778
-Patch26150: Input-synaptics-split-synaptics_resolution-query-fir.patch
-Patch26151: Input-synaptics-log-queried-and-quirked-dimension-va.patch
-Patch26152: Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
-Patch26153: Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
-Patch26154: Input-synaptics-support-min-max-board-id-in-min_max_.patch
-Patch26155: Input-synaptics-skip-quirks-when-post-2013-dimension.patch
-Patch26156: Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
-Patch26157: Input-synaptics-handle-spurious-release-of-trackstic.patch
-Patch26158: Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
-Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
-Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
-Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
-Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
-Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
-Patch26164: Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
 #CVE-2014-8159 rhbz 1181166 1200950
 Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
@@ -1380,23 +1363,6 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
-
-#rhbz 1200777 1200778
-ApplyPatch Input-synaptics-split-synaptics_resolution-query-fir.patch
-ApplyPatch Input-synaptics-log-queried-and-quirked-dimension-va.patch
-ApplyPatch Input-synaptics-query-min-dimensions-for-fw-v8.1.patch
-ApplyPatch Input-synaptics-remove-obsolete-min-max-quirk-for-X2.patch
-ApplyPatch Input-synaptics-support-min-max-board-id-in-min_max_.patch
-ApplyPatch Input-synaptics-skip-quirks-when-post-2013-dimension.patch
-ApplyPatch Input-synaptics-fix-middle-button-on-Lenovo-2015-pro.patch
-ApplyPatch Input-synaptics-handle-spurious-release-of-trackstic.patch
-ApplyPatch Input-synaptics-do-not-retrieve-the-board-id-on-old-.patch
-ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
-ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
-ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
-ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
-ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
-ApplyPatch Revert-Input-synaptics-use-dmax-in-input_mt_assign_s.patch
 
 #CVE-2014-8159 rhbz 1181166 1200950
 ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
@@ -2257,6 +2223,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git2.1
+- Linux v4.0-rc4-199-gb314acaccd7e
+
 * Thu Mar 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git1.3
 - Linux v4.0-rc4-88-g7b09ac704bac
 - Rename arm64-xgbe-a0.patch
