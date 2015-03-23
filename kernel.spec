@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -634,6 +634,8 @@ Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 Patch26172: Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
+
+Patch26173: net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1374,6 +1376,8 @@ ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 ApplyPatch Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
+
+ApplyPatch net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2225,7 +2229,8 @@ fi
 #
 # 
 %changelog
-* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.1
+* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.3
+- Validate iovec range in sys_sendto/sys_recvfrom
 - Revert i915 commit that causes boot hangs on at least some headless machines
 - Linux v4.0-rc5
 
