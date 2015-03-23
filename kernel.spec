@@ -2282,6 +2282,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable CONFIG_SND_BEBOB (rhbz 1204342)
 - Validate iovec range in sys_sendto/sys_recvfrom
 - CVE-2015-2666 execution in the early microcode loader (rhbz 1204724 1204722)
 
