@@ -68,9 +68,9 @@ Summary: The Linux kernel
 # define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -412,7 +412,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %endif
 
 #Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc4.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc5.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -612,8 +612,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-Patch26137: fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -630,9 +628,6 @@ Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
-
-#rhbz 1202362
-Patch26169: kernfs-handle-poll-correctly-on-direct_read-files.patch
 
 #rhbz 1187004
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
@@ -1355,8 +1350,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-ApplyPatch fifo-nv04-remove-the-loop-from-the-interrupt-handler.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -1373,9 +1366,6 @@ ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
-
-#rhbz 1202362
-ApplyPatch kernfs-handle-poll-correctly-on-direct_read-files.patch
 
 #rhbz 1187004
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
@@ -2231,6 +2221,9 @@ fi
 #
 # 
 %changelog
+* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.1
+- Linux v4.0-rc5
+
 * Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git2.1
 - Linux v4.0-rc4-199-gb314acaccd7e
 - Fix brightness on Lenovo Ideapad Z570 (rhbz 1187004)
