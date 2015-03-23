@@ -2271,6 +2271,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 23 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Refix Panda on ARMv7 crash on boot
+
 * Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix brightness on Lenovo Ideapad Z570 (rhbz 1187004)
 
