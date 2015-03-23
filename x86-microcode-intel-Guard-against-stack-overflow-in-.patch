@@ -1,4 +1,3 @@
-From 4423997d1e2f479f98b8f0c7ad733607f361ed76 Mon Sep 17 00:00:00 2001
 From: Quentin Casasnovas <quentin.casasnovas@oracle.com>
 Date: Tue, 3 Feb 2015 13:00:22 +0100
 Subject: [PATCH] x86/microcode/intel: Guard against stack overflow in the

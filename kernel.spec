@@ -654,6 +654,8 @@ Patch26172: x86-microcode-intel-Guard-against-stack-overflow-in-.patch
 Patch30000: kernel-arm64.patch
 Patch30001: aarch64-fix-tlb-issues.patch
 
+Patch26173: net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1417,6 +1419,8 @@ ApplyPatch aarch64-fix-tlb-issues.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
+
+ApplyPatch net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2278,6 +2282,7 @@ fi
 #                                    ||     ||
 %changelog
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Validate iovec range in sys_sendto/sys_recvfrom
 - CVE-2015-2666 execution in the early microcode loader (rhbz 1204724 1204722)
 
 * Mon Mar 23 2015 Peter Robinson <pbrobinson@fedoraproject.org>
