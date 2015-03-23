@@ -2230,6 +2230,7 @@ fi
 # 
 %changelog
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.3
+- Enable CONFIG_SND_BEBOB (rhbz 1204342)
 - Validate iovec range in sys_sendto/sys_recvfrom
 - Revert i915 commit that causes boot hangs on at least some headless machines
 - Linux v4.0-rc5
