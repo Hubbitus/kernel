@@ -647,6 +647,9 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
+#CVE-2015-2666 rhbz 1204724 1204722
+Patch26172: x86-microcode-intel-Guard-against-stack-overflow-in-.patch
+
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 Patch30001: aarch64-fix-tlb-issues.patch
@@ -1402,6 +1405,9 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 #rhbz 1187004
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
+
+#CVE-2015-2666 rhbz 1204724 1204722
+ApplyPatch x86-microcode-intel-Guard-against-stack-overflow-in-.patch
 
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
@@ -2271,6 +2277,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2666 execution in the early microcode loader (rhbz 1204724 1204722)
+
 * Mon Mar 23 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Refix Panda on ARMv7 crash on boot
 
