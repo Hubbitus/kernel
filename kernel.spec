@@ -633,6 +633,8 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
+Patch26172: Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1370,6 +1372,8 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 #rhbz 1187004
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
+
+ApplyPatch Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2222,6 +2226,7 @@ fi
 # 
 %changelog
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.1
+- Revert i915 commit that causes boot hangs on at least some headless machines
 - Linux v4.0-rc5
 
 * Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc4.git2.1
