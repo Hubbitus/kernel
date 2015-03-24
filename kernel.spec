@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -627,9 +627,8 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
-Patch26172: Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
-
-Patch26173: net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
+Patch26172: drm-Fixup-racy-refcounting-in-plane_force_disable.patch
+Patch26173: drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1369,9 +1368,8 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
-ApplyPatch Revert-drm-i915-Ensure-plane-state-fb-stays-in-sync-.patch
-
-ApplyPatch net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
+ApplyPatch drm-Fixup-racy-refcounting-in-plane_force_disable.patch
+ApplyPatch drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2223,6 +2221,10 @@ fi
 #
 # 
 %changelog
+* Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git1.3
+- Linux v4.0-rc5-25-g90a5a895cc8b
+- Add some i915 fixes
+
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git0.3
 - Enable CONFIG_SND_BEBOB (rhbz 1204342)
 - Validate iovec range in sys_sendto/sys_recvfrom
