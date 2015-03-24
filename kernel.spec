@@ -656,6 +656,9 @@ Patch30001: aarch64-fix-tlb-issues.patch
 
 Patch26173: net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
 
+#rhbz 1204512
+Patch26174: tun-return-proper-error-code-from-tun_do_read.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1421,6 +1424,9 @@ ApplyPatch kernel-arm64.patch -R
 %endif
 
 ApplyPatch net-validate-the-range-we-feed-to-iov_iter_init-in-s.patch
+
+#rhbz 1204512
+ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2281,6 +2287,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix tun bug causing Juniper VPN failure (rhbz 1204512)
+
 * Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.2-201
 - Enable CONFIG_SND_BEBOB (rhbz 1204342)
 - Validate iovec range in sys_sendto/sys_recvfrom
