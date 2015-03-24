@@ -630,6 +630,9 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 Patch26172: drm-Fixup-racy-refcounting-in-plane_force_disable.patch
 Patch26173: drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
 
+#rhbz 1203584
+Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1370,6 +1373,9 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 ApplyPatch drm-Fixup-racy-refcounting-in-plane_force_disable.patch
 ApplyPatch drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
+
+#rhbz 1203584
+ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2221,6 +2227,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ALPS v5 and v7 trackpads (rhbz 1203584)
+
 * Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git1.3
 - Linux v4.0-rc5-25-g90a5a895cc8b
 - Add some i915 fixes
