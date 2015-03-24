@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2281,7 +2281,7 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.2-201
 - Enable CONFIG_SND_BEBOB (rhbz 1204342)
 - Validate iovec range in sys_sendto/sys_recvfrom
 - CVE-2015-2666 execution in the early microcode loader (rhbz 1204724 1204722)
