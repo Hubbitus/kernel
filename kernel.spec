@@ -590,6 +590,11 @@ Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
+# IOMMU crash fixes - https://lists.linuxfoundation.org/pipermail/iommu/2015-February/012329.html
+Patch21030: iommu-omap-Play-nice-in-multi-platform-builds.patch
+Patch21031: iommu-exynos-Play-nice-in-multi-platform-builds.patch
+Patch21032: iommu-rockchip-Play-nice-in-multi-platform-builds.patch
+
 Patch21100: arm-highbank-l2-reverts.patch
 
 #rhbz 754518
@@ -1245,6 +1250,10 @@ ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
+
+ApplyPatch iommu-omap-Play-nice-in-multi-platform-builds.patch
+ApplyPatch iommu-exynos-Play-nice-in-multi-platform-builds.patch
+ApplyPatch iommu-rockchip-Play-nice-in-multi-platform-builds.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
