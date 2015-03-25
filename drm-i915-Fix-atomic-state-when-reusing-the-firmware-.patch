@@ -1,0 +1,61 @@
+From: Damien Lespiau <damien.lespiau@intel.com>
+Date: Thu, 5 Feb 2015 19:24:25 +0000
+Subject: [PATCH] drm/i915: Fix atomic state when reusing the firmware fb
+
+Right now, we get a warning when taking over the firmware fb:
+
+  [drm:drm_atomic_plane_check] FB set but no CRTC
+
+with the following backtrace:
+
+  [<ffffffffa010339d>] drm_atomic_check_only+0x35d/0x510 [drm]
+  [<ffffffffa0103567>] drm_atomic_commit+0x17/0x60 [drm]
+  [<ffffffffa00a6ccd>] drm_atomic_helper_plane_set_property+0x8d/0xd0 [drm_kms_helper]
+  [<ffffffffa00f1fed>] drm_mode_plane_set_obj_prop+0x2d/0x90 [drm]
+  [<ffffffffa00a8a1b>] restore_fbdev_mode+0x6b/0xf0 [drm_kms_helper]
+  [<ffffffffa00aa969>] drm_fb_helper_restore_fbdev_mode_unlocked+0x29/0x80 [drm_kms_helper]
+  [<ffffffffa00aa9e2>] drm_fb_helper_set_par+0x22/0x50 [drm_kms_helper]
+  [<ffffffffa050a71a>] intel_fbdev_set_par+0x1a/0x60 [i915]
+  [<ffffffff813ad444>] fbcon_init+0x4f4/0x580
+
+That's because we update the plane state with the fb from the firmware, but we
+never associate the plane to that CRTC.
+
+We don't quite have the full DRM take over from HW state just yet, so
+fake enough of the plane atomic state to pass the checks.
+
+v2: Fix the state on which we set the CRTC in the case we're sharing the
+    initial fb with another pipe. (Matt)
+
+Signed-off-by: Damien Lespiau <damien.lespiau@intel.com>
+Reviewed-by: Matt Roper <matthew.d.roper@intel.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+
+(Backported to 4.0-rc5)
+---
+ drivers/gpu/drm/i915/intel_display.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index 177714a9d778..805b5e7b0058 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -2439,6 +2439,7 @@ intel_find_plane_obj(struct intel_crtc *intel_crtc,
+ 		return;
+ 
+ 	if (intel_alloc_plane_obj(intel_crtc, plane_config)) {
++		intel_crtc->base.primary->state->crtc = &intel_crtc->base;
+ 		update_state_fb(intel_crtc->base.primary);
+ 		return;
+ 	}
+@@ -2469,6 +2470,7 @@ intel_find_plane_obj(struct intel_crtc *intel_crtc,
+ 
+ 			drm_framebuffer_reference(c->primary->fb);
+ 			intel_crtc->base.primary->fb = c->primary->fb;
++			intel_crtc->base.primary->state->crtc = &intel_crtc->base;
+ 			obj->frontbuffer_bits |= INTEL_FRONTBUFFER_PRIMARY(intel_crtc->pipe);
+ 			break;
+ 		}
+-- 
+2.1.0
+
