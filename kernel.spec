@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 4
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -627,11 +627,11 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 Patch26172: drm-Fixup-racy-refcounting-in-plane_force_disable.patch
 Patch26173: drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
+Patch26175: drm-i915-Fix-atomic-state-when-reusing-the-firmware-.patch
+Patch26176: drm-i915-Fixup-legacy-plane-crtc-link-for-initial-fb.patch
 
 #rhbz 1203584
 Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
-
-#atch26175: intel.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1371,11 +1371,11 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 ApplyPatch drm-Fixup-racy-refcounting-in-plane_force_disable.patch
 ApplyPatch drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
+ApplyPatch drm-i915-Fix-atomic-state-when-reusing-the-firmware-.patch
+ApplyPatch drm-i915-Fixup-legacy-plane-crtc-link-for-initial-fb.patch
 
 #rhbz 1203584
 ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
-
-#pplyPatch intel.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2227,6 +2227,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git2.4
+- Add patches to fix a few more i915 hangs/oopses
+
 * Wed Mar 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git2.1
 - Linux v4.0-rc5-53-gc875f421097a
 
