@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -615,8 +615,6 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
-Patch26141: mfd-rtsx_usb-prevent-DMA-from-stack.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
@@ -632,6 +630,8 @@ Patch26173: drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
 
 #rhbz 1203584
 Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
+
+#atch26175: intel.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1359,8 +1359,6 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
-ApplyPatch mfd-rtsx_usb-prevent-DMA-from-stack.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
@@ -1376,6 +1374,8 @@ ApplyPatch drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
 
 #rhbz 1203584
 ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
+
+#pplyPatch intel.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2227,6 +2227,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git2.1
+- Linux v4.0-rc5-53-gc875f421097a
+
 * Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix ALPS v5 and v7 trackpads (rhbz 1203584)
 
