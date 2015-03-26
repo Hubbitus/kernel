@@ -2287,6 +2287,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable the broken CONFIG_MSM_IOMMU
+
 * Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix tun bug causing Juniper VPN failure (rhbz 1204512)
 
