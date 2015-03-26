@@ -1,4 +1,3 @@
-From 957f094f221f81e457133b1f4c4d95ffa49ff731 Mon Sep 17 00:00:00 2001
 From: Alex Gartrell <agartrell@fb.com>
 Date: Thu, 25 Dec 2014 23:22:49 -0800
 Subject: [PATCH] tun: return proper error code from tun_do_read
@@ -13,10 +12,10 @@ Signed-off-by: David S. Miller <davem@davemloft.net>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/tun.c b/drivers/net/tun.c
-index df5e94871844..c0df872f5b8c 100644
+index 10f9e4021b5a..9a409a8f3b19 100644
 --- a/drivers/net/tun.c
 +++ b/drivers/net/tun.c
-@@ -1380,7 +1380,7 @@ static ssize_t tun_do_read(struct tun_struct *tun, struct tun_file *tfile,
+@@ -1368,7 +1368,7 @@ static ssize_t tun_do_read(struct tun_struct *tun, struct tun_file *tfile,
  	skb = __skb_recv_datagram(tfile->socket.sk, noblock ? MSG_DONTWAIT : 0,
  				  &peeked, &off, &err);
  	if (!skb)
