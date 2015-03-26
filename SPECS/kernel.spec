@@ -10,10 +10,10 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 229.el7
+%define pkgrelease 229.1.2.el7
 
 # allow pkg_release to have configurable %{?dist} tag
-%define specrelease 229%{?dist}
+%define specrelease 229.1.2%{?dist}
 
 %define pkg_release %{specrelease}%{?buildid}
 
@@ -332,16 +332,16 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 %if %{?released_kernel}
-Source13: centos.cer 
+Source13: securebootca.cer
 Source14: secureboot.cer
 %define pesign_name redhatsecureboot301
 %else
-Source13: centos.cer
-Source14: secureboot.cer
+Source13: redhatsecurebootca2.cer
+Source14: redhatsecureboot003.cer
 %define pesign_name redhatsecureboot003
 %endif
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -370,9 +370,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -525,11 +522,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n %{pesign_name}
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1500,8 +1491,17 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Fri Mar 06 2015 Johnny Hughes <johnny@centos.org> [3.10.0-229.el7]
-- Apply debranding changes
+* Fri Mar 06 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.1.2.el7]
+- [infiniband] core: Prevent integer overflow in ib_umem_get address arithmetic (Doug Ledford) [1181177 1179347] {CVE-2014-8159}
+
+* Thu Mar 05 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.1.1.el7]
+- [crypto] testmgr: mark rfc4106(gcm(aes)) as fips_allowed (Jarod Wilson) [1197751 1185400]
+- [virt] storvsc: ring buffer failures may result in I/O freeze (Vitaly Kuznetsov) [1197749 1171409]
+- [md] dm-thin: don't allow messages to be sent to a pool target in READ_ONLY or FAIL mode (Mike Snitzer) [1197745 1184592]
+- [kernel] workqueue: fix subtle pool management issue which can stall whole worker_pool (Eric Sandeen) [1197744 1165535]
+- [platform] thinkpad_acpi: support new BIOS version string pattern (Benjamin Tissoires) [1197743 1194830]
+- [x86] ioapic: kcrash: Prevent crash_kexec() from deadlocking on ioapic_lock (Baoquan He) [1197742 1182424]
+- [net] sctp: fix slab corruption from use after free on INIT collisions (Daniel Borkmann) [1196588 1183959] {CVE-2015-1421}
 
 * Thu Jan 29 2015 Jarod Wilson <jarod@redhat.com> [3.10.0-229.el7]
 - [net] rtnetlink: allow to register ops without ops->setup set (Jiri Benc) [1186492]
