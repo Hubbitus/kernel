@@ -1,7 +1,6 @@
-From 30b01a7a85c0a2993870f7ed93059f9957bff59f Mon Sep 17 00:00:00 2001
 From: Mark Langsdorf <mlangsdo@redhat.com>
 Date: Wed, 25 Mar 2015 14:12:51 -0400
-Subject: [PATCH 3/4] usb: make xhci platform driver use 64 bit or 32 bit DMA
+Subject: [PATCH] usb: make xhci platform driver use 64 bit or 32 bit DMA
 
 The xhci platform driver needs to work on systems that either only
 support 64-bit DMA or only support 32-bit DMA. Attempt to set a
@@ -14,7 +13,7 @@ Signed-off-by: Mark Langsdorf <mlangsdo@redhat.com>
  1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/usb/host/xhci-plat.c b/drivers/usb/host/xhci-plat.c
-index 0e11d61..cc5ca2c 100644
+index 0e11d61408ff..cc5ca2cac706 100644
 --- a/drivers/usb/host/xhci-plat.c
 +++ b/drivers/usb/host/xhci-plat.c
 @@ -83,14 +83,13 @@ static int xhci_plat_probe(struct platform_device *pdev)
@@ -40,5 +39,5 @@ index 0e11d61..cc5ca2c 100644
  	hcd = usb_create_hcd(driver, &pdev->dev, dev_name(&pdev->dev));
  	if (!hcd)
 -- 
-1.9.3
+2.1.0
 

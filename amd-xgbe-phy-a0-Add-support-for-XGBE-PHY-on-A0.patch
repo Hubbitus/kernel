@@ -1,7 +1,6 @@
-From 12d65e98ceb4238b749feeb56523b90f19396820 Mon Sep 17 00:00:00 2001
 From: Tom Lendacky <thomas.lendacky@amd.com>
 Date: Tue, 17 Mar 2015 10:58:38 -0500
-Subject: [PATCH 2/4] amd-xgbe-phy-a0: Add support for XGBE PHY on A0
+Subject: [PATCH] amd-xgbe-phy-a0: Add support for XGBE PHY on A0
 
 Add XGBE phy driver support for A0 hardware.
 
@@ -13,7 +12,7 @@ Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
  create mode 100644 drivers/net/phy/amd-xgbe-phy-a0.c
 
 diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index 501ea76..92e7644 100644
+index 501ea7699a2d..92e76446033e 100644
 --- a/drivers/net/phy/Makefile
 +++ b/drivers/net/phy/Makefile
 @@ -34,4 +34,5 @@ obj-$(CONFIG_MDIO_BUS_MUX_MMIOREG) += mdio-mux-mmioreg.o
@@ -24,7 +23,7 @@ index 501ea76..92e7644 100644
  obj-$(CONFIG_MDIO_BCM_UNIMAC)	+= mdio-bcm-unimac.o
 diff --git a/drivers/net/phy/amd-xgbe-phy-a0.c b/drivers/net/phy/amd-xgbe-phy-a0.c
 new file mode 100644
-index 0000000..c352d5c
+index 000000000000..c352d5c2989b
 --- /dev/null
 +++ b/drivers/net/phy/amd-xgbe-phy-a0.c
 @@ -0,0 +1,1814 @@
@@ -1843,5 +1842,5 @@ index 0000000..c352d5c
 +};
 +MODULE_DEVICE_TABLE(mdio, amd_xgbe_phy_a0_ids);
 -- 
-1.9.3
+2.1.0
 
