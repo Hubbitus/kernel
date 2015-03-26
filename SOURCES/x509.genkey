@@ -5,9 +5,9 @@ prompt = no
 x509_extensions = myexts
 
 [ req_distinguished_name ]
-O = Red Hat
-CN = Red Hat Enterprise Linux kernel signing key
-emailAddress = secalert@redhat.com
+O = CentOS 
+CN = CentOS Linux kernel signing key
+emailAddress = security@centos.org
 
 [ myexts ]
 basicConstraints=critical,CA:FALSE
