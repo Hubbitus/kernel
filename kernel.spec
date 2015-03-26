@@ -578,6 +578,9 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 # ARM64
 Patch21000: net-amd-Add-xgbe-a0-driver.patch
+Patch21001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
+Patch21002: arm64-avoid-needing-console-to-enable-serial-console.patch
+Patch21003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1211,6 +1214,9 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # ARM64
 ApplyPatch net-amd-Add-xgbe-a0-driver.patch
+ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
+ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
+ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 #
 # ARM
@@ -2227,6 +2233,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 25 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add aarch64 patches to fix mustang usb, seattle eth, and console settings
+
 * Wed Mar 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git2.4
 - Add patches to fix a few more i915 hangs/oopses
 

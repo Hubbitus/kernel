@@ -1,0 +1,46 @@
+From 3bba3a1990d065e30630c5c67ed32689106aef57 Mon Sep 17 00:00:00 2001
+From: Mark Salter <msalter@redhat.com>
+Date: Wed, 25 Mar 2015 14:17:50 -0400
+Subject: [PATCH 4/4] arm64: avoid needing console= to enable serial console
+
+Tell kernel to prefer one of the serial ports for console on
+platforms currently supported (pl011 or 8250). console= on
+command line will override these assumed preferences. This is
+just a hack to get the behavior we want from DT provided by
+firmware.
+
+Signed-off-by: Mark Salter <msalter@redhat.com>
+---
+ arch/arm64/kernel/setup.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index e8420f6..8473381 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -547,3 +547,22 @@ const struct seq_operations cpuinfo_op = {
+ 	.stop	= c_stop,
+ 	.show	= c_show
+ };
++
++/*
++ * Temporary hack to avoid need for console= on command line
++ */
++static int __init arm64_console_setup(void)
++{
++	/* Allow cmdline to override our assumed preferences */
++	if (console_set_on_cmdline)
++		return 0;
++
++	if (IS_ENABLED(CONFIG_SERIAL_AMBA_PL011))
++		add_preferred_console("ttyAMA", 0, "115200");
++
++	if (IS_ENABLED(CONFIG_SERIAL_8250))
++		add_preferred_console("ttyS", 0, "115200");
++
++	return 0;
++}
++early_initcall(arm64_console_setup);
+-- 
+1.9.3
+
