@@ -479,7 +479,7 @@ Source2001: cpupower.config
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
 # https://pf.natalenko.name/forum/index.php?topic=286.0
-%global stable_patch_00 https://pf.natalenko.name/sources/3.18/patch-3.18-pf1.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf2.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -611,10 +611,7 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
-<<<<<<< HEAD
 ################# Hubbitus patches
-# BFS
-#? Patch30002: http://ck.kolivas.org/patches/bfs/3.0/3.16/3.16-sched-bfs-456.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -627,59 +624,21 @@ Patch22000: weird-root-dentry-name-debug.patch
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch30007: BFS-3.13-compile-fix-hu.patch
+Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
 
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
 #? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #//////////////// end Hubbitus patches
 
-# Patch series from Hans for various backlight and platform driver fixes
-Patch26002: samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1089731
-Patch26058: asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1135338
-Patch26090: HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
-
-#rhbz 1173806
-Patch26101: powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#rhbz 1163927
-Patch26121: Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
 #rhbz 1178975
 Patch26125: x86-vdso-Use-asm-volatile-in-__getcpu.patch
-
-#rhbz 1124119
-Patch26126: uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-Patch26127: uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-Patch26128: uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
-
-#rhbz 1115713
-Patch26129: samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
-#rhbz 1163574
-Patch26130: acpi-video-Add-disable_native_backlight-quirk-for-De.patch
-#rhbz 1094948
-Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2014-9585 rhbz 1181054 1181056
 Patch26132: x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 
-# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
-Patch30000: kernel-arm64.patch
-
-# Fix for big-endian arches, already upstream
-Patch30001: mpssd-x86-only.patch
-
-#rhbz 1188074
-Patch30003: 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
-=======
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
->>>>>>> c41099298bb46a0d454e85201045129a0b83c575
 #rhbz 1186097
 Patch26135: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
@@ -1290,6 +1249,8 @@ ApplyOptionalPatch compile-fixes.patch
 
 %if !%{nopatches}
 
+
+
 # revert patches from upstream that conflict or that we get via other means
 ApplyOptionalPatch upstream-reverts.patch -R
 
@@ -1410,10 +1371,7 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 # Intel DRM
 ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
-<<<<<<< HEAD
-=======
 ApplyPatch drm-i915-hush-check-crtc-state.patch
->>>>>>> c41099298bb46a0d454e85201045129a0b83c575
 ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
@@ -1440,88 +1398,21 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
-<<<<<<< HEAD
-#rhbz 1025603
-ApplyPatch disable-libdw-unwind-on-non-x86.patch
-
-ApplyPatch perf-install-trace-event-plugins.patch
-
-# Patch series from Hans for various backlight and platform driver fixes
-ApplyPatch samsung-laptop-Add-broken-acpi-video-quirk-for-NC210.patch
-
-#rhbz 1089731
-ApplyPatch asus-nb-wmi-Add-wapf4-quirk-for-the-X550VB.patch
-
-#rhbz 1135338
-ApplyPatch HID-add-support-for-MS-Surface-Pro-3-Type-Cover.patch
-
-#rhbz 1173806
-ApplyPatch powerpc-powernv-force-all-CPUs-to-be-bootable.patch
-
-#rhbz 1163927
-ApplyPatch Set-UID-in-sess_auth_rawntlmssp_authenticate-too.patch
-
-# Fix for big-endian arches, already upstream
-ApplyPatch mpssd-x86-only.patch
-
-#rhbz 1188074
-ApplyPatch 0001-ntp-Fixup-adjtimex-freq-validation-on-32bit-systems.patch
-
-#rhbz 1186097
-#? ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch --fuzz=2
-
-#CVE-2015-1593 rhbz 1192519 1192520
-ApplyPatch ASLR-fix-stack-randomization-on-64-bit-systems.patch
-
-#CVE-XXXX-XXXX rhbz 1189864 1192079
-ApplyPatch vhost-scsi-potential-memory-corruption.patch
-
-#rhbz 1178975
-# Already in pf
-#? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
-
-#rhbz 1124119
-ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-#? ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
-
-#rhbz 1115713
-ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
-#rhbz 1163574
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2014-9585 rhbz 1181054 1181056
-#? ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
-
-#rhbz 1178975
-ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
-
-#rhbz 1124119
-ApplyPatch uas-Do-not-blacklist-ASM1153-disk-enclosures.patch
-ApplyPatch uas-Add-US_FL_NO_ATA_1X-for-2-more-Seagate-disk-encl.patch
-ApplyPatch uas-Add-no-report-opcodes-quirk-for-Simpletech-devic.patch
-
-#rhbz 1115713
-ApplyPatch samsung-laptop-Add-use_native_backlight-quirk-and-en.patch
-#rhbz 1163574
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-De.patch
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2014-9585 rhbz 1181054 1181056
-ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
-=======
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
 #rhbz 1186097
 ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
 
+# Already in pf?
+#rhbz 1178975
+#? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
+
+# Already in pf?
+#CVE-2014-9585 rhbz 1181054 1181056
+#? ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
+#rhbz 1094948
+ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
+
 #CVE-XXXX-XXXX rhbz 1189864 1192079
 ApplyPatch vhost-scsi-potential-memory-corruption.patch
->>>>>>> c41099298bb46a0d454e85201045129a0b83c575
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
@@ -1562,6 +1453,10 @@ ApplyPatch aarch64-fix-tlb-issues.patch
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
+
+################# Hubbitus patches
+ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch
+#//////////////// Hubbitus patches
 
 # END OF PATCH APPLICATIONS
 
@@ -2422,6 +2317,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.2-200.hu.1.pf2
+- 3.19-pf2: https://pf.natalenko.name/forum/index.php?topic=290.0
+- Merge fedora upstream 3.19.2-200.
+- Rebase acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
+- Rebase my patch kernel-3.19-bfs-compat-hubbitus.patch (was BFS-3.13-compile-fix-hu.patch)
+
 * Thu Mar 19 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.2-200
 - Linux v3.19.2
 
