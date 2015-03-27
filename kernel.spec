@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -627,11 +627,6 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 #rhbz 1187004
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
-
-Patch26172: drm-Fixup-racy-refcounting-in-plane_force_disable.patch
-Patch26173: drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
-Patch26175: drm-i915-Fix-atomic-state-when-reusing-the-firmware-.patch
-Patch26176: drm-i915-Fixup-legacy-plane-crtc-link-for-initial-fb.patch
 
 #rhbz 1203584
 Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
@@ -1374,11 +1369,6 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 #rhbz 1187004
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
-
-ApplyPatch drm-Fixup-racy-refcounting-in-plane_force_disable.patch
-ApplyPatch drm-i915-Don-t-try-to-reference-the-fb-in-get_initia.patch
-ApplyPatch drm-i915-Fix-atomic-state-when-reusing-the-firmware-.patch
-ApplyPatch drm-i915-Fixup-legacy-plane-crtc-link-for-initial-fb.patch
 
 #rhbz 1203584
 ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
@@ -2233,6 +2223,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git4.1
+- Linux v4.0-rc5-96-g3c435c1e472b
+- Fixes hangs due to i915 issues (rhbz 1204050 1206056)
+
 * Thu Mar 26 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc5.git3.1
 - Linux v4.0-rc5-80-g4c4fe4c24782
 
