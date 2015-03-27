@@ -1,5 +1,6 @@
 clog
 *.xz
+!*patch-*-pf[0-9].xz
 *.bz2
 *.rpm
 *.orig
