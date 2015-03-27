@@ -598,6 +598,11 @@ Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
+# IOMMU crash fixes - https://lists.linuxfoundation.org/pipermail/iommu/2015-February/012329.html
+Patch21030: iommu-omap-Play-nice-in-multi-platform-builds.patch
+Patch21031: iommu-exynos-Play-nice-in-multi-platform-builds.patch
+Patch21032: iommu-rockchip-Play-nice-in-multi-platform-builds.patch
+
 Patch21100: arm-highbank-l2-reverts.patch
 
 #rhbz 754518
@@ -667,19 +672,24 @@ Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
-#CVE-2015-2150 rhbz 1196266 1200397
-Patch26165: xen-pciback-limit-guest-control-of-command-register.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
+#rhbz 1187004
+Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
+
+#CVE-2015-2666 rhbz 1204724 1204722
+Patch26172: x86-microcode-intel-Guard-against-stack-overflow-in-.patch
 
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
-Patch30001: aarch64-fix-tlb-issues.patch
+
+#rhbz 1204512
+Patch26174: tun-return-proper-error-code-from-tun_do_read.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1277,6 +1287,10 @@ ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
 
+ApplyPatch iommu-omap-Play-nice-in-multi-platform-builds.patch
+ApplyPatch iommu-exynos-Play-nice-in-multi-platform-builds.patch
+ApplyPatch iommu-rockchip-Play-nice-in-multi-platform-builds.patch
+
 ApplyPatch arm-highbank-l2-reverts.patch
 
 #
@@ -1436,27 +1450,34 @@ ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
-#CVE-2015-2150 rhbz 1196266 1200397
-ApplyPatch xen-pciback-limit-guest-control-of-command-register.patch
-
 #CVE-2014-8159 rhbz 1181166 1200950
 ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
 
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
+#rhbz 1187004
+ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
+ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
+
+#CVE-2015-2666 rhbz 1204724 1204722
+ApplyPatch x86-microcode-intel-Guard-against-stack-overflow-in-.patch
+
 %if 0%{?aarch64patches}
 ApplyPatch kernel-arm64.patch
-# Just needed for 3.19
-ApplyPatch aarch64-fix-tlb-issues.patch
 %ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
 ApplyPatch kernel-arm64.patch -R
 %endif
 %endif
 
+
 ################# Hubbitus patches
 ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch
 #//////////////// Hubbitus patches
+
+
+#rhbz 1204512
+ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2317,6 +2338,26 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Mar 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.3-200
+- Linux v3.19.3
+
+* Thu Mar 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable the broken CONFIG_MSM_IOMMU
+
+* Tue Mar 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix tun bug causing Juniper VPN failure (rhbz 1204512)
+
+* Mon Mar 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.19.2-201
+- Enable CONFIG_SND_BEBOB (rhbz 1204342)
+- Validate iovec range in sys_sendto/sys_recvfrom
+- CVE-2015-2666 execution in the early microcode loader (rhbz 1204724 1204722)
+
+* Mon Mar 23 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Refix Panda on ARMv7 crash on boot
+
+* Fri Mar 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix brightness on Lenovo Ideapad Z570 (rhbz 1187004)
+
 * Thu Mar 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.2-200.hu.1.pf2
 - 3.19-pf2: https://pf.natalenko.name/forum/index.php?topic=290.0
 - Merge fedora upstream 3.19.2-200.
