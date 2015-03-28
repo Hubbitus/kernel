@@ -2348,6 +2348,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.3-200.hu.1.uksm.bfs.bfq
+- 3.19.3-200.hu.1.uksm.bfs.bfq
+
 * Thu Mar 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.3-200
 - Linux v3.19.3
 
