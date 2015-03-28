@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf2
+%define buildid .hu.1.pf3
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -56,7 +56,7 @@ Summary: The Linux kernel
 
 # Do we have a -stable update to apply?
 # %define stable_update 8
-# Pf v3.18-pf1 is 3.18.7: https://pf.natalenko.name/forum/index.php?topic=286.0
+#?? Pf v3.19-pf3: https://pf.natalenko.name/forum/index.php?topic=303.0
 %define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -478,8 +478,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=286.0
-%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf2.xz
+# https://pf.natalenko.name/forum/index.php?topic=303.0
+%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf3.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -1472,7 +1472,7 @@ ApplyPatch kernel-arm64.patch -R
 
 
 ################# Hubbitus patches
-ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch
+ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
 #//////////////// Hubbitus patches
 
 
@@ -2338,6 +2338,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Mar 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.2-200.hu.1.pf3
+- 3.19.2-200.hu.1.pf3
+
 * Thu Mar 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.3-200
 - Linux v3.19.3
 
