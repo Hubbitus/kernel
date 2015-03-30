@@ -163,7 +163,7 @@ index b033dab5c8bf..f526b6e02f59 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index e6ff2181b2a5..95931292f3c4 100644
+index 33e695877504..f1742ffe92bd 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -3892,6 +3892,13 @@ void module_layout(struct module *mod,
