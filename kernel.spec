@@ -2223,6 +2223,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 31 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable MLX4_EN_VXLAN (rhbz 1207728)
+
 * Mon Mar 30 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc6.git0.1
 - Linux v4.0-rc6
 
