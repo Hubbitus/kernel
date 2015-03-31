@@ -1,3 +1,4 @@
+From 47a69c76881e80f353676a3fde1d668adf894eb3 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 18 Nov 2014 10:18:22 -0500
 Subject: [PATCH] efi: Add esrt support.
@@ -28,16 +29,16 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
  Documentation/ABI/testing/sysfs-firmware-efi-esrt |  81 ++++
  arch/x86/platform/efi/efi.c                       |   2 +
  drivers/firmware/efi/Makefile                     |   2 +-
- drivers/firmware/efi/efi.c                        |  66 ++-
+ drivers/firmware/efi/efi.c                        |  82 +++-
  drivers/firmware/efi/esrt.c                       | 464 ++++++++++++++++++++++
  include/linux/efi.h                               |   8 +
- 6 files changed, 621 insertions(+), 2 deletions(-)
+ 6 files changed, 637 insertions(+), 2 deletions(-)
  create mode 100644 Documentation/ABI/testing/sysfs-firmware-efi-esrt
  create mode 100644 drivers/firmware/efi/esrt.c
 
 diff --git a/Documentation/ABI/testing/sysfs-firmware-efi-esrt b/Documentation/ABI/testing/sysfs-firmware-efi-esrt
 new file mode 100644
-index 000000000000..6e431d1a4e79
+index 0000000..6e431d1
 --- /dev/null
 +++ b/Documentation/ABI/testing/sysfs-firmware-efi-esrt
 @@ -0,0 +1,81 @@
@@ -123,7 +124,7 @@ index 000000000000..6e431d1a4e79
 +		6 - Battery power event
 +
 diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index dbc8627a5cdf..b4c9fbbc9270 100644
+index dbc8627..b4c9fbb 100644
 --- a/arch/x86/platform/efi/efi.c
 +++ b/arch/x86/platform/efi/efi.c
 @@ -492,6 +492,8 @@ void __init efi_init(void)
@@ -136,7 +137,7 @@ index dbc8627a5cdf..b4c9fbbc9270 100644
  
  void __init efi_late_init(void)
 diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index d8be608a9f3b..26eabbc55341 100644
+index d8be608..26eabbc 100644
 --- a/drivers/firmware/efi/Makefile
 +++ b/drivers/firmware/efi/Makefile
 @@ -1,7 +1,7 @@
@@ -149,7 +150,7 @@ index d8be608a9f3b..26eabbc55341 100644
  obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
  obj-$(CONFIG_UEFI_CPER)			+= cper.o
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3061bb8629dc..e54ea20dfb42 100644
+index 3061bb8..48b4c35 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -39,6 +39,7 @@ struct efi __read_mostly efi = {
@@ -169,7 +170,7 @@ index 3061bb8629dc..e54ea20dfb42 100644
  static struct kobject *efivars_kobj;
  
  /*
-@@ -232,6 +233,68 @@ err_put:
+@@ -232,6 +233,84 @@ err_put:
  
  subsys_initcall(efisubsys_init);
  
@@ -204,23 +205,39 @@ index 3061bb8629dc..e54ea20dfb42 100644
 +
 +	e = map->phys_map + map->nr_map * map->desc_size;
 +	for (p = map->phys_map; p < e; p += map->desc_size) {
++		efi_memory_desc_t *md;
++		u64 size;
++		u64 end;
++
 +		/*
 +		 * If a driver calls this after efi_free_boot_services,
-+		 * ->map will be NULL.
++		 * ->map will be NULL, and the target may also not be mapped.
 +		 * So just always get our own virtual map on the CPU.
++		 *
 +		 */
-+		efi_memory_desc_t *md = phys_to_virt((phys_addr_t)p);
-+		u64 size = md->num_pages << EFI_PAGE_SHIFT;
-+		u64 end = md->phys_addr + size;
++		md = early_memremap((phys_addr_t)p, sizeof (*md));
++		if (!md) {
++			pr_err_once("early_memremap(%p, %zu) failed.\n",
++				    p, sizeof (*md));
++			return -ENOMEM;
++		}
 +
 +		if (!(md->attribute & EFI_MEMORY_RUNTIME) &&
 +		    md->type != EFI_BOOT_SERVICES_DATA &&
-+		    md->type != EFI_RUNTIME_SERVICES_DATA)
++		    md->type != EFI_RUNTIME_SERVICES_DATA) {
++			early_memunmap(md, sizeof (*md));
 +			continue;
++		}
++
++		size = md->num_pages << EFI_PAGE_SHIFT;
++		end = md->phys_addr + size;
 +		if (phys_addr >= md->phys_addr && phys_addr < end) {
 +			memcpy(out_md, md, sizeof(*out_md));
++			early_memunmap(md, sizeof (*md));
 +			return 0;
 +		}
++
++		early_memunmap(md, sizeof (*md));
 +	}
 +	pr_err_once("requested map not found.\n");
 +	return -ENOENT;
@@ -238,7 +255,7 @@ index 3061bb8629dc..e54ea20dfb42 100644
  
  /*
   * We can't ioremap data in EFI boot services RAM, because we've already mapped
-@@ -274,6 +337,7 @@ static __initdata efi_config_table_type_t common_tables[] = {
+@@ -274,6 +353,7 @@ static __initdata efi_config_table_type_t common_tables[] = {
  	{SMBIOS_TABLE_GUID, "SMBIOS", &efi.smbios},
  	{SMBIOS3_TABLE_GUID, "SMBIOS 3.0", &efi.smbios3},
  	{UGA_IO_PROTOCOL_GUID, "UGA", &efi.uga},
@@ -248,7 +265,7 @@ index 3061bb8629dc..e54ea20dfb42 100644
  
 diff --git a/drivers/firmware/efi/esrt.c b/drivers/firmware/efi/esrt.c
 new file mode 100644
-index 000000000000..20c0cbdb1c60
+index 0000000..20c0cbd
 --- /dev/null
 +++ b/drivers/firmware/efi/esrt.c
 @@ -0,0 +1,464 @@
@@ -717,20 +734,20 @@ index 000000000000..20c0cbdb1c60
 +MODULE_DESCRIPTION("EFI System Resource Table support");
 +MODULE_LICENSE("GPL");
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 470e8dfcb517..ed0d0c09d45c 100644
+index cf7e431..bb12adf 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -589,6 +589,9 @@ void efi_native_runtime_setup(void);
- #define DEVICE_TREE_GUID \
-     EFI_GUID(  0xb1b621d5, 0xf19c, 0x41a5, 0x83, 0x0b, 0xd9, 0x15, 0x2c, 0x69, 0xaa, 0xe0 )
+@@ -583,6 +583,9 @@ void efi_native_runtime_setup(void);
+ #define EFI_FILE_INFO_ID \
+     EFI_GUID(  0x9576e92, 0x6d3f, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b )
  
 +#define EFI_SYSTEM_RESOURCE_TABLE_GUID \
 +    EFI_GUID(  0xb122a263, 0x3661, 0x4f68, 0x99, 0x29, 0x78, 0xf8, 0xb0, 0xd6, 0x21, 0x80 )
 +
- #define EFI_CERT_SHA256_GUID \
-     EFI_GUID(  0xc1c41626, 0x504c, 0x4092, 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 )
+ #define EFI_FILE_SYSTEM_GUID \
+     EFI_GUID(  0x964e5b22, 0x6459, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b )
  
-@@ -849,6 +852,7 @@ extern struct efi {
+@@ -823,6 +826,7 @@ extern struct efi {
  	unsigned long fw_vendor;	/* fw_vendor */
  	unsigned long runtime;		/* runtime table */
  	unsigned long config_table;	/* config tables */
@@ -738,7 +755,7 @@ index 470e8dfcb517..ed0d0c09d45c 100644
  	efi_get_time_t *get_time;
  	efi_set_time_t *set_time;
  	efi_get_wakeup_time_t *get_wakeup_time;
-@@ -901,6 +905,7 @@ static inline efi_status_t efi_query_variable_store(u32 attributes, unsigned lon
+@@ -875,6 +879,7 @@ static inline efi_status_t efi_query_variable_store(u32 attributes, unsigned lon
  #endif
  extern void __iomem *efi_lookup_mapped_addr(u64 phys_addr);
  extern int efi_config_init(efi_config_table_type_t *arch_tables);
@@ -746,7 +763,7 @@ index 470e8dfcb517..ed0d0c09d45c 100644
  extern int efi_config_parse_tables(void *config_tables, int count, int sz,
  				   efi_config_table_type_t *arch_tables);
  extern u64 efi_get_iobase (void);
-@@ -908,12 +913,15 @@ extern u32 efi_mem_type (unsigned long phys_addr);
+@@ -882,12 +887,15 @@ extern u32 efi_mem_type (unsigned long phys_addr);
  extern u64 efi_mem_attributes (unsigned long phys_addr);
  extern u64 efi_mem_attribute (unsigned long phys_addr, unsigned long size);
  extern int __init efi_uart_console_only (void);
