@@ -631,6 +631,9 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 #rhbz 1203584
 Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
+#CVE-2015-2150 rhbz 1196266 1200397
+Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1372,6 +1375,9 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #rhbz 1203584
 ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
+
+#CVE-2015-2150 rhbz 1196266 1200397
+ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2223,6 +2229,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
+
 * Tue Mar 31 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable MLX4_EN_VXLAN (rhbz 1207728)
 
