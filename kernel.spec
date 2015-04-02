@@ -634,6 +634,9 @@ Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
+#CVE-2015-XXXX rhbz 1203712 1208491
+Patch26177: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1378,6 +1381,9 @@ ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+#CVE-2015-XXXX rhbz 1203712 1208491
+ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2229,6 +2235,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- DoS against IPv6 stacks due to improper handling of RA (rhbz 1203712 1208491)
+
 * Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc6.git1.1
 - Linux v4.0-rc6-31-gd4039314d0b1
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
