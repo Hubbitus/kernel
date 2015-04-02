@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2229,7 +2229,8 @@ fi
 #
 # 
 %changelog
-* Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc6.git1.1
+- Linux v4.0-rc6-31-gd4039314d0b1
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
 
 * Tue Mar 31 2015 Josh Boyer <jwboyer@fedoraproject.org>
