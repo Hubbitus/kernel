@@ -664,6 +664,9 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1203913
 Patch26176: sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
 
+#rhbz 1207789
+Patch26177: tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1435,6 +1438,9 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1203913
 ApplyPatch sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
+
+#rhbz 1207789
+ApplyPatch tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2302,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to fix tg3 deadlock (rhbz 1207789)
 - Fix gssproxy (rhbz 1203913)
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
 
