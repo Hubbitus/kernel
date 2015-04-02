@@ -661,6 +661,9 @@ Patch26174: tun-return-proper-error-code-from-tun_do_read.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
+#rhbz 1203913
+Patch26176: sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1429,6 +1432,9 @@ ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+#rhbz 1203913
+ApplyPatch sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2290,6 +2296,7 @@ fi
 #                                    ||     ||
 %changelog
 * Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix gssproxy (rhbz 1203913)
 - CVE-2015-2150 xen: NMIs triggerable by guests (rhbz 1196266 1200397)
 
 * Thu Mar 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.3-200
