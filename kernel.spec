@@ -68,7 +68,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -633,9 +633,6 @@ Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#CVE-2015-XXXX rhbz 1203712 1208491
-Patch26177: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1381,9 +1378,6 @@ ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#CVE-2015-XXXX rhbz 1203712 1208491
-ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2235,6 +2229,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 02 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc6.git2.1
+- Linux v4.0-rc6-101-g0a4812798fae
+
 * Thu Apr 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - DoS against IPv6 stacks due to improper handling of RA (rhbz 1203712 1208491)
 
