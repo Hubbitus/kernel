@@ -667,6 +667,9 @@ Patch26176: sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
 #rhbz 1207789
 Patch26177: tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 
+#CVE-2015-XXXX rhbz 1203712 1208491
+Patch26178: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1441,6 +1444,9 @@ ApplyPatch sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
 
 #rhbz 1207789
 ApplyPatch tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
+
+#CVE-2015-XXXX rhbz 1203712 1208491
+ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2307,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- DoS against IPv6 stacks due to improper handling of RA (rhbz 1203712 1208491)
+
 * Wed Apr 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport patch to fix tg3 deadlock (rhbz 1207789)
 - Fix gssproxy (rhbz 1203913)
