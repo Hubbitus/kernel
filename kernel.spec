@@ -66,9 +66,9 @@ Summary: The Linux kernel
 # define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 %define upstream_sublevel 0
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -406,7 +406,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %endif
 
 #Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc6.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc7.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -618,18 +618,12 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
-#CVE-2014-8159 rhbz 1181166 1200950
-Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
-
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1187004
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
-
-#rhbz 1203584
-Patch26174: Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -1363,18 +1357,12 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
-#CVE-2014-8159 rhbz 1181166 1200950
-ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
-
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1187004
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
-
-#rhbz 1203584
-ApplyPatch Input-ALPS-fix-max-coordinates-for-v5-and-v7-protoco.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -2229,6 +2217,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc7.git1.1
+- Linux v4.0-rc7-30-g20624d17963c
+
 * Thu Apr 02 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc6.git2.1
 - Linux v4.0-rc6-101-g0a4812798fae
 
