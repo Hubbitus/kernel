@@ -24,6 +24,9 @@ CONFIG_PHYSICAL_ALIGN=0x1000000
 # https://lists.fedoraproject.org/pipermail/kernel/2013-December/004753.html
 CONFIG_DEFAULT_MMAP_MIN_ADDR=65536
 
+# enable the 32-bit entry point for Baytrail
+CONFIG_EFI_MIXED=y
+
 CONFIG_IA32_EMULATION=y
 # CONFIG_IA32_AOUT is not set
 
