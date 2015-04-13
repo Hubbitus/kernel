@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -63,12 +63,11 @@ Summary: The Linux kernel
 ## The not-released-kernel case ##
 %else
 # The next upstream release sublevel (base_sublevel+1)
-# define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
-%define upstream_sublevel 0
+%define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -151,8 +150,7 @@ Summary: The Linux kernel
 %endif
 
 # The kernel tarball/base version
-# define kversion 4.%{base_sublevel}
-%define kversion 4.%{base_sublevel}-rc%rcrev
+%define kversion 4.%{base_sublevel}
 
 %define make_target bzImage
 
@@ -405,8 +403,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
-#Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-4.0-rc7.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -477,8 +474,7 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-### HAX we're using -rc$x tarballs to make transitioning easier
-# Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
 Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -2217,6 +2213,9 @@ fi
 #
 # 
 %changelog
+* Sun Apr 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-1
+- Linux v4.0
+
 * Fri Apr 10 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-0.rc7.git2.1
 - Linux v4.0-rc7-42-ge5e02de0665e
 
