@@ -14,7 +14,7 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index c74cbd892032..1293d0e0bf90 100644
+index aa4ee20ec8bb..958d1d9a5af8 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -589,6 +589,12 @@ void efi_native_runtime_setup(void);

@@ -123,13 +123,13 @@ index 000000000000..6e431d1a4e79
 +		6 - Battery power event
 +
 diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index dbc8627a5cdf..b4c9fbbc9270 100644
+index 02744df576d5..3b984c3aa1b0 100644
 --- a/arch/x86/platform/efi/efi.c
 +++ b/arch/x86/platform/efi/efi.c
-@@ -492,6 +492,8 @@ void __init efi_init(void)
- 		return;
+@@ -501,6 +501,8 @@ void __init efi_init(void)
  
- 	print_efi_memmap();
+ 	if (efi_enabled(EFI_DBG))
+ 		print_efi_memmap();
 +
 +	efi_esrt_init();
  }
@@ -733,7 +733,7 @@ index 000000000000..20c0cbdb1c60
 +MODULE_DESCRIPTION("EFI System Resource Table support");
 +MODULE_LICENSE("GPL");
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 470e8dfcb517..c15e1de5273c 100644
+index 9cc069579351..fa3546989ab0 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -583,6 +583,9 @@ void efi_native_runtime_setup(void);

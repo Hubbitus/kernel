@@ -25,7 +25,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 706b16fa6de8..470e8dfcb517 100644
+index 3dd6f4a51b9b..9cc069579351 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -595,6 +595,12 @@ void efi_native_runtime_setup(void);

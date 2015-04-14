@@ -33,10 +33,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index b7d31ca55187..ab403a636357 100644
+index faff6934c05a..4accc52523b4 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1695,6 +1695,16 @@ config EFI_MIXED
+@@ -1690,6 +1690,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -115,10 +115,10 @@ index ef17683484e9..105e7360d747 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 225b0988043a..90dbfb73e11f 100644
+index ab456dc233b5..74ba4083e7ce 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -133,7 +133,8 @@ struct boot_params {
+@@ -134,7 +134,8 @@ struct boot_params {
  	__u8  eddbuf_entries;				/* 0x1e9 */
  	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
  	__u8  kbd_status;				/* 0x1eb */
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 0a2421cca01f..a3d8174dedf9 100644
+index d74ac33290ae..88dad730e858 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1156,6 +1156,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
