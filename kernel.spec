@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -607,9 +607,6 @@ Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
-
-#rhbz 1190947
-Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
@@ -1339,9 +1336,6 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
-
-#rhbz 1190947
-ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
@@ -2199,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git3.1
+- Linux v4.0-5833-g6c373ca89399
+
 * Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git2.1
 - Linux v4.0-3843-gbb0fd7ab0986
 
