@@ -624,6 +624,9 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
+#rhbz 1208953
+Patch26178: pty-Fix-input-race-when-closing.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1362,6 +1365,9 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+#rhbz 1208953
+ApplyPatch pty-Fix-input-race-when-closing.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2213,6 +2219,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix tty closure race (rhbz 1208953)
+
 * Sun Apr 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.0-1
 - Linux v4.0
 
