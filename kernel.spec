@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -613,13 +613,6 @@ Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
-
-#rhbz 1201532
-Patch26168: HID-multitouch-add-support-of-clickpads.patch
-
-#rhbz 1187004
-Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
-Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -1352,13 +1345,6 @@ ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
 
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
-
-#rhbz 1201532
-ApplyPatch HID-multitouch-add-support-of-clickpads.patch
-
-#rhbz 1187004
-ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
-ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -2213,6 +2199,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git2.1
+- Linux v4.0-3843-gbb0fd7ab0986
+
 * Tue Apr 14 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git1.1
 - Linux v4.0-2620-gb79013b2449c
 - Reenable debugging options.

@@ -11,10 +11,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4accc52523b4..7d852306b245 100644
+index 3e9129a79646..acdde2b3be4c 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1691,7 +1691,8 @@ config EFI_MIXED
+@@ -1687,7 +1687,8 @@ config EFI_MIXED
  	   If unsure, say N.
  
  config EFI_SECURE_BOOT_SIG_ENFORCE
