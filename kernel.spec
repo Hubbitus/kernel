@@ -661,6 +661,9 @@ Patch26177: tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 #CVE-2015-XXXX rhbz 1203712 1208491
 Patch26178: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
+#rhbz 1208953
+Patch26179: pty-Fix-input-race-when-closing.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1429,6 +1432,9 @@ ApplyPatch tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 
 #CVE-2015-XXXX rhbz 1203712 1208491
 ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
+
+#rhbz 1208953
+ApplyPatch pty-Fix-input-race-when-closing.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2289,6 +2295,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix tty closure race (rhbz 1208953)
+
 * Mon Apr 13 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.4-200
 - Linux v3.19.4
 
