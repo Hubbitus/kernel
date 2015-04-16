@@ -14,10 +14,10 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  1 file changed, 19 insertions(+)
 
 diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index e8420f635bd4..84733810614c 100644
+index 51ef97274b52..784731f5c45e 100644
 --- a/arch/arm64/kernel/setup.c
 +++ b/arch/arm64/kernel/setup.c
-@@ -547,3 +547,22 @@ const struct seq_operations cpuinfo_op = {
+@@ -568,3 +568,22 @@ const struct seq_operations cpuinfo_op = {
  	.stop	= c_stop,
  	.show	= c_show
  };
