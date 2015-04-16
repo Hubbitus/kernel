@@ -42,10 +42,10 @@ index 3dd6f4a51b9b..9cc069579351 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 65e1bd0bc995..98af72b9a002 100644
+index 0eaa8278c87b..60ec329b1959 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1901,6 +1901,15 @@ config MODULE_SIG_ALL
+@@ -1918,6 +1918,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,10 +62,10 @@ index 65e1bd0bc995..98af72b9a002 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 1408b3353a3c..8a3be67a3a15 100644
+index 0f8f8b0bc1bf..cbe268943cee 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_UID16) += uid16.o
+@@ -48,6 +48,7 @@ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -73,7 +73,7 @@ index 1408b3353a3c..8a3be67a3a15 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -99,6 +100,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+@@ -101,6 +102,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
  $(obj)/configs.o: $(obj)/config_data.h
  

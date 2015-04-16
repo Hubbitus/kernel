@@ -44,7 +44,7 @@ index 37dae792dbbe..1ecc03ca3c15 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 9c4fd7a8e2e5..aa2fac9086b5 100644
+index 6b1721f978c2..53fe675f9bd7 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -27,6 +27,7 @@
