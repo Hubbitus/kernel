@@ -627,6 +627,9 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1208953
 Patch26178: pty-Fix-input-race-when-closing.patch
 
+#rhbz 1210801
+Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1368,6 +1371,9 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1208953
 ApplyPatch pty-Fix-input-race-when-closing.patch
+
+#rhbz 1210801
+ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2219,6 +2225,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
+
 * Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix tty closure race (rhbz 1208953)
 
