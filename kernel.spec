@@ -630,6 +630,11 @@ Patch26178: pty-Fix-input-race-when-closing.patch
 #rhbz 1210801
 Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
+#rhbz 1209088
+Patch26180: Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
+Patch26181: Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
+Patch26182: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1374,6 +1379,11 @@ ApplyPatch pty-Fix-input-race-when-closing.patch
 
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
+
+#rhbz 1209088
+ApplyPatch Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
+ApplyPatch Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
+ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2226,6 +2236,7 @@ fi
 # 
 %changelog
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add support for touchpad on Google Pixel 2 (rhbz 1209088)
 - Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
 
 * Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
