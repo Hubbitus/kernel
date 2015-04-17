@@ -576,6 +576,7 @@ CONFIG_TI_EDMA=y
 
 # Mailbox
 CONFIG_MAILBOX=y
+# CONFIG_ARM_MHU is not set
 
 # MTD
 # CONFIG_MG_DISK is not set
