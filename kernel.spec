@@ -664,6 +664,9 @@ Patch26178: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 #rhbz 1208953
 Patch26179: pty-Fix-input-race-when-closing.patch
 
+#rhbz 1210801
+Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1435,6 +1438,9 @@ ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 #rhbz 1208953
 ApplyPatch pty-Fix-input-race-when-closing.patch
+
+#rhbz 1210801
+ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2295,6 +2301,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
+
 * Wed Apr 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix tty closure race (rhbz 1208953)
 
