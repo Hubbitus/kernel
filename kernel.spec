@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -610,6 +610,12 @@ Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+#rhbz 1212230
+Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+#rhbz 1209088
+Patch26177: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1336,6 +1342,12 @@ ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+#rhbz 1212230
+ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+#rhbz 1209088
+ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2187,6 +2199,11 @@ fi
 #
 # 
 %changelog
+* Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git7.1
+- Linux v4.0-7300-g4fc8adcfec3d
+- Patch from Benjamin Tissoires to fix 3 finger tap on synaptics (rhbz 1212230)
+- Add patch to support touchpad on Google Pixel 2 (rhbz 1209088)
+
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git6.1
 - Linux v4.0-7209-g7d69cff26cea
 
