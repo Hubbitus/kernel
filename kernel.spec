@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2199,6 +2199,9 @@ fi
 #
 # 
 %changelog
+* Sat Apr 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git8.1
+- Linux v4.0-7945-g7505256626b0
+
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git7.1
 - Linux v4.0-7300-g4fc8adcfec3d
 - Patch from Benjamin Tissoires to fix 3 finger tap on synaptics (rhbz 1212230)
