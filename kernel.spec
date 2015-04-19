@@ -2193,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 20 2015 Dennis Gilmore <dennis@ausil.us>
+- enable mvebu for the LPAE kernel
+
 * Mon Apr 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git9.1
 - Linux v4.0-8158-g09d51602cf84
 

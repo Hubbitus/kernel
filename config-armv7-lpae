@@ -1,7 +1,6 @@
 # ARM A15 lpae unified arch kernel
 CONFIG_ARCH_KEYSTONE=y
 
-# CONFIG_ARCH_MVEBU is not set
 # CONFIG_ARCH_MXC is not set
 # CONFIG_ARCH_OMAP3 is not set
 # CONFIG_ARCH_OMAP4 is not set
