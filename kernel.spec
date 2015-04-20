@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -634,6 +634,10 @@ Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 Patch26180: Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
 Patch26181: Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
 Patch26182: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
+
+#rhbz 1188741
+Patch26183: 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
+Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1384,6 +1388,10 @@ ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 ApplyPatch Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
 ApplyPatch Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
 ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
+
+#rhbz 1188741
+ApplyPatch 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
+ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2235,6 +2243,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 20 2015 Laura Abbott - 4.0.0-2
+- Fix sound issues (rhbz 1188741)
+
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add support for touchpad on Google Pixel 2 (rhbz 1209088)
 - Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
