@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf3
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -477,8 +477,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=303.0
-%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf3.xz
+# https://pf.natalenko.name/forum/index.php?topic=304.0
+%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf4.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -2355,6 +2355,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Apr 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.1.pf4
+- Update to Fedora origin 3.19.4 kernel, update to v3.19-pf4 - https://pf.natalenko.name/forum/index.php?topic=304.0
+
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
 
