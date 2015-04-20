@@ -2366,6 +2366,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Sun Apr 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.1.uksm.bfs.bfq
+- 3.19.4-200.hu.1.uksm.bfs.bfq
+
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Allow disabling raw mode in logitech-hidpp (rhbz 1210801)
 
