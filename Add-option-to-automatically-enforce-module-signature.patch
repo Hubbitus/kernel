@@ -33,10 +33,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index d43e7e1c784b..3e9129a79646 100644
+index 6049d587599e..cfd53b6b95f6 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1686,6 +1686,16 @@ config EFI_MIXED
+@@ -1696,6 +1696,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  

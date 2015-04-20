@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,9 +604,6 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2015-0275 rhbz 1193907 1195178
-Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -1336,9 +1333,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-2015-0275 rhbz 1193907 1195178
-ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -2199,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git9.1
+- Linux v4.0-8158-g09d51602cf84
+
 * Sat Apr 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git8.1
 - Linux v4.0-7945-g7505256626b0
 
