@@ -586,7 +586,7 @@ Patch21023: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 Patch21024: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
-
+Patch21027: 0001-drivers-rtc-rtc-em3027.c-add-device-tree-support.patch
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
@@ -1225,14 +1225,13 @@ ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 # ARM
 #
 ApplyPatch ARM-tegra-usb-no-reset.patch
-
 ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
 ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
-
+ApplyPatch 0001-drivers-rtc-rtc-em3027.c-add-device-tree-support.patch
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
@@ -2243,6 +2242,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix RTC on TrimSlice
+
 * Mon Apr 20 2015 Laura Abbott - 4.0.0-2
 - Fix sound issues (rhbz 1188741)
 
