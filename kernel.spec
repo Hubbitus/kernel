@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2193,6 +2193,10 @@ fi
 #
 # 
 %changelog
+* Mon Apr 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git10.1
+- Linux v4.0-8962-g14aa02449064
+- DRM merge
+
 * Mon Apr 20 2015 Dennis Gilmore <dennis@ausil.us>
 - enable mvebu for the LPAE kernel
 
