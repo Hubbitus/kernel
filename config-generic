@@ -203,6 +203,7 @@ CONFIG_BINFMT_MISC=m
 
 # CONFIG_COMMON_CLK_SI5351 is not set
 # CONFIG_COMMON_CLK_CDCE706 is not set
+# CONFIG_COMMON_CLK_PWM is not set
 
 #
 # Generic Driver Options
@@ -5006,6 +5007,8 @@ CONFIG_DW_DMAC_PCI=m
 # CONFIG_FSL_EDMA is not set
 # CONFIG_NBPFAXI_DMA is not set
 CONFIG_ASYNC_TX_DMA=y
+# CONFIG_HSU_DMA is not set
+# CONFIG_HSU_DMA_PCI is not set
 
 CONFIG_UNUSED_SYMBOLS=y
 

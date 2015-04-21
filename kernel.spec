@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2193,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git11.1
+- Linux v4.0-9362-g1fc149933fd4
+
 * Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable ECHO driver (rhbz 749884)
 
