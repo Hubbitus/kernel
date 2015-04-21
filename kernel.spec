@@ -2193,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable ECHO driver (rhbz 749884)
+
 * Mon Apr 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git10.1
 - Linux v4.0-8962-g14aa02449064
 - DRM merge
