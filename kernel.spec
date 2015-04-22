@@ -573,7 +573,7 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 # PPC
 
 # ARM64
-Patch21000: net-amd-Add-xgbe-a0-driver.patch
+Patch21000: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 Patch21001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 Patch21002: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch21003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
@@ -1188,7 +1188,7 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # PPC
 
 # ARM64
-ApplyPatch net-amd-Add-xgbe-a0-driver.patch
+ApplyPatch amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
 ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
