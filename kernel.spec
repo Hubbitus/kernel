@@ -2187,11 +2187,11 @@ fi
 #
 # 
 %changelog
-* Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+* Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org> - 4.1.0-0.rc0.git12.1
 - Inital ARM updates for 4.1
 - Temporarily disable AMD ARM64 xgbe-a0 driver
 
-* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git12.1
+* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org> 
 - Linux v4.0-9804-gdb4fd9c5d072
 
 * Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git11.1
