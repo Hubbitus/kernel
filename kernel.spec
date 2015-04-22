@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 11
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -610,9 +610,6 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1212230
 Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
-
-#rhbz 1209088
-Patch26177: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1339,9 +1336,6 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1212230
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
-
-#rhbz 1209088
-ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2193,6 +2187,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git12.1
+- Linux v4.0-9804-gdb4fd9c5d072
+
 * Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git11.1
 - Linux v4.0-9362-g1fc149933fd4
 
