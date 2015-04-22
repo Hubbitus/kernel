@@ -1188,8 +1188,8 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # PPC
 
 # ARM64
-# ApplyPatch net-amd-Add-xgbe-a0-driver.patch
-# ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
+ApplyPatch net-amd-Add-xgbe-a0-driver.patch
+ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
 ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
@@ -2187,6 +2187,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update AMD xgbe a0 aarch64 driver for 4.1
+
 * Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org> - 4.1.0-0.rc0.git12.1
 - Inital ARM updates for 4.1
 - Temporarily disable AMD ARM64 xgbe-a0 driver

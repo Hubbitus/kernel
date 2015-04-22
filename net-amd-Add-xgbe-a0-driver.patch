@@ -1,26 +1,28 @@
+From 60097639ec70f8677303d73c8f351e77773fa780 Mon Sep 17 00:00:00 2001
 From: Tom Lendacky <thomas.lendacky@amd.com>
-Date: Sat, 21 Feb 2015 12:25:12 -0500
-Subject: [PATCH] net: amd: Add xgbe-a0 driver
+Date: Thu, 2 Apr 2015 19:03:41 -0400
+Subject: [PATCH] amd-xgbe-a0: Add support for XGBE on A0
 
-Add support for A0 silicon xgbe driver.  This won't be upstreamed because
-the HW is being replaced with a better version.
+Add XGBE driver support for A0 hardware.
 
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+[fixup timespec -> timespec64]
 Signed-off-by: Mark Salter <msalter@redhat.com>
 ---
  drivers/net/ethernet/amd/Makefile               |    1 +
  drivers/net/ethernet/amd/xgbe-a0/Makefile       |    8 +
  drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h  | 1142 +++++++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c     |  269 ++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c     |  269 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c |  373 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c    |  636 +++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c     | 2964 +++++++++++++++++++++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c     | 2204 +++++++++++++++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c     | 2930 +++++++++++++++++++++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c     | 2218 +++++++++++++++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c |  616 +++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c    |  643 +++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c    |  312 +++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c     |  284 +++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c     |  278 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe.h         |  868 +++++++
- 13 files changed, 10320 insertions(+)
+ 13 files changed, 10294 insertions(+)
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/Makefile
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
@@ -35,7 +37,7 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 
 diff --git a/drivers/net/ethernet/amd/Makefile b/drivers/net/ethernet/amd/Makefile
-index a38a2dce3eb3..bf0cf2f8d2db 100644
+index a38a2dc..bf0cf2f 100644
 --- a/drivers/net/ethernet/amd/Makefile
 +++ b/drivers/net/ethernet/amd/Makefile
 @@ -18,3 +18,4 @@ obj-$(CONFIG_PCNET32) += pcnet32.o
@@ -45,7 +47,7 @@ index a38a2dce3eb3..bf0cf2f8d2db 100644
 +obj-$(CONFIG_AMD_XGBE) += xgbe-a0/
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/Makefile b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 new file mode 100644
-index 000000000000..561116faadae
+index 0000000..561116f
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 @@ -0,0 +1,8 @@
@@ -59,7 +61,7 @@ index 000000000000..561116faadae
 +amd-xgbe-a0-$(CONFIG_DEBUG_FS) += xgbe-debugfs.o
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 new file mode 100644
-index 000000000000..75b08c63d39f
+index 0000000..75b08c6
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 @@ -0,0 +1,1142 @@
@@ -1207,7 +1209,7 @@ index 000000000000..75b08c63d39f
 +#endif
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 new file mode 100644
-index 000000000000..343301cbf7b4
+index 0000000..343301c
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 @@ -0,0 +1,269 @@
@@ -1482,7 +1484,7 @@ index 000000000000..343301cbf7b4
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 new file mode 100644
-index 000000000000..ecfa6f91da22
+index 0000000..ecfa6f9
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 @@ -0,0 +1,373 @@
@@ -1861,7 +1863,7 @@ index 000000000000..ecfa6f91da22
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 new file mode 100644
-index 000000000000..5dd57779c82c
+index 0000000..5dd5777
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 @@ -0,0 +1,636 @@
@@ -2503,10 +2505,10 @@ index 000000000000..5dd57779c82c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
 new file mode 100644
-index 000000000000..f6a3a581cc21
+index 0000000..2d88739
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
-@@ -0,0 +1,2964 @@
+@@ -0,0 +1,2930 @@
 +/*
 + * AMD 10Gb Ethernet driver
 + *
@@ -5137,14 +5139,6 @@ index 000000000000..f6a3a581cc21
 +
 +		XGMAC_DMA_IOWRITE_BITS(channel, DMA_CH_TCR, ST, 0);
 +	}
-+
-+	/*TODO: Poll to be sure the channels have stopped?
-+	while (count--) {
-+		if (XGMAC_IOREAD_BITS(pdata, DMA_DSR0, TPS) == 6)
-+			break;
-+		mdelay(1);
-+	}
-+	*/
 +}
 +
 +static void xgbe_enable_rx(struct xgbe_prv_data *pdata)
@@ -5196,15 +5190,6 @@ index 000000000000..f6a3a581cc21
 +
 +		XGMAC_DMA_IOWRITE_BITS(channel, DMA_CH_RCR, SR, 0);
 +	}
-+
-+	/*TODO: Poll to be sure the channels have stopped?
-+	while (count--) {
-+		dma_sr0 = XGMAC_IOREAD_BITS(pdata, DMA_DSR0, RPS);
-+		if (dma_sr0 == 3 || dma_sr0 == 4)
-+			break;
-+		mdelay(1);
-+	}
-+	*/
 +}
 +
 +static void xgbe_powerup_tx(struct xgbe_prv_data *pdata)
@@ -5250,14 +5235,6 @@ index 000000000000..f6a3a581cc21
 +
 +		XGMAC_DMA_IOWRITE_BITS(channel, DMA_CH_TCR, ST, 0);
 +	}
-+
-+	/*TODO: Poll to be sure the channels have stopped?
-+	while (count--) {
-+		if (XGMAC_IOREAD_BITS(pdata, DMA_DSR0, TPS) == 6)
-+			break;
-+		mdelay(1);
-+	}
-+	*/
 +}
 +
 +static void xgbe_powerup_rx(struct xgbe_prv_data *pdata)
@@ -5288,15 +5265,6 @@ index 000000000000..f6a3a581cc21
 +
 +		XGMAC_DMA_IOWRITE_BITS(channel, DMA_CH_RCR, SR, 0);
 +	}
-+
-+	/*TODO: Poll to be sure the channels have stopped?
-+	while (count--) {
-+		dma_sr0 = XGMAC_IOREAD_BITS(pdata, DMA_DSR0, RPS);
-+		if (dma_sr0 == 3 || dma_sr0 == 4)
-+			break;
-+		mdelay(1);
-+	}
-+	*/
 +}
 +
 +static int xgbe_init(struct xgbe_prv_data *pdata)
@@ -5473,10 +5441,10 @@ index 000000000000..f6a3a581cc21
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
 new file mode 100644
-index 000000000000..acaeaf56b63f
+index 0000000..ca4af9e
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
-@@ -0,0 +1,2204 @@
+@@ -0,0 +1,2218 @@
 +/*
 + * AMD 10Gb Ethernet driver
 + *
@@ -5821,12 +5789,13 @@ index 000000000000..acaeaf56b63f
 +		dma_ch_isr = XGMAC_DMA_IOREAD(channel, DMA_CH_SR);
 +		DBGPR("  DMA_CH%u_ISR = %08x\n", i, dma_ch_isr);
 +
-+		/* If we get a TI or RI interrupt that means per channel DMA
-+		 * interrupts are not enabled, so we use the private data napi
-+		 * structure, not the per channel napi structure
++		/* The TI or RI interrupt bits may still be set even if using
++		 * per channel DMA interrupts. Check to be sure those are not
++		 * enabled before using the private data napi structure.
 +		 */
-+		if (XGMAC_GET_BITS(dma_ch_isr, DMA_CH_SR, TI) ||
-+		    XGMAC_GET_BITS(dma_ch_isr, DMA_CH_SR, RI)) {
++		if (!pdata->per_channel_irq &&
++		    (XGMAC_GET_BITS(dma_ch_isr, DMA_CH_SR, TI) ||
++		     XGMAC_GET_BITS(dma_ch_isr, DMA_CH_SR, RI))) {
 +			if (napi_schedule_prep(&pdata->napi)) {
 +				/* Disable Tx and Rx interrupts */
 +				xgbe_disable_rx_tx_ints(pdata);
@@ -6001,6 +5970,7 @@ index 000000000000..acaeaf56b63f
 +	hw_feat->sph           = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R, SPHEN);
 +	hw_feat->tso           = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R, TSOEN);
 +	hw_feat->dma_debug     = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R, DBGMEMA);
++	hw_feat->rss           = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R, RSSEN);
 +	hw_feat->tc_cnt	       = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R, NUMTC);
 +	hw_feat->hash_table_size = XGMAC_GET_BITS(mac_hfr1, MAC_HWF1R,
 +						  HASHTBLSZ);
@@ -6030,13 +6000,14 @@ index 000000000000..acaeaf56b63f
 +		break;
 +	}
 +
-+	/* The Queue and Channel counts are zero based so increment them
++	/* The Queue, Channel and TC counts are zero based so increment them
 +	 * to get the actual number
 +	 */
 +	hw_feat->rx_q_cnt++;
 +	hw_feat->tx_q_cnt++;
 +	hw_feat->rx_ch_cnt++;
 +	hw_feat->tx_ch_cnt++;
++	hw_feat->tc_cnt++;
 +
 +#define XGBE_TC_CNT		2
 +	hw_feat->tc_cnt = XGBE_TC_CNT;
@@ -6086,6 +6057,68 @@ index 000000000000..acaeaf56b63f
 +		if (del)
 +			netif_napi_del(&pdata->napi);
 +	}
++}
++
++static int xgbe_request_irqs(struct xgbe_prv_data *pdata)
++{
++	struct xgbe_channel *channel;
++	struct net_device *netdev = pdata->netdev;
++	unsigned int i;
++	int ret;
++
++	ret = devm_request_irq(pdata->dev, pdata->dev_irq, xgbe_isr, 0,
++			       netdev->name, pdata);
++	if (ret) {
++		netdev_alert(netdev, "error requesting irq %d\n",
++			     pdata->dev_irq);
++		return ret;
++	}
++
++	if (!pdata->per_channel_irq)
++		return 0;
++
++	channel = pdata->channel;
++	for (i = 0; i < pdata->channel_count; i++, channel++) {
++		snprintf(channel->dma_irq_name,
++			 sizeof(channel->dma_irq_name) - 1,
++			 "%s-TxRx-%u", netdev_name(netdev),
++			 channel->queue_index);
++
++		ret = devm_request_irq(pdata->dev, channel->dma_irq,
++				       xgbe_dma_isr, 0,
++				       channel->dma_irq_name, channel);
++		if (ret) {
++			netdev_alert(netdev, "error requesting irq %d\n",
++				     channel->dma_irq);
++			goto err_irq;
++		}
++	}
++
++	return 0;
++
++err_irq:
++	/* Using an unsigned int, 'i' will go to UINT_MAX and exit */
++	for (i--, channel--; i < pdata->channel_count; i--, channel--)
++		devm_free_irq(pdata->dev, channel->dma_irq, channel);
++
++	devm_free_irq(pdata->dev, pdata->dev_irq, pdata);
++
++	return ret;
++}
++
++static void xgbe_free_irqs(struct xgbe_prv_data *pdata)
++{
++	struct xgbe_channel *channel;
++	unsigned int i;
++
++	devm_free_irq(pdata->dev, pdata->dev_irq, pdata);
++
++	if (!pdata->per_channel_irq)
++		return;
++
++	channel = pdata->channel;
++	for (i = 0; i < pdata->channel_count; i++, channel++)
++		devm_free_irq(pdata->dev, channel->dma_irq, channel);
 +}
 +
 +void xgbe_a0_init_tx_coalesce(struct xgbe_prv_data *pdata)
@@ -6289,19 +6322,19 @@ index 000000000000..acaeaf56b63f
 +		return -EINVAL;
 +	}
 +
-+	phy_stop(pdata->phydev);
-+
 +	spin_lock_irqsave(&pdata->lock, flags);
 +
 +	if (caller == XGMAC_DRIVER_CONTEXT)
 +		netif_device_detach(netdev);
 +
 +	netif_tx_stop_all_queues(netdev);
-+	xgbe_napi_disable(pdata, 0);
 +
-+	/* Powerdown Tx/Rx */
 +	hw_if->powerdown_tx(pdata);
 +	hw_if->powerdown_rx(pdata);
++
++	xgbe_napi_disable(pdata, 0);
++
++	phy_stop(pdata->phydev);
 +
 +	pdata->power_down = 1;
 +
@@ -6333,14 +6366,14 @@ index 000000000000..acaeaf56b63f
 +
 +	phy_start(pdata->phydev);
 +
-+	/* Enable Tx/Rx */
++	xgbe_napi_enable(pdata, 0);
++
 +	hw_if->powerup_tx(pdata);
 +	hw_if->powerup_rx(pdata);
 +
 +	if (caller == XGMAC_DRIVER_CONTEXT)
 +		netif_device_attach(netdev);
 +
-+	xgbe_napi_enable(pdata, 0);
 +	netif_tx_start_all_queues(netdev);
 +
 +	spin_unlock_irqrestore(&pdata->lock, flags);
@@ -6354,6 +6387,7 @@ index 000000000000..acaeaf56b63f
 +{
 +	struct xgbe_hw_if *hw_if = &pdata->hw_if;
 +	struct net_device *netdev = pdata->netdev;
++	int ret;
 +
 +	DBGPR("-->xgbe_start\n");
 +
@@ -6363,17 +6397,31 @@ index 000000000000..acaeaf56b63f
 +
 +	phy_start(pdata->phydev);
 +
++	xgbe_napi_enable(pdata, 1);
++
++	ret = xgbe_request_irqs(pdata);
++	if (ret)
++		goto err_napi;
++
 +	hw_if->enable_tx(pdata);
 +	hw_if->enable_rx(pdata);
 +
 +	xgbe_init_tx_timers(pdata);
 +
-+	xgbe_napi_enable(pdata, 1);
 +	netif_tx_start_all_queues(netdev);
 +
 +	DBGPR("<--xgbe_start\n");
 +
 +	return 0;
++
++err_napi:
++	xgbe_napi_disable(pdata, 1);
++
++	phy_stop(pdata->phydev);
++
++	hw_if->exit(pdata);
++
++	return ret;
 +}
 +
 +static void xgbe_stop(struct xgbe_prv_data *pdata)
@@ -6386,15 +6434,20 @@ index 000000000000..acaeaf56b63f
 +
 +	DBGPR("-->xgbe_stop\n");
 +
-+	phy_stop(pdata->phydev);
-+
 +	netif_tx_stop_all_queues(netdev);
-+	xgbe_napi_disable(pdata, 1);
 +
 +	xgbe_stop_tx_timers(pdata);
 +
 +	hw_if->disable_tx(pdata);
 +	hw_if->disable_rx(pdata);
++
++	xgbe_free_irqs(pdata);
++
++	xgbe_napi_disable(pdata, 1);
++
++	phy_stop(pdata->phydev);
++
++	hw_if->exit(pdata);
 +
 +	channel = pdata->channel;
 +	for (i = 0; i < pdata->channel_count; i++, channel++) {
@@ -6410,10 +6463,6 @@ index 000000000000..acaeaf56b63f
 +
 +static void xgbe_restart_dev(struct xgbe_prv_data *pdata)
 +{
-+	struct xgbe_channel *channel;
-+	struct xgbe_hw_if *hw_if = &pdata->hw_if;
-+	unsigned int i;
-+
 +	DBGPR("-->xgbe_restart_dev\n");
 +
 +	/* If not running, "restart" will happen on open */
@@ -6421,18 +6470,9 @@ index 000000000000..acaeaf56b63f
 +		return;
 +
 +	xgbe_stop(pdata);
-+	synchronize_irq(pdata->dev_irq);
-+	if (pdata->per_channel_irq) {
-+		channel = pdata->channel;
-+		for (i = 0; i < pdata->channel_count; i++, channel++)
-+			synchronize_irq(channel->dma_irq);
-+	}
 +
 +	xgbe_free_tx_data(pdata);
 +	xgbe_free_rx_data(pdata);
-+
-+	/* Issue software reset to device */
-+	hw_if->exit(pdata);
 +
 +	xgbe_start(pdata);
 +
@@ -6762,10 +6802,7 @@ index 000000000000..acaeaf56b63f
 +static int xgbe_open(struct net_device *netdev)
 +{
 +	struct xgbe_prv_data *pdata = netdev_priv(netdev);
-+	struct xgbe_hw_if *hw_if = &pdata->hw_if;
 +	struct xgbe_desc_if *desc_if = &pdata->desc_if;
-+	struct xgbe_channel *channel = NULL;
-+	unsigned int i = 0;
 +	int ret;
 +
 +	DBGPR("-->xgbe_open\n");
@@ -6808,54 +6845,13 @@ index 000000000000..acaeaf56b63f
 +	INIT_WORK(&pdata->restart_work, xgbe_restart);
 +	INIT_WORK(&pdata->tx_tstamp_work, xgbe_tx_tstamp);
 +
-+	/* Request interrupts */
-+	ret = devm_request_irq(pdata->dev, pdata->dev_irq, xgbe_isr, 0,
-+			       netdev->name, pdata);
-+	if (ret) {
-+		netdev_alert(netdev, "error requesting irq %d\n",
-+			     pdata->dev_irq);
-+		goto err_rings;
-+	}
-+
-+	if (pdata->per_channel_irq) {
-+		channel = pdata->channel;
-+		for (i = 0; i < pdata->channel_count; i++, channel++) {
-+			snprintf(channel->dma_irq_name,
-+				 sizeof(channel->dma_irq_name) - 1,
-+				 "%s-TxRx-%u", netdev_name(netdev),
-+				 channel->queue_index);
-+
-+			ret = devm_request_irq(pdata->dev, channel->dma_irq,
-+					       xgbe_dma_isr, 0,
-+					       channel->dma_irq_name, channel);
-+			if (ret) {
-+				netdev_alert(netdev,
-+					     "error requesting irq %d\n",
-+					     channel->dma_irq);
-+				goto err_irq;
-+			}
-+		}
-+	}
-+
 +	ret = xgbe_start(pdata);
 +	if (ret)
-+		goto err_start;
++		goto err_rings;
 +
 +	DBGPR("<--xgbe_open\n");
 +
 +	return 0;
-+
-+err_start:
-+	hw_if->exit(pdata);
-+
-+err_irq:
-+	if (pdata->per_channel_irq) {
-+		/* Using an unsigned int, 'i' will go to UINT_MAX and exit */
-+		for (i--, channel--; i < pdata->channel_count; i--, channel--)
-+			devm_free_irq(pdata->dev, channel->dma_irq, channel);
-+	}
-+
-+	devm_free_irq(pdata->dev, pdata->dev_irq, pdata);
 +
 +err_rings:
 +	desc_if->free_ring_resources(pdata);
@@ -6878,29 +6874,15 @@ index 000000000000..acaeaf56b63f
 +static int xgbe_close(struct net_device *netdev)
 +{
 +	struct xgbe_prv_data *pdata = netdev_priv(netdev);
-+	struct xgbe_hw_if *hw_if = &pdata->hw_if;
 +	struct xgbe_desc_if *desc_if = &pdata->desc_if;
-+	struct xgbe_channel *channel;
-+	unsigned int i;
 +
 +	DBGPR("-->xgbe_close\n");
 +
 +	/* Stop the device */
 +	xgbe_stop(pdata);
 +
-+	/* Issue software reset to device */
-+	hw_if->exit(pdata);
-+
 +	/* Free the ring descriptors and buffers */
 +	desc_if->free_ring_resources(pdata);
-+
-+	/* Release the interrupts */
-+	devm_free_irq(pdata->dev, pdata->dev_irq, pdata);
-+	if (pdata->per_channel_irq) {
-+		channel = pdata->channel;
-+		for (i = 0; i < pdata->channel_count; i++, channel++)
-+			devm_free_irq(pdata->dev, channel->dma_irq, channel);
-+	}
 +
 +	/* Free the channel and ring structures */
 +	xgbe_free_channels(pdata);
@@ -7683,7 +7665,7 @@ index 000000000000..acaeaf56b63f
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 new file mode 100644
-index 000000000000..165ff1ceedcc
+index 0000000..165ff1c
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 @@ -0,0 +1,616 @@
@@ -8305,7 +8287,7 @@ index 000000000000..165ff1ceedcc
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 new file mode 100644
-index 000000000000..a85fb4965835
+index 0000000..a85fb49
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 @@ -0,0 +1,643 @@
@@ -8954,7 +8936,7 @@ index 000000000000..a85fb4965835
 +module_platform_driver(xgbe_a0_driver);
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 new file mode 100644
-index 000000000000..b84d0481bed8
+index 0000000..b84d048
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 @@ -0,0 +1,312 @@
@@ -9272,10 +9254,10 @@ index 000000000000..b84d0481bed8
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
 new file mode 100644
-index 000000000000..c53c7b2a4b08
+index 0000000..1016aeb
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
-@@ -0,0 +1,284 @@
+@@ -0,0 +1,278 @@
 +/*
 + * AMD 10Gb Ethernet driver
 + *
@@ -9449,21 +9431,15 @@ index 000000000000..c53c7b2a4b08
 +						   struct xgbe_prv_data,
 +						   ptp_clock_info);
 +	unsigned long flags;
-+	u64 nsec;
 +
 +	spin_lock_irqsave(&pdata->tstamp_lock, flags);
-+
-+	nsec = timecounter_read(&pdata->tstamp_tc);
-+
-+	nsec += delta;
-+	timecounter_init(&pdata->tstamp_tc, &pdata->tstamp_cc, nsec);
-+
++	timecounter_adjtime(&pdata->tstamp_tc, delta);
 +	spin_unlock_irqrestore(&pdata->tstamp_lock, flags);
 +
 +	return 0;
 +}
 +
-+static int xgbe_gettime(struct ptp_clock_info *info, struct timespec *ts)
++static int xgbe_gettime(struct ptp_clock_info *info, struct timespec64 *ts)
 +{
 +	struct xgbe_prv_data *pdata = container_of(info,
 +						   struct xgbe_prv_data,
@@ -9477,12 +9453,12 @@ index 000000000000..c53c7b2a4b08
 +
 +	spin_unlock_irqrestore(&pdata->tstamp_lock, flags);
 +
-+	*ts = ns_to_timespec(nsec);
++	*ts = ns_to_timespec64(nsec);
 +
 +	return 0;
 +}
 +
-+static int xgbe_settime(struct ptp_clock_info *info, const struct timespec *ts)
++static int xgbe_settime(struct ptp_clock_info *info, const struct timespec64 *ts)
 +{
 +	struct xgbe_prv_data *pdata = container_of(info,
 +						   struct xgbe_prv_data,
@@ -9490,7 +9466,7 @@ index 000000000000..c53c7b2a4b08
 +	unsigned long flags;
 +	u64 nsec;
 +
-+	nsec = timespec_to_ns(ts);
++	nsec = timespec64_to_ns(ts);
 +
 +	spin_lock_irqsave(&pdata->tstamp_lock, flags);
 +
@@ -9520,8 +9496,8 @@ index 000000000000..c53c7b2a4b08
 +	info->max_adj = pdata->ptpclk_rate;
 +	info->adjfreq = xgbe_adjfreq;
 +	info->adjtime = xgbe_adjtime;
-+	info->gettime = xgbe_gettime;
-+	info->settime = xgbe_settime;
++	info->gettime64 = xgbe_gettime;
++	info->settime64 = xgbe_settime;
 +	info->enable = xgbe_enable;
 +
 +	clock = ptp_clock_register(info, pdata->dev);
@@ -9562,7 +9538,7 @@ index 000000000000..c53c7b2a4b08
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 new file mode 100644
-index 000000000000..dd8500da98a6
+index 0000000..04c00d2
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 @@ -0,0 +1,868 @@
@@ -9692,7 +9668,7 @@ index 000000000000..dd8500da98a6
 +#include <linux/if_vlan.h>
 +#include <linux/bitops.h>
 +#include <linux/ptp_clock_kernel.h>
-+#include <linux/clocksource.h>
++#include <linux/timecounter.h>
 +#include <linux/net_tstamp.h>
 +#include <net/dcbnl.h>
 +
@@ -10435,5 +10411,5 @@ index 000000000000..dd8500da98a6
 +
 +#endif
 -- 
-2.1.0
+1.9.3
 
