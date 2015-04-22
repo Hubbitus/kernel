@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2242,10 +2242,11 @@ fi
 #
 # 
 %changelog
-* Tue Apr 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+* Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix RTC on TrimSlice
+- Enable all sound modules for TrimSlice (also needed for other devices)
 
-* Mon Apr 20 2015 Laura Abbott - 4.0.0-2
+* Mon Apr 20 2015 Laura Abbott
 - Fix sound issues (rhbz 1188741)
 
 * Fri Apr 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
