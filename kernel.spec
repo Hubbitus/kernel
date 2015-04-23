@@ -661,6 +661,9 @@ Patch26179: pty-Fix-input-race-when-closing.patch
 #rhbz 1210801
 Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
+#rhbz 1205083
+Patch26181: 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1430,6 +1433,8 @@ ApplyPatch pty-Fix-input-race-when-closing.patch
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
+#rhbz 1205083
+ApplyPatch 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2289,6 +2294,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 23 2015 Laura Abbott <labbott@fedoraproject.com>
+- Fix noisy iwlwifi warning (rhbz 1205083)
+
 * Mon Apr 20 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.5-200
 - Linux v3.19.5
 
