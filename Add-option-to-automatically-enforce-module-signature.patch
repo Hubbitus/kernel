@@ -163,10 +163,10 @@ index cdc46a791b9d..0c1edd33a42c 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 63bdba31cebc..5000dd2cdd18 100644
+index f43cbdd52546..feb6736fec91 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3912,6 +3912,13 @@ void module_layout(struct module *mod,
+@@ -3913,6 +3913,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  

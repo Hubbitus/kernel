@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2187,6 +2187,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git13.1
+- Linux v4.0-10710-g27cf3a16b253
+
 * Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update AMD xgbe a0 aarch64 driver for 4.1
 
