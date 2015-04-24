@@ -662,9 +662,6 @@ Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
-#CVE-2014-8159 rhbz 1181166 1200950
-Patch26167: IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
-
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
@@ -684,9 +681,6 @@ Patch26174: tun-return-proper-error-code-from-tun_do_read.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
-#rhbz 1203913
-Patch26176: sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
-
 #rhbz 1207789
 Patch26177: tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 
@@ -698,6 +692,9 @@ Patch26179: pty-Fix-input-race-when-closing.patch
 
 #rhbz 1210801
 Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
+
+#rhbz 1205083
+Patch26181: 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1449,9 +1446,6 @@ ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
 ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
 ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
 
-#CVE-2014-8159 rhbz 1181166 1200950
-ApplyPatch IB-core-Prevent-integer-overflow-in-ib_umem_get-addr.patch
-
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 
@@ -1481,9 +1475,6 @@ ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
-#rhbz 1203913
-ApplyPatch sunrpc-make-debugfs-file-creation-failure-non-fatal.patch
-
 #rhbz 1207789
 ApplyPatch tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
 
@@ -1496,6 +1487,8 @@ ApplyPatch pty-Fix-input-race-when-closing.patch
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
+#rhbz 1205083
+ApplyPatch 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2355,6 +2348,12 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 23 2015 Laura Abbott <labbott@fedoraproject.com>
+- Fix noisy iwlwifi warning (rhbz 1205083)
+
+* Mon Apr 20 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.5-200
+- Linux v3.19.5
+
 * Sun Apr 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.1.pf4
 - Update to Fedora origin 3.19.4 kernel, update to v3.19-pf4 - https://pf.natalenko.name/forum/index.php?topic=304.0
 

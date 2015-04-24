@@ -105,10 +105,10 @@ index 644ddb841d9f..bbc4ce66c2c1 100644
  		if (tty_hung_up_p(filp))
  			mask |= POLLHUP;
 diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 4ddfa60c9222..b52d61784e98 100644
+index 6f8cf3a52861..f9d9ed3f7e18 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
-@@ -1908,6 +1908,18 @@ static inline int input_available_p(struct tty_struct *tty, int poll)
+@@ -1960,6 +1960,18 @@ static inline int input_available_p(struct tty_struct *tty, int poll)
  		return read_cnt(ldata) >= amt;
  }
  
@@ -127,7 +127,7 @@ index 4ddfa60c9222..b52d61784e98 100644
  /**
   *	copy_from_read_buf	-	copy read data directly
   *	@tty: terminal device
-@@ -2125,7 +2137,7 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
+@@ -2177,7 +2189,7 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
  	struct n_tty_data *ldata = tty->disc_data;
  	unsigned char __user *b = buf;
  	DEFINE_WAIT_FUNC(wait, woken_wake_function);
@@ -136,7 +136,7 @@ index 4ddfa60c9222..b52d61784e98 100644
  	int minimum, time;
  	ssize_t retval = 0;
  	long timeout;
-@@ -2191,8 +2203,10 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
+@@ -2243,8 +2255,10 @@ static ssize_t n_tty_read(struct tty_struct *tty, struct file *file,
  		    ((minimum - (b - buf)) >= 1))
  			ldata->minimum_to_wake = (minimum - (b - buf));
  
@@ -148,7 +148,7 @@ index 4ddfa60c9222..b52d61784e98 100644
  				retval = -EIO;
  				break;
  			}
-@@ -2399,12 +2413,12 @@ static unsigned int n_tty_poll(struct tty_struct *tty, struct file *file,
+@@ -2451,12 +2465,12 @@ static unsigned int n_tty_poll(struct tty_struct *tty, struct file *file,
  
  	poll_wait(file, &tty->read_wait, wait);
  	poll_wait(file, &tty->write_wait, wait);

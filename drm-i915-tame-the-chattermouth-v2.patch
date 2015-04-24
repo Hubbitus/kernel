@@ -28,7 +28,7 @@ Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
  4 files changed, 104 insertions(+), 69 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index ddd005ce3a94..204dd676ebac 100644
+index 44a3c385eea2..757f000a1d14 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
 @@ -60,6 +60,35 @@
@@ -67,7 +67,7 @@ index ddd005ce3a94..204dd676ebac 100644
  enum pipe {
  	INVALID_PIPE = -1,
  	PIPE_A = 0,
-@@ -2315,6 +2344,7 @@ struct i915_params {
+@@ -2316,6 +2345,7 @@ struct i915_params {
  	bool disable_vtd_wa;
  	int use_mmio_flip;
  	bool mmio_debug;
@@ -96,7 +96,7 @@ index c91cb2033cc5..db07153b693f 100644
 +MODULE_PARM_DESC(verbose_state_checks,
 +	"Enable verbose logs (ie. WARN_ON()) in case of unexpected hw state conditions.");
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index c10b52ef116d..2e2f6443fd53 100644
+index 791b00e612d8..33d4d37fd614 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
 @@ -1024,7 +1024,7 @@ void assert_pll(struct drm_i915_private *dev_priv,
@@ -326,7 +326,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  	     "PCH LVDS enabled on transcoder %c, should be disabled\n",
  	     pipe_name(pipe));
  
-@@ -5382,25 +5382,25 @@ static void intel_connector_check_state(struct intel_connector *connector)
+@@ -5388,25 +5388,25 @@ static void intel_connector_check_state(struct intel_connector *connector)
  		if (connector->mst_port)
  			return;
  
@@ -360,7 +360,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  			     "encoder active on the wrong pipe\n");
  		}
  	}
-@@ -7810,24 +7810,24 @@ static void assert_can_disable_lcpll(struct drm_i915_private *dev_priv)
+@@ -7814,24 +7814,24 @@ static void assert_can_disable_lcpll(struct drm_i915_private *dev_priv)
  	struct intel_crtc *crtc;
  
  	for_each_intel_crtc(dev, crtc)
@@ -396,7 +396,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  
  	/*
  	 * In theory we can still leave IRQs enabled, as long as only the HPD
-@@ -7835,7 +7835,7 @@ static void assert_can_disable_lcpll(struct drm_i915_private *dev_priv)
+@@ -7839,7 +7839,7 @@ static void assert_can_disable_lcpll(struct drm_i915_private *dev_priv)
  	 * gen-specific and since we only disable LCPLL after we fully disable
  	 * the interrupts, the check below should be enough.
  	 */
@@ -405,7 +405,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  }
  
  static uint32_t hsw_read_dcomp(struct drm_i915_private *dev_priv)
-@@ -10742,7 +10742,7 @@ check_connector_state(struct drm_device *dev)
+@@ -10746,7 +10746,7 @@ check_connector_state(struct drm_device *dev)
  		 * ->get_hw_state callbacks. */
  		intel_connector_check_state(connector);
  
@@ -414,7 +414,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "connector's staged encoder doesn't match current encoder\n");
  	}
  }
-@@ -10762,9 +10762,9 @@ check_encoder_state(struct drm_device *dev)
+@@ -10766,9 +10766,9 @@ check_encoder_state(struct drm_device *dev)
  			      encoder->base.base.id,
  			      encoder->base.name);
  
@@ -426,7 +426,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "encoder's active_connectors set, but no crtc\n");
  
  		list_for_each_entry(connector, &dev->mode_config.connector_list,
-@@ -10783,19 +10783,19 @@ check_encoder_state(struct drm_device *dev)
+@@ -10787,19 +10787,19 @@ check_encoder_state(struct drm_device *dev)
  		if (!enabled && encoder->base.encoder_type == DRM_MODE_ENCODER_DPMST)
  			continue;
  
@@ -450,7 +450,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "encoder's hw state doesn't match sw tracking "
  		     "(expected %i, found %i)\n",
  		     encoder->connectors_active, active);
-@@ -10804,7 +10804,7 @@ check_encoder_state(struct drm_device *dev)
+@@ -10808,7 +10808,7 @@ check_encoder_state(struct drm_device *dev)
  			continue;
  
  		tracked_pipe = to_intel_crtc(encoder->base.crtc)->pipe;
@@ -459,7 +459,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "active encoder's pipe doesn't match"
  		     "(expected %i, found %i)\n",
  		     tracked_pipe, pipe);
-@@ -10829,7 +10829,7 @@ check_crtc_state(struct drm_device *dev)
+@@ -10833,7 +10833,7 @@ check_crtc_state(struct drm_device *dev)
  		DRM_DEBUG_KMS("[CRTC:%d]\n",
  			      crtc->base.base.id);
  
@@ -468,7 +468,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "active crtc, but not enabled in sw tracking\n");
  
  		for_each_intel_encoder(dev, encoder) {
-@@ -10840,10 +10840,10 @@ check_crtc_state(struct drm_device *dev)
+@@ -10844,10 +10844,10 @@ check_crtc_state(struct drm_device *dev)
  				active = true;
  		}
  
@@ -481,7 +481,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "crtc's computed enabled state doesn't match tracked enabled state "
  		     "(expected %i, found %i)\n", enabled, crtc->base.enabled);
  
-@@ -10863,13 +10863,13 @@ check_crtc_state(struct drm_device *dev)
+@@ -10867,13 +10867,13 @@ check_crtc_state(struct drm_device *dev)
  				encoder->get_config(encoder, &pipe_config);
  		}
  
@@ -497,7 +497,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  			intel_dump_pipe_config(crtc, &pipe_config,
  					       "[hw state]");
  			intel_dump_pipe_config(crtc, &crtc->config,
-@@ -10897,14 +10897,14 @@ check_shared_dpll_state(struct drm_device *dev)
+@@ -10901,14 +10901,14 @@ check_shared_dpll_state(struct drm_device *dev)
  
  		active = pll->get_hw_state(dev_priv, pll, &dpll_hw_state);
  
@@ -516,7 +516,7 @@ index c10b52ef116d..2e2f6443fd53 100644
  		     "pll on state mismatch (expected %i, found %i)\n",
  		     pll->on, active);
  
-@@ -10914,14 +10914,14 @@ check_shared_dpll_state(struct drm_device *dev)
+@@ -10918,14 +10918,14 @@ check_shared_dpll_state(struct drm_device *dev)
  			if (crtc->active && intel_crtc_to_shared_dpll(crtc) == pll)
  				active_crtcs++;
  		}
