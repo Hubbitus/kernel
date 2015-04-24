@@ -639,6 +639,9 @@ Patch26182: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 Patch26183: 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
 Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
+#rhbz 1208999
+Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1391,6 +1394,9 @@ ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 #rhbz 1188741
 ApplyPatch 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
 ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
+
+#rhbz 1208999
+ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2242,6 +2248,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi with QNAP devices (rhbz 1208999)
+
 * Wed Apr 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix RTC on TrimSlice
 - Enable all sound modules for TrimSlice (also needed for other devices)
