@@ -611,6 +611,9 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
+#rhbz 1208999
+Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1336,6 +1339,9 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1212230
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+#rhbz 1208999
+ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2187,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi with QNAP devices (rhbz 1208999)
+
 * Thu Apr 23 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git13.1
 - Linux v4.0-10710-g27cf3a16b253
 
