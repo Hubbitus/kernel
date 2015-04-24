@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf4
+%define buildid .hu.2.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -55,7 +55,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#?? Pf  against 3.19,4 v3.19-pf4: https://pf.natalenko.name/forum/index.php?topic=304.0
+#+Hu Pf Still against 3.19.4 v3.19-pf4: https://pf.natalenko.name/forum/index.php?topic=304.0
 %define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -2348,11 +2348,14 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 24 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.2.pf4
+- Pull fedora 3.19.5, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
+
 * Thu Apr 23 2015 Laura Abbott <labbott@fedoraproject.com>
 - Fix noisy iwlwifi warning (rhbz 1205083)
 
-* Mon Apr 20 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.5-200
-- Linux v3.19.5
+#* Mon Apr 20 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 3.19.5-200
+#- Linux v3.19.5
 
 * Sun Apr 19 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.1.pf4
 - Update to Fedora origin 3.19.4 kernel, update to v3.19-pf4 - https://pf.natalenko.name/forum/index.php?topic=304.0
