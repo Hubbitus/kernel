@@ -664,6 +664,9 @@ Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 #rhbz 1205083
 Patch26181: 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
 
+#rhbz 1208999
+Patch26182: SCSI-add-1024-max-sectors-black-list-flag.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1435,6 +1438,10 @@ ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
 #rhbz 1205083
 ApplyPatch 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+
+#rhbz 1208999
+ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2294,6 +2301,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi with QNAP devices (rhbz 1208999)
+
 * Thu Apr 23 2015 Laura Abbott <labbott@fedoraproject.com>
 - Fix noisy iwlwifi warning (rhbz 1205083)
 
