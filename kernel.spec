@@ -2359,6 +2359,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri Apr 24 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.5-200.hu.1.uksm.bfs.bfq
+- 3.19.5-200.hu.1.uksm.bfs.bfq
+
 * Thu Apr 23 2015 Laura Abbott <labbott@fedoraproject.com>
 - Fix noisy iwlwifi warning (rhbz 1205083)
 
