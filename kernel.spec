@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 14
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -474,7 +474,7 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
 Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -1113,7 +1113,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-#    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
     ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -2193,6 +2193,10 @@ fi
 #
 # 
 %changelog
+* Mon Apr 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc1.git0.1
+- Linux v4.1-rc1
+- Disable debugging options.
+
 * Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git14.1
 - Linux v4.0-10976-gd56a669ca59c
 

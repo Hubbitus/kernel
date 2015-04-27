@@ -109,6 +109,7 @@ CONFIG_RTC_DRV_XGENE=m
 CONFIG_HW_RANDOM_XGENE=m
 CONFIG_GPIO_XGENE=y
 CONFIG_GPIO_XGENE_SB=m
+CONFIG_XGENE_DMA=m
 
 # busted build for various reasons
 #  uses pci_* for some reason to allocate DMA buffers
