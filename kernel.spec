@@ -645,6 +645,10 @@ Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
 #CVE-2015-3330 rbhz 1214030
 Patch26188: fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 
+#rhbz 1211017 1211013
+Patch26190: nfs-fix-DIO-good-bytes-calculation.patch
+Patch26191: nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1403,6 +1407,11 @@ ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
 
 #CVE-2015-3330 rbhz 1214030
 ApplyPatch fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
+
+#rhbz 1211017 1211013
+ApplyPatch nfs-fix-DIO-good-bytes-calculation.patch
+ApplyPatch nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
+
 
 # END OF PATCH APPLICATIONS
 
@@ -2254,6 +2263,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport NFS DIO fixes from 4.1 (rhbz 1211017 1211013)
+
 * Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-3339 race condition between chown and execve (rhbz 1214030)
 - Fix iscsi with QNAP devices (rhbz 1208999)
