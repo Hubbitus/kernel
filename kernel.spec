@@ -670,6 +670,9 @@ Patch26182: SCSI-add-1024-max-sectors-black-list-flag.patch
 #CVE-2015-3330 rbhz 1214030
 Patch26188: fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 
+#rhbz 1204390
+Patch26189: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1447,6 +1450,9 @@ ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
 
 #CVE-2015-3330 rbhz 1214030
 ApplyPatch fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
+
+#rhbz 1204390
+ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2307,6 +2313,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Apr 28 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix more missing v4l2 caps
+
 * Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-3339 race condition between chown and execve (rhbz 1214030)
 - Fix iscsi with QNAP devices (rhbz 1208999)
