@@ -649,6 +649,9 @@ Patch26188: fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 Patch26190: nfs-fix-DIO-good-bytes-calculation.patch
 Patch26191: nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
 
+#rhbz 1210857
+Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1411,6 +1414,9 @@ ApplyPatch fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 #rhbz 1211017 1211013
 ApplyPatch nfs-fix-DIO-good-bytes-calculation.patch
 ApplyPatch nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
+
+#rhbz 1210857
+ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2263,6 +2269,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 28 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix up boot times for live images (rhbz 1210857)
+
 * Mon Apr 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport NFS DIO fixes from 4.1 (rhbz 1211017 1211013)
 
