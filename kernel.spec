@@ -614,6 +614,9 @@ Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 #rhbz 1208999
 Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
 
+#rhbz 1210857
+Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1342,6 +1345,9 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 #rhbz 1208999
 ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
+
+#rhbz 1210857
+ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2193,6 +2199,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 28 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix up boot times for live images (rhbz 1210857)
+
 * Mon Apr 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc1.git0.1
 - Linux v4.1-rc1
 - Disable debugging options.
