@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -641,9 +641,6 @@ Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 #rhbz 1208999
 Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
-
-#CVE-2015-3330 rbhz 1214030
-Patch26188: fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 
 #rhbz 1211017 1211013
 Patch26190: nfs-fix-DIO-good-bytes-calculation.patch
@@ -1407,9 +1404,6 @@ ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 #rhbz 1208999
 ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
-
-#CVE-2015-3330 rbhz 1214030
-ApplyPatch fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 
 #rhbz 1211017 1211013
 ApplyPatch nfs-fix-DIO-good-bytes-calculation.patch
@@ -2269,6 +2263,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 29 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.1-300
+- Linux v4.0.1
+
 * Tue Apr 28 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix up boot times for live images (rhbz 1210857)
 
