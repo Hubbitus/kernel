@@ -649,6 +649,9 @@ Patch26191: nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 
+#rhbz 1206036 1215989
+Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1411,6 +1414,9 @@ ApplyPatch nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
 
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
+
+#rhbz 1206036 1215989
+ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2263,6 +2269,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backlight on various Toshiba machines (rhbz 1206036 1215989)
+
 * Wed Apr 29 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.1-300
 - Linux v4.0.1
 
