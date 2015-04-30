@@ -673,6 +673,9 @@ Patch26188: fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 #rhbz 1204390
 Patch26189: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 
+#rhbz 1206036 1215989
+Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1453,6 +1456,10 @@ ApplyPatch fs-take-i_mutex-during-prepare_binprm-for-set-ug-id-.patch
 
 #rhbz 1204390
 ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1206036 1215989
+ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
+
 
 # END OF PATCH APPLICATIONS
 
@@ -2313,6 +2320,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Apr 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backlight on various Toshiba machines (rhbz 1206036 1215989)
+
 * Tue Apr 28 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix more missing v4l2 caps
 
