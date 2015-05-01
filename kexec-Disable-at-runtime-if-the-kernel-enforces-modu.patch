@@ -13,7 +13,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 38c25b1f2fd5..f2b5272156ce 100644
+index 7a36fdcca5bf..22d30d7a12b8 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
 @@ -36,6 +36,7 @@

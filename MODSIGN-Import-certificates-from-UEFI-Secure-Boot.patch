@@ -62,7 +62,7 @@ index 3b703d077513..1c9c8e500a48 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 0f8f8b0bc1bf..cbe268943cee 100644
+index 60c302cfb4d3..3de3ba7b98e4 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
 @@ -48,6 +48,7 @@ obj-$(CONFIG_UID16) += uid16.o
