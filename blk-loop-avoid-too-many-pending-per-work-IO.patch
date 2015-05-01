@@ -1,7 +1,3 @@
-From: Ming Lei <ming.lei@canonical.com>
-Date: Tue, 28 Apr 2015 14:40:49 -0400
-Subject: [PATCH] blk: loop: avoid too many pending work IO
-
 If there are too many pending per work I/O, too many
 high priority work thread can be generated so that
 system performance can be effected.
@@ -36,10 +32,10 @@ Signed-off-by: Ming Lei <ming.lei@canonical.com>
  2 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index d1f168b73634..453bceec22f9 100644
+index ae3fcb4..5a728c6 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
-@@ -1477,13 +1477,24 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
+@@ -1425,13 +1425,24 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
  		const struct blk_mq_queue_data *bd)
  {
  	struct loop_cmd *cmd = blk_mq_rq_to_pdu(bd->rq);
@@ -48,11 +44,11 @@ index d1f168b73634..453bceec22f9 100644
 +
 +	/*
 +	 * Fallback to single queue mode if the pending per work
-+	 * I/O number reaches 32, otherwise too many high priority
++	 * I/O number reaches 16, otherwise too many high priority
 +	 * worker thread may effect system performance as reported
 +	 * in fedora live booting from squashfs over loop.
 +	 */
-+	if (atomic_read(&lo->pending_per_work_io) >= 32)
++	if (atomic_read(&lo->pending_per_work_io) >= 16)
 +		single_queue = true;
  
  	blk_mq_start_request(bd->rq);
@@ -66,16 +62,16 @@ index d1f168b73634..453bceec22f9 100644
  		spin_lock_irq(&lo->lo_lock);
  		if (lo->write_started)
  			need_sched = false;
-@@ -1495,6 +1506,8 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
+@@ -1443,6 +1454,8 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
  		if (need_sched)
  			queue_work(loop_wq, &lo->write_work);
  	} else {
-+		cmd->per_work_io = true;
 +		atomic_inc(&lo->pending_per_work_io);
++		cmd->per_work_io = true;
  		queue_work(loop_wq, &cmd->read_work);
  	}
  
-@@ -1519,6 +1532,8 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
+@@ -1467,6 +1480,8 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
  	if (ret)
  		cmd->rq->errors = -EIO;
  	blk_mq_complete_request(cmd->rq);
@@ -85,7 +81,7 @@ index d1f168b73634..453bceec22f9 100644
  
  static void loop_queue_write_work(struct work_struct *work)
 diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 301c27f8323f..eb855f57a62d 100644
+index 301c27f..eb855f5 100644
 --- a/drivers/block/loop.h
 +++ b/drivers/block/loop.h
 @@ -57,6 +57,7 @@ struct loop_device {
@@ -105,5 +101,4 @@ index 301c27f8323f..eb855f57a62d 100644
  };
  
 -- 
-2.1.0
-
+1.9.1
