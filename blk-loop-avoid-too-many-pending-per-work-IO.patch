@@ -32,7 +32,7 @@ Signed-off-by: Ming Lei <ming.lei@canonical.com>
  2 files changed, 19 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index d7173cb..4db0301 100644
+index ae3fcb4..5a728c6 100644
 --- a/drivers/block/loop.c
 +++ b/drivers/block/loop.c
 @@ -1425,13 +1425,24 @@ static int loop_queue_rq(struct blk_mq_hw_ctx *hctx,
@@ -44,11 +44,11 @@ index d7173cb..4db0301 100644
 +
 +	/*
 +	 * Fallback to single queue mode if the pending per work
-+	 * I/O number reaches 32, otherwise too many high priority
++	 * I/O number reaches 16, otherwise too many high priority
 +	 * worker thread may effect system performance as reported
 +	 * in fedora live booting from squashfs over loop.
 +	 */
-+	if (atomic_read(&lo->pending_per_work_io) >= 32)
++	if (atomic_read(&lo->pending_per_work_io) >= 16)
 +		single_queue = true;
  
  	blk_mq_start_request(bd->rq);
@@ -66,8 +66,8 @@ index d7173cb..4db0301 100644
  		if (need_sched)
  			queue_work(loop_wq, &lo->write_work);
  	} else {
-+		cmd->per_work_io = true;
 +		atomic_inc(&lo->pending_per_work_io);
++		cmd->per_work_io = true;
  		queue_work(loop_wq, &cmd->read_work);
  	}
  
