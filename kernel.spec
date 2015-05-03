@@ -577,6 +577,7 @@ Patch21000: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 Patch21001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 Patch21002: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch21003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
+Patch21004: arm64-acpi-drop-expert.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -1198,6 +1199,7 @@ ApplyPatch amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
 ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
+ApplyPatch arm64-acpi-drop-expert.patch
 
 #
 # ARM
@@ -2199,6 +2201,9 @@ fi
 #
 # 
 %changelog
+* Sun May  3 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ACPI on aarch64
+
 * Fri May 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc1.git1.1
 - Linux v4.1-rc1-117-g4a152c3913fb
 - Reenable debugging options.
