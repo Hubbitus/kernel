@@ -2203,6 +2203,7 @@ fi
 %changelog
 * Sun May  3 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable ACPI on aarch64
+- General ARMv7 updates
 
 * Fri May 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc1.git1.1
 - Linux v4.1-rc1-117-g4a152c3913fb
