@@ -33,5 +33,5 @@ index 79beebf53302..eca0b7e0944f 100644
  	 * If the device is offline, don't try and read capacity or any
  	 * of the other niceties.
 -- 
-2.1.0
+2.3.6
 

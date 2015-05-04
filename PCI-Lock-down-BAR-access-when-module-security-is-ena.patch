@@ -112,5 +112,5 @@ index b91c4da68365..98f5637304d1 100644
  
  	dev = pci_get_bus_and_slot(bus, dfn);
 -- 
-2.1.0
+2.3.6
 

@@ -43,7 +43,7 @@ Signed-off-by: Josh Stone <jistone@redhat.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 7ff1239f9cd2..eaffb6f8ed36 100644
+index 2da553fd7fc3..32f118807d2a 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -704,7 +704,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
@@ -88,5 +88,5 @@ index 17670573dda8..d23b7c975eb5 100644
  config GDB_SCRIPTS
  	bool "Provide GDB scripts for kernel debugging"
 -- 
-2.1.0
+2.3.6
 

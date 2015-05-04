@@ -56,5 +56,5 @@ index 231fba0d03e5..0de5a6ddd5eb 100644
  	.init_machine	= highbank_init,
  	.dt_compat	= highbank_match,
 -- 
-2.1.0
+2.3.6
 
