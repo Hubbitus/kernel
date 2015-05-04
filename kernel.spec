@@ -1482,19 +1482,24 @@ BuildKernel() {
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} $MakeTarget %{?sparse_mflags} %{?kernel_mflags}
     %{make} -s ARCH=$Arch V=1 %{?_smp_mflags} modules %{?sparse_mflags} || exit 1
 
-%ifarch %{arm} aarch64
-    %{make} -s ARCH=$Arch V=1 dtbs dtbs_install INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
-    find arch/$Arch/boot/dts -name '*.dtb' -type f | xargs rm -f
-%endif
-
-    # Start installing the results
+    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}
+    mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer
 %if %{with_debuginfo}
     mkdir -p $RPM_BUILD_ROOT%{debuginfodir}/boot
     mkdir -p $RPM_BUILD_ROOT%{debuginfodir}/%{image_install_path}
 %endif
-    mkdir -p $RPM_BUILD_ROOT/%{image_install_path}
+
+%ifarch %{arm} aarch64
+    %{make} -s ARCH=$Arch V=1 dtbs dtbs_install INSTALL_DTBS_PATH=$RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
+    cp $RPM_BUILD_ROOT/%{image_install_path}/dtb-$KernelVer
+    find arch/$Arch/boot/dts -name '*.dtb' -type f | xargs rm -f
+%endif
+
+    # Start installing the results
     install -m 644 .config $RPM_BUILD_ROOT/boot/config-$KernelVer
+    install -m 644 .config $RPM_BUILD_ROOT/lib/modules/$KernelVer/config
     install -m 644 System.map $RPM_BUILD_ROOT/boot/System.map-$KernelVer
+    install -m 644 System.map $RPM_BUILD_ROOT/lib/modules/$KernelVer/System.map
 
     # We estimate the size of the initramfs because rpm needs to take this size
     # into consideration when performing disk space calculations. (See bz #530778)
@@ -1502,6 +1507,7 @@ BuildKernel() {
 
     if [ -f arch/$Arch/boot/zImage.stub ]; then
       cp arch/$Arch/boot/zImage.stub $RPM_BUILD_ROOT/%{image_install_path}/zImage.stub-$KernelVer || :
+      cp arch/$Arch/boot/zImage.stub $RPM_BUILD_ROOT/lib/modules/$KernelVer/zImage.stub-$KernelVer || :
     fi
     %if %{signmodules}
     # Sign the image if we're using EFI
@@ -1515,13 +1521,14 @@ BuildKernel() {
     $CopyKernel $KernelImage \
     		$RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     chmod 755 $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
+    cp $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer $RPM_BUILD_ROOT/lib/modules/$KernelVer/$InstallName
 
     # hmac sign the kernel for FIPS
     echo "Creating hmac file: $RPM_BUILD_ROOT/%{image_install_path}/.vmlinuz-$KernelVer.hmac"
     ls -l $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     sha512hmac $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer | sed -e "s,$RPM_BUILD_ROOT,," > $RPM_BUILD_ROOT/%{image_install_path}/.vmlinuz-$KernelVer.hmac;
+    cp $RPM_BUILD_ROOT/%{image_install_path}/.vmlinuz-$KernelVer.hmac $RPM_BUILD_ROOT/lib/modules/$KernelVer/.vmlinuz.hmac
 
-    mkdir -p $RPM_BUILD_ROOT/lib/modules/$KernelVer
     # Override $(mod-fw) because we don't want it to install any firmware
     # we'll get it from the linux-firmware package and we don't want conflicts
     %{make} -s ARCH=$Arch INSTALL_MOD_PATH=$RPM_BUILD_ROOT modules_install KERNELRELEASE=$KernelVer mod-fw=
@@ -1934,7 +1941,6 @@ popd
 make DESTDIR=$RPM_BUILD_ROOT bootwrapper_install WRAPPER_OBJDIR=%{_libdir}/kernel-wrapper WRAPPER_DTSDIR=%{_libdir}/kernel-wrapper/dts
 %endif
 
-
 ###
 ### clean
 ###
@@ -2005,7 +2011,7 @@ fi\
 #
 %define kernel_variant_posttrans() \
 %{expand:%%posttrans %{?1:%{1}-}core}\
-/bin/kernel-install add %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
+/bin/kernel-install add %{KVERREL}%{?1:+%{1}} /lib/modules/%{KVERREL}%{?1:+%{1}}/vmlinuz || exit $?\
 %{nil}
 
 #
@@ -2032,7 +2038,7 @@ fi}\
 #
 %define kernel_variant_preun() \
 %{expand:%%preun %{?1:%{1}-}core}\
-/bin/kernel-install remove %{KVERREL}%{?1:+%{1}} /%{image_install_path}/vmlinuz-%{KVERREL}%{?1:+%{1}} || exit $?\
+/bin/kernel-install remove %{KVERREL}%{?1:+%{1}} /lib/modules/%{KVERREL}%{?1:+%{1}}/vmlinuz || exit $?\
 %{nil}
 
 %kernel_variant_preun
@@ -2150,13 +2156,18 @@ fi
 %defattr(-,root,root)\
 %{!?_licensedir:%global license %%doc}\
 %license linux-%{KVERREL}/COPYING\
-/%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
-/%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
+/lib/modules/%{KVERREL}%{?2:+%{2}}/%{?-k:%{-k*}}%{!?-k:vmlinuz}\
+%ghost /%{image_install_path}/%{?-k:%{-k*}}%{!?-k:vmlinuz}-%{KVERREL}%{?2:+%{2}}\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/.vmlinuz.hmac \
+%ghost /%{image_install_path}/.vmlinuz-%{KVERREL}%{?2:+%{2}}.hmac \
 %ifarch %{arm} aarch64\
-/%{image_install_path}/dtb-%{KVERREL}%{?2:+%{2}} \
+/lib/modules/%{KVERREL}%{?2:+%{2}}/dtb \
+%ghost /%{image_install_path}/dtb-%{KVERREL}%{?2:+%{2}} \
 %endif\
-%attr(600,root,root) /boot/System.map-%{KVERREL}%{?2:+%{2}}\
-/boot/config-%{KVERREL}%{?2:+%{2}}\
+%attr(600,root,root) /lib/modules/%{KVERREL}%{?2:+%{2}}/System.map\
+%ghost /boot/System.map-%{KVERREL}%{?2:+%{2}}\
+/lib/modules/%{KVERREL}%{?2:+%{2}}/config\
+%ghost /boot/config-%{KVERREL}%{?2:+%{2}}\
 %ghost /boot/initramfs-%{KVERREL}%{?2:+%{2}}.img\
 %dir /lib/modules\
 %dir /lib/modules/%{KVERREL}%{?2:+%{2}}\
