@@ -615,6 +615,9 @@ Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 
+#rhbz 1218662
+Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1344,6 +1347,9 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
+
+#rhbz 1218662
+ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2195,6 +2201,9 @@ fi
 #
 # 
 %changelog
+* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
+
 * Mon May 04 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc2.git0.1
 - Linux v4.1-rc2
 - Disable debugging options.
