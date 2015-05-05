@@ -667,6 +667,9 @@ Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 #CVE-2015-3636 rhbz 1218074 1218110
 Patch26194: ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
 
+#rhbz 1218662
+Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1441,6 +1444,9 @@ ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
 #CVE-2015-3636 rhbz 1218074 1218110
 ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
+
+#rhbz 1218662
+ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2302,6 +2308,7 @@ fi
 #                                    ||     ||
 %changelog
 * Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
 - CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
 
 * Thu Apr 30 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.6-200
