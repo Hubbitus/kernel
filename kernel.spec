@@ -664,6 +664,9 @@ Patch26189: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1206036 1215989
 Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
+#CVE-2015-3636 rhbz 1218074 1218110
+Patch26194: ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1436,6 +1439,8 @@ ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1206036 1215989
 ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
+#CVE-2015-3636 rhbz 1218074 1218110
+ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2296,6 +2301,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
+
 * Thu Apr 30 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.6-200
 - Linux v3.19.6
 
