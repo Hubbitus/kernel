@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -608,9 +608,6 @@ Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1190947
-Patch26139: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
-
 #rhbz 1196825
 Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
@@ -641,10 +638,6 @@ Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 #rhbz 1208999
 Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
-
-#rhbz 1211017 1211013
-Patch26190: nfs-fix-DIO-good-bytes-calculation.patch
-Patch26191: nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
 
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
@@ -1380,9 +1373,6 @@ ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1190947
-ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
-
 #rhbz 1196825
 ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
@@ -1413,10 +1403,6 @@ ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
 #rhbz 1208999
 ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
-
-#rhbz 1211017 1211013
-ApplyPatch nfs-fix-DIO-good-bytes-calculation.patch
-ApplyPatch nfs-remove-WARN_ON_ONCE-from-nfs_direct_good_bytes.patch
 
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
@@ -2280,6 +2266,9 @@ fi
 #
 # 
 %changelog
+* Thu May 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.2-300
+- Linux v4.0.2
+
 * Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
 - CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
