@@ -2267,7 +2267,7 @@ fi
 # 
 %changelog
 * Thu May 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.2-300
-- Linux v4.0.2
+- Linux v4.0.2 (rhbz 1182816)
 
 * Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
