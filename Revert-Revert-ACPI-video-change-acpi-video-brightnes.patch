@@ -40,6 +40,3 @@ index 3647ce71154c..9dc8ba086596 100644
  module_param(brightness_switch_enabled, bool, 0644);
  
  /*
--- 
-2.1.0
-

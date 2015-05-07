@@ -28,6 +28,3 @@ index e27a25892db4..9ab0a86cc03d 100644
  		goto out;
  	case ATKBD_RET_ERR:
  		atkbd->err_count++;
--- 
-2.1.0
-

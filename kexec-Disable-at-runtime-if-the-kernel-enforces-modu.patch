@@ -38,6 +38,3 @@ index 9a8a01abbaed..9a0ecbf14545 100644
  	 * Verify we have a legal set of flags
  	 * This leaves us room for future extensions.
  	 */
--- 
-2.1.0
-

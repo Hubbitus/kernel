@@ -146,6 +146,3 @@ index 8d3761ce8f54..f39539c70219 100644
  
  	struct synaptics_mt_state mt_state;	/* Current mt finger state */
  	bool mt_state_lost;			/* mt_state may be incorrect */
--- 
-2.1.0
-

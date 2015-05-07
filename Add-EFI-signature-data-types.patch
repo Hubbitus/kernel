@@ -51,6 +51,3 @@ index 16ec1c00919d..b7cb7dc5ebb4 100644
  /*
   * All runtime access to EFI goes through this structure:
   */
--- 
-2.1.0
-
