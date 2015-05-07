@@ -243,6 +243,3 @@ index 55dacebb687b..9d4deeb9268e 100644
  
  static int param_set_bool_enable_only(const char *val,
  				      const struct kernel_param *kp)
--- 
-2.1.0
-

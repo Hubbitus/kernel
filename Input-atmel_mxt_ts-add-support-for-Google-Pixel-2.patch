@@ -218,6 +218,3 @@ index 2875ddf37289..40b98dda8f38 100644
  		.pm	= &mxt_pm_ops,
  	},
  	.probe		= mxt_probe,
--- 
-2.1.0
-

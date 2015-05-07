@@ -24,6 +24,3 @@ index ab403a636357..5dac78119fa7 100644
  	prompt "Force module signing when UEFI Secure Boot is enabled"
  	---help---
  	  UEFI Secure Boot provides a mechanism for ensuring that the
--- 
-2.1.0
-

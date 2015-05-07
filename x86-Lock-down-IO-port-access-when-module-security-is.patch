@@ -65,6 +65,3 @@ index 297110c12635..efe38c1bc234 100644
  	if (!access_ok(VERIFY_READ, buf, count))
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
--- 
-2.1.0
-

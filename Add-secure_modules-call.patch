@@ -58,6 +58,3 @@ index ec53f594e9c9..0372c3961016 100644
 +#endif
 +}
 +EXPORT_SYMBOL(secure_modules);
--- 
-2.1.0
-

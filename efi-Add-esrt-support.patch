@@ -778,6 +778,3 @@ index 470e8dfcb517..c15e1de5273c 100644
  
  extern int efi_reboot_quirk_mode;
  extern bool efi_poweroff_required(void);
--- 
-2.1.0
-

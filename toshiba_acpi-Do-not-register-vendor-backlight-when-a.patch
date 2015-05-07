@@ -92,6 +92,3 @@ index dbcb7a8915b8..2da716c3b648 100644
  	memset(&props, 0, sizeof(props));
  	props.type = BACKLIGHT_PLATFORM;
  	props.max_brightness = HCI_LCD_BRIGHTNESS_LEVELS - 1;
--- 
-2.1.0
-

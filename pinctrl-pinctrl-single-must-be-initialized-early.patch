@@ -32,6 +32,3 @@ index 69e84427f913..f21cf4291476 100644
  
  MODULE_AUTHOR("Tony Lindgren <tony@atomide.com>");
  MODULE_DESCRIPTION("One-register-per-pin type device tree based pinctrl driver");
--- 
-2.1.0
-

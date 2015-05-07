@@ -510,6 +510,3 @@ index 95ee92a91bd2..1b3b845d92f4 100644
  }
  
  static int mxt_input_open(struct input_dev *dev)
--- 
-2.1.0
-

@@ -26,6 +26,3 @@ index 208d5439e59b..787b0d699969 100644
  		sock_put(sk);
  		isk->inet_num = 0;
  		isk->inet_sport = 0;
--- 
-2.3.6
-

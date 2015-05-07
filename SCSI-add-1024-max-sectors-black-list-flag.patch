@@ -90,6 +90,3 @@ index 183eaab7c380..96e3f56519e7 100644
 +#define BLIST_MAX_1024		0x40000000 /* maximum 1024 sector cdb length */
  
  #endif
--- 
-2.1.0
-

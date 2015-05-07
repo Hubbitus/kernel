@@ -180,6 +180,3 @@ index 000000000000..94b0eb38a284
 +	return rc;
 +}
 +late_initcall(load_uefi_certs);
--- 
-2.1.0
-

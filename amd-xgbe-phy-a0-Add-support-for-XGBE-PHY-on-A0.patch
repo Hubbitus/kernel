@@ -1841,6 +1841,3 @@ index 000000000000..c352d5c2989b
 +	{ }
 +};
 +MODULE_DEVICE_TABLE(mdio, amd_xgbe_phy_a0_ids);
--- 
-2.1.0
-

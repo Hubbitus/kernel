@@ -38,6 +38,3 @@ index 0e11d61408ff..cc5ca2cac706 100644
  
  	hcd = usb_create_hcd(driver, &pdev->dev, dev_name(&pdev->dev));
  	if (!hcd)
--- 
-2.1.0
-

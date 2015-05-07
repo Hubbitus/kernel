@@ -98,6 +98,3 @@ index 1b3b845d92f4..2875ddf37289 100644
  	/* For multi touch */
  	error = input_mt_init_slots(input_dev, num_mt_slots, mt_flags);
  	if (error) {
--- 
-2.1.0
-
