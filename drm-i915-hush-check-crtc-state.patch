@@ -26,6 +26,3 @@ index d547d9c8dda2..f523ee679987 100644
  			intel_dump_pipe_config(crtc, &pipe_config,
  					       "[hw state]");
  			intel_dump_pipe_config(crtc, crtc->config,
--- 
-2.3.6
-

@@ -45,6 +45,3 @@ index 630af73e98c4..c69b308beb3f 100644
  	input_mt_drop_unused(dev);
  
  	/* Don't use active slot count to generate BTN_TOOL events. */
--- 
-2.3.6
-

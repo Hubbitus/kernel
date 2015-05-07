@@ -32,6 +32,3 @@ index 601965a948e8..028213cf0e4d 100644
  	help
  	  Use dynamic allocation for cpumask_var_t, instead of putting
  	  them on the stack.  This is a bit more expensive, but avoids
--- 
-2.3.6
-

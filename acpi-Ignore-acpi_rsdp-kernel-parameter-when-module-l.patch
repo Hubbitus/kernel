@@ -33,6 +33,3 @@ index 39748bb3a543..72edfeedb326 100644
  		return acpi_rsdp;
  #endif
  
--- 
-2.3.6
-

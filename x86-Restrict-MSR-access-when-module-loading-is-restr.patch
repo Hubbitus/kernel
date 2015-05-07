@@ -37,6 +37,3 @@ index 113e70784854..26c2f83fc470 100644
  		if (copy_from_user(&regs, uregs, sizeof regs)) {
  			err = -EFAULT;
  			break;
--- 
-2.3.6
-

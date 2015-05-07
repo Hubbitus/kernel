@@ -55,6 +55,3 @@ index 231fba0d03e5..0de5a6ddd5eb 100644
  	.init_irq	= highbank_init_irq,
  	.init_machine	= highbank_init,
  	.dt_compat	= highbank_match,
--- 
-2.3.6
-

@@ -34,6 +34,3 @@ index f6cb1f1b30b7..4476fb590733 100644
  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
  
  	/*
--- 
-2.3.6
-

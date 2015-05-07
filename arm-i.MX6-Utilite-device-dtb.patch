@@ -60,6 +60,3 @@ index 99b46f8030ad..8b6ddd16dcc5 100644
 +	pinctrl-0 = <&pinctrl_usdhc3>;
 +	status = "okay";
 +};
--- 
-2.3.6
-

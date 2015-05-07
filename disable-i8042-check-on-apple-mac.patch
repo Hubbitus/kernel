@@ -56,6 +56,3 @@ index 4022b75eaad7..1aaf06aa7b0f 100644
  	err = i8042_platform_init();
  	if (err)
  		return err;
--- 
-2.3.6
-

@@ -26,6 +26,3 @@ index 3b7151687776..4b19e7e5bc01 100644
  	/* Lock the device, then check to see if we were
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
--- 
-2.3.6
-

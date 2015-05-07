@@ -36,6 +36,3 @@ index 53fe675f9bd7..b52c88860532 100644
  	if (p < (unsigned long) high_memory) {
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
--- 
-2.3.6
-

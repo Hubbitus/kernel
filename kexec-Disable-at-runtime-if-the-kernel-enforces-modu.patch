@@ -38,6 +38,3 @@ index 7a36fdcca5bf..22d30d7a12b8 100644
  	 * Verify we have a legal set of flags
  	 * This leaves us room for future extensions.
  	 */
--- 
-2.3.6
-

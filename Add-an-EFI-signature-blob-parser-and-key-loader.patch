@@ -173,6 +173,3 @@ index 958d1d9a5af8..3dd6f4a51b9b 100644
  /**
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
--- 
-2.3.6
-

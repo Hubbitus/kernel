@@ -40,6 +40,3 @@ index 74753132c3ac..3cc99d7c2361 100644
 +	return 0;
 +}
 +early_initcall(arm64_console_setup);
--- 
-2.3.6
-
