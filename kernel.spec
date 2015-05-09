@@ -2266,6 +2266,9 @@ fi
 #
 # 
 %changelog
+* Sat May  9 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 updates
+
 * Thu May 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.2-300
 - Linux v4.0.2 (rhbz 1182816)
 
