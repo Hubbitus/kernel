@@ -2215,6 +2215,7 @@ fi
 * Mon May 11 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc3.git0.1
 - Linux v4.1-rc3
 - Disable debugging options.
+- Use kernel-install to create files in /boot partition (from Harald Hoyer)
 
 * Mon May 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM update
