@@ -44,6 +44,3 @@ index bbb7dcef02d3..19db0b684b7f 100644
  
  	p = kmem_cache_create("iopte_cache", IOPTE_TABLE_SIZE, align, flags,
  			      iopte_cachep_ctor);
--- 
-2.1.0
-

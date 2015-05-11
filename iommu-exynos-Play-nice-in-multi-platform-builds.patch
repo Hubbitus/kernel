@@ -44,6 +44,3 @@ index 7ce52737c7a1..dc14fec4ede1 100644
  	lv2table_kmem_cache = kmem_cache_create("exynos-iommu-lv2table",
  				LV2TABLE_SIZE, LV2TABLE_SIZE, 0, NULL);
  	if (!lv2table_kmem_cache) {
--- 
-2.1.0
-

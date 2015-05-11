@@ -39,6 +39,3 @@ index 8f6a153677b9..9d599eb79f17 100644
  			__set_bit(INPUT_PROP_TOPBUTTONPAD, dev->propbit);
  		/* Clickpads report only left button */
  		__clear_bit(BTN_RIGHT, dev->keybit);
--- 
-2.1.0
-

@@ -37,6 +37,3 @@ index 0238d612750e..16ec1c00919d 100644
  
  #ifdef CONFIG_EFI
  /*
--- 
-2.1.0
-

@@ -40,6 +40,3 @@ index db880bf46135..c931ec7201c0 100644
  	clkout2_pin: pinmux_clkout2_pin {
  		pinctrl-single,pins = <
  			0x1b4 (PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* xdma_event_intr1.clkout2 */
--- 
-2.1.0
-

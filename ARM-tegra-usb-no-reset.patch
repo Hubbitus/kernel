@@ -9,7 +9,7 @@ Patch for disconnect issues with storage attached to a
  1 file changed, 7 insertions(+)
 
 diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
-index b4bfa3ac4b12..1753af78b2b2 100644
+index 95409aacc076..f33003e59ab3 100644
 --- a/drivers/usb/core/hub.c
 +++ b/drivers/usb/core/hub.c
 @@ -5021,6 +5021,13 @@ static void hub_event(struct work_struct *work)
@@ -26,6 +26,3 @@ index b4bfa3ac4b12..1753af78b2b2 100644
  	/* Lock the device, then check to see if we were
  	 * disconnected while waiting for the lock to succeed. */
  	usb_lock_device(hdev);
--- 
-2.1.0
-

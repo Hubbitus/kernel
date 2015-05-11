@@ -30,6 +30,3 @@ index dac9ed0f01f7..31a29fe7c555 100644
  	default !EXPERT
  	help
  	  Provides the way to make tasks work with different objects using
--- 
-2.1.0
-

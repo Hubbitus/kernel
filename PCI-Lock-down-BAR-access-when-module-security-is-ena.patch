@@ -111,6 +111,3 @@ index b91c4da68365..98f5637304d1 100644
  		return -EPERM;
  
  	dev = pci_get_bus_and_slot(bus, dfn);
--- 
-2.1.0
-

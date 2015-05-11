@@ -36,6 +36,3 @@ index 0fd89c38cf02..20660917a06f 100644
  	hdmi {
  		compatible = "ti,tilcdc,slave";
  		i2c = <&i2c0>;
--- 
-2.1.0
-

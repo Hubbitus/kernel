@@ -48,6 +48,3 @@ index 7543a56e0f45..93b5a6998371 100644
  	status = wmi_evaluate_method(ASUS_WMI_MGMT_GUID,
  				     1, asus->debug.method_id,
  				     &input, &output);
--- 
-2.1.0
-

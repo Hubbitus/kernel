@@ -652,9 +652,6 @@ Patch26136: vhost-scsi-potential-memory-corruption.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1190947
-Patch26141: Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
-
 #rhbz 1200777 1200778
 Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
 Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
@@ -675,17 +672,8 @@ Patch26172: x86-microcode-intel-Guard-against-stack-overflow-in-.patch
 # git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
 Patch30000: kernel-arm64.patch
 
-#rhbz 1204512
-Patch26174: tun-return-proper-error-code-from-tun_do_read.patch
-
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#rhbz 1207789
-Patch26177: tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
-
-#CVE-2015-XXXX rhbz 1203712 1208491
-Patch26178: ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 #rhbz 1208953
 Patch26179: pty-Fix-input-race-when-closing.patch
@@ -695,6 +683,21 @@ Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
 #rhbz 1205083
 Patch26181: 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+
+#rhbz 1208999
+Patch26182: SCSI-add-1024-max-sectors-black-list-flag.patch
+
+#rhbz 1204390
+Patch26189: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1206036 1215989
+Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
+
+#CVE-2015-3636 rhbz 1218074 1218110
+Patch26194: ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
+
+#rhbz 1218662
+Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1436,9 +1439,6 @@ ApplyPatch vhost-scsi-potential-memory-corruption.patch
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1190947
-ApplyPatch Bluetooth-ath3k-Add-support-Atheros-AR5B195-combo-Mi.patch
-
 #rhbz 1200777 1200778
 ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
 ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
@@ -1468,18 +1468,8 @@ ApplyPatch kernel-arm64.patch -R
 ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
 #//////////////// Hubbitus patches
 
-
-#rhbz 1204512
-ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
-
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#rhbz 1207789
-ApplyPatch tg3-Hold-tp-lock-before-calling-tg3_halt-from-tg3_in.patch
-
-#CVE-2015-XXXX rhbz 1203712 1208491
-ApplyPatch ipv6-Don-t-reduce-hop-limit-for-an-interface.patch
 
 #rhbz 1208953
 ApplyPatch pty-Fix-input-race-when-closing.patch
@@ -1489,6 +1479,22 @@ ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
 #rhbz 1205083
 ApplyPatch 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+
+#rhbz 1208999
+ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
+
+#rhbz 1204390
+ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1206036 1215989
+ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
+
+#CVE-2015-3636 rhbz 1218074 1218110
+ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
+
+#rhbz 1218662
+ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
 # END OF PATCH APPLICATIONS
 
 %endif
@@ -2348,6 +2354,26 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 07 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.7-200
+- Linux v3.19.7
+
+* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
+- CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
+
+* Thu Apr 30 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.6-200
+- Linux v3.19.6
+
+* Thu Apr 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backlight on various Toshiba machines (rhbz 1206036 1215989)
+
+* Tue Apr 28 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix more missing v4l2 caps
+
+* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-3339 race condition between chown and execve (rhbz 1214030)
+- Fix iscsi with QNAP devices (rhbz 1208999)
+
 * Fri Apr 24 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.2.pf4
 - Pull fedora 3.19.5, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
 

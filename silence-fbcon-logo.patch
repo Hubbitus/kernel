@@ -50,6 +50,3 @@ index ea437245562e..eefa9c45d2e1 100644
  fs_initcall(fb_console_init);
  
  #ifdef MODULE
--- 
-2.1.0
-

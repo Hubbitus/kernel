@@ -47,6 +47,3 @@ index a93cefe0e522..00304f742eca 100644
  	if (hidpp->quirks & HIDPP_QUIRK_CLASS_WTP) {
  		ret = wtp_allocate(hdev, id);
  		if (ret)
--- 
-2.1.0
-
