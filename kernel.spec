@@ -2201,6 +2201,9 @@ fi
 #
 # 
 %changelog
+* Mon May 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM update
+
 * Thu May 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc2.git3.1
 - Linux v4.1-rc2-79-g0e1dc4274828
 
