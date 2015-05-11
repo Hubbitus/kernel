@@ -73,6 +73,3 @@ index 70bf11815f84..4eeb9923472b 100644
  	set_sample_period();
  
  	if (watchdog_user_enabled)
--- 
-2.1.0
-

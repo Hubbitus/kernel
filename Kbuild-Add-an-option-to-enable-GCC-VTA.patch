@@ -43,7 +43,7 @@ Signed-off-by: Josh Stone <jistone@redhat.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 633b5f0f11a0..5a2aedee1fc9 100644
+index 69952c1404b2..c0aa7af8ee68 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -706,7 +706,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
@@ -87,6 +87,3 @@ index 5f2ce616c046..6525e2a5619a 100644
  
  config ENABLE_WARN_DEPRECATED
  	bool "Enable __deprecated logic"
--- 
-2.1.0
-

@@ -120,6 +120,3 @@ index 1bd01f21783b..8d3761ce8f54 100644
  	unsigned long int identity;		/* Identification */
  	unsigned int x_res, y_res;		/* X/Y resolution in units/mm */
  	unsigned int x_max, y_max;		/* Max coordinates (from FW) */
--- 
-2.1.0
-

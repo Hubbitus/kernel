@@ -556,6 +556,3 @@ index 9f6c8971855c..67adf6437f78 100644
  	     port_name(dp_to_dig_port(intel_dp)->port));
  
  	intel_dp->want_panel_vdd = false;
--- 
-2.1.0
-

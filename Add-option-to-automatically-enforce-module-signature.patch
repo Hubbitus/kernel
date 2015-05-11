@@ -180,6 +180,3 @@ index 98c3d7955a51..6244f24abe27 100644
  bool secure_modules(void)
  {
  #ifdef CONFIG_MODULE_SIG
--- 
-2.1.0
-

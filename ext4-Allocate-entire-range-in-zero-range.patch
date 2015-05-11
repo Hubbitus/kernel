@@ -73,6 +73,3 @@ index bed43081720f..aa522429b751 100644
  
  		/* Now release the pages and zero block aligned part of pages*/
  		truncate_pagecache_range(inode, start, end - 1);
--- 
-2.1.0
-

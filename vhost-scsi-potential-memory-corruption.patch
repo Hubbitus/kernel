@@ -48,6 +48,3 @@ index d695b1673ae5..f5c98e6f7b58 100644
  		return ERR_PTR(-EINVAL);
  
  	tpg = kzalloc(sizeof(struct tcm_vhost_tpg), GFP_KERNEL);
--- 
-2.1.0
-
