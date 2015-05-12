@@ -10,10 +10,10 @@ Summary: The Linux kernel
 %global released_kernel 1
 
 %define rpmversion 3.10.0
-%define pkgrelease 229.1.2.el7
+%define pkgrelease 229.4.2.el7
 
 # allow pkg_release to have configurable %{?dist} tag
-%define specrelease 229.1.2%{?dist}
+%define specrelease 229.4.2%{?dist}
 
 %define pkg_release %{specrelease}%{?buildid}
 
@@ -332,16 +332,16 @@ Source10: sign-modules
 Source11: x509.genkey
 Source12: extra_certificates
 %if %{?released_kernel}
-Source13: centos.cer 
+Source13: securebootca.cer
 Source14: secureboot.cer
 %define pesign_name redhatsecureboot301
 %else
-Source13: centos.cer
-Source14: secureboot.cer
+Source13: redhatsecurebootca2.cer
+Source14: redhatsecureboot003.cer
 %define pesign_name redhatsecureboot003
 %endif
-Source15: centos-ldup.x509
-Source16: centos-kpatch.x509
+Source15: rheldup3.x509
+Source16: rhelkpatch1.x509
 
 Source18: check-kabi
 
@@ -370,9 +370,6 @@ Source2001: cpupower.config
 
 # empty final patch to facilitate testing of kernel patches
 Patch999999: linux-kernel-test.patch
-Patch1000: debrand-single-cpu.patch
-Patch1001: debrand-rh_taint.patch
-Patch1002: debrand-rh-i686-cpu.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -525,11 +522,11 @@ This package provides debug information for package kernel-tools.
 %endif # with_tools
 
 %package -n kernel-abi-whitelists
-Summary: The CentOS Linux kernel ABI symbol whitelists
+Summary: The Red Hat Enterprise Linux kernel ABI symbol whitelists
 Group: System Environment/Kernel
 AutoReqProv: no
 %description -n kernel-abi-whitelists
-The kABI package contains information pertaining to the CentOS
+The kABI package contains information pertaining to the Red Hat Enterprise
 Linux kernel ABI, including lists of kernel symbols that are needed by
 external Linux kernel modules, and a yum plugin to aid enforcement.
 
@@ -670,12 +667,6 @@ cd linux-%{KVRA}
 
 # Drop some necessary files from the source dir into the buildroot
 cp $RPM_SOURCE_DIR/kernel-%{version}-*.config .
-
-# CentOS Branding Modification
-ApplyOptionalPatch debrand-rh_taint.patch
-ApplyOptionalPatch debrand-single-cpu.patch
-ApplyOptionalPatch debrand-rh-i686-cpu.patch
-# End of CentOS Modification
 
 ApplyOptionalPatch linux-kernel-test.patch
 
@@ -828,7 +819,7 @@ BuildKernel() {
     fi
 # EFI SecureBoot signing, x86_64-only
 %ifarch x86_64
-    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE13}
+    %pesign -s -i $KernelImage -o $KernelImage.signed -a %{SOURCE13} -c %{SOURCE14} -n %{pesign_name}
     mv $KernelImage.signed $KernelImage
 %endif
     $CopyKernel $KernelImage $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
@@ -1500,10 +1491,59 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
-* Thu Mar 26 2015 Johnny Hughes <johnny@centos.org> [3.10.0-229.1.2.el7]
-- Apply debranding changes
+* Fri Apr 24 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.4.2.el7]
+- [x86] crypto: aesni - fix memory usage in GCM decryption (Kurt Stutsman) [1213331 1212178] {CVE-2015-3331}
 
-* Fri Mar 06 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.1.2.el7]
+* Tue Apr 14 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.4.1.el7]
+- [crypto] x86: sha256_ssse3 - also test for BMI2 (Herbert Xu) [1211484 1201563]
+- [crypto] testmgr: fix RNG return code enforcement (Herbert Xu) [1211487 1198978]
+- [crypto] rng: RNGs must return 0 in success case (Herbert Xu) [1211487 1198978]
+- [crypto] x86: sha1 - reduce size of the AVX2 asm implementation (Herbert Xu) [1211291 1177968]
+- [crypto] x86: sha1 - fix stack alignment of AVX2 variant (Herbert Xu) [1211291 1177968]
+- [crypto] x86: sha1 - re-enable the AVX variant (Herbert Xu) [1211291 1177968]
+- [crypto] sha: SHA1 transform x86_64 AVX2 (Herbert Xu) [1211291 1177968]
+- [crypto] sha-mb: sha1_mb_alg_state can be static (Herbert Xu) [1211290 1173756]
+- [crypto] mcryptd: mcryptd_flist can be static (Herbert Xu) [1211290 1173756]
+- [crypto] sha-mb: SHA1 multibuffer job manager and glue code (Herbert Xu) [1211290 1173756]
+- [crypto] sha-mb: SHA1 multibuffer crypto computation (x8 AVX2) (Herbert Xu) [1211290 1173756]
+- [crypto] sha-mb: SHA1 multibuffer submit and flush routines for AVX2 (Herbert Xu) [1211290 1173756]
+- [crypto] sha-mb: SHA1 multibuffer algorithm data structures (Herbert Xu) [1211290 1173756]
+- [crypto] sha-mb: multibuffer crypto infrastructure (Herbert Xu) [1211290 1173756]
+- [kernel] sched: Add function single_task_running to let a task check if it is the only task running on a cpu (Herbert Xu) [1211290 1173756]
+- [crypto] ahash: initialize entry len for null input in crypto hash sg list walk (Herbert Xu) [1211290 1173756]
+- [crypto] ahash: Add real ahash walk interface (Herbert Xu) [1211290 1173756]
+- [char] random: account for entropy loss due to overwrites (Herbert Xu) [1211288 1110044]
+- [char] random: allow fractional bits to be tracked (Herbert Xu) [1211288 1110044]
+- [char] random: statically compute poolbitshift, poolbytes, poolbits (Herbert Xu) [1211288 1110044]
+
+* Thu Apr 09 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.3.1.el7]
+- [netdrv] mlx4_en: tx_info->ts_requested was not cleared (Doug Ledford) [1209240 1178070]
+
+* Thu Apr 02 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.2.1.el7]
+- [char] tpm: Added Little Endian support to vtpm module (Steve Best) [1207051 1189017]
+- [powerpc] pseries: Fix endian problems with LE migration (Steve Best) [1207050 1183198]
+- [iommu] vt-d: Work around broken RMRR firmware entries (Myron Stowe) [1205303 1195802]
+- [iommu] vt-d: Store bus information in RMRR PCI device path (Myron Stowe) [1205303 1195802]
+- [s390] zcrypt: enable s390 hwrng to seed kernel entropy (Hendrik Brueckner) [1205300 1196398]
+- [s390] zcrypt: improve device probing for zcrypt adapter cards (Hendrik Brueckner) [1205300 1196398]
+- [net] team: fix possible null pointer dereference in team_handle_frame (Jiri Pirko) [1202359 1188496]
+- [fs] fsnotify: fix handling of renames in audit (Paul Moore) [1202358 1191562]
+- [net] openvswitch: Fix net exit (Jiri Benc) [1202357 1200859]
+- [fs] gfs2: Move gfs2_file_splice_write outside of #ifdef (Robert S Peterson) [1201256 1193910]
+- [fs] gfs2: Allocate reservation during splice_write (Robert S Peterson) [1201256 1193910]
+- [crypto] aesni: fix "by8" variant for 128 bit keys (Herbert Xu) [1201254 1174971]
+- [crypto] aesni: remove unused defines in "by8" variant (Herbert Xu) [1201254 1174971]
+- [crypto] aesni: fix counter overflow handling in "by8" variant (Herbert Xu) [1201254 1174971]
+- [crypto] aes: AES CTR x86_64 "by8" AVX optimization (Herbert Xu) [1201254 1174971]
+- [kernel] audit: restore AUDIT_LOGINUID unset ABI (Richard Guy Briggs) [1197748 1120491]
+- [kernel] audit: replace getname()/putname() hacks with reference counters (Paul Moore) [1197746 1155208]
+- [kernel] audit: fix filename matching in __audit_inode() and __audit_inode_child() (Paul Moore) [1197746 1155208]
+- [kernel] audit: enable filename recording via getname_kernel() (Paul Moore) [1197746 1155208]
+- [fs] namei: simpler calling conventions for filename_mountpoint() (Paul Moore) [1197746 1155208]
+- [fs] namei: create proper filename objects using getname_kernel() (Paul Moore) [1197746 1155208]
+- [fs] namei: rework getname_kernel to handle up to PATH_MAX sized filenames (Paul Moore) [1197746 1155208]
+- [fs] namei: cut down the number of do_path_lookup() callers (Paul Moore) [1197746 1155208]
+- [fs] execve: use 'struct filename *' for executable name passing (Paul Moore) [1197746 1155208]
 - [infiniband] core: Prevent integer overflow in ib_umem_get address arithmetic (Doug Ledford) [1181177 1179347] {CVE-2014-8159}
 
 * Thu Mar 05 2015 Phillip Lougher <plougher@redhat.com> [3.10.0-229.1.1.el7]
