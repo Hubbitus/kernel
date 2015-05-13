@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -636,17 +636,11 @@ Patch26182: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 Patch26183: 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
 Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
-#rhbz 1208999
-Patch26177: SCSI-add-1024-max-sectors-black-list-flag.patch
-
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 #rhbz 1206036 1215989
 Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
-
-#CVE-2015-3636 rhbz 1218074 1218110
-Patch26194: ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
 
 #rhbz 1218662
 Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
@@ -1401,17 +1395,11 @@ ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 ApplyPatch 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
 ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
-#rhbz 1208999
-ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
-
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 #rhbz 1206036 1215989
 ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
-
-#CVE-2015-3636 rhbz 1218074 1218110
-ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
 
 #rhbz 1218662
 ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
@@ -2266,6 +2254,9 @@ fi
 #
 # 
 %changelog
+* Wed May 13 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-300
+- Linux v4.0.3
+
 * Sat May  9 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARMv7 updates
 
