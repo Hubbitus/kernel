@@ -645,6 +645,9 @@ Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 #rhbz 1218662
 Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
 
+#rhbz 1219343
+Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1403,6 +1406,9 @@ ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
 #rhbz 1218662
 ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
+#rhbz 1219343
+ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2254,6 +2260,9 @@ fi
 #
 # 
 %changelog
+* Wed May 13 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix spew from KVM switch (rhbz 1219343)
+
 * Wed May 13 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-300
 - Linux v4.0.3
 
