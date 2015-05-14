@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -560,6 +560,7 @@ Patch1020: efi-Add-esrt-support.patch
 # nouveau + drm fixes
 # intel drm is all merged upstream
 Patch1826: drm-i915-hush-check-crtc-state.patch
+Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
 # Quiet boot fixes
 
@@ -1343,6 +1344,7 @@ ApplyPatch efi-Add-esrt-support.patch
 
 # Intel DRM
 ApplyPatch drm-i915-hush-check-crtc-state.patch
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
 
@@ -2276,8 +2278,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-200
+* Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
 - Linux v4.0.3
+- Disable i915 verbose state checks
 
 * Mon May 11 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.8-200
 - Linux v3.19.8
