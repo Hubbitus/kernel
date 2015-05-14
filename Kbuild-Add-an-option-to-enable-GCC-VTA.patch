@@ -43,7 +43,7 @@ Signed-off-by: Josh Stone <jistone@redhat.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index 69952c1404b2..c0aa7af8ee68 100644
+index dc9f43a019d6..89b47324c032 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -706,7 +706,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
@@ -59,7 +59,7 @@ index 69952c1404b2..c0aa7af8ee68 100644
  ifdef CONFIG_DEBUG_INFO
  ifdef CONFIG_DEBUG_INFO_SPLIT
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 5f2ce616c046..6525e2a5619a 100644
+index c5cefb3c009c..b663e8e211b0 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
 @@ -165,7 +165,23 @@ config DEBUG_INFO_DWARF4
@@ -85,5 +85,5 @@ index 5f2ce616c046..6525e2a5619a 100644
 +	  environment to automatically compile everything both ways,
 +	  generating an error if anything differs.
  
- config ENABLE_WARN_DEPRECATED
- 	bool "Enable __deprecated logic"
+ config GDB_SCRIPTS
+ 	bool "Provide GDB scripts for kernel debugging"
