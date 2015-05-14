@@ -613,6 +613,9 @@ Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 #rhbz 1219343
 Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
+#rhbz 1220915
+Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1345,6 +1348,9 @@ ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 #rhbz 1219343
 ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
+
+#rhbz 1220915
+ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2206,6 +2212,9 @@ fi
 #
 # 
 %changelog
+* Thu May 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix non-empty dir removal in overlayfs (rhbz 1220915)
+
 * Wed May 13 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix spew from KVM switch (rhbz 1219343)
 
