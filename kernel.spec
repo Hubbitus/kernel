@@ -43,26 +43,26 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 19
+%define base_sublevel 0
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf Still against 3.19.4 v3.19-pf4: https://pf.natalenko.name/forum/index.php?topic=304.0
-%define stable_update 4
+#+Hu Pf Still against 4.0.2 v4.0-pf4: https://pf.natalenko.name/forum/index.php?topic=315.0
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
 %define stable_base %{stable_update}
 %endif
-%define rpmversion 3.%{base_sublevel}.%{stable_update}
+%define rpmversion 4.%{base_sublevel}.%{stable_update}
 
 ## The not-released-kernel case ##
 %else
@@ -73,7 +73,7 @@ Summary: The Linux kernel
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
-%define rpmversion 3.%{upstream_sublevel}.0
+%define rpmversion 4.%{upstream_sublevel}.0
 %endif
 # Nb: The above rcrev and gitrev values automagically define Patch00 and Patch01 below.
 
@@ -154,7 +154,7 @@ Summary: The Linux kernel
 %endif
 
 # The kernel tarball/base version
-%define kversion 3.%{base_sublevel}
+%define kversion 4.%{base_sublevel}
 
 %define make_target bzImage
 
@@ -414,7 +414,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v3.0/linux-%{kversion}.tar.xz
+Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.0/linux-%{kversion}.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -477,8 +477,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=304.0
-%global stable_patch_00 https://pf.natalenko.name/sources/3.19/patch-3.19-pf4.xz
+# https://pf.natalenko.name/forum/index.php?topic=315.0
+%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf4.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -487,14 +487,14 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-Patch01: patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Patch00: patch-3.%{base_sublevel}-git%{gitrev}.xz
+Patch00: patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
@@ -557,13 +557,15 @@ Patch1018: MODSIGN-Support-not-importing-certs-from-db.patch
 
 Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
+# esrt
+Patch1020: efi-Add-esrt-support.patch
+
 # virt + ksm patches
 
 # DRM
 
 # nouveau + drm fixes
 # intel drm is all merged upstream
-Patch1825: drm-i915-tame-the-chattermouth-v2.patch
 Patch1826: drm-i915-hush-check-crtc-state.patch
 Patch1827: drm-i915-Disable-verbose-state-checks.patch
 
@@ -585,6 +587,10 @@ Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
 # PPC
 
 # ARM64
+Patch21000: net-amd-Add-xgbe-a0-driver.patch
+Patch21001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
+Patch21002: arm64-avoid-needing-console-to-enable-serial-console.patch
+Patch21003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 # ARMv7
 Patch21020: ARM-tegra-usb-no-reset.patch
@@ -594,13 +600,8 @@ Patch21023: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 Patch21024: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 Patch21025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch21026: pinctrl-pinctrl-single-must-be-initialized-early.patch
-
+Patch21027: 0001-drivers-rtc-rtc-em3027.c-add-device-tree-support.patch
 Patch21028: arm-i.MX6-Utilite-device-dtb.patch
-
-# IOMMU crash fixes - https://lists.linuxfoundation.org/pipermail/iommu/2015-February/012329.html
-Patch21030: iommu-omap-Play-nice-in-multi-platform-builds.patch
-Patch21031: iommu-exynos-Play-nice-in-multi-platform-builds.patch
-Patch21032: iommu-rockchip-Play-nice-in-multi-platform-builds.patch
 
 Patch21100: arm-highbank-l2-reverts.patch
 
@@ -643,21 +644,11 @@ Patch26132: x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
-#rhbz 1186097
-Patch26135: acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
-
-#CVE-XXXX-XXXX rhbz 1189864 1192079
-Patch26136: vhost-scsi-potential-memory-corruption.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1200777 1200778
-Patch26159: Input-synaptics-retrieve-the-extended-capabilities-i.patch
-Patch26160: Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
-Patch26161: Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
-Patch26162: Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
-Patch26163: Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+#rhbz 1196825
+Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 #rhbz 1201532
 Patch26168: HID-multitouch-add-support-of-clickpads.patch
@@ -666,38 +657,38 @@ Patch26168: HID-multitouch-add-support-of-clickpads.patch
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
-#CVE-2015-2666 rhbz 1204724 1204722
-Patch26172: x86-microcode-intel-Guard-against-stack-overflow-in-.patch
-
-# git clone ssh://git.fedorahosted.org/git/kernel-arm64.git, git diff master...devel
-Patch30000: kernel-arm64.patch
-
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 #rhbz 1208953
-Patch26179: pty-Fix-input-race-when-closing.patch
+Patch26178: pty-Fix-input-race-when-closing.patch
 
 #rhbz 1210801
-Patch26180: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
+Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
-#rhbz 1205083
-Patch26181: 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+#rhbz 1209088
+Patch26180: Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
+Patch26181: Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
+Patch26182: Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
-#rhbz 1208999
-Patch26182: SCSI-add-1024-max-sectors-black-list-flag.patch
+#rhbz 1188741
+Patch26183: 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
+Patch26184: 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
-#rhbz 1204390
-Patch26189: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+#rhbz 1210857
+Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 #rhbz 1206036 1215989
 Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#CVE-2015-3636 rhbz 1218074 1218110
-Patch26194: ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
-
 #rhbz 1218662
 Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
+#rhbz 1219343
+Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
+
+#rhbz 1220915
+Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1069,7 +1060,7 @@ ApplyPatch()
     exit 1
   fi
   if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
-    if [ "${patch:0:8}" != "patch-3." ] ; then
+    if [ "${patch:0:8}" != "patch-4." ] ; then
       echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
@@ -1102,20 +1093,20 @@ ApplyOptionalPatch()
 
 # Update to latest upstream.
 %if 0%{?released_kernel}
-%define vanillaversion 3.%{base_sublevel}
+%define vanillaversion 4.%{base_sublevel}
 # non-released_kernel case
 %else
 %if 0%{?rcrev}
-%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}
+%define vanillaversion 4.%{upstream_sublevel}-rc%{rcrev}
 %if 0%{?gitrev}
-%define vanillaversion 3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
+%define vanillaversion 4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-%define vanillaversion 3.%{base_sublevel}-git%{gitrev}
+%define vanillaversion 4.%{base_sublevel}-git%{gitrev}
 %else
-%define vanillaversion 3.%{base_sublevel}
+%define vanillaversion 4.%{base_sublevel}
 %endif
 %endif
 %endif
@@ -1128,7 +1119,7 @@ ApplyOptionalPatch()
 
 # Build a list of the other top-level kernel tree directories.
 # This will be used to hardlink identical vanilla subdirs.
-sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-3.*' \
+sharedirs=$(find "$PWD" -maxdepth 1 -type d -name 'kernel-4.*' \
             | grep -x -v "$PWD"/kernel-%{kversion}%{?dist}) ||:
 
 # Delete all old stale trees.
@@ -1199,14 +1190,14 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    ApplyPatch patch-3.%{base_sublevel}-git%{gitrev}.xz
+    ApplyPatch patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 
@@ -1280,24 +1271,23 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 # PPC
 
 # ARM64
+ApplyPatch net-amd-Add-xgbe-a0-driver.patch
+ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
+ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
+ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 #
 # ARM
 #
 ApplyPatch ARM-tegra-usb-no-reset.patch
-
 ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
 ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
 ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
-
+ApplyPatch 0001-drivers-rtc-rtc-em3027.c-add-device-tree-support.patch
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-
-ApplyPatch iommu-omap-Play-nice-in-multi-platform-builds.patch
-ApplyPatch iommu-exynos-Play-nice-in-multi-platform-builds.patch
-ApplyPatch iommu-rockchip-Play-nice-in-multi-platform-builds.patch
 
 ApplyPatch arm-highbank-l2-reverts.patch
 
@@ -1385,6 +1375,8 @@ ApplyPatch MODSIGN-Support-not-importing-certs-from-db.patch
 
 ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
+ApplyPatch efi-Add-esrt-support.patch
+
 # Assorted Virt Fixes
 
 # DRM core
@@ -1392,7 +1384,6 @@ ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 # Nouveau DRM
 
 # Intel DRM
-ApplyPatch drm-i915-tame-the-chattermouth-v2.patch
 ApplyPatch drm-i915-hush-check-crtc-state.patch
 ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
@@ -1420,31 +1411,14 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
-#rhbz 1186097
-ApplyPatch acpi-video-add-disable_native_backlight_quirk_for_samsung_510r.patch
-
-# Already in pf?
-#rhbz 1178975
-#? ApplyPatch x86-vdso-Use-asm-volatile-in-__getcpu.patch
-
-# Already in pf?
-#CVE-2014-9585 rhbz 1181054 1181056
-#? ApplyPatch x86_64-vdso-Fix-the-vdso-address-randomization-algor.patch
 #rhbz 1094948
 ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
-#CVE-XXXX-XXXX rhbz 1189864 1192079
-ApplyPatch vhost-scsi-potential-memory-corruption.patch
 
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
-#rhbz 1200777 1200778
-ApplyPatch Input-synaptics-retrieve-the-extended-capabilities-i.patch
-ApplyPatch Input-synaptics-remove-TOPBUTTONPAD-property-for-Len.patch
-ApplyPatch Input-synaptics-re-route-tracksticks-buttons-on-the-.patch
-ApplyPatch Input-synaptics-remove-X1-Carbon-3rd-gen-from-the-to.patch
-ApplyPatch Input-synaptics-remove-X250-from-the-topbuttonpad-li.patch
+#rhbz 1196825
+ApplyPatch security-yama-Remove-unnecessary-selects-from-Kconfi.patch
 
 #rhbz 1201532
 ApplyPatch HID-multitouch-add-support-of-clickpads.patch
@@ -1453,20 +1427,11 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
-#CVE-2015-2666 rhbz 1204724 1204722
-ApplyPatch x86-microcode-intel-Guard-against-stack-overflow-in-.patch
-
-%if 0%{?aarch64patches}
-ApplyPatch kernel-arm64.patch
-%ifnarch aarch64 # this is stupid, but i want to notice before secondary koji does.
-ApplyPatch kernel-arm64.patch -R
-%endif
-%endif
-
 
 ################# Hubbitus patches
-ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
-#//////////////// Hubbitus patches
+#? ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
+#//////////////////////////////// Hubbitus patches
+
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
@@ -1477,23 +1442,29 @@ ApplyPatch pty-Fix-input-race-when-closing.patch
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
-#rhbz 1205083
-ApplyPatch 0001-iwlwifi-mvm-remove-WARN_ON-for-invalid-BA-notificati.patch
+#rhbz 1209088
+ApplyPatch Input-atmel_mxt_ts-implement-support-for-T100-touch-.patch
+ApplyPatch Input-atmel_mxt_ts-split-out-touchpad-initialisation.patch
+ApplyPatch Input-atmel_mxt_ts-add-support-for-Google-Pixel-2.patch
 
-#rhbz 1208999
-ApplyPatch SCSI-add-1024-max-sectors-black-list-flag.patch
+#rhbz 1188741
+ApplyPatch 0001-ALSA-hda-realtek-Support-Dell-headset-mode-for-ALC28.patch
+ApplyPatch 0001-ALSA-hda-realtek-Support-headset-mode-for-ALC286-288.patch
 
-#rhbz 1204390
-ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+#rhbz 1210857
+ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
 #rhbz 1206036 1215989
 ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#CVE-2015-3636 rhbz 1218074 1218110
-ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
-
 #rhbz 1218662
-#? ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+
+#rhbz 1219343
+ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
+
+#rhbz 1220915
+ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2354,11 +2325,18 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Mon May 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.3.pf4
-- Pull fedora 3.19.7, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
+* Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
+- Linux v4.0.3
+- Disable i915 verbose state checks
+
+* Mon May 11 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.8-200
+- Linux v3.19.8
 
 #* Thu May 07 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.7-200
 #- Linux v3.19.7
+
+* Mon May 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.3.pf4
+- Pull fedora 3.19.7, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
 
 #* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 #- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
