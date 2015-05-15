@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2212,6 +2212,9 @@ fi
 #
 # 
 %changelog
+* Fri May 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc3.git3.1
+- Linux v4.1-rc3-177-gf0897f4cc0fc
+
 * Thu May 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix non-empty dir removal in overlayfs (rhbz 1220915)
 
