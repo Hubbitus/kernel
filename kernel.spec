@@ -658,6 +658,9 @@ Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 #rhbz 1220915
 Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
+#rhbz 1220118
+Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1418,6 +1421,9 @@ ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220915
 ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
+
+#rhbz 1220118
+ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2278,6 +2284,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 15 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix DVB oops (rhbz 1220118)
+
 * Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
 - Linux v4.0.3
 - Disable i915 verbose state checks
