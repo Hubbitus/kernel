@@ -20,7 +20,7 @@ Signed-off-by: Jiri Kosina <jkosina@suse.cz>
  1 file changed, 10 insertions(+)
 
 diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-index a93cefe0e522..00304f742eca 100644
+index e77658cd037c..8e9cb25f45cb 100644
 --- a/drivers/hid/hid-logitech-hidpp.c
 +++ b/drivers/hid/hid-logitech-hidpp.c
 @@ -28,6 +28,11 @@ MODULE_LICENSE("GPL");
@@ -35,7 +35,7 @@ index a93cefe0e522..00304f742eca 100644
  #define REPORT_ID_HIDPP_SHORT			0x10
  #define REPORT_ID_HIDPP_LONG			0x11
  
-@@ -1159,6 +1164,11 @@ static int hidpp_probe(struct hid_device *hdev, const struct hid_device_id *id)
+@@ -1188,6 +1193,11 @@ static int hidpp_probe(struct hid_device *hdev, const struct hid_device_id *id)
  
  	hidpp->quirks = id->driver_data;
  

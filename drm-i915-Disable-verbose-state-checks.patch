@@ -23,6 +23,9 @@ index db07153b693f..c049fe3fbdff 100644
  	.mmio_debug = 0,
 -	.verbose_state_checks = 1,
 +	.verbose_state_checks = 0,
+	.nuclear_pageflip = 0,
  };
  
- module_param_named(modeset, i915.modeset, int, 0400);
+-- 
+2.1.0
+
