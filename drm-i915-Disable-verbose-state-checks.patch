@@ -14,7 +14,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/i915/i915_params.c b/drivers/gpu/drm/i915/i915_params.c
-index db07153b693f..c049fe3fbdff 100644
+index 44f2262a5553..09566acd995d 100644
 --- a/drivers/gpu/drm/i915/i915_params.c
 +++ b/drivers/gpu/drm/i915/i915_params.c
 @@ -51,7 +51,7 @@ struct i915_params i915 __read_mostly = {
@@ -23,9 +23,6 @@ index db07153b693f..c049fe3fbdff 100644
  	.mmio_debug = 0,
 -	.verbose_state_checks = 1,
 +	.verbose_state_checks = 0,
-	.nuclear_pageflip = 0,
+ 	.nuclear_pageflip = 0,
  };
  
--- 
-2.1.0
-

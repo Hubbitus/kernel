@@ -1343,7 +1343,7 @@ ApplyPatch efi-Add-esrt-support.patch
 
 # Intel DRM
 ApplyPatch drm-i915-hush-check-crtc-state.patch
-# ApplyPatch drm-i915-Disable-verbose-state-checks.patch
+ApplyPatch drm-i915-Disable-verbose-state-checks.patch
 
 # Radeon DRM
 
