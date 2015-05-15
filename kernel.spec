@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.2.pf4
+%define buildid .hu.3.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -1493,7 +1493,7 @@ ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 ApplyPatch ipv4-Missing-sk_nulls_node_init-in-ping_unhash.patch
 
 #rhbz 1218662
-ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
+#? ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2354,25 +2354,28 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu May 07 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.7-200
-- Linux v3.19.7
+* Mon May 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.3.pf4
+- Pull fedora 3.19.7, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
 
-* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
-- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
-- CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
+#* Thu May 07 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.7-200
+#- Linux v3.19.7
 
-* Thu Apr 30 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.6-200
-- Linux v3.19.6
+#* Tue May 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+#- Backport patch to blacklist TRIM on all Samsung 8xx series SSDs (rhbz 1218662)
+#- CVE-2015-3636 ping-sockets use-after-free privilege escalation (rhbz 1218074 1218110)
 
-* Thu Apr 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
-- Fix backlight on various Toshiba machines (rhbz 1206036 1215989)
+#* Thu Apr 30 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.6-200
+#- Linux v3.19.6
 
-* Tue Apr 28 2015 Laura Abbott <labbott@fedoraproject.org>
-- Fix more missing v4l2 caps
+#* Thu Apr 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+#- Fix backlight on various Toshiba machines (rhbz 1206036 1215989)
 
-* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2015-3339 race condition between chown and execve (rhbz 1214030)
-- Fix iscsi with QNAP devices (rhbz 1208999)
+#* Tue Apr 28 2015 Laura Abbott <labbott@fedoraproject.org>
+#- Fix more missing v4l2 caps
+
+#* Fri Apr 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+#- CVE-2015-3339 race condition between chown and execve (rhbz 1214030)
+#- Fix iscsi with QNAP devices (rhbz 1208999)
 
 * Fri Apr 24 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.4-200.hu.2.pf4
 - Pull fedora 3.19.5, but v3.19-pf4 still stick with 3.19.4, so just add and update some patches.
