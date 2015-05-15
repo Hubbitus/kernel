@@ -1479,9 +1479,6 @@ ApplyPatch https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0003-block-bfq-add-
 #//////////////// Hubbitus patches
 
 
-#rhbz 1204512
-ApplyPatch tun-return-proper-error-code-from-tun_do_read.patch
-
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
@@ -2368,6 +2365,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.19.7-200.hu.1.uksm.bfs.bfq
+- 3.19.7-200.hu.1.uksm.bfs.bfq
+
 * Thu May 07 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.7-200
 - Linux v3.19.7
 
