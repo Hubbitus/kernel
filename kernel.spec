@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 202
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2284,6 +2284,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May 18 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-202
+- Disable YAMA for F21
+
 * Fri May 15 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix DVB oops (rhbz 1220118)
 
