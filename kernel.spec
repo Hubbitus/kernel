@@ -640,7 +640,7 @@ Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
 Requires(preun): systemd >= 200\
-Conflicts: xorg-x11-drv-vmmouse < 3.0.99\
+Conflicts: xorg-x11-drv-vmmouse < 13.0.99\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_provides:Provides: %%{kernel%{?1:_%{1}}_provides}}}\
