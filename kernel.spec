@@ -619,6 +619,8 @@ Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 #rhbz 1220118
 Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
+Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1358,6 +1360,8 @@ ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
+
+ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2220,6 +2224,7 @@ fi
 # 
 %changelog
 * Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect bandwidth on some Chicony webcams
 - Fix DVB oops (rhbz 1220118)
 
 * Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc3.git4.1
