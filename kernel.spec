@@ -657,6 +657,9 @@ Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
 
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
+#rhbz 1204390
+Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1427,6 +1430,9 @@ ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
 
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1204390
+ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2278,6 +2284,9 @@ fi
 #
 # 
 %changelog
+* Mon May 18 2015 Laura Abbott <labbott@fedoraproject.org>
+- Re-add the v4l2 query caps patch which was dropped
+
 * Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix incorrect bandwidth on some Chicony webcams
 
