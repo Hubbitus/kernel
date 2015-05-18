@@ -615,10 +615,11 @@ Patch22000: weird-root-dentry-name-debug.patch
 
 ################# Hubbitus patches
 # UKSM
-Patch40001: http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.18.patch
+Patch40001: http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
 
 # BFS
-Patch40002: http://ck.kolivas.org/patches/bfs/3.0/3.19/3.19-sched-bfs-461.patch
+Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
+Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -634,9 +635,9 @@ Patch40002: http://ck.kolivas.org/patches/bfs/3.0/3.19/3.19-sched-bfs-461.patch
 Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-Patch40003: https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-3.19.patch
-Patch40004: https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-3.19.patch
-Patch40005: https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-3.19.0.patch
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-4.0.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-4.0.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-4.0.0.patch
 
 #? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -1062,7 +1063,7 @@ ApplyPatch()
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-4." ] ; then
       echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
@@ -1272,16 +1273,17 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 ################# Hubbitus patches
 # UKSM
-ApplyPatch http://kerneldedup.org/download/uksm/0.1.2.3/uksm-0.1.2.3-for-v3.18.patch
+ApplyPatch http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/3.0/3.19/3.19-sched-bfs-461.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-3.19.patch
-ApplyPatch https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-3.19.patch
-ApplyPatch https://pf.natalenko.name/mirrors/bfq/3.19.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-3.19.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-4.0.0.patch
 
 #? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -2343,6 +2345,16 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Fri May 15 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.3-201.hu.1.uksm.bfs.bfq
+- Major step to Kernel 4.0.3-201: 4.0.3-201.hu.1.uksm.bfs.bfq
+- Update patches:
+	* uksm: http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
+	* bfs: http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
+	* bfq:
+		o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-4.0.patch
+		o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-4.0.patch
+		o http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-4.0.0.patch
+
 * Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
 - Linux v4.0.3
 - Disable i915 verbose state checks
