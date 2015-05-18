@@ -616,6 +616,9 @@ Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 #rhbz 1220915
 Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
+#rhbz 1220118
+Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1352,6 +1355,9 @@ ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220915
 ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
+
+#rhbz 1220118
+ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2213,6 +2219,9 @@ fi
 #
 # 
 %changelog
+* Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix DVB oops (rhbz 1220118)
+
 * Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc3.git4.1
 - Linux v4.1-rc3-346-gc0655fe9b090
 - Enable in-kernel vmmouse driver (rhbz 1214474)
