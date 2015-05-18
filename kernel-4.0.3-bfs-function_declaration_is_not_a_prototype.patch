@@ -1,0 +1,17 @@
+--- a/kernel/sched/bfs.c	2015-05-15 13:40:34.384916292 +0300
++++ b/kernel/sched/bfs.c	2015-05-15 13:40:51.832227843 +0300
+@@ -519,12 +519,12 @@
+ }
+ 
+ #if defined(CONFIG_SMP) && !defined(CONFIG_64BIT)
+-static inline void grq_priodl_lock()
++static inline void grq_priodl_lock(void)
+ {
+ 	raw_spin_lock(&grq.priodl_lock);
+ }
+ 
+-static inline void grq_priodl_unlock()
++static inline void grq_priodl_unlock(void)
+ {
+ 	raw_spin_unlock(&grq.priodl_lock);
+ }

@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.3.pf4
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -630,6 +630,11 @@ Patch22000: weird-root-dentry-name-debug.patch
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
 Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
+# https://kojipkgs.fedoraproject.org//work/tasks/258/9750258/build.log
+# kernel/sched/bfs.c:522:20: error: function declaration isn't a prototype [-Werror=strict-prototypes]
+#  static inline void grq_priodl_lock()
+# Pull request: https://github.com/pfactum/pf-kernel/pull/3
+Patch30008: kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch
 
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
 #? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
@@ -1429,7 +1434,8 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 
 ################# Hubbitus patches
-#? ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
+ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
+ApplyPatch kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch
 #//////////////////////////////// Hubbitus patches
 
 
@@ -2325,9 +2331,14 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
-* Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
-- Linux v4.0.3
-- Disable i915 verbose state checks
+* Fri May 15 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.2-201.hu.1.pf4
+- Pull fedora 4.0.3, v4.0-pf4 still stick with 4.0.2, so just add and update some patches.
+- Add patch kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch to fix "error: function declaration isn't a prototype [-Werror=strict-prototypes]"
+    (Pull request: https://github.com/pfactum/pf-kernel/pull/3)
+
+#* Thu May 14 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.3-201
+#- Linux v4.0.3
+#- Disable i915 verbose state checks
 
 * Mon May 11 2015 Laura Abbott <labbott@fedoraproject.org> - 3.19.8-200
 - Linux v3.19.8
