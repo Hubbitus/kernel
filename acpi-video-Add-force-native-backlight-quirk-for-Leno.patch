@@ -26,7 +26,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  2 files changed, 17 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index 2f1f16df460c..16d744e4552f 100644
+index 70ea37bea84f..d9bf8ba7d848 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -425,6 +425,12 @@ static int __init video_disable_native_backlight(const struct dmi_system_id *d)
@@ -42,7 +42,7 @@ index 2f1f16df460c..16d744e4552f 100644
  static struct dmi_system_id video_dmi_table[] __initdata = {
  	/*
  	 * Broken _BQC workaround http://bugzilla.kernel.org/show_bug.cgi?id=13121
-@@ -556,6 +562,17 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+@@ -566,6 +572,17 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
  		DMI_MATCH(DMI_PRODUCT_NAME, "XPS L521X"),
  		},
  	},

@@ -25,7 +25,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index fb972b96959a..581878071c85 100644
+index 706b16fa6de8..470e8dfcb517 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -595,6 +595,12 @@ void efi_native_runtime_setup(void);
@@ -42,10 +42,10 @@ index fb972b96959a..581878071c85 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index ea0dbdf29b75..dac9ed0f01f7 100644
+index eca8ab59ae7f..9a782b02e4d5 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1896,6 +1896,15 @@ config MODULE_SIG_ALL
+@@ -1888,6 +1888,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,10 +62,10 @@ index ea0dbdf29b75..dac9ed0f01f7 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index a59481a3fa6c..04b4ba9e0c9d 100644
+index 1408b3353a3c..8a3be67a3a15 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -45,6 +45,7 @@ obj-$(CONFIG_UID16) += uid16.o
+@@ -46,6 +46,7 @@ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -73,7 +73,7 @@ index a59481a3fa6c..04b4ba9e0c9d 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC) += kexec.o
-@@ -98,6 +99,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+@@ -99,6 +100,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
  $(obj)/configs.o: $(obj)/config_data.h
  
