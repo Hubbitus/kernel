@@ -13,7 +13,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index 9a8a01abbaed..9a0ecbf14545 100644
+index 38c25b1f2fd5..f2b5272156ce 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
 @@ -36,6 +36,7 @@
@@ -24,7 +24,7 @@ index 9a8a01abbaed..9a0ecbf14545 100644
  
  #include <asm/page.h>
  #include <asm/uaccess.h>
-@@ -1251,6 +1252,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+@@ -1247,6 +1248,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
  		return -EPERM;
  
  	/*

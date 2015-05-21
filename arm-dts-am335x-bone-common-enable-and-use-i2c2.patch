@@ -8,7 +8,7 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 39 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 2c6248d9a9ef..ec755eeb78ee 100644
+index c3255e0c90aa..1fd496fe1a68 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
 @@ -81,6 +81,13 @@
