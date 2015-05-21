@@ -669,6 +669,9 @@ Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1218688
 Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
+#rhbz 1223332
+Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1440,6 +1443,9 @@ ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 
 #rhbz 1218688
 ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
+
+#rhbz 1223332
+ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2301,6 +2307,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix discard on md RAID0 (rhbz 1223332)
 - Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
 
 * Mon May 18 2015 Laura Abbott <labbott@fedoraproject.org>
