@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2296,7 +2296,7 @@ fi
 #
 # 
 %changelog
-* Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-301
 - Add patch to fix discard on md RAID0 (rhbz 1223332)
 - Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
 
