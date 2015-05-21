@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -620,6 +620,9 @@ Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1223332
+Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1362,6 +1365,9 @@ ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1223332
+ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2223,6 +2229,11 @@ fi
 #
 # 
 %changelog
+* Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc4.git1.1
+- Linux v4.1-rc4-11-g1113cdfe7d2c
+- Reenable debugging options.
+- Add patch to fix discard on md RAID0 (rhbz 1223332)
+
 * Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc4.git0.1
 - Linux v4.1-rc4
 - Disable debugging options.

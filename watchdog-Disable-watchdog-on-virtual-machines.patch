@@ -20,7 +20,7 @@ Signed-off-by: Dave Jones <davej@redhat.com>
  1 file changed, 29 insertions(+)
 
 diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 506edcc500c4..8b622b336b64 100644
+index 581a68a04c64..18b609d3360a 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
 @@ -19,6 +19,7 @@
