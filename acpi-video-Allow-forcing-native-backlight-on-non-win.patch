@@ -21,7 +21,7 @@ Signed-off-by: Hans de Goede <hdegoede@redhat.com>
  1 file changed, 13 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
-index 497622ce5c31..2f1f16df460c 100644
+index db70d550f526..70ea37bea84f 100644
 --- a/drivers/acpi/video.c
 +++ b/drivers/acpi/video.c
 @@ -82,9 +82,15 @@ module_param(allow_duplicates, bool, 0644);

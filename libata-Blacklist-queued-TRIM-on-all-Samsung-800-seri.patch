@@ -22,10 +22,10 @@ Signed-off-by: Tejun Heo <tj@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index 00f2f740b425..eabee5ec901f 100644
+index 23dac3babfe3..8cfe5eeac1e6 100644
 --- a/drivers/ata/libata-core.c
 +++ b/drivers/ata/libata-core.c
-@@ -4243,7 +4243,7 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
+@@ -4214,7 +4214,7 @@ static const struct ata_blacklist_entry ata_device_blacklist [] = {
  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
  	{ "Crucial_CT*MX100*",		"MU01",	ATA_HORKAGE_NO_NCQ_TRIM |
  						ATA_HORKAGE_ZERO_AFTER_TRIM, },

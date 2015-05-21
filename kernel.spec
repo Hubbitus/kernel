@@ -43,7 +43,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -56,7 +56,7 @@ Summary: The Linux kernel
 
 # Do we have a -stable update to apply?
 #+Hu Pf Still against 4.0.2 v4.0-pf4: https://pf.natalenko.name/forum/index.php?topic=315.0
-%define stable_update 2
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -694,6 +694,17 @@ Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220915
 Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
+
+#rhbz 1220118
+Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
+
+Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1204390
+Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1218688
+Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1471,6 +1482,17 @@ ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220915
 ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
+
+#rhbz 1220118
+ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
+
+ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1204390
+ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1218688
+ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2331,6 +2353,22 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
+
+* Mon May 18 2015 Laura Abbott <labbott@fedoraproject.org>
+- Re-add the v4l2 query caps patch which was dropped
+
+* Mon May 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect bandwidth on some Chicony webcams
+
+* Mon May 18 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.4-200
+- Disable YAMA for F21
+- Linux v4.0.4
+
+* Fri May 15 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix DVB oops (rhbz 1220118)
+
 * Fri May 15 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.2-201.hu.1.pf4
 - Pull fedora 4.0.3, v4.0-pf4 still stick with 4.0.2, so just add and update some patches.
 - Add patch kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch to fix "error: function declaration isn't a prototype [-Werror=strict-prototypes]"
