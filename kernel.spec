@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -705,6 +705,12 @@ Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1204390
 Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1218688
+Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
+
+#rhbz 1223332
+Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1501,6 +1507,12 @@ ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1204390
 ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
+
+#rhbz 1218688
+ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
+
+#rhbz 1223332
+ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2361,6 +2373,10 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-201
+- Add patch to fix discard on md RAID0 (rhbz 1223332)
+- Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
+
 * Thu May 21 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-200.hu.1.uksm.bfs.bfq
 - 4.0.4-200.hu.1.uksm.bfs.bfq
 
