@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 4
+%define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -610,9 +610,6 @@ Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 
-#rhbz 1219343
-Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
 #rhbz 1220915
 Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
@@ -620,9 +617,6 @@ Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
-
-#rhbz 1223332
-Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1355,9 +1349,6 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 
-#rhbz 1219343
-ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
 #rhbz 1220915
 ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
@@ -1365,9 +1356,6 @@ ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
-
-#rhbz 1223332
-ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2229,6 +2217,10 @@ fi
 #
 # 
 %changelog
+* Mon May 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc5.git0.1
+- Linux v4.1-rc5
+- Disable debugging options.
+
 * Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc4.git1.1
 - Linux v4.1-rc4-11-g1113cdfe7d2c
 - Reenable debugging options.
