@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf4
+%define buildid .hu.1.pf5
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -55,8 +55,9 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf Still against 4.0.2 v4.0-pf4: https://pf.natalenko.name/forum/index.php?topic=315.0
+#+Hu Pf against 4.0.4 v4.0-pf5: https://pf.natalenko.name/forum/index.php?topic=318.0
 %define stable_update 4
+
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -477,8 +478,8 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=315.0
-%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf4.xz
+# https://pf.natalenko.name/forum/index.php?topic=318.0
+%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf5.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -633,8 +634,6 @@ Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
 # https://kojipkgs.fedoraproject.org//work/tasks/258/9750258/build.log
 # kernel/sched/bfs.c:522:20: error: function declaration isn't a prototype [-Werror=strict-prototypes]
 #  static inline void grq_priodl_lock()
-# Pull request: https://github.com/pfactum/pf-kernel/pull/3
-Patch30008: kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch
 
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
 #? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
@@ -1446,7 +1445,6 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 ################# Hubbitus patches
 ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
-ApplyPatch kernel-4.0.3-bfs-function_declaration_is_not_a_prototype.patch
 #//////////////////////////////// Hubbitus patches
 
 
@@ -2353,6 +2351,11 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 21 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-200.hu.1.pf5
+- 4.0.4-200.hu.1.pf5
+- Update to v4.0-pf5 - https://pf.natalenko.name/forum/index.php?topic=318.0
+- Drop kernel-4.0.3-bfs-function_declaration_is_not_a_prototype patch - pull-request merged
+
 * Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
 
