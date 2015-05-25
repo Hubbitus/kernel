@@ -2361,6 +2361,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 21 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-200.hu.1.uksm.bfs.bfq
+- 4.0.4-200.hu.1.uksm.bfs.bfq
+
 * Mon May 18 2015 Laura Abbott <labbott@fedoraproject.org>
 - Re-add the v4l2 query caps patch which was dropped
 
