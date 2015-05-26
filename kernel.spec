@@ -481,17 +481,12 @@ Patch00: patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 
-# we also need compile fixes for -vanilla
-Patch04: compile-fixes.patch
-
 # build tweak for build ID magic, even for -vanilla
 Patch05: kbuild-AFTER_LINK.patch
 
 %if !%{nopatches}
 
 
-# revert upstream patches we get via other methods
-Patch09: upstream-reverts.patch
 # Git trees.
 
 # Standalone patches
@@ -1175,15 +1170,8 @@ done
 
 ApplyPatch kbuild-AFTER_LINK.patch
 
-#
-# misc small stuff to make things compile
-#
-ApplyOptionalPatch compile-fixes.patch
 
 %if !%{nopatches}
-
-# revert patches from upstream that conflict or that we get via other means
-ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
