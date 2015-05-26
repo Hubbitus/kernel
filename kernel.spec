@@ -559,8 +559,6 @@ Patch1826: drm-i915-hush-check-crtc-state.patch
 # patches headed upstream
 Patch12016: disable-i8042-check-on-apple-mac.patch
 
-Patch14000: hibernate-freeze-filesystems.patch
-
 Patch14010: lis3-improve-handling-of-null-rate.patch
 
 Patch15000: watchdog-Disable-watchdog-on-virtual-machines.patch
@@ -595,8 +593,6 @@ Patch21242: criu-no-expert.patch
 
 #rhbz 892811
 Patch21247: ath9k-rx-dma-stop-check.patch
-
-Patch22000: weird-root-dentry-name-debug.patch
 
 #rhbz 1094948
 Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
@@ -1318,9 +1314,6 @@ ApplyPatch drm-i915-hush-check-crtc-state.patch
 # Patches headed upstream
 ApplyPatch disable-i8042-check-on-apple-mac.patch
 
-# FIXME: REBASE
-#ApplyPatch hibernate-freeze-filesystems.patch
-
 ApplyPatch lis3-improve-handling-of-null-rate.patch
 
 # Disable watchdog on virtual machines.
@@ -1328,8 +1321,6 @@ ApplyPatch watchdog-Disable-watchdog-on-virtual-machines.patch
 
 #rhbz 754518
 ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-#pplyPatch weird-root-dentry-name-debug.patch
 
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 ApplyPatch criu-no-expert.patch
