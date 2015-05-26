@@ -675,6 +675,9 @@ Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 #rhbz 1220519
 Patch26208: sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
 
+#rhbz 1200353
+Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1452,6 +1455,9 @@ ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
 
 #rhbz 1220519
 ApplyPatch sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
+
+#rhbz 1200353
+ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2312,6 +2318,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue May 26 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix signed division error (rhbz 1200353)
+
 * Tue May 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport patch to fix might_sleep splat (rhbz 1220519)
 
