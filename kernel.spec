@@ -675,6 +675,10 @@ Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 #rhbz 1214474
 Patch26210: Input-add-vmmouse-driver.patch
 
+# Apply queued fixes for crasher reported by Alex Larsson
+Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
+Patch26212: fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1464,6 +1468,10 @@ ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 
 #rhbz 1214474
 ApplyPatch Input-add-vmmouse-driver.patch
+
+# Apply queued fixes for crasher reported by Alex Larsson
+ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
+ApplyPatch fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2316,6 +2324,7 @@ fi
 # 
 %changelog
 * Wed May 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Apply queued fixes for crasher reported by Alex Larsson
 - Enable in-kernel vmmouse driver (rhbz 1214474)
 
 * Tue May 26 2015 Laura Abbott <labbott@fedoraproject.org>
