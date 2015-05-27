@@ -2373,6 +2373,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon May 25 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-201.hu.1.uksm.bfs.bfq
+- 4.0.4-201.hu.1.uksm.bfs.bfq
+
 * Thu May 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-201
 - Add patch to fix discard on md RAID0 (rhbz 1223332)
 - Add submitted stable fix for i915 flickering on ilk (rhbz 1218688)
