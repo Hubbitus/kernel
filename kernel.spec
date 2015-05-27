@@ -672,6 +672,9 @@ Patch26208: sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
 #rhbz 1200353
 Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 
+#rhbz 1214474
+Patch26210: Input-add-vmmouse-driver.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -696,6 +699,7 @@ Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
 Requires(preun): systemd >= 200\
+Conflicts: xorg-x11-drv-vmmouse < 13.0.99\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_provides:Provides: %%{kernel%{?1:_%{1}}_provides}}}\
@@ -1457,6 +1461,9 @@ ApplyPatch sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
 
 #rhbz 1200353
 ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
+
+#rhbz 1214474
+ApplyPatch Input-add-vmmouse-driver.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2308,6 +2315,9 @@ fi
 #
 # 
 %changelog
+* Wed May 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable in-kernel vmmouse driver (rhbz 1214474)
+
 * Tue May 26 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix signed division error (rhbz 1200353)
 
