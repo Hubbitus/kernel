@@ -674,6 +674,7 @@ Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 
 #rhbz 1214474
 Patch26210: Input-add-vmmouse-driver.patch
+Patch26213: Input-joydev-don-t-classify-the-vmmouse-as-a-joystic.patch
 
 # Apply queued fixes for crasher reported by Alex Larsson
 Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
@@ -1468,6 +1469,7 @@ ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
 
 #rhbz 1214474
 ApplyPatch Input-add-vmmouse-driver.patch
+ApplyPatch Input-joydev-don-t-classify-the-vmmouse-as-a-joystic.patch
 
 # Apply queued fixes for crasher reported by Alex Larsson
 ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
@@ -2323,6 +2325,9 @@ fi
 #
 # 
 %changelog
+* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to avoid vmmouse being classified as a joystic (rhbz 1214474)
+
 * Wed May 27 2015 Josh Boyer <jwboyer@fedoraproject.org> -4.0.4-302
 - Apply queued fixes for crasher reported by Alex Larsson
 - Enable in-kernel vmmouse driver (rhbz 1214474)
