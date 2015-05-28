@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 303
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2325,7 +2325,7 @@ fi
 #
 # 
 %changelog
-* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-303
 - Add patch to avoid vmmouse being classified as a joystic (rhbz 1214474)
 
 * Wed May 27 2015 Josh Boyer <jwboyer@fedoraproject.org> -4.0.4-302
