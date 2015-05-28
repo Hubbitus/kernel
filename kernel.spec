@@ -609,6 +609,9 @@ Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
+#rhbz 1217249
+Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1335,6 +1338,9 @@ ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
+
+#rhbz 1217249
+ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2196,6 +2202,9 @@ fi
 #
 # 
 %changelog
+* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for Mac Pro backlight (rhbz 1217249)
+
 * Mon May 25 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc5.git0.1
 - Linux v4.1-rc5
 - Disable debugging options.
