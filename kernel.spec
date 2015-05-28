@@ -680,6 +680,9 @@ Patch26213: Input-joydev-don-t-classify-the-vmmouse-as-a-joystic.patch
 Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
 Patch26212: fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
 
+#rhbz 1217249
+Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1474,6 +1477,9 @@ ApplyPatch Input-joydev-don-t-classify-the-vmmouse-as-a-joystic.patch
 # Apply queued fixes for crasher reported by Alex Larsson
 ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
 ApplyPatch fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
+
+#rhbz 1217249
+ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2325,6 +2331,9 @@ fi
 #
 # 
 %changelog
+* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for Mac Pro backlight (rhbz 1217249)
+
 * Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-303
 - Add patch to avoid vmmouse being classified as a joystic (rhbz 1214474)
 

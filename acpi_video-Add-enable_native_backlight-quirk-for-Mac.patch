@@ -1,0 +1,37 @@
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 28 May 2015 18:25:46 +0200
+Subject: [PATCH] acpi_video: Add enable_native_backlight quirk for
+ MacbookPro12,1
+
+It seems that the latest generation of MacbookPro needs to use the
+native backlight driver, just like most modern laptops do, but it does
+not automatically get enabled as the Apple BIOS does not advertise
+Windows 8 compatibility. So add a quirk for this.
+
+Cc: Christopher Beland <beland@alum.mit.edu>
+Reported-by: Christopher Beland <beland@alum.mit.edu>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/acpi/video.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/acpi/video.c b/drivers/acpi/video.c
+index d9bf8ba7d848..b57d69370bac 100644
+--- a/drivers/acpi/video.c
++++ b/drivers/acpi/video.c
+@@ -583,6 +583,15 @@ static struct dmi_system_id video_dmi_table[] __initdata = {
+ 		DMI_MATCH(DMI_PRODUCT_NAME, "102434U"),
+ 		},
+ 	},
++	{
++	 /* https://bugzilla.redhat.com/show_bug.cgi?id=1217249 */
++	 .callback = video_enable_native_backlight,
++	 .ident = "Apple MacBook Pro 12,1",
++	 .matches = {
++		DMI_MATCH(DMI_SYS_VENDOR, "Apple Inc."),
++		DMI_MATCH(DMI_PRODUCT_NAME, "MacBookPro12,1"),
++		},
++	},
+ 	{}
+ };
+ 
