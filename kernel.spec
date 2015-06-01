@@ -43,7 +43,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 202
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -707,6 +707,19 @@ Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
 #rhbz 1223332
 Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
+
+#rhbz 1220519
+Patch26208: sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
+
+#rhbz 1200353
+Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
+
+# Apply queued fixes for crasher reported by Alex Larsson
+Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
+Patch26212: fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
+
+#rhbz 1217249
+Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1497,6 +1510,19 @@ ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
 #rhbz 1223332
 ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
+
+#rhbz 1220519
+ApplyPatch sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
+
+#rhbz 1200353
+ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
+
+# Apply queued fixes for crasher reported by Alex Larsson
+ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
+ApplyPatch fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
+
+#rhbz 1217249
+ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2357,6 +2383,18 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add quirk for Mac Pro backlight (rhbz 1217249)
+
+* Wed May 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.4-202
+- Apply queued fixes for crasher reported by Alex Larsson
+
+* Tue May 26 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix signed division error (rhbz 1200353)
+
+* Tue May 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to fix might_sleep splat (rhbz 1220519)
+
 * Mon May 25 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-201.hu.1.pf5
 - 4.0.4-201.hu.1.pf5
 
