@@ -65,7 +65,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -600,9 +600,6 @@ Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 #rhbz 1210857
 Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220915
-Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
@@ -1330,9 +1327,6 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 #rhbz 1210857
 ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220915
-ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
@@ -2202,6 +2196,9 @@ fi
 #
 # 
 %changelog
+* Mon Jun 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc6.git0.1
+- Linux v4.1-rc6
+
 * Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add quirk for Mac Pro backlight (rhbz 1217249)
 
