@@ -683,6 +683,9 @@ Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 #rhbz 1225563
 Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
+#rhbz 1218882
+Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1480,6 +1483,9 @@ ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 #rhbz 1225563
 ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
+
+#rhbz 1218882
+ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2331,6 +2337,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 02 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix fd_do_rw error (rhbz 1218882)
+
 * Tue Jun 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix middle button issues on external Lenovo keyboards (rhbz 1225563)
 
