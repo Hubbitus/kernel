@@ -609,6 +609,9 @@ Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 #rhbz 1217249
 Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
+#rhbz 1225563
+Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1335,6 +1338,9 @@ ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1217249
 ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
+
+#rhbz 1225563
+ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2196,6 +2202,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix middle button issues on external Lenovo keyboards (rhbz 1225563)
+
 * Mon Jun 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc6.git0.1
 - Linux v4.1-rc6
 
