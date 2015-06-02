@@ -589,9 +589,6 @@ Patch21242: criu-no-expert.patch
 #rhbz 892811
 Patch21247: ath9k-rx-dma-stop-check.patch
 
-#rhbz 1094948
-Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
@@ -1318,9 +1315,6 @@ ApplyPatch criu-no-expert.patch
 
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
-
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
