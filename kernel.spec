@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2196,6 +2196,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc6.git1.1
+- Linux v4.1-rc6-44-g8cd9234c64c5
+
 * Tue Jun 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix middle button issues on external Lenovo keyboards (rhbz 1225563)
 
