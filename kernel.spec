@@ -695,6 +695,9 @@ Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 #rhbz 1133378
 Patch26219: 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
+# FAF Problem 885578
+Patch26220: 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1504,6 +1507,9 @@ ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 #rhbz 1133378
 ApplyPatch 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+# FAF Problem 885578
+ApplyPatch 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2355,6 +2361,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix del_timer_sync in mwifiex
+
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
 - Drop that blasted firwmare warning until we get a real fix (rhbz 1133378)
 
