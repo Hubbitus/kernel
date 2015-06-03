@@ -694,6 +694,9 @@ Patch26217: vfs-read-file_handle-only-once-in-handle_to_path.patch
 #rhbz 1188695
 Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
+#rhbz 1133378
+Patch26219: 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1490,6 +1493,9 @@ ApplyPatch vfs-read-file_handle-only-once-in-handle_to_path.patch
 
 #rhbz 1188695
 ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
+#rhbz 1133378
+ApplyPatch 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2350,6 +2356,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Drop that blasted firwmare warning until we get a real fix (rhbz 1133378)
+
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix auditing of canonical mode (rhbz 1188695)
 
