@@ -689,6 +689,9 @@ Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 #CVE-2015-1420 rhbz 1187534 1227417
 Patch26217: vfs-read-file_handle-only-once-in-handle_to_path.patch
 
+#rhbz 1188695
+Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1492,6 +1495,9 @@ ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 
 #CVE-2015-1420 rhbz 1187534 1227417
 ApplyPatch vfs-read-file_handle-only-once-in-handle_to_path.patch
+
+#rhbz 1188695
+ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2343,6 +2349,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix auditing of canonical mode (rhbz 1188695)
+
 * Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-1420 fhandle race condition (rhbz 1187534 1227417)
 
