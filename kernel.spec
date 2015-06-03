@@ -688,6 +688,9 @@ Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 #rhbz 1218882
 Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 
+#CVE-2015-1420 rhbz 1187534 1227417
+Patch26217: vfs-read-file_handle-only-once-in-handle_to_path.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1478,6 +1481,9 @@ ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
 #rhbz 1218882
 ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
+
+#CVE-2015-1420 rhbz 1187534 1227417
+ApplyPatch vfs-read-file_handle-only-once-in-handle_to_path.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2338,6 +2344,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1420 fhandle race condition (rhbz 1187534 1227417)
+
 * Tue Jun 02 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix fd_do_rw error (rhbz 1218882)
 
