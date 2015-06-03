@@ -609,6 +609,9 @@ Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 #rhbz 1225563
 Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
+#rhbz 1188695
+Patch26218: n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1335,6 +1338,9 @@ ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
 #rhbz 1225563
 ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
+
+#rhbz 1188695
+ApplyPatch n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2200,6 +2206,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix auditing of canonical mode (rhbz 1188695)
+
 * Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix from Ngo Than for perf build on ppc64le (rhbz 1227260)
 
