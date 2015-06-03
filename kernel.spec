@@ -1746,8 +1746,12 @@ BuildKernel %make_target %kernel_image %{pae}
 BuildKernel %make_target %kernel_image
 %endif
 
+%ifarch ppc64le
+%define no32bit NO_PERF_READ_VDSO32=1
+%endif
+
 %global perf_make \
-  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
+  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 %{?no32bit} WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT all
@@ -2196,6 +2200,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix from Ngo Than for perf build on ppc64le (rhbz 1227260)
+
 * Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc6.git1.1
 - Linux v4.1-rc6-44-g8cd9234c64c5
 
