@@ -612,6 +612,9 @@ Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 #rhbz 1188695
 Patch26218: n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
+#rhbz 1133378
+Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1341,6 +1344,9 @@ ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
 #rhbz 1188695
 ApplyPatch n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
+#rhbz 1133378
+ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2206,6 +2212,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Drop that blasted firwmare warning until we get a real fix (rhbz 1133378)
+
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix auditing of canonical mode (rhbz 1188695)
 
