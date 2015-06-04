@@ -703,6 +703,9 @@ Patch26220: 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
+#rhbz 1227877
+Patch26222: powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1508,6 +1511,9 @@ ApplyPatch 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
 
 #rhbz 1226743
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
+
+#rhbz 1227877
+ApplyPatch powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2369,6 +2375,7 @@ fi
 #                                    ||     ||
 %changelog
 * Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix SMT guests on POWER7 (rhbz 1227877)
 - Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
 
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
