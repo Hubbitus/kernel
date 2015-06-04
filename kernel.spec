@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2218,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc6.git2.1
+- Linux v4.1-rc6-49-g8a7deb362b76
+
 * Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
 
