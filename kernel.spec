@@ -700,6 +700,9 @@ Patch26219: 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 # FAF Problem 885578
 Patch26220: 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
 
+#rhbz 1226743
+Patch26221: drm-i915-turn-off-wc-mmaps.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1502,6 +1505,9 @@ ApplyPatch 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # FAF Problem 885578
 ApplyPatch 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
+
+#rhbz 1226743
+ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2362,6 +2368,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
+
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix del_timer_sync in mwifiex
 
