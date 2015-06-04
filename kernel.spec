@@ -704,6 +704,9 @@ Patch26221: drm-i915-turn-off-wc-mmaps.patch
 #rhbz 1227877
 Patch26222: powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
 
+#rhbz 1226621
+Patch26223: block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1522,6 +1525,9 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 #rhbz 1227877
 ApplyPatch powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
+
+#rhbz 1226621
+ApplyPatch block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2374,6 +2380,7 @@ fi
 # 
 %changelog
 * Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport commit to fix block spew (rhbz 1226621)
 - Add patch to fix SMT guests on POWER7 (rhbz 1227877)
 - Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
 
