@@ -615,6 +615,9 @@ Patch26218: n_tty-Fix-auditing-support-for-cannonical-mode.patch
 #rhbz 1133378
 Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
+#rhbz 1226743
+Patch26221: drm-i915-turn-off-wc-mmaps.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1347,6 +1350,9 @@ ApplyPatch n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 #rhbz 1133378
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+#rhbz 1226743
+ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2212,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
+
 * Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
 - Drop that blasted firwmare warning until we get a real fix (rhbz 1133378)
 
