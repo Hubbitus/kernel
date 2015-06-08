@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 202
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -625,9 +625,6 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
-#rhbz 1208953
-Patch26178: pty-Fix-input-race-when-closing.patch
-
 #rhbz 1210801
 Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
@@ -646,14 +643,8 @@ Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 #rhbz 1206036 1215989
 Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#rhbz 1218662
-Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
-
 #rhbz 1219343
 Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
-#rhbz 1220915
-Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
@@ -666,19 +657,6 @@ Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1218688
 Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
-#rhbz 1223332
-Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
-
-#rhbz 1220519
-Patch26208: sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
-
-#rhbz 1200353
-Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
-
-# Apply queued fixes for crasher reported by Alex Larsson
-Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
-Patch26212: fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
-
 #rhbz 1217249
 Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
@@ -687,9 +665,6 @@ Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
 #rhbz 1218882
 Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
-
-#CVE-2015-1420 rhbz 1187534 1227417
-Patch26217: vfs-read-file_handle-only-once-in-handle_to_path.patch
 
 #rhbz 1188695
 Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
@@ -1437,9 +1412,6 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
-#rhbz 1208953
-ApplyPatch pty-Fix-input-race-when-closing.patch
-
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
 
@@ -1458,14 +1430,8 @@ ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 #rhbz 1206036 1215989
 ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#rhbz 1218662
-ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
-
 #rhbz 1219343
 ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
-#rhbz 1220915
-ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
@@ -1478,19 +1444,6 @@ ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1218688
 ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
-#rhbz 1223332
-ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
-
-#rhbz 1220519
-ApplyPatch sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
-
-#rhbz 1200353
-ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
-
-# Apply queued fixes for crasher reported by Alex Larsson
-ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
-ApplyPatch fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
-
 #rhbz 1217249
 ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
 
@@ -1499,9 +1452,6 @@ ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 
 #rhbz 1218882
 ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
-
-#CVE-2015-1420 rhbz 1187534 1227417
-ApplyPatch vfs-read-file_handle-only-once-in-handle_to_path.patch
 
 #rhbz 1188695
 ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
@@ -2380,6 +2330,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.5-200
+- Linux v4.0.5
+
 * Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport commit to fix block spew (rhbz 1226621)
 - Add patch to fix SMT guests on POWER7 (rhbz 1227877)
