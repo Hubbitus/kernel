@@ -684,6 +684,9 @@ Patch26222: powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
 #rhbz 1226621
 Patch26223: block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
 
+#rhbz 1223051
+Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1470,6 +1473,9 @@ ApplyPatch powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
 
 #rhbz 1226621
 ApplyPatch block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
+
+#rhbz 1223051
+ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2330,6 +2336,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix touchpad for Thinkpad S540 (rhbz 1223051)
+
 * Mon Jun 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.5-200
 - Linux v4.0.5
 
