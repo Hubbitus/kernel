@@ -615,6 +615,9 @@ Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
+#rhbz 1223051
+Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1347,6 +1350,9 @@ ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 #rhbz 1226743
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
+
+#rhbz 1223051
+ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2212,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix touchpad for Thinkpad S540 (rhbz 1223051)
+
 * Mon Jun 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc7.git0.1
 - Linux v4.1-rc7
 
