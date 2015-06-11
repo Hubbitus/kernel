@@ -694,6 +694,11 @@ Patch26235: Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
 Patch26236: Btrfs-fix-uninit-variable-in-clone-ioctl.patch
 Patch26237: Btrfs-fix-regression-in-raid-level-conversion.patch
 
+#rhbz 1212230
+Patch26238: Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
+Patch26239: Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
+Patch26240: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1502,6 +1507,11 @@ ApplyPatch btrfs-cleanup-orphans-while-looking-up-default-subvo.patch
 ApplyPatch Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
 ApplyPatch Btrfs-fix-uninit-variable-in-clone-ioctl.patch
 ApplyPatch Btrfs-fix-regression-in-raid-level-conversion.patch
+
+#rhbz 1212230
+ApplyPatch Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
+ApplyPatch Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
+ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2354,6 +2364,7 @@ fi
 # 
 %changelog
 * Thu Jun 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport fixes for synaptic 3 finger tap (rhbz 1212230)
 - Backport btrfs fixes queued for stable (rhbz 1217191)
 
 * Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
