@@ -2383,6 +2383,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Mon Jun 01 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-202.hu.1.pf5
+- 4.0.4-202.hu.1.pf5
+
 * Thu May 28 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add quirk for Mac Pro backlight (rhbz 1217249)
 
