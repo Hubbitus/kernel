@@ -685,6 +685,15 @@ Patch26223: block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
 #rhbz 1223051
 Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
+#rhbz 1217191
+Patch26231: Btrfs-send-add-missing-check-for-dead-clone-root.patch
+Patch26232: Btrfs-send-don-t-leave-without-decrementing-clone-ro.patch
+Patch26233: btrfs-incorrect-handling-for-fiemap_fill_next_extent.patch
+Patch26234: btrfs-cleanup-orphans-while-looking-up-default-subvo.patch
+Patch26235: Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
+Patch26236: Btrfs-fix-uninit-variable-in-clone-ioctl.patch
+Patch26237: Btrfs-fix-regression-in-raid-level-conversion.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1484,6 +1493,15 @@ ApplyPatch block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
 
 #rhbz 1223051
 ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
+
+#rhbz 1217191
+ApplyPatch Btrfs-send-add-missing-check-for-dead-clone-root.patch
+ApplyPatch Btrfs-send-don-t-leave-without-decrementing-clone-ro.patch
+ApplyPatch btrfs-incorrect-handling-for-fiemap_fill_next_extent.patch
+ApplyPatch btrfs-cleanup-orphans-while-looking-up-default-subvo.patch
+ApplyPatch Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
+ApplyPatch Btrfs-fix-uninit-variable-in-clone-ioctl.patch
+ApplyPatch Btrfs-fix-regression-in-raid-level-conversion.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2335,6 +2353,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport btrfs fixes queued for stable (rhbz 1217191)
+
 * Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix touchpad for Thinkpad S540 (rhbz 1223051)
 
