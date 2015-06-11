@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 202
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -649,9 +649,6 @@ Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/
 #? Patch40008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #//////////////// end Hubbitus patches
 
-#rhbz 1094948
-Patch26131: acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -667,9 +664,6 @@ Patch26171: acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#rhbz 1208953
-Patch26178: pty-Fix-input-race-when-closing.patch
 
 #rhbz 1210801
 Patch26179: HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
@@ -689,14 +683,8 @@ Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
 #rhbz 1206036 1215989
 Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#rhbz 1218662
-Patch26199: libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
-
 #rhbz 1219343
 Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
-#rhbz 1220915
-Patch26201: ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
@@ -709,21 +697,35 @@ Patch26204: 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1218688
 Patch26205: drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
-#rhbz 1223332
-Patch26207: md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
-
-#rhbz 1220519
-Patch26208: sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
-
-#rhbz 1200353
-Patch26209: 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
-
-# Apply queued fixes for crasher reported by Alex Larsson
-Patch26211: mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
-Patch26212: fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
-
 #rhbz 1217249
 Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
+
+#rhbz 1225563
+Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
+
+#rhbz 1218882
+Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
+
+#rhbz 1188695
+Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
+#rhbz 1133378
+Patch26219: 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+# FAF Problem 885578
+Patch26220: 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
+
+#rhbz 1226743
+Patch26221: drm-i915-turn-off-wc-mmaps.patch
+
+#rhbz 1227877
+Patch26222: powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
+
+#rhbz 1226621
+Patch26223: block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
+
+#rhbz 1223051
+Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1464,9 +1466,6 @@ ApplyPatch criu-no-expert.patch
 #rhbz 892811
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
-#rhbz 1094948
-ApplyPatch acpi-video-Add-disable_native_backlight-quirk-for-Sa.patch
-
 #CVE-2015-0275 rhbz 1193907 1195178
 ApplyPatch ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -1482,9 +1481,6 @@ ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-#rhbz 1208953
-ApplyPatch pty-Fix-input-race-when-closing.patch
 
 #rhbz 1210801
 ApplyPatch HID-logitech-hidpp-add-a-module-parameter-to-keep-fi.patch
@@ -1504,14 +1500,8 @@ ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
 #rhbz 1206036 1215989
 ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 
-#rhbz 1218662
-ApplyPatch libata-Blacklist-queued-TRIM-on-all-Samsung-800-seri.patch
-
 #rhbz 1219343
 ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
-
-#rhbz 1220915
-ApplyPatch ovl-don-t-remove-non-empty-opaque-directory.patch
 
 #rhbz 1220118
 ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
@@ -1524,21 +1514,35 @@ ApplyPatch 0001-cx18-add-missing-caps-for-the-PCM-video-device.patch
 #rhbz 1218688
 ApplyPatch drm-i915-Fix-ilk-watermarks-calculation-when-primary.patch
 
-#rhbz 1223332
-ApplyPatch md-raid0-fix-restore-to-sector-variable-in-raid0_mak.patch
-
-#rhbz 1220519
-ApplyPatch sched-always-use-blk_schedule_flush_plug-in-io_sched.patch
-
-#rhbz 1200353
-ApplyPatch 0001-ktime-Fix-ktime_divns-to-do-signed-division.patch
-
-# Apply queued fixes for crasher reported by Alex Larsson
-ApplyPatch mnt-Fail-collect_mounts-when-applied-to-unmounted-mo.patch
-ApplyPatch fs_pin-Allow-for-the-possibility-that-m_list-or-s_li.patch
-
 #rhbz 1217249
 ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
+
+#rhbz 1225563
+ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
+
+#rhbz 1218882
+ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
+
+#rhbz 1188695
+ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
+
+#rhbz 1133378
+ApplyPatch 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+# FAF Problem 885578
+ApplyPatch 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
+
+#rhbz 1226743
+ApplyPatch drm-i915-turn-off-wc-mmaps.patch
+
+#rhbz 1227877
+ApplyPatch powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
+
+#rhbz 1226621
+ApplyPatch block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
+
+#rhbz 1223051
+ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2399,6 +2403,35 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix touchpad for Thinkpad S540 (rhbz 1223051)
+
+* Mon Jun 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.0.5-200
+- Linux v4.0.5
+
+* Thu Jun 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport commit to fix block spew (rhbz 1226621)
+- Add patch to fix SMT guests on POWER7 (rhbz 1227877)
+- Add patch to turn of WC mmaps on i915 from airlied (rhbz 1226743)
+
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix del_timer_sync in mwifiex
+
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Drop that blasted firwmare warning until we get a real fix (rhbz 1133378)
+
+* Wed Jun 03 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix auditing of canonical mode (rhbz 1188695)
+
+* Wed Jun 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1420 fhandle race condition (rhbz 1187534 1227417)
+
+* Tue Jun 02 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix fd_do_rw error (rhbz 1218882)
+
+* Tue Jun 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix middle button issues on external Lenovo keyboards (rhbz 1225563)
+
 * Mon Jun 01 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-202.hu.1.uksm.bfs.bfq
 - 4.0.4-202.hu.1.uksm.bfs.bfq
 

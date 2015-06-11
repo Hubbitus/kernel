@@ -1,0 +1,58 @@
+From: Sam Bobroff <sam.bobroff@au1.ibm.com>
+Date: Fri, 1 May 2015 16:50:34 +1000
+Subject: [PATCH] powerpc/powernv: Restore non-volatile CRs after nap
+
+Patches 7cba160ad "powernv/cpuidle: Redesign idle states management"
+and 77b54e9f2 "powernv/powerpc: Add winkle support for offline cpus"
+use non-volatile condition registers (cr2, cr3 and cr4) early in the system
+reset interrupt handler (system_reset_pSeries()) before it has been determined
+if state loss has occurred. If state loss has not occurred, control returns via
+the power7_wakeup_noloss() path which does not restore those condition
+registers, leaving them corrupted.
+
+Fix this by restoring the condition registers in the power7_wakeup_noloss()
+case.
+
+This is apparent when running a KVM guest on hardware that does not
+support winkle or sleep and the guest makes use of secondary threads. In
+practice this means Power7 machines, though some early unreleased Power8
+machines may also be susceptible.
+
+The secondary CPUs are taken off line before the guest is started and
+they call pnv_smp_cpu_kill_self(). This checks support for sleep
+states (in this case there is no support) and power7_nap() is called.
+
+When the CPU is woken, power7_nap() returns and because the CPU is
+still off line, the main while loop executes again. The sleep states
+support test is executed again, but because the tested values cannot
+have changed, the compiler has optimized the test away and instead we
+rely on the result of the first test, which has been left in cr3
+and/or cr4. With the result overwritten, the wrong branch is taken and
+power7_winkle() is called on a CPU that does not support it, leading
+to it stalling.
+
+Fixes: 7cba160ad789 ("powernv/cpuidle: Redesign idle states management")
+Fixes: 77b54e9f213f ("powernv/powerpc: Add winkle support for offline cpus")
+[mpe: Massage change log a bit more]
+Signed-off-by: Sam Bobroff <sam.bobroff@au1.ibm.com>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+---
+ arch/powerpc/kernel/idle_power7.S | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/arch/powerpc/kernel/idle_power7.S b/arch/powerpc/kernel/idle_power7.S
+index 05adc8bbdef8..401d8d0085aa 100644
+--- a/arch/powerpc/kernel/idle_power7.S
++++ b/arch/powerpc/kernel/idle_power7.S
+@@ -500,9 +500,11 @@ BEGIN_FTR_SECTION
+ 	CHECK_HMI_INTERRUPT
+ END_FTR_SECTION_IFSET(CPU_FTR_HVMODE)
+ 	ld	r1,PACAR1(r13)
++	ld	r6,_CCR(r1)
+ 	ld	r4,_MSR(r1)
+ 	ld	r5,_NIP(r1)
+ 	addi	r1,r1,INT_FRAME_SIZE
++	mtcr	r6
+ 	mtspr	SPRN_SRR1,r4
+ 	mtspr	SPRN_SRR0,r5
+ 	rfid
