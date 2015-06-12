@@ -641,7 +641,7 @@ Patch26193: toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 Patch26200: 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220118
-Patch26202: 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
+Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
@@ -668,7 +668,7 @@ Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 #rhbz 1133378
-Patch26219: 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # FAF Problem 885578
 Patch26220: 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
@@ -1455,7 +1455,7 @@ ApplyPatch toshiba_acpi-Do-not-register-vendor-backlight-when-a.patch
 ApplyPatch 0001-HID-usbhid-Add-HID_QUIRK_NOGET-for-Aten-DVI-KVM-swit.patch
 
 #rhbz 1220118
-ApplyPatch 0001-media-media-Fix-regression-in-some-more-dib0700-base.patch
+ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
 
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
@@ -1482,7 +1482,7 @@ ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
 
 #rhbz 1133378
-ApplyPatch 0001-firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # FAF Problem 885578
 ApplyPatch 0001-mwifiex-use-del_timer-variant-in-interrupt-context.patch
