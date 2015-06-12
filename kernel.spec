@@ -618,6 +618,9 @@ Patch26221: drm-i915-turn-off-wc-mmaps.patch
 #rhbz 1223051
 Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
+# CVE-2015-XXXX rhbz 1230770 1230774
+Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1353,6 +1356,9 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 #rhbz 1223051
 ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
+
+# CVE-2015-XXXX rhbz 1230770 1230774
+ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2218,6 +2224,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
+
 * Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix touchpad for Thinkpad S540 (rhbz 1223051)
 
