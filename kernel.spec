@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -614,9 +614,6 @@ Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
-
-#rhbz 1223051
-Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
@@ -1353,9 +1350,6 @@ ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 #rhbz 1226743
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
-
-#rhbz 1223051
-ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
@@ -2224,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc7.git1.1
+- Linux v4.1-rc7-72-gdf5f4158415b
+
 * Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
 
