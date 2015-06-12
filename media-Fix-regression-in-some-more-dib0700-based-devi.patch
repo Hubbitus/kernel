@@ -1,8 +1,6 @@
-From e989a73ebd09d22c22ead51fa363a2f56f70f28a Mon Sep 17 00:00:00 2001
 From: Thomas Reitmayr <treitmayr@devbase.at>
 Date: Fri, 1 May 2015 20:18:04 -0300
-Subject: [PATCH] [media] media: Fix regression in some more dib0700 based
- devices
+Subject: [PATCH] media: Fix regression in some more dib0700 based devices
 
 Fix an oops during device initialization by correctly setting size_of_priv
 instead of leaving it 0.
@@ -23,10 +21,10 @@ Signed-off-by: Mauro Carvalho Chehab <mchehab@osg.samsung.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/media/usb/dvb-usb/dib0700_devices.c b/drivers/media/usb/dvb-usb/dib0700_devices.c
-index 90cee38..e87ce83 100644
+index e1757b8f5f5d..6aa4e9f4e441 100644
 --- a/drivers/media/usb/dvb-usb/dib0700_devices.c
 +++ b/drivers/media/usb/dvb-usb/dib0700_devices.c
-@@ -3944,6 +3944,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
+@@ -3947,6 +3947,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
  
  				DIB0700_DEFAULT_STREAMING_CONFIG(0x02),
  			}},
@@ -35,7 +33,7 @@ index 90cee38..e87ce83 100644
  			}, {
  			.num_frontends = 1,
  			.fe = {{
-@@ -3956,6 +3958,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
+@@ -3959,6 +3961,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
  
  				DIB0700_DEFAULT_STREAMING_CONFIG(0x03),
  			}},
@@ -44,7 +42,7 @@ index 90cee38..e87ce83 100644
  			}
  		},
  
-@@ -4009,6 +4013,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
+@@ -4012,6 +4016,8 @@ struct dvb_usb_device_properties dib0700_devices[] = {
  
  				DIB0700_DEFAULT_STREAMING_CONFIG(0x02),
  			}},
@@ -53,6 +51,3 @@ index 90cee38..e87ce83 100644
  			},
  		},
  
--- 
-2.1.0
-
