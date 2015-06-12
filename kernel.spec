@@ -699,6 +699,9 @@ Patch26238: Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
 Patch26239: Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
 Patch26240: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
+# CVE-2015-XXXX rhbz 1230770 1230774
+Patch26241: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1512,6 +1515,9 @@ ApplyPatch Btrfs-fix-regression-in-raid-level-conversion.patch
 ApplyPatch Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
 ApplyPatch Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+# CVE-2015-XXXX rhbz 1230770 1230774
+ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2363,6 +2369,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
+
 * Thu Jun 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport fixes for synaptic 3 finger tap (rhbz 1212230)
 - Backport btrfs fixes queued for stable (rhbz 1217191)
