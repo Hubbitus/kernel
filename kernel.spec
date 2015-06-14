@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-# % define buildid .local
+%define buildid .hu.1.pf6
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -52,6 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
+#+Hu Pf against 4.0.5 v4.0-pf6: https://pf.natalenko.name/forum/index.php?topic=324
 %define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -341,7 +342,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64 
+%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -354,7 +355,10 @@ Summary: The Linux kernel
 Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
-URL: http://www.kernel.org/
+#URL: http://www.kernel.org/
+# Hubbitus patched fork of Fedora Kernel. Post-factum (https://pf.natalenko.name/) branch.
+# Binaries could be found at: http://hubbitus.info/wiki/Repository
+URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
@@ -465,7 +469,8 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
+#%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf6.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -474,7 +479,7 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
 Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -603,6 +608,28 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
 
+################# Hubbitus patches
+# My patch to resolve compile problem:
+#+ make -s ARCH=x86_64 V=1 -j3 bzImage
+#In file included from include/linux/srcu.h:33:0,
+#                 from include/linux/notifier.h:15,
+#                 from include/linux/memory_hotplug.h:6,
+#                 from include/linux/mmzone.h:800,
+#                 from include/linux/gfp.h:4,
+#                 from include/linux/slab.h:14,
+#                 from kernel/sched/stats.c:2:
+#kernel/sched/stats.c: In function 'show_schedstat':
+#kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
+#          lockdep_is_held(&sched_domains_mutex))
+Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
+# https://kojipkgs.fedoraproject.org//work/tasks/258/9750258/build.log
+# kernel/sched/bfs.c:522:20: error: function declaration isn't a prototype [-Werror=strict-prototypes]
+#  static inline void grq_priodl_lock()
+
+# My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
+#? Patch30008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#//////////////// end Hubbitus patches
+
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
 
@@ -710,6 +737,10 @@ BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
 
 %description
 The kernel meta package
+
+Hubbitus patched fork of Fedora Kernel (https://github.com/Hubbitus/kernel/).
+Post-factum (https://pf.natalenko.name/) branch.
+Binaries could be found at: http://hubbitus.info/wiki/Repository
 
 #
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
@@ -1031,7 +1062,7 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package 
+%kernel_variant_package
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
@@ -1066,14 +1097,16 @@ fi 2>/dev/null
 patch_command='patch -p1 -F1 -s'
 ApplyPatch()
 {
-  local patch=$1
+#Hu basename to allow use URLs in patches
+  local patch=$( basename $1 )
+  local patchURL=$1
   shift
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-4." ] ; then
-      echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
+      echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
@@ -1202,7 +1235,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-#    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
     ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -1275,6 +1308,7 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
+#Hu!!: This patch never should be disabled: + cat .newoptions: CONFIG_NR_CPUS
 ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 # PPC
@@ -1433,6 +1467,12 @@ ApplyPatch HID-multitouch-add-support-of-clickpads.patch
 ApplyPatch acpi-video-Allow-forcing-native-backlight-on-non-win.patch
 ApplyPatch acpi-video-Add-force-native-backlight-quirk-for-Leno.patch
 
+
+################# Hubbitus patches
+ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
+#//////////////////////////////// Hubbitus patches
+
+
 #CVE-2015-2150 rhbz 1196266 1200397
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
@@ -1533,7 +1573,7 @@ touch .scmversion
 # only deal with configs if we are going to build for the arch
 %ifnarch %nobuildarches
 
-mkdir configs
+mkdir -p configs
 
 %if !%{debugbuildsenabled}
 rm -f kernel-%{version}-*debug.config
@@ -1542,7 +1582,7 @@ rm -f kernel-%{version}-*debug.config
 %define make make %{?cross_opts}
 
 # now run oldconfig over all the config files
-for i in *.config
+for i in %{all_arch_configs}
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
@@ -2367,8 +2407,11 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
-# 
 %changelog
+* Sun Jun 14 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-303.hu.1.pf6
+- Upgrade to Fedora 22. Start f22-pf branch for kernels. First attempt build. Port changes from f21.
+- 4.0.4-303.hu.1.pf6
+
 * Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
 
