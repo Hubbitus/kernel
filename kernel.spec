@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-# % define buildid .local
+%define buildid .hu.1.uksm.bfs.bfq
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -341,7 +341,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64 
+%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -354,7 +354,10 @@ Summary: The Linux kernel
 Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2 and Redistributable, no modification permitted
-URL: http://www.kernel.org/
+#URL: http://www.kernel.org/
+# Hubbitus patched fork of Fedora Kernel
+# Binaries could be found at: http://hubbitus.info/wiki/Repository
+URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
@@ -474,7 +477,7 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00 patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
 Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -602,6 +605,42 @@ Patch21242: criu-no-expert.patch
 Patch21247: ath9k-rx-dma-stop-check.patch
 
 Patch22000: weird-root-dentry-name-debug.patch
+
+################# Hubbitus patches
+# UKSM
+Patch40001: http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
+
+# BFS
+Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
+Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
+# My patch to resolve compile problem:
+#+ make -s ARCH=x86_64 V=1 -j3 bzImage
+#In file included from include/linux/srcu.h:33:0,
+#                 from include/linux/notifier.h:15,
+#                 from include/linux/memory_hotplug.h:6,
+#                 from include/linux/mmzone.h:800,
+#                 from include/linux/gfp.h:4,
+#                 from include/linux/slab.h:14,
+#                 from kernel/sched/stats.c:2:
+#kernel/sched/stats.c: In function 'show_schedstat':
+#kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
+#          lockdep_is_held(&sched_domains_mutex))
+Patch40007: BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
+
+#? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+#? Patch40006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
+
+# My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
+#? Patch40008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#//////////////// end Hubbitus patches
 
 #CVE-2015-0275 rhbz 1193907 1195178
 Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
@@ -1031,7 +1070,7 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package 
+%kernel_variant_package
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
@@ -1066,14 +1105,16 @@ fi 2>/dev/null
 patch_command='patch -p1 -F1 -s'
 ApplyPatch()
 {
-  local patch=$1
+#Hu basename to allow use URLs in patches
+  local patch=$( basename $1 )
+  local patchURL=$1
   shift
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-4." ] ; then
-      echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
+      echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
@@ -1202,7 +1243,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-#    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
     ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
@@ -1275,7 +1316,32 @@ ApplyOptionalPatch upstream-reverts.patch -R
 
 # Architecture patches
 # x86(-64)
+#Hu!!: This patch never should be disabled: + cat .newoptions: CONFIG_NR_CPUS
 ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+
+
+################# Hubbitus patches
+# UKSM
+ApplyPatch http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
+
+# BFS
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
+ApplyPatch BFS-3.13-compile-fix-hu.patch
+
+# BFQ
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
+
+#? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
+
+# TuxOnIce
+# URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
+#? ApplyPatch http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2 --fuzz=2
+#? ApplyPatch tuxonice-function_trace_stop-undefined-compilation-problem.patch
+#//////////////// Hubbitus patches
+
 
 # PPC
 
@@ -1542,7 +1608,7 @@ rm -f kernel-%{version}-*debug.config
 %define make make %{?cross_opts}
 
 # now run oldconfig over all the config files
-for i in *.config
+for i in %{all_arch_configs}
 do
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
@@ -2367,8 +2433,11 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
-# 
 %changelog
+* Sun Jun 14 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.4-303.hu.1.uksm.bfs.bfq
+- Upgrade to Fedora 22. Start f22-hubbitus branch for kernels. First attempt build. Port changes from f21.
+- 4.0.4-303.hu.1.uksm.bfs.bfq
+
 * Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
 

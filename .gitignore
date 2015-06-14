@@ -1,7 +1,0 @@
-clog
-*.xz
-*.bz2
-*.rpm
-*.orig
-kernel-[234].*/
-perf-man-*.tar.gz
