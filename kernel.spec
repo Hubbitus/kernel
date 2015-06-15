@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -617,6 +617,8 @@ Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
+
+Patch26232: mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1353,6 +1355,8 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
+
+ApplyPatch mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2218,6 +2222,9 @@ fi
 #
 # 
 %changelog
+* Mon Jun 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc8.git0.1
+- Linux v4.1-rc8
+
 * Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc7.git1.1
 - Linux v4.1-rc7-72-gdf5f4158415b
 
