@@ -2222,6 +2222,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 16 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Make some of the ARMv7 cpufreq drivers modular
+
 * Mon Jun 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc8.git0.1
 - Linux v4.1-rc8
 
