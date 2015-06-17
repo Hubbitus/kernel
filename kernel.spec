@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2222,6 +2222,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc8.git0.2
+- Bump for rebuild to hopefully fix size issues due to elfutils bug
+
 * Tue Jun 16 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Make some of the ARMv7 cpufreq drivers modular
 
