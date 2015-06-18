@@ -620,6 +620,9 @@ Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 Patch26232: mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
 
+# rhbz 1227891
+Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1357,6 +1360,9 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 ApplyPatch mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
+
+#rhbz 1227891
+ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2222,6 +2228,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix touchpad issues on Razer machines (rhbz 1227891)
+
 * Tue Jun 16 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc8.git0.2
 - Bump for rebuild to hopefully fix size issues due to elfutils bug
 
