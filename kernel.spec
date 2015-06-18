@@ -702,6 +702,9 @@ Patch26240: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 # CVE-2015-XXXX rhbz 1230770 1230774
 Patch26241: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
+# rhbz 1227891
+Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1518,6 +1521,9 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
+
+#rhbz 1227891
+ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2369,6 +2375,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix touchpad issues on Razer machines (rhbz 1227891)
+
 * Fri Jun 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-XXXX kvm: NULL ptr deref in kvm_apic_has_events (rhbz 1230770 1230774)
 
