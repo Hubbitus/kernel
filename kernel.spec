@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -40,13 +40,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 0
+%define base_sublevel 1
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -65,7 +65,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 8
+%define rcrev 0
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -617,8 +617,6 @@ Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
-Patch26232: mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
 
 # rhbz 1227891
 Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
@@ -1358,8 +1356,6 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 # CVE-2015-XXXX rhbz 1230770 1230774
 ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
-ApplyPatch mm-shmem_zero_setup-skip-security-check-and-lockdep-.patch
 
 #rhbz 1227891
 ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
@@ -2228,6 +2224,9 @@ fi
 #
 # 
 %changelog
+* Mon Jun 22 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-1
+- Linux v4.1
+
 * Thu Jun 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix touchpad issues on Razer machines (rhbz 1227891)
 
