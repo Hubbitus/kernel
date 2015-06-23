@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -664,9 +664,6 @@ Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 #rhbz 1218882
 Patch26216: 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 
-#rhbz 1188695
-Patch26218: 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
-
 #rhbz 1133378
 Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
@@ -678,21 +675,6 @@ Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
 #rhbz 1227877
 Patch26222: powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
-
-#rhbz 1226621
-Patch26223: block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
-
-#rhbz 1223051
-Patch26230: Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
-
-#rhbz 1217191
-Patch26231: Btrfs-send-add-missing-check-for-dead-clone-root.patch
-Patch26232: Btrfs-send-don-t-leave-without-decrementing-clone-ro.patch
-Patch26233: btrfs-incorrect-handling-for-fiemap_fill_next_extent.patch
-Patch26234: btrfs-cleanup-orphans-while-looking-up-default-subvo.patch
-Patch26235: Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
-Patch26236: Btrfs-fix-uninit-variable-in-clone-ioctl.patch
-Patch26237: Btrfs-fix-regression-in-raid-level-conversion.patch
 
 #rhbz 1212230
 Patch26238: Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
@@ -1484,9 +1466,6 @@ ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
 #rhbz 1218882
 ApplyPatch 0001-target-use-vfs_iter_read-write-in-fd_do_rw.patch
 
-#rhbz 1188695
-ApplyPatch 0001-n_tty-Fix-auditing-support-for-cannonical-mode.patch
-
 #rhbz 1133378
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
@@ -1498,21 +1477,6 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 
 #rhbz 1227877
 ApplyPatch powerpc-powernv-Restore-non-volatile-CRs-after-nap.patch
-
-#rhbz 1226621
-ApplyPatch block-discard-bdi_unregister-in-favour-of-bdi_destro.patch
-
-#rhbz 1223051
-ApplyPatch Input-synaptics-add-min-max-quirk-for-Lenovo-S540.patch
-
-#rhbz 1217191
-ApplyPatch Btrfs-send-add-missing-check-for-dead-clone-root.patch
-ApplyPatch Btrfs-send-don-t-leave-without-decrementing-clone-ro.patch
-ApplyPatch btrfs-incorrect-handling-for-fiemap_fill_next_extent.patch
-ApplyPatch btrfs-cleanup-orphans-while-looking-up-default-subvo.patch
-ApplyPatch Btrfs-fix-range-cloning-when-same-inode-used-as-sour.patch
-ApplyPatch Btrfs-fix-uninit-variable-in-clone-ioctl.patch
-ApplyPatch Btrfs-fix-regression-in-raid-level-conversion.patch
 
 #rhbz 1212230
 ApplyPatch Input-Revert-Revert-synaptics-use-dmax-in-input_mt_a.patch
@@ -2375,6 +2339,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 23 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.6-300
+- Linux v4.0.6
+
 * Thu Jun 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix touchpad issues on Razer machines (rhbz 1227891)
 
