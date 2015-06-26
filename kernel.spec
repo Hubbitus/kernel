@@ -237,6 +237,7 @@ Summary: The Linux kernel
 %ifnarch %{power64}
 %define with_bootwrapper 0
 %define with_sparse 0
+%define with_perf 0
 %endif
 
 # Per-arch tweaks
@@ -265,7 +266,7 @@ Summary: The Linux kernel
 %define all_arch_configs kernel-%{version}-ppc64*.config
 %endif
 %ifarch ppc64le
-%define all_arch_configs kernel-%{version}-ppc64le.config
+%define all_arch_configs kernel-%{version}-ppc64le*.config
 %endif
 %endif
 
@@ -431,7 +432,7 @@ Source32: config-x86-32-generic
 
 Source40: config-x86_64-generic
 
-Source50: config-powerpc-generic
+Source50: config-powerpc64-generic
 Source53: config-powerpc64
 Source54: config-powerpc64p7
 Source55: config-powerpc64le
@@ -2147,6 +2148,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Reorganisation and cleanup of the powerpc configs
+
 * Thu Jun 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v4.1-5596-gaefbef10e3ae
 
