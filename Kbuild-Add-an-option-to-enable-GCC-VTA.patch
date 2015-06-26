@@ -43,10 +43,10 @@ Signed-off-by: Josh Stone <jistone@redhat.com>
  2 files changed, 21 insertions(+), 1 deletion(-)
 
 diff --git a/Makefile b/Makefile
-index f5c8983aeeb7..962bafd4a18e 100644
+index 6c6f14628f32..144ffbb5af82 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -704,7 +704,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
+@@ -703,7 +703,11 @@ KBUILD_CFLAGS	+= -fomit-frame-pointer
  endif
  endif
  
@@ -59,7 +59,7 @@ index f5c8983aeeb7..962bafd4a18e 100644
  ifdef CONFIG_DEBUG_INFO
  ifdef CONFIG_DEBUG_INFO_SPLIT
 diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index ba2b0c87e65b..390e4089c086 100644
+index b908048f8d6a..1bfb8e63218f 100644
 --- a/lib/Kconfig.debug
 +++ b/lib/Kconfig.debug
 @@ -165,7 +165,23 @@ config DEBUG_INFO_DWARF4

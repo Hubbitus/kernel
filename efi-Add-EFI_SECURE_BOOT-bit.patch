@@ -12,10 +12,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  2 files changed, 3 insertions(+)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 88dad730e858..d99c8c38914f 100644
+index d3071ca120eb..9bcd51050511 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1158,7 +1158,9 @@ void __init setup_arch(char **cmdline_p)
+@@ -1163,7 +1163,9 @@ void __init setup_arch(char **cmdline_p)
  
  #ifdef CONFIG_EFI_SECURE_BOOT_SIG_ENFORCE
  	if (boot_params.secure_boot) {
@@ -26,10 +26,10 @@ index 88dad730e858..d99c8c38914f 100644
  #endif
  
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index af5be0368dec..aa4ee20ec8bb 100644
+index 5f19efe4eb3f..13a3a411c65f 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -943,6 +943,7 @@ extern int __init efi_setup_pcdp_console(char *);
+@@ -958,6 +958,7 @@ extern int __init efi_setup_pcdp_console(char *);
  #define EFI_PARAVIRT		6	/* Access is via a paravirt interface */
  #define EFI_ARCH_1		7	/* First arch-specific bit */
  #define EFI_DBG			8	/* Print additional debug info at runtime */

@@ -1,9 +1,13 @@
 From: Peter Robinson <pbrobinson@gmail.com>
-Subject: arm64: acpi drop expert patch
-Date: Sun May 3 18:35:23 2015 +0100
+Date: Sun, 3 May 2015 18:35:23 +0100
+Subject: [PATCH] arm64: acpi drop expert patch
+
+---
+ drivers/acpi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-index ab2cbb5..87a6c19 100644
+index 35da507411a0..e3518852eb39 100644
 --- a/drivers/acpi/Kconfig
 +++ b/drivers/acpi/Kconfig
 @@ -5,7 +5,7 @@

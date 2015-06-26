@@ -16,10 +16,10 @@ Upstream-status: Fedora mustard
  3 files changed, 2 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
-index 3d874eca7104..deab7897b01f 100644
+index 30b7bbfdc558..95863902627f 100644
 --- a/drivers/base/power/main.c
 +++ b/drivers/base/power/main.c
-@@ -122,8 +122,6 @@ void device_pm_unlock(void)
+@@ -123,8 +123,6 @@ void device_pm_unlock(void)
   */
  void device_pm_add(struct device *dev)
  {
@@ -41,7 +41,7 @@ index cb5ece77fd7d..4022b75eaad7 100644
  	}
  
 diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 32d710eaf1fc..af4a20b86ee7 100644
+index 7933e62a7318..96a911003af7 100644
 --- a/net/can/af_can.c
 +++ b/net/can/af_can.c
 @@ -155,13 +155,9 @@ static int can_create(struct net *net, struct socket *sock, int protocol,

@@ -10,7 +10,7 @@ exercise left to the reader.
  1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 13b45f297727..f84ce0135c38 100644
+index b2de09d3b1a0..bced65ec07cc 100644
 --- a/drivers/pinctrl/pinctrl-single.c
 +++ b/drivers/pinctrl/pinctrl-single.c
 @@ -2025,7 +2025,17 @@ static struct platform_driver pcs_driver = {

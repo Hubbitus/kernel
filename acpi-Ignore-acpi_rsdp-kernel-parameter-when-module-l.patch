@@ -13,7 +13,7 @@ Signed-off-by: Josh Boyer <jwboyer@redhat.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
-index 7ccba395c9dd..9cbdbccf3dc3 100644
+index a5dc9034efee..fd2aee6de6a7 100644
 --- a/drivers/acpi/osl.c
 +++ b/drivers/acpi/osl.c
 @@ -44,6 +44,7 @@
@@ -24,7 +24,7 @@ index 7ccba395c9dd..9cbdbccf3dc3 100644
  
  #include <asm/io.h>
  #include <asm/uaccess.h>
-@@ -252,7 +253,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
+@@ -248,7 +249,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
  acpi_physical_address __init acpi_os_get_root_pointer(void)
  {
  #ifdef CONFIG_KEXEC

@@ -15,7 +15,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 9 insertions(+)
 
 diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index 7543a56e0f45..93b5a6998371 100644
+index 6f8558f744a4..d448974b6766 100644
 --- a/drivers/platform/x86/asus-wmi.c
 +++ b/drivers/platform/x86/asus-wmi.c
 @@ -1589,6 +1589,9 @@ static int show_dsts(struct seq_file *m, void *data)

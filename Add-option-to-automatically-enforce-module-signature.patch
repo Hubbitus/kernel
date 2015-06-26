@@ -33,7 +33,7 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 226d5696e1d1..6a8f880e213f 100644
+index 8e0b76ad8350..39645abe44e3 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
 @@ -1697,6 +1697,16 @@ config EFI_MIXED
@@ -129,10 +129,10 @@ index ab456dc233b5..74ba4083e7ce 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index d74ac33290ae..88dad730e858 100644
+index d3b95b89e9b2..d3071ca120eb 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1156,6 +1156,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1161,6 +1161,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,7 +146,7 @@ index d74ac33290ae..88dad730e858 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index cdc46a791b9d..0c1edd33a42c 100644
+index 6b99261cbb4b..7117d03cbfe8 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);

@@ -16,7 +16,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 17 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index c883b86ea964..cdc46a791b9d 100644
+index 1e5436042eb0..6b99261cbb4b 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -508,6 +508,8 @@ int unregister_module_notifier(struct notifier_block *nb);
