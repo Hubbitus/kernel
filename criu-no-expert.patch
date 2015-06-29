@@ -9,19 +9,19 @@ Upstream-status: Fedora mustard
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/init/Kconfig b/init/Kconfig
-index f3e3a0d45d40..41765c00d633 100644
+index 021d080ecf6c..d760621a625f 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1130,7 +1130,7 @@ config DEBUG_BLK_CGROUP
+@@ -1136,7 +1136,7 @@ config CGROUP_WRITEBACK
  endif # CGROUPS
  
  config CHECKPOINT_RESTORE
 -	bool "Checkpoint/restore support" if EXPERT
 +	bool "Checkpoint/restore support"
+ 	select PROC_CHILDREN
  	default n
  	help
- 	  Enables additional kernel features in a sake of checkpoint/restore.
-@@ -1141,7 +1141,7 @@ config CHECKPOINT_RESTORE
+@@ -1148,7 +1148,7 @@ config CHECKPOINT_RESTORE
  	  If unsure, say N here.
  
  menuconfig NAMESPACES

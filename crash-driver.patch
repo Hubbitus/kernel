@@ -269,7 +269,7 @@ index 000000000000..fd4736ec99f5
 +
 +#endif /* _X86_CRASH_H */
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index a4af8221751e..193f1a7c2ce5 100644
+index a043107da2af..b272397f306a 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
 @@ -4,6 +4,9 @@
@@ -283,10 +283,10 @@ index a4af8221751e..193f1a7c2ce5 100644
  
  config DEVMEM
 diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-index d06cde26031b..0832636fd9bc 100644
+index d8a7579300d2..31c83630f593 100644
 --- a/drivers/char/Makefile
 +++ b/drivers/char/Makefile
-@@ -62,3 +62,5 @@ js-rtc-y = rtc.o
+@@ -60,3 +60,5 @@ js-rtc-y = rtc.o
  
  obj-$(CONFIG_TILE_SROM)		+= tile-srom.o
  obj-$(CONFIG_XILLYBUS)		+= xillybus/

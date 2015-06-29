@@ -33,10 +33,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 8e0b76ad8350..39645abe44e3 100644
+index 4fcf0ade7e91..0ea05e5528c9 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1697,6 +1697,16 @@ config EFI_MIXED
+@@ -1692,6 +1692,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -146,7 +146,7 @@ index d3b95b89e9b2..d3071ca120eb 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 6b99261cbb4b..7117d03cbfe8 100644
+index 3da68fd1f657..ec76d890c9f2 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
@@ -163,10 +163,10 @@ index 6b99261cbb4b..7117d03cbfe8 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 17738285d7a2..e7065d683640 100644
+index 5d3e6c6191fa..4c682ab7e640 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3916,6 +3916,13 @@ void module_layout(struct module *mod,
+@@ -3926,6 +3926,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  

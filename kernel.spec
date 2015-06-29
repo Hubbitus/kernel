@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -509,101 +509,93 @@ Patch458: arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 
 Patch459: arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
 
-Patch460: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
+Patch460: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 
-Patch461: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
+Patch461: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 
-Patch462: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
+Patch462: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
-Patch463: pinctrl-pinctrl-single-must-be-initialized-early.patch
+Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
-Patch464: arm-i.MX6-Utilite-device-dtb.patch
+Patch464: arm-highbank-l2-reverts.patch
 
-Patch465: arm-highbank-l2-reverts.patch
+Patch465: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
-Patch466: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
+Patch466: input-kill-stupid-messages.patch
 
-Patch467: input-kill-stupid-messages.patch
+Patch467: die-floppy-die.patch
 
-Patch468: die-floppy-die.patch
+Patch468: no-pcspkr-modalias.patch
 
-Patch469: no-pcspkr-modalias.patch
+Patch469: input-silence-i8042-noise.patch
 
-Patch470: input-silence-i8042-noise.patch
+Patch470: silence-fbcon-logo.patch
 
-Patch471: silence-fbcon-logo.patch
+Patch471: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
 
-Patch472: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
+Patch472: crash-driver.patch
 
-Patch473: crash-driver.patch
+Patch473: Add-secure_modules-call.patch
 
-Patch474: Add-secure_modules-call.patch
+Patch474: PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
 
-Patch475: PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
+Patch475: x86-Lock-down-IO-port-access-when-module-security-is.patch
 
-Patch476: x86-Lock-down-IO-port-access-when-module-security-is.patch
+Patch476: ACPI-Limit-access-to-custom_method.patch
 
-Patch477: ACPI-Limit-access-to-custom_method.patch
+Patch477: asus-wmi-Restrict-debugfs-interface-when-module-load.patch
 
-Patch478: asus-wmi-Restrict-debugfs-interface-when-module-load.patch
+Patch478: Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
 
-Patch479: Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
+Patch479: acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
 
-Patch480: acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
+Patch480: kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
 
-Patch481: kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
+Patch481: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
 
-Patch482: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
+Patch482: Add-option-to-automatically-enforce-module-signature.patch
 
-Patch483: Add-option-to-automatically-enforce-module-signature.patch
+Patch483: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
 
-Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+Patch484: efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
 
-Patch485: efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
+Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
 
-Patch486: efi-Add-EFI_SECURE_BOOT-bit.patch
+Patch486: hibernate-Disable-in-a-signed-modules-environment.patch
 
-Patch487: hibernate-Disable-in-a-signed-modules-environment.patch
+Patch487: Add-EFI-signature-data-types.patch
 
-Patch488: Add-EFI-signature-data-types.patch
+Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
 
-Patch489: Add-an-EFI-signature-blob-parser-and-key-loader.patch
+Patch489: KEYS-Add-a-system-blacklist-keyring.patch
 
-Patch490: KEYS-Add-a-system-blacklist-keyring.patch
+Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 
-Patch491: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
+Patch491: MODSIGN-Support-not-importing-certs-from-db.patch
 
-Patch492: MODSIGN-Support-not-importing-certs-from-db.patch
+Patch492: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
-Patch493: Add-sysrq-option-to-disable-secure-boot-mode.patch
+Patch493: drm-i915-hush-check-crtc-state.patch
 
-Patch494: drm-i915-hush-check-crtc-state.patch
+Patch494: disable-i8042-check-on-apple-mac.patch
 
-Patch495: disable-i8042-check-on-apple-mac.patch
+Patch495: lis3-improve-handling-of-null-rate.patch
 
-Patch496: lis3-improve-handling-of-null-rate.patch
+Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
 
-Patch497: watchdog-Disable-watchdog-on-virtual-machines.patch
+Patch497: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
-Patch498: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+Patch498: criu-no-expert.patch
 
-Patch499: criu-no-expert.patch
+Patch499: ath9k-rx-dma-stop-check.patch
 
-Patch500: ath9k-rx-dma-stop-check.patch
+Patch500: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
-Patch501: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-Patch502: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
-Patch503: blk-loop-avoid-too-many-pending-work-IO.patch
-
-Patch504: media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
-Patch505: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
-
-Patch506: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
-
-Patch507: drm-i915-turn-off-wc-mmaps.patch
+Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 
 # END OF PATCH DEFINITIONS
@@ -1187,8 +1179,6 @@ ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 
 ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
 
-ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
-
 ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 
 ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
@@ -1272,12 +1262,6 @@ ApplyPatch ath9k-rx-dma-stop-check.patch
 ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
-
-ApplyPatch blk-loop-avoid-too-many-pending-work-IO.patch
-
-ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
-ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
@@ -2148,6 +2132,11 @@ fi
 #
 # 
 %changelog
+* Mon Jun 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git2.1
+- Linux v4.1-11235-gc63f887bdae8
+- Reenable debugging options.
+
+
 * Fri Jun 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Reorganisation and cleanup of the powerpc configs
 

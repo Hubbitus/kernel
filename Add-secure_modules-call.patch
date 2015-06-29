@@ -11,28 +11,27 @@ Upstream-status: Fedora mustard.  Replaced by securelevels, but that was nak'd
 
 Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
 ---
- include/linux/module.h |  7 +++++++
+ include/linux/module.h |  6 ++++++
  kernel/module.c        | 10 ++++++++++
- 2 files changed, 17 insertions(+)
+ 2 files changed, 16 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 1e5436042eb0..6b99261cbb4b 100644
+index 7ffe0851d244..3da68fd1f657 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -508,6 +508,8 @@ int unregister_module_notifier(struct notifier_block *nb);
- 
- extern void print_modules(void);
+@@ -515,6 +515,8 @@ static inline bool module_requested_async_probing(struct module *module)
+ 	return module && module->async_probe_requested;
+ }
  
 +extern bool secure_modules(void);
 +
  #else /* !CONFIG_MODULES... */
  
  /* Given an address, look for it in the exception tables. */
-@@ -618,6 +620,11 @@ static inline int unregister_module_notifier(struct notifier_block *nb)
- static inline void print_modules(void)
- {
+@@ -631,6 +633,10 @@ static inline bool module_requested_async_probing(struct module *module)
+ 	return false;
  }
-+
+ 
 +static inline bool secure_modules(void)
 +{
 +	return false;
@@ -41,10 +40,10 @@ index 1e5436042eb0..6b99261cbb4b 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index cfc9e843a924..17738285d7a2 100644
+index f80a97f7da1f..5d3e6c6191fa 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3915,3 +3915,13 @@ void module_layout(struct module *mod,
+@@ -3925,3 +3925,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif
