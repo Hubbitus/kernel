@@ -148,7 +148,7 @@ index 000000000000..404bcb93c112
 +
 +#endif /* _ASM_IA64_CRASH_H */
 diff --git a/arch/ia64/kernel/ia64_ksyms.c b/arch/ia64/kernel/ia64_ksyms.c
-index 5b7791dd3965..aee4b870c763 100644
+index 096731049538..e88887827906 100644
 --- a/arch/ia64/kernel/ia64_ksyms.c
 +++ b/arch/ia64/kernel/ia64_ksyms.c
 @@ -84,6 +84,9 @@ EXPORT_SYMBOL(ia64_save_scratch_fpregs);

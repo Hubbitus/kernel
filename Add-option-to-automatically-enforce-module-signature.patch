@@ -33,10 +33,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 4fcf0ade7e91..0ea05e5528c9 100644
+index d05a42357ef0..6c218407e987 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1692,6 +1692,16 @@ config EFI_MIXED
+@@ -1696,6 +1696,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -54,7 +54,7 @@ index 4fcf0ade7e91..0ea05e5528c9 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 48304b89b601..2ff19014117a 100644
+index 2c82bd150d43..1ef8ea7f8ed9 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -103,7 +103,7 @@ index 48304b89b601..2ff19014117a 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1408,6 +1440,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1412,6 +1444,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  

@@ -26,10 +26,10 @@ index d3071ca120eb..9bcd51050511 100644
  #endif
  
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 5f19efe4eb3f..13a3a411c65f 100644
+index 85ef051ac6fb..de3e45088d4a 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -958,6 +958,7 @@ extern int __init efi_setup_pcdp_console(char *);
+@@ -959,6 +959,7 @@ extern int __init efi_setup_pcdp_console(char *);
  #define EFI_PARAVIRT		6	/* Access is via a paravirt interface */
  #define EFI_ARCH_1		7	/* First arch-specific bit */
  #define EFI_DBG			8	/* Print additional debug info at runtime */

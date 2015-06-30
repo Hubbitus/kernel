@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -237,7 +237,6 @@ Summary: The Linux kernel
 %ifnarch %{power64}
 %define with_bootwrapper 0
 %define with_sparse 0
-%define with_perf 0
 %endif
 
 # Per-arch tweaks
@@ -596,6 +595,8 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
+
+Patch504: sched-kvm-Fix-KVM-preempt_notifier-usage.patch
 
 
 # END OF PATCH DEFINITIONS
@@ -1266,6 +1267,8 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
+
+ApplyPatch sched-kvm-Fix-KVM-preempt_notifier-usage.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2132,10 +2135,18 @@ fi
 #
 # 
 %changelog
+* Tue Jun 30 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc0.git3.1
+- Linux v4.1-11355-g6aaf0da8728c
+- Add patch to fix KVM sleeping in atomic issue (rhbz 1237143)
+- Fix errant with_perf disable that removed perf entirely (rhbz 1237266)
+
+* Tue Jun 30 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor Aarch64 updates and cleanups
+- Enable initial support for hi6220
+
 * Mon Jun 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git2.1
 - Linux v4.1-11235-gc63f887bdae8
 - Reenable debugging options.
-
 
 * Fri Jun 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Reorganisation and cleanup of the powerpc configs
