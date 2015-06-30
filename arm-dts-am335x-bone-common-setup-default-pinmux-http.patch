@@ -9,7 +9,7 @@ Signed-off-by: Robert Nelson <robertcnelson@gmail.com>
  1 file changed, 222 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-bone-common.dtsi b/arch/arm/boot/dts/am335x-bone-common.dtsi
-index 1fd496fe1a68..9688dda39e7a 100644
+index b2e14381dd1c..853079eb0080 100644
 --- a/arch/arm/boot/dts/am335x-bone-common.dtsi
 +++ b/arch/arm/boot/dts/am335x-bone-common.dtsi
 @@ -95,6 +95,20 @@
@@ -222,7 +222,7 @@ index 1fd496fe1a68..9688dda39e7a 100644
  /include/ "tps65217.dtsi"
  
  &tps {
-@@ -347,4 +529,44 @@
+@@ -366,4 +548,44 @@
  
  &sham {
  	status = "okay";
