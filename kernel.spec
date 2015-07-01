@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2135,6 +2135,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 01 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc0.git4.1
+- Linux v4.1-11549-g05a8256c586a
+
 * Tue Jun 30 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc0.git3.1
 - Linux v4.1-11355-g6aaf0da8728c
 - Add patch to fix KVM sleeping in atomic issue (rhbz 1237143)
