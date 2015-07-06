@@ -42,10 +42,10 @@ index 414c3c3d988d..d920a6be6c8b 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index a3f17e13603c..021d080ecf6c 100644
+index 62f6fd191e4f..648bb79d6b73 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1905,6 +1905,15 @@ config MODULE_SIG_ALL
+@@ -1906,6 +1906,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,7 +62,7 @@ index a3f17e13603c..021d080ecf6c 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 60c302cfb4d3..3de3ba7b98e4 100644
+index 43c4c920f30a..3193574387ac 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
 @@ -48,6 +48,7 @@ obj-$(CONFIG_UID16) += uid16.o

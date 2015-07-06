@@ -16,10 +16,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 16 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 7ffe0851d244..3da68fd1f657 100644
+index d67b1932cc59..57474384b66b 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -515,6 +515,8 @@ static inline bool module_requested_async_probing(struct module *module)
+@@ -551,6 +551,8 @@ static inline bool module_requested_async_probing(struct module *module)
  	return module && module->async_probe_requested;
  }
  
@@ -28,7 +28,7 @@ index 7ffe0851d244..3da68fd1f657 100644
  #else /* !CONFIG_MODULES... */
  
  /* Given an address, look for it in the exception tables. */
-@@ -631,6 +633,10 @@ static inline bool module_requested_async_probing(struct module *module)
+@@ -667,6 +669,10 @@ static inline bool module_requested_async_probing(struct module *module)
  	return false;
  }
  
@@ -40,10 +40,10 @@ index 7ffe0851d244..3da68fd1f657 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index f80a97f7da1f..5d3e6c6191fa 100644
+index 3e0e19763d24..c3bce9c6a746 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3925,3 +3925,13 @@ void module_layout(struct module *mod,
+@@ -4082,3 +4082,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif

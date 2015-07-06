@@ -9,10 +9,10 @@ Upstream-status: Fedora mustard
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/init/Kconfig b/init/Kconfig
-index 021d080ecf6c..d760621a625f 100644
+index 648bb79d6b73..860ca236975f 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1136,7 +1136,7 @@ config CGROUP_WRITEBACK
+@@ -1137,7 +1137,7 @@ config CGROUP_WRITEBACK
  endif # CGROUPS
  
  config CHECKPOINT_RESTORE
@@ -21,7 +21,7 @@ index 021d080ecf6c..d760621a625f 100644
  	select PROC_CHILDREN
  	default n
  	help
-@@ -1148,7 +1148,7 @@ config CHECKPOINT_RESTORE
+@@ -1149,7 +1149,7 @@ config CHECKPOINT_RESTORE
  	  If unsure, say N here.
  
  menuconfig NAMESPACES
