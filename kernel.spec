@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -595,8 +595,6 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
-
-Patch504: tools-perf-rbtree-Add-RCU-wrappers-to-make-rbtree.h-.patch
 
 
 # END OF PATCH DEFINITIONS
@@ -1267,8 +1265,6 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
-
-ApplyPatch tools-perf-rbtree-Add-RCU-wrappers-to-make-rbtree.h-.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2135,6 +2131,10 @@ fi
 #
 # 
 %changelog
+* Tue Jul 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git1.1
+- Linux v4.2-rc1-17-gc7e9ad7da219
+- Reenable debugging options.
+
 * Mon Jul 06 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git0.1
 - Linux v4.2-rc1
 - Disable debug options.
