@@ -1,0 +1,83 @@
+From: Daniel Mack <daniel@zonque.org>
+Date: Fri, 3 Apr 2015 12:41:52 +0200
+Subject: [PATCH] samples/kdbus: stub out code for glibc < 2.7
+
+Andrew Morton reports the following build error in samples/kdbus on Fedora
+Core 6:
+
+  samples/kdbus/kdbus-workers.c:73:26: error: sys/signalfd.h: No such file or directory
+  samples/kdbus/kdbus-workers.c: In function 'master_new':
+  samples/kdbus/kdbus-workers.c:231: warning: implicit declaration of function 'signalfd'
+  samples/kdbus/kdbus-workers.c:231: error: 'SFD_CLOEXEC' undeclared (first use in this function)
+  samples/kdbus/kdbus-workers.c:231: error: (Each undeclared identifier is reported only once
+  samples/kdbus/kdbus-workers.c:231: error: for each function it appears in.)
+  samples/kdbus/kdbus-workers.c: In function 'master_handle_signal':
+  samples/kdbus/kdbus-workers.c:406: error: storage size of 'val' isn't known
+  samples/kdbus/kdbus-workers.c:406: warning: unused variable 'val'
+  samples/kdbus/kdbus-workers.c: In function 'child_run':
+  samples/kdbus/kdbus-workers.c:773: error: 'CLOCK_MONOTONIC_COARSE' undeclared (first use in this function)
+  samples/kdbus/kdbus-workers.c: In function 'bus_open_connection':
+  samples/kdbus/kdbus-workers.c:1038: error: 'O_CLOEXEC' undeclared (first use in this function)
+  samples/kdbus/kdbus-workers.c: In function 'bus_make':
+  samples/kdbus/kdbus-workers.c:1275: error: 'O_CLOEXEC' undeclared (first use in this function)
+
+Fedora Core 6 was released in 2006, which predates the introduction of
+signalfds in the kernel (v2.6.22, 2007).
+
+The example cannot be built without signalfds, and kbuild cannot depend on
+specific features of the local libc when building userspace executables, so
+we have to work around the issue by checking for specific glibc versions at
+compile time and stub the entire thing if it can't be compiled.
+
+Reported-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+---
+ samples/kdbus/kdbus-workers.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/samples/kdbus/kdbus-workers.c b/samples/kdbus/kdbus-workers.c
+index d331e0186899..c3ba958639f3 100644
+--- a/samples/kdbus/kdbus-workers.c
++++ b/samples/kdbus/kdbus-workers.c
+@@ -57,6 +57,12 @@
+  * top-down, but requires some forward-declarations. Just ignore those.
+  */
+ 
++#include <stdio.h>
++#include <stdlib.h>
++
++/* glibc < 2.7 does not ship sys/signalfd.h */
++#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 7
++
+ #include <ctype.h>
+ #include <errno.h>
+ #include <fcntl.h>
+@@ -65,8 +71,6 @@
+ #include <stdbool.h>
+ #include <stddef.h>
+ #include <stdint.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+ #include <string.h>
+ #include <sys/mman.h>
+ #include <sys/poll.h>
+@@ -1324,3 +1328,18 @@ static int bus_make(uid_t uid, const char *name)
+ 
+ 	return fd;
+ }
++
++#else
++
++#warning "Skipping compilation due to unsupported libc version"
++
++int main(int argc, char **argv)
++{
++	fprintf(stderr,
++		"Compilation of %s was skipped due to unsupported libc.\n",
++		argv[0]);
++
++	return EXIT_FAILURE;
++}
++
++#endif /* libc sanity check */

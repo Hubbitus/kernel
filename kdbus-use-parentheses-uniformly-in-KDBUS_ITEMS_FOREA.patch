@@ -1,0 +1,31 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Wed, 10 Jun 2015 00:00:00 +0300
+Subject: [PATCH] kdbus: use parentheses uniformly in KDBUS_ITEMS_FOREACH macro
+
+Enclose all arguments into parentheses to stay consistent across the
+whole macro.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/item.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ipc/kdbus/item.h b/ipc/kdbus/item.h
+index 32909e2e7954..bca63b4e6e80 100644
+--- a/ipc/kdbus/item.h
++++ b/ipc/kdbus/item.h
+@@ -28,10 +28,10 @@
+ #define KDBUS_ITEM_PAYLOAD_SIZE(_i) ((_i)->size - KDBUS_ITEM_HEADER_SIZE)
+ 
+ #define KDBUS_ITEMS_FOREACH(_i, _is, _s)				\
+-	for (_i = _is;							\
++	for ((_i) = (_is);						\
+ 	     ((u8 *)(_i) < (u8 *)(_is) + (_s)) &&			\
+ 	       ((u8 *)(_i) >= (u8 *)(_is));				\
+-	     _i = KDBUS_ITEM_NEXT(_i))
++	     (_i) = KDBUS_ITEM_NEXT(_i))
+ 
+ #define KDBUS_ITEM_VALID(_i, _is, _s)					\
+ 	((_i)->size >= KDBUS_ITEM_HEADER_SIZE &&			\

@@ -1,0 +1,31 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Thu, 9 Apr 2015 13:08:06 +0300
+Subject: [PATCH] Documentation: kdbus: Update list of ioctls which cause
+ writing to receiver's pool
+
+Add KDBUS_CMD_BUS_CREATOR_INFO.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Acked-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.pool.xml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/Documentation/kdbus/kdbus.pool.xml b/Documentation/kdbus/kdbus.pool.xml
+index 05fd01902ad4..a9e16f196d39 100644
+--- a/Documentation/kdbus/kdbus.pool.xml
++++ b/Documentation/kdbus/kdbus.pool.xml
+@@ -66,6 +66,12 @@
+             ... to retrieve information on a connection
+           </para></listitem>
+         </varlistentry>
++        <varlistentry>
++          <term><constant>KDBUS_CMD_BUS_CREATOR_INFO</constant></term>
++          <listitem><para>
++            ... to retrieve information about a connection's bus creator
++          </para></listitem>
++        </varlistentry>
+       </variablelist>
+ 
+     </para>

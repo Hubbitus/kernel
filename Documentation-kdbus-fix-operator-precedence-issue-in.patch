@@ -1,0 +1,33 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Wed, 10 Jun 2015 00:00:01 +0300
+Subject: [PATCH] Documentation/kdbus: fix operator precedence issue in
+ KDBUS_ITEM_NEXT macro
+
+`item' argument in KDBUS_ITEM_NEXT macro example is not enclosed into
+parentheses when the cast operator is applied, which leads to improper
+type conversion if `item' is supplied as a complex expression, e.g.
+
+    KDBUS_ITEM_NEXT(condition ? a : b)
+
+Use parentheses properly to guarantee right precedence.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.item.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/kdbus/kdbus.item.xml b/Documentation/kdbus/kdbus.item.xml
+index 09f8b903116f..b0eeeef995af 100644
+--- a/Documentation/kdbus/kdbus.item.xml
++++ b/Documentation/kdbus/kdbus.item.xml
+@@ -69,7 +69,7 @@
+ #define KDBUS_ALIGN8(val) (((val) + 7) & ~7)
+ 
+ #define KDBUS_ITEM_NEXT(item) \
+-    (typeof(item))(((uint8_t *)item) + KDBUS_ALIGN8((item)->size))
++    (typeof(item))((uint8_t *)(item) + KDBUS_ALIGN8((item)->size))
+ 
+ #define KDBUS_ITEM_FOREACH(item, head, first)                      \
+     for (item = (head)->first;                                     \

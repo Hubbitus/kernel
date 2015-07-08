@@ -1,0 +1,167 @@
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Mon, 20 Apr 2015 16:20:59 +0200
+Subject: [PATCH] kdbus: copy small ioctl payloads to stack
+
+Right now, we use memdup_user() on all ioctl payloads. However, most of
+the time an ioctl payload is pretty small. 512 bytes on stack seem
+reasonable (similar to what poll() does) to speed up small ioctl payloads.
+Add a command-buffer to kdbus_args and use it instead of kmalloc() for
+reasonably small payloads.
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Acked-by: Daniel Mack <daniel@zonque.org>
+---
+ ipc/kdbus/handle.c | 30 ++++++++++++++++++++++++++----
+ ipc/kdbus/handle.h |  5 +++++
+ ipc/kdbus/util.c   | 45 ---------------------------------------------
+ ipc/kdbus/util.h   |  1 -
+ 4 files changed, 31 insertions(+), 50 deletions(-)
+
+diff --git a/ipc/kdbus/handle.c b/ipc/kdbus/handle.c
+index 6230c7ef4347..07527990a051 100644
+--- a/ipc/kdbus/handle.c
++++ b/ipc/kdbus/handle.c
+@@ -146,11 +146,32 @@ static int kdbus_args_negotiate(struct kdbus_args *args)
+ int __kdbus_args_parse(struct kdbus_args *args, void __user *argp,
+ 		       size_t type_size, size_t items_offset, void **out)
+ {
++	u64 user_size;
+ 	int ret, i;
+ 
+-	args->cmd = kdbus_memdup_user(argp, type_size, KDBUS_CMD_MAX_SIZE);
+-	if (IS_ERR(args->cmd))
+-		return PTR_ERR(args->cmd);
++	ret = kdbus_copy_from_user(&user_size, argp, sizeof(user_size));
++	if (ret < 0)
++		return ret;
++
++	if (user_size < type_size)
++		return -EINVAL;
++	if (user_size > KDBUS_CMD_MAX_SIZE)
++		return -EMSGSIZE;
++
++	if (user_size <= sizeof(args->cmd_buf)) {
++		if (copy_from_user(args->cmd_buf, argp, user_size))
++			return -EFAULT;
++		args->cmd = (void*)args->cmd_buf;
++	} else {
++		args->cmd = memdup_user(argp, user_size);
++		if (IS_ERR(args->cmd))
++			return PTR_ERR(args->cmd);
++	}
++
++	if (args->cmd->size != user_size) {
++		ret = -EINVAL;
++		goto error;
++	}
+ 
+ 	args->cmd->return_flags = 0;
+ 	args->user = argp;
+@@ -207,7 +228,8 @@ int kdbus_args_clear(struct kdbus_args *args, int ret)
+ 		if (put_user(args->cmd->return_flags,
+ 			     &args->user->return_flags))
+ 			ret = -EFAULT;
+-		kfree(args->cmd);
++		if (args->cmd != (void*)args->cmd_buf)
++			kfree(args->cmd);
+ 		args->cmd = NULL;
+ 	}
+ 
+diff --git a/ipc/kdbus/handle.h b/ipc/kdbus/handle.h
+index 93a372d554a2..13c59d975728 100644
+--- a/ipc/kdbus/handle.h
++++ b/ipc/kdbus/handle.h
+@@ -45,6 +45,7 @@ struct kdbus_arg {
+  * @argv:		array of items this command supports
+  * @user:		set by parser to user-space location of current command
+  * @cmd:		set by parser to kernel copy of command payload
++ * @cmd_buf:		512 bytes inline buf to avoid kmalloc() on small cmds
+  * @items:		points to item array in @cmd
+  * @items_size:		size of @items in bytes
+  *
+@@ -52,6 +53,9 @@ struct kdbus_arg {
+  * The ioctl handler has to pre-fill the flags and allowed items before passing
+  * the object to kdbus_args_parse(). The parser will copy the command payload
+  * into kernel-space and verify the correctness of the data.
++ *
++ * We use a 512 bytes buffer for small command payloads, to be allocated on
++ * stack on syscall entrance.
+  */
+ struct kdbus_args {
+ 	u64 allowed_flags;
+@@ -60,6 +64,7 @@ struct kdbus_args {
+ 
+ 	struct kdbus_cmd __user *user;
+ 	struct kdbus_cmd *cmd;
++	u8 cmd_buf[512];
+ 
+ 	struct kdbus_item *items;
+ 	size_t items_size;
+diff --git a/ipc/kdbus/util.c b/ipc/kdbus/util.c
+index eaa806a27997..72b188330896 100644
+--- a/ipc/kdbus/util.c
++++ b/ipc/kdbus/util.c
+@@ -50,51 +50,6 @@ int kdbus_copy_from_user(void *dest, void __user *user_ptr, size_t size)
+ }
+ 
+ /**
+- * kdbus_memdup_user() - copy dynamically sized object from user-space
+- * @user_ptr:	user-provided source buffer
+- * @sz_min:	minimum object size
+- * @sz_max:	maximum object size
+- *
+- * This copies a dynamically sized object from user-space into kernel-space. We
+- * require the object to have a 64bit size field at offset 0. We read it out
+- * first, allocate a suitably sized buffer and then copy all data.
+- *
+- * The @sz_min and @sz_max parameters define possible min and max object sizes
+- * so user-space cannot trigger un-bound kernel-space allocations.
+- *
+- * The same alignment-restrictions as described in kdbus_copy_from_user() apply.
+- *
+- * Return: pointer to dynamically allocated copy, or ERR_PTR() on failure.
+- */
+-void *kdbus_memdup_user(void __user *user_ptr, size_t sz_min, size_t sz_max)
+-{
+-	void *ptr;
+-	u64 size;
+-	int ret;
+-
+-	ret = kdbus_copy_from_user(&size, user_ptr, sizeof(size));
+-	if (ret < 0)
+-		return ERR_PTR(ret);
+-
+-	if (size < sz_min)
+-		return ERR_PTR(-EINVAL);
+-
+-	if (size > sz_max)
+-		return ERR_PTR(-EMSGSIZE);
+-
+-	ptr = memdup_user(user_ptr, size);
+-	if (IS_ERR(ptr))
+-		return ptr;
+-
+-	if (*(u64 *)ptr != size) {
+-		kfree(ptr);
+-		return ERR_PTR(-EINVAL);
+-	}
+-
+-	return ptr;
+-}
+-
+-/**
+  * kdbus_verify_uid_prefix() - verify UID prefix of a user-supplied name
+  * @name:	user-supplied name to verify
+  * @user_ns:	user-namespace to act in
+diff --git a/ipc/kdbus/util.h b/ipc/kdbus/util.h
+index 740b19880985..9fedf8ab41cd 100644
+--- a/ipc/kdbus/util.h
++++ b/ipc/kdbus/util.h
+@@ -64,7 +64,6 @@ int kdbus_verify_uid_prefix(const char *name, struct user_namespace *user_ns,
+ int kdbus_sanitize_attach_flags(u64 flags, u64 *attach_flags);
+ 
+ int kdbus_copy_from_user(void *dest, void __user *user_ptr, size_t size);
+-void *kdbus_memdup_user(void __user *user_ptr, size_t sz_min, size_t sz_max);
+ 
+ struct kvec;
+ 

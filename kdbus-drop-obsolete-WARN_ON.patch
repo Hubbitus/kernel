@@ -1,0 +1,27 @@
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Wed, 22 Apr 2015 19:31:50 +0200
+Subject: [PATCH] kdbus: drop obsolete WARN_ON
+
+entry->user is never set to an error-code. Drop the obsolete WARN_ON which
+is a leftover from before the quota rework.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Acked-by: Daniel Mack <daniel@zonque.org>
+---
+ ipc/kdbus/queue.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/queue.c b/ipc/kdbus/queue.c
+index a449464a3975..25bb3ad66b98 100644
+--- a/ipc/kdbus/queue.c
++++ b/ipc/kdbus/queue.c
+@@ -637,7 +637,7 @@ int kdbus_queue_entry_move(struct kdbus_queue_entry *e,
+ 	lockdep_assert_held(&src->lock);
+ 	lockdep_assert_held(&dst->lock);
+ 
+-	if (WARN_ON(IS_ERR(e->user)) || WARN_ON(list_empty(&e->entry)))
++	if (WARN_ON(list_empty(&e->entry)))
+ 		return -EINVAL;
+ 	if (src == dst)
+ 		return 0;

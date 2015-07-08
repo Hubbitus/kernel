@@ -1,0 +1,28 @@
+From: Lukasz Skalski <l.skalski@samsung.com>
+Date: Mon, 16 Mar 2015 10:35:08 +0100
+Subject: [PATCH] Documentation/kdbus: replace 'reply_cookie' with
+ 'cookie_reply'
+
+The member field is called 'cookie_reply', fix the documentation which
+incorrectly used 'reply_cookie'.
+
+Signed-off-by: Lukasz Skalski <l.skalski@samsung.com>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.message.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/kdbus/kdbus.message.xml b/Documentation/kdbus/kdbus.message.xml
+index c25000dcfbc7..5e7c7a3f537e 100644
+--- a/Documentation/kdbus/kdbus.message.xml
++++ b/Documentation/kdbus/kdbus.message.xml
+@@ -393,7 +393,7 @@ struct kdbus_msg {
+                   For a message to be accepted as reply, it must be a direct
+                   message to the original sender (not a broadcast and not a
+                   signal message), and its
+-                  <varname>kdbus_msg.reply_cookie</varname> must match the
++                  <varname>kdbus_msg.cookie_reply</varname> must match the
+                   previous message's <varname>kdbus_msg.cookie</varname>.
+                 </para><para>
+                   Expected replies also temporarily open the policy of the

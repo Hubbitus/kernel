@@ -1,0 +1,29 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Thu, 4 Jun 2015 13:39:30 +0300
+Subject: [PATCH] kdbus: use FIELD_SIZEOF in kdbus_member_set_user macro
+
+sizeof(((_t *)0)->_m) -> FIELD_SIZEOF(_t, _m)
+
+Use conventional macro according to chapter 17 of
+Documentation/CodingStyle.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/util.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/util.h b/ipc/kdbus/util.h
+index 9fedf8ab41cd..529716669fe7 100644
+--- a/ipc/kdbus/util.h
++++ b/ipc/kdbus/util.h
+@@ -40,7 +40,7 @@
+ ({									\
+ 	u64 __user *_sz =						\
+ 		(void __user *)((u8 __user *)(_b) + offsetof(_t, _m));	\
+-	copy_to_user(_sz, _s, sizeof(((_t *)0)->_m));			\
++	copy_to_user(_sz, _s, FIELD_SIZEOF(_t, _m));			\
+ })
+ 
+ /**

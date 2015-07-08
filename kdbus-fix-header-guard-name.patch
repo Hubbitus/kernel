@@ -1,0 +1,36 @@
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+Date: Tue, 17 Mar 2015 09:21:42 -0300
+Subject: [PATCH] kdbus: fix header guard name
+
+UAPI headers have a _UAPI_ as prefix, which is removed during
+headers_install. If it's put as a suffix it will not be removed and will
+be the only header with UAPI in the header guard macro.
+
+Signed-off-by: Lucas De Marchi <lucas.demarchi@intel.com>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/uapi/linux/kdbus.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/include/uapi/linux/kdbus.h b/include/uapi/linux/kdbus.h
+index fc1d77dd7c93..2fe0a1c5056c 100644
+--- a/include/uapi/linux/kdbus.h
++++ b/include/uapi/linux/kdbus.h
+@@ -5,8 +5,8 @@
+  * your option) any later version.
+  */
+ 
+-#ifndef _KDBUS_UAPI_H_
+-#define _KDBUS_UAPI_H_
++#ifndef _UAPI_KDBUS_H_
++#define _UAPI_KDBUS_H_
+ 
+ #include <linux/ioctl.h>
+ #include <linux/types.h>
+@@ -976,4 +976,4 @@ enum kdbus_ioctl_type {
+ 					     struct kdbus_cmd_match),
+ };
+ 
+-#endif /* _KDBUS_UAPI_H_ */
++#endif /* _UAPI_KDBUS_H_ */

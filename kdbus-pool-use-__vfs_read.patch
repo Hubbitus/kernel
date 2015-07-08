@@ -1,0 +1,72 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Tue, 21 Apr 2015 02:12:18 +0300
+Subject: [PATCH] kdbus: pool: use __vfs_read()
+
+After commit 5d5d56897530 ("make new_sync_{read,write}() static")
+->read() cannot be called directly.
+
+kdbus_pool_slice_copy() leads to oops, which can be reproduced by
+launching tools/testing/selftests/kdbus/kdbus-test -t message-quota:
+
+[ 1167.146793] BUG: unable to handle kernel NULL pointer dereference at           (null)
+[ 1167.147554] IP: [<          (null)>]           (null)
+[ 1167.148670] PGD 3a9dd067 PUD 3a841067 PMD 0
+[ 1167.149611] Oops: 0010 [#1] SMP
+[ 1167.150088] Modules linked in: nfsv3 nfs kdbus lockd grace sunrpc
+[ 1167.150771] CPU: 0 PID: 518 Comm: kdbus-test Not tainted 4.0.0-next-20150420-kdbus #62
+[ 1167.150771] Hardware name: Bochs Bochs, BIOS Bochs 01/01/2011
+[ 1167.150771] task: ffff88003daed120 ti: ffff88003a800000 task.ti: ffff88003a800000
+[ 1167.150771] RIP: 0010:[<0000000000000000>]  [<          (null)>]           (null)
+[ 1167.150771] RSP: 0018:ffff88003a803bc0  EFLAGS: 00010286
+[ 1167.150771] RAX: ffff8800377fb000 RBX: 00000000000201e8 RCX: ffff88003a803c00
+[ 1167.150771] RDX: 0000000000000b40 RSI: ffff8800377fb4c0 RDI: ffff88003d815700
+[ 1167.150771] RBP: ffff88003a803c48 R08: ffffffff8139e380 R09: ffff880039d80490
+[ 1167.150771] R10: ffff88003a803a90 R11: 00000000000004c0 R12: 00000000002a24c0
+[ 1167.150771] R13: 0000000000000b40 R14: ffff88003d815700 R15: ffffffff8139e460
+[ 1167.150771] FS:  00007f41dccd4740(0000) GS:ffff88003fc00000(0000) knlGS:0000000000000000
+[ 1167.150771] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1167.150771] CR2: 0000000000000000 CR3: 000000003ccdf000 CR4: 00000000000007b0
+[ 1167.150771] Stack:
+[ 1167.150771]  ffffffffa0065497 ffff88003a803c10 00007ffffffff000 ffff88003aaa67c0
+[ 1167.150771]  00000000000004c0 ffff88003aaa6870 ffff88003ca83300 ffffffffa006537d
+[ 1167.150771]  00000000000201e8 ffffea0000ddfec0 ffff88003a803c20 0000000000000018
+[ 1167.150771] Call Trace:
+[ 1167.150771]  [<ffffffffa0065497>] ? kdbus_pool_slice_copy+0x127/0x200 [kdbus]
+[ 1167.150771]  [<ffffffffa006537d>] ? kdbus_pool_slice_copy+0xd/0x200 [kdbus]
+[ 1167.150771]  [<ffffffffa006670a>] kdbus_queue_entry_move+0xaa/0x180 [kdbus]
+[ 1167.150771]  [<ffffffffa0059e64>] kdbus_conn_move_messages+0x1e4/0x2c0 [kdbus]
+[ 1167.150771]  [<ffffffffa006234e>] kdbus_name_acquire+0x31e/0x390 [kdbus]
+[ 1167.150771]  [<ffffffffa00625c5>] kdbus_cmd_name_acquire+0x125/0x130 [kdbus]
+[ 1167.150771]  [<ffffffffa005db5d>] kdbus_handle_ioctl+0x4ed/0x610 [kdbus]
+[ 1167.150771]  [<ffffffff811040e0>] do_vfs_ioctl+0x2e0/0x4e0
+[ 1167.150771]  [<ffffffff81389750>] ? preempt_schedule_common+0x1f/0x3f
+[ 1167.150771]  [<ffffffff8110431c>] SyS_ioctl+0x3c/0x80
+[ 1167.150771]  [<ffffffff8138c36e>] system_call_fastpath+0x12/0x71
+[ 1167.150771] Code:  Bad RIP value.
+[ 1167.150771] RIP  [<          (null)>]           (null)
+[ 1167.150771]  RSP <ffff88003a803bc0>
+[ 1167.150771] CR2: 0000000000000000
+[ 1167.168756] ---[ end trace a676bcfa75db5a96 ]---
+
+Use __vfs_read() instead.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/pool.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/pool.c b/ipc/kdbus/pool.c
+index 139bb77056b3..45dcdea505f4 100644
+--- a/ipc/kdbus/pool.c
++++ b/ipc/kdbus/pool.c
+@@ -675,7 +675,7 @@ int kdbus_pool_slice_copy(const struct kdbus_pool_slice *slice_dst,
+ 		}
+ 
+ 		kaddr = (char __force __user *)kmap(page) + page_off;
+-		n_read = f_src->f_op->read(f_src, kaddr, copy_len, &off_src);
++		n_read = __vfs_read(f_src, kaddr, copy_len, &off_src);
+ 		kunmap(page);
+ 		mark_page_accessed(page);
+ 		flush_dcache_page(page);

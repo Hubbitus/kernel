@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -595,6 +595,162 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
+
+Patch504: kdbus-add-documentation.patch
+
+Patch505: kdbus-add-uapi-header-file.patch
+
+Patch506: kdbus-add-driver-skeleton-ioctl-entry-points-and-uti.patch
+
+Patch507: kdbus-add-connection-pool-implementation.patch
+
+Patch508: kdbus-add-connection-queue-handling-and-message-vali.patch
+
+Patch509: kdbus-add-node-and-filesystem-implementation.patch
+
+Patch510: kdbus-add-code-to-gather-metadata.patch
+
+Patch511: kdbus-add-code-for-notifications-and-matches.patch
+
+Patch512: kdbus-add-code-for-buses-domains-and-endpoints.patch
+
+Patch513: kdbus-add-name-registry-implementation.patch
+
+Patch514: kdbus-add-policy-database-implementation.patch
+
+Patch515: kdbus-add-Makefile-Kconfig-and-MAINTAINERS-entry.patch
+
+Patch516: kdbus-add-walk-through-user-space-example.patch
+
+Patch517: kdbus-add-selftests.patch
+
+Patch518: Documentation-kdbus-fix-location-for-generated-files.patch
+
+Patch519: kdbus-samples-kdbus-add-lrt.patch
+
+Patch520: kdbus-fix-minor-typo-in-the-walk-through-example.patch
+
+Patch521: samples-kdbus-drop-wrong-include.patch
+
+Patch522: Documentation-kdbus-fix-out-of-tree-builds.patch
+
+Patch523: Documentation-kdbus-support-quiet-builds.patch
+
+Patch524: selftests-kdbus-fix-gitignore.patch
+
+Patch525: Documentation-kdbus-replace-reply_cookie-with-cookie.patch
+
+Patch526: kdbus-fix-header-guard-name.patch
+
+Patch527: kdbus-connection-fix-handling-of-failed-fget.patch
+
+Patch528: kdbus-Fix-CONFIG_KDBUS-help-text.patch
+
+Patch529: samples-kdbus-build-kdbus-workers-conditionally.patch
+
+Patch530: selftest-kdbus-enable-cross-compilation.patch
+
+Patch531: kdbus-uapi-Fix-kernel-doc-for-enum-kdbus_send_flags.patch
+
+Patch532: Documentation-kdbus-Fix-list-of-KDBUS_CMD_ENDPOINT_U.patch
+
+Patch533: Documentation-kdbus-Update-list-of-ioctls-which-caus.patch
+
+Patch534: Documentation-kdbus-Fix-description-of-KDBUS_SEND_SY.patch
+
+Patch535: Documentation-kdbus-Fix-typos.patch
+
+Patch536: kdbus-avoid-the-use-of-struct-timespec.patch
+
+Patch537: kdbus-pool-use-__vfs_read.patch
+
+Patch538: kdbus-skip-mandatory-items-on-negotiation.patch
+
+Patch539: kdbus-turn-kdbus_node_idr-into-an-ida.patch
+
+Patch540: kdbus-reduce-scope-of-handle-locking.patch
+
+Patch541: kdbus-skip-acquiring-an-active-reference-in-poll.patch
+
+Patch542: kdbus-remove-unused-linux-version.h-include.patch
+
+Patch543: kdbus-optimize-auxgroup-collector.patch
+
+Patch544: kdbus-drop-obsolete-WARN_ON.patch
+
+Patch545: kdbus-copy-small-ioctl-payloads-to-stack.patch
+
+Patch546: kdbus-drop-kdbus_meta_attach_mask-modparam.patch
+
+Patch547: kdbus-fix-typo.patch
+
+Patch548: kdbus-forward-ID-notifications-to-everyone.patch
+
+Patch549: kdbus-provide-helper-to-collect-metadata.patch
+
+Patch550: kdbus-make-metadata-on-broadcasts-reliable.patch
+
+Patch551: samples-kdbus-stub-out-code-for-glibc-2.7.patch
+
+Patch552: kdbus-fix-up-documentation-of-ioctl-handlers.patch
+
+Patch553: kdbus-translate-capabilities-between-namespaces.patch
+
+Patch554: kdbus-selftests-add-build-dependencies-on-headers.patch
+
+Patch555: kdbus-use-rcu-to-access-exe-file-in-metadata.patch
+
+Patch556: kdbus-no-need-to-ref-current-mm.patch
+
+Patch557: selftests-kdbus-install-kdbus-test.patch
+
+Patch558: kdbus-update-kernel-doc-for-kdbus_sync_reply_wakeup.patch
+
+Patch559: kdbus-remove-redundant-code-from-kdbus_conn_entry_ma.patch
+
+Patch560: kdbus-kdbus_item_validate-remove-duplicated-code.patch
+
+Patch561: kdbus-kdbus_conn_connect-use-bus-instead-of-conn-ep-.patch
+
+Patch562: kdbus-use-FIELD_SIZEOF-in-kdbus_member_set_user-macr.patch
+
+Patch563: selftests-kdbus-handle-cap_get_proc-error-properly.patch
+
+Patch564: selftests-kdbus-drop-useless-assignment.patch
+
+Patch565: selftests-kdbus-remove-useless-initializations-from-.patch
+
+Patch566: selftests-kdbus-drop-duplicated-code-from-__kdbus_ms.patch
+
+Patch567: selftests-kdbus-fix-error-paths-in-__kdbus_msg_send.patch
+
+Patch568: kdbus-drop-useless-goto.patch
+
+Patch569: kdbus-fix-operator-precedence-issues-in-item-macros.patch
+
+Patch570: kdbus-use-parentheses-uniformly-in-KDBUS_ITEMS_FOREA.patch
+
+Patch571: Documentation-kdbus-fix-operator-precedence-issue-in.patch
+
+Patch572: Documentation-kdbus-use-parentheses-uniformly-in-KDB.patch
+
+Patch573: selftests-kdbus-fix-trivial-style-issues.patch
+
+Patch574: selftests-kdbus-fix-precedence-issues-in-macros.patch
+
+Patch575: selftests-kdbus-use-parentheses-in-iteration-macros-.patch
+
+Patch576: samples-kdbus-add-whitespace.patch
+
+Patch577: samples-kdbus-fix-operator-precedence-issue-in-KDBUS.patch
+
+Patch578: samples-kdbus-use-parentheses-uniformly-in-KDBUS_FOR.patch
+
+Patch579: kdbus-kdbus_reply_find-return-on-found-entry.patch
+
+Patch580: kdbus-optimize-error-path-in-kdbus_reply_new.patch
+
+Patch581: kdbus-optimize-if-statements-in-kdbus_conn_disconnec.patch
 
 
 # END OF PATCH DEFINITIONS
@@ -1265,6 +1421,162 @@ ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 ApplyPatch drm-i915-turn-off-wc-mmaps.patch
+
+ApplyPatch kdbus-add-documentation.patch
+
+ApplyPatch kdbus-add-uapi-header-file.patch
+
+ApplyPatch kdbus-add-driver-skeleton-ioctl-entry-points-and-uti.patch
+
+ApplyPatch kdbus-add-connection-pool-implementation.patch
+
+ApplyPatch kdbus-add-connection-queue-handling-and-message-vali.patch
+
+ApplyPatch kdbus-add-node-and-filesystem-implementation.patch
+
+ApplyPatch kdbus-add-code-to-gather-metadata.patch
+
+ApplyPatch kdbus-add-code-for-notifications-and-matches.patch
+
+ApplyPatch kdbus-add-code-for-buses-domains-and-endpoints.patch
+
+ApplyPatch kdbus-add-name-registry-implementation.patch
+
+ApplyPatch kdbus-add-policy-database-implementation.patch
+
+ApplyPatch kdbus-add-Makefile-Kconfig-and-MAINTAINERS-entry.patch
+
+ApplyPatch kdbus-add-walk-through-user-space-example.patch
+
+ApplyPatch kdbus-add-selftests.patch
+
+ApplyPatch Documentation-kdbus-fix-location-for-generated-files.patch
+
+ApplyPatch kdbus-samples-kdbus-add-lrt.patch
+
+ApplyPatch kdbus-fix-minor-typo-in-the-walk-through-example.patch
+
+ApplyPatch samples-kdbus-drop-wrong-include.patch
+
+ApplyPatch Documentation-kdbus-fix-out-of-tree-builds.patch
+
+ApplyPatch Documentation-kdbus-support-quiet-builds.patch
+
+ApplyPatch selftests-kdbus-fix-gitignore.patch
+
+ApplyPatch Documentation-kdbus-replace-reply_cookie-with-cookie.patch
+
+ApplyPatch kdbus-fix-header-guard-name.patch
+
+ApplyPatch kdbus-connection-fix-handling-of-failed-fget.patch
+
+ApplyPatch kdbus-Fix-CONFIG_KDBUS-help-text.patch
+
+ApplyPatch samples-kdbus-build-kdbus-workers-conditionally.patch
+
+ApplyPatch selftest-kdbus-enable-cross-compilation.patch
+
+ApplyPatch kdbus-uapi-Fix-kernel-doc-for-enum-kdbus_send_flags.patch
+
+ApplyPatch Documentation-kdbus-Fix-list-of-KDBUS_CMD_ENDPOINT_U.patch
+
+ApplyPatch Documentation-kdbus-Update-list-of-ioctls-which-caus.patch
+
+ApplyPatch Documentation-kdbus-Fix-description-of-KDBUS_SEND_SY.patch
+
+ApplyPatch Documentation-kdbus-Fix-typos.patch
+
+ApplyPatch kdbus-avoid-the-use-of-struct-timespec.patch
+
+ApplyPatch kdbus-pool-use-__vfs_read.patch
+
+ApplyPatch kdbus-skip-mandatory-items-on-negotiation.patch
+
+ApplyPatch kdbus-turn-kdbus_node_idr-into-an-ida.patch
+
+ApplyPatch kdbus-reduce-scope-of-handle-locking.patch
+
+ApplyPatch kdbus-skip-acquiring-an-active-reference-in-poll.patch
+
+ApplyPatch kdbus-remove-unused-linux-version.h-include.patch
+
+ApplyPatch kdbus-optimize-auxgroup-collector.patch
+
+ApplyPatch kdbus-drop-obsolete-WARN_ON.patch
+
+ApplyPatch kdbus-copy-small-ioctl-payloads-to-stack.patch
+
+ApplyPatch kdbus-drop-kdbus_meta_attach_mask-modparam.patch
+
+ApplyPatch kdbus-fix-typo.patch
+
+ApplyPatch kdbus-forward-ID-notifications-to-everyone.patch
+
+ApplyPatch kdbus-provide-helper-to-collect-metadata.patch
+
+ApplyPatch kdbus-make-metadata-on-broadcasts-reliable.patch
+
+ApplyPatch samples-kdbus-stub-out-code-for-glibc-2.7.patch
+
+ApplyPatch kdbus-fix-up-documentation-of-ioctl-handlers.patch
+
+ApplyPatch kdbus-translate-capabilities-between-namespaces.patch
+
+ApplyPatch kdbus-selftests-add-build-dependencies-on-headers.patch
+
+ApplyPatch kdbus-use-rcu-to-access-exe-file-in-metadata.patch
+
+ApplyPatch kdbus-no-need-to-ref-current-mm.patch
+
+ApplyPatch selftests-kdbus-install-kdbus-test.patch
+
+ApplyPatch kdbus-update-kernel-doc-for-kdbus_sync_reply_wakeup.patch
+
+ApplyPatch kdbus-remove-redundant-code-from-kdbus_conn_entry_ma.patch
+
+ApplyPatch kdbus-kdbus_item_validate-remove-duplicated-code.patch
+
+ApplyPatch kdbus-kdbus_conn_connect-use-bus-instead-of-conn-ep-.patch
+
+ApplyPatch kdbus-use-FIELD_SIZEOF-in-kdbus_member_set_user-macr.patch
+
+ApplyPatch selftests-kdbus-handle-cap_get_proc-error-properly.patch
+
+ApplyPatch selftests-kdbus-drop-useless-assignment.patch
+
+ApplyPatch selftests-kdbus-remove-useless-initializations-from-.patch
+
+ApplyPatch selftests-kdbus-drop-duplicated-code-from-__kdbus_ms.patch
+
+ApplyPatch selftests-kdbus-fix-error-paths-in-__kdbus_msg_send.patch
+
+ApplyPatch kdbus-drop-useless-goto.patch
+
+ApplyPatch kdbus-fix-operator-precedence-issues-in-item-macros.patch
+
+ApplyPatch kdbus-use-parentheses-uniformly-in-KDBUS_ITEMS_FOREA.patch
+
+ApplyPatch Documentation-kdbus-fix-operator-precedence-issue-in.patch
+
+ApplyPatch Documentation-kdbus-use-parentheses-uniformly-in-KDB.patch
+
+ApplyPatch selftests-kdbus-fix-trivial-style-issues.patch
+
+ApplyPatch selftests-kdbus-fix-precedence-issues-in-macros.patch
+
+ApplyPatch selftests-kdbus-use-parentheses-in-iteration-macros-.patch
+
+ApplyPatch samples-kdbus-add-whitespace.patch
+
+ApplyPatch samples-kdbus-fix-operator-precedence-issue-in-KDBUS.patch
+
+ApplyPatch samples-kdbus-use-parentheses-uniformly-in-KDBUS_FOR.patch
+
+ApplyPatch kdbus-kdbus_reply_find-return-on-found-entry.patch
+
+ApplyPatch kdbus-optimize-error-path-in-kdbus_reply_new.patch
+
+ApplyPatch kdbus-optimize-if-statements-in-kdbus_conn_disconnec.patch
 
 
 # END OF PATCH APPLICATIONS
@@ -2131,6 +2443,12 @@ fi
 #
 # 
 %changelog
+* Wed Jul 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git2.1
+- Linux v4.2-rc1-33-gd6ac4ffc61ac
+
+* Tue Jul 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add kdbus
+
 * Tue Jul 07 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git1.1
 - Linux v4.2-rc1-17-gc7e9ad7da219
 - Reenable debugging options.

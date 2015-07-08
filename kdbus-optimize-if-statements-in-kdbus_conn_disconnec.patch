@@ -1,0 +1,48 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Wed, 17 Jun 2015 20:14:58 +0300
+Subject: [PATCH] kdbus: optimize if statements in kdbus_conn_disconnect()
+
+if (r->sync) branch and code after it both call kdbus_reply_unlink().
+Rewrite them as if-else to eliminate code duplication and make algorithm
+more obvious.
+
+Convert outer if statement to use continue in order to reduce
+indentation and make things easier to read.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Reviewed-by: Djalal Harouni <tixxdz@opendz.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index 707be050b408..9993753d11de 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -559,17 +559,16 @@ int kdbus_conn_disconnect(struct kdbus_conn *conn, bool ensure_queue_empty)
+ 	hash_for_each(bus->conn_hash, i, c, hentry) {
+ 		mutex_lock(&c->lock);
+ 		list_for_each_entry_safe(r, r_tmp, &c->reply_list, entry) {
+-			if (r->reply_src == conn) {
+-				if (r->sync) {
+-					kdbus_sync_reply_wakeup(r, -EPIPE);
+-					kdbus_reply_unlink(r);
+-					continue;
+-				}
++			if (r->reply_src != conn)
++				continue;
+ 
++			if (r->sync)
++				kdbus_sync_reply_wakeup(r, -EPIPE);
++			else
+ 				/* send a 'connection dead' notification */
+ 				kdbus_notify_reply_dead(bus, c->id, r->cookie);
+-				kdbus_reply_unlink(r);
+-			}
++
++			kdbus_reply_unlink(r);
+ 		}
+ 		mutex_unlock(&c->lock);
+ 	}

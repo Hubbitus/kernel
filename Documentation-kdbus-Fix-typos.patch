@@ -1,0 +1,279 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Thu, 9 Apr 2015 13:08:04 +0300
+Subject: [PATCH] Documentation: kdbus: Fix typos
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Acked-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.bus.xml        |  9 ++++-----
+ Documentation/kdbus/kdbus.connection.xml | 10 ++++------
+ Documentation/kdbus/kdbus.endpoint.xml   |  2 +-
+ Documentation/kdbus/kdbus.item.xml       |  9 ++++-----
+ Documentation/kdbus/kdbus.match.xml      | 14 ++++++++------
+ Documentation/kdbus/kdbus.message.xml    | 11 +++++------
+ Documentation/kdbus/kdbus.xml            |  6 +++---
+ 7 files changed, 29 insertions(+), 32 deletions(-)
+
+diff --git a/Documentation/kdbus/kdbus.bus.xml b/Documentation/kdbus/kdbus.bus.xml
+index 4d875e59ac02..4b9a0ac1b351 100644
+--- a/Documentation/kdbus/kdbus.bus.xml
++++ b/Documentation/kdbus/kdbus.bus.xml
+@@ -28,8 +28,7 @@
+       <citerefentry>
+         <refentrytitle>kdbus.message</refentrytitle>
+         <manvolnum>7</manvolnum>
+-      </citerefentry>
+-      ).
++      </citerefentry>).
+       Each bus is independent, and operations on the bus will not have any
+       effect on other buses. A bus is a management entity that controls the
+       addresses of its connections, their policies and message transactions
+@@ -42,7 +41,7 @@
+         <refentrytitle>kdbus.fs</refentrytitle>
+         <manvolnum>7</manvolnum>
+       </citerefentry>
+-      , a bus is presented as a directory. No operations can be performed on
++      a bus is presented as a directory. No operations can be performed on
+       the bus itself; instead you need to perform the operations on an endpoint
+       associated with the bus. Endpoints are accessible as files underneath the
+       bus directory. A default endpoint called <constant>bus</constant> is
+@@ -165,8 +164,8 @@ struct kdbus_cmd {
+             <citerefentry>
+               <refentrytitle>kdbus.item</refentrytitle>
+               <manvolnum>7</manvolnum>
+-            </citerefentry>
+-            ) are expected for <constant>KDBUS_CMD_BUS_MAKE</constant>.
++            </citerefentry>)
++            are expected for <constant>KDBUS_CMD_BUS_MAKE</constant>.
+           </para>
+           <variablelist>
+             <varlistentry>
+diff --git a/Documentation/kdbus/kdbus.connection.xml b/Documentation/kdbus/kdbus.connection.xml
+index 09852125b2d4..cefb419f1093 100644
+--- a/Documentation/kdbus/kdbus.connection.xml
++++ b/Documentation/kdbus/kdbus.connection.xml
+@@ -50,8 +50,7 @@
+       <citerefentry>
+         <refentrytitle>kdbus.match</refentrytitle>
+         <manvolnum>7</manvolnum>
+-      </citerefentry>
+-      ).
++      </citerefentry>).
+     </para>
+     <para>
+       Messages synthesized and sent directly by the kernel will carry the
+@@ -595,13 +594,13 @@ struct kdbus_cmd_info {
+       </varlistentry>
+ 
+       <varlistentry>
+-        <term><varname>flags</varname></term>
++        <term><varname>attach_flags</varname></term>
+         <listitem><para>
+           Specifies which metadata items should be attached to the answer. See
+           <citerefentry>
+             <refentrytitle>kdbus.message</refentrytitle>
+             <manvolnum>7</manvolnum>
+-          </citerefentry>
++          </citerefentry>.
+         </para></listitem>
+       </varlistentry>
+ 
+@@ -986,8 +985,7 @@ struct kdbus_cmd {
+         <term><varname>items</varname></term>
+         <listitem>
+           <para>
+-            Items to describe the connection details to be updated. The
+-            following item types are supported.
++            The following item types are supported.
+           </para>
+           <variablelist>
+             <varlistentry>
+diff --git a/Documentation/kdbus/kdbus.endpoint.xml b/Documentation/kdbus/kdbus.endpoint.xml
+index c36aa9781739..6632485f3e84 100644
+--- a/Documentation/kdbus/kdbus.endpoint.xml
++++ b/Documentation/kdbus/kdbus.endpoint.xml
+@@ -201,7 +201,7 @@ struct kdbus_cmd {
+     <para>
+       To update an existing endpoint, the
+       <constant>KDBUS_CMD_ENDPOINT_UPDATE</constant> command is used on the file
+-      descriptor that was used to create the update, using
++      descriptor that was used to create the endpoint, using
+       <constant>KDBUS_CMD_ENDPOINT_MAKE</constant>. The only relevant detail of
+       the endpoint that can be updated is the policy. When the command is
+       employed, the policy of the endpoint is <emphasis>replaced</emphasis>
+diff --git a/Documentation/kdbus/kdbus.item.xml b/Documentation/kdbus/kdbus.item.xml
+index bfe47362097f..09f8b903116f 100644
+--- a/Documentation/kdbus/kdbus.item.xml
++++ b/Documentation/kdbus/kdbus.item.xml
+@@ -139,7 +139,7 @@ struct kdbus_item {
+           <term><constant>KDBUS_ITEM_NEGOTIATE</constant></term>
+           <listitem><para>
+             With this item is attached to any ioctl, programs can
+-            <emphasis>probe</emphasis> the kernel for known item items.
++            <emphasis>probe</emphasis> the kernel for known item types.
+             The item carries an array of <type>uint64_t</type> values in
+             <varname>item.data64</varname>, each set to an item type to
+             probe. The kernel will reset each member of this array that is
+@@ -232,7 +232,6 @@ struct kdbus_memfd {
+             When received as item attached to a message, the array will
+             contain the numbers of the installed file descriptors, or
+             <constant>-1</constant> in case an error occurred.
+-            file descriptor.
+             In either case, the number of entries in the array is derived from
+             the item's total size. See
+             <citerefentry>
+@@ -487,7 +486,7 @@ struct kdbus_pids {
+             a remote peer is a member of, stored as array of
+             <type>uint32_t</type> values in <varname>item.data32</varname>.
+             The array length can be determined by looking at the item's total
+-            size, subtracting the size of the header and and dividing the
++            size, subtracting the size of the header and dividing the
+             remainder by <constant>sizeof(uint32_t)</constant>.
+           </para></listitem>
+         </varlistentry>
+@@ -748,7 +747,7 @@ struct kdbus_notify_name_change {
+             This item is sent as attachment to a
+             <emphasis>kernel notification</emphasis>. It informs the receiver
+             that an expected reply to a message was not received in time.
+-            The remote peer ID and the message cookie is stored in the message
++            The remote peer ID and the message cookie are stored in the message
+             header. See
+             <citerefentry>
+               <refentrytitle>kdbus.message</refentrytitle>
+@@ -765,7 +764,7 @@ struct kdbus_notify_name_change {
+             <emphasis>kernel notification</emphasis>. It informs the receiver
+             that a remote connection a reply is expected from was disconnected
+             before that reply was sent. The remote peer ID and the message
+-            cookie is stored in the message header. See
++            cookie are stored in the message header. See
+             <citerefentry>
+               <refentrytitle>kdbus.message</refentrytitle>
+               <manvolnum>7</manvolnum>
+diff --git a/Documentation/kdbus/kdbus.match.xml b/Documentation/kdbus/kdbus.match.xml
+index ef77b64e5890..ae38e04ab4d6 100644
+--- a/Documentation/kdbus/kdbus.match.xml
++++ b/Documentation/kdbus/kdbus.match.xml
+@@ -55,7 +55,7 @@
+       possibly along with some other rules to further limit the match.
+ 
+       The kernel will match the signal message's bloom filter against the
+-      connections bloom mask (simply by &amp;-ing it), and will decide whether
++      connection's bloom mask (simply by &amp;-ing it), and will decide whether
+       the message should be delivered to a connection.
+     </para>
+     <para>
+@@ -138,9 +138,9 @@
+       <title>Generations</title>
+ 
+       <para>
+-        Uploaded matches may contain multiple masks, which have are as large as
+-        the bloom size defined by the bus. Each block of a mask is called a
+-        <emphasis>generation</emphasis>, starting at index 0.
++        Uploaded matches may contain multiple masks, which have to be as large
++        as the bloom filter size defined by the bus. Each block of a mask is
++        called a <emphasis>generation</emphasis>, starting at index 0.
+ 
+         At match time, when a signal is about to be delivered, a bloom mask
+         generation is passed, which denotes which of the bloom masks the filter
+@@ -171,7 +171,8 @@
+     <title>Adding a match</title>
+     <para>
+       To add a match, the <constant>KDBUS_CMD_MATCH_ADD</constant> ioctl is
+-      used, which takes a struct of the struct described below.
++      used, which takes a <type>struct kdbus_cmd_match</type> as an argument
++      described below.
+ 
+       Note that each of the items attached to this command will internally
+       create one match <emphasis>rule</emphasis>, and the collection of them,
+@@ -266,7 +267,8 @@ struct kdbus_cmd_match {
+                   An item that carries the bloom filter mask to match against
+                   in its data field. The payload size must match the bloom
+                   filter size that was specified when the bus was created.
+-                  See the section below for more information on bloom filters.
++                  See the "Bloom filters" section above for more information on
++                  bloom filters.
+                 </para>
+               </listitem>
+             </varlistentry>
+diff --git a/Documentation/kdbus/kdbus.message.xml b/Documentation/kdbus/kdbus.message.xml
+index 90f6596dcc20..0115d9d50db3 100644
+--- a/Documentation/kdbus/kdbus.message.xml
++++ b/Documentation/kdbus/kdbus.message.xml
+@@ -344,8 +344,7 @@ struct kdbus_cmd_send {
+     </variablelist>
+ 
+     <para>
+-      The fields in this struct are described below.
+-      The message referenced the <varname>msg_address</varname> above has
++      The message referenced by the <varname>msg_address</varname> above has
+       the following layout.
+     </para>
+ 
+@@ -528,7 +527,7 @@ struct kdbus_msg {
+               <listitem>
+                 <para>
+                   Actual data records containing the payload. See section
+-                  "Passing of Payload Data".
++                  "Message payload".
+                 </para>
+               </listitem>
+             </varlistentry>
+@@ -707,7 +706,7 @@ struct kdbus_cmd_recv {
+         <listitem><para>
+           Whenever a message with <constant>KDBUS_MSG_SIGNAL</constant> is sent
+           but cannot be queued on a peer (e.g., as it contains FDs but the peer
+-          does not support FDs, or there is no space left in the peer's pool..)
++          does not support FDs, or there is no space left in the peer's pool)
+           the 'dropped_msgs' counter of the peer is incremented. On the next
+           RECV ioctl, the 'dropped_msgs' field is copied into the ioctl struct
+           and cleared on the peer. If it was non-zero, the
+@@ -963,7 +962,7 @@ struct kdbus_msg_info {
+         <varlistentry>
+           <term><constant>E2BIG</constant></term>
+           <listitem><para>
+-            Too many items
++            Too many items.
+           </para></listitem>
+         </varlistentry>
+ 
+@@ -1172,7 +1171,7 @@ struct kdbus_msg_info {
+         <varlistentry>
+           <term><constant>EAGAIN</constant></term>
+           <listitem><para>
+-            No message found in the queue
++            No message found in the queue.
+           </para></listitem>
+         </varlistentry>
+       </variablelist>
+diff --git a/Documentation/kdbus/kdbus.xml b/Documentation/kdbus/kdbus.xml
+index 194abd2e76cc..d8e7400df2af 100644
+--- a/Documentation/kdbus/kdbus.xml
++++ b/Documentation/kdbus/kdbus.xml
+@@ -379,7 +379,7 @@
+         <listitem>
+           <para>
+             When a message is sent (<constant>KDBUS_CMD_SEND</constant>),
+-            information about the sending task and the sending connection are
++            information about the sending task and the sending connection is
+             collected. This metadata will be attached to the message when it
+             arrives in the receiver's pool. If the connection sending the
+             message installed faked credentials (see
+@@ -514,7 +514,7 @@
+         To let the kernel know which metadata information to attach as items
+         to the aforementioned commands, it uses a bitmask. In those, the
+         following <emphasis>attach flags</emphasis> are currently supported.
+-        Both the the <varname>attach_flags_recv</varname> and
++        Both the <varname>attach_flags_recv</varname> and
+         <varname>attach_flags_send</varname> fields of
+         <type>struct kdbus_cmd_hello</type>, as well as the payload of the
+         <constant>KDBUS_ITEM_ATTACH_FLAGS_SEND</constant> and
+@@ -924,7 +924,7 @@
+ 
+     <para>
+       These ioctls, along with the structs they transport, are explained in
+-      detail in the other documents linked to in the 'see also' section below.
++      detail in the other documents linked to in the "See Also" section below.
+     </para>
+   </refsect1>
+ 

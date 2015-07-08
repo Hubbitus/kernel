@@ -1,0 +1,40 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Wed, 17 Jun 2015 19:33:26 +0300
+Subject: [PATCH] selftests/kdbus: remove useless initializations from
+ kdbus_clone_userns_test()
+
+Do not initialize efd, unpriv_conn_id, userns_conn_id and monitor. These
+vars are assigned to values later in code while initial values are never
+used.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/testing/selftests/kdbus/test-metadata-ns.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/tools/testing/selftests/kdbus/test-metadata-ns.c b/tools/testing/selftests/kdbus/test-metadata-ns.c
+index 2cb1d4d2a5be..ccdfae06922b 100644
+--- a/tools/testing/selftests/kdbus/test-metadata-ns.c
++++ b/tools/testing/selftests/kdbus/test-metadata-ns.c
+@@ -281,16 +281,13 @@ out:
+ static int kdbus_clone_userns_test(const char *bus,
+ 				   struct kdbus_conn *conn)
+ {
+-	int ret;
+-	int status;
+-	int efd = -1;
++	int ret, status, efd;
+ 	pid_t pid, ppid;
+-	uint64_t unpriv_conn_id = 0;
+-	uint64_t userns_conn_id = 0;
++	uint64_t unpriv_conn_id, userns_conn_id;
+ 	struct kdbus_msg *msg;
+ 	const struct kdbus_item *item;
+ 	struct kdbus_pids expected_pids;
+-	struct kdbus_conn *monitor = NULL;
++	struct kdbus_conn *monitor;
+ 
+ 	kdbus_printf("STARTING TEST 'metadata-ns'.\n");
+ 

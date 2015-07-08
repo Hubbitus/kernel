@@ -1,0 +1,32 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Thu, 9 Apr 2015 13:08:07 +0300
+Subject: [PATCH] Documentation: kdbus: Fix list of KDBUS_CMD_ENDPOINT_UPDATE
+ errors
+
+Remove EEXIST.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Acked-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.endpoint.xml | 7 -------
+ 1 file changed, 7 deletions(-)
+
+diff --git a/Documentation/kdbus/kdbus.endpoint.xml b/Documentation/kdbus/kdbus.endpoint.xml
+index 76e325d4e931..c36aa9781739 100644
+--- a/Documentation/kdbus/kdbus.endpoint.xml
++++ b/Documentation/kdbus/kdbus.endpoint.xml
+@@ -369,13 +369,6 @@ struct kdbus_cmd {
+             <constant>KDBUS_ITEM_POLICY_ACCESS</constant> was provided.
+           </para></listitem>
+         </varlistentry>
+-
+-        <varlistentry>
+-          <term><constant>EEXIST</constant></term>
+-          <listitem><para>
+-            An endpoint of that name already exists.
+-          </para></listitem>
+-        </varlistentry>
+       </variablelist>
+     </refsect2>
+   </refsect1>

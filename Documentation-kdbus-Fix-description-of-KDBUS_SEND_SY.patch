@@ -1,0 +1,27 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Thu, 9 Apr 2015 13:08:05 +0300
+Subject: [PATCH] Documentation: kdbus: Fix description of
+ KDBUS_SEND_SYNC_REPLY flag
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Acked-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/kdbus.message.xml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/kdbus/kdbus.message.xml b/Documentation/kdbus/kdbus.message.xml
+index 5e7c7a3f537e..90f6596dcc20 100644
+--- a/Documentation/kdbus/kdbus.message.xml
++++ b/Documentation/kdbus/kdbus.message.xml
+@@ -242,8 +242,8 @@ struct kdbus_cmd_send {
+                   </citerefentry>.
+ 
+                   The offset of the reply message in the sender's pool is stored
+-                  in in <varname>offset_reply</varname> when the ioctl has
+-                  returned without error. Hence, there is no need for another
++                  in <varname>reply</varname> when the ioctl has returned without
++                  error. Hence, there is no need for another
+                   <constant>KDBUS_CMD_RECV</constant> ioctl or anything else to
+                   receive the reply.
+                 </para>

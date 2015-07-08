@@ -1,0 +1,36 @@
+From: Daniel Mack <daniel@zonque.org>
+Date: Tue, 17 Mar 2015 19:48:24 +0100
+Subject: [PATCH] kdbus: connection: fix handling of failed fget()
+
+The patch 5fc8dd5c84fc: "kdbus: add connection, queue handling and
+message validation code" from Sep 11, 2014, leads to the following
+static checker warning:
+
+	ipc/kdbus/connection.c:2000 kdbus_cmd_send()
+	warn: 'cancel_fd' isn't an ERR_PTR
+
+Fix this by checking for NULL pointers returned from fget().
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index e554f1a71aa1..ab476fa9ccca 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -1997,9 +1997,8 @@ int kdbus_cmd_send(struct kdbus_conn *conn, struct file *f, void __user *argp)
+ 
+ 	if (argv[1].item) {
+ 		cancel_fd = fget(argv[1].item->fds[0]);
+-		if (IS_ERR(cancel_fd)) {
+-			ret = PTR_ERR(cancel_fd);
+-			cancel_fd = NULL;
++		if (!cancel_fd) {
++			ret = -EBADF;
+ 			goto exit;
+ 		}
+ 

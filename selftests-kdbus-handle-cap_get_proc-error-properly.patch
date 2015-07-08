@@ -1,0 +1,26 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Wed, 17 Jun 2015 19:33:24 +0300
+Subject: [PATCH] selftests/kdbus: handle cap_get_proc() error properly
+
+Fix typo in checking error value of cap_get_proc(): cap -> caps
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/testing/selftests/kdbus/kdbus-util.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/testing/selftests/kdbus/kdbus-util.c b/tools/testing/selftests/kdbus/kdbus-util.c
+index 4b376ecfdbed..6909fb9b1ce5 100644
+--- a/tools/testing/selftests/kdbus/kdbus-util.c
++++ b/tools/testing/selftests/kdbus/kdbus-util.c
+@@ -1547,7 +1547,7 @@ int test_is_capable(int cap, ...)
+ 	cap_t caps;
+ 
+ 	caps = cap_get_proc();
+-	if (!cap) {
++	if (!caps) {
+ 		ret = -errno;
+ 		kdbus_printf("error cap_get_proc(): %d (%m)\n", ret);
+ 		return ret;

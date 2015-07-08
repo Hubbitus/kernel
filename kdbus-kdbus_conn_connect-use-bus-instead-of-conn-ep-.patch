@@ -1,0 +1,27 @@
+From: Sergei Zviagintsev <sergei@s15v.net>
+Date: Tue, 2 Jun 2015 18:48:50 +0300
+Subject: [PATCH] kdbus: kdbus_conn_connect(): use `bus' instead of
+ `conn->ep->bus'
+
+Local `bus' is already set to `conn->ep->bus'. Use it.
+
+Signed-off-by: Sergei Zviagintsev <sergei@s15v.net>
+Reviewed-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index 1bd7bb968f9f..707be050b408 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -432,7 +432,7 @@ static int kdbus_conn_connect(struct kdbus_conn *conn, const char *name)
+ 	 * directly, and won't cause any notifications.
+ 	 */
+ 	if (!kdbus_conn_is_monitor(conn)) {
+-		ret = kdbus_notify_id_change(conn->ep->bus, KDBUS_ITEM_ID_ADD,
++		ret = kdbus_notify_id_change(bus, KDBUS_ITEM_ID_ADD,
+ 					     conn->id, conn->flags);
+ 		if (ret < 0)
+ 			goto exit_disconnect;
