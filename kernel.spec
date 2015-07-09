@@ -365,7 +365,7 @@ Requires: kernel-modules-uname-r = %{KVERREL}%{?variant}
 #
 # List the packages used during the kernel build
 #
-BuildRequires: kmod, patch, bash, sh-utils, tar
+BuildRequires: kmod, patch, bash, sh-utils, tar, git
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
 BuildRequires: net-tools, hostname, bc
@@ -461,7 +461,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 %define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
-Patch00: %{stable_patch_00}
+Source5000: %{stable_patch_00}
 %endif
 
 # non-released_kernel case
@@ -469,20 +469,20 @@ Patch00: %{stable_patch_00}
 # near the top of this spec file.
 %else
 %if 0%{?rcrev}
-Patch00: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+Source5000: patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
 %if 0%{?gitrev}
-Patch01: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+Source5001: patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-Patch00: patch-4.%{base_sublevel}-git%{gitrev}.xz
+Source5000: patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 %endif
 
 # build tweak for build ID magic, even for -vanilla
-Patch05: kbuild-AFTER_LINK.patch
+Source5005: kbuild-AFTER_LINK.patch
 
 %if !%{nopatches}
 
@@ -1253,16 +1253,22 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}.xz
+    xzcat %{SOURCE5000} | patch -p1 -F1 -s
 %if 0%{?gitrev}
-    ApplyPatch patch-4.%{upstream_sublevel}-rc%{rcrev}-git%{gitrev}.xz
+    xzcat %{SOURCE5001} | patch -p1 -F1 -s
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    ApplyPatch patch-4.%{base_sublevel}-git%{gitrev}.xz
+    xzcat %{SOURCE5000} | patch -p1 -F1 -s
 %endif
 %endif
+    git init
+    git config user.email "kernel-team@fedoraproject.org"
+    git config user.name "Fedora Kernel Team"
+    git config gc.auto 0
+    git add .
+    git commit -a -q -m "baseline"
 
     cd ..
 
@@ -1284,7 +1290,9 @@ cd linux-%{KVERREL}
 
 # released_kernel with possible stable updates
 %if 0%{?stable_base}
-ApplyPatch %{stable_patch_00}
+# This is special because the kernel spec is hell and nothing is consistent
+xzcat %{SOURCE5000} | patch -p1 -F1 -s
+git commit -a -m "Stable update"
 %endif
 
 # Drop some necessary files from the source dir into the buildroot
@@ -1312,272 +1320,13 @@ do
 done
 %endif
 
-ApplyPatch kbuild-AFTER_LINK.patch
+# The kbuild-AFTER_LINK patch is needed regardless so we list it as a Source
+# file and apply it separately from the rest.
+git am %{SOURCE5005}
 
 %if !%{nopatches}
 
-ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
-
-ApplyPatch amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
-
-ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
-
-ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
-
-ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
-
-ApplyPatch arm64-acpi-drop-expert-patch.patch
-
-ApplyPatch ARM-tegra-usb-no-reset.patch
-
-ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
-
-ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
-
-ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
-
-ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
-
-ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
-
-ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-
-ApplyPatch arm-highbank-l2-reverts.patch
-
-ApplyPatch Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
-
-ApplyPatch input-kill-stupid-messages.patch
-
-ApplyPatch die-floppy-die.patch
-
-ApplyPatch no-pcspkr-modalias.patch
-
-ApplyPatch input-silence-i8042-noise.patch
-
-ApplyPatch silence-fbcon-logo.patch
-
-ApplyPatch Kbuild-Add-an-option-to-enable-GCC-VTA.patch
-
-ApplyPatch crash-driver.patch
-
-ApplyPatch Add-secure_modules-call.patch
-
-ApplyPatch PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
-
-ApplyPatch x86-Lock-down-IO-port-access-when-module-security-is.patch
-
-ApplyPatch ACPI-Limit-access-to-custom_method.patch
-
-ApplyPatch asus-wmi-Restrict-debugfs-interface-when-module-load.patch
-
-ApplyPatch Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
-
-ApplyPatch acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
-
-ApplyPatch kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
-
-ApplyPatch x86-Restrict-MSR-access-when-module-loading-is-restr.patch
-
-ApplyPatch Add-option-to-automatically-enforce-module-signature.patch
-
-ApplyPatch efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
-
-ApplyPatch efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
-
-ApplyPatch efi-Add-EFI_SECURE_BOOT-bit.patch
-
-ApplyPatch hibernate-Disable-in-a-signed-modules-environment.patch
-
-ApplyPatch Add-EFI-signature-data-types.patch
-
-ApplyPatch Add-an-EFI-signature-blob-parser-and-key-loader.patch
-
-ApplyPatch KEYS-Add-a-system-blacklist-keyring.patch
-
-ApplyPatch MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
-
-ApplyPatch MODSIGN-Support-not-importing-certs-from-db.patch
-
-ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
-
-ApplyPatch drm-i915-hush-check-crtc-state.patch
-
-ApplyPatch disable-i8042-check-on-apple-mac.patch
-
-ApplyPatch lis3-improve-handling-of-null-rate.patch
-
-ApplyPatch watchdog-Disable-watchdog-on-virtual-machines.patch
-
-ApplyPatch scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-ApplyPatch criu-no-expert.patch
-
-ApplyPatch ath9k-rx-dma-stop-check.patch
-
-ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
-
-ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
-
-ApplyPatch drm-i915-turn-off-wc-mmaps.patch
-
-ApplyPatch kdbus-add-documentation.patch
-
-ApplyPatch kdbus-add-uapi-header-file.patch
-
-ApplyPatch kdbus-add-driver-skeleton-ioctl-entry-points-and-uti.patch
-
-ApplyPatch kdbus-add-connection-pool-implementation.patch
-
-ApplyPatch kdbus-add-connection-queue-handling-and-message-vali.patch
-
-ApplyPatch kdbus-add-node-and-filesystem-implementation.patch
-
-ApplyPatch kdbus-add-code-to-gather-metadata.patch
-
-ApplyPatch kdbus-add-code-for-notifications-and-matches.patch
-
-ApplyPatch kdbus-add-code-for-buses-domains-and-endpoints.patch
-
-ApplyPatch kdbus-add-name-registry-implementation.patch
-
-ApplyPatch kdbus-add-policy-database-implementation.patch
-
-ApplyPatch kdbus-add-Makefile-Kconfig-and-MAINTAINERS-entry.patch
-
-ApplyPatch kdbus-add-walk-through-user-space-example.patch
-
-ApplyPatch kdbus-add-selftests.patch
-
-ApplyPatch Documentation-kdbus-fix-location-for-generated-files.patch
-
-ApplyPatch kdbus-samples-kdbus-add-lrt.patch
-
-ApplyPatch kdbus-fix-minor-typo-in-the-walk-through-example.patch
-
-ApplyPatch samples-kdbus-drop-wrong-include.patch
-
-ApplyPatch Documentation-kdbus-fix-out-of-tree-builds.patch
-
-ApplyPatch Documentation-kdbus-support-quiet-builds.patch
-
-ApplyPatch selftests-kdbus-fix-gitignore.patch
-
-ApplyPatch Documentation-kdbus-replace-reply_cookie-with-cookie.patch
-
-ApplyPatch kdbus-fix-header-guard-name.patch
-
-ApplyPatch kdbus-connection-fix-handling-of-failed-fget.patch
-
-ApplyPatch kdbus-Fix-CONFIG_KDBUS-help-text.patch
-
-ApplyPatch samples-kdbus-build-kdbus-workers-conditionally.patch
-
-ApplyPatch selftest-kdbus-enable-cross-compilation.patch
-
-ApplyPatch kdbus-uapi-Fix-kernel-doc-for-enum-kdbus_send_flags.patch
-
-ApplyPatch Documentation-kdbus-Fix-list-of-KDBUS_CMD_ENDPOINT_U.patch
-
-ApplyPatch Documentation-kdbus-Update-list-of-ioctls-which-caus.patch
-
-ApplyPatch Documentation-kdbus-Fix-description-of-KDBUS_SEND_SY.patch
-
-ApplyPatch Documentation-kdbus-Fix-typos.patch
-
-ApplyPatch kdbus-avoid-the-use-of-struct-timespec.patch
-
-ApplyPatch kdbus-pool-use-__vfs_read.patch
-
-ApplyPatch kdbus-skip-mandatory-items-on-negotiation.patch
-
-ApplyPatch kdbus-turn-kdbus_node_idr-into-an-ida.patch
-
-ApplyPatch kdbus-reduce-scope-of-handle-locking.patch
-
-ApplyPatch kdbus-skip-acquiring-an-active-reference-in-poll.patch
-
-ApplyPatch kdbus-remove-unused-linux-version.h-include.patch
-
-ApplyPatch kdbus-optimize-auxgroup-collector.patch
-
-ApplyPatch kdbus-drop-obsolete-WARN_ON.patch
-
-ApplyPatch kdbus-copy-small-ioctl-payloads-to-stack.patch
-
-ApplyPatch kdbus-drop-kdbus_meta_attach_mask-modparam.patch
-
-ApplyPatch kdbus-fix-typo.patch
-
-ApplyPatch kdbus-forward-ID-notifications-to-everyone.patch
-
-ApplyPatch kdbus-provide-helper-to-collect-metadata.patch
-
-ApplyPatch kdbus-make-metadata-on-broadcasts-reliable.patch
-
-ApplyPatch samples-kdbus-stub-out-code-for-glibc-2.7.patch
-
-ApplyPatch kdbus-fix-up-documentation-of-ioctl-handlers.patch
-
-ApplyPatch kdbus-translate-capabilities-between-namespaces.patch
-
-ApplyPatch kdbus-selftests-add-build-dependencies-on-headers.patch
-
-ApplyPatch kdbus-use-rcu-to-access-exe-file-in-metadata.patch
-
-ApplyPatch kdbus-no-need-to-ref-current-mm.patch
-
-ApplyPatch selftests-kdbus-install-kdbus-test.patch
-
-ApplyPatch kdbus-update-kernel-doc-for-kdbus_sync_reply_wakeup.patch
-
-ApplyPatch kdbus-remove-redundant-code-from-kdbus_conn_entry_ma.patch
-
-ApplyPatch kdbus-kdbus_item_validate-remove-duplicated-code.patch
-
-ApplyPatch kdbus-kdbus_conn_connect-use-bus-instead-of-conn-ep-.patch
-
-ApplyPatch kdbus-use-FIELD_SIZEOF-in-kdbus_member_set_user-macr.patch
-
-ApplyPatch selftests-kdbus-handle-cap_get_proc-error-properly.patch
-
-ApplyPatch selftests-kdbus-drop-useless-assignment.patch
-
-ApplyPatch selftests-kdbus-remove-useless-initializations-from-.patch
-
-ApplyPatch selftests-kdbus-drop-duplicated-code-from-__kdbus_ms.patch
-
-ApplyPatch selftests-kdbus-fix-error-paths-in-__kdbus_msg_send.patch
-
-ApplyPatch kdbus-drop-useless-goto.patch
-
-ApplyPatch kdbus-fix-operator-precedence-issues-in-item-macros.patch
-
-ApplyPatch kdbus-use-parentheses-uniformly-in-KDBUS_ITEMS_FOREA.patch
-
-ApplyPatch Documentation-kdbus-fix-operator-precedence-issue-in.patch
-
-ApplyPatch Documentation-kdbus-use-parentheses-uniformly-in-KDB.patch
-
-ApplyPatch selftests-kdbus-fix-trivial-style-issues.patch
-
-ApplyPatch selftests-kdbus-fix-precedence-issues-in-macros.patch
-
-ApplyPatch selftests-kdbus-use-parentheses-in-iteration-macros-.patch
-
-ApplyPatch samples-kdbus-add-whitespace.patch
-
-ApplyPatch samples-kdbus-fix-operator-precedence-issue-in-KDBUS.patch
-
-ApplyPatch samples-kdbus-use-parentheses-uniformly-in-KDBUS_FOR.patch
-
-ApplyPatch kdbus-kdbus_reply_find-return-on-found-entry.patch
-
-ApplyPatch kdbus-optimize-error-path-in-kdbus_reply_new.patch
-
-ApplyPatch kdbus-optimize-if-statements-in-kdbus_conn_disconnec.patch
-
+git am %{patches}
 
 # END OF PATCH APPLICATIONS
 
@@ -2443,6 +2192,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Use git to apply patches
+
 * Wed Jul 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git2.1
 - Linux v4.2-rc1-33-gd6ac4ffc61ac
 
