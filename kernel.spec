@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -1738,12 +1738,8 @@ BuildKernel %make_target %kernel_image %{pae}
 BuildKernel %make_target %kernel_image
 %endif
 
-%ifarch ppc64le
-%define no32bit NO_PERF_READ_VDSO32=1
-%endif
-
 %global perf_make \
-  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 %{?no32bit} WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
+  make -s %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 NO_PERF_READ_VDSO32=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT all
@@ -2192,6 +2188,10 @@ fi
 #
 # 
 %changelog
+* Fri Jul 10 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc1.git3.1
+- Linux v4.2-rc1-62-gc4b5fd3fb205
+- Build perf with NO_PERF_READ_VDSO32 on all arches
+
 * Thu Jul 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Use git to apply patches
 
