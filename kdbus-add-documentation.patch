@@ -7475,7 +7475,7 @@ index 000000000000..52565eac7d0d
 +	</template>
 +</stylesheet>
 diff --git a/Makefile b/Makefile
-index 4ce793e576cf..1df89975465f 100644
+index 3cc6f4477e78..e030a4385a5d 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -1344,6 +1344,7 @@ $(help-board-dirs): help-%:

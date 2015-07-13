@@ -20,10 +20,10 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  create mode 100644 ipc/kdbus/Makefile
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index 8133cefb6b6e..11a76301dde3 100644
+index fd6078443083..4c2b69d15a3d 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -5780,6 +5780,19 @@ S:	Maintained
+@@ -5793,6 +5793,19 @@ S:	Maintained
  F:	Documentation/kbuild/kconfig-language.txt
  F:	scripts/kconfig/
  
