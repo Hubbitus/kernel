@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Tue Jul 14 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update AMD Seattle a0 eth driver for 4.2
+
 * Mon Jul 13 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc2.git0.1
 - Linux v4.2-rc2
 - Disable debugging options.
