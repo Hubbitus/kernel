@@ -3,7 +3,7 @@
 
 Summary: The Linux kernel
 
-# % define buildid .local
+%define buildid .hu.1.pf1
 
 # For a kernel released for public testing, released_kernel should be 1.
 # For internal testing builds during development, it should be 0.
@@ -62,7 +62,7 @@ Summary: The Linux kernel
 %define with_dbgonly   %{?_with_dbgonly:      1} %{?!_with_dbgonly:      0}
 
 # Control whether we perform a compat. check against published ABI.
-%define with_kabichk   %{?_without_kabichk:   0} %{?!_without_kabichk:   1}
+%define with_kabichk   %{?_without_kabichk:   1} %{?!_without_kabichk:   0}
 
 # should we do C=1 builds with sparse
 %define with_sparse    %{?_with_sparse:       1} %{?!_with_sparse:       0}
@@ -196,7 +196,7 @@ Summary: The Linux kernel
 # Which is a BadThing(tm).
 
 # We only build kernel-headers on the following...
-%define nobuildarches i686 s390 ppc
+%define nobuildarches i686 s390 ppc ppc64
 
 %ifarch %nobuildarches
 %define with_default 0
@@ -273,7 +273,10 @@ AutoProv: yes\
 Name: kernel%{?variant}
 Group: System Environment/Kernel
 License: GPLv2
-URL: http://www.kernel.org/
+#URL: http://www.kernel.org/
+# Hubbitus patched fork of Fedora Kernel
+# Binaries could be found at: http://hubbitus.info/wiki/Repository
+URL: https://github.com/Hubbitus/kernel/
 Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
@@ -352,6 +355,9 @@ Source23: Module.kabi_s390x
 
 Source25: kernel-abi-whitelists.tar.bz2
 
+#+ Hubbitus config which just mixin for ALL arches
+Source49: kernel-%{version}.config.hu
+
 Source50: kernel-%{version}-x86_64.config
 Source51: kernel-%{version}-x86_64-debug.config
 
@@ -373,6 +379,11 @@ Patch999999: linux-kernel-test.patch
 Patch1000: debrand-single-cpu.patch
 Patch1001: debrand-rh_taint.patch
 Patch1002: debrand-rh-i686-cpu.patch
+
+# Hubbitus patched (http://wiki.centos.org/HowTos/Custom_Kernel?highlight=%28kernel%29%7C%28source%29)
+# https://pf.natalenko.name/forum/index.php?topic=220.0
+#Patch40000: http://pf.natalenko.name/sources/3.10/patch-3.10.0-pf.bz2
+Patch40000: http://pf.natalenko.name/sources/3.10/patch-3.10.0-pf.patch
 
 BuildRoot: %{_tmppath}/kernel-%{KVRA}-root
 
@@ -632,14 +643,16 @@ fi 2>/dev/null
 patch_command='patch -p1 -F1 -s'
 ApplyPatch()
 {
-  local patch=$1
+#Hu basename to allow use URLs in patches
+  local patch=$( basename $1 )
+  local patchURL=$1
   shift
   if [ ! -f $RPM_SOURCE_DIR/$patch ]; then
     exit 1
   fi
-  if ! grep -E "^Patch[0-9]+: $patch\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
+  if ! grep -E "^Patch[0-9]+: $patchURL\$" %{_specdir}/${RPM_PACKAGE_NAME%%%%%{?variant}}.spec ; then
     if [ "${patch:0:8}" != "patch-3." ] ; then
-      echo "ERROR: Patch  $patch  not listed as a source patch in specfile"
+      echo "ERROR: Patch [$patch] not listed as a source patch in specfile"
       exit 1
     fi
   fi 2>/dev/null
@@ -681,6 +694,17 @@ ApplyOptionalPatch linux-kernel-test.patch
 
 # Any further pre-build tree manipulations happen here.
 
+if [ -L configs ]; then
+	rm -f configs
+	mkdir configs
+fi
+
+################# Hubbitus patches
+# Must be AFTER configs manipulations because them also patched
+# PF v3.10.0-pf https://pf.natalenko.name/forum/index.php?topic=220.0
+ApplyPatch http://pf.natalenko.name/sources/3.10/patch-3.10.0-pf.patch --fuzz=2
+#//////////////// end Hubbitus patches
+
 chmod +x scripts/checkpatch.pl
 
 # This Prevents scripts/setlocalversion from mucking with our version numbers.
@@ -688,11 +712,6 @@ touch .scmversion
 
 # only deal with configs if we are going to build for the arch
 %ifnarch %nobuildarches
-
-if [ -L configs ]; then
-	rm -f configs
-	mkdir configs
-fi
 
 # Remove configs not for the buildarch
 for cfg in kernel-%{version}-*.config; do
@@ -708,6 +727,8 @@ rm -f kernel-%{version}-*debug.config
 # now run oldconfig over all the config files
 for i in *.config
 do
+  echo "Process config [$i] for run oldconfig"
+  cat %{SOURCE49} >> $i
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
   make %{?cross_opts} ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
@@ -719,6 +740,7 @@ do
 %endif
   rm -f .newoptions
   make %{?cross_opts} ARCH=$Arch oldnoconfig
+#? exit 101
   echo "# $Arch" > configs/$i
   cat .config >> configs/$i
 done
@@ -803,8 +825,12 @@ BuildKernel() {
     fi
 %endif
 
-    make -s %{?cross_opts} ARCH=$Arch oldnoconfig >/dev/null
-    make -s %{?cross_opts} ARCH=$Arch V=1 %{?_smp_mflags} KCFLAGS="%{?kcflags}" $MakeTarget %{?sparse_mflags}
+#? exit 101
+
+#?    make -s %{?cross_opts} ARCH=$Arch oldnoconfig >/dev/null
+    make %{?cross_opts} ARCH=$Arch oldnoconfig >/dev/null
+#?    make -s %{?cross_opts} ARCH=$Arch V=1 %{?_smp_mflags} KCFLAGS="%{?kcflags}" $MakeTarget %{?sparse_mflags}
+    make %{?cross_opts} ARCH=$Arch V=1 %{?_smp_mflags} KCFLAGS="%{?kcflags}" $MakeTarget %{?sparse_mflags}
 
     if [ "$Flavour" != "kdump" ]; then
         make -s %{?cross_opts} ARCH=$Arch V=1 %{?_smp_mflags} KCFLAGS="%{?kcflags}" modules %{?sparse_mflags} || exit 1
@@ -1500,6 +1526,14 @@ fi
 %kernel_variant_files %{with_kdump} kdump
 
 %changelog
+* Mon May 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 3.10.0-229.4.2.el7.hu.1.pf1
+- Add Source49: kernel-%{version}.config.hu
+- Add pf patch http://pf.natalenko.name/sources/3.10/patch-3.10.0-pf.bz2 (https://pf.natalenko.name/forum/index.php?topic=220.0)
+	o  without: async-thread.c, drivers/md/md.c patching
+	o and *massively* rebased.
+- Add ppc64 into nobuildarches.
+- Switch without_kabichk to 1 (do *not* check).
+
 * Tue May 12 2015 Johnny Hughes <johnny@centos.org> [3.10.0-229.4.2.el7]
 - Apply debranding changes
 

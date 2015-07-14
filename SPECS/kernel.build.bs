@@ -1,0 +1,9 @@
+#!/bin/bash
+
+DIR=$(pwd)
+
+# Only UP
+LANG=C ionice -c3 nice -n19 rpmbuild --define "_sourcedir $DIR/../SOURCES/" --define "_specdir $DIR" --define "_builddir $DIR/../BUILD/" --define "_srcrpmdir $DIR/../SRPMS/" --define "_rpmdir $DIR/../RPMS/" \
+	--without smp --without pae --without debug --without doc --without headers --without extra --without perf --without tools --without debuginfo --without bootwrapper --without vdso_install \
+	--with baseonly \
+	-bs ${DIR}/kernel.spec 2>&1 | tee .build.bs.log
