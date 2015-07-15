@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc2.git1.1
+- Linux v4.2-rc2-77-gf760b87f8f12
+
 * Tue Jul 14 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update AMD Seattle a0 eth driver for 4.2
 
