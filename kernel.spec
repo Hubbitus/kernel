@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 3
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -595,8 +595,6 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
-
-Patch504: kdbus.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2033,6 +2031,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop kdbus as it wasn't merged in time for f23
+
 * Tue Jul 14 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update AMD Seattle a0 eth driver for 4.2
 
