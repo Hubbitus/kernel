@@ -14,7 +14,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/ioport.c b/arch/x86/kernel/ioport.c
-index 4ddaf66ea35f..00b440307419 100644
+index 37dae792dbbe..1ecc03ca3c15 100644
 --- a/arch/x86/kernel/ioport.c
 +++ b/arch/x86/kernel/ioport.c
 @@ -15,6 +15,7 @@
@@ -44,13 +44,13 @@ index 4ddaf66ea35f..00b440307419 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 297110c12635..efe38c1bc234 100644
+index 6b1721f978c2..53fe675f9bd7 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -27,6 +27,7 @@
  #include <linux/export.h>
  #include <linux/io.h>
- #include <linux/aio.h>
+ #include <linux/uio.h>
 +#include <linux/module.h>
  
  #include <linux/uaccess.h>
