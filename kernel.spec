@@ -2031,6 +2031,9 @@ fi
 #
 # 
 %changelog
+* Fri Jul 17 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable DW MMC for generic ARM (hi6220 SoC support)
+
 * Wed Jul 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc2.git1.1
 - Linux v4.2-rc2-77-gf760b87f8f12
 
