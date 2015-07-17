@@ -49058,3 +49058,44 @@ index 64763ead693c..3520f45875df 100644
 -- 
 2.4.3
 
+From 748cf9547ea30f5a4dfee5e97d1d2ff4b307c392 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 16 Jul 2015 17:37:29 +0200
+Subject: [PATCH] kdbus: fix unused %docs make-targets
+
+The top-level Makefile re-routes all %docs targets to the Documentation
+makefiles. The DocBook makefile supports a lot more targets than the kdbus
+makefile, and it seems unreasonable to expect that both will always be in
+sync.
+
+Therefore, add a fallback no-op target %docs: which is used for all
+unspecified %docs targets.
+
+We will, from time to time, add further %docs targets that make sense
+(like installdocs). But there is definitely no time pressure on those.
+However, we really should add this fallback now, as otherwise "make" will
+print errors due to unknown targets.
+
+Reported-by: Ulf Magnusson <ulfalizer.lkml@gmail.com>
+Tested-by: Jim Davis <jim.epost@gmail.com>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/kdbus/Makefile | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/kdbus/Makefile b/Documentation/kdbus/Makefile
+index af87641db416..8caffe565750 100644
+--- a/Documentation/kdbus/Makefile
++++ b/Documentation/kdbus/Makefile
+@@ -38,3 +38,7 @@ mandocs: $(MANFILES)
+ htmldocs: $(HTMLFILES)
+ 
+ clean-files := $(MANFILES) $(HTMLFILES)
++
++# we don't support other %docs targets right now
++%docs:
++	@true
+-- 
+2.4.3
+
