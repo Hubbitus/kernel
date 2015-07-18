@@ -1,3 +1,4 @@
+From c4343b792fe32b46800298444549a71bc6d8e825 Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 18 Nov 2014 10:18:22 -0500
 Subject: [PATCH] efi: Add esrt support.
@@ -37,7 +38,7 @@ Signed-off-by: Peter Jones <pjones@redhat.com>
 
 diff --git a/Documentation/ABI/testing/sysfs-firmware-efi-esrt b/Documentation/ABI/testing/sysfs-firmware-efi-esrt
 new file mode 100644
-index 000000000000..6e431d1a4e79
+index 0000000..6e431d1
 --- /dev/null
 +++ b/Documentation/ABI/testing/sysfs-firmware-efi-esrt
 @@ -0,0 +1,81 @@
@@ -123,20 +124,20 @@ index 000000000000..6e431d1a4e79
 +		6 - Battery power event
 +
 diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
-index dbc8627a5cdf..b4c9fbbc9270 100644
+index 02744df..3b984c3 100644
 --- a/arch/x86/platform/efi/efi.c
 +++ b/arch/x86/platform/efi/efi.c
-@@ -492,6 +492,8 @@ void __init efi_init(void)
- 		return;
+@@ -501,6 +501,8 @@ void __init efi_init(void)
  
- 	print_efi_memmap();
+ 	if (efi_enabled(EFI_DBG))
+ 		print_efi_memmap();
 +
 +	efi_esrt_init();
  }
  
  void __init efi_late_init(void)
 diff --git a/drivers/firmware/efi/Makefile b/drivers/firmware/efi/Makefile
-index d8be608a9f3b..26eabbc55341 100644
+index d8be608..26eabbc 100644
 --- a/drivers/firmware/efi/Makefile
 +++ b/drivers/firmware/efi/Makefile
 @@ -1,7 +1,7 @@
@@ -149,7 +150,7 @@ index d8be608a9f3b..26eabbc55341 100644
  obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
  obj-$(CONFIG_UEFI_CPER)			+= cper.o
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3061bb8629dc..48b4c356740f 100644
+index 3061bb8..48b4c35 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -39,6 +39,7 @@ struct efi __read_mostly efi = {
@@ -264,7 +265,7 @@ index 3061bb8629dc..48b4c356740f 100644
  
 diff --git a/drivers/firmware/efi/esrt.c b/drivers/firmware/efi/esrt.c
 new file mode 100644
-index 000000000000..20c0cbdb1c60
+index 0000000..20c0cbd
 --- /dev/null
 +++ b/drivers/firmware/efi/esrt.c
 @@ -0,0 +1,464 @@
@@ -733,7 +734,7 @@ index 000000000000..20c0cbdb1c60
 +MODULE_DESCRIPTION("EFI System Resource Table support");
 +MODULE_LICENSE("GPL");
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 470e8dfcb517..c15e1de5273c 100644
+index af5be03..024c27e 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
 @@ -583,6 +583,9 @@ void efi_native_runtime_setup(void);
@@ -746,7 +747,7 @@ index 470e8dfcb517..c15e1de5273c 100644
  #define EFI_FILE_SYSTEM_GUID \
      EFI_GUID(  0x964e5b22, 0x6459, 0x11d2, 0x8e, 0x39, 0x00, 0xa0, 0xc9, 0x69, 0x72, 0x3b )
  
-@@ -849,6 +852,7 @@ extern struct efi {
+@@ -823,6 +826,7 @@ extern struct efi {
  	unsigned long fw_vendor;	/* fw_vendor */
  	unsigned long runtime;		/* runtime table */
  	unsigned long config_table;	/* config tables */
@@ -754,7 +755,7 @@ index 470e8dfcb517..c15e1de5273c 100644
  	efi_get_time_t *get_time;
  	efi_set_time_t *set_time;
  	efi_get_wakeup_time_t *get_wakeup_time;
-@@ -901,6 +905,7 @@ static inline efi_status_t efi_query_variable_store(u32 attributes, unsigned lon
+@@ -875,6 +879,7 @@ static inline efi_status_t efi_query_variable_store(u32 attributes, unsigned lon
  #endif
  extern void __iomem *efi_lookup_mapped_addr(u64 phys_addr);
  extern int efi_config_init(efi_config_table_type_t *arch_tables);
@@ -762,7 +763,7 @@ index 470e8dfcb517..c15e1de5273c 100644
  extern int efi_config_parse_tables(void *config_tables, int count, int sz,
  				   efi_config_table_type_t *arch_tables);
  extern u64 efi_get_iobase (void);
-@@ -908,12 +913,15 @@ extern u32 efi_mem_type (unsigned long phys_addr);
+@@ -882,12 +887,15 @@ extern u32 efi_mem_type (unsigned long phys_addr);
  extern u64 efi_mem_attributes (unsigned long phys_addr);
  extern u64 efi_mem_attribute (unsigned long phys_addr, unsigned long size);
  extern int __init efi_uart_console_only (void);
@@ -778,3 +779,6 @@ index 470e8dfcb517..c15e1de5273c 100644
  
  extern int efi_reboot_quirk_mode;
  extern bool efi_poweroff_required(void);
+-- 
+2.4.3
+
