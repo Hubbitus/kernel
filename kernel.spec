@@ -2398,6 +2398,9 @@ fi
 # and build.
 #
 %changelog
+* Tue Jun 30 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.7-300.hu.1.uksm.bfs.bfq
+- 4.0.7-300.hu.1.uksm.bfs.bfq
+
 * Mon Jun 29 2015 Laura Abbott <labbott@fedoraproject.org> - 4.0.7-300
 - Linux v4.0.7
 
