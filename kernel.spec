@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf6
+%define buildid .hu.2.pf6
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -2372,11 +2372,14 @@ fi
 # and build.
 #
 %changelog
-* Mon Jun 29 2015 Laura Abbott <labbott@fedoraproject.org> - 4.0.7-300
-- Linux v4.0.7
+* Tue Jun 30 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.5.hu.2.pf6
+- Pf still against 4.0.5 v4.0-pf6: https://pf.natalenko.name/forum/index.php?topic=324, so just ne build to incorporate updstream fedora patches.
 
-* Tue Jun 23 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.6-300
-- Linux v4.0.6
+#* Mon Jun 29 2015 Laura Abbott <labbott@fedoraproject.org> - 4.0.7-300
+#- Linux v4.0.7
+
+#* Tue Jun 23 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.0.6-300
+#- Linux v4.0.6
 
 * Thu Jun 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix touchpad issues on Razer machines (rhbz 1227891)
