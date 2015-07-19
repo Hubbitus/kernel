@@ -25,7 +25,7 @@ Summary: The Linux kernel
 %endif
 
 #%define buildid .hu.2.bfq.gccnative.uksm
-%define buildid .hu.1.pf5
+%define buildid .hu.1.pf6
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -55,8 +55,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.0.4 v4.0-pf5: https://pf.natalenko.name/forum/index.php?topic=318.0
-%define stable_update 4
+#+Hu Pf against 4.0.5 v4.0-pf6: https://pf.natalenko.name/forum/index.php?topic=324
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -477,8 +477,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-3.%{base_sublevel}.%{stable_base}.xz
-# https://pf.natalenko.name/forum/index.php?topic=318.0
-%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf5.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf6.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -2380,6 +2379,9 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.5-200.hu.1.pf6
+- Pull upsteram changes and also update to v4.0-pf6 (https://pf.natalenko.name/forum/index.php?topic=324)
+
 * Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix touchpad for Thinkpad S540 (rhbz 1223051)
 
