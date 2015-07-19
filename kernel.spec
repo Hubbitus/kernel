@@ -635,9 +635,9 @@ Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.pa
 Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-4.0.patch
-Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-4.0.patch
-Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-4.0.0.patch
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
 
 #? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -1310,9 +1310,9 @@ ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.pat
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r7-4.0.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0002-block-introduce-the-BFQ-v7r7-I-O-sched-for-4.0.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r7/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r7-for-4.0.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
 
 #? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -2403,6 +2403,13 @@ fi
 #                                    ||----w |
 #                                    ||     ||
 %changelog
+* Thu Jun 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.5-200.hu.1.uksm.bfs.bfq
+- 4.0.5-200.hu.1.uksm.bfs.bfq
+- Update BFQ:
+	Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
+	Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
+	Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
+
 * Tue Jun 09 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix touchpad for Thinkpad S540 (rhbz 1223051)
 
