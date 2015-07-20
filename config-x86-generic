@@ -492,6 +492,7 @@ CONFIG_NFC_PN544_MEI=m
 CONFIG_NFC_MICROREAD_MEI=m
 
 # Maybe enable in debug kernels?
+# CONFIG_DEBUG_ENTRY is not set
 # CONFIG_DEBUG_NMI_SELFTEST is not set
 
 # CONFIG_X86_GOLDFISH is not set
