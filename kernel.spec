@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.2.pf6
+%define buildid .hu.1.pf1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -470,7 +470,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.0/patch-4.0-pf6.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.1/patch-4.1-pf1.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -2257,6 +2257,10 @@ fi
 # and build.
 #
 %changelog
+* Sat Jul 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.1.pf1
+- Linux 4.1.2
+- Update PF patch to v4.1-pf1
+
 * Wed Jul 15 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.2-200
 - Linux v4.1.2 rebase
 
