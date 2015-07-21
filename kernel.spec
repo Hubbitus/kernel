@@ -504,19 +504,7 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
 
-Patch458: arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
-
-Patch459: arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
-
-Patch460: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
-
-Patch461: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
-
-Patch462: pinctrl-pinctrl-single-must-be-initialized-early.patch
-
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
-
-Patch464: arm-highbank-l2-reverts.patch
 
 Patch465: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
