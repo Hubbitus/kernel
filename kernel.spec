@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2034,6 +2034,9 @@ fi
 #
 # 
 %changelog
+* Tue Jul 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc3.git1.1
+- Linux v4.2-rc3-4-g9d634c410b07
+
 * Tue Jul 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix stmmac eth driver (AllWinner, other ARM, and other devices)
 
