@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2036,7 +2036,8 @@ fi
 #
 # 
 %changelog
-* Tue Jul 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc3.git0.2
+* Tue Jul 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc3.git1.1
+- Linux v4.2-rc3-4-g9d634c410b07
 - Reenable debugging options.
 
 * Tue Jul 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
