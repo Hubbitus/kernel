@@ -596,7 +596,8 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-# END OF PATCH DEFINITIONS
+# http://www.spinics.net/lists/netdev/msg336243.html
+Patch504: 0001-stmmac-fix-setting-of-driver-data-in-stmmac_dvr_prob.patch
 
 %endif
 
@@ -2031,6 +2032,9 @@ fi
 #
 # 
 %changelog
+* Tue Jul 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix stmmac eth driver (AllWinner, other ARM, and other devices)
+
 * Mon Jul 20 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc3.git0.1
 - Linux v4.2-rc3
 

@@ -1,0 +1,33 @@
+From 9e3197f80ac597912808f8ad07ba727c7fdafc50 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Tue, 21 Jul 2015 09:49:19 +0100
+Subject: [PATCH] stmmac: fix setting of driver data in stmmac_dvr_probe
+
+Commit 803f8fc46274b ("stmmac: move driver data setting into
+stmmac_dvr_probe") mistakenly set priv and not priv->dev as
+driver data. This meant that the remove, resume and suspend
+callbacks that fetched and tried to use this data would most
+likely explode. Fix the issue by using the correct variable.
+
+Fixes: 803f8fc46274b ("stmmac: move driver data setting into stmmac_dvr_probe")
+Signed-off-by: Joachim Eastwood <manabian@xxxxxxxxx>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 50f7a7a..864b476 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -2843,7 +2843,7 @@ int stmmac_dvr_probe(struct device *device,
+ 	if (res->mac)
+ 		memcpy(priv->dev->dev_addr, res->mac, ETH_ALEN);
+ 
+-	dev_set_drvdata(device, priv);
++	dev_set_drvdata(device, priv->dev);
+ 
+ 	/* Verify driver arguments */
+ 	stmmac_verify_args();
+-- 
+2.4.6
+
