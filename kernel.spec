@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2218,6 +2218,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 22 2015 Laur Abbott <labbott@fedoraproject.org> - 4.1.3-200
+* Linux v4.1.3
+
 * Wed Jul 15 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.2-200
 - Linux v4.1.2 rebase
 
