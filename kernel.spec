@@ -625,6 +625,9 @@ Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 # rhbz 1227891
 Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
+# rhbz 1192270
+Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1367,6 +1370,9 @@ ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 #rhbz 1227891
 ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
+
+# rhbz 1192270
+ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2218,8 +2224,11 @@ fi
 #
 # 
 %changelog
-* Wed Jul 22 2015 Laur Abbott <labbott@fedoraproject.org> - 4.1.3-200
-* Linux v4.1.3
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
+- Add patches for Ideapad RF switches (rhbz 1192270)
+
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
+- Linux v4.1.3
 
 * Wed Jul 15 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.2-200
 - Linux v4.1.2 rebase
