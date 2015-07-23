@@ -11,7 +11,7 @@ export NEWGIT=$(($OLDGIT+1))
 
 pushd $LINUX_GIT
 
-git diff v$VER.. > /tmp/patch-$VER-git$NEWGIT
+git format-patch --stdout v$VER.. > /tmp/patch-$VER-git$NEWGIT
 xz -9 /tmp/patch-$VER-git$NEWGIT
 DESC=$(git describe)
 popd
