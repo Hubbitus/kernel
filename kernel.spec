@@ -628,6 +628,9 @@ Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 # rhbz 1192270
 Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 
+# rhbz 1180920 1206724
+Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1373,6 +1376,9 @@ ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
 # rhbz 1192270
 ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
+
+# rhbz 1180920 1206724
+ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2224,6 +2230,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix warning from pcmcia (rhbz 1180920 1206724)
+
 * Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
 - Add patches for Ideapad RF switches (rhbz 1192270)
 
