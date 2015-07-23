@@ -584,9 +584,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-# http://www.spinics.net/lists/netdev/msg336243.html
-Patch504: 0001-stmmac-fix-setting-of-driver-data-in-stmmac_dvr_prob.patch
-
 # END OF PATCH DEFINITIONS
 
 %endif
