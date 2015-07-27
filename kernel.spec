@@ -631,6 +631,9 @@ Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
+#CVE-2015-1333 rhbz 1244171
+Patch26253: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1379,6 +1382,9 @@ ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 
 # rhbz 1180920 1206724
 ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
+
+#CVE-2015-1333 rhbz 1244171
+ApplyPatch KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2230,6 +2236,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1333 add_key memory leak (rhbz 1244171)
+
 * Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix warning from pcmcia (rhbz 1180920 1206724)
 
