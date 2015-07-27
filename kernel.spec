@@ -634,6 +634,17 @@ Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 #CVE-2015-1333 rhbz 1244171
 Patch26253: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
 
+# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
+Patch26254: x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
+Patch26255: x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
+Patch26256: x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
+Patch26257: x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
+Patch26258: x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
+Patch26259: x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
+Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
+Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
+Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1385,6 +1396,17 @@ ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
 #CVE-2015-1333 rhbz 1244171
 ApplyPatch KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+
+# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
+ApplyPatch x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
+ApplyPatch x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
+ApplyPatch x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
+ApplyPatch x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
+ApplyPatch x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
+ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
+ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
+ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
+ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2236,6 +2258,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
+- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
+
 * Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-1333 add_key memory leak (rhbz 1244171)
 
