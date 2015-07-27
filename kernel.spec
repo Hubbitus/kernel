@@ -584,7 +584,9 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-Patch504: kdbus.patch
+Patch504: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+
+Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2023,6 +2025,7 @@ fi
 %changelog
 * Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc4.git0.1
 - Linux v4.2-rc4
+- CVE-2015-1333 add_key memory leak (rhbz 1244171)
 - Disable debugging options.
 
 * Fri Jul 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc3.git4.1
