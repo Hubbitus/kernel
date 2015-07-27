@@ -49099,3 +49099,90 @@ index af87641db416..8caffe565750 100644
 -- 
 2.4.3
 
+From 52e895942ba065db563de042a4fff21fb38b26e6 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Fri, 24 Jul 2015 12:57:20 +0200
+Subject: [PATCH 1/2] kdbus: fix sparse address-space annotation
+
+Make sure to properly annotate casts in 'struct iovec' if we cross
+address-spaces, to make sure sparse does not warn about them.
+
+All those conversions are fine, as we are allowed to pass those kvecs
+through the iovec importer.
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/message.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ipc/kdbus/message.c b/ipc/kdbus/message.c
+index 3520f45875df..27a5021fe70f 100644
+--- a/ipc/kdbus/message.c
++++ b/ipc/kdbus/message.c
+@@ -920,7 +920,7 @@ struct kdbus_pool_slice *kdbus_staging_emit(struct kdbus_staging *staging,
+ 
+ 	/* msg.size */
+ 	v->iov_len = sizeof(msg_size);
+-	v->iov_base = &msg_size;
++	v->iov_base = (void __user *)&msg_size;
+ 	++v;
+ 
+ 	/* msg (after msg.size) plus items */
+@@ -937,7 +937,7 @@ struct kdbus_pool_slice *kdbus_staging_emit(struct kdbus_staging *staging,
+ 	if (meta_size > 0) {
+ 		/* metadata items */
+ 		v->iov_len = meta_size;
+-		v->iov_base = meta_items;
++		v->iov_base = (void __user *)meta_items;
+ 		++v;
+ 
+ 		/* padding after metadata */
+-- 
+2.4.3
+
+
+From 63c8e2f6f33766723d35a13be094a4e475e6d46d Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Fri, 24 Jul 2015 12:32:09 +0200
+Subject: [PATCH 2/2] kdbus: fix wrong message size on 32bit
+
+When broadcasting messages, each receiver might get a different message
+due to different metadata requirements. Therefore, the value of msg->size
+might be different for each receiver. To account for that, we use a
+temporary variable to store the real size and use it as source for the
+iovec-copy transaction instead of &msg->size.
+
+But we incorrectly used "size_t" for this variable. Hence, on 32bit, we
+end up missing 4 bytes of the message header as "size_t" might only be
+32bit wide.
+
+Fix this and properly use "u64" for the message size that is copied to
+user-space.
+
+Reported-by: Alban Browaeys <prahal@yahoo.com>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/message.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ipc/kdbus/message.c b/ipc/kdbus/message.c
+index 27a5021fe70f..432dba4dcfdc 100644
+--- a/ipc/kdbus/message.c
++++ b/ipc/kdbus/message.c
+@@ -886,9 +886,9 @@ struct kdbus_pool_slice *kdbus_staging_emit(struct kdbus_staging *staging,
+ {
+ 	struct kdbus_item *item, *meta_items = NULL;
+ 	struct kdbus_pool_slice *slice = NULL;
+-	size_t off, size, msg_size, meta_size;
++	size_t off, size, meta_size;
+ 	struct iovec *v;
+-	u64 attach;
++	u64 attach, msg_size;
+ 	int ret;
+ 
+ 	/*
+-- 
+2.4.3
+
