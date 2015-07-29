@@ -506,8 +506,6 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
-Patch465: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
-
 Patch466: input-kill-stupid-messages.patch
 
 Patch467: die-floppy-die.patch
@@ -2021,6 +2019,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Drop acpi_brightness_enable revert patch
+
 * Tue Jul 28 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc4.git1.1
 - Linux v4.2-rc4-44-g67eb890e5e13
 
