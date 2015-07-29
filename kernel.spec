@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -581,8 +581,6 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
-
-Patch504: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2019,6 +2017,9 @@ fi
 #
 # 
 %changelog
+* Wed Jul 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc4.git2.1
+- Linux v4.2-rc4-53-g956325bd55bb
+
 * Wed Jul 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Drop acpi_brightness_enable revert patch
 
