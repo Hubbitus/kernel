@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2019,6 +2019,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 30 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc4.git3.1
+- Linux v4.2-rc4-87-g86ea07ca846a
+
 * Thu Jul 30 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable CRYPTO_DEV_VMX_ENCRYPT on PPC for now to fix Power 8 boot (rhbz 1237089)
 
