@@ -833,6 +833,12 @@ CONFIG_CROS_EC_CHARDEV=m
 CONFIG_R8188EU=m
 # CONFIG_88EU_AP_MODE is not set
 
+# CAN drivers
+# CONFIG_CAN_TI_HECC is not set
+# CONFIG_CAN_FLEXCAN is not set
+# CONFIG_CAN_RCAR is not set
+# CONFIG_CAN_MCP251X is not set
+
 # Needs work/investigation
 # CONFIG_ARM_KPROBES_TEST is not set
 
