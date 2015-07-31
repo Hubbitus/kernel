@@ -16,7 +16,7 @@
 # Set the default dirs/modules to filter out
 driverdirs="atm auxdisplay bcma bluetooth fmc iio infiniband isdn leds media memstick mfd mmc mtd nfc ntb pcmcia platform power ssb staging uio uwb"
 
-netdrvs="appletalk dsa hamradio ieee802154 irda ppp slip usb wireless"
+netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
 ethdrvs="3com adaptec alteon amd atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
 
@@ -28,7 +28,7 @@ usbdrvs="atm wusbcore"
 
 fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs udf ufs"
 
-netprots="appletalk atm ax25 batman-adv bluetooth dccp dsa ieee802154 irda l2tp mac80211 mac802154 netrom nfc rds rfkill rose sctp wireless"
+netprots="appletalk atm ax25 batman-adv bluetooth can dccp dsa ieee802154 irda l2tp mac80211 mac802154 netrom nfc rds rfkill rose sctp wireless"
 
 drmdrvs="ast gma500 mgag200 via nouveau"
 
