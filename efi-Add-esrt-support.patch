@@ -1,4 +1,4 @@
-From c4343b792fe32b46800298444549a71bc6d8e825 Mon Sep 17 00:00:00 2001
+From 081e34b1c72e9e366a9d8046eb1eac850b03561e Mon Sep 17 00:00:00 2001
 From: Peter Jones <pjones@redhat.com>
 Date: Tue, 18 Nov 2014 10:18:22 -0500
 Subject: [PATCH] efi: Add esrt support.
@@ -150,7 +150,7 @@ index d8be608..26eabbc 100644
  obj-$(CONFIG_EFI_VARS_PSTORE)		+= efi-pstore.o
  obj-$(CONFIG_UEFI_CPER)			+= cper.o
 diff --git a/drivers/firmware/efi/efi.c b/drivers/firmware/efi/efi.c
-index 3061bb8..48b4c35 100644
+index e14363d..b060392 100644
 --- a/drivers/firmware/efi/efi.c
 +++ b/drivers/firmware/efi/efi.c
 @@ -39,6 +39,7 @@ struct efi __read_mostly efi = {
@@ -167,10 +167,10 @@ index 3061bb8..48b4c35 100644
  
 -static struct kobject *efi_kobj;
 +struct kobject *efi_kobj;
- static struct kobject *efivars_kobj;
  
  /*
-@@ -232,6 +233,84 @@ err_put:
+  * Let's not leave out systab information that snuck into
+@@ -230,6 +231,84 @@ err_put:
  
  subsys_initcall(efisubsys_init);
  
@@ -255,7 +255,7 @@ index 3061bb8..48b4c35 100644
  
  /*
   * We can't ioremap data in EFI boot services RAM, because we've already mapped
-@@ -274,6 +353,7 @@ static __initdata efi_config_table_type_t common_tables[] = {
+@@ -272,6 +351,7 @@ static __initdata efi_config_table_type_t common_tables[] = {
  	{SMBIOS_TABLE_GUID, "SMBIOS", &efi.smbios},
  	{SMBIOS3_TABLE_GUID, "SMBIOS 3.0", &efi.smbios3},
  	{UGA_IO_PROTOCOL_GUID, "UGA", &efi.uga},
