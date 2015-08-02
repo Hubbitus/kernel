@@ -1,0 +1,38 @@
+From 59637d194abb34c4ed0368b1614494e1f5f72bda Mon Sep 17 00:00:00 2001
+From: Dmitry Tunin <hanipouspilot@gmail.com>
+Date: Sun, 18 Jan 2015 15:44:40 +0300
+Subject: [PATCH] ideapad_laptop: Lenovo G50-30 fix rfkill reports wireless
+ blocked
+
+Lenovo G30-50 does not have a hardware wireless switch and wireless
+is always blocked.
+
+BugLink: https://bugs.launchpad.net/bugs/1397021
+Signed-off-by: Dmitry Tunin <hanipouspilot@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Philippe Coval <philippe.coval@open.eurogiciel.org>
+[dvhart@linux.intel.com: Reordered dmi id per Phillippe's later version]
+Signed-off-by: Darren Hart <dvhart@linux.intel.com>
+---
+ drivers/platform/x86/ideapad-laptop.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/platform/x86/ideapad-laptop.c b/drivers/platform/x86/ideapad-laptop.c
+index b496db8..c98f885 100644
+--- a/drivers/platform/x86/ideapad-laptop.c
++++ b/drivers/platform/x86/ideapad-laptop.c
+@@ -834,6 +834,11 @@ static const struct dmi_system_id no_hw_rfkill_list[] = {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+ 			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo G40-30"),
++	},
++		.ident = "Lenovo G50-30",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "Lenovo G50-30"),
+ 		},
+ 	},
+ 	{
+-- 
+2.4.3
+

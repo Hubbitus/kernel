@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -667,6 +667,26 @@ Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 # rhbz 1227891
 Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
+
+# rhbz 1192270
+Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
+
+# rhbz 1180920 1206724
+Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
+
+#CVE-2015-1333 rhbz 1244171
+Patch26253: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+
+# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
+Patch26254: x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
+Patch26255: x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
+Patch26256: x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
+Patch26257: x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
+Patch26258: x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
+Patch26259: x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
+Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
+Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
+Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1437,6 +1457,26 @@ ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
 
 #rhbz 1227891
 ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
+
+# rhbz 1192270
+ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
+
+# rhbz 1180920 1206724
+ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
+
+#CVE-2015-1333 rhbz 1244171
+ApplyPatch KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+
+# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
+ApplyPatch x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
+ApplyPatch x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
+ApplyPatch x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
+ApplyPatch x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
+ApplyPatch x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
+ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
+ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
+ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
+ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2287,6 +2327,24 @@ fi
 # and build.
 #
 %changelog
+* Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
+- tag and build for CVE fixes
+
+* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
+- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
+
+* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1333 add_key memory leak (rhbz 1244171)
+
+* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix warning from pcmcia (rhbz 1180920 1206724)
+
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
+- Add patches for Ideapad RF switches (rhbz 1192270)
+
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
+- Linux v4.1.3
+
 * Sat Jul 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.1.uksm.bfs.bfq
 - 4.1.2-200.hu.1.uksm.bfs.bfq
 - Update BFQ patches:
