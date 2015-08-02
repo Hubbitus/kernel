@@ -2327,6 +2327,9 @@ fi
 # and build.
 #
 %changelog
+* Sun Aug 02 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.3-201.hu.1.uksm.bfs.bfq
+- 4.1.3-201.hu.1.uksm.bfs.bfq
+
 * Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
 - tag and build for CVE fixes
 
