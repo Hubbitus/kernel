@@ -596,15 +596,13 @@ Patch21242: criu-no-expert.patch
 #rhbz 892811
 Patch21247: ath9k-rx-dma-stop-check.patch
 
-Patch22000: weird-root-dentry-name-debug.patch
-
 ################# Hubbitus patches
 # UKSM
-Patch40001: http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
+Patch40001: uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch
 
 # BFS
-Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
-Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
+Patch40002: bfs-for-kernel-4.1-by-Alfred.patch
+#? Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -617,12 +615,12 @@ Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.pa
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch40007: BFS-3.13-compile-fix-hu.patch
+#? Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
-Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
-Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.1.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.1.0.patch
 
 #? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -633,15 +631,6 @@ Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/
 # My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
 #? Patch40008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #//////////////// end Hubbitus patches
-
-#CVE-2015-0275 rhbz 1193907 1195178
-Patch26138: ext4-Allocate-entire-range-in-zero-range.patch
-
-#rhbz 1196825
-Patch26140: security-yama-Remove-unnecessary-selects-from-Kconfi.patch
-
-#rhbz 1201532
-Patch26168: HID-multitouch-add-support-of-clickpads.patch
 
 #rhbz 1187004
 Patch26170: acpi-video-Allow-forcing-native-backlight-on-non-win.patch
@@ -1253,17 +1242,17 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 ################# Hubbitus patches
 # UKSM
-ApplyPatch http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch
+ApplyPatch uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch --fuzz=2
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/4.0-sched-bfs-462.patch
-ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
-ApplyPatch BFS-3.13-compile-fix-hu.patch
+ApplyPatch bfs-for-kernel-4.1-by-Alfred.patch
+#? ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
+#? ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.0.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.0.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.0.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.0.0.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.1.patch
+ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.1.0.patch
 
 #? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -2298,6 +2287,15 @@ fi
 # and build.
 #
 %changelog
+* Sat Jul 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.1.uksm.bfs.bfq
+- 4.1.2-200.hu.1.uksm.bfs.bfq
+- Update BFQ patches:
+    * http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
+    * http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.1.patch
+    * http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.1.0.patch
+- Rebase patch http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch for Kernel 4.1 - uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch
+- No yet official BFS for kernel 4.1. Use bfs-for-kernel-4.1-by-Alfred.patch from Alfred repo: http://cchalpha.blogspot.ru/2015/06/time-to-have-fun-with-kernel-41.html
+
 * Wed Jul 15 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.2-200
 - Linux v4.1.2 rebase
 
@@ -2306,7 +2304,6 @@ fi
 
 * Tue Jul 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Drop incorrect patches for now (rhbz 1212230)
->>>>>>> 925196e8fe86aad27cbf836012447374e85ffd32
 
 * Tue Jun 30 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.0.7-300.hu.1.uksm.bfs.bfq
 - 4.0.7-300.hu.1.uksm.bfs.bfq
