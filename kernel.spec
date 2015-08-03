@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-# % define buildid .local
+# define buildid .local
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -581,6 +581,8 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
+
+Patch505: 0001-Revert-dm-fix-casting-bug-in-dm_merge_bvec.patch
 
 Patch904: kdbus.patch
 
@@ -2019,6 +2021,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert upstream commit 1c220c69ce to fix i686 booting (rhbz 1247382)
+
 * Fri Jul 31 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc4.git4.1
 - Linux v4.2-rc4-111-g8400935737bf
 
