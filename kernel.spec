@@ -639,6 +639,9 @@ Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 # CVE-2015-5697 (rhbz 1249011 1249013)
 Patch26263: md-use-kzalloc-when-bitmap-is-disabled.patch
 
+#rhbz 1244511
+Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1395,6 +1398,9 @@ ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 
 # CVE-2015-5697 (rhbz 1249011 1249013)
 ApplyPatch md-use-kzalloc-when-bitmap-is-disabled.patch
+
+#rhbz 1244511
+ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2246,6 +2252,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Nicholas Kudriavtsev for Acer Switch 12 Fn keys (rhbz 1244511)
+
 * Tue Aug  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Back port AMD Seattle a0 4.1 NIC driver update
 
