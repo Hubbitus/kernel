@@ -2025,6 +2025,9 @@ fi
 # 
 %changelog
 * Tue Aug 04 2015 Hans de Goede <hdegoede@redhat.com>
+- Always enable mmiotrace when building x86 kernels
+
+* Tue Aug 04 2015 Hans de Goede <hdegoede@redhat.com>
 - Move joydev.ko from kernel-modules-extra to kernel-modules
 
 * Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
