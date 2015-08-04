@@ -1,0 +1,83 @@
+From c9de2830476185f839e6cf3f9a0e5d258a534d5d Mon Sep 17 00:00:00 2001
+From: Mike Snitzer <snitzer@redhat.com>
+Date: Mon, 3 Aug 2015 09:54:58 -0400
+Subject: [PATCH] dm: fix dm_merge_bvec regression on 32 bit systems
+
+A DM regression on 32 bit systems was reported against v4.2-rc3 here:
+https://lkml.org/lkml/2015/7/29/401
+
+Fix this by reverting both commit 1c220c69 ("dm: fix casting bug in
+dm_merge_bvec()") and 148e51ba ("dm: improve documentation and code
+clarity in dm_merge_bvec").  This combined revert is done to eliminate
+the possibility of a partial revert in stable@ kernels.
+
+In hindsight the correct fix, at the time 1c220c69 was applied to fix
+the regression that 148e51ba introduced, should've been to simply revert
+148e51ba.
+
+Reported-by: Josh Boyer <jwboyer@fedoraproject.org>
+Acked-by: Joe Thornber <ejt@redhat.com>
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+Cc: stable@vger.kernel.org # 3.19+
+---
+ drivers/md/dm.c | 27 ++++++++++-----------------
+ 1 file changed, 10 insertions(+), 17 deletions(-)
+
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index ab37ae114e94..0d7ab20c58df 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -1729,7 +1729,8 @@ static int dm_merge_bvec(struct request_queue *q,
+ 	struct mapped_device *md = q->queuedata;
+ 	struct dm_table *map = dm_get_live_table_fast(md);
+ 	struct dm_target *ti;
+-	sector_t max_sectors, max_size = 0;
++	sector_t max_sectors;
++	int max_size = 0;
+ 
+ 	if (unlikely(!map))
+ 		goto out;
+@@ -1742,18 +1743,10 @@ static int dm_merge_bvec(struct request_queue *q,
+ 	 * Find maximum amount of I/O that won't need splitting
+ 	 */
+ 	max_sectors = min(max_io_len(bvm->bi_sector, ti),
+-			  (sector_t) queue_max_sectors(q));
++			  (sector_t) BIO_MAX_SECTORS);
+ 	max_size = (max_sectors << SECTOR_SHIFT) - bvm->bi_size;
+-
+-	/*
+-	 * FIXME: this stop-gap fix _must_ be cleaned up (by passing a sector_t
+-	 * to the targets' merge function since it holds sectors not bytes).
+-	 * Just doing this as an interim fix for stable@ because the more
+-	 * comprehensive cleanup of switching to sector_t will impact every
+-	 * DM target that implements a ->merge hook.
+-	 */
+-	if (max_size > INT_MAX)
+-		max_size = INT_MAX;
++	if (max_size < 0)
++		max_size = 0;
+ 
+ 	/*
+ 	 * merge_bvec_fn() returns number of bytes
+@@ -1761,13 +1754,13 @@ static int dm_merge_bvec(struct request_queue *q,
+ 	 * max is precomputed maximal io size
+ 	 */
+ 	if (max_size && ti->type->merge)
+-		max_size = ti->type->merge(ti, bvm, biovec, (int) max_size);
++		max_size = ti->type->merge(ti, bvm, biovec, max_size);
+ 	/*
+ 	 * If the target doesn't support merge method and some of the devices
+-	 * provided their merge_bvec method (we know this by looking for the
+-	 * max_hw_sectors that dm_set_device_limits may set), then we can't
+-	 * allow bios with multiple vector entries.  So always set max_size
+-	 * to 0, and the code below allows just one page.
++	 * provided their merge_bvec method (we know this by looking at
++	 * queue_max_hw_sectors), then we can't allow bios with multiple vector
++	 * entries.  So always set max_size to 0, and the code below allows
++	 * just one page.
+ 	 */
+ 	else if (queue_max_hw_sectors(q) <= PAGE_SIZE >> 9)
+ 		max_size = 0;
+-- 
+2.4.3
+
