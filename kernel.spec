@@ -636,6 +636,9 @@ Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
 Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
 Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
 
+# CVE-2015-5697 (rhbz 1249011 1249013)
+Patch26263: md-use-kzalloc-when-bitmap-is-disabled.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1389,6 +1392,9 @@ ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
 ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
 ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
 ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+
+# CVE-2015-5697 (rhbz 1249011 1249013)
+ApplyPatch md-use-kzalloc-when-bitmap-is-disabled.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2242,6 +2248,7 @@ fi
 %changelog
 * Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.4-200
 - Linux v4.1.4
+- CVE-2015-5697 info leak in md driver (rhbz 1249011 1249013)
 
 * Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
 - tag and build for CVE fixes
