@@ -2022,6 +2022,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 04 2015 Hans de Goede <hdegoede@redhat.com>
+- Move joydev.ko from kernel-modules-extra to kernel-modules
+
 * Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix i386 boot bug correctly (rhbz 1247382)
 - CVE-2015-5697 info leak in md driver (rhbz 1249011 1249013)
