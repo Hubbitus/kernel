@@ -105,7 +105,6 @@ w6692.ko
 avma1_cs.ko
 elsa_cs.ko
 hfc4s8s_l1.ko
-joydev.ko
 a3d.ko
 adi.ko
 analog.ko
