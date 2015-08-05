@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -583,9 +583,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch505: 0001-dm-fix-dm_merge_bvec-regression-on-32-bit-systems.patch
-
-# CVE-2015-5697 (rhbz 1249011 1249013)
-Patch506: md-use-kzalloc-when-bitmap-is-disabled.patch
 
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
@@ -2027,6 +2024,9 @@ fi
 #
 # 
 %changelog
+* Wed Aug 05 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc5.git2.1
+- Linux v4.2-rc5-42-g4e6b6ee253ce
+
 * Tue Aug 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Patch from Nicholas Kudriavtsev for Acer Switch 12 Fn keys (rhbz 1244511)
 
