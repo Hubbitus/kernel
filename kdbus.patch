@@ -49186,3 +49186,769 @@ index 27a5021fe70f..432dba4dcfdc 100644
 -- 
 2.4.3
 
+From 12000cd279ab5502006441c406ceba5bde44be71 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:20 +0200
+Subject: [PATCH 1/9] kdbus: return EBADSLT on replies without slot
+
+If you send a reply without an active reply slot, we used to return EPERM.
+However, this makes it impossible to distinguish this case from a real
+permission-denied error (eg., LSM). Hence, make sure we return a unique
+error-code if the reply-slot is missing.
+
+With this patch, you get EBADSLT ("Invalid slot") if you call
+KDBUS_CMD_SEND with a reply-cookie that has no valid slot.
+
+Reviewed-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c                       | 2 +-
+ tools/testing/selftests/kdbus/test-message.c | 2 +-
+ tools/testing/selftests/kdbus/test-sync.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index d94b417e0f32..2787bd7d00c1 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -1123,7 +1123,7 @@ static int kdbus_conn_reply(struct kdbus_conn *src,
+ 	mutex_unlock(&dst->lock);
+ 
+ 	if (!reply) {
+-		ret = -EPERM;
++		ret = -EBADSLT;
+ 		goto exit;
+ 	}
+ 
+diff --git a/tools/testing/selftests/kdbus/test-message.c b/tools/testing/selftests/kdbus/test-message.c
+index ddc1e0af877b..563dc859077a 100644
+--- a/tools/testing/selftests/kdbus/test-message.c
++++ b/tools/testing/selftests/kdbus/test-message.c
+@@ -75,7 +75,7 @@ int kdbus_test_message_basic(struct kdbus_test_env *env)
+ 
+ 	/* Faked replies with a valid reply cookie are rejected */
+ 	ret = kdbus_msg_send_reply(conn, time(NULL) ^ cookie, sender->id);
+-	ASSERT_RETURN(ret == -EPERM);
++	ASSERT_RETURN(ret == -EBADSLT);
+ 
+ 	ret = kdbus_free(conn, offset);
+ 	ASSERT_RETURN(ret == 0);
+diff --git a/tools/testing/selftests/kdbus/test-sync.c b/tools/testing/selftests/kdbus/test-sync.c
+index e2be910d2ece..0655a545fbf1 100644
+--- a/tools/testing/selftests/kdbus/test-sync.c
++++ b/tools/testing/selftests/kdbus/test-sync.c
+@@ -235,7 +235,7 @@ static void *run_thread_reply(void *data)
+ 
+ 	/* using an unknown cookie must fail */
+ 	ret = kdbus_msg_send_reply(conn_a, ~cookie, conn_b->id);
+-	if (ret != -EPERM) {
++	if (ret != -EBADSLT) {
+ 		status = TEST_ERR;
+ 		goto exit_thread;
+ 	}
+-- 
+2.4.3
+
+
+From 2fee35fd480b2387e1f148fdc2125cc93708501b Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:21 +0200
+Subject: [PATCH 2/9] kdbus: reduce stack buffer to 256 bytes
+
+This reduces the stack-buffer for small ioctl payloads to 256 bytes. As
+seen during real workloads, this is more than enough. And we really
+should reduce stack pressure. Hence, lets limit the stack buffers to 256
+bytes.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/handle.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/ipc/kdbus/handle.h b/ipc/kdbus/handle.h
+index 8a36c0595091..5dde2c10bed4 100644
+--- a/ipc/kdbus/handle.h
++++ b/ipc/kdbus/handle.h
+@@ -45,7 +45,7 @@ struct kdbus_arg {
+  * @argv:		array of items this command supports
+  * @user:		set by parser to user-space location of current command
+  * @cmd:		set by parser to kernel copy of command payload
+- * @cmd_buf:		512 bytes inline buf to avoid kmalloc() on small cmds
++ * @cmd_buf:		inline buf to avoid kmalloc() on small cmds
+  * @items:		points to item array in @cmd
+  * @items_size:		size of @items in bytes
+  * @is_cmd:		whether this is a command-payload or msg-payload
+@@ -55,7 +55,7 @@ struct kdbus_arg {
+  * the object to kdbus_args_parse(). The parser will copy the command payload
+  * into kernel-space and verify the correctness of the data.
+  *
+- * We use a 512 bytes buffer for small command payloads, to be allocated on
++ * We use a 256 bytes buffer for small command payloads, to be allocated on
+  * stack on syscall entrance.
+  */
+ struct kdbus_args {
+@@ -65,7 +65,7 @@ struct kdbus_args {
+ 
+ 	struct kdbus_cmd __user *user;
+ 	struct kdbus_cmd *cmd;
+-	u8 cmd_buf[512];
++	u8 cmd_buf[256];
+ 
+ 	struct kdbus_item *items;
+ 	size_t items_size;
+-- 
+2.4.3
+
+
+From cff26ca42ae55286f5b8366302812d16bbc4a90a Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:22 +0200
+Subject: [PATCH 3/9] kdbus: use separate counter for message IDs
+
+For each kdbus domain, we maintain an ID-counter to guarantee unique IDs
+across all objects. We also used to use it for message IDs. However, this
+requires touching a shared cacheline on each message transaction, even
+though we never guaranteed global ordering across buses, anyway.
+
+Introduce a separate counter which is used solely for message IDs.
+Semantics stay the same, but it no longer relates to IDs across buses.
+
+Reviewed-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/bus.h     | 2 ++
+ ipc/kdbus/message.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/bus.h b/ipc/kdbus/bus.h
+index 238986eff92f..8c2acaed6258 100644
+--- a/ipc/kdbus/bus.h
++++ b/ipc/kdbus/bus.h
+@@ -44,6 +44,7 @@ struct kdbus_user;
+  * @domain:		Domain of this bus
+  * @creator:		Creator of the bus
+  * @creator_meta:	Meta information about the bus creator
++ * @last_message_id:	Last used message id
+  * @policy_db:		Policy database for this bus
+  * @name_registry:	Name registry of this bus
+  * @conn_rwlock:	Read/Write lock for all lists of child connections
+@@ -67,6 +68,7 @@ struct kdbus_bus {
+ 	struct kdbus_meta_proc *creator_meta;
+ 
+ 	/* protected by own locks */
++	atomic64_t last_message_id;
+ 	struct kdbus_policy_db policy_db;
+ 	struct kdbus_name_registry *name_registry;
+ 
+diff --git a/ipc/kdbus/message.c b/ipc/kdbus/message.c
+index 432dba4dcfdc..ae565cd343f8 100644
+--- a/ipc/kdbus/message.c
++++ b/ipc/kdbus/message.c
+@@ -671,7 +671,7 @@ static struct kdbus_staging *kdbus_staging_new(struct kdbus_bus *bus,
+ 	if (!staging)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	staging->msg_seqnum = atomic64_inc_return(&bus->domain->last_id);
++	staging->msg_seqnum = atomic64_inc_return(&bus->last_message_id);
+ 	staging->n_parts = 0; /* we reserve n_parts, but don't enforce them */
+ 	staging->parts = (void *)(staging + 1);
+ 
+-- 
+2.4.3
+
+
+From 41c64712fef883818dadd5796f7522f675931d16 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:23 +0200
+Subject: [PATCH 4/9] kdbus: move privilege checking in kdbus_conn_new()
+
+Instead of relying on handle.c to perform privilege evaluation and
+passing information along, move this into kdbus_conn_new(). This has the
+benefit that we can now split 'owner' level and 'privileged' levels
+apart. This will be required for following extensions that need to
+distinguish both cases.
+
+Also, pass on 'struct file*' from handle into kdbus_conn_new(). Most
+kernel helpers cannot accept 'struct cred*' but instead only operate on
+files (and access file->f_cred then).
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 41 ++++++++++++++++++++++++++++++++---------
+ ipc/kdbus/connection.h |  6 ++++--
+ ipc/kdbus/handle.c     |  2 +-
+ 3 files changed, 37 insertions(+), 12 deletions(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index 2787bd7d00c1..243cbc77624e 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -52,7 +52,8 @@
+ #define KDBUS_CONN_ACTIVE_BIAS	(INT_MIN + 2)
+ #define KDBUS_CONN_ACTIVE_NEW	(INT_MIN + 1)
+ 
+-static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep, bool privileged,
++static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep,
++					 struct file *file,
+ 					 struct kdbus_cmd_hello *hello,
+ 					 const char *name,
+ 					 const struct kdbus_creds *creds,
+@@ -72,6 +73,8 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep, bool privileged,
+ 	bool is_policy_holder;
+ 	bool is_activator;
+ 	bool is_monitor;
++	bool privileged;
++	bool owner;
+ 	struct kvec kvec;
+ 	int ret;
+ 
+@@ -81,6 +84,25 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep, bool privileged,
+ 		struct kdbus_bloom_parameter bloom;
+ 	} bloom_item;
+ 
++	/*
++	 * A connection is considered privileged, if, and only if, it didn't
++	 * connect through a custom endpoint *and* it has CAP_IPC_OWNER on the
++	 * namespace of the current domain.
++	 * Additionally, a connection is considered equivalent to the bus owner
++	 * if it didn't connect through a custom endpoint *and* it either is
++	 * privileged or the same user as the bus owner.
++	 *
++	 * Bus owners and alike can bypass bus policies. Privileged connections
++	 * can additionally change accounting, modify kernel resources and
++	 * perform restricted operations, as long as they're privileged on the
++	 * same level as the resources they touch.
++	 */
++	privileged = !ep->user &&
++		     file_ns_capable(file, ep->bus->domain->user_namespace,
++				     CAP_IPC_OWNER);
++	owner = !ep->user &&
++		(privileged || uid_eq(file->f_cred->euid, ep->bus->node.uid));
++
+ 	is_monitor = hello->flags & KDBUS_HELLO_MONITOR;
+ 	is_activator = hello->flags & KDBUS_HELLO_ACTIVATOR;
+ 	is_policy_holder = hello->flags & KDBUS_HELLO_POLICY_HOLDER;
+@@ -97,9 +119,9 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep, bool privileged,
+ 		return ERR_PTR(-EINVAL);
+ 	if (is_monitor && ep->user)
+ 		return ERR_PTR(-EOPNOTSUPP);
+-	if (!privileged && (is_activator || is_policy_holder || is_monitor))
++	if (!owner && (is_activator || is_policy_holder || is_monitor))
+ 		return ERR_PTR(-EPERM);
+-	if ((creds || pids || seclabel) && !privileged)
++	if (!owner && (creds || pids || seclabel))
+ 		return ERR_PTR(-EPERM);
+ 
+ 	ret = kdbus_sanitize_attach_flags(hello->attach_flags_send,
+@@ -129,12 +151,13 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep, bool privileged,
+ 	atomic_set(&conn->request_count, 0);
+ 	atomic_set(&conn->lost_count, 0);
+ 	INIT_DELAYED_WORK(&conn->work, kdbus_reply_list_scan_work);
+-	conn->cred = get_current_cred();
++	conn->cred = get_cred(file->f_cred);
+ 	conn->pid = get_pid(task_pid(current));
+ 	get_fs_root(current->fs, &conn->root_path);
+ 	init_waitqueue_head(&conn->wait);
+ 	kdbus_queue_init(&conn->queue);
+ 	conn->privileged = privileged;
++	conn->owner = owner;
+ 	conn->ep = kdbus_ep_ref(ep);
+ 	conn->id = atomic64_inc_return(&bus->domain->last_id);
+ 	conn->flags = hello->flags;
+@@ -1418,7 +1441,7 @@ bool kdbus_conn_policy_own_name(struct kdbus_conn *conn,
+ 			return false;
+ 	}
+ 
+-	if (conn->privileged)
++	if (conn->owner)
+ 		return true;
+ 
+ 	res = kdbus_policy_query(&conn->ep->bus->policy_db, conn_creds,
+@@ -1448,7 +1471,7 @@ bool kdbus_conn_policy_talk(struct kdbus_conn *conn,
+ 					 to, KDBUS_POLICY_TALK))
+ 		return false;
+ 
+-	if (conn->privileged)
++	if (conn->owner)
+ 		return true;
+ 	if (uid_eq(conn_creds->euid, to->cred->uid))
+ 		return true;
+@@ -1567,12 +1590,12 @@ bool kdbus_conn_policy_see_notification(struct kdbus_conn *conn,
+ /**
+  * kdbus_cmd_hello() - handle KDBUS_CMD_HELLO
+  * @ep:			Endpoint to operate on
+- * @privileged:		Whether the caller is privileged
++ * @file:		File this connection is opened on
+  * @argp:		Command payload
+  *
+  * Return: NULL or newly created connection on success, ERR_PTR on failure.
+  */
+-struct kdbus_conn *kdbus_cmd_hello(struct kdbus_ep *ep, bool privileged,
++struct kdbus_conn *kdbus_cmd_hello(struct kdbus_ep *ep, struct file *file,
+ 				   void __user *argp)
+ {
+ 	struct kdbus_cmd_hello *cmd;
+@@ -1607,7 +1630,7 @@ struct kdbus_conn *kdbus_cmd_hello(struct kdbus_ep *ep, bool privileged,
+ 
+ 	item_name = argv[1].item ? argv[1].item->str : NULL;
+ 
+-	c = kdbus_conn_new(ep, privileged, cmd, item_name,
++	c = kdbus_conn_new(ep, file, cmd, item_name,
+ 			   argv[2].item ? &argv[2].item->creds : NULL,
+ 			   argv[3].item ? &argv[3].item->pids : NULL,
+ 			   argv[4].item ? argv[4].item->str : NULL,
+diff --git a/ipc/kdbus/connection.h b/ipc/kdbus/connection.h
+index 5ee864eb0e41..8e0180ace3f6 100644
+--- a/ipc/kdbus/connection.h
++++ b/ipc/kdbus/connection.h
+@@ -73,7 +73,8 @@ struct kdbus_staging;
+  * @activator_of:	Well-known name entry this connection acts as an
+  * @names_list:		List of well-known names
+  * @names_queue_list:	Well-known names this connection waits for
+- * @privileged:		Whether this connection is privileged on the bus
++ * @privileged:		Whether this connection is privileged on the domain
++ * @owner:		Owned by the same user as the bus owner
+  */
+ struct kdbus_conn {
+ 	struct kref kref;
+@@ -116,6 +117,7 @@ struct kdbus_conn {
+ 	struct list_head names_queue_list;
+ 
+ 	bool privileged:1;
++	bool owner:1;
+ };
+ 
+ struct kdbus_conn *kdbus_conn_ref(struct kdbus_conn *conn);
+@@ -154,7 +156,7 @@ bool kdbus_conn_policy_see_notification(struct kdbus_conn *conn,
+ 					const struct kdbus_msg *msg);
+ 
+ /* command dispatcher */
+-struct kdbus_conn *kdbus_cmd_hello(struct kdbus_ep *ep, bool privileged,
++struct kdbus_conn *kdbus_cmd_hello(struct kdbus_ep *ep, struct file *file,
+ 				   void __user *argp);
+ int kdbus_cmd_byebye_unlocked(struct kdbus_conn *conn, void __user *argp);
+ int kdbus_cmd_conn_info(struct kdbus_conn *conn, void __user *argp);
+diff --git a/ipc/kdbus/handle.c b/ipc/kdbus/handle.c
+index e0e06b0e1114..a93c385c6280 100644
+--- a/ipc/kdbus/handle.c
++++ b/ipc/kdbus/handle.c
+@@ -431,7 +431,7 @@ static long kdbus_handle_ioctl_ep(struct file *file, unsigned int cmd,
+ 		break;
+ 
+ 	case KDBUS_CMD_HELLO:
+-		conn = kdbus_cmd_hello(file_ep, handle->privileged, buf);
++		conn = kdbus_cmd_hello(file_ep, file, buf);
+ 		if (IS_ERR_OR_NULL(conn)) {
+ 			ret = PTR_ERR_OR_ZERO(conn);
+ 			break;
+-- 
+2.4.3
+
+
+From 1cd893dae99f8169c0f0620f343e3ee2379d0d28 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:24 +0200
+Subject: [PATCH 5/9] kdbus: perform accounting on proxied uids
+
+If a connection proxies a uid, we should make sure to perform accounting
+on that passed uid. Otherwise, limits will be shared across all proxied
+users (or we'd require the proxy to run setuid() and thus require
+CAP_SETUID).
+However, this is only allowed if the proxy is privileged on the bus. That
+is, it must have CAP_IPC_ADMIN on the domain and the passed uid must be
+mapped in that domain.
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index 243cbc77624e..c81888ed1138 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -237,11 +237,21 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep,
+ 	 * Note that limits are always accounted against the real UID, not
+ 	 * the effective UID (cred->user always points to the accounting of
+ 	 * cred->uid, not cred->euid).
++	 * In case the caller is privileged, we allow changing the accounting
++	 * to the faked user.
+ 	 */
+ 	if (ep->user) {
+ 		conn->user = kdbus_user_ref(ep->user);
+ 	} else {
+-		conn->user = kdbus_user_lookup(ep->bus->domain, current_uid());
++		kuid_t uid;
++
++		if (conn->meta_fake && uid_valid(conn->meta_fake->uid) &&
++		    conn->privileged)
++			uid = conn->meta_fake->uid;
++		else
++			uid = conn->cred->uid;
++
++		conn->user = kdbus_user_lookup(ep->bus->domain, uid);
+ 		if (IS_ERR(conn->user)) {
+ 			ret = PTR_ERR(conn->user);
+ 			conn->user = NULL;
+-- 
+2.4.3
+
+
+From 9dad3c87e273ac8e895ec86252bd79792d49da77 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:25 +0200
+Subject: [PATCH 6/9] kdbus: inline privilege checks
+
+Instead of caching privilege information in 'kdbus_handle' (and thus
+increasing the size of each handle by 8 byte), perform privilege checks
+on the cached creds in file->f_cred inline. None of the functions that
+need those checks is a fast path (in fact, it's just EP_MAKE that needs
+it right now), so there's no need to cache the data.
+
+If more functions need this check later on, we should turn it into a
+small static helper.
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/handle.c | 34 +++++++++++-----------------------
+ 1 file changed, 11 insertions(+), 23 deletions(-)
+
+diff --git a/ipc/kdbus/handle.c b/ipc/kdbus/handle.c
+index a93c385c6280..4d41ecf9cc7d 100644
+--- a/ipc/kdbus/handle.c
++++ b/ipc/kdbus/handle.c
+@@ -264,7 +264,6 @@ enum kdbus_handle_type {
+  * @bus_owner:		bus this handle owns
+  * @ep_owner:		endpoint this handle owns
+  * @conn:		connection this handle owns
+- * @privileged:		Flag to mark a handle as privileged
+  */
+ struct kdbus_handle {
+ 	struct mutex lock;
+@@ -275,8 +274,6 @@ struct kdbus_handle {
+ 		struct kdbus_ep *ep_owner;
+ 		struct kdbus_conn *conn;
+ 	};
+-
+-	bool privileged:1;
+ };
+ 
+ static int kdbus_handle_open(struct inode *inode, struct file *file)
+@@ -298,23 +295,6 @@ static int kdbus_handle_open(struct inode *inode, struct file *file)
+ 	mutex_init(&handle->lock);
+ 	handle->type = KDBUS_HANDLE_NONE;
+ 
+-	if (node->type == KDBUS_NODE_ENDPOINT) {
+-		struct kdbus_ep *ep = kdbus_ep_from_node(node);
+-		struct kdbus_bus *bus = ep->bus;
+-
+-		/*
+-		 * A connection is privileged if it is opened on an endpoint
+-		 * without custom policy and either:
+-		 *   * the user has CAP_IPC_OWNER in the domain user namespace
+-		 * or
+-		 *   * the callers euid matches the uid of the bus creator
+-		 */
+-		if (!ep->user &&
+-		    (ns_capable(bus->domain->user_namespace, CAP_IPC_OWNER) ||
+-		     uid_eq(file->f_cred->euid, bus->node.uid)))
+-			handle->privileged = true;
+-	}
+-
+ 	file->private_data = handle;
+ 	ret = 0;
+ 
+@@ -406,6 +386,7 @@ static long kdbus_handle_ioctl_ep(struct file *file, unsigned int cmd,
+ 	struct kdbus_handle *handle = file->private_data;
+ 	struct kdbus_node *node = file_inode(file)->i_private;
+ 	struct kdbus_ep *ep, *file_ep = kdbus_ep_from_node(node);
++	struct kdbus_bus *bus = file_ep->bus;
+ 	struct kdbus_conn *conn;
+ 	int ret = 0;
+ 
+@@ -413,14 +394,20 @@ static long kdbus_handle_ioctl_ep(struct file *file, unsigned int cmd,
+ 		return -ESHUTDOWN;
+ 
+ 	switch (cmd) {
+-	case KDBUS_CMD_ENDPOINT_MAKE:
++	case KDBUS_CMD_ENDPOINT_MAKE: {
++		bool priv;
++
++		priv = uid_eq(file->f_cred->euid, bus->node.uid) ||
++		       file_ns_capable(file, bus->domain->user_namespace,
++				       CAP_IPC_OWNER);
++
+ 		/* creating custom endpoints is a privileged operation */
+-		if (!handle->privileged) {
++		if (file_ep->user || !priv) {
+ 			ret = -EPERM;
+ 			break;
+ 		}
+ 
+-		ep = kdbus_cmd_ep_make(file_ep->bus, buf);
++		ep = kdbus_cmd_ep_make(bus, buf);
+ 		if (IS_ERR_OR_NULL(ep)) {
+ 			ret = PTR_ERR_OR_ZERO(ep);
+ 			break;
+@@ -429,6 +416,7 @@ static long kdbus_handle_ioctl_ep(struct file *file, unsigned int cmd,
+ 		handle->ep_owner = ep;
+ 		ret = KDBUS_HANDLE_EP_OWNER;
+ 		break;
++	}
+ 
+ 	case KDBUS_CMD_HELLO:
+ 		conn = kdbus_cmd_hello(file_ep, file, buf);
+-- 
+2.4.3
+
+
+From c4bf3679fb862abfc7064c975a5782cdb2a01c9e Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:26 +0200
+Subject: [PATCH 7/9] kdbus: consolidate common code
+
+Move the file-credential checkers into kdbus_ep_*() helper functions to
+avoid hard-coding the same behavior in multiple places.
+
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ ipc/kdbus/connection.c | 20 ++------------------
+ ipc/kdbus/endpoint.c   | 28 ++++++++++++++++++++++++++++
+ ipc/kdbus/endpoint.h   |  3 +++
+ ipc/kdbus/handle.c     |  8 +-------
+ 4 files changed, 34 insertions(+), 25 deletions(-)
+
+diff --git a/ipc/kdbus/connection.c b/ipc/kdbus/connection.c
+index c81888ed1138..aa3296ea4f93 100644
+--- a/ipc/kdbus/connection.c
++++ b/ipc/kdbus/connection.c
+@@ -84,24 +84,8 @@ static struct kdbus_conn *kdbus_conn_new(struct kdbus_ep *ep,
+ 		struct kdbus_bloom_parameter bloom;
+ 	} bloom_item;
+ 
+-	/*
+-	 * A connection is considered privileged, if, and only if, it didn't
+-	 * connect through a custom endpoint *and* it has CAP_IPC_OWNER on the
+-	 * namespace of the current domain.
+-	 * Additionally, a connection is considered equivalent to the bus owner
+-	 * if it didn't connect through a custom endpoint *and* it either is
+-	 * privileged or the same user as the bus owner.
+-	 *
+-	 * Bus owners and alike can bypass bus policies. Privileged connections
+-	 * can additionally change accounting, modify kernel resources and
+-	 * perform restricted operations, as long as they're privileged on the
+-	 * same level as the resources they touch.
+-	 */
+-	privileged = !ep->user &&
+-		     file_ns_capable(file, ep->bus->domain->user_namespace,
+-				     CAP_IPC_OWNER);
+-	owner = !ep->user &&
+-		(privileged || uid_eq(file->f_cred->euid, ep->bus->node.uid));
++	privileged = kdbus_ep_is_privileged(ep, file);
++	owner = kdbus_ep_is_owner(ep, file);
+ 
+ 	is_monitor = hello->flags & KDBUS_HELLO_MONITOR;
+ 	is_activator = hello->flags & KDBUS_HELLO_ACTIVATOR;
+diff --git a/ipc/kdbus/endpoint.c b/ipc/kdbus/endpoint.c
+index 977964dbb44a..44e7a20de9c2 100644
+--- a/ipc/kdbus/endpoint.c
++++ b/ipc/kdbus/endpoint.c
+@@ -184,6 +184,34 @@ struct kdbus_ep *kdbus_ep_unref(struct kdbus_ep *ep)
+ }
+ 
+ /**
++ * kdbus_ep_is_privileged() - check whether a file is privileged
++ * @ep:		endpoint to operate on
++ * @file:	file to test
++ *
++ * Return: True if @file is privileged in the domain of @ep.
++ */
++bool kdbus_ep_is_privileged(struct kdbus_ep *ep, struct file *file)
++{
++	return !ep->user &&
++		file_ns_capable(file, ep->bus->domain->user_namespace,
++				CAP_IPC_OWNER);
++}
++
++/**
++ * kdbus_ep_is_owner() - check whether a file should be treated as bus owner
++ * @ep:		endpoint to operate on
++ * @file:	file to test
++ *
++ * Return: True if @file should be treated as bus owner on @ep
++ */
++bool kdbus_ep_is_owner(struct kdbus_ep *ep, struct file *file)
++{
++	return !ep->user &&
++		(uid_eq(file->f_cred->euid, ep->bus->node.uid) ||
++		 kdbus_ep_is_privileged(ep, file));
++}
++
++/**
+  * kdbus_cmd_ep_make() - handle KDBUS_CMD_ENDPOINT_MAKE
+  * @bus:		bus to operate on
+  * @argp:		command payload
+diff --git a/ipc/kdbus/endpoint.h b/ipc/kdbus/endpoint.h
+index bc1b94a70f93..e0da59f01a7a 100644
+--- a/ipc/kdbus/endpoint.h
++++ b/ipc/kdbus/endpoint.h
+@@ -61,6 +61,9 @@ struct kdbus_ep *kdbus_ep_new(struct kdbus_bus *bus, const char *name,
+ struct kdbus_ep *kdbus_ep_ref(struct kdbus_ep *ep);
+ struct kdbus_ep *kdbus_ep_unref(struct kdbus_ep *ep);
+ 
++bool kdbus_ep_is_privileged(struct kdbus_ep *ep, struct file *file);
++bool kdbus_ep_is_owner(struct kdbus_ep *ep, struct file *file);
++
+ struct kdbus_ep *kdbus_cmd_ep_make(struct kdbus_bus *bus, void __user *argp);
+ int kdbus_cmd_ep_update(struct kdbus_ep *ep, void __user *argp);
+ 
+diff --git a/ipc/kdbus/handle.c b/ipc/kdbus/handle.c
+index 4d41ecf9cc7d..fc60932d69c7 100644
+--- a/ipc/kdbus/handle.c
++++ b/ipc/kdbus/handle.c
+@@ -395,14 +395,8 @@ static long kdbus_handle_ioctl_ep(struct file *file, unsigned int cmd,
+ 
+ 	switch (cmd) {
+ 	case KDBUS_CMD_ENDPOINT_MAKE: {
+-		bool priv;
+-
+-		priv = uid_eq(file->f_cred->euid, bus->node.uid) ||
+-		       file_ns_capable(file, bus->domain->user_namespace,
+-				       CAP_IPC_OWNER);
+-
+ 		/* creating custom endpoints is a privileged operation */
+-		if (file_ep->user || !priv) {
++		if (!kdbus_ep_is_owner(file_ep, file)) {
+ 			ret = -EPERM;
+ 			break;
+ 		}
+-- 
+2.4.3
+
+
+From 146f50d92e16b684da73ecbb290d980babe98366 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:27 +0200
+Subject: [PATCH 8/9] kdbus/samples: skip if __NR_memfd_create is not defined
+
+We require __NR_memfd_create for the kdbus samples. Make sure we skip
+compilation if the target architecture and kernel do not support memfds.
+
+Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+Reviewed-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ samples/kdbus/kdbus-workers.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/samples/kdbus/kdbus-workers.c b/samples/kdbus/kdbus-workers.c
+index c3ba958639f3..5a6dfdce3bfd 100644
+--- a/samples/kdbus/kdbus-workers.c
++++ b/samples/kdbus/kdbus-workers.c
+@@ -59,9 +59,11 @@
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <sys/syscall.h>
+ 
+ /* glibc < 2.7 does not ship sys/signalfd.h */
+-#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 7
++/* we require kernels with __NR_memfd_create */
++#if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 7 && defined(__NR_memfd_create)
+ 
+ #include <ctype.h>
+ #include <errno.h>
+@@ -75,7 +77,6 @@
+ #include <sys/mman.h>
+ #include <sys/poll.h>
+ #include <sys/signalfd.h>
+-#include <sys/syscall.h>
+ #include <sys/time.h>
+ #include <sys/wait.h>
+ #include <time.h>
+-- 
+2.4.3
+
+
+From 917ee9c6252234fdb8e08670d3c31b6cef18e902 Mon Sep 17 00:00:00 2001
+From: David Herrmann <dh.herrmann@gmail.com>
+Date: Thu, 6 Aug 2015 10:21:28 +0200
+Subject: [PATCH 9/9] kdbus/tests: properly parse KDBUS_CMD_LIST objects
+
+There is no reason to assume the information returned by KDBUS_CMD_LIST
+contains only a single KDBUS_ITEM_OWNED_NAME. Parse each of them properly
+and don't bail out early.
+
+Reviewed-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: David Herrmann <dh.herrmann@gmail.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ tools/testing/selftests/kdbus/kdbus-util.c |  9 +++++----
+ tools/testing/selftests/kdbus/test-names.c | 17 +++++++++++------
+ 2 files changed, 16 insertions(+), 10 deletions(-)
+
+diff --git a/tools/testing/selftests/kdbus/kdbus-util.c b/tools/testing/selftests/kdbus/kdbus-util.c
+index a5e54ca3a492..82fa89b1a881 100644
+--- a/tools/testing/selftests/kdbus/kdbus-util.c
++++ b/tools/testing/selftests/kdbus/kdbus-util.c
+@@ -1155,11 +1155,12 @@ int kdbus_list(struct kdbus_conn *conn, uint64_t flags)
+ 			if (item->type == KDBUS_ITEM_OWNED_NAME) {
+ 				n = item->name.name;
+ 				flags = item->name.flags;
+-			}
+ 
+-		kdbus_printf("%8llu flags=0x%08llx conn=0x%08llx '%s'\n",
+-			     name->id, (unsigned long long) flags,
+-			     name->flags, n);
++				kdbus_printf("%8llu flags=0x%08llx conn=0x%08llx '%s'\n",
++					     name->id,
++					     (unsigned long long) flags,
++					     name->flags, n);
++			}
+ 	}
+ 	kdbus_printf("\n");
+ 
+diff --git a/tools/testing/selftests/kdbus/test-names.c b/tools/testing/selftests/kdbus/test-names.c
+index 66ebb47370eb..fd4ac5adc6d2 100644
+--- a/tools/testing/selftests/kdbus/test-names.c
++++ b/tools/testing/selftests/kdbus/test-names.c
+@@ -35,15 +35,20 @@ static int conn_is_name_owner(const struct kdbus_conn *conn,
+ 		struct kdbus_item *item;
+ 		const char *n = NULL;
+ 
+-		KDBUS_ITEM_FOREACH(item, name, items)
+-			if (item->type == KDBUS_ITEM_OWNED_NAME)
++		KDBUS_ITEM_FOREACH(item, name, items) {
++			if (item->type == KDBUS_ITEM_OWNED_NAME) {
+ 				n = item->name.name;
+ 
+-		if (name->id == conn->id &&
+-		    n && strcmp(needle, n) == 0) {
+-			found = true;
+-			break;
++				if (name->id == conn->id &&
++				    n && strcmp(needle, n) == 0) {
++					found = true;
++					break;
++				}
++			}
+ 		}
++
++		if (found)
++			break;
+ 	}
+ 
+ 	ret = kdbus_free(conn, cmd_list.offset);
+-- 
+2.4.3
+
