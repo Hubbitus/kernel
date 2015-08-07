@@ -587,6 +587,8 @@ Patch505: 0001-dm-fix-dm_merge_bvec-regression-on-32-bit-systems.patch
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
+Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
