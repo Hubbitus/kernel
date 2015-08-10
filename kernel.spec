@@ -642,6 +642,10 @@ Patch26263: md-use-kzalloc-when-bitmap-is-disabled.patch
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
+#rhbz 1251877 1251880 1250279 1248741
+# and probably more since ugh use after free bugs
+Patch26264: HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1401,6 +1405,9 @@ ApplyPatch md-use-kzalloc-when-bitmap-is-disabled.patch
 
 #rhbz 1244511
 ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
+#rhbz 1251877 1251880 1250279 1248741
+ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2252,6 +2259,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 10 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix use after free in HID input (rhbz 1251877 1251880 1250279 1248741)
+
 * Tue Aug 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Patch from Nicholas Kudriavtsev for Acer Switch 12 Fn keys (rhbz 1244511)
 
