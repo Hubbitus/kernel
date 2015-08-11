@@ -2024,6 +2024,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop UACCESS_WITH_MEMCPY on ARMv7 as it's broken (rhbz 1250613)
+
 * Sun Aug 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc6.git0.1
 - Linux v4.2-rc6
 
