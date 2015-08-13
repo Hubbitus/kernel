@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -642,12 +642,6 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-#rhbz 1210857
-Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220118
-Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1217249
@@ -674,9 +668,6 @@ Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
-#CVE-2015-1333 rhbz 1244171
-Patch26253: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
-
 # CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
 Patch26254: x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
 Patch26255: x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
@@ -687,6 +678,16 @@ Patch26259: x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
 Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
 Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
 Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+
+# CVE-2015-5697 (rhbz 1249011 1249013)
+Patch26263: md-use-kzalloc-when-bitmap-is-disabled.patch
+
+#rhbz 1244511
+Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
+#rhbz 1251877 1251880 1250279 1248741
+# and probably more since ugh use after free bugs
+Patch26264: HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1427,12 +1428,6 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-#rhbz 1210857
-ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220118
-ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1217249
@@ -1464,9 +1459,6 @@ ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
-#CVE-2015-1333 rhbz 1244171
-ApplyPatch KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
-
 # CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
 ApplyPatch x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
 ApplyPatch x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
@@ -1477,6 +1469,15 @@ ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
 ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
 ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
 ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+
+# CVE-2015-5697 (rhbz 1249011 1249013)
+ApplyPatch md-use-kzalloc-when-bitmap-is-disabled.patch
+
+#rhbz 1244511
+ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
+#rhbz 1251877 1251880 1250279 1248741
+ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2327,6 +2328,25 @@ fi
 # and build.
 #
 %changelog
+* Tue Aug 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop UACCESS_WITH_MEMCPY on ARMv7 as it's broken (rhbz 1250613)
+
+* Mon Aug 10 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.5-200
+- Linux v4.1.5
+
+* Mon Aug 10 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix use after free in HID input (rhbz 1251877 1251880 1250279 1248741)
+
+* Tue Aug 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Nicholas Kudriavtsev for Acer Switch 12 Fn keys (rhbz 1244511)
+
+* Tue Aug  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Back port AMD Seattle a0 4.1 NIC driver update
+
+* Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.4-200
+- Linux v4.1.4
+- CVE-2015-5697 info leak in md driver (rhbz 1249011 1249013)
+
 * Sun Aug 02 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.3-201.hu.1.uksm.bfs.bfq
 - 4.1.3-201.hu.1.uksm.bfs.bfq
 
