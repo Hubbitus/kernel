@@ -587,6 +587,9 @@ Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
+#rhbz 1239050
+Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2022,6 +2025,9 @@ fi
 #
 # 
 %changelog
+* Sat Aug 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Hans de Goede to add yoga 3 rfkill quirk (rhbz 1239050)
+
 * Fri Aug 14 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc6.git1.1
 - Linux v4.2-rc6-130-g7ddab73346a1
 
