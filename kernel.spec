@@ -646,6 +646,9 @@ Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 # and probably more since ugh use after free bugs
 Patch26264: HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
 
+#rhbz 1239050
+Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1408,6 +1411,9 @@ ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
 #rhbz 1251877 1251880 1250279 1248741
 ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
+
+#rhbz 1239050
+ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2259,6 +2265,9 @@ fi
 #
 # 
 %changelog
+* Sat Aug 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Hans de Goede to add yoga 3 rfkill quirk (rhbz 1239050)
+
 * Tue Aug 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop UACCESS_WITH_MEMCPY on ARMv7 as it's broken (rhbz 1250613)
 
