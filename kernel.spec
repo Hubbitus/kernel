@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2027,6 +2027,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git0.1
+- Linux v4.2-rc7
+
 * Sat Aug 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Patch from Hans de Goede to add yoga 3 rfkill quirk (rhbz 1239050)
 
