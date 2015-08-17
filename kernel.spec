@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -613,9 +613,6 @@ Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
-# CVE-2015-XXXX rhbz 1230770 1230774
-Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
 # rhbz 1227891
 Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
@@ -624,20 +621,6 @@ Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 
 # rhbz 1180920 1206724
 Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
-
-# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
-Patch26254: x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
-Patch26255: x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
-Patch26256: x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
-Patch26257: x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
-Patch26258: x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
-Patch26259: x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
-Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
-Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
-Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
-
-# CVE-2015-5697 (rhbz 1249011 1249013)
-Patch26263: md-use-kzalloc-when-bitmap-is-disabled.patch
 
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
@@ -1383,9 +1366,6 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 # pplyPatch Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
 # pplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-# CVE-2015-XXXX rhbz 1230770 1230774
-ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
 #rhbz 1227891
 ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
@@ -1395,20 +1375,6 @@ ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
-# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
-ApplyPatch x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
-ApplyPatch x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
-ApplyPatch x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
-ApplyPatch x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
-ApplyPatch x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
-ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
-ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
-ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
-ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
-
-# CVE-2015-5697 (rhbz 1249011 1249013)
-ApplyPatch md-use-kzalloc-when-bitmap-is-disabled.patch
-
 #rhbz 1244511
 ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
@@ -1417,6 +1383,9 @@ ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
 
 #rhbz 1239050
 ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
+#rhbz 1253789
+ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2268,6 +2237,10 @@ fi
 #
 # 
 %changelog
+* Mon Aug 17 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.6-200
+- Linux v4.1.6
+- Actually apply the fix for rhbz 1253789
+
 * Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix iscsi issue (rhbz 1253789)
 
