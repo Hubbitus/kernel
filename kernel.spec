@@ -590,6 +590,9 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
+#rhbz 1253789
+Patch510: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2027,6 +2030,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi issue (rhbz 1253789)
+
 * Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git0.1
 - Linux v4.2-rc7
 
