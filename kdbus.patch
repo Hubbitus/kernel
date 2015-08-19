@@ -51834,3 +51834,66 @@ index 9217465f3ff1..e400dc86a2f5 100644
 -- 
 2.4.3
 
+From: Lubomir Rintel <lkundrak@v3.sk>
+Date: 2015-08-14 13:21:43
+Subject: kdbus: create /sys/fs/kdbus with sysfs_create_mount_point()
+
+Since 0cbee99269 user-namespace pull, if a kdbusfs is mounted on a
+location that's not created with sysfs_create_mount_point the user
+namespaces are not allowed to mount their sysfs instances.
+
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+Applies on top of char-misc/kdbus a36324913.
+
+ ipc/kdbus/main.c | 13 +++++--------
+ 1 file changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/ipc/kdbus/main.c b/ipc/kdbus/main.c
+index 1ad4dc8..c2117ea 100644
+--- a/ipc/kdbus/main.c
++++ b/ipc/kdbus/main.c
+@@ -75,16 +75,13 @@
+  *  '» struct kdbus_ep *ep (owned)
+  */
+ 
+-/* kdbus mount-point /sys/fs/kdbus */
+-static struct kobject *kdbus_dir;
+-
+ static int __init kdbus_init(void)
+ {
+ 	int ret;
+ 
+-	kdbus_dir = kobject_create_and_add(KBUILD_MODNAME, fs_kobj);
+-	if (!kdbus_dir)
+-		return -ENOMEM;
++	ret = sysfs_create_mount_point(fs_kobj, KBUILD_MODNAME);
++	if (ret)
++		return ret;
+ 
+ 	ret = kdbus_fs_init();
+ 	if (ret < 0) {
+@@ -96,14 +93,14 @@ static int __init kdbus_init(void)
+ 	return 0;
+ 
+ exit_dir:
+-	kobject_put(kdbus_dir);
++	sysfs_remove_mount_point(fs_kobj, KBUILD_MODNAME);
+ 	return ret;
+ }
+ 
+ static void __exit kdbus_exit(void)
+ {
+ 	kdbus_fs_exit();
+-	kobject_put(kdbus_dir);
++	sysfs_remove_mount_point(fs_kobj, KBUILD_MODNAME);
+ 	ida_destroy(&kdbus_node_ida);
+ }
+ 
+-- 
+2.4.3
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-fsdevel" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
