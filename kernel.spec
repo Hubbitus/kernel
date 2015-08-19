@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 0
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -589,6 +589,9 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
+#rhbz 1253789
+Patch510: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
 Patch904: kdbus.patch
 
@@ -2027,6 +2030,15 @@ fi
 #
 # 
 %changelog
+* Wed Aug 19 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git2.1
+- Linux v4.2-rc7-24-g1b647a166f07
+
+* Tue Aug 18 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git1.1
+- Linux v4.2-rc7-15-gbf6740281ed5
+
+* Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi issue (rhbz 1253789)
+
 * Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git0.1
 - Linux v4.2-rc7
 
