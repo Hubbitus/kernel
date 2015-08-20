@@ -635,6 +635,9 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 #rhbz 1253789
 Patch511: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
+#rhbz 1250717
+Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1386,6 +1389,9 @@ ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 #rhbz 1253789
 ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+
+#rhbz 1250717
+ApplyPatch ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2237,6 +2243,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect ext4 freezing behavior on non-journaled fs (rhbz 1250717)
+
 * Mon Aug 17 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.6-200
 - Linux v4.1.6
 - Actually apply the fix for rhbz 1253789
