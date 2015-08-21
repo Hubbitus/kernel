@@ -2031,6 +2031,9 @@ fi
 #
 # 
 %changelog
+* Fri Aug 21 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor config updates for ARMv7
+
 * Thu Aug 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix incorrect ext4 freezing behavior on non-journaled fs (rhbz 1250717)
 
