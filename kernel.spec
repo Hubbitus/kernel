@@ -2243,6 +2243,9 @@ fi
 #
 # 
 %changelog
+* Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable EFI_VARS (rhbz 1252137)
+
 * Thu Aug 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix incorrect ext4 freezing behavior on non-journaled fs (rhbz 1250717)
 
