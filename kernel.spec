@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable EFI_VARS (rhbz 1252137)
+
 * Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc7.git4.1
 - Linux v4.2-rc7-100-ge45fc85a2f37
 
