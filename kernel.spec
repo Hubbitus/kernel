@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 7
+%define rcrev 8
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git0.1
+- Linux v4.2-rc8
+
 * Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Disable EFI_VARS (rhbz 1252137)
 
