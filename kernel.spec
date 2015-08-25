@@ -641,6 +641,9 @@ Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
 #CVE-2015-6666 rhbz 1256746 1256753
 Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
 
+#rhbz 1256281
+Patch26265: mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1398,6 +1401,9 @@ ApplyPatch ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
 #CVE-2015-6666 rhbz 1256746 1256753
 ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
+
+#rhbz 1256281
+ApplyPatch mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2249,6 +2255,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix DMA leak from sdhci (rhbz 1256281)
+
 * Tue Aug 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-6666 x86_64 NT flag handling DoS (rhbz 1256746 1256753)
 
