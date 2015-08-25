@@ -1,4 +1,4 @@
-From dfc9fad3e582c41b7e7cedc4d7fbbde6942fdfed Mon Sep 17 00:00:00 2001
+From 5b942146e110c49f52bbaa034273b3affd787dfb Mon Sep 17 00:00:00 2001
 From: Haibo Chen <haibo.chen@freescale.com>
 Date: Tue, 25 Aug 2015 10:02:11 +0800
 Subject: [PATCH] mmc: sdhci: fix dma memory leak in sdhci_pre_req()
@@ -20,10 +20,14 @@ Fixes: commit 348487cb28e66b0 ("mmc: sdhci: use pipeline mmc requests to improve
 Cc: stable@vger.kernel.org # 4.0+
 Reported-and-tested-by: Jiri Slaby <jslaby@suse.cz>
 Signed-off-by: Haibo Chen <haibo.chen@freescale.com>
+[labbott@redhat.com: Add extra mmc field for compilation]
+Signed-off-by: Laura Abbott <labbott@redhat.com>
+
 ---
  drivers/mmc/host/sdhci.c | 67 ++++++++++++++++++------------------------------
  drivers/mmc/host/sdhci.h |  8 +++---
- 2 files changed, 29 insertions(+), 46 deletions(-)
+ include/linux/mmc/core.h |  1 +
+ 3 files changed, 30 insertions(+), 46 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
 index bec8a30..ef5b604 100644
@@ -202,6 +206,18 @@ index e639b7f..eea23f6 100644
  	unsigned long private[0] ____cacheline_aligned;
  };
  
+diff --git a/include/linux/mmc/core.h b/include/linux/mmc/core.h
+index de722d4e..258daf9 100644
+--- a/include/linux/mmc/core.h
++++ b/include/linux/mmc/core.h
+@@ -121,6 +121,7 @@ struct mmc_data {
+ 	struct mmc_request	*mrq;		/* associated request */
+ 
+ 	unsigned int		sg_len;		/* size of scatter list */
++	int			sg_count;	/* mapped sg entries */
+ 	struct scatterlist	*sg;		/* I/O scatter list */
+ 	s32			host_cookie;	/* host private data */
+ };
 -- 
 2.4.3
 

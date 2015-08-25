@@ -2256,6 +2256,9 @@ fi
 # 
 %changelog
 * Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
+- Correct the sdhci DMA leak patch to actually compile (oops)
+
+* Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
 - Fix DMA leak from sdhci (rhbz 1256281)
 
 * Tue Aug 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
