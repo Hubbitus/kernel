@@ -638,6 +638,9 @@ Patch511: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 #rhbz 1250717
 Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
+#CVE-2015-6666 rhbz 1256746 1256753
+Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1392,6 +1395,9 @@ ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
 #rhbz 1250717
 ApplyPatch ext4-dont-manipulate-recovery-flag-when-freezing.patch
+
+#CVE-2015-6666 rhbz 1256746 1256753
+ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2243,6 +2249,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-6666 x86_64 NT flag handling DoS (rhbz 1256746 1256753)
+
 * Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Disable EFI_VARS (rhbz 1252137)
 
