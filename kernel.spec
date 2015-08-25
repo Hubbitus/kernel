@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 24 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in GPIO_OMAP to fix BeagleBone boot on mSD (changes in 4.2 upstream)
+
 * Mon Aug 24 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git0.1
 - Linux v4.2-rc8
 

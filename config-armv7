@@ -51,7 +51,8 @@ CONFIG_SERIAL_OMAP=y
 CONFIG_SERIAL_OMAP_CONSOLE=y
 CONFIG_SERIAL_8250_OMAP=m
 
-CONFIG_GPIO_OMAP=m
+# Needed by omap_hsmmc for card detect on at least the am33xx (BBone) platforms (changed in 4.2)
+CONFIG_GPIO_OMAP=y
 CONFIG_GPIO_TWL4030=m
 CONFIG_GPIO_TWL6040=m
 CONFIG_I2C_OMAP=m
