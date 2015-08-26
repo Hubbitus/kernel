@@ -82,7 +82,3 @@ config-release:
 
 	@# Change defaults back to sane things.
 	@perl -pi -e 's/CONFIG_MAXSMP=y/# CONFIG_MAXSMP is not set/' config-x86-generic
-
-	@perl -pi -e 's/CONFIG_SCHEDSTATS=y/# CONFIG_SCHEDSTATS is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_LATENCYTOP=y/# CONFIG_LATENCYTOP is not set/' config-nodebug
-

@@ -2031,6 +2031,9 @@ fi
 #
 # 
 %changelog
+* Wed Aug 26 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable SCHEDSTATS and LATENCYTOP again (rhbz 1013225)
+
 * Mon Aug 24 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build in GPIO_OMAP to fix BeagleBone boot on mSD (changes in 4.2 upstream)
 
