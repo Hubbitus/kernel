@@ -373,7 +373,7 @@ BuildRequires: net-tools, hostname, bc
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 %ifnarch s390 s390x %{arm}
 BuildRequires: numactl-devel
