@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git2.1
+- Linux v4.2-rc8-10-gf9ed72dde34e
+
 * Wed Aug 26 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git1.1
 - Linux v4.2-rc8-7-gf5db4b31b315
 - Fixes x2apic panic (rhbz 1224764)
