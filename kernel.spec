@@ -602,6 +602,10 @@ Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 #rhbz 1212201
 Patch514: drm-qxl-validate-monitors-config-modes.patch
 
+#rhbz 1257500
+Patch517: vmwgfx-Rework-device-initialization.patch
+Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2039,6 +2043,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
+
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git2.1
 - Linux v4.2-rc8-10-gf9ed72dde34e
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
