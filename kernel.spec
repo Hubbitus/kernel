@@ -599,6 +599,9 @@ Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
 #rhbz 1257534
 Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
+#rhbz 1212201
+Patch514: drm-qxl-validate-monitors-config-modes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2037,6 +2040,7 @@ fi
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git2.1
 - Linux v4.2-rc8-10-gf9ed72dde34e
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
+- Add patch from Jonathon Jongsma to fix modes in qxl (rhbz 1212201)
 
 * Wed Aug 26 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git1.1
 - Linux v4.2-rc8-7-gf5db4b31b315
