@@ -653,6 +653,10 @@ Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 #rhbz 1212201
 Patch514: drm-qxl-validate-monitors-config-modes.patch
 
+#rhbz 1257500
+Patch517: vmwgfx-Rework-device-initialization.patch
+Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1422,6 +1426,10 @@ ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
 #rhbz 1212201
 ApplyPatch drm-qxl-validate-monitors-config-modes.patch
+
+#rhbz 1257500
+ApplyPatch vmwgfx-Rework-device-initialization.patch
+ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2274,6 +2282,7 @@ fi
 # 
 %changelog
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
 - Add patch from Jonathon Jongsma to fix modes in qxl (rhbz 1212201)
 
