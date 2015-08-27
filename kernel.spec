@@ -650,6 +650,9 @@ Patch26266: x86-apic-Fix-fallout-from-x2apic-cleanup.patch
 #rhbz 1257534
 Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
+#rhbz 1212201
+Patch514: drm-qxl-validate-monitors-config-modes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1416,6 +1419,9 @@ ApplyPatch x86-apic-Fix-fallout-from-x2apic-cleanup.patch
 
 #rhbz 1257534
 ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
+
+#rhbz 1212201
+ApplyPatch drm-qxl-validate-monitors-config-modes.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2269,6 +2275,7 @@ fi
 %changelog
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
+- Add patch from Jonathon Jongsma to fix modes in qxl (rhbz 1212201)
 
 * Wed Aug 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable CRYPTO_DEV_VMX_ENCRYPT on PPC for now to fix Power 8 boot (rhbz 1237089)
