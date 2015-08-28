@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2041,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Fri Aug 28 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-0.rc8.git3.1
+- Linux v4.2-rc8-37-g4941b8f0c2b9
+
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
 
