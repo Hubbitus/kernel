@@ -2328,6 +2328,9 @@ fi
 # and build.
 #
 %changelog
+* Thu Aug 13 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.5-200.hu.1.uksm.bfs.bfq
+- 4.1.5-200.hu.1.uksm.bfs.bfq
+
 * Tue Aug 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop UACCESS_WITH_MEMCPY on ARMv7 as it's broken (rhbz 1250613)
 
