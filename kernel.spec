@@ -605,6 +605,7 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 Patch519: security-device_cgroup-fix-RCU-lockdep-splat.patch
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
+Patch521: perf-build-fixes-for-non-x86.patch
 
 Patch904: kdbus.patch
 
