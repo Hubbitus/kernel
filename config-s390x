@@ -291,6 +291,7 @@ CONFIG_HOTPLUG_PCI_S390=y
 # CONFIG_SH_ETH is not set
 # CONFIG_NET_VENDOR_VIA is not set
 # CONFIG_IEEE802154_DRIVERS is not set
+# CONFIG_MDIO_OCTEON is not set
 
 # CONFIG_FMC is not set
 
