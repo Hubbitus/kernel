@@ -593,7 +593,7 @@ Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 #rhbz 1212201
 Patch514: drm-qxl-validate-monitors-config-modes.patch
 
-#rhbz 1257500
+#rhbz 1227193
 Patch517: vmwgfx-Rework-device-initialization.patch
 Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
