@@ -600,6 +600,9 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 Patch519: security-device_cgroup-fix-RCU-lockdep-splat.patch
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
 
+#rhbz 1258223
+Patch521: x86-alternatives-Make-optimize_nops-interrupt-safe-a.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2047,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix alternatives oops from Thomas Gleixner (rhbz 1258223)
+
 * Fri Sep 04 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git7.1
 - Linux v4.2-6663-g807249d3ada1
 
