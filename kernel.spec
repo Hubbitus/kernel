@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2053,7 +2053,7 @@ fi
 #
 # 
 %changelog
-* Wed Sep 02 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+* Wed Sep 02 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.0-300
 - Make flush_workqueue() available again to non GPL modules (rhbz 1259231)
 
 * Mon Aug 31 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.2.0-1
