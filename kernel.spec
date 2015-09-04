@@ -628,7 +628,7 @@ Provides: kernel-drm-nouveau = 16\
 Provides: kernel-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
-Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
+Requires(pre): linux-firmware >= 20150904-56.git6ebf5d57\
 Requires(preun): systemd >= 200\
 Conflicts: xorg-x11-drv-vmmouse < 13.0.99\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
@@ -2051,6 +2051,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Bump Requiers on linux-firmware for new amdgpu firmware requirements
+
 * Thu Sep 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git6.1
 - Linux v4.2-6105-gdd5cdb48edfd
 - Networking merge
