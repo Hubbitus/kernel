@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2281,6 +2281,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 04 2015 Laura Abbott <labbott@redhat.com> - 4.1.6-201
+- Tag and build
+
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
