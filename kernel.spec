@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -587,9 +587,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
-#rhbz 1250717
-Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
-
 #rhbz 1257534
 Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
@@ -602,7 +599,6 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 Patch519: security-device_cgroup-fix-RCU-lockdep-splat.patch
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
-Patch521: perf-build-fixes-for-non-x86.patch
 
 Patch904: kdbus.patch
 
@@ -2051,6 +2047,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 04 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git7.1
+- Linux v4.2-6663-g807249d3ada1
+
 * Fri Sep 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Bump Requiers on linux-firmware for new amdgpu firmware requirements
 
