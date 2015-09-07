@@ -352,3 +352,6 @@ CONFIG_VFIO_AMBA=m
 # CONFIG_BMP085_SPI is not set
 # CONFIG_TI_DAC7512 is not set
 # CONFIG_SPI_ROCKCHIP is not set
+
+# https://fedoraproject.org/wiki/Features/Checkpoint_Restore
+CONFIG_CHECKPOINT_RESTORE=y
