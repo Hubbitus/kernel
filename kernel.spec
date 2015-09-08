@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2046,6 +2046,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git9.1
+- Linux v4.2-9861-g4e4adb2f4628
+
 * Tue Sep 08 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in blk layer (rhbz 1237136)
 
