@@ -2046,6 +2046,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Config updates for ARMv7/aarch64
+
 * Tue Sep 08 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git9.1
 - Linux v4.2-9861-g4e4adb2f4628
 

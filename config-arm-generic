@@ -316,10 +316,12 @@ CONFIG_VFIO_AMBA=m
 # CONFIG_NET_VENDOR_SUN is not set
 # CONFIG_NET_VENDOR_WIZNET is not set
 # CONFIG_NET_VENDOR_XIRCOM is not set
+# CONFIG_TLAN is not set
 
 # scsi
 
 # CONFIG_BLK_DEV_3W_XXXX_RAID is not set
+# CONFIG_BLK_DEV_DAC960 is not set
 # CONFIG_SCSI_3W_SAS is not set
 # CONFIG_SCSI_PM8001 is not set
 # CONFIG_SCSI_IPS is not set
