@@ -596,6 +596,9 @@ Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
 #rhbz 1258223
 Patch521: x86-alternatives-Make-optimize_nops-interrupt-safe-a.patch
 
+#rhbz 1237136
+Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2043,6 +2046,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 08 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in blk layer (rhbz 1237136)
+
 * Sun Sep 06 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git8.1
 - Linux v4.2-9700-g7d9071a09502
 
