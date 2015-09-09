@@ -389,7 +389,7 @@ BuildRequires: rpm-build, elfutils
 %endif
 
 %if %{signmodules}
-BuildRequires: openssl-devel
+BuildRequires: openssl openssl-devel
 BuildRequires: pesign >= 0.10-4
 %endif
 
