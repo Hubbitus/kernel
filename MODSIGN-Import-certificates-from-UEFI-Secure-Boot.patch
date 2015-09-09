@@ -1,3 +1,4 @@
+From b890a85619bee4262876ad131eb0565014ae82b0 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
@@ -42,10 +43,10 @@ index 414c3c3d988d..d920a6be6c8b 100644
  	efi_guid_t guid;
  	u64 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 62f6fd191e4f..648bb79d6b73 100644
+index 782d26f02885..bcc71c2f4b80 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1906,6 +1906,15 @@ config MODULE_SIG_ALL
+@@ -1933,6 +1933,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,11 +63,11 @@ index 62f6fd191e4f..648bb79d6b73 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 43c4c920f30a..3193574387ac 100644
+index e0d7587e7684..566ac6bb720c 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -48,6 +48,7 @@ obj-$(CONFIG_UID16) += uid16.o
- obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
+@@ -47,6 +47,7 @@ endif
+ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
 +obj-$(CONFIG_MODULE_SIG_UEFI) += modsign_uefi.o
@@ -75,13 +76,13 @@ index 43c4c920f30a..3193574387ac 100644
  obj-$(CONFIG_KEXEC) += kexec.o
 @@ -101,6 +102,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
- $(obj)/configs.o: $(obj)/config_data.h
+ obj-$(CONFIG_HAS_IOMEM) += memremap.o
  
 +$(obj)/modsign_uefi.o: KBUILD_CFLAGS += -fshort-wchar
 +
+ $(obj)/configs.o: $(obj)/config_data.h
+ 
  # config_data.h contains the same information as ikconfig.h but gzipped.
- # Info from config_data can be extracted from /proc/config*
- targets += config_data.gz
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
 new file mode 100644
 index 000000000000..94b0eb38a284
@@ -180,3 +181,6 @@ index 000000000000..94b0eb38a284
 +	return rc;
 +}
 +late_initcall(load_uefi_certs);
+-- 
+2.4.3
+

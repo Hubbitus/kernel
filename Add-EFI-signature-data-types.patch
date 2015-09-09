@@ -1,6 +1,7 @@
+From 34e3e23e08fdccbf4637deab0cf03070d4f2226d Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
-Subject: [PATCH] Add EFI signature data types
+Subject: [PATCH 15/20] Add EFI signature data types
 
 Add the data types that are used for containing hashes, keys and certificates
 for cryptographic verification.
@@ -51,3 +52,6 @@ index de3e45088d4a..fac43c611614 100644
  /*
   * All runtime access to EFI goes through this structure:
   */
+-- 
+2.4.3
+

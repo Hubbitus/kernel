@@ -1,6 +1,7 @@
+From c279ba86f93cf6a75d078e2d0e3f59d4ba8a2dd0 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
-Subject: [PATCH] Add an EFI signature blob parser and key loader.
+Subject: [PATCH 16/20] Add an EFI signature blob parser and key loader.
 
 X.509 certificates are loaded into the specified keyring as asymmetric type
 keys.
@@ -32,7 +33,7 @@ index 4870f28403f5..4a1b50d73b80 100644
 +
  endif # ASYMMETRIC_KEY_TYPE
 diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index e47fcd9ac5e8..6512f6596785 100644
+index cd1406f9b14a..d9db380bbe53 100644
 --- a/crypto/asymmetric_keys/Makefile
 +++ b/crypto/asymmetric_keys/Makefile
 @@ -8,6 +8,7 @@ asymmetric_keys-y := asymmetric_type.o signature.o
@@ -173,3 +174,6 @@ index fac43c611614..414c3c3d988d 100644
  /**
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
+-- 
+2.4.3
+

@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -389,7 +389,7 @@ BuildRequires: rpm-build, elfutils
 %endif
 
 %if %{signmodules}
-BuildRequires: openssl
+BuildRequires: openssl-devel
 BuildRequires: pesign >= 0.10-4
 %endif
 
@@ -1304,10 +1304,8 @@ BuildKernel() {
     cp configs/$Config .config
 
     %if %{signmodules}
-    cp %{SOURCE11} .
+    cp %{SOURCE11} certs/.
     %endif
-
-    chmod +x scripts/sign-file
 
     Arch=`head -1 .config | cut -b 3-`
     echo USING ARCH=$Arch
@@ -1550,8 +1548,8 @@ BuildKernel() {
 
 %if %{signmodules}
     # Save the signing keys so we can sign the modules in __modsign_install_post
-    cp signing_key.priv signing_key.priv.sign${Flav}
-    cp signing_key.x509 signing_key.x509.sign${Flav}
+    cp certs/signing_key.pem certs/signing_key.pem.sign${Flav}
+    cp certs/signing_key.x509 certs/signing_key.x509.sign${Flav}
 %endif
 
     # Move the devel headers out of the root file system
@@ -1646,16 +1644,16 @@ popd
 %define __modsign_install_post \
   if [ "%{signmodules}" -eq "1" ]; then \
     if [ "%{with_pae}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae} signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae} certs/signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
     fi \
     if [ "%{with_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+debug signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+debug certs/signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
     fi \
     if [ "%{with_pae_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae}debug signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae}debug certs/signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
     fi \
     if [ "%{with_up}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign certs/signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
   if [ "%{zipmodules}" -eq "1" ]; then \
@@ -2046,6 +2044,10 @@ fi
 #
 # 
 %changelog
+* Wed Sep 09 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git10.1
+- Linux v4.2-10637-ga794b4f32921
+- Rework secure boot patchset
+
 * Tue Sep  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Config updates for ARMv7/aarch64
 
