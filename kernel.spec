@@ -2350,6 +2350,9 @@ fi
 # and build.
 #
 %changelog
+* Fri Aug 28 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.6-200.hu.1.uksm.bfs.bfq
+- 4.1.6-200.hu.1.uksm.bfs.bfq
+
 * Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
 - Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
