@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf1
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -470,7 +470,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.1/patch-4.1-pf1.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.1/patch-4.1-pf4.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -612,7 +612,7 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
+#? Patch30007: kernel-3.19-bfs-compat-hubbitus.patch
 # https://kojipkgs.fedoraproject.org//work/tasks/258/9750258/build.log
 # kernel/sched/bfs.c:522:20: error: function declaration isn't a prototype [-Werror=strict-prototypes]
 #  static inline void grq_priodl_lock()
@@ -1400,7 +1400,7 @@ ApplyPatch criu-no-expert.patch
 ApplyPatch ath9k-rx-dma-stop-check.patch
 
 ################# Hubbitus patches
-ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
+#? ApplyPatch kernel-3.19-bfs-compat-hubbitus.patch --fuzz=2
 #//////////////////////////////// Hubbitus patches
 
 #CVE-2015-2150 rhbz 1196266 1200397
@@ -2320,6 +2320,10 @@ fi
 # and build.
 #
 %changelog
+* Sun Sep 13 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.6-201.hu.1.pf4
+- Update pf to v4.1-pf4 - https://pf.natalenko.name/forum/index.php?topic=345.0
+- Possible kernel-3.19-bfs-compat-hubbitus.patch will not needed anymore (https://pf.natalenko.name/forum/index.php?topic=332.0).
+
 * Fri Sep 04 2015 Laura Abbott <labbott@redhat.com> - 4.1.6-201
 - Tag and build
 
