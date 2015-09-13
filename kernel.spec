@@ -2297,23 +2297,26 @@ fi
 # and build.
 #
 %changelog
-* Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
-- tag and build for CVE fixes
+* Sat Aug 01 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.2.pf1
+- Merge Fedora changes, but stay at 4.1.2 as PF patch is.
 
-* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
-- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
+#* Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
+#- tag and build for CVE fixes
 
-* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2015-1333 add_key memory leak (rhbz 1244171)
+#* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
+#- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
 
-* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
-- Fix warning from pcmcia (rhbz 1180920 1206724)
+#* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+#- CVE-2015-1333 add_key memory leak (rhbz 1244171)
 
-* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
-- Add patches for Ideapad RF switches (rhbz 1192270)
+#* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
+#- Fix warning from pcmcia (rhbz 1180920 1206724)
 
-* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
-- Linux v4.1.3
+#* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
+#- Add patches for Ideapad RF switches (rhbz 1192270)
+
+#* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
+#- Linux v4.1.3
 
 * Sat Jul 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.1.pf1
 - Linux 4.1.2
