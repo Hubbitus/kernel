@@ -2350,6 +2350,9 @@ fi
 # and build.
 #
 %changelog
+* Sun Sep 13 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.6-201.hu.1.uksm.bfs.bfq
+- 4.1.6-201.hu.1.uksm.bfs.bfq
+
 * Fri Sep 04 2015 Laura Abbott <labbott@redhat.com> - 4.1.6-201
 - Tag and build
 
