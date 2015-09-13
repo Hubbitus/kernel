@@ -52,8 +52,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.1.2 v4.1-pf1: https://pf.natalenko.name/forum/index.php?topic=332.0
-%define stable_update 2
+#+Hu Pf against 4.1.6 v4.1-pf4: https://pf.natalenko.name/forum/index.php?topic=345.0 (https://pf.natalenko.name/forum/index.php?topic=344.0)
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -628,12 +628,6 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-#rhbz 1210857
-Patch26192: blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220118
-Patch26202: media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
 Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1217249
@@ -648,9 +642,6 @@ Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
-# CVE-2015-XXXX rhbz 1230770 1230774
-Patch26231: kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
 # rhbz 1227891
 Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
@@ -660,19 +651,40 @@ Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
-#CVE-2015-1333 rhbz 1244171
-Patch26253: KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+#rhbz 1244511
+Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
-# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
-Patch26254: x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
-Patch26255: x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
-Patch26256: x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
-Patch26257: x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
-Patch26258: x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
-Patch26259: x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
-Patch26260: x86-nmi-64-Improve-nested-NMI-comments.patch
-Patch26261: x86-nmi-64-Reorder-nested-NMI-checks.patch
-Patch26262: x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+#rhbz 1251877 1251880 1250279 1248741
+# and probably more since ugh use after free bugs
+Patch26264: HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
+
+#rhbz 1239050
+Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
+#rhbz 1253789
+Patch511: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+
+#rhbz 1250717
+Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
+
+#CVE-2015-6666 rhbz 1256746 1256753
+Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
+
+#rhbz 1256281
+Patch26265: mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
+
+#rhbz 1224764
+Patch26266: x86-apic-Fix-fallout-from-x2apic-cleanup.patch
+
+#rhbz 1257534
+Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
+
+#rhbz 1212201
+Patch514: drm-qxl-validate-monitors-config-modes.patch
+
+#rhbz 1257500
+Patch517: vmwgfx-Rework-device-initialization.patch
+Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1397,12 +1409,6 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-#rhbz 1210857
-ApplyPatch blk-loop-avoid-too-many-pending-per-work-IO.patch
-
-#rhbz 1220118
-ApplyPatch media-Fix-regression-in-some-more-dib0700-based-devi.patch
-
 ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
 
 #rhbz 1217249
@@ -1422,9 +1428,6 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 # pplyPatch Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
 # pplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-# CVE-2015-XXXX rhbz 1230770 1230774
-ApplyPatch kvm-x86-fix-kvm_apic_has_events-to-check-for-NULL-po.patch
-
 #rhbz 1227891
 ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
 
@@ -1434,19 +1437,39 @@ ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
 # rhbz 1180920 1206724
 ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
-#CVE-2015-1333 rhbz 1244171
-ApplyPatch KEYS-ensure-we-free-the-assoc-array-edit-if-edit-is-.patch
+#rhbz 1244511
+ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
-# CVE-2015-3290 CVE-2015-3291 rhbz 1243465 1245927
-ApplyPatch x86-asm-entry-64-Remove-pointless-jump-to-irq_return.patch
-ApplyPatch x86-entry-Stop-using-PER_CPU_VAR-kernel_stack.patch
-ApplyPatch x86-entry-Define-cpu_current_top_of_stack-for-64-bit.patch
-ApplyPatch x86-nmi-Enable-nested-do_nmi-handling-for-64-bit-ker.patch
-ApplyPatch x86-nmi-64-Remove-asm-code-that-saves-cr2.patch
-ApplyPatch x86-nmi-64-Switch-stacks-on-userspace-NMI-entry.patch
-ApplyPatch x86-nmi-64-Improve-nested-NMI-comments.patch
-ApplyPatch x86-nmi-64-Reorder-nested-NMI-checks.patch
-ApplyPatch x86-nmi-64-Use-DF-to-avoid-userspace-RSP-confusing-n.patch
+#rhbz 1251877 1251880 1250279 1248741
+ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
+
+#rhbz 1239050
+ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
+
+#rhbz 1253789
+ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+
+#rhbz 1250717
+ApplyPatch ext4-dont-manipulate-recovery-flag-when-freezing.patch
+
+#CVE-2015-6666 rhbz 1256746 1256753
+ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
+
+#rhbz 1256281
+ApplyPatch mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
+
+#rhbz 1224764
+ApplyPatch x86-apic-Fix-fallout-from-x2apic-cleanup.patch
+
+#rhbz 1257534
+ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
+
+#rhbz 1212201
+ApplyPatch drm-qxl-validate-monitors-config-modes.patch
+
+#rhbz 1257500
+ApplyPatch vmwgfx-Rework-device-initialization.patch
+ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2297,26 +2320,84 @@ fi
 # and build.
 #
 %changelog
-* Sat Aug 01 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.2.pf1
-- Merge Fedora changes, but stay at 4.1.2 as PF patch is.
+* Fri Sep 04 2015 Laura Abbott <labbott@redhat.com> - 4.1.6-201
+- Tag and build
 
-#* Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
-#- tag and build for CVE fixes
+* Thu Aug 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix vmware driver issues from Thomas Hellström (rhbz 1227193)
+- Add patch from Hans de Goede to fix nv46 based cards (rhbz 1257534)
+- Add patch from Jonathon Jongsma to fix modes in qxl (rhbz 1212201)
 
-#* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
-#- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
+* Wed Aug 26 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable CRYPTO_DEV_VMX_ENCRYPT on PPC for now to fix Power 8 boot (rhbz 1237089)
 
-#* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
-#- CVE-2015-1333 add_key memory leak (rhbz 1244171)
+* Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix x2apic refactoring breakage (rhbz 1224764)
 
-#* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
-#- Fix warning from pcmcia (rhbz 1180920 1206724)
+* Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
+- Correct the sdhci DMA leak patch to actually compile (oops)
 
-#* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
-#- Add patches for Ideapad RF switches (rhbz 1192270)
+* Tue Aug 25 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix DMA leak from sdhci (rhbz 1256281)
 
-#* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
-#- Linux v4.1.3
+* Tue Aug 25 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-6666 x86_64 NT flag handling DoS (rhbz 1256746 1256753)
+
+* Fri Aug 21 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable EFI_VARS (rhbz 1252137)
+
+* Thu Aug 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect ext4 freezing behavior on non-journaled fs (rhbz 1250717)
+
+* Mon Aug 17 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.6-200
+- Linux v4.1.6
+- Actually apply the fix for rhbz 1253789
+
+* Mon Aug 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix iscsi issue (rhbz 1253789)
+
+* Sat Aug 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Hans de Goede to add yoga 3 rfkill quirk (rhbz 1239050)
+
+* Tue Aug 11 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop UACCESS_WITH_MEMCPY on ARMv7 as it's broken (rhbz 1250613)
+
+* Mon Aug 10 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.5-200
+- Linux v4.1.5
+
+* Mon Aug 10 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix use after free in HID input (rhbz 1251877 1251880 1250279 1248741)
+
+* Tue Aug 04 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Patch from Nicholas Kudriavtsev for Acer Switch 12 Fn keys (rhbz 1244511)
+
+* Tue Aug  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Back port AMD Seattle a0 4.1 NIC driver update
+
+* Mon Aug 03 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.4-200
+- Linux v4.1.4
+- CVE-2015-5697 info leak in md driver (rhbz 1249011 1249013)
+
+#* Sat Aug 01 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.2.pf1
+#- Merge Fedora changes, but stay at 4.1.2 as PF patch is.
+
+* Wed Jul 29 2015 Laura Abbott <labbott@redhat.com> - 4.1.3-201
+- tag and build for CVE fixes
+
+* Mon Jul 27 2015 Laura Abbott <labbott@fedoraproject.org>
+- CVE-2015-3290 CVE-2015-3291 NMI issues (rhbz 1243465 1245927)
+
+* Mon Jul 27 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-1333 add_key memory leak (rhbz 1244171)
+
+* Thu Jul 23 2015 Laura Abbott <labbott@fedoraproject.org>
+- Fix warning from pcmcia (rhbz 1180920 1206724)
+
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org> - 4.1.3-200
+- Add patches for Ideapad RF switches (rhbz 1192270)
+
+* Wed Jul 22 2015 Laura Abbott <labbott@fedoraproject.org>
+- Linux v4.1.3
 
 * Sat Jul 18 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.2-200.hu.1.pf1
 - Linux 4.1.2
