@@ -1,4 +1,4 @@
-From b668a9f4ea6ece8bd0d314fe7a707ac9c19360bf Mon Sep 17 00:00:00 2001
+From ffdabd783cb9c3995aa5f546ebb442f1fb033e54 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 21:50:47 +0200
 Subject: [PATCH 001/130] kdbus: add documentation
@@ -7476,10 +7476,10 @@ index 000000000000..52565eac7d0d
 +	</template>
 +</stylesheet>
 diff --git a/Makefile b/Makefile
-index c3615937df38..9019c24f12dd 100644
+index 1a132ea43ca5..d9eecba36d95 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -1346,6 +1346,7 @@ $(help-board-dirs): help-%:
+@@ -1338,6 +1338,7 @@ $(help-board-dirs): help-%:
  %docs: scripts_basic FORCE
  	$(Q)$(MAKE) $(build)=scripts build_docproc
  	$(Q)$(MAKE) $(build)=Documentation/DocBook $@
@@ -7491,7 +7491,7 @@ index c3615937df38..9019c24f12dd 100644
 2.4.3
 
 
-From e94c68e014415a4844b1144804b041496cc37177 Mon Sep 17 00:00:00 2001
+From 7ddc171864705c9dda7a0cb31582793954c4e8f8 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:38:06 +0200
 Subject: [PATCH 002/130] kdbus: add uapi header file
@@ -7536,7 +7536,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  create mode 100644 include/uapi/linux/kdbus.h
 
 diff --git a/include/uapi/linux/Kbuild b/include/uapi/linux/Kbuild
-index aafb9937b162..2a70847ce79c 100644
+index f7b2db44eb4b..e77707802dcc 100644
 --- a/include/uapi/linux/Kbuild
 +++ b/include/uapi/linux/Kbuild
 @@ -216,6 +216,7 @@ header-y += ixjuser.h
@@ -8536,7 +8536,7 @@ index 000000000000..fc1d77dd7c93
 2.4.3
 
 
-From ea9b81fe3e7a5194082d9f9764fa5895c967f49e Mon Sep 17 00:00:00 2001
+From dc53b2f74ca57f1abcd8381c37ffdef726227052 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:52:52 +0200
 Subject: [PATCH 003/130] kdbus: add driver skeleton, ioctl entry points and
@@ -8577,7 +8577,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  create mode 100644 ipc/kdbus/util.h
 
 diff --git a/Documentation/ioctl/ioctl-number.txt b/Documentation/ioctl/ioctl-number.txt
-index 64df08db4657..a4395cc374fe 100644
+index df1b25eb8382..50b737402038 100644
 --- a/Documentation/ioctl/ioctl-number.txt
 +++ b/Documentation/ioctl/ioctl-number.txt
 @@ -294,6 +294,7 @@ Code  Seq#(hex)	Include File		Comments
@@ -9794,7 +9794,7 @@ index 000000000000..9caadb337912
 2.4.3
 
 
-From 49d5743e2e701d123a2a5231e30fa02a247cd08f Mon Sep 17 00:00:00 2001
+From 063f53848a32975e14f236456218e29a2ff32f20 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:56:41 +0200
 Subject: [PATCH 004/130] kdbus: add connection pool implementation
@@ -10621,7 +10621,7 @@ index 000000000000..a9038213aa4d
 2.4.3
 
 
-From 8dcd0c117f71cadd2d65ff6f9fde801168aa8fb9 Mon Sep 17 00:00:00 2001
+From 8d59762de6c538c110c609f3d257ea90334caccd Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:57:24 +0200
 Subject: [PATCH 005/130] kdbus: add connection, queue handling and message
@@ -15460,7 +15460,7 @@ index 9caadb337912..740b19880985 100644
 2.4.3
 
 
-From 0a3d4ad22cdcfab28e04005c302c066b332d4a9f Mon Sep 17 00:00:00 2001
+From f7185207f42e5f89aad3216889b34a02f56e847e Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Fri, 14 Nov 2014 09:59:08 +0100
 Subject: [PATCH 006/130] kdbus: add node and filesystem implementation
@@ -17067,7 +17067,7 @@ index 000000000000..be125ce4fd58
 2.4.3
 
 
-From 70aff60f300a225a2600a81678e532720174f0f0 Mon Sep 17 00:00:00 2001
+From 35da0b7ef0bcffbfb38dd54537f84129d163d257 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:58:45 +0200
 Subject: [PATCH 007/130] kdbus: add code to gather metadata
@@ -18392,7 +18392,7 @@ index 000000000000..42c942b34d2c
 2.4.3
 
 
-From 070039525334761a6380755a54109a60cc372e19 Mon Sep 17 00:00:00 2001
+From 6d7f104924c3efacf440fdd9eb522794fd631d2f Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:59:16 +0200
 Subject: [PATCH 008/130] kdbus: add code for notifications and matches
@@ -19326,7 +19326,7 @@ index 000000000000..03df464cb735
 2.4.3
 
 
-From cfaf46b3e441677c2a7f9a4bfe2cb92169c2a80e Mon Sep 17 00:00:00 2001
+From 284f9a409dbd30df4cf47acaeb60addf14e76984 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:59:39 +0200
 Subject: [PATCH 009/130] kdbus: add code for buses, domains and endpoints
@@ -20797,7 +20797,7 @@ index 000000000000..d31954bfba2c
 2.4.3
 
 
-From d2993b42750a72d2add44fa168a633ef1956315b Mon Sep 17 00:00:00 2001
+From 73b5c7fb46e8a11e423311694da8cb2aa03d3e23 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 19:00:00 +0200
 Subject: [PATCH 010/130] kdbus: add name registry implementation
@@ -21685,7 +21685,7 @@ index 000000000000..3dd2589293e0
 2.4.3
 
 
-From d24753cc89d84175f4b3de4324a35f16b710d177 Mon Sep 17 00:00:00 2001
+From 282823ded644a8c24ad9b131cbf818ce84337959 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 19:00:43 +0200
 Subject: [PATCH 011/130] kdbus: add policy database implementation
@@ -22275,7 +22275,7 @@ index 000000000000..15dd7bc12068
 2.4.3
 
 
-From bdd7a429e3323b61ef2cb848e8536a1c1d36bf7a Mon Sep 17 00:00:00 2001
+From eb926f5ee1f2db656a8efffa2799d28a5c8a2513 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 11 Sep 2014 18:48:06 +0200
 Subject: [PATCH 012/130] kdbus: add Makefile, Kconfig and MAINTAINERS entry
@@ -22298,10 +22298,10 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  create mode 100644 ipc/kdbus/Makefile
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index b4c6754f3144..d595e884eab3 100644
+index 7ba7ab749c85..9d62f64a5763 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -5818,6 +5818,19 @@ S:	Maintained
+@@ -5870,6 +5870,19 @@ S:	Maintained
  F:	Documentation/kbuild/kconfig-language.txt
  F:	scripts/kconfig/
  
@@ -22322,7 +22322,7 @@ index b4c6754f3144..d595e884eab3 100644
  M:	Vivek Goyal <vgoyal@redhat.com>
  M:	Haren Myneni <hbabu@us.ibm.com>
 diff --git a/init/Kconfig b/init/Kconfig
-index bb9b4dd55889..daa2a1840359 100644
+index c24b6f767bf0..fcd2b661caae 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -261,6 +261,18 @@ config POSIX_MQUEUE_SYSCTL
@@ -22386,7 +22386,7 @@ index 000000000000..7ee9271e1449
 2.4.3
 
 
-From b727a91e03aff77cde7dcdc8ce79f4646451db3c Mon Sep 17 00:00:00 2001
+From 14a66fff2844bf482a00da633185bb0b5bbbc655 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Thu, 26 Feb 2015 21:06:38 +0100
 Subject: [PATCH 013/130] kdbus: add walk-through user space example
@@ -23929,7 +23929,7 @@ index 000000000000..d1d8f7a7697b
 2.4.3
 
 
-From a735cefff5aaef4bfd64f1ceddc6fd700ab94c69 Mon Sep 17 00:00:00 2001
+From 9b50214195a064cd797285febc0dc681fe91c349 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Sat, 13 Sep 2014 23:15:02 +0200
 Subject: [PATCH 014/130] kdbus: add selftests
@@ -24009,7 +24009,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  create mode 100644 tools/testing/selftests/kdbus/test-timeout.c
 
 diff --git a/tools/testing/selftests/Makefile b/tools/testing/selftests/Makefile
-index b8f12e0897e6..2cb20b7188ae 100644
+index 89b05e2222c9..ac40ec9c6968 100644
 --- a/tools/testing/selftests/Makefile
 +++ b/tools/testing/selftests/Makefile
 @@ -6,6 +6,7 @@ TARGETS += firmware
@@ -24017,9 +24017,9 @@ index b8f12e0897e6..2cb20b7188ae 100644
  TARGETS += futex
  TARGETS += kcmp
 +TARGETS += kdbus
+ TARGETS += membarrier
  TARGETS += memfd
  TARGETS += memory-hotplug
- TARGETS += mount
 diff --git a/tools/testing/selftests/kdbus/.gitignore b/tools/testing/selftests/kdbus/.gitignore
 new file mode 100644
 index 000000000000..7b421f76c888
@@ -35382,7 +35382,7 @@ index 000000000000..cfd193066a64
 2.4.3
 
 
-From f73c8e9f341c199e5392e3707fc50387aea6c3ab Mon Sep 17 00:00:00 2001
+From 89c5373d542dec8d9f5e51a7f0926956b3f6df66 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Mon, 9 Mar 2015 18:00:46 +0100
 Subject: [PATCH 015/130] Documentation: kdbus: fix location for generated
@@ -35429,7 +35429,7 @@ index cd6b48ee41bf..f6d491251c25 100644
 2.4.3
 
 
-From 815ce23c808641f73b70408158c4c5dbf0616c3f Mon Sep 17 00:00:00 2001
+From 5eb72218c829e2f5f86972eab4f73b32f1b15bab Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 12 Mar 2015 17:27:31 +0100
 Subject: [PATCH 016/130] kdbus: samples/kdbus: add -lrt
@@ -35457,7 +35457,7 @@ index d009025369f4..eee9b9aed632 100644
 2.4.3
 
 
-From 2580be7718fcb2628eaa87ff33585e219490ad43 Mon Sep 17 00:00:00 2001
+From 42dd477ec9ff8f1f89b8f1e49819f961e938bb04 Mon Sep 17 00:00:00 2001
 From: Nicolas Iooss <nicolas.iooss_linux@m4x.org>
 Date: Sun, 15 Mar 2015 13:13:08 +0800
 Subject: [PATCH 017/130] kdbus: fix minor typo in the walk-through example
@@ -35489,7 +35489,7 @@ index d1d8f7a7697b..d331e0186899 100644
 2.4.3
 
 
-From 10a5701888346594f77462989c39dd5f68da5cc6 Mon Sep 17 00:00:00 2001
+From 668829bf95064f6494b8cb0adeb1faadea0d6080 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 16 Mar 2015 10:17:10 +0100
 Subject: [PATCH 018/130] samples/kdbus: drop wrong include
@@ -35526,7 +35526,7 @@ index eee9b9aed632..e714602b6260 100644
 2.4.3
 
 
-From 8d6faac0c482b3400e93cef8eb1e8b0ebdcc7201 Mon Sep 17 00:00:00 2001
+From 2c824a6c43eb725dbdff02120c249d4a0a5f9547 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 16 Mar 2015 10:17:11 +0100
 Subject: [PATCH 019/130] Documentation/kdbus: fix out-of-tree builds
@@ -35558,7 +35558,7 @@ index f6d491251c25..d8e6bf37d53b 100644
 2.4.3
 
 
-From 92bdc22fb63d7ad05228e1dfcd47405d0ba0f77b Mon Sep 17 00:00:00 2001
+From 6b18497f285bf021679362a5fdf99d2f3c7ef49d Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 16 Mar 2015 10:17:12 +0100
 Subject: [PATCH 020/130] Documentation/kdbus: support quiet builds
@@ -35607,7 +35607,7 @@ index d8e6bf37d53b..af87641db416 100644
 2.4.3
 
 
-From 9c21e18c4188813abbb92a1c32a6edee2ef8d3f0 Mon Sep 17 00:00:00 2001
+From d7fd904ac1f666a5a7123741a526fc0179c6b0dc Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 16 Mar 2015 10:17:13 +0100
 Subject: [PATCH 021/130] selftests/kdbus: fix gitignore
@@ -35636,7 +35636,7 @@ index 7b421f76c888..d3ef42f6ada6 100644
 2.4.3
 
 
-From 603ec2cb7c1f9bb7eedab740c7218615261fb789 Mon Sep 17 00:00:00 2001
+From fc4bfd9a3b481b6210d28ac323a5c821be092d01 Mon Sep 17 00:00:00 2001
 From: Lukasz Skalski <l.skalski@samsung.com>
 Date: Mon, 16 Mar 2015 10:35:08 +0100
 Subject: [PATCH 022/130] Documentation/kdbus: replace 'reply_cookie' with
@@ -35669,7 +35669,7 @@ index c25000dcfbc7..5e7c7a3f537e 100644
 2.4.3
 
 
-From 5ee97ee89f976d5aab871fda4b19bc8e77f45542 Mon Sep 17 00:00:00 2001
+From 95622d8218f70bfc1184cbde9ac5370be1047ee3 Mon Sep 17 00:00:00 2001
 From: Lucas De Marchi <lucas.demarchi@intel.com>
 Date: Tue, 17 Mar 2015 09:21:42 -0300
 Subject: [PATCH 023/130] kdbus: fix header guard name
@@ -35710,7 +35710,7 @@ index fc1d77dd7c93..2fe0a1c5056c 100644
 2.4.3
 
 
-From 2fd0e4250975260d7fd66a3cc7d0fb4d9046c385 Mon Sep 17 00:00:00 2001
+From c529ad2ce38a1f5d6bca4e96930d66a4fe5f400b Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Tue, 17 Mar 2015 19:48:24 +0100
 Subject: [PATCH 024/130] kdbus: connection: fix handling of failed fget()
@@ -35751,7 +35751,7 @@ index e554f1a71aa1..ab476fa9ccca 100644
 2.4.3
 
 
-From 9ca058d3aafd7a10ae415c04e7777d9bc237db5a Mon Sep 17 00:00:00 2001
+From 84b3f4759730e105abc9bc409ac93ec82b1ff813 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Tue, 24 Mar 2015 19:51:55 +0100
 Subject: [PATCH 025/130] kdbus: Fix CONFIG_KDBUS help text
@@ -35769,7 +35769,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/init/Kconfig b/init/Kconfig
-index daa2a1840359..05f1cb831c1c 100644
+index fcd2b661caae..2de1c05e4baa 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
 @@ -268,10 +268,11 @@ config KDBUS
@@ -35791,7 +35791,7 @@ index daa2a1840359..05f1cb831c1c 100644
 2.4.3
 
 
-From 643174f373b5a13aec287c4e2cc5eaecc11f3bca Mon Sep 17 00:00:00 2001
+From bf3fc2686532d0200f1615aa90e518f5de9320bf Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Tue, 31 Mar 2015 15:11:34 +0200
 Subject: [PATCH 026/130] samples: kdbus: build kdbus-workers conditionally
@@ -35843,7 +35843,7 @@ index e714602b6260..137f84272099 100644
 2.4.3
 
 
-From 72ed5a1f1dcc083c56434c06e53b2cb6998fe356 Mon Sep 17 00:00:00 2001
+From 46fbd5ca71792c10eb1fcc3aa41f3d273225a34f Mon Sep 17 00:00:00 2001
 From: Tyler Baker <tyler.baker@linaro.org>
 Date: Wed, 1 Apr 2015 16:20:16 -0700
 Subject: [PATCH 027/130] selftest/kdbus: enable cross compilation
@@ -35881,7 +35881,7 @@ index f6cfab26f315..de8242f9b00e 100644
 2.4.3
 
 
-From d5defe4feffaa9ce969f24830017a1ca8fbbfc47 Mon Sep 17 00:00:00 2001
+From cfd1068dfbc2fc20bc3ad7d1223b33a900701fd2 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 9 Apr 2015 13:11:01 +0300
 Subject: [PATCH 028/130] kdbus: uapi: Fix kernel-doc for enum kdbus_send_flags
@@ -35910,7 +35910,7 @@ index 2fe0a1c5056c..00a6e142c977 100644
 2.4.3
 
 
-From b613e7ad45bf67fd43a97eb331dc50e8d1ff8500 Mon Sep 17 00:00:00 2001
+From 16b298422872b3ea0539ab964f6feff238451d1a Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 9 Apr 2015 13:08:07 +0300
 Subject: [PATCH 029/130] Documentation: kdbus: Fix list of
@@ -35947,7 +35947,7 @@ index 76e325d4e931..c36aa9781739 100644
 2.4.3
 
 
-From baa81048a66a0b93728a170863cb4039c99b21f5 Mon Sep 17 00:00:00 2001
+From 22223c06ec40c5f065786fe858775599a5c3679a Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 9 Apr 2015 13:08:06 +0300
 Subject: [PATCH 030/130] Documentation: kdbus: Update list of ioctls which
@@ -35983,7 +35983,7 @@ index 05fd01902ad4..a9e16f196d39 100644
 2.4.3
 
 
-From b906a3c6d3179cf9125f82b9ecc4a8ee8978589b Mon Sep 17 00:00:00 2001
+From d765165272f418e7af67dd2c1f87f8795bacf5f2 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 9 Apr 2015 13:08:05 +0300
 Subject: [PATCH 031/130] Documentation: kdbus: Fix description of
@@ -36015,7 +36015,7 @@ index 5e7c7a3f537e..90f6596dcc20 100644
 2.4.3
 
 
-From 1ac3982fef5fc64053732a4869a1cefb6c98e0e6 Mon Sep 17 00:00:00 2001
+From 3aaa51abeacf6b146967e36d09de5abeaf56adb7 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 9 Apr 2015 13:08:04 +0300
 Subject: [PATCH 032/130] Documentation: kdbus: Fix typos
@@ -36299,7 +36299,7 @@ index 194abd2e76cc..d8e7400df2af 100644
 2.4.3
 
 
-From 94379c976298bbb35c957e8db5df53f688aac2e7 Mon Sep 17 00:00:00 2001
+From a00b37fd9f7c864cac67ccfbfb785426479a84f2 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
 Date: Fri, 10 Apr 2015 13:43:37 +0200
 Subject: [PATCH 033/130] kdbus: avoid the use of struct timespec
@@ -36360,7 +36360,7 @@ index 6b3bd81bbb4d..008dca801627 100644
 2.4.3
 
 
-From 884f8b8fe2095eb7e29e1e0c6a46d9e31aefb183 Mon Sep 17 00:00:00 2001
+From aa7069d5a4d86898d6af5bf78d875571cc312d26 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 21 Apr 2015 02:12:18 +0300
 Subject: [PATCH 034/130] kdbus: pool: use __vfs_read()
@@ -36437,7 +36437,7 @@ index 139bb77056b3..45dcdea505f4 100644
 2.4.3
 
 
-From 7c13dff3ff298c459b004befbbe42796504fe6d0 Mon Sep 17 00:00:00 2001
+From 16ef70bc3a110650712fb921ccc86ba442165fdb Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 21 May 2015 20:03:29 +0200
 Subject: [PATCH 035/130] kdbus: skip mandatory items on negotiation
@@ -36497,7 +36497,7 @@ index f72dbe513b4a..3f5d8085a297 100644
 2.4.3
 
 
-From 6a9e725ef6cd6dc81b136181d218fbf5d1224e08 Mon Sep 17 00:00:00 2001
+From 6fa13b53a59384e530279a76cdb3e480a4e88c2b Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 18 Apr 2015 12:00:33 +0200
 Subject: [PATCH 036/130] kdbus: turn kdbus_node_idr into an ida
@@ -36603,7 +36603,7 @@ index be125ce4fd58..970e02b08e9f 100644
 2.4.3
 
 
-From 6feda585dbfe6a8edcf437b0f2ce5692e58e6155 Mon Sep 17 00:00:00 2001
+From 805482785bdd9dc253bf098c0472ee3087ebec03 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 18 Apr 2015 12:39:51 +0200
 Subject: [PATCH 037/130] kdbus: reduce scope of handle locking
@@ -36884,7 +36884,7 @@ index 3f5d8085a297..a3e01383a6f6 100644
 2.4.3
 
 
-From e29cc2728378cbcc9a28e3b2c4dcd018dbf73dfe Mon Sep 17 00:00:00 2001
+From 07b1e4c472f93b2718058ca14e3f6508b7bd9cf0 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 18 Apr 2015 13:04:42 +0200
 Subject: [PATCH 038/130] kdbus: skip acquiring an active reference in poll()
@@ -36952,7 +36952,7 @@ index a3e01383a6f6..6230c7ef4347 100644
 2.4.3
 
 
-From 3a9d18fb8526247bb8c388b73486bfd187e5dc64 Mon Sep 17 00:00:00 2001
+From e02cde6e6f83273116d065fb2d7618180831ac55 Mon Sep 17 00:00:00 2001
 From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 Date: Thu, 16 Apr 2015 21:07:18 +0800
 Subject: [PATCH 039/130] kdbus: remove unused linux/version.h include
@@ -36982,7 +36982,7 @@ index 3adc6c2c2e76..eeebfef11552 100644
 2.4.3
 
 
-From 768c4e8f018816435b582e4379d3a6e9f02408d0 Mon Sep 17 00:00:00 2001
+From 25ad919f279833ef0ca9f16b9a9862e78151f4cf Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 20 Apr 2015 10:53:35 +0200
 Subject: [PATCH 040/130] kdbus: optimize auxgroup collector
@@ -37037,7 +37037,7 @@ index eeebfef11552..174436f0aa01 100644
 2.4.3
 
 
-From e600ea23cf0a551f3cacb42754e50fbb8e4546d9 Mon Sep 17 00:00:00 2001
+From 5ef9ab4304bcb7a23ba068950f24a69080355a9e Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 22 Apr 2015 19:31:50 +0200
 Subject: [PATCH 041/130] kdbus: drop obsolete WARN_ON
@@ -37069,7 +37069,7 @@ index a449464a3975..25bb3ad66b98 100644
 2.4.3
 
 
-From 0b054fa3b9dac028e9bea5f5abc52b7092131202 Mon Sep 17 00:00:00 2001
+From 528eff261147557954d7b8cf09e67b6988b2ef1b Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 20 Apr 2015 16:20:59 +0200
 Subject: [PATCH 042/130] kdbus: copy small ioctl payloads to stack
@@ -37241,7 +37241,7 @@ index 740b19880985..9fedf8ab41cd 100644
 2.4.3
 
 
-From 95a6097299cff40ecf2fb61e4222e7ff9bfeb5ae Mon Sep 17 00:00:00 2001
+From 9ded5aae87c4bef0b86d62c7aa1321d9c9caeab4 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 22 May 2015 10:25:08 +0200
 Subject: [PATCH 043/130] kdbus: drop kdbus_meta_attach_mask modparam
@@ -38317,7 +38317,7 @@ index 5c2bf3511daa..e7c486621b04 100644
 2.4.3
 
 
-From ab58b8d91ba734185f43f419b0cb3cb2d7174731 Mon Sep 17 00:00:00 2001
+From f31bede434fb6e9135540476f5da2c4d4a4ca70f Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 26 May 2015 09:29:52 +0200
 Subject: [PATCH 044/130] kdbus: fix typo
@@ -38347,7 +38347,7 @@ index ab476fa9ccca..fb2c6c67c4c1 100644
 2.4.3
 
 
-From 92f587c9a76e6b074a391a3770aa60fcf37fa42e Mon Sep 17 00:00:00 2001
+From 9ceb818c36408729359c12c5fcaa72476932d7ce Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 26 May 2015 09:30:14 +0200
 Subject: [PATCH 045/130] kdbus: forward ID notifications to everyone
@@ -38440,7 +38440,7 @@ index dcc6ab91c4e6..34a7be49c482 100644
 2.4.3
 
 
-From 8acbaca899bd0baab31ee7b19b6958ab2d079168 Mon Sep 17 00:00:00 2001
+From f15c0003cc901abe70639cd5a53f1396a53f3c95 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 26 May 2015 09:59:02 +0200
 Subject: [PATCH 046/130] kdbus: provide helper to collect metadata
@@ -38640,7 +38640,7 @@ index af4775850235..cdaa65c4e6ae 100644
 2.4.3
 
 
-From b0bb4163a40e915e29ddec999d86742b7e3ace84 Mon Sep 17 00:00:00 2001
+From b162a4076e299e161ed0ab7fbf5f2f83079e9397 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 26 May 2015 10:01:37 +0200
 Subject: [PATCH 047/130] kdbus: make metadata on broadcasts reliable
@@ -38706,7 +38706,7 @@ index 9a0ecbc9df2f..d5475961b896 100644
 2.4.3
 
 
-From ea6d39c5424558bc99aac4406357b574209b6e4d Mon Sep 17 00:00:00 2001
+From 50467284ba689614d015a5ff5a042c8addd50bb4 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Fri, 3 Apr 2015 12:41:52 +0200
 Subject: [PATCH 048/130] samples/kdbus: stub out code for glibc < 2.7
@@ -38794,7 +38794,7 @@ index d331e0186899..c3ba958639f3 100644
 2.4.3
 
 
-From 8b78777a8afbdb1a841d76ee2dfa0383cd1e4dba Mon Sep 17 00:00:00 2001
+From b8fdd39764c5f8f76707bc291f8f185a01276f45 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 23 Apr 2015 10:23:38 +0200
 Subject: [PATCH 049/130] kdbus: fix up documentation of ioctl handlers
@@ -38984,7 +38984,7 @@ index 657008e1bb37..5f5d84ea0e8e 100644
 2.4.3
 
 
-From d586da35885529be944d8326b12df11db1d02979 Mon Sep 17 00:00:00 2001
+From 180572652d9ea4143dc2427d79ef619e79674084 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 22 Apr 2015 13:14:24 +0200
 Subject: [PATCH 050/130] kdbus: translate capabilities between namespaces
@@ -39201,7 +39201,7 @@ index b908b6314a00..7949c8d3ed64 100644
 2.4.3
 
 
-From d8c6929d0adbba978139d542542bec20d4c625cd Mon Sep 17 00:00:00 2001
+From 8b74a69813cf1ab3b447a83580837cd4db068ee9 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 3 Jun 2015 17:53:29 +0200
 Subject: [PATCH 051/130] kdbus/selftests: add build-dependencies on headers
@@ -39230,7 +39230,7 @@ index 076f9f40566d..7ad587b3c767 100644
 2.4.3
 
 
-From abca33ce9dc3ea44d372b4b6f74106ef0b7f87b8 Mon Sep 17 00:00:00 2001
+From 4ac790e50e07adf7723cf9f06999e1bdbca46017 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Sat, 18 Apr 2015 12:04:36 +0200
 Subject: [PATCH 052/130] kdbus: use rcu to access exe file in metadata
@@ -39279,7 +39279,7 @@ index 7949c8d3ed64..a85eac34a5c4 100644
 2.4.3
 
 
-From 02fdb873abeb89d06550d81ff436a01af2e64cf8 Mon Sep 17 00:00:00 2001
+From bf492a18fd4fd88ffd564e2642ed7a49f7f556b2 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 20 Apr 2015 11:13:54 +0200
 Subject: [PATCH 053/130] kdbus: no need to ref current->mm
@@ -39351,7 +39351,7 @@ index a85eac34a5c4..c36b9cc67637 100644
 2.4.3
 
 
-From ad87a130f69d5a00a3fb6241c1b653b31e8c2694 Mon Sep 17 00:00:00 2001
+From 0b829ead8c96fa393a061554a5cc34dbf5c726c4 Mon Sep 17 00:00:00 2001
 From: Tyler Baker <tyler.baker@linaro.org>
 Date: Tue, 21 Apr 2015 15:50:51 -0700
 Subject: [PATCH 054/130] selftests/kdbus: install kdbus-test
@@ -39383,7 +39383,7 @@ index 7ad587b3c767..8f36cb5667cc 100644
 2.4.3
 
 
-From 0f89707b73db8c67cc4d012249acea88775415e7 Mon Sep 17 00:00:00 2001
+From 75ea5dba14996d17b9324f04f965803d4002c42e Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 2 Jun 2015 18:48:47 +0300
 Subject: [PATCH 055/130] kdbus: update kernel-doc for
@@ -39417,7 +39417,7 @@ index 008dca801627..89d355b44f63 100644
 2.4.3
 
 
-From c3a42010f0ce1856acf088fe703a8f44faa8bb7e Mon Sep 17 00:00:00 2001
+From 7b6d83ec2f3ac00326919cad4da2b41269101860 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 2 Jun 2015 18:48:48 +0300
 Subject: [PATCH 056/130] kdbus: remove redundant code from
@@ -39463,7 +39463,7 @@ index 8ee62fc0bd46..1bd7bb968f9f 100644
 2.4.3
 
 
-From adb5ce988ffd3b596c54190168f185e33e37d88f Mon Sep 17 00:00:00 2001
+From 7c341b1c1144aab30ac0a8534a181d983d8d65c7 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 2 Jun 2015 18:48:49 +0300
 Subject: [PATCH 057/130] kdbus: kdbus_item_validate(): remove duplicated code
@@ -39499,7 +39499,7 @@ index 745ad5495096..1ee72c2ad7c3 100644
 2.4.3
 
 
-From dcddfa9a95106e997eb3ec90f869c1b5a0b842f0 Mon Sep 17 00:00:00 2001
+From 4993c0edb7064313ac9f0e93cf1e6f511d49fe44 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 2 Jun 2015 18:48:50 +0300
 Subject: [PATCH 058/130] kdbus: kdbus_conn_connect(): use `bus' instead of
@@ -39531,7 +39531,7 @@ index 1bd7bb968f9f..707be050b408 100644
 2.4.3
 
 
-From 30a5d6ffa9831dfcd69a5f851a20f7427674d2f8 Mon Sep 17 00:00:00 2001
+From a997dfb3bc2c2f6bcbd198c66a27912ef48b1905 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Thu, 4 Jun 2015 13:39:30 +0300
 Subject: [PATCH 059/130] kdbus: use FIELD_SIZEOF in kdbus_member_set_user
@@ -39566,7 +39566,7 @@ index 9fedf8ab41cd..529716669fe7 100644
 2.4.3
 
 
-From 093d14d172070d7e2302b4dfb69aadcafd133640 Mon Sep 17 00:00:00 2001
+From 3719abc3dd2bc8009e162b5afeb5be1c263127af Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 19:33:24 +0300
 Subject: [PATCH 060/130] selftests/kdbus: handle cap_get_proc() error properly
@@ -39597,7 +39597,7 @@ index 4b376ecfdbed..6909fb9b1ce5 100644
 2.4.3
 
 
-From 31b10140ddcab9d791fe08461f95cc48c86a7cf4 Mon Sep 17 00:00:00 2001
+From c73d42e664545548314a9cb00cf3015784937b6b Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 19:33:25 +0300
 Subject: [PATCH 061/130] selftests/kdbus: drop useless assignment
@@ -39635,7 +39635,7 @@ index 6909fb9b1ce5..5b924531d938 100644
 2.4.3
 
 
-From 9f870484965105f2901b791f3c2afb1200e3d03a Mon Sep 17 00:00:00 2001
+From 1bcf6b24ff75eeb66f6639e74e1d1411b4ec4eb5 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 19:33:26 +0300
 Subject: [PATCH 062/130] selftests/kdbus: remove useless initializations from
@@ -39680,7 +39680,7 @@ index 2cb1d4d2a5be..ccdfae06922b 100644
 2.4.3
 
 
-From a1bca9c1642a67bc79f4a0ea8cce4a5d0bb0cbc2 Mon Sep 17 00:00:00 2001
+From 6dbc7c82d030c3b9174f651a655131b61658a298 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 19:33:27 +0300
 Subject: [PATCH 063/130] selftests/kdbus: drop duplicated code from
@@ -39715,7 +39715,7 @@ index 5b924531d938..d35ec89cb816 100644
 2.4.3
 
 
-From 9875e85830bd097701d75eb8c03cf24965cfda15 Mon Sep 17 00:00:00 2001
+From ca61a99145e277c8d1d343b5ae7fbac1c31ffc29 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 19:33:28 +0300
 Subject: [PATCH 064/130] selftests/kdbus: fix error paths in
@@ -39831,7 +39831,7 @@ index d35ec89cb816..9fac4b31536d 100644
 2.4.3
 
 
-From e2feb7b3ce7878f82a7be25552b8dd22b3bba79b Mon Sep 17 00:00:00 2001
+From 3b1f34bd4cc08e9efeb7f66d8c36b16cc0aa3cae Mon Sep 17 00:00:00 2001
 From: Marc-Antoine Perennou <Marc-Antoine@Perennou.com>
 Date: Fri, 5 Jun 2015 14:37:34 +0200
 Subject: [PATCH 065/130] kdbus: drop useless goto
@@ -39860,7 +39860,7 @@ index 5f5d84ea0e8e..d77ee08afeda 100644
 2.4.3
 
 
-From 566489908e144d18434d18ef5b0f560509902959 Mon Sep 17 00:00:00 2001
+From a87636b4f6938dd9f058a2539a8e6bc959a8137e Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Tue, 9 Jun 2015 23:59:59 +0300
 Subject: [PATCH 066/130] kdbus: fix operator precedence issues in item macros
@@ -39912,7 +39912,7 @@ index eeefd8beac3b..32909e2e7954 100644
 2.4.3
 
 
-From d88f05bfe41d79dcc7f4e6053ced0bdf320c7088 Mon Sep 17 00:00:00 2001
+From 0735211c6c5670d89007fb932330d280879bf992 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:00 +0300
 Subject: [PATCH 067/130] kdbus: use parentheses uniformly in
@@ -39949,7 +39949,7 @@ index 32909e2e7954..bca63b4e6e80 100644
 2.4.3
 
 
-From 29061f790d5760f092253bff820213d96ef3e53f Mon Sep 17 00:00:00 2001
+From 35e2358e17fd7de35032dc905b46afed33f0665a Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:01 +0300
 Subject: [PATCH 068/130] Documentation/kdbus: fix operator precedence issue in
@@ -39987,7 +39987,7 @@ index 09f8b903116f..b0eeeef995af 100644
 2.4.3
 
 
-From d685a3cd5cad65b2bfda17fdafb7d9743bb7460e Mon Sep 17 00:00:00 2001
+From 718d56012e27f13b92df3de081d828e6dc6ef518 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:02 +0300
 Subject: [PATCH 069/130] Documentation/kdbus: use parentheses uniformly in
@@ -40024,7 +40024,7 @@ index b0eeeef995af..ee09dfa443b8 100644
 2.4.3
 
 
-From cd435826642632787d1c919a50f2fada095e574d Mon Sep 17 00:00:00 2001
+From 02ab1f82685f66c9649a7c7b2e9ddb74952f7ec5 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:03 +0300
 Subject: [PATCH 070/130] selftests/kdbus: fix trivial style issues
@@ -40127,7 +40127,7 @@ index 50ff07140bdd..b53b03f0565c 100644
 2.4.3
 
 
-From 5792813a5618e9fa4358d3648860ac58968fc305 Mon Sep 17 00:00:00 2001
+From 1efbbd2b0b90385f3102428aacd9be82a22308dc Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:04 +0300
 Subject: [PATCH 071/130] selftests/kdbus: fix precedence issues in macros
@@ -40185,7 +40185,7 @@ index b53b03f0565c..df5721ee8f54 100644
 2.4.3
 
 
-From db973118c90257c78dfaf72c3d8d66ea98bdd9ec Mon Sep 17 00:00:00 2001
+From a05a0c9c299e6041b0470488baba21a23ab3cf79 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:05 +0300
 Subject: [PATCH 072/130] selftests/kdbus: use parentheses in iteration macros
@@ -40229,7 +40229,7 @@ index df5721ee8f54..d1a0f1b4d0eb 100644
 2.4.3
 
 
-From e7678984067e3da18896631c25435ad35864b2b8 Mon Sep 17 00:00:00 2001
+From 400c38e4d80ff529380afc70c47b2ff8e0ab5aba Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:06 +0300
 Subject: [PATCH 073/130] samples/kdbus: add whitespace
@@ -40258,7 +40258,7 @@ index 5ed5907c5cb4..2de4d6a8c51e 100644
 2.4.3
 
 
-From 1110aacf0bdfcd2f0b6988f95186ee65e4ed2c3f Mon Sep 17 00:00:00 2001
+From 26807479fed45a5e19defd4cd1a0c6b828a0f9c0 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:07 +0300
 Subject: [PATCH 074/130] samples/kdbus: fix operator precedence issue in
@@ -40296,7 +40296,7 @@ index 2de4d6a8c51e..fab873b89d97 100644
 2.4.3
 
 
-From 8b744d165719cd00d0191fea1806ae9628608953 Mon Sep 17 00:00:00 2001
+From a7f6636cd5a6e12099734c4c432efd4ad2e9f2b9 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 10 Jun 2015 00:00:08 +0300
 Subject: [PATCH 075/130] samples/kdbus: use parentheses uniformly in
@@ -40333,7 +40333,7 @@ index fab873b89d97..7f3abae18396 100644
 2.4.3
 
 
-From cf0967bae2b90f9975c7a22097f0fabff4ae4baf Mon Sep 17 00:00:00 2001
+From 76273a8da068bab7f97144cc984005e0c226f16c Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 20:14:56 +0300
 Subject: [PATCH 076/130] kdbus: kdbus_reply_find(): return on found entry
@@ -40380,7 +40380,7 @@ index 89d355b44f63..9d823ebee71f 100644
 2.4.3
 
 
-From 50aaf53f5830d1dd41336a338ffd562990a3a285 Mon Sep 17 00:00:00 2001
+From 5c399f8c458c2f3f8bfda1d355288eb46dc7381b Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 20:14:57 +0300
 Subject: [PATCH 077/130] kdbus: optimize error path in kdbus_reply_new()
@@ -40431,7 +40431,7 @@ index 9d823ebee71f..e6791d86ec92 100644
 2.4.3
 
 
-From a235c172b03f530715776d7b20d6c6e6dae80922 Mon Sep 17 00:00:00 2001
+From c745fe60e92c0c8206d9656012bb316eb5d0706e Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Wed, 17 Jun 2015 20:14:58 +0300
 Subject: [PATCH 078/130] kdbus: optimize if statements in
@@ -40485,7 +40485,7 @@ index 707be050b408..9993753d11de 100644
 2.4.3
 
 
-From de3aa5494fe3e83d32bb40c6f248f40e473e554a Mon Sep 17 00:00:00 2001
+From 3867fb79eb9145ccecad66c7415e8dabbd4c3040 Mon Sep 17 00:00:00 2001
 From: Markus Elfring <elfring@users.sourceforge.net>
 Date: Wed, 24 Jun 2015 14:30:17 +0200
 Subject: [PATCH 079/130] kdbus: delete unnecessary check before
@@ -40523,7 +40523,7 @@ index d01f33baaa0d..205a3adaa2ab 100644
 2.4.3
 
 
-From be3f3566979391cc463a728baf7ebd2b86b22bbb Mon Sep 17 00:00:00 2001
+From 87912311a944afa1ca848f9ae4f516aec01b2d08 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Sun, 28 Jun 2015 16:17:30 +0300
 Subject: [PATCH 080/130] kdbus: fix typos in kdbus_conn_quota_inc()
@@ -40561,7 +40561,7 @@ index 9993753d11de..df072487e23c 100644
 2.4.3
 
 
-From 015b0f227eccb3f141279f37cffb026bbb0e9757 Mon Sep 17 00:00:00 2001
+From 4641ff30eef4fe0c28ba335902672bc65e45c054 Mon Sep 17 00:00:00 2001
 From: Sergei Zviagintsev <sergei@s15v.net>
 Date: Sun, 28 Jun 2015 16:17:31 +0300
 Subject: [PATCH 081/130] kdbus: use standard kernel types in struct
@@ -40597,7 +40597,7 @@ index df072487e23c..af044f93c14f 100644
 2.4.3
 
 
-From 2ac991c229fe8caabb627ae16941cd778e5ce504 Mon Sep 17 00:00:00 2001
+From 5a51bf5488496fc99403f973b04764d3260ac9f5 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 9 Jun 2015 09:41:40 +0200
 Subject: [PATCH 082/130] kdbus/selftests: fix CAP translation tests
@@ -40653,7 +40653,7 @@ index ccdfae06922b..1f6edc09008a 100644
 2.4.3
 
 
-From e6170e0447b7e8fcd8d434fbdf485980f2dcc997 Mon Sep 17 00:00:00 2001
+From 77b0c3f40a8045a9ef8d894a67e1eab7f780ad9e Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 15 Jun 2015 12:20:28 +0200
 Subject: [PATCH 083/130] kdbus: drop redundant KDBUS_MSG_MAX_ITEMS
@@ -40728,7 +40728,7 @@ index 066e816dfdea..e9da67229eb1 100644
 2.4.3
 
 
-From f237934c8b23701533ce843006f4278de12ce409 Mon Sep 17 00:00:00 2001
+From 7473e5abd8213f3ca54819a8c5821df60ed6388c Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 17:08:08 +0200
 Subject: [PATCH 084/130] kdbus: drop unused 'bloom_generation' field
@@ -40764,7 +40764,7 @@ index cdaa65c4e6ae..3b733474f335 100644
 2.4.3
 
 
-From e5f4f9a51364e333196c1aa185fe189c4ec3813c Mon Sep 17 00:00:00 2001
+From 9c1f30680ad7f49739c4c2e60c6b17484e7a2f6c Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 5 Jun 2015 15:30:40 +0200
 Subject: [PATCH 085/130] kdbus: drop support for required attach-flags on
@@ -41052,7 +41052,7 @@ index e7c486621b04..4688ce8ec40b 100644
 2.4.3
 
 
-From 6dfb180f6ed15c1481989d1fbcc5f230a6f4f424 Mon Sep 17 00:00:00 2001
+From d332c7fb29539f11a94558d38e9feb869dd81674 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 9 Jun 2015 09:43:47 +0200
 Subject: [PATCH 086/130] kdbus: pin namespaces on HELLO
@@ -41332,7 +41332,7 @@ index 25bb3ad66b98..6650b7804d87 100644
 2.4.3
 
 
-From 10952457c93b24f62420f2fc2b65ee7f783250f0 Mon Sep 17 00:00:00 2001
+From 00f271aaa419211ff4e798bc143ed02acc080134 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 1 Jul 2015 17:15:14 +0200
 Subject: [PATCH 087/130] kdbus: fix NULL-deref in activator cleanup
@@ -41367,7 +41367,7 @@ index d77ee08afeda..057f8061c20f 100644
 2.4.3
 
 
-From 25b1edb7a2dc84d1fd3f07b1ab80755df77a16fc Mon Sep 17 00:00:00 2001
+From c42d86e8b55ca68b9a627b03240363725d54719d Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 3 Jul 2015 11:10:22 +0200
 Subject: [PATCH 088/130] kdbus: allow building development modules
@@ -41421,7 +41421,7 @@ index 7ee9271e1449..66663a124104 100644
 2.4.3
 
 
-From 4c2fc229105c9ef08192bfcd810219d994bcfaca Mon Sep 17 00:00:00 2001
+From d1682efe38ec3d9eea6cf215e2bf81b4a3fa443c Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 15 Jun 2015 20:49:21 +0200
 Subject: [PATCH 089/130] kdbus: split off faked metadata into separate object
@@ -42020,7 +42020,7 @@ index 6650b7804d87..1e7916155036 100644
 2.4.3
 
 
-From d215154fecae81a0a0fd37e5f0838a9b5d15c514 Mon Sep 17 00:00:00 2001
+From 7a79fc0e72a572cadfd54b6ca0dab337dc225f67 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 15 Jun 2015 21:25:39 +0200
 Subject: [PATCH 090/130] kdbus: pin 'struct cred' in process metadata
@@ -42288,7 +42288,7 @@ index ac4135c507c4..1bac0dda72e0 100644
 2.4.3
 
 
-From c521d8f8b2bf54e059fdc91154e7ec5276449243 Mon Sep 17 00:00:00 2001
+From d77d29aa86119b335f05b5c4c0c3419aea167fd0 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 15:33:34 +0200
 Subject: [PATCH 091/130] kdbus: pass msg-seqnum directly into meta-conn
@@ -42432,7 +42432,7 @@ index e4a454222f09..216720fc26ff 100644
 2.4.3
 
 
-From 9f3e2b6559f938667fefdbfd96a38941f3299184 Mon Sep 17 00:00:00 2001
+From fcedf4d1f660c2e294c4c31e4ce4df7a827f93d1 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 15:37:03 +0200
 Subject: [PATCH 092/130] kdbus: don't include padding in mc->owned_names_size
@@ -42515,7 +42515,7 @@ index dcb603798aba..beb7dbb73d08 100644
 2.4.3
 
 
-From e75fca7dda283d3b555221cf0f2e0f8c48125d09 Mon Sep 17 00:00:00 2001
+From 7c5bc7353eba057b4713845af58f5a6584c8435b Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 16:16:30 +0200
 Subject: [PATCH 093/130] kdbus: re-introduce metadata buffers
@@ -42946,7 +42946,7 @@ index c33315d0b82b..a30b0ad26af2 100644
 2.4.3
 
 
-From 33f21a6fde771fcba5c450ce6da9b9d4990c29d9 Mon Sep 17 00:00:00 2001
+From ed21508ef51c99bfe7685e916862a1a267bf09bc Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 16:46:30 +0200
 Subject: [PATCH 094/130] kdbus: speed up KDBUS_CMD_*_INFO by using meta_emit()
@@ -43133,7 +43133,7 @@ index 8fcff17ae2b6..7b800b299caf 100644
 2.4.3
 
 
-From 4dbcf2c1e8e13f0e60dc09e4bf6e45c11d53f080 Mon Sep 17 00:00:00 2001
+From 63dbb7496b7797d77e81dff007b57b36039ffa88 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 21:34:08 +0200
 Subject: [PATCH 095/130] kdbus: simplify kdbus_match_rules()
@@ -43293,7 +43293,7 @@ index cc083b4211de..869a9fbce37d 100644
 2.4.3
 
 
-From 62af3e5d4a85e63812591200c8bba34b83a8144a Mon Sep 17 00:00:00 2001
+From 79a01773cfb433d98ee1e28694fb04981440a823 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 21:39:25 +0200
 Subject: [PATCH 096/130] kdbus: pass notification details directly into policy
@@ -43395,7 +43395,7 @@ index 0eb3d2e70a5e..aa4234a4e3e4 100644
 2.4.3
 
 
-From 1492ebd7259558b116855da1fbf87bce588fb22e Mon Sep 17 00:00:00 2001
+From 9784733946961bddc5deec8acc9a2ce473de989a Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 21:46:39 +0200
 Subject: [PATCH 097/130] kdbus: pass source connection to queue handling
@@ -43513,7 +43513,7 @@ index 7f2db96fe308..ac471d0c809d 100644
 2.4.3
 
 
-From c341b3377ecc277ddf81c25e2314f085e66dfebe Mon Sep 17 00:00:00 2001
+From 74836cc10698ff01cb3d9ef3817c41b104b817bc Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 21:56:25 +0200
 Subject: [PATCH 098/130] kdbus: remove redundant kmsg->dst_name_id
@@ -43720,7 +43720,7 @@ index 43824c93fb03..4749b23a4f14 100644
 2.4.3
 
 
-From 922a6b724e96af08b3054d17a3da28bb96e2ac5b Mon Sep 17 00:00:00 2001
+From 0c46447bf09986e1f4ad53b624227ef68cd056f1 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 23:04:49 +0200
 Subject: [PATCH 099/130] kdbus: simplify collecting metadata on messages
@@ -43877,7 +43877,7 @@ index 88e2366e49b6..9a11389d9f27 100644
 2.4.3
 
 
-From 0175469bb7b019e0ca1934cf74ba130bccc2f7b6 Mon Sep 17 00:00:00 2001
+From c772e76bac1e087df627f87d61ad6f9402921da0 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 23:38:19 +0200
 Subject: [PATCH 100/130] kdbus: simplify notification shortcuts
@@ -44263,7 +44263,7 @@ index bcf7555e386a..a07d242d0470 100644
 2.4.3
 
 
-From faea2617f10b6fd8aad29e929f38bc73360464d8 Mon Sep 17 00:00:00 2001
+From 1b06ba54c5a8ab4b105cd24341da3e308dc9f364 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 19 Jun 2015 23:56:19 +0200
 Subject: [PATCH 101/130] kdbus: rewrite message importer
@@ -45402,7 +45402,7 @@ index 5755ad4c9fd9..8fe49a961834 100644
 2.4.3
 
 
-From 98b8b96d7504dd56ae9d3f5e29fbc3739aecb172 Mon Sep 17 00:00:00 2001
+From dd7214c80ce22d150f333bfbacce5c7eefb894b1 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 20 Jun 2015 00:53:58 +0200
 Subject: [PATCH 102/130] kdbus: remove unused code
@@ -45486,7 +45486,7 @@ index bca63b4e6e80..3a7e6ccc253c 100644
 2.4.3
 
 
-From d8837dc31c193da262a4f9f82f7c6cf196b5d010 Mon Sep 17 00:00:00 2001
+From eef5c601ce12c504ec8fc070c6bf9897da6f6085 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 20 Jun 2015 11:37:58 +0200
 Subject: [PATCH 103/130] kdbus: import messages via kdbus_args
@@ -45713,7 +45713,7 @@ index 13c59d975728..8a36c0595091 100644
 2.4.3
 
 
-From a28abc3b9eadda2b4f3b0cede18ca93d72bd988e Mon Sep 17 00:00:00 2001
+From d6d876cd3a2678bc3d577fc98e3acc0cf1026632 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 24 Jun 2015 15:27:03 +0200
 Subject: [PATCH 104/130] kdbus: switch to kdbus_staging
@@ -47071,7 +47071,7 @@ index ac471d0c809d..bf686d182ce1 100644
 2.4.3
 
 
-From f8c54b051bcd7c306d216ab060297ac1d6c76c1c Mon Sep 17 00:00:00 2001
+From 82be2645946ac52317a7f3c5b2b22a967cc5eb26 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 24 Jun 2015 15:29:53 +0200
 Subject: [PATCH 105/130] kdbus: drop unused metadata code
@@ -47500,7 +47500,7 @@ index a30b0ad26af2..8fb2a9f7f82e 100644
 2.4.3
 
 
-From 7a99dafc76484279a7b904fcb46d872072cd6f5c Mon Sep 17 00:00:00 2001
+From 79a96dd3aa7a60f51e3190040cecb1f9a288377d Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Wed, 24 Jun 2015 15:31:10 +0200
 Subject: [PATCH 106/130] kdbus: drop unused message handling
@@ -48255,7 +48255,7 @@ index e0c4f2e324b3..298f9c99dfcf 100644
 2.4.3
 
 
-From a8534b6397a4361bae4fdc529413ab00fafddc09 Mon Sep 17 00:00:00 2001
+From 38044dae6df2ddeffcf8a32226d3954f81e3e445 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 6 Jul 2015 11:29:05 +0200
 Subject: [PATCH 107/130] kdbus: allow senders to receive own broadcasts
@@ -48371,7 +48371,7 @@ index a318cccad0d5..0208638a7245 100644
 2.4.3
 
 
-From 580307439dcaeb9bb72538bd03dee944efd8b595 Mon Sep 17 00:00:00 2001
+From 833ed5ce192e6bc4a1d86b1deea1633678038d99 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Sat, 4 Jul 2015 19:41:28 +0200
 Subject: [PATCH 108/130] kdbus: pass metadata which a receiver could read via
@@ -48684,7 +48684,7 @@ index 8fb2a9f7f82e..dba7cc7fdbcb 100644
 2.4.3
 
 
-From c713686b0327bf8aba644d82a2b9405a2c1b5e71 Mon Sep 17 00:00:00 2001
+From d5ddfd938f16f0f42634c24414e476aee59f82e5 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 6 Jul 2015 16:52:44 +0200
 Subject: [PATCH 109/130] kdbus: drop redundant ns pointers
@@ -48763,7 +48763,7 @@ index 5150932cb257..d4973a90a81e 100644
 2.4.3
 
 
-From 588b9213fe7cbf04b05695f194dc2977e734af45 Mon Sep 17 00:00:00 2001
+From d12ecf6e671334e2855814e8480642dcaac01ce7 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Mon, 6 Jul 2015 16:54:36 +0200
 Subject: [PATCH 110/130] kdbus: allow match rules on msg->dst_id
@@ -48889,7 +48889,7 @@ index 3ae224ff9f3f..d1b300769014 100644
 2.4.3
 
 
-From 2e5bfb5eb0e72a8b5c01fe9b4f72f2d1f54cf575 Mon Sep 17 00:00:00 2001
+From 1937d6b838235e18370883968dca095726776bb4 Mon Sep 17 00:00:00 2001
 From: Masanari Iida <standby24x7@gmail.com>
 Date: Fri, 10 Jul 2015 21:55:33 +0900
 Subject: [PATCH 111/130] kdbus: Fix typo in ipc/kdbus
@@ -49022,7 +49022,7 @@ index 45dcdea505f4..63ccd55713c7 100644
 2.4.3
 
 
-From d812144ef5c2a7e0f316fdce5d2f3173023e88a4 Mon Sep 17 00:00:00 2001
+From c70318290de910cd517c1e43145f66bf9c431abd Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Tue, 14 Jul 2015 20:12:28 +0200
 Subject: [PATCH 112/130] kdbus: properly reset metadata iovecs on multicasts
@@ -49067,7 +49067,7 @@ index 64763ead693c..3520f45875df 100644
 2.4.3
 
 
-From e843b13503607b9a880d4d5b0f1e50ee7f2d2d91 Mon Sep 17 00:00:00 2001
+From bdf6ba200c31d6793a7f58387da5ea338f935e0f Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 16 Jul 2015 17:37:29 +0200
 Subject: [PATCH 113/130] kdbus: fix unused %docs make-targets
@@ -49109,7 +49109,7 @@ index af87641db416..8caffe565750 100644
 2.4.3
 
 
-From 5304ac50e374b587c5eefa57acfa33afce081e28 Mon Sep 17 00:00:00 2001
+From 8eff8b5e47afb6e904d6c2f53bca833234a1e281 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 24 Jul 2015 12:57:20 +0200
 Subject: [PATCH 114/130] kdbus: fix sparse address-space annotation
@@ -49152,7 +49152,7 @@ index 3520f45875df..27a5021fe70f 100644
 2.4.3
 
 
-From ba84cc7fe2bb80c589d28a1905f50e547efd9143 Mon Sep 17 00:00:00 2001
+From 9cadc2a904fab68d9b4b5481e3f279b9eafb7a11 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 24 Jul 2015 12:32:09 +0200
 Subject: [PATCH 115/130] kdbus: fix wrong message size on 32bit
@@ -49197,7 +49197,7 @@ index 27a5021fe70f..432dba4dcfdc 100644
 2.4.3
 
 
-From aa9ffdf58953446d5ed0898e36e3cfa74af40e58 Mon Sep 17 00:00:00 2001
+From 6c33f736898f57cd8c7c0aa371cb0ba653e6ba84 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:20 +0200
 Subject: [PATCH 116/130] kdbus: return EBADSLT on replies without slot
@@ -49262,7 +49262,7 @@ index e2be910d2ece..0655a545fbf1 100644
 2.4.3
 
 
-From 750545eaf0610acedfc258d5538b91ba698f9add Mon Sep 17 00:00:00 2001
+From 67f1e545a952248748e978b9e911b1b44133d969 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:21 +0200
 Subject: [PATCH 117/130] kdbus: reduce stack buffer to 256 bytes
@@ -49315,7 +49315,7 @@ index 8a36c0595091..5dde2c10bed4 100644
 2.4.3
 
 
-From 086e2ac299d3b52d3718bad61777d563855b0870 Mon Sep 17 00:00:00 2001
+From 1ba6ec68be096ace997a061a5a315b81bb87b412 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:22 +0200
 Subject: [PATCH 118/130] kdbus: use separate counter for message IDs
@@ -49373,7 +49373,7 @@ index 432dba4dcfdc..ae565cd343f8 100644
 2.4.3
 
 
-From 32ea313d225452fbeca59dea31c25b9ac20b9289 Mon Sep 17 00:00:00 2001
+From 1047a21d6c0c72471aba9e6bbf3cb5480978c5f9 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:23 +0200
 Subject: [PATCH 119/130] kdbus: move privilege checking in kdbus_conn_new()
@@ -49562,7 +49562,7 @@ index e0e06b0e1114..a93c385c6280 100644
 2.4.3
 
 
-From b6d45676786487a14cf358ccde05227be3eb850a Mon Sep 17 00:00:00 2001
+From eb7117864314356338ddda5233113fd267e25edd Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:24 +0200
 Subject: [PATCH 120/130] kdbus: perform accounting on proxied uids
@@ -49612,7 +49612,7 @@ index 243cbc77624e..c81888ed1138 100644
 2.4.3
 
 
-From c59db063d151251315befeaeb5dd30ca4d8c4f26 Mon Sep 17 00:00:00 2001
+From ca4086ca74b8ea53e0b651eaba87aea494c91cab Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:25 +0200
 Subject: [PATCH 121/130] kdbus: inline privilege checks
@@ -49721,7 +49721,7 @@ index a93c385c6280..4d41ecf9cc7d 100644
 2.4.3
 
 
-From 59d1f8e2ad6aa247044e4398da2b05bfc0ae7f1f Mon Sep 17 00:00:00 2001
+From f29ad8e99b317ec90539a511094cc0dbd90777fb Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:26 +0200
 Subject: [PATCH 122/130] kdbus: consolidate common code
@@ -49846,7 +49846,7 @@ index 4d41ecf9cc7d..fc60932d69c7 100644
 2.4.3
 
 
-From 34221e86d14f7e6a79482ce05352deb74995018c Mon Sep 17 00:00:00 2001
+From 71a24812d527ae9a57d7e55fceacefa4df805d71 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:27 +0200
 Subject: [PATCH 123/130] kdbus/samples: skip if __NR_memfd_create is not
@@ -49892,7 +49892,7 @@ index c3ba958639f3..5a6dfdce3bfd 100644
 2.4.3
 
 
-From 8d7d9fe9e8f3799a74e5df4dd3ee7353240219d3 Mon Sep 17 00:00:00 2001
+From a7efdf3425f92d6e2d002e2ca4db5b3fec3fef01 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Thu, 6 Aug 2015 10:21:28 +0200
 Subject: [PATCH 124/130] kdbus/tests: properly parse KDBUS_CMD_LIST objects
@@ -49965,7 +49965,7 @@ index 66ebb47370eb..fd4ac5adc6d2 100644
 2.4.3
 
 
-From 81205dab1ec3a6d40cefce71261fbd585f9d49b0 Mon Sep 17 00:00:00 2001
+From 225ffcacfd172dc6415fa91253b0fc402784504f Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 7 Aug 2015 16:36:33 +0200
 Subject: [PATCH 125/130] kdbus: restructure name-registry to follow dbus-spec
@@ -51292,7 +51292,7 @@ index 3dd2589293e0..edac59ddd8ee 100644
 2.4.3
 
 
-From 6f13cdf87c8d2fec27155138578eeb7b1ed4837c Mon Sep 17 00:00:00 2001
+From 778a2ef52f6f8991305194958b8f4691a55381bb Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 7 Aug 2015 16:36:34 +0200
 Subject: [PATCH 126/130] kdbus: inform caller about exact updates on
@@ -51492,7 +51492,7 @@ index 7a6e61c35ebf..a47ee5452158 100644
 2.4.3
 
 
-From 396f8e8f8d6594cbb25b79342a84d6b200980c86 Mon Sep 17 00:00:00 2001
+From d4b8e3851b1ab39e1c72d5f4a8263dbf0386b1c2 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 7 Aug 2015 16:36:35 +0200
 Subject: [PATCH 127/130] kdbus: never return <0 from ioctls if we changed
@@ -51581,7 +51581,7 @@ index fd4ac5adc6d2..9217465f3ff1 100644
 2.4.3
 
 
-From 74694fa80f344592af40abc37c90d87897996087 Mon Sep 17 00:00:00 2001
+From d24490565323e6b5a9612202f3d86534018fff80 Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
 Date: Fri, 7 Aug 2015 16:36:36 +0200
 Subject: [PATCH 128/130] kdbus: selftests: add more name registry tests
@@ -51850,7 +51850,7 @@ index 9217465f3ff1..e400dc86a2f5 100644
 2.4.3
 
 
-From 6935d6dc1afdda7ce6c0c1e679734e3899bac1b6 Mon Sep 17 00:00:00 2001
+From c1c995efd63e9a85be3e09d82cb7573dd8b222d1 Mon Sep 17 00:00:00 2001
 From: Lubomir Rintel <lkundrak@v3.sk>
 Date: Fri, 14 Aug 2015 13:21:43 -0400
 Subject: [PATCH 129/130] kdbus: create /sys/fs/kdbus with
@@ -51910,7 +51910,7 @@ index 1ad4dc8dafa1..c2117ea53bb5 100644
 2.4.3
 
 
-From bdd2181cc49c2e766cb555ed603eac9c5a96cfd6 Mon Sep 17 00:00:00 2001
+From 3aaa2072da07022dd01b685363fb8ec1a7f80058 Mon Sep 17 00:00:00 2001
 From: David Herrmann <dh.herrmann@gmail.com>
 Date: Fri, 4 Sep 2015 11:02:35 +0200
 Subject: [PATCH 130/130] kdbus: raise hard-coded limit of matches

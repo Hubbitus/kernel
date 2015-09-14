@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 14
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -511,8 +511,6 @@ Patch466: input-kill-stupid-messages.patch
 Patch467: die-floppy-die.patch
 
 Patch468: no-pcspkr-modalias.patch
-
-Patch469: input-silence-i8042-noise.patch
 
 Patch470: silence-fbcon-logo.patch
 
@@ -2041,6 +2039,10 @@ fi
 #
 # 
 %changelog
+* Mon Sep 14 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc1.git0.1
+- Linux v4.3-rc1
+- Disable debugging options.
+
 * Mon Sep 14 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARMv7 update for AllWinner devices
 
