@@ -2056,6 +2056,9 @@ fi
 #
 # 
 %changelog
+* Wed Sep  9 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7/aarch64 config updates
+
 * Tue Sep 08 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in blk layer (rhbz 1237136)
 
