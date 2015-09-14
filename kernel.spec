@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -625,10 +625,6 @@ Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
-#rhbz 1251877 1251880 1250279 1248741
-# and probably more since ugh use after free bugs
-Patch26264: HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
-
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
@@ -643,9 +639,6 @@ Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
 
 #rhbz 1256281
 Patch26265: mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
-
-#rhbz 1224764
-Patch26266: x86-apic-Fix-fallout-from-x2apic-cleanup.patch
 
 #rhbz 1257534
 Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
@@ -1400,9 +1393,6 @@ ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 #rhbz 1244511
 ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
 
-#rhbz 1251877 1251880 1250279 1248741
-ApplyPatch HID-hid-input-Fix-accessing-freed-memory-during-devi.patch
-
 #rhbz 1239050
 ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
@@ -1417,9 +1407,6 @@ ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
 
 #rhbz 1256281
 ApplyPatch mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
-
-#rhbz 1224764
-ApplyPatch x86-apic-Fix-fallout-from-x2apic-cleanup.patch
 
 #rhbz 1257534
 ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
@@ -2281,6 +2268,9 @@ fi
 #
 # 
 %changelog
+* Mon Sep 14 2015 Laura Abbott <labbott@redhat.com> - 4.1.7-200
+- Linux v4.1.7
+
 * Fri Sep 04 2015 Laura Abbott <labbott@redhat.com> - 4.1.6-201
 - Tag and build
 
