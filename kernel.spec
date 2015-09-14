@@ -2041,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Mon Sep 14 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARMv7 update for AllWinner devices
+
 * Fri Sep 11 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc0.git14.1
 - Linux v4.2-11169-g64d1def7d338
 
