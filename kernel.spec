@@ -650,6 +650,9 @@ Patch514: drm-qxl-validate-monitors-config-modes.patch
 Patch517: vmwgfx-Rework-device-initialization.patch
 Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
+#CVE-2015-6937 rhbz 1263139 1263140
+Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1417,6 +1420,9 @@ ApplyPatch drm-qxl-validate-monitors-config-modes.patch
 #rhbz 1257500
 ApplyPatch vmwgfx-Rework-device-initialization.patch
 ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+
+#CVE-2015-6937 rhbz 1263139 1263140
+ApplyPatch RDS-verify-the-underlying-transport-exists-before-cr.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2268,6 +2274,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-6937 net: rds null pointer (rhbz 1263139 1263140)
+
 * Mon Sep 14 2015 Laura Abbott <labbott@redhat.com> - 4.1.7-200
 - Linux v4.1.7
 
