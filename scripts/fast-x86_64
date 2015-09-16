@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rpmbuild --target x86_64 --without debuginfo --without perf --without tools --rebuild $1

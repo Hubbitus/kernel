@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rpmbuild --target armv7hl --with cross --without debuginfo --without perf --without tools --define "__strip /usr/bin/arm-linux-gnu-strip" --rebuild $1
