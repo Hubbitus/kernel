@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -593,6 +593,8 @@ Patch521: x86-alternatives-Make-optimize_nops-interrupt-safe-a.patch
 
 #rhbz 1237136
 Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
+
+Patch523: fix-bounce_end_io.patch
 
 Patch904: kdbus.patch
 
@@ -2039,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Wed Sep 16 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc1.git2.1
+- Linux v4.3-rc1-21-g865ca08
+
 * Tue Sep 15 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.0-0.rc1.git1.1
 - Linux v4.3-rc1-19-gd25ed277fbd4
 
