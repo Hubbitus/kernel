@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -652,6 +652,9 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
+
+#rhbz 1263762
+Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1423,6 +1426,9 @@ ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 ApplyPatch RDS-verify-the-underlying-transport-exists-before-cr.patch
+
+#rhbz 1263762
+ApplyPatch 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2274,6 +2280,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in 32-bit kernel on 64-bit AMD cpus (rhbz 1263762)
+
 * Tue Sep 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-6937 net: rds null pointer (rhbz 1263139 1263140)
 
