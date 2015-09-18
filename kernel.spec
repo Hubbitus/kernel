@@ -598,6 +598,9 @@ Patch523: fix-bounce_end_io.patch
 
 Patch904: kdbus.patch
 
+#rhbz 1263762
+Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2041,6 +2044,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in 32-bit kernel on 64-bit AMD cpus (rhbz 1263762)
+
 * Thu Sep 17 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc1.git3.1
 - Linux v4.3-rc1-47-g7271484
 
