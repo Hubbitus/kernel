@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -614,6 +614,9 @@ Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
+
+#rhbz 1263762
+Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2059,6 +2062,9 @@ fi
 #
 # 
 %changelog
+* Thu Sep 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in 32-bit kernel on 64-bit AMD cpus (rhbz 1263762)
+
 * Tue Sep 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-6937 net: rds null pointer (rhbz 1263139 1263140)
 
