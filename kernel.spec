@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -585,11 +585,7 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
-Patch519: security-device_cgroup-fix-RCU-lockdep-splat.patch
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
-
-#rhbz 1258223
-Patch521: x86-alternatives-Make-optimize_nops-interrupt-safe-a.patch
 
 #rhbz 1237136
 Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
@@ -2044,6 +2040,9 @@ fi
 #
 # 
 %changelog
+* Fri Sep 18 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc1.git4.1
+- Linux v4.3-rc1-131-ga7d5c18
+
 * Fri Sep 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in 32-bit kernel on 64-bit AMD cpus (rhbz 1263762)
 
