@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -586,11 +586,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
-
-#rhbz 1237136
-Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
-
-Patch523: fix-bounce_end_io.patch
 
 Patch904: kdbus.patch
 
@@ -2040,6 +2035,10 @@ fi
 #
 # 
 %changelog
+* Mon Sep 21 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc2.git0.2
+- Linux v4.3-rc2
+- Disable debugging options.
+
 * Fri Sep 18 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc1.git4.1
 - Linux v4.3-rc1-131-ga7d5c18
 
