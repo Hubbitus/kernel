@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -598,9 +598,6 @@ Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
 #rhbz 1257534
 Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
-
-#rhbz 1212201
-Patch514: drm-qxl-validate-monitors-config-modes.patch
 
 #rhbz 1257500
 Patch517: vmwgfx-Rework-device-initialization.patch
@@ -2062,6 +2059,9 @@ fi
 #
 # 
 %changelog
+* Mon Sep 21 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.1-300
+- Linux v4.2.1
+
 * Thu Sep 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in 32-bit kernel on 64-bit AMD cpus (rhbz 1263762)
 
