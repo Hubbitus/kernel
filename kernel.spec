@@ -615,6 +615,9 @@ Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
 #rhbz 1263762
 Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
+#CVE-2015-5257 rhbz 1265607 1265612
+Patch527: USB-whiteheat-fix-potential-null-deref-at-probe.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2059,6 +2062,9 @@ fi
 #
 # 
 %changelog
+* Thu Sep 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-5257 Null ptr deref in usb whiteheat driver (rhbz 1265607 1265612)
+
 * Mon Sep 21 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.1-300
 - Linux v4.2.1
 
