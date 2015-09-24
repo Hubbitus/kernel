@@ -587,10 +587,13 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
 
-Patch904: kdbus.patch
-
 #rhbz 1263762
 Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
+
+#CVE-2015-5257 rhbz 1265607 1265612
+Patch527: USB-whiteheat-fix-potential-null-deref-at-probe.patch
+
+Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2035,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Thu Sep 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-5257 Null ptr deref in usb whiteheat driver (rhbz 1265607 1265612)
+
 * Tue Sep 22 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc2.git1.1
 - Linux v4.3-rc2-19-gbcee19f
 - Reenable debugging options.
