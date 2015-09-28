@@ -19,9 +19,11 @@ pushd $LINUX_GIT
 git diff v$VER.. > /tmp/patch-$VER-git$NEWGIT
 xz -9 /tmp/patch-$VER-git$NEWGIT
 DESC=$(git describe)
+git rev-list --max-count=1 HEAD > /tmp/gitrev
 popd
 
 mv /tmp/patch-$VER-git$NEWGIT.xz .
+mv /tmp/gitrev .
 
 perl -p -i -e 's|%global baserelease.*|%global baserelease 0|' kernel.spec
 
