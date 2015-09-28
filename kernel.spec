@@ -504,6 +504,8 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
 
+Patch458: regulator-axp20x-module-alias.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2062,6 +2064,9 @@ fi
 #
 # 
 %changelog
+* Mon Sep 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream patch to fix a Allwinner regulator loading as a module
+
 * Thu Sep 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-5257 Null ptr deref in usb whiteheat driver (rhbz 1265607 1265612)
 
