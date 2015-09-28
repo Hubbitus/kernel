@@ -2038,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Mon Sep 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 updates
+
 * Thu Sep 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-5257 Null ptr deref in usb whiteheat driver (rhbz 1265607 1265612)
 
