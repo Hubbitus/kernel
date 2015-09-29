@@ -587,6 +587,9 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
 
+#rhbz 1262434
+Patch521: Revert-Input-synaptics-fix-handling-of-disabling-ges.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2032,6 +2035,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Revert upstream guesture disabling patch on synaptics (rhbz 1262434)
+
 * Mon Sep 28 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc3.git1.1
 - Linux v4.3-rc3-40-g097f70b
 - Disable debugging options.
