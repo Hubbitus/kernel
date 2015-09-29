@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -630,9 +630,6 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 #rhbz 1253789
 Patch511: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
-
-#rhbz 1250717
-Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
 #CVE-2015-6666 rhbz 1256746 1256753
 Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
@@ -1404,9 +1401,6 @@ ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 #rhbz 1253789
 ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
-
-#rhbz 1250717
-ApplyPatch ext4-dont-manipulate-recovery-flag-when-freezing.patch
 
 #CVE-2015-6666 rhbz 1256746 1256753
 ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
@@ -2280,6 +2274,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.9-200
+- Linux v4.1.9
+
 * Thu Sep 24 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-5257 Null ptr deref in usb whiteheat driver (rhbz 1265607 1265612)
 
