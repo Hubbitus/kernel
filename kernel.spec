@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2035,6 +2035,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 29 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc3.git2.1
+- Linux v4.3-rc3-42-g3225031
+
 * Tue Sep 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Revert upstream guesture disabling patch on synaptics (rhbz 1262434)
 
