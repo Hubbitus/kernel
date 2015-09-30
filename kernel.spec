@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -595,18 +595,12 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 #rhbz 1253789
 Patch510: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
-#rhbz 1250717
-Patch512: ext4-dont-manipulate-recovery-flag-when-freezing.patch
-
 #rhbz 1257534
 Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
 #rhbz 1257500
 Patch517: vmwgfx-Rework-device-initialization.patch
 Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
-
-#rhbz 1259231
-Patch519: make-flush-workqueue-available-to-non-GPL-modules.patch
 
 #rhbz 1237136
 Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
@@ -2064,6 +2058,9 @@ fi
 #
 # 
 %changelog
+* Tue Sep 29 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.2-300
+- Linux v4.2.2
+
 * Mon Sep 28 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add upstream patch to fix a Allwinner regulator loading as a module
 
