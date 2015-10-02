@@ -653,6 +653,10 @@ Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 #CVE-2015-5257 rhbz 1265607 1265612
 Patch527: USB-whiteheat-fix-potential-null-deref-at-probe.patch
 
+#CVE-2015-2925 rhbz 1209367 1209373
+Patch528: dcache-Handle-escaped-paths-in-prepend_path.patch
+Patch529: vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1423,6 +1427,10 @@ ApplyPatch 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 #CVE-2015-5257 rhbz 1265607 1265612
 ApplyPatch USB-whiteheat-fix-potential-null-deref-at-probe.patch
+
+#CVE-2015-2925 rhbz 1209367 1209373
+ApplyPatch dcache-Handle-escaped-paths-in-prepend_path.patch
+ApplyPatch vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2274,6 +2282,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2925 Don't allow bind mount escape (rhbz 1209367 1209373)
+
 * Tue Sep 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.9-200
 - Linux v4.1.9
 
