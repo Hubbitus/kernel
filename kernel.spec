@@ -504,6 +504,8 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
 
+Patch458: ARM-dts-Add-am335x-bonegreen.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2035,6 +2037,9 @@ fi
 #
 # 
 %changelog
+* Sun Oct  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add support for BeagleBone Green
+
 * Fri Oct 02 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc3.git4.1
 - Linux v4.3-rc3-145-g36f8daf
 
