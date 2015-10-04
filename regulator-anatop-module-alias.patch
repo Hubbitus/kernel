@@ -1,0 +1,24 @@
+From d702ffd4d1df73b9c620af1654af42ff5b8d5c09 Fri Sep 18 19:09:07 2015
+From: Luis de Bethencourt <luis@debethencourt.com>
+Date:   Fri Sep 18 19:09:07 2015 +0200
+
+    regulator: anatop: Fix module autoload for OF platform driver
+    
+    This platform driver has a OF device ID table but the OF module
+    alias information is not created so module autoloading won't work.
+    
+    Signed-off-by: Luis de Bethencourt <luisbg@osg.samsung.com>
+    Signed-off-by: Mark Brown <broonie@kernel.org>
+
+diff --git a/drivers/regulator/anatop-regulator.c b/drivers/regulator/anatop-regulator.c
+index 738adfa..52ea605 100644
+--- a/drivers/regulator/anatop-regulator.c
++++ b/drivers/regulator/anatop-regulator.c
+@@ -318,6 +318,7 @@ static const struct of_device_id of_anatop_regulator_match_tbl[] = {
+ 	{ .compatible = "fsl,anatop-regulator", },
+ 	{ /* end */ }
+ };
++MODULE_DEVICE_TABLE(of, of_anatop_regulator_match_tbl);
+ 
+ static struct platform_driver anatop_regulator_driver = {
+ 	.driver = {

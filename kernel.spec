@@ -506,6 +506,10 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch458: regulator-axp20x-module-alias.patch
 
+Patch459: regulator-anatop-module-alias.patch
+
+Patch460: ARM-dts-Add-am335x-bonegreen.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2065,6 +2069,10 @@ fi
 #
 # 
 %changelog
+* Sun Oct  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream patch to fix a Anatop (i.MX) regulator loading as a module
+- Add support for BeagleBone Green
+
 * Fri Oct 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7613 Unauthorized access to IPC via SysV shm (rhbz 1268270 1268273)
 
