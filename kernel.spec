@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -588,9 +588,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
 Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
-
-#rhbz 1262434
-Patch521: Revert-Input-synaptics-fix-handling-of-disabling-ges.patch
 
 #rhbz 1238803 1249850
 Patch522: drm-qxl-avoid-buffer-reservation-in-qxl_crtc_page_fl.patch
@@ -2041,6 +2038,10 @@ fi
 #
 # 
 %changelog
+* Mon Oct 05 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc4.git0.1
+- Linux v4.3-rc4
+- Disable debugging options.
+
 * Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patches to fix qxl locking issues (rhbz 1238803 1249850)
 
