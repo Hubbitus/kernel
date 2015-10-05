@@ -627,6 +627,10 @@ Patch530: Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
 
 Patch531: net-inet-fix-race-in-reqsk_queue_unlink.patch
 
+#rhbz 1265978
+Patch536: si2168-Bounds-check-firmware.patch
+Patch537: si2157-Bounds-check-firmware.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2071,6 +2075,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 05 2015 Laura Abbott <labbott@fedoraproject.org>
+- Stop stack smash for several DVB devices (rhbz 1265978)
+
 * Mon Oct 05 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.3-300
 - Linux v4.2.3
 - Netdev fix race in resq_queue_unlink
