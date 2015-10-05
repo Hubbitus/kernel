@@ -1,0 +1,42 @@
+From 364222966c6cb48898b83f9a912bff4cedcda2cd Mon Sep 17 00:00:00 2001
+From: Frediano Ziglio <fziglio@redhat.com>
+Date: Thu, 24 Sep 2015 14:25:15 +0100
+Subject: [PATCH 2/2] drm/qxl: avoid dependency lock
+
+qxl_bo_unref calls drm_gem_object_unreference_unlocked which
+locks dev->struct_mutex. However this lock could be already
+locked if the call came from qxl_gem_object_free.
+As we don't need to call qxl_bo_ref/qxl_bo_unref cause
+qxl_release_list_add will hold a reference by itself avoid
+to call them and the possible deadlock.
+
+Signed-off-by: Frediano Ziglio <fziglio@redhat.com>
+---
+ drivers/gpu/drm/qxl/qxl_release.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/qxl/qxl_release.c b/drivers/gpu/drm/qxl/qxl_release.c
+index b66ec331c17c..4efa8e261baf 100644
+--- a/drivers/gpu/drm/qxl/qxl_release.c
++++ b/drivers/gpu/drm/qxl/qxl_release.c
+@@ -307,7 +307,7 @@ int qxl_alloc_surface_release_reserved(struct qxl_device *qdev,
+ 		idr_ret = qxl_release_alloc(qdev, QXL_RELEASE_SURFACE_CMD, release);
+ 		if (idr_ret < 0)
+ 			return idr_ret;
+-		bo = qxl_bo_ref(to_qxl_bo(entry->tv.bo));
++		bo = to_qxl_bo(entry->tv.bo);
+ 
+ 		(*release)->release_offset = create_rel->release_offset + 64;
+ 
+@@ -316,8 +316,6 @@ int qxl_alloc_surface_release_reserved(struct qxl_device *qdev,
+ 		info = qxl_release_map(qdev, *release);
+ 		info->id = idr_ret;
+ 		qxl_release_unmap(qdev, *release, info);
+-
+-		qxl_bo_unref(&bo);
+ 		return 0;
+ 	}
+ 
+-- 
+2.4.3
+

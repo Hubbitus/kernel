@@ -1,0 +1,53 @@
+From fc6c6a4dde53bf68c519c0079b5957a24b7bad2b Mon Sep 17 00:00:00 2001
+From: Frediano Ziglio <fziglio@redhat.com>
+Date: Thu, 24 Sep 2015 14:25:14 +0100
+Subject: [PATCH 1/2] drm/qxl: avoid buffer reservation in qxl_crtc_page_flip
+
+This avoid a dependency lock error.
+According to https://lwn.net/Articles/548909/ users of WW mutex API
+should avoid using different context.
+When a buffer is reserved with qxl_bo_reserve a ww_mutex_lock without
+context is used. However during qxl_draw_dirty_fb different locks
+with specific context are used.
+This is detected during a machine booting with a debug kernel with lock
+dependency checking enabled.
+Like many other function in this file to avoid this problem object
+pinning is used. Once the object is pinned is not necessary to keep
+the lock so it can be released avoiding the locking problem.
+
+Signed-off-by: Frediano Ziglio <fziglio@redhat.com>
+---
+ drivers/gpu/drm/qxl/qxl_display.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index 4649bd2ed340..183aea1abebc 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -244,6 +244,10 @@ static int qxl_crtc_page_flip(struct drm_crtc *crtc,
+ 	ret = qxl_bo_reserve(bo, false);
+ 	if (ret)
+ 		return ret;
++	ret = qxl_bo_pin(bo, bo->type, NULL);
++	qxl_bo_unreserve(bo);
++	if (ret)
++		return ret;
+ 
+ 	qxl_draw_dirty_fb(qdev, qfb_src, bo, 0, 0,
+ 			  &norect, one_clip_rect, inc);
+@@ -257,7 +261,11 @@ static int qxl_crtc_page_flip(struct drm_crtc *crtc,
+ 	}
+ 	drm_vblank_put(dev, qcrtc->index);
+ 
+-	qxl_bo_unreserve(bo);
++	ret = qxl_bo_reserve(bo, false);
++	if (!ret) {
++		qxl_bo_unpin(bo);
++		qxl_bo_unreserve(bo);
++	}
+ 
+ 	return 0;
+ }
+-- 
+2.4.3
+

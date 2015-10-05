@@ -592,6 +592,10 @@ Patch520: ARM-dts-Fix-Makefile-target-for-sun4i-a10-itead-itea.patch
 #rhbz 1262434
 Patch521: Revert-Input-synaptics-fix-handling-of-disabling-ges.patch
 
+#rhbz 1238803 1249850
+Patch522: drm-qxl-avoid-buffer-reservation-in-qxl_crtc_page_fl.patch
+Patch523: drm-qxl-avoid-dependency-lock.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2037,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix qxl locking issues (rhbz 1238803 1249850)
+
 * Sun Oct  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add support for BeagleBone Green
 
