@@ -660,6 +660,10 @@ Patch529: vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
 #CVE-2015-7613 rhbz 1268270 1268273
 Patch532: Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
 
+#rhbz 1266691
+Patch534: inet-fix-potential-deadlock-in-reqsk_queue_unlink.patch
+Patch535: inet-fix-race-in-reqsk_queue_unlink.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1437,6 +1441,10 @@ ApplyPatch vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
 
 #CVE-2015-7613 rhbz 1268270 1268273
 ApplyPatch Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
+
+#rhbz 1266691
+ApplyPatch inet-fix-potential-deadlock-in-reqsk_queue_unlink.patch
+ApplyPatch inet-fix-race-in-reqsk_queue_unlink.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2288,8 +2296,9 @@ fi
 #
 # 
 %changelog
-* Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.10-200
 - Linxu v4.1.10
+- Add patch to fix soft lockups in network stack (rhbz 1266691)
 
 * Fri Oct 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7613 Unauthorized access to IPC via SysV shm (rhbz 1268270 1268273)
