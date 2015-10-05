@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 10
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2288,6 +2288,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Linxu v4.1.10
+
 * Fri Oct 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7613 Unauthorized access to IPC via SysV shm (rhbz 1268270 1268273)
 
