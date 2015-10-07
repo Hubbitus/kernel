@@ -1,11 +1,13 @@
+From b634bc924371a7df6459af04f37c91f65ac59df2 Mon Sep 17 00:00:00 2001
 From: Tom Lendacky <thomas.lendacky@amd.com>
-Date: Sat, 21 Feb 2015 12:25:12 -0500
-Subject: [PATCH] amd-xgbe-a0: Add support for XGBE on A0
+Date: Thu, 28 May 2015 16:38:57 -0400
+Subject: [PATCH 1/2] amd-xgbe-a0: Add support for XGBE on A0
 
 Add XGBE driver support for A0 hardware.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 [fixup timespec -> timespec64]
+[use device_dma_is_coherent]
 Signed-off-by: Mark Salter <msalter@redhat.com>
 ---
  drivers/net/ethernet/amd/Makefile               |    1 +
@@ -17,11 +19,11 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c     | 2930 +++++++++++++++++++++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c     | 2218 +++++++++++++++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c |  616 +++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c    |  643 +++++
+ drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c    |  618 +++++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c    |  312 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c     |  278 +++
  drivers/net/ethernet/amd/xgbe-a0/xgbe.h         |  868 +++++++
- 13 files changed, 10294 insertions(+)
+ 13 files changed, 10269 insertions(+)
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/Makefile
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
@@ -36,7 +38,7 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 
 diff --git a/drivers/net/ethernet/amd/Makefile b/drivers/net/ethernet/amd/Makefile
-index a38a2dce3eb3..bf0cf2f8d2db 100644
+index a38a2dc..bf0cf2f 100644
 --- a/drivers/net/ethernet/amd/Makefile
 +++ b/drivers/net/ethernet/amd/Makefile
 @@ -18,3 +18,4 @@ obj-$(CONFIG_PCNET32) += pcnet32.o
@@ -46,7 +48,7 @@ index a38a2dce3eb3..bf0cf2f8d2db 100644
 +obj-$(CONFIG_AMD_XGBE) += xgbe-a0/
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/Makefile b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 new file mode 100644
-index 000000000000..561116faadae
+index 0000000..561116f
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/Makefile
 @@ -0,0 +1,8 @@
@@ -60,7 +62,7 @@ index 000000000000..561116faadae
 +amd-xgbe-a0-$(CONFIG_DEBUG_FS) += xgbe-debugfs.o
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 new file mode 100644
-index 000000000000..75b08c63d39f
+index 0000000..75b08c6
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
 @@ -0,0 +1,1142 @@
@@ -1208,7 +1210,7 @@ index 000000000000..75b08c63d39f
 +#endif
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 new file mode 100644
-index 000000000000..343301cbf7b4
+index 0000000..343301c
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
 @@ -0,0 +1,269 @@
@@ -1483,7 +1485,7 @@ index 000000000000..343301cbf7b4
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 new file mode 100644
-index 000000000000..ecfa6f91da22
+index 0000000..ecfa6f9
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
 @@ -0,0 +1,373 @@
@@ -1862,7 +1864,7 @@ index 000000000000..ecfa6f91da22
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 new file mode 100644
-index 000000000000..5dd57779c82c
+index 0000000..5dd5777
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
 @@ -0,0 +1,636 @@
@@ -2504,7 +2506,7 @@ index 000000000000..5dd57779c82c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
 new file mode 100644
-index 000000000000..2d88739de41c
+index 0000000..2d88739
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
 @@ -0,0 +1,2930 @@
@@ -5440,7 +5442,7 @@ index 000000000000..2d88739de41c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
 new file mode 100644
-index 000000000000..ca4af9e508b8
+index 0000000..ca4af9e
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
 @@ -0,0 +1,2218 @@
@@ -7664,7 +7666,7 @@ index 000000000000..ca4af9e508b8
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 new file mode 100644
-index 000000000000..165ff1ceedcc
+index 0000000..165ff1c
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
 @@ -0,0 +1,616 @@
@@ -8286,10 +8288,10 @@ index 000000000000..165ff1ceedcc
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 new file mode 100644
-index 000000000000..a85fb4965835
+index 0000000..deb8551
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
-@@ -0,0 +1,643 @@
+@@ -0,0 +1,618 @@
 +/*
 + * AMD 10Gb Ethernet driver
 + *
@@ -8476,13 +8478,8 @@ index 000000000000..a85fb4965835
 +#ifdef CONFIG_ACPI
 +static int xgbe_acpi_support(struct xgbe_prv_data *pdata)
 +{
-+	struct acpi_device *adev = pdata->adev;
 +	struct device *dev = pdata->dev;
 +	u32 property;
-+	acpi_handle handle;
-+	acpi_status status;
-+	unsigned long long data;
-+	int cca;
 +	int ret;
 +
 +	/* Obtain the system clock setting */
@@ -8502,24 +8499,6 @@ index 000000000000..a85fb4965835
 +		return ret;
 +	}
 +	pdata->ptpclk_rate = property;
-+
-+	/* Retrieve the device cache coherency value */
-+	handle = adev->handle;
-+	do {
-+		status = acpi_evaluate_integer(handle, "_CCA", NULL, &data);
-+		if (!ACPI_FAILURE(status)) {
-+			cca = data;
-+			break;
-+		}
-+
-+		status = acpi_get_parent(handle, &handle);
-+	} while (!ACPI_FAILURE(status));
-+
-+	if (ACPI_FAILURE(status)) {
-+		dev_err(dev, "error obtaining acpi coherency value\n");
-+		return -EINVAL;
-+	}
-+	pdata->coherent = !!cca;
 +
 +	return 0;
 +}
@@ -8550,9 +8529,6 @@ index 000000000000..a85fb4965835
 +		return PTR_ERR(pdata->ptpclk);
 +	}
 +	pdata->ptpclk_rate = clk_get_rate(pdata->ptpclk);
-+
-+	/* Retrieve the device cache coherency value */
-+	pdata->coherent = of_dma_is_coherent(dev->of_node);
 +
 +	return 0;
 +}
@@ -8672,6 +8648,7 @@ index 000000000000..a85fb4965835
 +		goto err_io;
 +
 +	/* Set the DMA coherency values */
++	pdata->coherent = device_dma_is_coherent(pdata->dev);
 +	if (pdata->coherent) {
 +		pdata->axdomain = XGBE_DMA_OS_AXDOMAIN;
 +		pdata->arcache = XGBE_DMA_OS_ARCACHE;
@@ -8935,7 +8912,7 @@ index 000000000000..a85fb4965835
 +module_platform_driver(xgbe_a0_driver);
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 new file mode 100644
-index 000000000000..b84d0481bed8
+index 0000000..b84d048
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
 @@ -0,0 +1,312 @@
@@ -9253,7 +9230,7 @@ index 000000000000..b84d0481bed8
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
 new file mode 100644
-index 000000000000..1016aeb96162
+index 0000000..1016aeb
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
 @@ -0,0 +1,278 @@
@@ -9537,7 +9514,7 @@ index 000000000000..1016aeb96162
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe.h b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 new file mode 100644
-index 000000000000..04c00d236c49
+index 0000000..04c00d2
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe.h
 @@ -0,0 +1,868 @@
@@ -10409,3 +10386,6 @@ index 000000000000..04c00d236c49
 +#endif
 +
 +#endif
+-- 
+2.4.5
+

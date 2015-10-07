@@ -1,7 +1,16 @@
-From 8f6a05588928ef61e751ca3cb008b9847fb6b83d Mon Sep 17 00:00:00 2001
+From patchwork Thu Oct  1 12:39:26 2015
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [net] inet: fix race in reqsk_queue_unlink()
+From: Eric Dumazet <eric.dumazet@gmail.com>
+X-Patchwork-Id: 524966
+Message-Id: <1443703166.32531.47.camel@edumazet-glaptop2.roam.corp.google.com>
+To: David Miller <davem@davemloft.net>
+Cc: netdev <netdev@vger.kernel.org>, Yuchung Cheng <ycheng@google.com>
+Date: Thu, 01 Oct 2015 05:39:26 -0700
+
 From: Eric Dumazet <edumazet@google.com>
-Date: Thu, 1 Oct 2015 05:39:26 -0700
-Subject: [PATCH] inet: fix race in reqsk_queue_unlink()
 
 reqsk_timer_handler() tests if icsk_accept_queue.listen_opt
 is NULL at its beginning.
@@ -19,14 +28,21 @@ Fixes: b357a364c57c ("inet: fix possible panic in reqsk_queue_unlink()")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Cc: Yuchung Cheng <ycheng@google.com>
 ---
- net/ipv4/inet_connection_sock.c | 19 ++++++++++---------
+ net/ipv4/inet_connection_sock.c |   19 ++++++++++---------
  1 file changed, 10 insertions(+), 9 deletions(-)
 
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe netdev" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
 diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index e664706b350c..37c8b45af44b 100644
+index 7bb9c39e0a4d..61b45a17fc73 100644
 --- a/net/ipv4/inet_connection_sock.c
 +++ b/net/ipv4/inet_connection_sock.c
-@@ -568,21 +568,22 @@ EXPORT_SYMBOL(inet_rtx_syn_ack);
+@@ -577,21 +577,22 @@ EXPORT_SYMBOL(inet_rtx_syn_ack);
  static bool reqsk_queue_unlink(struct request_sock_queue *queue,
  			       struct request_sock *req)
  {
@@ -58,6 +74,3 @@ index e664706b350c..37c8b45af44b 100644
  	spin_unlock(&queue->syn_wait_lock);
  	if (timer_pending(&req->rsk_timer) && del_timer_sync(&req->rsk_timer))
  		reqsk_put(req);
--- 
-2.4.3
-

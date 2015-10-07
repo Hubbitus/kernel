@@ -1,4 +1,4 @@
-From 0e9ff3b71d0b2866f8f4ce408043f3f06792aad3 Mon Sep 17 00:00:00 2001
+From c0ea161a6e7158281f64bc6d41126da43cb08f14 Mon Sep 17 00:00:00 2001
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 Date: Sat, 15 Aug 2015 13:36:12 -0500
 Subject: [PATCH 1/2] dcache: Handle escaped paths in prepend_path
@@ -43,10 +43,10 @@ Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
  1 file changed, 7 insertions(+)
 
 diff --git a/fs/dcache.c b/fs/dcache.c
-index 5d03eb0ec0ac..2e8ddc1d09e9 100644
+index 9b5fe503f6cb..e3b44ca75a1b 100644
 --- a/fs/dcache.c
 +++ b/fs/dcache.c
-@@ -2923,6 +2923,13 @@ restart:
+@@ -2926,6 +2926,13 @@ restart:
  
  		if (dentry == vfsmnt->mnt_root || IS_ROOT(dentry)) {
  			struct mount *parent = ACCESS_ONCE(mnt->mnt_parent);

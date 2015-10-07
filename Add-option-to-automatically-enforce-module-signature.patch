@@ -33,10 +33,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index b7d31ca55187..ab403a636357 100644
+index 3dbb7e7909ca..4da6644b1fd0 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1695,6 +1695,16 @@ config EFI_MIXED
+@@ -1703,6 +1703,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -54,7 +54,7 @@ index b7d31ca55187..ab403a636357 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index ef17683484e9..105e7360d747 100644
+index 2c82bd150d43..1ef8ea7f8ed9 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -103,7 +103,7 @@ index ef17683484e9..105e7360d747 100644
  /*
   * See if we have Graphics Output Protocol
   */
-@@ -1406,6 +1438,10 @@ struct boot_params *efi_main(struct efi_config *c,
+@@ -1412,6 +1444,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -115,10 +115,10 @@ index ef17683484e9..105e7360d747 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 225b0988043a..90dbfb73e11f 100644
+index ab456dc233b5..74ba4083e7ce 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
-@@ -133,7 +133,8 @@ struct boot_params {
+@@ -134,7 +134,8 @@ struct boot_params {
  	__u8  eddbuf_entries;				/* 0x1e9 */
  	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
  	__u8  kbd_status;				/* 0x1eb */
@@ -129,10 +129,10 @@ index 225b0988043a..90dbfb73e11f 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 0a2421cca01f..a3d8174dedf9 100644
+index 80f874bf999e..c2e4f52cad30 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1151,6 +1151,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1160,6 +1160,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,10 +146,10 @@ index 0a2421cca01f..a3d8174dedf9 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index b033dab5c8bf..f526b6e02f59 100644
+index 57474384b66b..b69d657c3700 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -188,6 +188,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
+@@ -189,6 +189,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
  
  struct notifier_block;
  
@@ -163,10 +163,10 @@ index b033dab5c8bf..f526b6e02f59 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index f3489ef9e409..3bb7c01b3c9f 100644
+index e9869c497175..87fa14fedc88 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -3912,6 +3912,13 @@ void module_layout(struct module *mod,
+@@ -4084,6 +4084,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
