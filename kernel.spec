@@ -2038,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Wed Oct 07 2015 Laura Abbott <labbott@fedoraproject.org>
+- Disable hibernation for powerpc (rhbz 1267395)
+
 * Wed Oct 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Increase the default number of runtime UARTS (rhbz 1264383)
 - Enable X86_NUMACHIP
