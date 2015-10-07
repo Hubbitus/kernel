@@ -2038,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Wed Oct 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable X86_NUMACHIP
+
 * Tue Oct 06 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc4.git1.1
 - Linux v4.3-rc4-15-gf670268
 - Reenable debugging options.
