@@ -2078,6 +2078,9 @@ fi
 #
 # 
 %changelog
+* Wed Oct 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Increase the default number of runtime UARTS (rhbz 1264383)
+
 * Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Enable CONFIG_ACPI_REV_OVERRIDE_POSSIBLE for Dell XPS sound (rhbz 1255070)
 - Enable CONFIG_X86_NUMACHIP
