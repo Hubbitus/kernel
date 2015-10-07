@@ -2078,6 +2078,10 @@ fi
 #
 # 
 %changelog
+* Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Enable CONFIG_ACPI_REV_OVERRIDE_POSSIBLE for Dell XPS sound (rhbz 1255070)
+- Enable CONFIG_X86_NUMACHIP
+
 * Mon Oct 05 2015 Laura Abbott <labbott@fedoraproject.org>
 - Make headphone work with with T550 + Dock (rhbz 1268037)
 
