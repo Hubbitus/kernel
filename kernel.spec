@@ -2039,6 +2039,7 @@ fi
 # 
 %changelog
 * Wed Oct 07 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Increase the default number of runtime UARTS (rhbz 1264383)
 - Enable X86_NUMACHIP
 
 * Tue Oct 06 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc4.git1.1
