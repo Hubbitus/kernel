@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2038,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Wed Oct 07 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc4.git2.1
+- Linux v4.3-rc4-46-g8ace60f
+
 * Wed Oct 07 2015 Laura Abbott <labbott@fedoraproject.org>
 - Disable hibernation for powerpc (rhbz 1267395)
 
