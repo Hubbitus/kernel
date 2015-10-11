@@ -46,13 +46,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 1
+%define base_sublevel 2
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 9
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -267,7 +267,7 @@ Summary: The Linux kernel
 %define all_arch_configs kernel-%{version}-ppc64*.config
 %endif
 %ifarch ppc64le
-%define all_arch_configs kernel-%{version}-ppc64le.config
+%define all_arch_configs kernel-%{version}-ppc64le*.config
 %endif
 %endif
 
@@ -502,9 +502,8 @@ Patch05: kbuild-AFTER_LINK.patch
 Patch450: input-kill-stupid-messages.patch
 Patch452: no-pcspkr-modalias.patch
 
+Patch458: regulator-axp20x-module-alias.patch
 Patch470: die-floppy-die.patch
-
-Patch500: Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 Patch510: input-silence-i8042-noise.patch
 Patch530: silence-fbcon-logo.patch
@@ -542,9 +541,6 @@ Patch1018: MODSIGN-Support-not-importing-certs-from-db.patch
 
 Patch1019: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
-# esrt
-Patch1020: efi-Add-esrt-support.patch
-
 # virt + ksm patches
 
 # DRM
@@ -578,14 +574,10 @@ Patch16003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 Patch16020: ARM-tegra-usb-no-reset.patch
 Patch16021: arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 Patch16022: arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
-Patch16023: arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
-Patch16024: arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 Patch16025: arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 Patch16026: pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 Patch16028: arm-i.MX6-Utilite-device-dtb.patch
-
-Patch16030: arm-highbank-l2-reverts.patch
 
 #rhbz 754518
 Patch21235: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
@@ -640,31 +632,17 @@ Patch26175: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 Patch26176: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-Patch26203: v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
-
-#rhbz 1217249
-Patch26214: acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
-
-#rhbz 1225563
-Patch26215: HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
-
 #rhbz 1133378
 Patch26219: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 #rhbz 1226743
 Patch26221: drm-i915-turn-off-wc-mmaps.patch
 
-# rhbz 1227891
-Patch26250: HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
-
-# rhbz 1192270
-Patch26251: ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
-
-# rhbz 1180920 1206724
-Patch26252: pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
 
 #rhbz 1244511
 Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
+Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
@@ -672,18 +650,15 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 #rhbz 1253789
 Patch511: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
-#CVE-2015-6666 rhbz 1256746 1256753
-Patch513: Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
-
-#rhbz 1256281
-Patch26265: mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
-
 #rhbz 1257534
 Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
 #rhbz 1257500
 Patch517: vmwgfx-Rework-device-initialization.patch
 Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+
+#rhbz 1237136
+Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
@@ -693,6 +668,22 @@ Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 #CVE-2015-5257 rhbz 1265607 1265612
 Patch527: USB-whiteheat-fix-potential-null-deref-at-probe.patch
+
+#CVE-2015-2925 rhbz 1209367 1209373
+Patch528: dcache-Handle-escaped-paths-in-prepend_path.patch
+Patch529: vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
+
+#CVE-2015-7613 rhbz 1268270 1268273
+Patch532: Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
+
+Patch533: net-inet-fix-race-in-reqsk_queue_unlink.patch
+
+#rhbz 1265978
+Patch536: si2168-Bounds-check-firmware.patch
+Patch537: si2157-Bounds-check-firmware.patch
+
+#rhbz 1268037
+Patch538: ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -716,7 +707,7 @@ Provides: kernel-drm-nouveau = 16\
 Provides: kernel-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
-Requires(pre): linux-firmware >= 20130724-29.git31f6b30\
+Requires(pre): linux-firmware >= 20150904-56.git6ebf5d57\
 Requires(preun): systemd >= 200\
 Conflicts: xorg-x11-drv-vmmouse < 13.0.99\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
@@ -1304,14 +1295,10 @@ ApplyPatch ARM-tegra-usb-no-reset.patch
 
 ApplyPatch arm-dts-am335x-boneblack-lcdc-add-panel-info.patch
 ApplyPatch arm-dts-am335x-boneblack-add-cpu0-opp-points.patch
-ApplyPatch arm-dts-am335x-bone-common-enable-and-use-i2c2.patch
-ApplyPatch arm-dts-am335x-bone-common-setup-default-pinmux-http.patch
 ApplyPatch arm-dts-am335x-bone-common-add-uart2_pins-uart4_pins.patch
 ApplyPatch pinctrl-pinctrl-single-must-be-initialized-early.patch
 
 ApplyPatch arm-i.MX6-Utilite-device-dtb.patch
-
-ApplyPatch arm-highbank-l2-reverts.patch
 
 #
 # bugfixes to drivers and filesystems
@@ -1342,8 +1329,6 @@ ApplyPatch arm-highbank-l2-reverts.patch
 #
 
 # ACPI
-
-ApplyPatch Revert-Revert-ACPI-video-change-acpi-video-brightnes.patch
 
 # ALSA
 
@@ -1397,8 +1382,6 @@ ApplyPatch MODSIGN-Support-not-importing-certs-from-db.patch
 
 ApplyPatch Add-sysrq-option-to-disable-secure-boot-mode.patch
 
-ApplyPatch efi-Add-esrt-support.patch
-
 # Assorted Virt Fixes
 
 # DRM core
@@ -1433,14 +1416,6 @@ ApplyPatch xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 #rhbz 1212230
 ApplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-ApplyPatch v4l-uvcvideo-Fix-incorrect-bandwidth-with-Chicony-de.patch
-
-#rhbz 1217249
-ApplyPatch acpi_video-Add-enable_native_backlight-quirk-for-Mac.patch
-
-#rhbz 1225563
-ApplyPatch HID-lenovo-set-INPUT_PROP_POINTING_STICK.patch
-
 #rhbz 1133378
 ApplyPatch firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
@@ -1452,17 +1427,10 @@ ApplyPatch drm-i915-turn-off-wc-mmaps.patch
 # pplyPatch Input-synaptics-allocate-3-slots-to-keep-stability-i.patch
 # pplyPatch Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-#rhbz 1227891
-ApplyPatch HID-rmi-Disable-populating-F30-when-the-touchpad-has.patch
-
-# rhbz 1192270
-ApplyPatch ideapad_laptop-Lenovo-G50-30-fix-rfkill-reports-wire.patch
-
-# rhbz 1180920 1206724
-ApplyPatch pcmcia-fix-a-boot-time-warning-in-pcmcia-cs-code.patch
-
 #rhbz 1244511
 ApplyPatch HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+
+ApplyPatch kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #rhbz 1239050
 ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
@@ -1470,18 +1438,15 @@ ApplyPatch ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 #rhbz 1253789
 ApplyPatch iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
 
-#CVE-2015-6666 rhbz 1256746 1256753
-ApplyPatch Revert-sched-x86_64-Don-t-save-flags-on-context-swit.patch
-
-#rhbz 1256281
-ApplyPatch mmc-sdhci-fix-dma-memory-leak-in-sdhci_pre_req.patch
-
 #rhbz 1257534
 ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 
 #rhbz 1257500
 ApplyPatch vmwgfx-Rework-device-initialization.patch
 ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+
+#rhbz 1237136
+ApplyPatch block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 ApplyPatch RDS-verify-the-underlying-transport-exists-before-cr.patch
@@ -1491,6 +1456,24 @@ ApplyPatch 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
 
 #CVE-2015-5257 rhbz 1265607 1265612
 ApplyPatch USB-whiteheat-fix-potential-null-deref-at-probe.patch
+
+ApplyPatch regulator-axp20x-module-alias.patch
+
+#CVE-2015-2925 rhbz 1209367 1209373
+ApplyPatch dcache-Handle-escaped-paths-in-prepend_path.patch
+ApplyPatch vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
+
+#CVE-2015-7613 rhbz 1268270 1268273
+ApplyPatch Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
+
+ApplyPatch net-inet-fix-race-in-reqsk_queue_unlink.patch
+
+#rhbz 1265978
+ApplyPatch si2168-Bounds-check-firmware.patch
+ApplyPatch si2157-Bounds-check-firmware.patch
+
+#rhbz 1268037
+ApplyPatch ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2088,10 +2071,10 @@ rm -rf $RPM_BUILD_ROOT
 ###
 
 %if %{with_tools}
-%post -n kernel-tools-libs
+%post -n kernel-tools
 /sbin/ldconfig
 
-%postun -n kernel-tools-libs
+%postun -n kernel-tools
 /sbin/ldconfig
 %endif
 
@@ -2341,6 +2324,26 @@ fi
 # and build.
 #
 %changelog
+* Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.3-200
+- Linux v4.2.3
+- CVE-2015-5156 virtio-net: bug overflow with large fraglist (rhbz 1243852 1266515)
+
+* Mon Oct 05 2015 Laura Abbott <labbott@fedoraproject.org>
+- Make headphone work with with T550 + Dock (rhbz 1268037)
+
+* Mon Oct 05 2015 Laura Abbott <labbott@fedoraproject.org>
+- Stop stack smash for several DVB devices (rhbz 1265978)
+
+* Mon Oct 05 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.10-200
+- Linxu v4.1.10
+- Add patch to fix soft lockups in network stack (rhbz 1266691)
+
+* Fri Oct 02 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7613 Unauthorized access to IPC via SysV shm (rhbz 1268270 1268273)
+
+* Thu Oct 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-2925 Don't allow bind mount escape (rhbz 1209367 1209373)
+
 * Wed Sep 30 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.9-200.hu.1.uksm.bfs.bfq
 - 4.1.9-200.hu.1.uksm.bfs.bfq
 - Update bfs patch: http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch

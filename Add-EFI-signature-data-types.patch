@@ -14,10 +14,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index c74cbd892032..1293d0e0bf90 100644
+index de3e45088d4a..fac43c611614 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -589,6 +589,12 @@ void efi_native_runtime_setup(void);
+@@ -595,6 +595,12 @@ void efi_native_runtime_setup(void);
  #define DEVICE_TREE_GUID \
      EFI_GUID(  0xb1b621d5, 0xf19c, 0x41a5, 0x83, 0x0b, 0xd9, 0x15, 0x2c, 0x69, 0xaa, 0xe0 )
  
@@ -30,7 +30,7 @@ index c74cbd892032..1293d0e0bf90 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -804,6 +810,20 @@ typedef struct _efi_file_io_interface {
+@@ -810,6 +816,20 @@ typedef struct _efi_file_io_interface {
  
  #define EFI_INVALID_TABLE_ADDR		(~0UL)
  
