@@ -601,7 +601,7 @@ Patch21247: ath9k-rx-dma-stop-check.patch
 Patch40001: uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch
 
 # BFS
-Patch40002: bfs-for-kernel-4.1-by-Alfred.patch
+Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
 #? Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
@@ -615,7 +615,7 @@ Patch40002: bfs-for-kernel-4.1-by-Alfred.patch
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-#? Patch40007: BFS-3.13-compile-fix-hu.patch
+Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
 Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
@@ -628,8 +628,6 @@ Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/
 # URL from Gentoo ebuild http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/sys-kernel/tuxonice-sources/tuxonice-sources-3.14.2.ebuild?view=markup
 #? Patch40006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
 
-# My patch to fix ERROR: "function_trace_stop" [kernel/power/tuxonice_core.ko] undefined!
-#? Patch40008: tuxonice-function_trace_stop-undefined-compilation-problem.patch
 #//////////////// end Hubbitus patches
 
 #rhbz 1187004
@@ -1273,9 +1271,9 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch --fuzz=2
 
 # BFS
-ApplyPatch bfs-for-kernel-4.1-by-Alfred.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
 #? ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
-#? ApplyPatch BFS-3.13-compile-fix-hu.patch
+ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
 ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
@@ -2343,6 +2341,10 @@ fi
 # and build.
 #
 %changelog
+* Wed Sep 30 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.1.9-200.hu.1.uksm.bfs.bfq
+- 4.1.9-200.hu.1.uksm.bfs.bfq
+- Update bfs patch: http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
+
 * Tue Sep 29 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.9-200
 - Linux v4.1.9
 
