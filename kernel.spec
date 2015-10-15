@@ -644,6 +644,10 @@ Patch537: si2157-Bounds-check-firmware.patch
 #rhbz 1268037
 Patch538: ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
 
+#rhbz 1271812
+Patch539: iscsi-target-Avoid-OFMarker-IFMarker-negotiation.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1406,6 +1410,9 @@ ApplyPatch si2157-Bounds-check-firmware.patch
 
 #rhbz 1268037
 ApplyPatch ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
+
+#rhbz 1271812
+ApplyPatch iscsi-target-Avoid-OFMarker-IFMarker-negotiation.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2257,6 +2264,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix for iscsi target issues (#rhbz 1271812)
+
 * Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.3-200
 - Linux v4.2.3
 - CVE-2015-5156 virtio-net: bug overflow with large fraglist (rhbz 1243852 1266515)
