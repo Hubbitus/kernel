@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf4
+%define buildid .hu.1.pf2
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -470,7 +470,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.1/patch-4.1-pf4.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.2/patch-4.2-pf2.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -2296,6 +2296,10 @@ fi
 # and build.
 #
 %changelog
+* Sun Oct 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.3-200.hu.1.pf2
+- 4.2.3-200.hu.1.pf2
+- pf v4.2-pf2 https://pf.natalenko.name/forum/index.php?topic=352.0
+
 * Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.3-200
 - Linux v4.2.3
 - CVE-2015-5156 virtio-net: bug overflow with large fraglist (rhbz 1243852 1266515)
