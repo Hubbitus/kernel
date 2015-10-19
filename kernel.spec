@@ -647,6 +647,9 @@ Patch538: ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
 #rhbz 1271812
 Patch539: iscsi-target-Avoid-OFMarker-IFMarker-negotiation.patch
 
+#rhbz 1272172
+Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1413,6 +1416,10 @@ ApplyPatch ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
 
 #rhbz 1271812
 ApplyPatch iscsi-target-Avoid-OFMarker-IFMarker-negotiation.patch
+
+#rhbz 1272172
+ApplyPatch 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+ApplyPatch 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2264,6 +2271,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash in key garbage collector when using request_key (rhbz 1272172)
+
 * Thu Oct 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix for iscsi target issues (#rhbz 1271812)
 
