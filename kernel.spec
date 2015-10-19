@@ -587,6 +587,10 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
+#rhbz 1272172
+Patch510: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+Patch511: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2032,6 +2036,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash in key garbage collector when using request_key (rhbz 1272172)
+
 * Fri Oct 16 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc5.git2.1
 - Linux v4.3-rc5-65-g69984b6
 
