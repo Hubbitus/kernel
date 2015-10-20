@@ -2271,6 +2271,9 @@ fi
 #
 # 
 %changelog
+* Tue Oct 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IEEE802154_ATUSB (rhbz 1272935)
+
 * Mon Oct 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix crash in key garbage collector when using request_key (rhbz 1272172)
 
