@@ -2032,6 +2032,9 @@ fi
 #
 # 
 %changelog
+* Fri Oct 23 2015 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_FS_DAX (rhbz 1274844)
+
 * Fri Oct 23 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc6.git3.1
 - Linux v4.3-rc6-232-g0386729
 
