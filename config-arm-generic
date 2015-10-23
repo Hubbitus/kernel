@@ -286,6 +286,7 @@ CONFIG_VFIO_AMBA=m
 # CONFIG_KEYBOARD_OMAP4 is not set
 # CONFIG_KEYBOARD_BCM is not set
 # CONFIG_PHY_SAMSUNG_USB2 is not set
+# CONFIG_OMAP_GPMC_DEBUG is not set
 
 ### turn off things which make no sense on embedded SoC
 
