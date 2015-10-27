@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -618,8 +618,6 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
-
-Patch533: net-inet-fix-race-in-reqsk_queue_unlink.patch
 
 #rhbz 1265978
 Patch536: si2168-Bounds-check-firmware.patch
@@ -1366,8 +1364,6 @@ ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 ApplyPatch RDS-verify-the-underlying-transport-exists-before-cr.patch
 
 ApplyPatch regulator-axp20x-module-alias.patch
-
-ApplyPatch net-inet-fix-race-in-reqsk_queue_unlink.patch
 
 #rhbz 1265978
 ApplyPatch si2168-Bounds-check-firmware.patch
@@ -2227,6 +2223,9 @@ fi
 #
 # 
 %changelog
+* Mon Oct 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.5-200
+- Linux v4.2.5
+
 * Fri Oct 23 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.4-200
 - Linux v4.2.4 (rhbz 1272645)
 
