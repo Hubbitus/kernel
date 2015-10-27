@@ -566,6 +566,7 @@ Patch16000: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 Patch16001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 Patch16002: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch16003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
+Patch16004: showmem-cma-correct-reserved-memory-calculation.patch
 
 # ARMv7
 Patch16020: ARM-tegra-usb-no-reset.patch
@@ -1202,6 +1203,8 @@ ApplyPatch amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
 ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
+
+ApplyPatch showmem-cma-correct-reserved-memory-calculation.patch
 
 #
 # ARM
@@ -2223,6 +2226,9 @@ fi
 #
 # 
 %changelog
+* Tue Oct 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- CMA memory patch to fix aarch64 builder lockups
+
 * Mon Oct 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.5-200
 - Linux v4.2.5
 
