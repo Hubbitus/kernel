@@ -502,13 +502,15 @@ Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
-Patch457: ARM-tegra-usb-no-reset.patch
+Patch457: showmem-cma-correct-reserved-memory-calculation.patch
 
-Patch458: regulator-axp20x-module-alias.patch
+Patch458: ARM-tegra-usb-no-reset.patch
 
-Patch459: regulator-anatop-module-alias.patch
+Patch459: regulator-axp20x-module-alias.patch
 
-Patch460: ARM-dts-Add-am335x-bonegreen.patch
+Patch460: regulator-anatop-module-alias.patch
+
+Patch461: ARM-dts-Add-am335x-bonegreen.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
@@ -2061,6 +2063,9 @@ fi
 #
 # 
 %changelog
+* Tue Oct 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- CMA memory patch to fix aarch64 builder lockups
+
 * Mon Oct 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.5-300
 - Linux v4.2.5
 
