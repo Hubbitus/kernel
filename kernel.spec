@@ -2036,6 +2036,9 @@ fi
 # 
 %changelog
 * Wed Oct 28 2015 Laura Abbott <labbott@redhat.com>
+- Disable CONFIG_DMADEVICES_VDEBUG
+
+* Wed Oct 28 2015 Laura Abbott <labbott@redhat.com>
 - Add new PCI ids for wireless, including Lenovo Yoga
 
 * Tue Oct 27 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc7.git1.1
