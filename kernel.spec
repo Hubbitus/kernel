@@ -587,6 +587,9 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 
+#rhbz 1275490
+Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2032,6 +2035,9 @@ fi
 #
 # 
 %changelog
+* Wed Oct 28 2015 Laura Abbott <labbott@redhat.com>
+- Add new PCI ids for wireless, including Lenovo Yoga
+
 * Tue Oct 27 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc7.git1.1
 - Linux v4.3-rc7-19-g858e904
 - Reenable debugging options.
