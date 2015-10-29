@@ -2035,6 +2035,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Move iscsi_tcp and related modules to kernel-core (rhbz 1249424)
+
 * Wed Oct 28 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-0.rc7.git2.1
 - Linux v4.3-rc7-32-g8a28d67
 
