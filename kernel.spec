@@ -590,6 +590,9 @@ Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
 #rhbz 1275490
 Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
+#CVE-2015-7990 rhbz 1276437 1276438
+Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
+
 Patch904: kdbus.patch
 
 # END OF PATCH DEFINITIONS
@@ -2035,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7099 RDS: race condition on unbound socket null deref (rhbz 1276437 1276438)
+
 * Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Move iscsi_tcp and related modules to kernel-core (rhbz 1249424)
 
