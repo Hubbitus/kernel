@@ -2063,6 +2063,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Move iscsi_tcp and related modules to kernel-core (rhbz 1249424)
+
 * Tue Oct 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - CMA memory patch to fix aarch64 builder lockups
 
