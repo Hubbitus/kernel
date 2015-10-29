@@ -610,6 +610,8 @@ Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
+#CVE-2015-7990 rhbz 1276437 1276438
+Patch524: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
 #rhbz 1265978
 Patch536: si2168-Bounds-check-firmware.patch
@@ -2063,6 +2065,9 @@ fi
 #
 # 
 %changelog
+* Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7099 RDS: race condition on unbound socket null deref (rhbz 1276437 1276438)
+
 * Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Move iscsi_tcp and related modules to kernel-core (rhbz 1249424)
 
