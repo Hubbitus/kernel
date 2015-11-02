@@ -621,6 +621,9 @@ Patch537: si2157-Bounds-check-firmware.patch
 Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
 Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
+#rhbz 1257131
+Patch542: 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2065,6 +2068,9 @@ fi
 #
 # 
 %changelog
+* Mon Nov 02 2015 Laura Abbott <labbott@fedoraproject.org>
+- Add spurious wakeup quirk for LynxPoint-LP controllers (rhbz 1257131)
+
 * Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7099 RDS: race condition on unbound socket null deref (rhbz 1276437 1276438)
 
