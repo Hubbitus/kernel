@@ -506,6 +506,8 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch458: ARM-dts-Add-am335x-bonegreen.patch
 
+Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2036,7 +2038,12 @@ fi
 #
 # 
 %changelog
-* Mon Nov 02 2015 Laura Abbott <labbott@redhat.com> - 4.2.0-1
+* Tue Nov  2 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix crash in omap_wdt (headed upstream)
+- Build in ARM generic crypto optomisation modules
+- Minor ARM updates
+
+* Mon Nov 02 2015 Laura Abbott <labbott@redhat.com> - 4.3.0-1
 - Linux v4.3
 - Disable debugging options.
 
