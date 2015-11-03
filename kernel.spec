@@ -633,6 +633,10 @@ Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 #rhbz 1257131
 Patch542: 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
 
+#CVE-2015-7799 rhbz 1271134 1271135
+Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -1385,6 +1389,10 @@ ApplyPatch 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
 #rhbz 1257131
 ApplyPatch 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
+
+#CVE-2015-7799 rhbz 1271134 1271135
+ApplyPatch isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+ApplyPatch ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2236,6 +2244,9 @@ fi
 #
 # 
 %changelog
+* Tue Nov 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7799 slip:crash when using PPP char dev driver (rhbz 1271134 1271135)
+
 * Tue Nov 03 2015 Justin M. Forbes <jforbes@fedoraproject.org>
 - Add xz-devel builreq for perf (rhbz 1167457)
 
