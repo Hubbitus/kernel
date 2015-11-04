@@ -2072,6 +2072,9 @@ fi
 #
 # 
 %changelog
+* Wed Nov  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable some IIO sensors (temp/humidity) on ARMv7
+
 * Tue Nov 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7799 slip:crash when using PPP char dev driver (rhbz 1271134 1271135)
 
