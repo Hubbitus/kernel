@@ -2042,6 +2042,9 @@ fi
 #
 # 
 %changelog
+* Wed Nov  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 config updates
+
 * Tue Nov 03 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git1.1
 - Linux v4.3-272-g5062ecd
 - Reenable debugging options.
