@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -381,7 +381,7 @@ BuildRequires: net-tools, hostname, bc
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex
+BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 %ifnarch s390 s390x %{arm}
 BuildRequires: numactl-devel
@@ -569,6 +569,7 @@ Patch16000: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
 Patch16001: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 Patch16002: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch16003: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
+Patch16004: showmem-cma-correct-reserved-memory-calculation.patch
 
 # ARMv7
 Patch16020: ARM-tegra-usb-no-reset.patch
@@ -657,33 +658,25 @@ Patch515: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 Patch517: vmwgfx-Rework-device-initialization.patch
 Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
-#rhbz 1237136
-Patch522: block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
-
 #CVE-2015-6937 rhbz 1263139 1263140
 Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
-
-#rhbz 1263762
-Patch526: 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
-
-#CVE-2015-5257 rhbz 1265607 1265612
-Patch527: USB-whiteheat-fix-potential-null-deref-at-probe.patch
-
-#CVE-2015-2925 rhbz 1209367 1209373
-Patch528: dcache-Handle-escaped-paths-in-prepend_path.patch
-Patch529: vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
-
-#CVE-2015-7613 rhbz 1268270 1268273
-Patch532: Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
-
-Patch533: net-inet-fix-race-in-reqsk_queue_unlink.patch
+#CVE-2015-7990 rhbz 1276437 1276438
+Patch524: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
 #rhbz 1265978
 Patch536: si2168-Bounds-check-firmware.patch
 Patch537: si2157-Bounds-check-firmware.patch
 
-#rhbz 1268037
-Patch538: ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
+#rhbz 1272172
+Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
+
+#rhbz 1257131
+Patch542: 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
+
+#CVE-2015-7799 rhbz 1271134 1271135
+Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1288,6 +1281,8 @@ ApplyPatch amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 ApplyPatch arm64-avoid-needing-console-to-enable-serial-console.patch
 ApplyPatch usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
+ApplyPatch showmem-cma-correct-reserved-memory-calculation.patch
+
 #
 # ARM
 #
@@ -1445,35 +1440,27 @@ ApplyPatch nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
 ApplyPatch vmwgfx-Rework-device-initialization.patch
 ApplyPatch drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
 
-#rhbz 1237136
-ApplyPatch block-blkg_destroy_all-should-clear-q-root_blkg-and-.patch
-
 #CVE-2015-6937 rhbz 1263139 1263140
 ApplyPatch RDS-verify-the-underlying-transport-exists-before-cr.patch
-
-#rhbz 1263762
-ApplyPatch 0001-x86-cpu-cacheinfo-Fix-teardown-path.patch
-
-#CVE-2015-5257 rhbz 1265607 1265612
-ApplyPatch USB-whiteheat-fix-potential-null-deref-at-probe.patch
+#CVE-2015-7990 rhbz 1276437 1276438
+ApplyPatch RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
 ApplyPatch regulator-axp20x-module-alias.patch
-
-#CVE-2015-2925 rhbz 1209367 1209373
-ApplyPatch dcache-Handle-escaped-paths-in-prepend_path.patch
-ApplyPatch vfs-Test-for-and-handle-paths-that-are-unreachable-f.patch
-
-#CVE-2015-7613 rhbz 1268270 1268273
-ApplyPatch Initialize-msg-shm-IPC-objects-before-doing-ipc_addi.patch
-
-ApplyPatch net-inet-fix-race-in-reqsk_queue_unlink.patch
 
 #rhbz 1265978
 ApplyPatch si2168-Bounds-check-firmware.patch
 ApplyPatch si2157-Bounds-check-firmware.patch
 
-#rhbz 1268037
-ApplyPatch ALSA-hda-Add-dock-support-for-ThinkPad-T550.patch
+#rhbz 1272172
+ApplyPatch 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+ApplyPatch 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
+
+#rhbz 1257131
+ApplyPatch 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
+
+#CVE-2015-7799 rhbz 1271134 1271135
+ApplyPatch isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+ApplyPatch ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 # END OF PATCH APPLICATIONS
 
@@ -2324,6 +2311,42 @@ fi
 # and build.
 #
 %changelog
+* Wed Nov  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable some IIO sensors (temp/humidity) on ARMv7
+
+* Tue Nov 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7799 slip:crash when using PPP char dev driver (rhbz 1271134 1271135)
+
+* Tue Nov 03 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Add xz-devel builreq for perf (rhbz 1167457)
+
+* Mon Nov 02 2015 Laura Abbott <labbott@fedoraproject.org>
+- Add spurious wakeup quirk for LynxPoint-LP controllers (rhbz 1257131)
+
+* Thu Oct 29 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7099 RDS: race condition on unbound socket null deref (rhbz 1276437 1276438)
+
+* Tue Oct 27 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.5-201
+- Bump for build
+
+* Tue Oct 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- CMA memory patch to fix aarch64 builder lockups
+
+* Mon Oct 26 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.5-200
+- Linux v4.2.5
+
+* Fri Oct 23 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.4-200
+- Linux v4.2.4 (rhbz 1272645)
+
+* Tue Oct 20 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IEEE802154_ATUSB (rhbz 1272935)
+
+* Mon Oct 19 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash in key garbage collector when using request_key (rhbz 1272172)
+
+* Thu Oct 15 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix for iscsi target issues (#rhbz 1271812)
+
 * Sun Oct 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.3-200.hu.1.uksm.bfs.bfq
 - 4.2.3-200.hu.1.uksm.bfs.bfq
 
