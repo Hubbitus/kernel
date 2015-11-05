@@ -1,7 +1,3 @@
-Linux 3.4 rebase notes:
+Linux 4.4 rebase notes:
 
-* Look at the CPU modalias patches from Andi.  See if they are sufficient to
-  build the cpufreq drivers as modules again (rhbz 713572 but mostly to just
-  make this person in IRC be quiet)
-
-* Make sure X32 stays disabled.  Preferably forever
+CONFIG_RTL8XXXU_UNTESTED should be turned off. Great for rawhide, not for stable

@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -498,8 +498,6 @@ Patch453: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 
 Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 
-Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
-
 Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
@@ -594,10 +592,6 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
-
-#CVE-2015-7799 rhbz 1271134 1271135
-Patch512: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
-Patch513: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2042,6 +2036,9 @@ fi
 #
 # 
 %changelog
+* Thu Nov 05 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git3.1
+- Linux v4.3-6681-g8e483ed
+
 * Wed Nov 04 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git2.1
 - Linux v4.3-1107-g66ef349
 

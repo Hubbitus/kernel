@@ -61,6 +61,7 @@ CONFIG_INTEL_MIC_HOST=m
 CONFIG_INTEL_MIC_CARD=m
 CONFIG_INTEL_MIC_BUS=m
 CONFIG_INTEL_MIC_X100_DMA=m
+CONFIG_MIC_COSM=m
 
 # SHPC has half-arsed PCI probing, which makes it load on too many systems
 CONFIG_HOTPLUG_PCI_SHPC=m
