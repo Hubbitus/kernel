@@ -2076,6 +2076,9 @@ fi
 #
 # 
 %changelog
+* Thu Nov  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable Exynos IOMMU as it crashes
+
 * Thu Nov 05 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix backlight regression on older radeon devices (rhbz 1278407)
 
