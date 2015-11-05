@@ -2036,6 +2036,10 @@ fi
 #
 # 
 %changelog
+* Thu Nov  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable Exynos IOMMU as it crashes
+- Minor ARMv7 update
+
 * Thu Nov 05 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git3.1
 - Linux v4.3-6681-g8e483ed
 
