@@ -1262,7 +1262,7 @@ ApplyPatch lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 ApplyPatch uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch --fuzz=2
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
+ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch --fuzz=2
 #? ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
 ApplyPatch BFS-3.13-compile-fix-hu.patch
 
@@ -2324,6 +2324,9 @@ fi
 # and build.
 #
 %changelog
+* Sun Oct 11 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.3-200.hu.1.uksm.bfs.bfq
+- 4.2.3-200.hu.1.uksm.bfs.bfq
+
 * Wed Oct 07 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.3-200
 - Linux v4.2.3
 - CVE-2015-5156 virtio-net: bug overflow with large fraglist (rhbz 1243852 1266515)
