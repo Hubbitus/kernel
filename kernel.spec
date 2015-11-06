@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -592,6 +592,8 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
+
+Patch512: Revert-ARM-dts-twl4030-Add-iio-properties-for-bci-su.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2036,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Fri Nov 06 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git4.2
+- Fix ARM dt compilation error
+
 * Fri Nov 06 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git4.1
 - Linux v4.3-7965-gd1e41ff
 
