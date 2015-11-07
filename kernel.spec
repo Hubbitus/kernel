@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf2
+%define buildid .hu.1.pf3
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -52,12 +52,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-<<<<<<< HEAD
-#+Hu Pf against 4.2.3 v4.2-pf2: https://pf.natalenko.name/forum/index.php?topic=352.0
-%define stable_update 3
-=======
+#+Hu Pf against 4.2.5 v4.2-pf3: https://pf.natalenko.name/forum/index.php?topic=363.0
 %define stable_update 5
->>>>>>> 8b2cbe93901e227770fad71989ed13d2327b1b8c
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -474,7 +470,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.2/patch-4.2-pf2.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.2/patch-4.2-pf3.xz
 Patch00: %{stable_patch_00}
 %endif
 
@@ -2287,6 +2283,10 @@ fi
 # and build.
 #
 %changelog
+* Thu Nov 05 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.5-201.hu.1.pf3
+- Update to pf3 - v4.2-pf3: https://pf.natalenko.name/forum/index.php?topic=363.0
+- 4.2.5-201.hu.1.pf3
+
 * Wed Nov  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable some IIO sensors (temp/humidity) on ARMv7
 
