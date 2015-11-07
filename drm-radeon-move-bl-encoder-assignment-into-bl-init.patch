@@ -1,0 +1,59 @@
+From 4cee6a9057d5e13911f0cb6e143d11dc1a3245dd Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Wed, 28 Oct 2015 14:26:32 -0400
+Subject: [PATCH 1/2] drm/radeon: move bl encoder assignment into bl init
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+So that the bl encoder will be null if the GPU does not
+control the backlight.
+
+Reviewed-by: Michel Dänzer <michel.daenzer@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/radeon/atombios_encoders.c      | 1 +
+ drivers/gpu/drm/radeon/radeon_encoders.c        | 1 -
+ drivers/gpu/drm/radeon/radeon_legacy_encoders.c | 1 +
+ 3 files changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/radeon/atombios_encoders.c b/drivers/gpu/drm/radeon/atombios_encoders.c
+index 65adb9c72377..933fd1bc849b 100644
+--- a/drivers/gpu/drm/radeon/atombios_encoders.c
++++ b/drivers/gpu/drm/radeon/atombios_encoders.c
+@@ -237,6 +237,7 @@ void radeon_atom_backlight_init(struct radeon_encoder *radeon_encoder,
+ 	backlight_update_status(bd);
+ 
+ 	DRM_INFO("radeon atom DIG backlight initialized\n");
++	rdev->mode_info.bl_encoder = radeon_encoder;
+ 
+ 	return;
+ 
+diff --git a/drivers/gpu/drm/radeon/radeon_encoders.c b/drivers/gpu/drm/radeon/radeon_encoders.c
+index ef99917f000d..c6ee80216cf4 100644
+--- a/drivers/gpu/drm/radeon/radeon_encoders.c
++++ b/drivers/gpu/drm/radeon/radeon_encoders.c
+@@ -194,7 +194,6 @@ static void radeon_encoder_add_backlight(struct radeon_encoder *radeon_encoder,
+ 			radeon_atom_backlight_init(radeon_encoder, connector);
+ 		else
+ 			radeon_legacy_backlight_init(radeon_encoder, connector);
+-		rdev->mode_info.bl_encoder = radeon_encoder;
+ 	}
+ }
+ 
+diff --git a/drivers/gpu/drm/radeon/radeon_legacy_encoders.c b/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
+index 45715307db71..30de43366eae 100644
+--- a/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
++++ b/drivers/gpu/drm/radeon/radeon_legacy_encoders.c
+@@ -441,6 +441,7 @@ void radeon_legacy_backlight_init(struct radeon_encoder *radeon_encoder,
+ 	backlight_update_status(bd);
+ 
+ 	DRM_INFO("radeon legacy LVDS backlight initialized\n");
++	rdev->mode_info.bl_encoder = radeon_encoder;
+ 
+ 	return;
+ 
+-- 
+2.4.3
+
