@@ -464,7 +464,7 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-#%define    stable_patch_00  patch-4.%{base_sublevel}.%{stable_base}.xz
+#%%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
 %global stable_patch_00 https://pf.natalenko.name/sources/4.2/patch-4.2-pf3.xz
 Source5000: %{stable_patch_00}
 %endif
@@ -2111,6 +2111,11 @@ fi
 # and build.
 #
 %changelog
+* Sat Nov 07 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.5-300.hu.1.pf3
+- Update to Fedora23.
+- Merge fc23 branch.
+- Adjust hibernate-Disable-in-a-signed-modules-environment.patch.
+
 * Thu Nov 05 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.5-201.hu.1.pf3.fc22
 - Update to pf3 - v4.2-pf3: https://pf.natalenko.name/forum/index.php?topic=363.0
 - 4.2.5-201.hu.1.pf3
