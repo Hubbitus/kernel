@@ -2311,6 +2311,9 @@ fi
 # and build.
 #
 %changelog
+* Thu Nov 05 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.2.5-201.hu.1.uksm.bfs.bfq
+- 4.2.5-201.hu.1.uksm.bfs.bfq
+
 * Wed Nov  4 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable some IIO sensors (temp/humidity) on ARMv7
 
