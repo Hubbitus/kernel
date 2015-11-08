@@ -2038,6 +2038,9 @@ fi
 #
 # 
 %changelog
+* Sun Nov  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARMv7 updates
+
 * Fri Nov 06 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git4.2
 - Fix ARM dt compilation error
 
