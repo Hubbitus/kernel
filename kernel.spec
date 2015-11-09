@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -592,8 +592,6 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
-
-Patch512: Revert-ARM-dts-twl4030-Add-iio-properties-for-bci-su.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2038,6 +2036,9 @@ fi
 #
 # 
 %changelog
+* Mon Nov 09 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git5.1
+- Linux v4.3-9269-gce5c2d2
+
 * Sun Nov  8 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARMv7 updates
 
