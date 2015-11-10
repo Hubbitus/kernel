@@ -593,6 +593,9 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
+#CVE-2015-5307 rhbz 1277172 1279688
+Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2036,6 +2039,9 @@ fi
 #
 # 
 %changelog
+* Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-5307 kvm: DoS infinite loop in microcode AC exception (rhbz 1277172 1279688)
+
 * Tue Nov 10 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Don't build Serial 8250 on ppc platforms (fix FBTFS)
 - Enable some more common sensors on ARMv7
