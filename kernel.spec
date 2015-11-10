@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2048,6 +2048,9 @@ fi
 #
 # 
 %changelog
+* Tue Nov 10 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git6.1
+- Linux v4.3-9393-gbd4f203
+
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix Yoga 900 rfkill switch issues (rhbz 1275490)
 - Fix incorrect size calculations in megaraid with 64K pages (rhbz 1269300)
