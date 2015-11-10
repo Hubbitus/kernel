@@ -602,6 +602,9 @@ Patch551: KVM-svm-unconditionally-intercept-DB.patch
 #rhbz 1269300
 Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
 
+#rhbz 1275490
+Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2046,6 +2049,7 @@ fi
 # 
 %changelog
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Yoga 900 rfkill switch issues (rhbz 1275490)
 - Fix incorrect size calculations in megaraid with 64K pages (rhbz 1269300)
 - CVE-2015-8104 kvm: DoS infinite loop in microcode DB exception (rhbz 1278496 1279691)
 - CVE-2015-5307 kvm: DoS infinite loop in microcode AC exception (rhbz 1277172 1279688)
