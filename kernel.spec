@@ -2048,6 +2048,9 @@ fi
 #
 # 
 %changelog
+* Tue Nov 10 2015 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_CMA on x86_64 (rhbz 1278985)
+
 * Tue Nov 10 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git6.1
 - Linux v4.3-9393-gbd4f203
 
