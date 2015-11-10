@@ -635,6 +635,9 @@ Patch546: drm-radeon-fix-dpms-when-driver-backlight-control-is.patch
 #CVE-2015-5307 rhbz 1277172 1279688
 Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
 
+#CVE-2015-8104 rhbz 1278496 1279691
+Patch551: KVM-svm-unconditionally-intercept-DB.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2080,6 +2083,7 @@ fi
 # 
 %changelog
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8104 kvm: DoS infinite loop in microcode DB exception (rhbz 1278496 1279691)
 - CVE-2015-5307 kvm: DoS infinite loop in microcode AC exception (rhbz 1277172 1279688)
 
 * Thu Nov  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
