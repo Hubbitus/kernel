@@ -2036,6 +2036,10 @@ fi
 #
 # 
 %changelog
+* Tue Nov 10 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Don't build Serial 8250 on ppc platforms (fix FBTFS)
+- Enable some more common sensors on ARMv7
+
 * Mon Nov 09 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git5.1
 - Linux v4.3-9269-gce5c2d2
 

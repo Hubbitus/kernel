@@ -166,6 +166,7 @@ CONFIG_SCSI_IPR_TRACE=y
 CONFIG_SCSI_IPR_DUMP=y
 
 CONFIG_SERIAL_ICOM=m
+# CONFIG_SERIAL_8250 is not set
 
 # Things we might want to review for newer architectures
 # CONFIG_PCIEPORTBUS is not set
