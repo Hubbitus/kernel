@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -613,24 +613,13 @@ Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch524: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
-#rhbz 1265978
-Patch536: si2168-Bounds-check-firmware.patch
-Patch537: si2157-Bounds-check-firmware.patch
-
 #rhbz 1272172
 Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
 Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
-#rhbz 1257131
-Patch542: 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
-
 #CVE-2015-7799 rhbz 1271134 1271135
 Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
 Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
-
-#rhbz 1278407
-Patch545: drm-radeon-move-bl-encoder-assignment-into-bl-init.patch
-Patch546: drm-radeon-fix-dpms-when-driver-backlight-control-is.patch
 
 #CVE-2015-5307 rhbz 1277172 1279688
 Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
@@ -2085,6 +2074,9 @@ fi
 #
 # 
 %changelog
+* Tue Nov 10 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.6-300
+- Linux v4.2.6
+
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix incorrect size calculations in megaraid with 64K pages (rhbz 1269300)
 - CVE-2015-8104 kvm: DoS infinite loop in microcode DB exception (rhbz 1278496 1279691)
