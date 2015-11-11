@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -501,8 +501,6 @@ Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
-
-Patch458: ARM-dts-Add-am335x-bonegreen.patch
 
 Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
 
@@ -2045,6 +2043,10 @@ fi
 #
 # 
 %changelog
+* Wed Nov 11 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git7.1
+- Linux v4.3-11481-gc5a3788
+- Actually drop CONFIG_DMADEVICES_VDEBUG
+
 * Tue Nov 10 2015 Laura Abbott <labbott@redhat.com>
 - Enable CONFIG_CMA on x86_64 (rhbz 1278985)
 
