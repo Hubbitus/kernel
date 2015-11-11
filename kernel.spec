@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2043,6 +2043,9 @@ fi
 #
 # 
 %changelog
+* Wed Nov 11 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git7.2
+- Drop CONFIG_DRM_DW_HDMI_AHB_AUDIO for now
+
 * Wed Nov 11 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git7.1
 - Linux v4.3-11481-gc5a3788
 - Actually drop CONFIG_DMADEVICES_VDEBUG
