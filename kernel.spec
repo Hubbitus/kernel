@@ -584,9 +584,6 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#rhbz 1239050
-Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
-
 #rhbz 1275490
 Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
