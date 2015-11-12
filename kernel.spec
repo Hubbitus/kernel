@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2046,6 +2046,10 @@ fi
 #
 # 
 %changelog
+* Thu Nov 12 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git8.1
+- Linux v4.3-11626-g5d50ac7
+- Set CONFIG_SECTION_MISMATCH_WARN_ONLY since powerpc has mismatches
+
 * Thu Nov 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-5327 x509 time validation
 
