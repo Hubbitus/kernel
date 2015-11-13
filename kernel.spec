@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -588,20 +588,11 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
-#CVE-2015-5307 rhbz 1277172 1279688
-Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
-
-#CVE-2015-8104 rhbz 1278496 1279691
-Patch551: KVM-svm-unconditionally-intercept-DB.patch
-
 #rhbz 1269300
 Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
 
 #rhbz 1275490
 Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
-
-#CVE-2015-5327
-Patch554: X.509-Fix-the-time-validation-ver-3.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2046,6 +2037,9 @@ fi
 #
 # 
 %changelog
+* Fri Nov 13 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git9.1
+- Linux v4.3-11742-gf6d07df
+
 * Thu Nov 12 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git8.1
 - Linux v4.3-11626-g5d50ac7
 - Set CONFIG_SECTION_MISMATCH_WARN_ONLY since powerpc has mismatches
