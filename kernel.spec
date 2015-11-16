@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 9
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -588,11 +588,8 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
-#rhbz 1269300
-Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
-
-#rhbz 1275490
-Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
+#rhbz 1281674
+Patch512: set_features_failure.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2037,6 +2034,11 @@ fi
 #
 # 
 %changelog
+* Mon Nov 16 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc1.git0.1
+- Linux v4.4-rc1
+- Disable debugging options.
+- Add potential fix for set_features breakage in networking
+
 * Fri Nov 13 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc0.git9.1
 - Linux v4.3-11742-gf6d07df
 
