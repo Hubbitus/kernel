@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -587,9 +587,6 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
-
-#rhbz 1281674
-Patch512: set_features_failure.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2034,6 +2031,9 @@ fi
 #
 # 
 %changelog
+* Wed Nov 18 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc1.git1.1
+- Linux v4.4-rc1-96-g7f151f1
+
 * Mon Nov 16 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc1.git0.1
 - Linux v4.4-rc1
 - Disable debugging options.
