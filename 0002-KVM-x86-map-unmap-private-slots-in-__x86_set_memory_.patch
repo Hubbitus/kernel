@@ -1,0 +1,134 @@
+From f0d648bdf0a5bbc91da6099d5282f77996558ea4 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 12 Oct 2015 13:56:27 +0200
+Subject: [PATCH] KVM: x86: map/unmap private slots in __x86_set_memory_region
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Otherwise, two copies (one of them never populated and thus bogus)
+are allocated for the regular and SMM address spaces.  This breaks
+SMM with EPT but without unrestricted guest support, because the
+SMM copy of the identity page map is all zeros.
+
+By moving the allocation to the caller we also remove the last
+vestiges of kernel-allocated memory regions (not accessible anymore
+in userspace since commit b74a07beed0e, "KVM: Remove kernel-allocated
+memory regions", 2010-06-21); that is a nice bonus.
+
+Reported-by: Alexandre DERUMIER <aderumier@odiso.com>
+Cc: stable@vger.kernel.org
+Fixes: 9da0e4d5ac969909f6b435ce28ea28135a9cbd69
+Reviewed-by: Radim Krčmář <rkrcmar@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+---
+ arch/x86/kvm/x86.c | 62 ++++++++++++++++++++++++++----------------------------
+ 1 file changed, 30 insertions(+), 32 deletions(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 7bf8096..3ac33f8 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -7477,23 +7477,53 @@ void kvm_arch_sync_events(struct kvm *kvm)
+ int __x86_set_memory_region(struct kvm *kvm, int id, gpa_t gpa, u32 size)
+ {
+ 	int i, r;
++	u64 hva;
++	struct kvm_memslots *slots = kvm_memslots(kvm);
++	struct kvm_memory_slot *slot, old;
+
+ 	/* Called with kvm->slots_lock held.  */
+ 	if (WARN_ON(id >= KVM_MEM_SLOTS_NUM))
+ 		return -EINVAL;
+
++	slot = id_to_memslot(slots, id);
++	if (size) {
++		if (WARN_ON(slot->npages))
++			return -EEXIST;
++
++		/*
++		 * MAP_SHARED to prevent internal slot pages from being moved
++		 * by fork()/COW.
++		 */
++		hva = vm_mmap(NULL, 0, size, PROT_READ | PROT_WRITE,
++			      MAP_SHARED | MAP_ANONYMOUS, 0);
++		if (IS_ERR((void *)hva))
++			return PTR_ERR((void *)hva);
++	} else {
++		if (!slot->npages)
++			return 0;
++
++		hva = 0;
++	}
++
++	old = *slot;
+ 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+ 		struct kvm_userspace_memory_region m;
+
+ 		m.slot = id | (i << 16);
+ 		m.flags = 0;
+ 		m.guest_phys_addr = gpa;
++		m.userspace_addr = hva;
+ 		m.memory_size = size;
+ 		r = __kvm_set_memory_region(kvm, &m);
+ 		if (r < 0)
+ 			return r;
+ 	}
+
++	if (!size) {
++		r = vm_munmap(old.userspace_addr, old.npages * PAGE_SIZE);
++		WARN_ON(r < 0);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(__x86_set_memory_region);
+@@ -7623,27 +7653,6 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				const struct kvm_userspace_memory_region *mem,
+ 				enum kvm_mr_change change)
+ {
+-	/*
+-	 * Only private memory slots need to be mapped here since
+-	 * KVM_SET_MEMORY_REGION ioctl is no longer supported.
+-	 */
+-	if ((memslot->id >= KVM_USER_MEM_SLOTS) && (change == KVM_MR_CREATE)) {
+-		unsigned long userspace_addr;
+-
+-		/*
+-		 * MAP_SHARED to prevent internal slot pages from being moved
+-		 * by fork()/COW.
+-		 */
+-		userspace_addr = vm_mmap(NULL, 0, memslot->npages * PAGE_SIZE,
+-					 PROT_READ | PROT_WRITE,
+-					 MAP_SHARED | MAP_ANONYMOUS, 0);
+-
+-		if (IS_ERR((void *)userspace_addr))
+-			return PTR_ERR((void *)userspace_addr);
+-
+-		memslot->userspace_addr = userspace_addr;
+-	}
+-
+ 	return 0;
+ }
+
+@@ -7705,17 +7714,6 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ {
+ 	int nr_mmu_pages = 0;
+
+-	if (change == KVM_MR_DELETE && old->id >= KVM_USER_MEM_SLOTS) {
+-		int ret;
+-
+-		ret = vm_munmap(old->userspace_addr,
+-				old->npages * PAGE_SIZE);
+-		if (ret < 0)
+-			printk(KERN_WARNING
+-			       "kvm_vm_ioctl_set_memory_region: "
+-			       "failed to munmap memory\n");
+-	}
+-
+ 	if (!kvm->arch.n_requested_mmu_pages)
+ 		nr_mmu_pages = kvm_mmu_calculate_mmu_pages(kvm);
+
+-- 
+2.5.0
+
