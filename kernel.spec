@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -616,24 +616,38 @@ Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch524: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
-#rhbz 1265978
-Patch536: si2168-Bounds-check-firmware.patch
-Patch537: si2157-Bounds-check-firmware.patch
-
 #rhbz 1272172
 Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
 Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
-
-#rhbz 1257131
-Patch542: 0001-xhci-Add-spurious-wakeup-quirk-for-LynxPoint-LP-cont.patch
 
 #CVE-2015-7799 rhbz 1271134 1271135
 Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
 Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
-#rhbz 1278407
-Patch545: drm-radeon-move-bl-encoder-assignment-into-bl-init.patch
-Patch546: drm-radeon-fix-dpms-when-driver-backlight-control-is.patch
+#CVE-2015-5307 rhbz 1277172 1279688
+Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
+
+#CVE-2015-8104 rhbz 1278496 1279691
+Patch551: KVM-svm-unconditionally-intercept-DB.patch
+
+#rhbz 1269300
+Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
+
+#rhbz 1275490
+Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
+
+#rhbz 1279189
+Patch556: netfilter-ipset-Fix-extension-alignment.patch
+Patch557: netfilter-ipset-Fix-hash-type-expiration.patch
+Patch558: netfilter-ipset-Fix-hash-type-expire-release-empty-h.patch
+
+#rhbz 1272571
+Patch559: 0001-ipv6-Avoid-creating-RTF_CACHE-from-a-rt-that-is-not-.patch
+
+#rhbz 1278688
+Patch560: 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
+Patch561: 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
+Patch562: 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
 
 
 ################# Hubbitus patches
@@ -2138,6 +2152,24 @@ fi
 # and build.
 #
 %changelog
+* Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org>
+- Fix for GRE tunnel running in IPSec (rhbz 1272571)
+- Fix KVM on specific hardware (rhbz 1278688)
+
+* Mon Nov 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix ipset netfilter issues (rhbz 1279189)
+
+* Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Yoga 900 rfkill switch issues (rhbz 1275490)
+
+* Tue Nov 10 2015 Justin M. Forbes <jforbes@fedoraproject.org> - 4.2.6-300
+- Linux v4.2.6
+
+* Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect size calculations in megaraid with 64K pages (rhbz 1269300)
+- CVE-2015-8104 kvm: DoS infinite loop in microcode DB exception (rhbz 1278496 1279691)
+- CVE-2015-5307 kvm: DoS infinite loop in microcode AC exception (rhbz 1277172 1279688)
+
 * Thu Nov  5 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable Exynos IOMMU as it crashes
 
