@@ -504,6 +504,8 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
 
+Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2031,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Sun Nov 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix sound issue on some ARM devices (tested on Arndale)
+
 * Fri Nov 20 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc1.git3.1
 - Linux v4.4-rc1-223-g86eaf54
 
