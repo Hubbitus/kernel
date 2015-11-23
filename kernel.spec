@@ -2033,6 +2033,9 @@ fi
 #
 # 
 %changelog
+* Mon Nov 23 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update AMD xgbe driver for 4.4
+
 * Mon Nov 23 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc2.git0.1
 - Linux v4.4-rc2
 - Disable debugging options.

@@ -1,42 +1,12 @@
-From b634bc924371a7df6459af04f37c91f65ac59df2 Mon Sep 17 00:00:00 2001
+From a57bb48be552eb00f420266769723ab7a287a2d9 Mon Sep 17 00:00:00 2001
 From: Tom Lendacky <thomas.lendacky@amd.com>
-Date: Thu, 28 May 2015 16:38:57 -0400
-Subject: [PATCH 1/2] amd-xgbe-a0: Add support for XGBE on A0
+Date: Tue, 17 Mar 2015 15:58:32 +0000
+Subject: amd-xgbe-a0: Add support for XGBE on A0
 
 Add XGBE driver support for A0 hardware.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[fixup timespec -> timespec64]
-[use device_dma_is_coherent]
-Signed-off-by: Mark Salter <msalter@redhat.com>
 ---
- drivers/net/ethernet/amd/Makefile               |    1 +
- drivers/net/ethernet/amd/xgbe-a0/Makefile       |    8 +
- drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h  | 1142 +++++++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c     |  269 +++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c |  373 +++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c    |  636 +++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c     | 2930 +++++++++++++++++++++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c     | 2218 +++++++++++++++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c |  616 +++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c    |  618 +++++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c    |  312 +++
- drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c     |  278 +++
- drivers/net/ethernet/amd/xgbe-a0/xgbe.h         |  868 +++++++
- 13 files changed, 10269 insertions(+)
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/Makefile
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-common.h
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dcb.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-debugfs.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-desc.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-dev.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-drv.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-ethtool.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-mdio.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe-ptp.c
- create mode 100644 drivers/net/ethernet/amd/xgbe-a0/xgbe.h
-
 diff --git a/drivers/net/ethernet/amd/Makefile b/drivers/net/ethernet/amd/Makefile
 index a38a2dc..bf0cf2f 100644
 --- a/drivers/net/ethernet/amd/Makefile
@@ -8288,10 +8258,10 @@ index 0000000..165ff1c
 +}
 diff --git a/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
 new file mode 100644
-index 0000000..deb8551
+index 0000000..c06013e
 --- /dev/null
 +++ b/drivers/net/ethernet/amd/xgbe-a0/xgbe-main.c
-@@ -0,0 +1,618 @@
+@@ -0,0 +1,620 @@
 +/*
 + * AMD 10Gb Ethernet driver
 + *
@@ -8648,7 +8618,9 @@ index 0000000..deb8551
 +		goto err_io;
 +
 +	/* Set the DMA coherency values */
-+	pdata->coherent = device_dma_is_coherent(pdata->dev);
++	// FIXME: what replaced device_dma_is_coherent?
++	//pdata->coherent = device_dma_is_coherent(pdata->dev);
++	pdata->coherent = true;
 +	if (pdata->coherent) {
 +		pdata->axdomain = XGBE_DMA_OS_AXDOMAIN;
 +		pdata->arcache = XGBE_DMA_OS_ARCACHE;
@@ -10386,6 +10358,5 @@ index 0000000..04c00d2
 +#endif
 +
 +#endif
--- 
-2.4.5
-
+--
+cgit v0.9.2

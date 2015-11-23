@@ -1,50 +1,42 @@
-From a3e660ae9fdeb53000eceeaf393e03cd087e37f7 Mon Sep 17 00:00:00 2001
+From 94c958a307f70c5d6c7103b4d2342b54077c7a23 Mon Sep 17 00:00:00 2001
 From: Tom Lendacky <thomas.lendacky@amd.com>
-Date: Tue, 17 Mar 2015 10:58:38 -0500
-Subject: [PATCH 2/2] amd-xgbe-phy-a0: Add support for XGBE PHY on A0
+Date: Tue, 17 Mar 2015 15:58:38 +0000
+Subject: amd-xgbe-phy-a0: Add support for XGBE PHY on A0
 
 Add XGBE phy driver support for A0 hardware.
 
 Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-[Add back AMD_XGBE_PHY removed upstream for B0 driver]
-Signed-off-by: Mark Salter <msalter@redhat.com>
 ---
- drivers/net/phy/Kconfig           |    7 +
- drivers/net/phy/Makefile          |    1 +
- drivers/net/phy/amd-xgbe-phy-a0.c | 1814 +++++++++++++++++++++++++++++++++++++
- 3 files changed, 1822 insertions(+)
- create mode 100644 drivers/net/phy/amd-xgbe-phy-a0.c
-
 diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-index cb86d7a..a3138b1 100644
+index 60994a8..ca52987 100644
 --- a/drivers/net/phy/Kconfig
 +++ b/drivers/net/phy/Kconfig
-@@ -24,6 +24,13 @@ config AMD_PHY
+@@ -29,6 +29,13 @@ config AMD_PHY
  	---help---
  	  Currently supports the am79c874
  
 +config AMD_XGBE_PHY
-+       tristate "Driver for the AMD 10GbE (amd-xgbe) PHYs"
-+       depends on (OF || ACPI) && HAS_IOMEM
-+       depends on ARM64 || COMPILE_TEST
-+       ---help---
-+         Currently supports the AMD 10GbE PHY
++	tristate "Driver for the AMD 10GbE (amd-xgbe) PHYs"
++	depends on (OF || ACPI) && HAS_IOMEM
++	depends on ARM64 || COMPILE_TEST
++	---help---
++	  Currently supports the AMD 10GbE PHY
 +
  config MARVELL_PHY
  	tristate "Drivers for Marvell PHYs"
  	---help---
 diff --git a/drivers/net/phy/Makefile b/drivers/net/phy/Makefile
-index fcc25a0..6ebb9ba 100644
+index f31a4e2..c2336b9 100644
 --- a/drivers/net/phy/Makefile
 +++ b/drivers/net/phy/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_MDIO_OCTEON)	+= mdio-octeon.o
- obj-$(CONFIG_MICREL_KS8995MA)	+= spi_ks8995.o
- obj-$(CONFIG_AT803X_PHY)	+= at803x.o
- obj-$(CONFIG_AMD_PHY)		+= amd.o
-+obj-$(CONFIG_AMD_XGBE_PHY)	+= amd-xgbe-phy-a0.o
- obj-$(CONFIG_MDIO_BUS_MUX)	+= mdio-mux.o
- obj-$(CONFIG_MDIO_BUS_MUX_GPIO)	+= mdio-mux-gpio.o
+@@ -39,6 +39,7 @@ obj-$(CONFIG_MDIO_BUS_MUX_GPIO)	+= mdio-mux-gpio.o
  obj-$(CONFIG_MDIO_BUS_MUX_MMIOREG) += mdio-mux-mmioreg.o
+ obj-$(CONFIG_MDIO_SUN4I)	+= mdio-sun4i.o
+ obj-$(CONFIG_MDIO_MOXART)	+= mdio-moxart.o
++obj-$(CONFIG_AMD_XGBE_PHY)	+= amd-xgbe-phy-a0.o
+ obj-$(CONFIG_MDIO_BCM_UNIMAC)	+= mdio-bcm-unimac.o
+ obj-$(CONFIG_MICROCHIP_PHY)	+= microchip.o
+ obj-$(CONFIG_MDIO_BCM_IPROC)	+= mdio-bcm-iproc.o
 diff --git a/drivers/net/phy/amd-xgbe-phy-a0.c b/drivers/net/phy/amd-xgbe-phy-a0.c
 new file mode 100644
 index 0000000..c352d5c
@@ -1865,6 +1857,5 @@ index 0000000..c352d5c
 +	{ }
 +};
 +MODULE_DEVICE_TABLE(mdio, amd_xgbe_phy_a0_ids);
--- 
-2.4.5
-
+--
+cgit v0.9.2
