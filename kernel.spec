@@ -646,6 +646,9 @@ Patch560: 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
 Patch561: 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
 Patch562: 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
 
+#CVE-2015-8374 rhbz 1286261 1286262
+Patch565: Btrfs-fix-truncation-of-compressed-and-inlined-exten.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2090,6 +2093,9 @@ fi
 #
 # 
 %changelog
+* Mon Nov 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8374 btrfs: info leak when truncating compressed/inlined extents (rhbz 1286261 1286262)
+
 * Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org>
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
 - Fix KVM on specific hardware (rhbz 1278688)
