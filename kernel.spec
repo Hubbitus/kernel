@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -502,8 +502,6 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
 
-Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
-
 Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
@@ -589,6 +587,9 @@ Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
 #CVE-2015-7990 rhbz 1276437 1276438
 Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
+
+#rhbz 1282706
+Patch512: 0001-cgroup-make-css_set-pin-its-css-s-to-avoid-use-afer-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2033,6 +2034,11 @@ fi
 #
 # 
 %changelog
+* Mon Nov 30 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git0.1
+- Linux v4.4-rc3
+- Fix for cgroup use after free (rhbz 1282706)
+- Disable debugging options.
+
 * Wed Nov 25 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc2.git2.1
 - Linux v4.4-rc2-44-g6ffeba9
 
