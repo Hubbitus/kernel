@@ -652,6 +652,9 @@ Patch565: Btrfs-fix-truncation-of-compressed-and-inlined-exten.patch
 #rhbz 1284059
 Patch566: KEYS-Fix-handling-of-stored-error-in-a-negatively-in.patch
 
+#CVE-2015-7833 rhbz 1270158 1270160
+Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2096,6 +2099,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
+
 * Mon Nov 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix crash in add_key (rhbz 1284059)
 - CVE-2015-8374 btrfs: info leak when truncating compressed/inlined extents (rhbz 1286261 1286262)
