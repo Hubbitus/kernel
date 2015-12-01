@@ -591,6 +591,9 @@ Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 #rhbz 1282706
 Patch512: 0001-cgroup-make-css_set-pin-its-css-s-to-avoid-use-afer-.patch
 
+#CVE-2015-7833 rhbz 1270158 1270160
+Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2034,6 +2037,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
+
 * Tue Dec 01 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git1.1
 - Linux v4.4-rc3-5-g2255702
 - Reenable debugging options.
