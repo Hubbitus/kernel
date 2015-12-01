@@ -655,6 +655,9 @@ Patch566: KEYS-Fix-handling-of-stored-error-in-a-negatively-in.patch
 #CVE-2015-7833 rhbz 1270158 1270160
 Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
 
+#CVE-2015-7515 rhbz 1285326 1285331
+Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2100,6 +2103,7 @@ fi
 # 
 %changelog
 * Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7515 aiptek: crash on invalid device descriptors (rhbz 1285326 1285331)
 - CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
 
 * Mon Nov 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
