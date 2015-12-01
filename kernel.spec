@@ -2040,6 +2040,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 01 2015 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_X86_INTEL_MPX (rhbz 1287279)
+
 * Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7515 aiptek: crash on invalid device descriptors (rhbz 1285326 1285331)
 - CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
