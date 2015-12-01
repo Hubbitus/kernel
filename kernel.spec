@@ -2100,7 +2100,7 @@ fi
 - Fix crash in add_key (rhbz 1284059)
 - CVE-2015-8374 btrfs: info leak when truncating compressed/inlined extents (rhbz 1286261 1286262)
 
-* Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org>
+* Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org> - 4.2.6-301
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
 - Fix KVM on specific hardware (rhbz 1278688)
 
