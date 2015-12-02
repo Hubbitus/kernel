@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2040,6 +2040,9 @@ fi
 #
 # 
 %changelog
+* Wed Dec 02 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git2.1
+- Linux v4.4-rc3-8-g6a24e72
+
 * Tue Dec 01 2015 Laura Abbott <labbott@redhat.com>
 - Enable CONFIG_X86_INTEL_MPX (rhbz 1287279)
 
