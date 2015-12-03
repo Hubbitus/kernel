@@ -661,6 +661,9 @@ Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
 #rhbz 1275490
 Patch569: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
 
+#rhbz 1287819
+Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2106,6 +2109,7 @@ fi
 # 
 %changelog
 * Thu Dec 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix palm rejection on certain touchpads (rhbz 1287819)
 - Add new PCI ids for wireless, including Lenovo Yoga (rhbz 1275490)
 
 * Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
