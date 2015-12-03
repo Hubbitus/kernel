@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2043,6 +2043,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 03 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git3.1
+- Linux v4.4-rc3-24-g25364a9
+
 * Thu Dec 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix palm rejection on certain touchpads (rhbz 1287819)
 
