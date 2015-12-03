@@ -658,6 +658,9 @@ Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
 #CVE-2015-7515 rhbz 1285326 1285331
 Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
 
+#rhbz 1275490
+Patch569: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2102,6 +2105,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add new PCI ids for wireless, including Lenovo Yoga (rhbz 1275490)
+
 * Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7515 aiptek: crash on invalid device descriptors (rhbz 1285326 1285331)
 - CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
