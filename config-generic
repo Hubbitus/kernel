@@ -1680,6 +1680,8 @@ CONFIG_JME=m
 
 #
 # Ethernet (10000 Mbit)
+# CONFIG_NET_VENDOR_AURORA is not set
+
 #
 # CONFIG_IP1000 is not set
 # CONFIG_MLX4_EN is not set

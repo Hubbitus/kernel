@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -581,12 +581,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
-
-#rhbz 1275490
-Patch510: 0001-iwlwifi-Add-new-PCI-IDs-for-the-8260-series.patch
-
-#CVE-2015-7990 rhbz 1276437 1276438
-Patch511: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
 
 #rhbz 1282706
 Patch512: 0001-cgroup-make-css_set-pin-its-css-s-to-avoid-use-afer-.patch
@@ -2043,6 +2037,9 @@ fi
 #
 # 
 %changelog
+* Fri Dec 04 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git4.1
+- Linux v4.4-rc3-171-g071f5d1
+
 * Thu Dec 03 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc3.git3.1
 - Linux v4.4-rc3-24-g25364a9
 
