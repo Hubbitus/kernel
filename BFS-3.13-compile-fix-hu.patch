@@ -1,3 +1,6 @@
+From: Pavel Alexeev <Pahan@Hubbitus.info>
+
+---
 --- a/kernel/sched/bfs.c	2014-04-08 16:11:44.996610427 +0400
 +++ b/kernel/sched/bfs.c	2014-04-08 16:11:51.897722801 +0400
 @@ -243,11 +243,6 @@

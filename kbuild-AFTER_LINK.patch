@@ -93,18 +93,16 @@ diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
 index e97032069f88..9ea82f444dea 100644
 --- a/arch/x86/entry/vdso/Makefile
 +++ b/arch/x86/entry/vdso/Makefile
-@@ -172,8 +172,9 @@ $(vdso32-images:%=$(obj)/%.dbg): $(obj)/vdso32-%.so.dbg: FORCE \
+@@ -172,7 +172,8 @@
  quiet_cmd_vdso = VDSO    $@
        cmd_vdso = $(CC) -nostdlib -o $@ \
  		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
 -		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) && \
--		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
 +		       -Wl,-T,$(filter %.lds,$^) $(filter %.o,$^) \
 +		$(if $(AFTER_LINK),; $(AFTER_LINK)) && \
-+		sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
+ 		 sh $(srctree)/$(src)/checkundef.sh '$(NM)' '$@'
  
- VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=sysv) \
- 	$(call cc-ldoption, -Wl$(comma)--build-id) -Wl,-Bsymbolic $(LTO_CFLAGS)
+ VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=both) \
 diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
 index 1a10d8ac8162..092d0c0cf72c 100755
 --- a/scripts/link-vmlinux.sh

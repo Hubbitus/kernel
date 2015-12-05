@@ -16,15 +16,15 @@ diff --git a/kernel/kexec.c b/kernel/kexec.c
 index a785c1015e25..81d6b404f33c 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
-@@ -36,6 +36,7 @@
- #include <linux/syscore_ops.h>
- #include <linux/compiler.h>
- #include <linux/hugetlb.h>
+@@ -15,6 +15,7 @@
+ #include <linux/syscalls.h>
+ #include <linux/vmalloc.h>
+ #include <linux/slab.h>
 +#include <linux/module.h>
  
- #include <asm/page.h>
- #include <asm/uaccess.h>
-@@ -1258,6 +1259,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ #include "kexec_internal.h"
+ 
+@@ -133,6 +134,13 @@
  		return -EPERM;
  
  	/*

@@ -1,9 +1,12 @@
-diff --git a/Documentation/vm/00-INDEX b/Documentation/vm/00-INDEX
-index 081c497..75bde3d 100644
---- a/Documentation/vm/00-INDEX
-+++ b/Documentation/vm/00-INDEX
-@@ -16,6 +16,8 @@ hwpoison.txt
- 	- explains what hwpoison is
+From: Unknown <unknown@mail.tld>
+
+http://kerneldedup.org/download/uksm/beta/uksm-0.1.2.4-beta-for-linux-v4.0.patch rebased by Pavel Alexeev for new kernel version.
+---
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/Documentation/vm/00-INDEX linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/Documentation/vm/00-INDEX
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/Documentation/vm/00-INDEX	2015-11-28 16:01:22.055345964 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/Documentation/vm/00-INDEX	2015-11-28 16:04:49.253184637 +0300
+@@ -18,6 +18,8 @@
+ 	- description of the idle page tracking feature.
  ksm.txt
  	- how to use the Kernel Samepage Merging feature.
 +uksm.txt
@@ -11,11 +14,9 @@ index 081c497..75bde3d 100644
  numa
  	- information about NUMA specific code in the Linux vm.
  numa_memory_policy.txt
-diff --git a/Documentation/vm/uksm.txt b/Documentation/vm/uksm.txt
-new file mode 100644
-index 0000000..387d96a
---- /dev/null
-+++ b/Documentation/vm/uksm.txt
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/Documentation/vm/uksm.txt linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/Documentation/vm/uksm.txt
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/Documentation/vm/uksm.txt	1970-01-01 03:00:00.000000000 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/Documentation/vm/uksm.txt	2015-11-28 16:04:49.253184637 +0300
 @@ -0,0 +1,59 @@
 +The Ultra Kernel Samepage Merging feature
 +----------------------------------------------
@@ -76,19 +77,9 @@ index 0000000..387d96a
 +2012-12-31 UKSM 0.1.2.2 Minor bug fixes.
 +2014-07-02 UKSM 0.1.2.3 Fix a " __this_cpu_read() in preemptible bug".
 +2015-04-22 UKSM 0.1.2.4 Fix a race condition that can sometimes trigger anonying warnings.
-diff --git a/fs/exec.c b/fs/exec.c
-index c7f9b73..324b514 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -19,7 +19,7 @@
-  * current->executable is only used by the procfs.  This allows a dispatch
-  * table to check for several different types  of binary formats.  We keep
-  * trying until we recognize the file or we run out of supported binary
-- * formats. 
-+ * formats.
-  */
- 
- #include <linux/slab.h>
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/fs/exec.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/fs/exec.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/fs/exec.c	2015-11-28 16:01:30.180261211 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/fs/exec.c	2015-11-28 16:04:49.253184637 +0300
 @@ -56,6 +56,7 @@
  #include <linux/pipe_fs_i.h>
  #include <linux/oom.h>
@@ -97,19 +88,10 @@ index c7f9b73..324b514 100644
  
  #include <asm/uaccess.h>
  #include <asm/mmu_context.h>
-@@ -1143,6 +1144,7 @@ void setup_new_exec(struct linux_binprm * bprm)
- 	/* An exec changes our domain. We are no longer part of the thread
- 	   group */
- 	current->self_exec_id++;
-+
- 	flush_signal_handlers(current, 0);
- 	do_close_on_exec(current->files);
- }
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index d3ebf2e..f151d21 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -124,6 +124,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/fs/proc/meminfo.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/fs/proc/meminfo.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/fs/proc/meminfo.c	2015-11-28 16:01:30.921253481 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/fs/proc/meminfo.c	2015-11-28 16:04:49.254184627 +0300
+@@ -124,6 +124,9 @@
  		"SUnreclaim:     %8lu kB\n"
  		"KernelStack:    %8lu kB\n"
  		"PageTables:     %8lu kB\n"
@@ -119,7 +101,7 @@ index d3ebf2e..f151d21 100644
  #ifdef CONFIG_QUICKLIST
  		"Quicklists:     %8lu kB\n"
  #endif
-@@ -182,6 +185,9 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+@@ -182,6 +185,9 @@
  		K(global_page_state(NR_SLAB_UNRECLAIMABLE)),
  		global_page_state(NR_KERNEL_STACK) * THREAD_SIZE / 1024,
  		K(global_page_state(NR_PAGETABLE)),
@@ -129,11 +111,10 @@ index d3ebf2e..f151d21 100644
  #ifdef CONFIG_QUICKLIST
  		K(quicklist_total_size()),
  #endif
-diff --git a/include/asm-generic/pgtable.h b/include/asm-generic/pgtable.h
-index 4d46085..dd71cab 100644
---- a/include/asm-generic/pgtable.h
-+++ b/include/asm-generic/pgtable.h
-@@ -529,12 +529,25 @@ extern void untrack_pfn(struct vm_area_struct *vma, unsigned long pfn,
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/asm-generic/pgtable.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/asm-generic/pgtable.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/asm-generic/pgtable.h	2015-11-28 16:01:30.934253346 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/asm-generic/pgtable.h	2015-11-28 16:04:49.254184627 +0300
+@@ -555,12 +555,25 @@
  			unsigned long size);
  #endif
  
@@ -160,7 +141,7 @@ index 4d46085..dd71cab 100644
  }
  
  #define my_zero_pfn(addr)	page_to_pfn(ZERO_PAGE(addr))
-@@ -543,7 +556,7 @@ static inline int is_zero_pfn(unsigned long pfn)
+@@ -569,7 +582,7 @@
  static inline int is_zero_pfn(unsigned long pfn)
  {
  	extern unsigned long zero_pfn;
@@ -169,11 +150,10 @@ index 4d46085..dd71cab 100644
  }
  
  static inline unsigned long my_zero_pfn(unsigned long addr)
-diff --git a/include/linux/ksm.h b/include/linux/ksm.h
-index 3be6bb1..51557d1 100644
---- a/include/linux/ksm.h
-+++ b/include/linux/ksm.h
-@@ -19,21 +19,6 @@ struct mem_cgroup;
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/ksm.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/ksm.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/ksm.h	2015-11-28 16:01:31.107251541 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/ksm.h	2015-11-28 16:04:49.254184627 +0300
+@@ -19,21 +19,6 @@
  #ifdef CONFIG_KSM
  int ksm_madvise(struct vm_area_struct *vma, unsigned long start,
  		unsigned long end, int advice, unsigned long *vm_flags);
@@ -193,9 +173,9 @@ index 3be6bb1..51557d1 100644
 -		__ksm_exit(mm);
 -}
  
- /*
-  * A KSM page is one of those write-protected "shared pages" or "merged pages"
-@@ -76,6 +61,33 @@ struct page *ksm_might_need_to_copy(struct page *page,
+ static inline struct stable_node *page_stable_node(struct page *page)
+ {
+@@ -64,6 +49,33 @@
  int rmap_walk_ksm(struct page *page, struct rmap_walk_control *rwc);
  void ksm_migrate_page(struct page *newpage, struct page *oldpage);
  
@@ -229,32 +209,30 @@ index 3be6bb1..51557d1 100644
  #else  /* !CONFIG_KSM */
  
  static inline int ksm_fork(struct mm_struct *mm, struct mm_struct *oldmm)
-@@ -123,4 +135,6 @@ static inline void ksm_migrate_page(struct page *newpage, struct page *oldpage)
+@@ -106,4 +118,6 @@
  #endif /* CONFIG_MMU */
  #endif /* !CONFIG_KSM */
  
 +#include <linux/uksm.h>
 +
  #endif /* __LINUX_KSM_H */
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index 199a03a..cd64156 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -313,6 +313,9 @@ struct vm_area_struct {
- #ifdef CONFIG_NUMA
- 	struct mempolicy *vm_policy;	/* NUMA policy for the VMA */
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mm_types.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mm_types.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mm_types.h	2015-11-28 16:01:31.109251520 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mm_types.h	2015-11-28 16:04:49.255184616 +0300
+@@ -215,6 +215,9 @@
+ 	__u16 offset;
+ 	__u16 size;
  #endif
 +#ifdef CONFIG_UKSM
 +	struct vma_slot *uksm_vma_slot;
 +#endif
  };
  
- struct core_thread {
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 2782df4..b631036 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -157,6 +157,9 @@ enum zone_stat_item {
+ #define PAGE_FRAG_CACHE_MAX_SIZE	__ALIGN_MASK(32768, ~PAGE_MASK)
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mmzone.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mmzone.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mmzone.h	2015-11-28 16:01:31.109251520 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mmzone.h	2015-11-28 16:04:49.255184616 +0300
+@@ -157,6 +157,9 @@
  	WORKINGSET_NODERECLAIM,
  	NR_ANON_TRANSPARENT_HUGEPAGES,
  	NR_FREE_CMA_PAGES,
@@ -264,20 +242,9 @@ index 2782df4..b631036 100644
  	NR_VM_ZONE_STAT_ITEMS };
  
  /*
-@@ -864,7 +867,7 @@ static inline int is_highmem_idx(enum zone_type idx)
- }
- 
- /**
-- * is_highmem - helper function to quickly check if a struct zone is a 
-+ * is_highmem - helper function to quickly check if a struct zone is a
-  *              highmem zone or not.  This is an attempt to keep references
-  *              to ZONE_{DMA/NORMAL/HIGHMEM/etc} in general code to a minimum.
-  * @zone - pointer to struct zone variable
-diff --git a/include/linux/sradix-tree.h b/include/linux/sradix-tree.h
-new file mode 100644
-index 0000000..6780fdb
---- /dev/null
-+++ b/include/linux/sradix-tree.h
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/sradix-tree.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/sradix-tree.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/sradix-tree.h	1970-01-01 03:00:00.000000000 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/sradix-tree.h	2015-11-28 16:04:49.255184616 +0300
 @@ -0,0 +1,77 @@
 +#ifndef _LINUX_SRADIX_TREE_H
 +#define _LINUX_SRADIX_TREE_H
@@ -356,11 +323,9 @@ index 0000000..6780fdb
 +extern void *sradix_tree_lookup(struct sradix_tree_root *root, unsigned long index);
 +
 +#endif /* _LINUX_SRADIX_TREE_H */
-diff --git a/include/linux/uksm.h b/include/linux/uksm.h
-new file mode 100644
-index 0000000..206f109
---- /dev/null
-+++ b/include/linux/uksm.h
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/uksm.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/uksm.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/uksm.h	1970-01-01 03:00:00.000000000 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/uksm.h	2015-11-28 16:04:49.255184616 +0300
 @@ -0,0 +1,146 @@
 +#ifndef __LINUX_UKSM_H
 +#define __LINUX_UKSM_H
@@ -508,11 +473,10 @@ index 0000000..206f109
 +}
 +#endif /* !CONFIG_UKSM */
 +#endif /* __LINUX_UKSM_H */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index cf65139..bc308cc 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -412,7 +412,7 @@ static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/fork.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/fork.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/fork.c	2015-11-28 16:01:31.604246357 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/fork.c	2015-11-28 16:04:49.256184606 +0300
+@@ -443,7 +443,7 @@
  				goto fail_nomem;
  			charge = len;
  		}
@@ -521,7 +485,7 @@ index cf65139..bc308cc 100644
  		if (!tmp)
  			goto fail_nomem;
  		*tmp = *mpnt;
-@@ -463,7 +463,7 @@ static int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm)
+@@ -495,7 +495,7 @@
  		__vma_link_rb(mm, tmp, rb_link, rb_parent);
  		rb_link = &tmp->vm_rb.rb_right;
  		rb_parent = &tmp->vm_rb;
@@ -530,11 +494,10 @@ index cf65139..bc308cc 100644
  		mm->map_count++;
  		retval = copy_page_range(mm, oldmm, mpnt);
  
-diff --git a/lib/Makefile b/lib/Makefile
-index 58f74d2..db33178 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -8,7 +8,7 @@ KBUILD_CFLAGS = $(subst $(CC_FLAGS_FTRACE),,$(ORIG_CFLAGS))
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/lib/Makefile linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/lib/Makefile
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/lib/Makefile	2015-11-28 16:01:31.613246263 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/lib/Makefile	2015-11-28 16:04:49.256184606 +0300
+@@ -8,7 +8,7 @@
  endif
  
  lib-y := ctype.o string.o vsprintf.o cmdline.o \
@@ -543,11 +506,9 @@ index 58f74d2..db33178 100644
  	 idr.o int_sqrt.o extable.o \
  	 sha1.o md5.o irq_regs.o argv_split.o \
  	 proportions.o flex_proportions.o ratelimit.o show_mem.o \
-diff --git a/lib/sradix-tree.c b/lib/sradix-tree.c
-new file mode 100644
-index 0000000..8d06329
---- /dev/null
-+++ b/lib/sradix-tree.c
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/lib/sradix-tree.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/lib/sradix-tree.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/lib/sradix-tree.c	1970-01-01 03:00:00.000000000 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/lib/sradix-tree.c	2015-11-28 16:04:49.256184606 +0300
 @@ -0,0 +1,476 @@
 +#include <linux/errno.h>
 +#include <linux/mm.h>
@@ -1025,11 +986,10 @@ index 0000000..8d06329
 +
 +	return 0;
 +}
-diff --git a/mm/Kconfig b/mm/Kconfig
-index a03131b..f39074a 100644
---- a/mm/Kconfig
-+++ b/mm/Kconfig
-@@ -340,6 +340,32 @@ config KSM
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/Kconfig linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/Kconfig
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/Kconfig	2015-11-28 16:01:31.909243175 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/Kconfig	2015-11-28 16:04:49.257184595 +0300
+@@ -334,6 +334,32 @@
  	  See Documentation/vm/ksm.txt for more information: KSM is inactive
  	  until a program has madvised that an area is MADV_MERGEABLE, and
  	  root has set /sys/kernel/mm/ksm/run to 1 (if CONFIG_SYSFS is set).
@@ -1062,11 +1022,10 @@ index a03131b..f39074a 100644
  
  config DEFAULT_MMAP_MIN_ADDR
          int "Low address space to protect from user allocation"
-diff --git a/mm/Makefile b/mm/Makefile
-index 15dbe99..c1520c5 100644
---- a/mm/Makefile
-+++ b/mm/Makefile
-@@ -47,7 +47,8 @@ obj-$(CONFIG_SPARSEMEM)	+= sparse.o
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/Makefile linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/Makefile
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/Makefile	2015-11-28 16:01:31.909243175 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/Makefile	2015-11-28 16:04:49.257184595 +0300
+@@ -47,7 +47,8 @@
  obj-$(CONFIG_SPARSEMEM_VMEMMAP) += sparse-vmemmap.o
  obj-$(CONFIG_SLOB) += slob.o
  obj-$(CONFIG_MMU_NOTIFIER) += mmu_notifier.o
@@ -1076,11 +1035,10 @@ index 15dbe99..c1520c5 100644
  obj-$(CONFIG_PAGE_POISONING) += debug-pagealloc.o
  obj-$(CONFIG_SLAB) += slab.o
  obj-$(CONFIG_SLUB) += slub.o
-diff --git a/mm/memory.c b/mm/memory.c
-index 97839f5..7420a93 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -120,6 +120,28 @@ unsigned long highest_memmap_pfn __read_mostly;
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/memory.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/memory.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/memory.c	2015-11-28 16:01:31.910243165 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/memory.c	2015-11-28 17:38:12.701113346 +0300
+@@ -121,6 +121,28 @@
  
  EXPORT_SYMBOL(zero_pfn);
  
@@ -1109,15 +1067,7 @@ index 97839f5..7420a93 100644
  /*
   * CONFIG_MMU architectures set up ZERO_PAGE in their paging_init()
   */
-@@ -131,6 +153,7 @@ static int __init init_zero_pfn(void)
- core_initcall(init_zero_pfn);
- 
- 
-+
- #if defined(SPLIT_RSS_COUNTING)
- 
- void sync_mm_rss(struct mm_struct *mm)
-@@ -878,6 +901,11 @@ copy_one_pte(struct mm_struct *dst_mm, struct mm_struct *src_mm,
+@@ -878,6 +901,11 @@
  			rss[MM_ANONPAGES]++;
  		else
  			rss[MM_FILEPAGES]++;
@@ -1129,7 +1079,7 @@ index 97839f5..7420a93 100644
  	}
  
  out_set_pte:
-@@ -1111,8 +1139,10 @@ again:
+@@ -1111,8 +1139,10 @@
  			ptent = ptep_get_and_clear_full(mm, addr, pte,
  							tlb->fullmm);
  			tlb_remove_tlb_entry(tlb, pte, addr);
@@ -1141,7 +1091,7 @@ index 97839f5..7420a93 100644
  			if (PageAnon(page))
  				rss[MM_ANONPAGES]--;
  			else {
-@@ -1945,8 +1975,10 @@ static inline void cow_user_page(struct page *dst, struct page *src, unsigned lo
+@@ -1945,8 +1975,10 @@
  			clear_page(kaddr);
  		kunmap_atomic(kaddr);
  		flush_dcache_page(dst);
@@ -1153,7 +1103,7 @@ index 97839f5..7420a93 100644
  }
  
  /*
-@@ -2152,6 +2184,7 @@ gotten:
+@@ -2076,6 +2108,7 @@
  		new_page = alloc_zeroed_user_highpage_movable(vma, address);
  		if (!new_page)
  			goto oom;
@@ -1161,32 +1111,29 @@ index 97839f5..7420a93 100644
  	} else {
  		new_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, address);
  		if (!new_page)
-@@ -2177,8 +2210,11 @@ gotten:
- 				dec_mm_counter_fast(mm, MM_FILEPAGES);
+@@ -2101,8 +2134,10 @@
  				inc_mm_counter_fast(mm, MM_ANONPAGES);
  			}
--		} else
-+			uksm_bugon_zeropage(orig_pte);
-+		} else {
+ 		} else {
 +			uksm_unmap_zero_page(orig_pte);
  			inc_mm_counter_fast(mm, MM_ANONPAGES);
-+		}
+ 		}
++
  		flush_cache_page(vma, address, pte_pfn(orig_pte));
  		entry = mk_pte(new_page, vma->vm_page_prot);
  		entry = maybe_mkwrite(pte_mkdirty(entry), vma);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 9ec50a3..258b8e9 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/mmap.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/mmap.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/mmap.c	2015-11-28 16:01:31.911243154 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/mmap.c	2015-11-28 17:39:20.892411371 +0300
 @@ -41,6 +41,7 @@
  #include <linux/notifier.h>
  #include <linux/memory.h>
  #include <linux/printk.h>
 +#include <linux/ksm.h>
+ #include <linux/userfaultfd_k.h>
  
  #include <asm/uaccess.h>
- #include <asm/cacheflush.h>
-@@ -276,6 +277,7 @@ static struct vm_area_struct *remove_vma(struct vm_area_struct *vma)
+@@ -277,6 +278,7 @@
  	if (vma->vm_file)
  		fput(vma->vm_file);
  	mpol_put(vma_policy(vma));
@@ -1194,7 +1141,7 @@ index 9ec50a3..258b8e9 100644
  	kmem_cache_free(vm_area_cachep, vma);
  	return next;
  }
-@@ -733,9 +735,16 @@ int vma_adjust(struct vm_area_struct *vma, unsigned long start,
+@@ -734,9 +736,16 @@
  	long adjust_next = 0;
  	int remove_next = 0;
  
@@ -1211,15 +1158,7 @@ index 9ec50a3..258b8e9 100644
  		if (end >= next->vm_end) {
  			/*
  			 * vma expands, overlapping all the next, and
-@@ -829,6 +838,7 @@ again:			remove_next = 1 + (end > next->vm_end);
- 		end_changed = true;
- 	}
- 	vma->vm_pgoff = pgoff;
-+
- 	if (adjust_next) {
- 		next->vm_start += adjust_next << PAGE_SHIFT;
- 		next->vm_pgoff += adjust_next;
-@@ -899,16 +909,22 @@ again:			remove_next = 1 + (end > next->vm_end);
+@@ -900,16 +910,22 @@
  		 * up the code too much to do both in one go.
  		 */
  		next = vma->vm_next;
@@ -1233,11 +1172,11 @@ index 9ec50a3..258b8e9 100644
 -		else
 +		} else {
  			mm->highest_vm_end = end;
-+		}
+ 	}
 +	} else {
 +		if (next && !insert)
 +			uksm_vma_add_new(next);
- 	}
++	}
  	if (insert && file)
  		uprobe_mmap(insert);
  
@@ -1245,8 +1184,8 @@ index 9ec50a3..258b8e9 100644
  	validate_mm(mm);
  
  	return 0;
-@@ -1301,6 +1317,9 @@ unsigned long do_mmap_pgoff(struct file *file, unsigned long addr,
- 	vm_flags = calc_vm_prot_bits(prot) | calc_vm_flag_bits(flags) |
+@@ -1312,6 +1328,9 @@
+ 	vm_flags |= calc_vm_prot_bits(prot) | calc_vm_flag_bits(flags) |
  			mm->def_flags | VM_MAYREAD | VM_MAYWRITE | VM_MAYEXEC;
  
 +	/* If uksm is enabled, we add VM_MERGABLE to new VMAs. */
@@ -1255,7 +1194,7 @@ index 9ec50a3..258b8e9 100644
  	if (flags & MAP_LOCKED)
  		if (!can_do_mlock())
  			return -EPERM;
-@@ -1642,6 +1661,7 @@ munmap_back:
+@@ -1654,6 +1673,7 @@
  			allow_write_access(file);
  	}
  	file = vma->vm_file;
@@ -1263,7 +1202,7 @@ index 9ec50a3..258b8e9 100644
  out:
  	perf_event_mmap(vma);
  
-@@ -1683,6 +1703,7 @@ allow_write_and_free_vma:
+@@ -1695,6 +1715,7 @@
  	if (vm_flags & VM_DENYWRITE)
  		allow_write_access(file);
  free_vma:
@@ -1271,7 +1210,7 @@ index 9ec50a3..258b8e9 100644
  	kmem_cache_free(vm_area_cachep, vma);
  unacct_error:
  	if (charged)
-@@ -2484,6 +2505,8 @@ static int __split_vma(struct mm_struct *mm, struct vm_area_struct *vma,
+@@ -2496,6 +2517,8 @@
  	else
  		err = vma_adjust(vma, vma->vm_start, addr, vma->vm_pgoff, new);
  
@@ -1280,7 +1219,7 @@ index 9ec50a3..258b8e9 100644
  	/* Success. */
  	if (!err)
  		return 0;
-@@ -2721,6 +2744,7 @@ static unsigned long do_brk(unsigned long addr, unsigned long len)
+@@ -2732,6 +2755,7 @@
  		return addr;
  
  	flags = VM_DATA_DEFAULT_FLAGS | VM_ACCOUNT | mm->def_flags;
@@ -1288,7 +1227,7 @@ index 9ec50a3..258b8e9 100644
  
  	error = get_unmapped_area(NULL, addr, len, 0, MAP_FIXED);
  	if (error & ~PAGE_MASK)
-@@ -2779,6 +2803,7 @@ static unsigned long do_brk(unsigned long addr, unsigned long len)
+@@ -2789,6 +2813,7 @@
  	vma->vm_flags = flags;
  	vma->vm_page_prot = vm_get_page_prot(flags);
  	vma_link(mm, vma, prev, rb_link, rb_parent);
@@ -1296,7 +1235,7 @@ index 9ec50a3..258b8e9 100644
  out:
  	perf_event_mmap(vma);
  	mm->total_vm += len >> PAGE_SHIFT;
-@@ -2814,6 +2839,12 @@ void exit_mmap(struct mm_struct *mm)
+@@ -2824,6 +2849,12 @@
  	/* mm's last user has gone, and its about to be pulled down */
  	mmu_notifier_release(mm);
  
@@ -1309,7 +1248,7 @@ index 9ec50a3..258b8e9 100644
  	if (mm->locked_vm) {
  		vma = mm->mmap;
  		while (vma) {
-@@ -2849,6 +2880,11 @@ void exit_mmap(struct mm_struct *mm)
+@@ -2859,6 +2890,11 @@
  		vma = remove_vma(vma);
  	}
  	vm_unacct_memory(nr_accounted);
@@ -1321,19 +1260,15 @@ index 9ec50a3..258b8e9 100644
  }
  
  /* Insert vm structure into process list sorted by address
-@@ -2955,6 +2991,7 @@ struct vm_area_struct *copy_vma(struct vm_area_struct **vmap,
- 				new_vma->vm_ops->open(new_vma);
- 			vma_link(mm, new_vma, prev, rb_link, rb_parent);
- 			*need_rmap_locks = false;
-+			uksm_vma_add_new(new_vma);
- 		}
+@@ -2968,6 +3004,7 @@
+ 			new_vma->vm_ops->open(new_vma);
+ 		vma_link(mm, new_vma, prev, rb_link, rb_parent);
+ 		*need_rmap_locks = false;
++		uksm_vma_add_new(new_vma);
  	}
  	return new_vma;
-@@ -3068,10 +3105,10 @@ static struct vm_area_struct *__install_special_mapping(
- 	ret = insert_vm_struct(mm, vma);
- 	if (ret)
- 		goto out;
--
+ 
+@@ -3077,6 +3113,7 @@
  	mm->total_vm += len >> PAGE_SHIFT;
  
  	perf_event_mmap(vma);
@@ -1341,27 +1276,9 @@ index 9ec50a3..258b8e9 100644
  
  	return vma;
  
-diff --git a/mm/rmap.c b/mm/rmap.c
-index c161a14..d4f569e 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -955,9 +955,9 @@ void page_move_anon_rmap(struct page *page,
- 
- /**
-  * __page_set_anon_rmap - set up new anonymous rmap
-- * @page:	Page to add to rmap	
-+ * @page:	Page to add to rmap
-  * @vma:	VM area to add page to.
-- * @address:	User virtual address of the mapping	
-+ * @address:	User virtual address of the mapping
-  * @exclusive:	the page is exclusively owned by the current process
-  */
- static void __page_set_anon_rmap(struct page *page,
-diff --git a/mm/uksm.c b/mm/uksm.c
-new file mode 100644
-index 0000000..2ce7963
---- /dev/null
-+++ b/mm/uksm.c
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/uksm.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/uksm.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/uksm.c	1970-01-01 03:00:00.000000000 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/uksm.c	2015-11-28 16:04:49.263184533 +0300
 @@ -0,0 +1,5525 @@
 +/*
 + * Ultra KSM. Copyright (C) 2011-2012 Nai Xia
@@ -6888,11 +6805,10 @@ index 0000000..2ce7963
 +late_initcall(uksm_init);
 +#endif
 +
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 4f5cd97..095cc4b 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -740,6 +740,9 @@ const char * const vmstat_text[] = {
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/vmstat.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/vmstat.c
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/mm/vmstat.c	2015-11-28 16:01:31.912243144 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/mm/vmstat.c	2015-11-28 16:04:49.263184533 +0300
+@@ -740,6 +740,9 @@
  	"nr_anon_transparent_hugepages",
  	"nr_free_cma",
  
@@ -6902,3 +6818,16 @@ index 4f5cd97..095cc4b 100644
  	/* enum writeback_stat_item counters */
  	"nr_dirty_threshold",
  	"nr_dirty_background_threshold",
+diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mm_types.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mm_types.h
+--- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/mm_types.h	2015-11-28 17:52:33.918317931 +0300
++++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/mm_types.h	2015-11-28 17:53:12.355928873 +0300
+@@ -336,6 +336,9 @@
+ 	struct mempolicy *vm_policy;	/* NUMA policy for the VMA */
+ #endif
+ 	struct vm_userfaultfd_ctx vm_userfaultfd_ctx;
++#ifdef CONFIG_UKSM
++	struct vma_slot *uksm_vma_slot;
++#endif
+ };
+ 
+ struct core_thread {

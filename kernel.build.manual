@@ -1,0 +1,7 @@
+#!/bin/bash
+
+DIR="$(pwd)"
+
+alias rm=/usr/bin/rm
+
+rpmbuild --define "_sourcedir $DIR" --define "_specdir $DIR" --define "_builddir $DIR" --define "_srcrpmdir $DIR" --define "_rpmdir $DIR" --define 'dist .fc23' --define 'fedora 23' --eval '%undefine rhel' --define 'fc23 1' --short-circuit ${@:--ba} ./kernel.spec | tee kernel$(fedpkg --dist f23 verrel).log

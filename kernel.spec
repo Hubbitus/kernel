@@ -46,13 +46,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 2
+%define base_sublevel 3
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 0
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -392,7 +392,7 @@ BuildRequires: rpm-build, elfutils
 %endif
 
 %if %{signmodules}
-BuildRequires: openssl
+BuildRequires: openssl openssl-devel
 BuildRequires: pesign >= 0.10-4
 %endif
 
@@ -505,13 +505,7 @@ Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
-Patch457: showmem-cma-correct-reserved-memory-calculation.patch
-
 Patch458: ARM-tegra-usb-no-reset.patch
-
-Patch459: regulator-axp20x-module-alias.patch
-
-Patch460: regulator-anatop-module-alias.patch
 
 Patch461: ARM-dts-Add-am335x-bonegreen.patch
 
@@ -522,8 +516,6 @@ Patch466: input-kill-stupid-messages.patch
 Patch467: die-floppy-die.patch
 
 Patch468: no-pcspkr-modalias.patch
-
-Patch469: input-silence-i8042-noise.patch
 
 Patch470: silence-fbcon-logo.patch
 
@@ -571,8 +563,6 @@ Patch491: MODSIGN-Support-not-importing-certs-from-db.patch
 
 Patch492: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
-Patch493: drm-i915-hush-check-crtc-state.patch
-
 Patch494: disable-i8042-check-on-apple-mac.patch
 
 Patch495: lis3-improve-handling-of-null-rate.patch
@@ -593,32 +583,10 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-#rhbz 1244511
-Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
-
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #rhbz 1239050
 Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
-
-#rhbz 1253789
-Patch510: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
-
-#rhbz 1257534
-Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
-
-#rhbz 1257500
-Patch517: vmwgfx-Rework-device-initialization.patch
-Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
-
-#CVE-2015-6937 rhbz 1263139 1263140
-Patch523: RDS-verify-the-underlying-transport-exists-before-cr.patch
-#CVE-2015-7990 rhbz 1276437 1276438
-Patch524: RDS-fix-race-condition-when-sending-a-message-on-unb.patch
-
-#rhbz 1272172
-Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
-Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
 
 #CVE-2015-7799 rhbz 1271134 1271135
 Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
@@ -641,22 +609,12 @@ Patch556: netfilter-ipset-Fix-extension-alignment.patch
 Patch557: netfilter-ipset-Fix-hash-type-expiration.patch
 Patch558: netfilter-ipset-Fix-hash-type-expire-release-empty-h.patch
 
-#rhbz 1272571
-Patch559: 0001-ipv6-Avoid-creating-RTF_CACHE-from-a-rt-that-is-not-.patch
-
-#rhbz 1278688
-Patch560: 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
-Patch561: 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
-Patch562: 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
-
-
 ################# Hubbitus patches
 # UKSM
-Patch40001: uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch
+Patch40001: uksm-0.1.2.4-beta-for-linux-v4.3-Hubbitus.patch
 
 # BFS
-Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
-#? Patch40009: http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
+Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -669,12 +627,12 @@ Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch
 #kernel/sched/stats.c: In function 'show_schedstat':
 #kernel/sched/bfs_sched.h:104:27: error: 'sched_domains_mutex' undeclared (first use in this function)
 #          lockdep_is_held(&sched_domains_mutex))
-Patch40007: BFS-3.13-compile-fix-hu.patch
+#? Patch40007: BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
-Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.1.patch
-Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.1.0.patch
+Patch40003: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.3.patch
+Patch40004: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.3.patch
+Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.3.0.patch
 
 #? Patch40006: https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -1273,17 +1231,16 @@ git am %{patches}
 
 ################# Hubbitus patches
 # UKSM
-ApplyPatch uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch --fuzz=2
+#?- ApplyPatch uksm-0.1.2.4-beta-for-linux-v4.1-Hubbitus.patch --fuzz=2
 
 # BFS
-ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.1/4.1-sched-bfs-464.patch --fuzz=2
-#? ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.0/pending/bfs462-rtmn-fix.patch
-ApplyPatch BFS-3.13-compile-fix-hu.patch
+#?- ApplyPatch http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
+#?- ApplyPatch BFS-3.13-compile-fix-hu.patch
 
 # BFQ
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.1.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.1.patch
-ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.1.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.1.0.patch
+#?- ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.3.patch
+#?- ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.3.patch
+#?- ApplyPatch http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.3.0.patch
 
 #? ApplyPatch https://raw.githubusercontent.com/Nefelim4ag/aur-linux-next-git/master/Useful_patches/0001-kernel_gcc_native.patch
 
@@ -1412,10 +1369,8 @@ BuildKernel() {
     cp configs/$Config .config
 
     %if %{signmodules}
-    cp %{SOURCE11} .
+    cp %{SOURCE11} certs/.
     %endif
-
-    chmod +x scripts/sign-file
 
     Arch=`head -1 .config | cut -b 3-`
     echo USING ARCH=$Arch
@@ -1617,9 +1572,9 @@ BuildKernel() {
     # Find all the module files and filter them out into the core and modules
     # lists.  This actually removes anything going into -modules from the dir.
     find lib/modules/$KernelVer/kernel -name *.ko | sort -n > modules.list
-	cp $RPM_SOURCE_DIR/filter-*.sh .
+    cp $RPM_SOURCE_DIR/filter-*.sh .
     %{SOURCE99} modules.list %{_target_cpu}
-	rm filter-*.sh
+    rm filter-*.sh
 
     # Run depmod on the resulting module tree and make sure it isn't broken
     depmod -b . -aeF ./System.map $KernelVer &> depmod.out
@@ -1656,11 +1611,11 @@ BuildKernel() {
     rm -f $RPM_BUILD_ROOT/modules.list
     rm -f $RPM_BUILD_ROOT/module-dirs.list
 
-%if %{signmodules}
-    # Save the signing keys so we can sign the modules in __modsign_install_post
-    cp signing_key.priv signing_key.priv.sign${Flav}
-    cp signing_key.x509 signing_key.x509.sign${Flav}
-%endif
+    %if %{signmodules}
+        # Save the signing keys so we can sign the modules in __modsign_install_post
+        cp certs/signing_key.pem certs/signing_key.pem.sign${Flav}
+        cp certs/signing_key.x509 certs/signing_key.x509.sign${Flav}
+    %endif
 
     # Move the devel headers out of the root file system
     mkdir -p $RPM_BUILD_ROOT/usr/src/kernels
@@ -1754,16 +1709,16 @@ popd
 %define __modsign_install_post \
   if [ "%{signmodules}" -eq "1" ]; then \
     if [ "%{with_pae}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae} signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae} certs/signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
     fi \
     if [ "%{with_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+debug signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+debug certs/signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
     fi \
     if [ "%{with_pae_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae}debug signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae}debug certs/signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
     fi \
     if [ "%{with_up}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign certs/signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
   if [ "%{zipmodules}" -eq "1" ]; then \
@@ -2024,6 +1979,7 @@ fi
 %{_libdir}/traceevent/plugins/*
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
+%{_datadir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
 %{_sysconfdir}/bash_completion.d/perf
 %doc linux-%{KVERREL}/tools/perf/Documentation/examples.txt
@@ -2152,6 +2108,36 @@ fi
 # and build.
 #
 %changelog
+* Fri Nov 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.30-200.hu.1.uksm.bfs.bfq
+- Step myself (ahead of Fedora) to kernel 4.3.0.
+- Update patches:
+    o bfs: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
+    o bfq:
+        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.3.patch
+        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.3.patch
+        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.3.0.patch
+- Drop old patches:
+    o showmem-cma-correct-reserved-memory-calculation.patch
+    o regulator-axp20x-module-alias.patch
+    o regulator-anatop-module-alias.patch
+    o input-silence-i8042-noise.patch
+    o drm-i915-hush-check-crtc-state.patch
+    o HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+    o iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+    o nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
+    o 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+    o 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
+    o 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
+    o 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
+    o 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
+    o vmwgfx-Rework-device-initialization.patch
+    o drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+    o RDS-verify-the-underlying-transport-exists-before-cr.patch
+    o RDS-fix-race-condition-when-sending-a-message-on-unb.patch
+    o 0001-ipv6-Avoid-creating-RTF_CACHE-from-a-rt-that-is-not-.patch
+    o BFS-3.13-compile-fix-hu.patch
+- Rebase other patches.
+
 * Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org>
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
 - Fix KVM on specific hardware (rhbz 1278688)
