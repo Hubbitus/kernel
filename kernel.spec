@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2037,6 +2037,10 @@ fi
 #
 # 
 %changelog
+* Tue Dec 08 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git1.1
+- Linux v4.4-rc4-16-g62ea1ec
+- Reenable debugging options.
+
 * Mon Dec 07 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git0.1
 - Linux v4.4-rc4
 - Disable debugging options.
