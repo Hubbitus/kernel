@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2037,6 +2037,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 10 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git3.1
+- Linux v4.4-rc4-86-g6764e5e
+
 * Thu Dec 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix rfkill issues on ideapad Y700-17ISK (rhbz 1286293)
 
