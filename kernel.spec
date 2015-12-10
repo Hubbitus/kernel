@@ -388,8 +388,12 @@ BuildRequires: rpm-build, elfutils
 %define debuginfo_args --strict-build-id -r
 %endif
 
-%if %{signmodules}
+%ifarch %{ix86} x86_64
+# MODULE_SIG is enabled in config-x86-generic and needs these:
 BuildRequires: openssl openssl-devel
+%endif
+
+%if %{signmodules}
 BuildRequires: pesign >= 0.10-4
 %endif
 
