@@ -656,6 +656,9 @@ Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
 #rhbz 1287819
 Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
 
+#rhbz 1286293
+Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2100,6 +2103,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix rfkill issues on ideapad Y700-17ISK (rhbz 1286293)
+
 * Wed Dec 09 2015 <jmforbes@fedoraproject.org> - 4.2.7-300
 - Linux v4.2.7
 
