@@ -594,6 +594,9 @@ Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
+#rhbz 1288687
+Patch572: alua_fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2037,6 +2040,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 10 2015 Laura Abbott <labbott@redhat.com>
+- Ignore errors from scsi_dh_add_device (rhbz 1288687)
+
 * Thu Dec 10 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git3.1
 - Linux v4.4-rc4-86-g6764e5e
 
