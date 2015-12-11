@@ -659,6 +659,9 @@ Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
+#CVE-2013-7446 rhbz 1282688 1282712
+Patch573: unix-avoid-use-after-free-in-ep_remove_wait_queue.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2103,6 +2106,9 @@ fi
 #
 # 
 %changelog
+* Fri Dec 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-7446 unix sockects use after free (rhbz 1282688 1282712)
+
 * Thu Dec 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix rfkill issues on ideapad Y700-17ISK (rhbz 1286293)
 
