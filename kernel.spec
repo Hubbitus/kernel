@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2040,6 +2040,9 @@ fi
 #
 # 
 %changelog
+* Fri Dec 11 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git4.1
+- Linux v4.4-rc4-113-g0bd0f1e
+
 * Thu Dec 10 2015 Laura Abbott <labbott@redhat.com>
 - Ignore errors from scsi_dh_add_device (rhbz 1288687)
 
