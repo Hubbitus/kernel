@@ -597,6 +597,9 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1288687
 Patch572: alua_fix.patch
 
+#CVE-2015-7550 rhbz 1291197 1291198
+Patch575: KEYS-Fix-race-between-read-and-revoke.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2040,6 +2043,9 @@ fi
 #
 # 
 %changelog
+* Mon Dec 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7550 Race between read and revoke keys (rhbz 1291197 1291198)
+
 * Fri Dec 11 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc4.git4.1
 - Linux v4.4-rc4-113-g0bd0f1e
 
