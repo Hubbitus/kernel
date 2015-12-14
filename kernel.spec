@@ -662,6 +662,9 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #CVE-2013-7446 rhbz 1282688 1282712
 Patch573: unix-avoid-use-after-free-in-ep_remove_wait_queue.patch
 
+#CVE-XXXX-XXXX rhbz 1291329 1291332
+Patch574: ovl-fix-permission-checking-for-setattr.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2106,6 +2109,9 @@ fi
 #
 # 
 %changelog
+* Mon Dec 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-XXXX-XXXX permission bypass on overlayfs (rhbz 1291329 1291332)
+
 * Fri Dec 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-7446 unix sockects use after free (rhbz 1282688 1282712)
 
