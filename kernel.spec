@@ -668,6 +668,9 @@ Patch574: ovl-fix-permission-checking-for-setattr.patch
 #CVE-2015-7550 rhbz 1291197 1291198
 Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 
+#CVE-2015-8543 rhbz 1290475 1290477
+Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2112,6 +2115,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8543 ipv6: DoS via NULL pointer dereference (rhbz 1290475 1290477)
+
 * Mon Dec 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7550 Race between read and revoke keys (rhbz 1291197 1291198)
 - CVE-XXXX-XXXX permission bypass on overlayfs (rhbz 1291329 1291332)
