@@ -604,6 +604,9 @@ Patch572: alua_fix.patch
 #CVE-2015-7550 rhbz 1291197 1291198
 Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 
+#CVE-2015-8543 rhbz 1290475 1290477
+Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2047,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8543 ipv6: DoS via NULL pointer dereference (rhbz 1290475 1290477)
+
 * Mon Dec 14 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git0.1
 - Linux v4.4-rc5
 - Disable debugging options.
