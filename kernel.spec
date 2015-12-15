@@ -607,6 +607,24 @@ Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 #CVE-2015-8543 rhbz 1290475 1290477
 Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
 
+#rhbz 1275718
+Patch577: 0001-device-property-always-check-for-fwnode-type.patch
+Patch578: 0002-device-property-rename-helper-functions.patch
+Patch579: 0003-device-property-refactor-built-in-properties-support.patch
+Patch580: 0004-device-property-keep-single-value-inplace.patch
+Patch581: 0005-device-property-helper-macros-for-property-entry-cre.patch
+Patch582: 0006-device-property-improve-readability-of-macros.patch
+Patch583: 0007-device-property-return-EINVAL-when-property-isn-t-fo.patch
+Patch584: 0008-device-property-Fallback-to-secondary-fwnode-if-prim.patch
+Patch585: 0009-device-property-Take-a-copy-of-the-property-set.patch
+Patch586: 0010-driver-core-platform-Add-support-for-built-in-device.patch
+Patch587: 0011-driver-core-Do-not-overwrite-secondary-fwnode-with-N.patch
+Patch588: 0012-mfd-core-propagate-device-properties-to-sub-devices-.patch
+Patch589: 0013-mfd-intel-lpss-Add-support-for-passing-device-proper.patch
+Patch590: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
+Patch591: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
+Patch592: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2050,6 +2068,9 @@ fi
 #
 # 
 %changelog
+* Tue Dec 15 2015 Laura Abbott <labbott@fedoraproject.org>
+- Add support for Yoga touch input (rhbz 1275718)
+
 * Tue Dec 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8543 ipv6: DoS via NULL pointer dereference (rhbz 1290475 1290477)
 
