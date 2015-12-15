@@ -1473,6 +1473,8 @@ BuildKernel() {
 %ifarch aarch64
     # arch/arm64/include/asm/xen references arch/arm
     cp -a --parents arch/arm/include/asm/xen $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
+    # arch/arm64/include/asm/opcodes.h references arch/arm
+    cp -a --parents arch/arm/include/asm/opcodes.h $RPM_BUILD_ROOT/lib/modules/$KernelVer/build/
 %endif
     # include the machine specific headers for ARM variants, if available.
 %ifarch %{arm}
