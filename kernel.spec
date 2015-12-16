@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2068,6 +2068,9 @@ fi
 #
 # 
 %changelog
+* Wed Dec 16 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git1.1
+- Linux v4.4-rc5-18-gedb42dc
+
 * Tue Dec 15 2015 Laura Abbott <labbott@fedoraproject.org>
 - Add support for Yoga touch input (rhbz 1275718)
 
