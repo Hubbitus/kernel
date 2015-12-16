@@ -2068,6 +2068,9 @@ fi
 #
 # 
 %changelog
+* Wed Dec 16 2015 Laura Abbott <labbott@redhat.com>
+- Enable a set of RDMA drivers (rhbz 1291902)
+
 * Wed Dec 16 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git1.1
 - Linux v4.4-rc5-18-gedb42dc
 
