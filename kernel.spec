@@ -625,6 +625,9 @@ Patch590: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
 Patch591: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
 Patch592: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
 
+#CVE-2015-8569 rhbz 1292045 1292047
+Patch600: pptp-verify-sockaddr_len-in-pptp_bind-and-pptp_conne.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2068,6 +2071,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8569 info leak from getsockname (rhbz 1292045 1292047)
+
 * Wed Dec 16 2015 Laura Abbott <labbott@redhat.com>
 - Enable a set of RDMA drivers (rhbz 1291902)
 
