@@ -2071,6 +2071,9 @@ fi
 #
 # 
 %changelog
+* Thu Dec 17 2015 Laura Abbott <labbott@redhat.com>
+- Enable XEN_PVN support (rhbz 1211904)
+
 * Thu Dec 17 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git2.1
 - Linux v4.4-rc5-25-ga5e90b1
 - Reenable debugging options.
