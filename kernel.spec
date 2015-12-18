@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,9 +604,6 @@ Patch572: alua_fix.patch
 #CVE-2015-7550 rhbz 1291197 1291198
 Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 
-#CVE-2015-8543 rhbz 1290475 1290477
-Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
-
 #rhbz 1275718
 Patch577: 0001-device-property-always-check-for-fwnode-type.patch
 Patch578: 0002-device-property-rename-helper-functions.patch
@@ -624,9 +621,6 @@ Patch589: 0013-mfd-intel-lpss-Add-support-for-passing-device-proper.patch
 Patch590: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
 Patch591: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
 Patch592: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
-
-#CVE-2015-8569 rhbz 1292045 1292047
-Patch600: pptp-verify-sockaddr_len-in-pptp_bind-and-pptp_conne.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2071,6 +2065,9 @@ fi
 #
 # 
 %changelog
+* Fri Dec 18 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git3.1
+- Linux v4.4-rc5-168-g73796d8
+
 * Thu Dec 17 2015 Laura Abbott <labbott@redhat.com>
 - Enable XEN_PVN support (rhbz 1211904)
 
