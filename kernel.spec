@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -588,9 +588,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #CVE-2015-7833 rhbz 1270158 1270160
 Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
-
-#CVE-2015-7515 rhbz 1285326 1285331
-Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
 
 #rhbz 1287819
 Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
@@ -2065,6 +2062,10 @@ fi
 #
 # 
 %changelog
+* Mon Dec 21 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc6.git0.1
+- Linux v4.4-rc6
+- Disable debugging options.
+
 * Fri Dec 18 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc5.git3.1
 - Linux v4.4-rc5-168-g73796d8
 
