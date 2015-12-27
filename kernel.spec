@@ -2064,6 +2064,7 @@ fi
 %changelog
 * Sun Dec 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARMv7/aarch64/ppc/s390 config cleanups
+- Enable rk3368 aarch64 platforms
 
 * Wed Dec 23 2015 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc6.git1.1
 - Linux v4.4-rc6-23-g24bc3ea
