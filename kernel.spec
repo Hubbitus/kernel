@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -597,9 +597,6 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
 #rhbz 1288687
 Patch572: alua_fix.patch
-
-#CVE-2015-7550 rhbz 1291197 1291198
-Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 
 #rhbz 1275718
 Patch577: 0001-device-property-always-check-for-fwnode-type.patch
@@ -2062,6 +2059,10 @@ fi
 #
 # 
 %changelog
+* Mon Jan 04 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc8.git0.1
+- Linux v4.4-rc8
+- Disable debugging options.
+
 * Sun Dec 27 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARMv7/aarch64/ppc/s390 config cleanups
 - Enable rk3368 aarch64 platforms
