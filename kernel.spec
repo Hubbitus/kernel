@@ -598,24 +598,6 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1288687
 Patch572: alua_fix.patch
 
-#rhbz 1275718
-Patch577: 0001-device-property-always-check-for-fwnode-type.patch
-Patch578: 0002-device-property-rename-helper-functions.patch
-Patch579: 0003-device-property-refactor-built-in-properties-support.patch
-Patch580: 0004-device-property-keep-single-value-inplace.patch
-Patch581: 0005-device-property-helper-macros-for-property-entry-cre.patch
-Patch582: 0006-device-property-improve-readability-of-macros.patch
-Patch583: 0007-device-property-return-EINVAL-when-property-isn-t-fo.patch
-Patch584: 0008-device-property-Fallback-to-secondary-fwnode-if-prim.patch
-Patch585: 0009-device-property-Take-a-copy-of-the-property-set.patch
-Patch586: 0010-driver-core-platform-Add-support-for-built-in-device.patch
-Patch587: 0011-driver-core-Do-not-overwrite-secondary-fwnode-with-N.patch
-Patch588: 0012-mfd-core-propagate-device-properties-to-sub-devices-.patch
-Patch589: 0013-mfd-intel-lpss-Add-support-for-passing-device-proper.patch
-Patch590: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
-Patch591: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
-Patch592: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
-
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2059,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 05 2016 Laura Abbott <labbott@redhat.com>
+- Drop patches for Lenovo Yoga Touchpad (rhbz 1275718)
+
 * Mon Jan 04 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc8.git0.1
 - Linux v4.4-rc8
 - Disable debugging options.
