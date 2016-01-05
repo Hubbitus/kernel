@@ -645,6 +645,9 @@ Patch601: vrf-fix-memory-leak-on-registration.patch
 #CVE-2015-8575 rhbz 1292840 1292841
 Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 
+#CVE-2015-8709 rhbz 1295287 1295288
+Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2089,6 +2092,7 @@ fi
 # 
 %changelog
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
 - Merge 4.3.3 from stabilization branch
 
 * Fri Dec 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
