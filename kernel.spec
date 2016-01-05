@@ -598,6 +598,9 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1288687
 Patch572: alua_fix.patch
 
+#CVE-2015-8709 rhbz 1295287 1295288
+Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2041,6 +2044,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
+
 * Tue Jan 05 2016 Laura Abbott <labbott@redhat.com>
 - Drop patches for Lenovo Yoga Touchpad (rhbz 1275718)
 
