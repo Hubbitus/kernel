@@ -1,6 +1,7 @@
+From f630ce576114bfede02d8a0bafa97e4d6f978a74 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
-Subject: [PATCH] KEYS: Add a system blacklist keyring
+Subject: [PATCH 17/20] KEYS: Add a system blacklist keyring
 
 This adds an additional keyring that is used to store certificates that
 are blacklisted.  This keyring is searched first when loading signed modules
@@ -9,72 +10,15 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
+ certs/system_keyring.c        | 27 +++++++++++++++++++++++++++
  include/keys/system_keyring.h |  4 ++++
  init/Kconfig                  |  9 +++++++++
- kernel/module_signing.c       | 12 ++++++++++++
- kernel/system_keyring.c       | 17 +++++++++++++++++
- 4 files changed, 42 insertions(+)
+ 3 files changed, 40 insertions(+)
 
-diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index 72665eb80692..2c7b80d31366 100644
---- a/include/keys/system_keyring.h
-+++ b/include/keys/system_keyring.h
-@@ -28,4 +28,8 @@ static inline struct key *get_system_trusted_keyring(void)
- }
- #endif
- 
-+#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
-+extern struct key *system_blacklist_keyring;
-+#endif
-+
- #endif /* _KEYS_SYSTEM_KEYRING_H */
-diff --git a/init/Kconfig b/init/Kconfig
-index af09b4fb43d2..62f6fd191e4f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1752,6 +1752,15 @@ config SYSTEM_TRUSTED_KEYRING
- 
- 	  Keys in this keyring are used by module signature checking.
- 
-+config SYSTEM_BLACKLIST_KEYRING
-+	bool "Provide system-wide ring of blacklisted keys"
-+	depends on KEYS
-+	help
-+	  Provide a system keyring to which blacklisted keys can be added.
-+	  Keys in the keyring are considered entirely untrusted.  Keys in this
-+	  keyring are used by the module signature checking to reject loading
-+	  of modules signed with a blacklisted key.
-+
- config PROFILING
- 	bool "Profiling support"
- 	help
-diff --git a/kernel/module_signing.c b/kernel/module_signing.c
-index be5b8fac4bd0..fed815fcdaf2 100644
---- a/kernel/module_signing.c
-+++ b/kernel/module_signing.c
-@@ -158,6 +158,18 @@ static struct key *request_asymmetric_key(const char *signer, size_t signer_len,
- 
- 	pr_debug("Look up: \"%s\"\n", id);
- 
-+#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
-+	key = keyring_search(make_key_ref(system_blacklist_keyring, 1),
-+				   &key_type_asymmetric, id);
-+	if (!IS_ERR(key)) {
-+		/* module is signed with a cert in the blacklist.  reject */
-+		pr_err("Module key '%s' is in blacklist\n", id);
-+		key_ref_put(key);
-+		kfree(id);
-+		return ERR_PTR(-EKEYREJECTED);
-+	}
-+#endif
-+
- 	key = keyring_search(make_key_ref(system_trusted_keyring, 1),
- 			     &key_type_asymmetric, id);
- 	if (IS_ERR(key))
-diff --git a/kernel/system_keyring.c b/kernel/system_keyring.c
-index 875f64e8935b..c15e93f5a418 100644
---- a/kernel/system_keyring.c
-+++ b/kernel/system_keyring.c
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 2570598b784d..53733822993f 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
 @@ -20,6 +20,9 @@
  
  struct key *system_trusted_keyring;
@@ -90,7 +34,7 @@ index 875f64e8935b..c15e93f5a418 100644
  
  	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
 +
-+#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +	system_blacklist_keyring = keyring_alloc(".system_blacklist_keyring",
 +				    KUIDT_INIT(0), KGIDT_INIT(0),
 +				    current_cred(),
@@ -106,3 +50,56 @@ index 875f64e8935b..c15e93f5a418 100644
  	return 0;
  }
  
+@@ -138,6 +155,16 @@ int system_verify_data(const void *data, unsigned long len,
+ 	if (ret < 0)
+ 		goto error;
+ 
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	ret = pkcs7_validate_trust(pkcs7, system_blacklist_keyring, &trusted);
++	if (!ret) {
++		/* module is signed with a cert in the blacklist.  reject */
++		pr_err("Module key is in the blacklist\n");
++		ret = -EKEYREJECTED;
++		goto error;
++	}
++#endif
++
+ 	ret = pkcs7_validate_trust(pkcs7, system_trusted_keyring, &trusted);
+ 	if (ret < 0)
+ 		goto error;
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index b20cd885c1fd..51d8ddc60e0f 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -35,4 +35,8 @@ extern int system_verify_data(const void *data, unsigned long len,
+ 			      enum key_being_used_for usage);
+ #endif
+ 
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++extern struct key *system_blacklist_keyring;
++#endif
++
+ #endif /* _KEYS_SYSTEM_KEYRING_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 02da9f1fd9df..782d26f02885 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1783,6 +1783,15 @@ config SYSTEM_DATA_VERIFICATION
+ 	  module verification, kexec image verification and firmware blob
+ 	  verification.
+ 
++config SYSTEM_BLACKLIST_KEYRING
++	bool "Provide system-wide ring of blacklisted keys"
++	depends on KEYS
++	help
++	  Provide a system keyring to which blacklisted keys can be added.
++	  Keys in the keyring are considered entirely untrusted.  Keys in this
++	  keyring are used by the module signature checking to reject loading
++	  of modules signed with a blacklisted key.
++
+ config PROFILING
+ 	bool "Profiling support"
+ 	help
+-- 
+2.4.3
+

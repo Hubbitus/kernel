@@ -1,6 +1,7 @@
+From d7c9efa4ab647d6ccb617f2504e79a398d56f7d4 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Thu, 3 Oct 2013 10:14:23 -0400
-Subject: [PATCH] MODSIGN: Support not importing certs from db
+Subject: [PATCH 19/20] MODSIGN: Support not importing certs from db
 
 If a user tells shim to not use the certs/hashes in the UEFI db variable
 for verification purposes, shim will set a UEFI variable called MokIgnoreDB.
@@ -78,3 +79,6 @@ index 94b0eb38a284..ae28b974d49a 100644
  	}
  
  	mok = get_cert_list(L"MokListRT", &mok_var, &moksize);
+-- 
+2.4.3
+

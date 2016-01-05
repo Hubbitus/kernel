@@ -1,3 +1,4 @@
+From 2246a781c8dbb1207a0b0abbfae201f998c3954b Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
@@ -25,12 +26,12 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 414c3c3d988d..d920a6be6c8b 100644
+index 85ef051ac6fb..a042b2ece788 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -601,6 +601,12 @@ void efi_native_runtime_setup(void);
- #define EFI_CERT_X509_GUID \
-     EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
+@@ -600,6 +600,12 @@ typedef struct {
+ 	u64 table;
+ } efi_config_table_64_t;
  
 +#define EFI_IMAGE_SECURITY_DATABASE_GUID \
 +    EFI_GUID(  0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0x0e, 0x67, 0x65, 0x6f )
@@ -40,12 +41,12 @@ index 414c3c3d988d..d920a6be6c8b 100644
 +
  typedef struct {
  	efi_guid_t guid;
- 	u64 table;
+ 	u32 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 62f6fd191e4f..648bb79d6b73 100644
+index 02da9f1fd9df..90c73a0564b1 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1906,6 +1906,15 @@ config MODULE_SIG_ALL
+@@ -1924,6 +1924,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -62,26 +63,26 @@ index 62f6fd191e4f..648bb79d6b73 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index 43c4c920f30a..3193574387ac 100644
+index d4988410b410..55e886239e7e 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -48,6 +48,7 @@ obj-$(CONFIG_UID16) += uid16.o
- obj-$(CONFIG_SYSTEM_TRUSTED_KEYRING) += system_keyring.o system_certificates.o
+@@ -47,6 +47,7 @@ endif
+ obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
 +obj-$(CONFIG_MODULE_SIG_UEFI) += modsign_uefi.o
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
- obj-$(CONFIG_KEXEC) += kexec.o
-@@ -101,6 +102,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+ obj-$(CONFIG_KEXEC_CORE) += kexec_core.o
+@@ -103,6 +104,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
- $(obj)/configs.o: $(obj)/config_data.h
+ obj-$(CONFIG_HAS_IOMEM) += memremap.o
  
 +$(obj)/modsign_uefi.o: KBUILD_CFLAGS += -fshort-wchar
 +
+ $(obj)/configs.o: $(obj)/config_data.h
+ 
  # config_data.h contains the same information as ikconfig.h but gzipped.
- # Info from config_data can be extracted from /proc/config*
- targets += config_data.gz
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
 new file mode 100644
 index 000000000000..94b0eb38a284
@@ -180,3 +181,6 @@ index 000000000000..94b0eb38a284
 +	return rc;
 +}
 +late_initcall(load_uefi_certs);
+-- 
+2.4.3
+

@@ -46,13 +46,13 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 2
+%define base_sublevel 3
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -388,8 +388,12 @@ BuildRequires: rpm-build, elfutils
 %define debuginfo_args --strict-build-id -r
 %endif
 
+%ifarch %{ix86} x86_64
+# MODULE_SIG is enabled in config-x86-generic and needs these:
+BuildRequires: openssl openssl-devel
+%endif
+
 %if %{signmodules}
-BuildRequires: openssl
 BuildRequires: pesign >= 0.10-4
 %endif
 
@@ -502,15 +506,13 @@ Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
-Patch457: showmem-cma-correct-reserved-memory-calculation.patch
+Patch457: ARM-tegra-usb-no-reset.patch
 
-Patch458: ARM-tegra-usb-no-reset.patch
+Patch458: ARM-dts-Add-am335x-bonegreen.patch
 
-Patch459: regulator-axp20x-module-alias.patch
+Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
 
-Patch460: regulator-anatop-module-alias.patch
-
-Patch461: ARM-dts-Add-am335x-bonegreen.patch
+Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
@@ -519,8 +521,6 @@ Patch466: input-kill-stupid-messages.patch
 Patch467: die-floppy-die.patch
 
 Patch468: no-pcspkr-modalias.patch
-
-Patch469: input-silence-i8042-noise.patch
 
 Patch470: silence-fbcon-logo.patch
 
@@ -590,31 +590,11 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-#rhbz 1244511
-Patch507: HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
-
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#rhbz 1239050
-Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
-
-#rhbz 1253789
-Patch510: iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
-
-#rhbz 1257534
-Patch513: nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
-
-#rhbz 1257500
-Patch517: vmwgfx-Rework-device-initialization.patch
-Patch518: drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
-
-#rhbz 1272172
-Patch540: 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
-Patch541: 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
-
 #CVE-2015-7799 rhbz 1271134 1271135
-Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
-Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
+Patch512: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+Patch513: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 #CVE-2015-8104 rhbz 1278496 1279691
 Patch551: KVM-svm-unconditionally-intercept-DB.patch
@@ -629,11 +609,6 @@ Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
 Patch556: netfilter-ipset-Fix-extension-alignment.patch
 Patch557: netfilter-ipset-Fix-hash-type-expiration.patch
 Patch558: netfilter-ipset-Fix-hash-type-expire-release-empty-h.patch
-
-#rhbz 1278688
-Patch560: 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
-Patch561: 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
-Patch562: 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
 
 #rhbz 1284059
 Patch566: KEYS-Fix-handling-of-stored-error-in-a-negatively-in.patch
@@ -650,6 +625,9 @@ Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
+#rhbz 1288687
+Patch572: alua_fix.patch
+
 #CVE-XXXX-XXXX rhbz 1291329 1291332
 Patch574: ovl-fix-permission-checking-for-setattr.patch
 
@@ -662,8 +640,10 @@ Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
 #CVE-2015-8569 rhbz 1292045 1292047
 Patch600: pptp-verify-sockaddr_len-in-pptp_bind-and-pptp_conne.patch
 
+Patch601: vrf-fix-memory-leak-on-registration.patch
+
 #CVE-2015-8575 rhbz 1292840 1292841
-Patch601: bluetooth-Validate-socket-address-length-in-sco_sock.patch
+Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1368,10 +1348,8 @@ BuildKernel() {
     cp configs/$Config .config
 
     %if %{signmodules}
-    cp %{SOURCE11} .
+    cp %{SOURCE11} certs/.
     %endif
-
-    chmod +x scripts/sign-file
 
     Arch=`head -1 .config | cut -b 3-`
     echo USING ARCH=$Arch
@@ -1614,8 +1592,8 @@ BuildKernel() {
 
 %if %{signmodules}
     # Save the signing keys so we can sign the modules in __modsign_install_post
-    cp signing_key.priv signing_key.priv.sign${Flav}
-    cp signing_key.x509 signing_key.x509.sign${Flav}
+    cp certs/signing_key.pem certs/signing_key.pem.sign${Flav}
+    cp certs/signing_key.x509 certs/signing_key.x509.sign${Flav}
 %endif
 
     # Move the devel headers out of the root file system
@@ -1710,16 +1688,16 @@ popd
 %define __modsign_install_post \
   if [ "%{signmodules}" -eq "1" ]; then \
     if [ "%{with_pae}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae} signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae} certs/signing_key.x509.sign+%{pae} $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}/ \
     fi \
     if [ "%{with_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+debug signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+debug certs/signing_key.x509.sign+debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+debug/ \
     fi \
     if [ "%{with_pae_debug}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign+%{pae}debug signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
+      %{modsign_cmd} certs/signing_key.pem.sign+%{pae}debug certs/signing_key.x509.sign+%{pae}debug $RPM_BUILD_ROOT/lib/modules/%{KVERREL}+%{pae}debug/ \
     fi \
     if [ "%{with_up}" -ne "0" ]; then \
-      %{modsign_cmd} signing_key.priv.sign signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
+      %{modsign_cmd} certs/signing_key.pem.sign certs/signing_key.x509.sign $RPM_BUILD_ROOT/lib/modules/%{KVERREL}/ \
     fi \
   fi \
   if [ "%{zipmodules}" -eq "1" ]; then \
@@ -1980,6 +1958,7 @@ fi
 %{_libdir}/traceevent/plugins/*
 %dir %{_libexecdir}/perf-core
 %{_libexecdir}/perf-core/*
+%{_datadir}/perf-core/*
 %{_mandir}/man[1-8]/perf*
 %{_sysconfdir}/bash_completion.d/perf
 %doc linux-%{KVERREL}/tools/perf/Documentation/examples.txt
@@ -2109,8 +2088,14 @@ fi
 #
 # 
 %changelog
+* Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Merge 4.3.3 from stabilization branch
+
 * Fri Dec 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8575 information leak in sco_sock_bind (rhbz 1292840 1292841)
+
+* Thu Dec 17 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix for memory leak in vrf
 
 * Thu Dec 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8569 info leak from getsockname (rhbz 1292045 1292047)
@@ -2128,6 +2113,9 @@ fi
 * Fri Dec 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2013-7446 unix sockects use after free (rhbz 1282688 1282712)
 
+* Thu Dec 10 2015 Laura Abbott <labbott@redhat.com>
+- Ignore errors from scsi_dh_add_device (rhbz 1288687)
+
 * Thu Dec 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix rfkill issues on ideapad Y700-17ISK (rhbz 1286293)
 
@@ -2138,6 +2126,9 @@ fi
 - Add patch to fix palm rejection on certain touchpads (rhbz 1287819)
 - Add new PCI ids for wireless, including Lenovo Yoga (rhbz 1275490)
 
+* Tue Dec 01 2015 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_X86_INTEL_MPX (rhbz 1287279)
+
 * Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7515 aiptek: crash on invalid device descriptors (rhbz 1285326 1285331)
 - CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
@@ -2146,12 +2137,18 @@ fi
 - Fix crash in add_key (rhbz 1284059)
 - CVE-2015-8374 btrfs: info leak when truncating compressed/inlined extents (rhbz 1286261 1286262)
 
+* Sun Nov 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix sound issue on some ARM devices (tested on Arndale)
+
 * Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org> - 4.2.6-301
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
 - Fix KVM on specific hardware (rhbz 1278688)
 
 * Mon Nov 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix ipset netfilter issues (rhbz 1279189)
+
+* Thu Nov 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-5327 x509 time validation
 
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix Yoga 900 rfkill switch issues (rhbz 1275490)
