@@ -648,6 +648,8 @@ Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
+Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2091,6 +2093,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
+- Quiet i915 gen8 irq messages
+
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
 - Merge 4.3.3 from stabilization branch
