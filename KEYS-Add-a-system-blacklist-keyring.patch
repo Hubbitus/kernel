@@ -1,6 +1,7 @@
+From f630ce576114bfede02d8a0bafa97e4d6f978a74 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
-Subject: [PATCH] KEYS: Add a system blacklist keyring
+Subject: [PATCH 17/20] KEYS: Add a system blacklist keyring
 
 This adds an additional keyring that is used to store certificates that
 are blacklisted.  This keyring is searched first when loading signed modules
@@ -9,15 +10,15 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
+ certs/system_keyring.c        | 27 +++++++++++++++++++++++++++
  include/keys/system_keyring.h |  4 ++++
  init/Kconfig                  |  9 +++++++++
- kernel/module_signing.c       | 12 ++++++++++++
- certs/system_keyring.c       | 17 +++++++++++++++++
- 4 files changed, 42 insertions(+)
+ 3 files changed, 40 insertions(+)
 
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/certs/system_keyring.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/certs/system_keyring.c
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/certs/system_keyring.c	2015-11-27 17:37:35.685131927 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/certs/system_keyring.c	2015-11-27 17:38:08.290795243 +0300
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 2570598b784d..53733822993f 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
 @@ -20,6 +20,9 @@
  
  struct key *system_trusted_keyring;
@@ -28,12 +29,12 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
  
  extern __initconst const u8 system_certificate_list[];
  extern __initconst const unsigned long system_certificate_list_size;
-@@ -41,6 +44,20 @@
+@@ -41,6 +44,20 @@ static __init int system_trusted_keyring_init(void)
  		panic("Can't allocate system trusted keyring\n");
  
  	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
 +
-+#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +	system_blacklist_keyring = keyring_alloc(".system_blacklist_keyring",
 +				    KUIDT_INIT(0), KGIDT_INIT(0),
 +				    current_cred(),
@@ -49,10 +50,28 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
  	return 0;
  }
  
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/keys/system_keyring.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/keys/system_keyring.h
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/keys/system_keyring.h	2015-11-27 17:37:43.235053967 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/keys/system_keyring.h	2015-11-27 17:38:08.289795254 +0300
-@@ -35,4 +35,8 @@
+@@ -138,6 +155,16 @@ int system_verify_data(const void *data, unsigned long len,
+ 	if (ret < 0)
+ 		goto error;
+ 
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
++	ret = pkcs7_validate_trust(pkcs7, system_blacklist_keyring, &trusted);
++	if (!ret) {
++		/* module is signed with a cert in the blacklist.  reject */
++		pr_err("Module key is in the blacklist\n");
++		ret = -EKEYREJECTED;
++		goto error;
++	}
++#endif
++
+ 	ret = pkcs7_validate_trust(pkcs7, system_trusted_keyring, &trusted);
+ 	if (ret < 0)
+ 		goto error;
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index b20cd885c1fd..51d8ddc60e0f 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -35,4 +35,8 @@ extern int system_verify_data(const void *data, unsigned long len,
  			      enum key_being_used_for usage);
  #endif
  
@@ -61,10 +80,11 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
 +#endif
 +
  #endif /* _KEYS_SYSTEM_KEYRING_H */
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/init/Kconfig linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/init/Kconfig
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/init/Kconfig	2015-11-27 17:37:43.691049259 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/init/Kconfig	2015-11-27 17:38:08.289795254 +0300
-@@ -1795,6 +1795,15 @@
+diff --git a/init/Kconfig b/init/Kconfig
+index 02da9f1fd9df..782d26f02885 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1783,6 +1783,15 @@ config SYSTEM_DATA_VERIFICATION
  	  module verification, kexec image verification and firmware blob
  	  verification.
  
@@ -80,25 +100,6 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
  config PROFILING
  	bool "Profiling support"
  	help
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/security/integrity/digsig_asymmetric.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/security/integrity/digsig_asymmetric.c
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/security/integrity/digsig_asymmetric.c	2015-11-27 17:37:44.434041587 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/security/integrity/digsig_asymmetric.c	2015-11-27 17:38:34.138528341 +0300
-@@ -32,6 +32,18 @@
- 
- 	pr_debug("key search: \"%s\"\n", name);
- 
-+	#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
-+		key = keyring_search(make_key_ref(system_blacklist_keyring, 1),
-+					   &key_type_asymmetric, id);
-+		if (!IS_ERR(key)) {
-+			/* module is signed with a cert in the blacklist.  reject */
-+			pr_err("Module key '%s' is in blacklist\n", id);
-+			key_ref_put(key);
-+			kfree(id);
-+			return ERR_PTR(-EKEYREJECTED);
-+		}
-+	#endif
-+
- 	if (keyring) {
- 		/* search in specific keyring */
- 		key_ref_t kref;
+-- 
+2.4.3
+

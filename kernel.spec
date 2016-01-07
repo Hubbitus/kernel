@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -391,8 +391,12 @@ BuildRequires: rpm-build, elfutils
 %define debuginfo_args --strict-build-id -r
 %endif
 
-%if %{signmodules}
+%ifarch %{ix86} x86_64
+# MODULE_SIG is enabled in config-x86-generic and needs these:
 BuildRequires: openssl openssl-devel
+%endif
+
+%if %{signmodules}
 BuildRequires: pesign >= 0.10-4
 %endif
 
@@ -505,9 +509,13 @@ Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
-Patch458: ARM-tegra-usb-no-reset.patch
+Patch457: ARM-tegra-usb-no-reset.patch
 
-Patch461: ARM-dts-Add-am335x-bonegreen.patch
+Patch458: ARM-dts-Add-am335x-bonegreen.patch
+
+Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
+
+Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
@@ -563,6 +571,8 @@ Patch491: MODSIGN-Support-not-importing-certs-from-db.patch
 
 Patch492: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
+Patch493: drm-i915-hush-check-crtc-state.patch
+
 Patch494: disable-i8042-check-on-apple-mac.patch
 
 Patch495: lis3-improve-handling-of-null-rate.patch
@@ -585,15 +595,9 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#rhbz 1239050
-Patch509: ideapad-laptop-Add-Lenovo-Yoga-3-14-to-no_hw_rfkill-.patch
-
 #CVE-2015-7799 rhbz 1271134 1271135
-Patch543: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
-Patch544: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
-
-#CVE-2015-5307 rhbz 1277172 1279688
-Patch550: KVM-x86-work-around-infinite-loop-in-microcode-when-.patch
+Patch512: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
+Patch513: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
 
 #CVE-2015-8104 rhbz 1278496 1279691
 Patch551: KVM-svm-unconditionally-intercept-DB.patch
@@ -608,6 +612,44 @@ Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
 Patch556: netfilter-ipset-Fix-extension-alignment.patch
 Patch557: netfilter-ipset-Fix-hash-type-expiration.patch
 Patch558: netfilter-ipset-Fix-hash-type-expire-release-empty-h.patch
+
+#rhbz 1284059
+Patch566: KEYS-Fix-handling-of-stored-error-in-a-negatively-in.patch
+
+#CVE-2015-7833 rhbz 1270158 1270160
+Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
+
+#CVE-2015-7515 rhbz 1285326 1285331
+Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
+
+#rhbz 1287819
+Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
+
+#rhbz 1286293
+Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
+
+#rhbz 1288687
+Patch572: alua_fix.patch
+
+#CVE-XXXX-XXXX rhbz 1291329 1291332
+Patch574: ovl-fix-permission-checking-for-setattr.patch
+
+#CVE-2015-7550 rhbz 1291197 1291198
+Patch575: KEYS-Fix-race-between-read-and-revoke.patch
+
+#CVE-2015-8543 rhbz 1290475 1290477
+Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
+
+#CVE-2015-8569 rhbz 1292045 1292047
+Patch600: pptp-verify-sockaddr_len-in-pptp_bind-and-pptp_conne.patch
+
+Patch601: vrf-fix-memory-leak-on-registration.patch
+
+#CVE-2015-8575 rhbz 1292840 1292841
+Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
+
+#CVE-2015-8709 rhbz 1295287 1295288
+Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
 ################# Hubbitus patches
 # UKSM
@@ -2108,6 +2150,59 @@ fi
 # and build.
 #
 %changelog
+* Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
+- Merge 4.3.3 from stabilization branch
+
+* Fri Dec 18 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8575 information leak in sco_sock_bind (rhbz 1292840 1292841)
+
+* Thu Dec 17 2015 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix for memory leak in vrf
+
+* Thu Dec 17 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8569 info leak from getsockname (rhbz 1292045 1292047)
+
+* Tue Dec 15 2015 Justin Forbes <jforbes@fedoraproject.org> - 4.2.8-300
+- Linux v4.2.8
+
+* Tue Dec 15 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8543 ipv6: DoS via NULL pointer dereference (rhbz 1290475 1290477)
+
+* Mon Dec 14 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7550 Race between read and revoke keys (rhbz 1291197 1291198)
+- CVE-XXXX-XXXX permission bypass on overlayfs (rhbz 1291329 1291332)
+
+* Fri Dec 11 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2013-7446 unix sockects use after free (rhbz 1282688 1282712)
+
+* Thu Dec 10 2015 Laura Abbott <labbott@redhat.com>
+- Ignore errors from scsi_dh_add_device (rhbz 1288687)
+
+* Thu Dec 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix rfkill issues on ideapad Y700-17ISK (rhbz 1286293)
+
+* Wed Dec 09 2015 Justin Forbes <jforbes@fedoraproject.org> - 4.2.7-300
+- Linux v4.2.7
+
+* Thu Dec 03 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix palm rejection on certain touchpads (rhbz 1287819)
+- Add new PCI ids for wireless, including Lenovo Yoga (rhbz 1275490)
+
+* Tue Dec 01 2015 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_X86_INTEL_MPX (rhbz 1287279)
+
+* Tue Dec 01 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7515 aiptek: crash on invalid device descriptors (rhbz 1285326 1285331)
+- CVE-2015-7833 usbvision: crash on invalid device descriptors (rhbz 1270158 1270160)
+
+* Mon Nov 30 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix crash in add_key (rhbz 1284059)
+- CVE-2015-8374 btrfs: info leak when truncating compressed/inlined extents (rhbz 1286261 1286262)
+
+* Sun Nov 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix sound issue on some ARM devices (tested on Arndale)
+
 * Fri Nov 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.30-200.hu.1.uksm.bfs.bfq
 - Step myself (ahead of Fedora) to kernel 4.3.0.
 - Update patches:
@@ -2138,12 +2233,16 @@ fi
     o BFS-3.13-compile-fix-hu.patch
 - Rebase other patches.
 
-* Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org>
+
+* Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org> - 4.2.6-301
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
 - Fix KVM on specific hardware (rhbz 1278688)
 
 * Mon Nov 16 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix ipset netfilter issues (rhbz 1279189)
+
+* Thu Nov 12 2015 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-5327 x509 time validation
 
 * Tue Nov 10 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix Yoga 900 rfkill switch issues (rhbz 1275490)

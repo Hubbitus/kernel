@@ -1,3 +1,4 @@
+From 2246a781c8dbb1207a0b0abbfae201f998c3954b Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
@@ -24,12 +25,13 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  4 files changed, 110 insertions(+)
  create mode 100644 kernel/modsign_uefi.c
 
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/efi.h linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/efi.h
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/include/linux/efi.h	2015-11-27 18:06:52.394983543 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/include/linux/efi.h	2015-11-27 18:07:20.832690233 +0300
-@@ -601,6 +601,12 @@
- #define EFI_CERT_X509_GUID \
-     EFI_GUID(  0xa5c059a1, 0x94e4, 0x4aa7, 0x87, 0xb5, 0xab, 0x15, 0x5c, 0x2b, 0xf0, 0x72 )
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 85ef051ac6fb..a042b2ece788 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -600,6 +600,12 @@ typedef struct {
+ 	u64 table;
+ } efi_config_table_64_t;
  
 +#define EFI_IMAGE_SECURITY_DATABASE_GUID \
 +    EFI_GUID(  0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0x0e, 0x67, 0x65, 0x6f )
@@ -39,11 +41,12 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
 +
  typedef struct {
  	efi_guid_t guid;
- 	u64 table;
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/init/Kconfig linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/init/Kconfig
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/init/Kconfig	2015-11-27 18:06:52.558981852 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/init/Kconfig	2015-11-27 18:07:20.833690223 +0300
-@@ -1945,6 +1945,15 @@
+ 	u32 table;
+diff --git a/init/Kconfig b/init/Kconfig
+index 02da9f1fd9df..90c73a0564b1 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1924,6 +1924,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -59,10 +62,11 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
  choice
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/Makefile linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/Makefile
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/Makefile	2015-11-27 18:06:52.559981841 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/Makefile	2015-11-27 18:07:20.833690223 +0300
-@@ -47,6 +47,7 @@
+diff --git a/kernel/Makefile b/kernel/Makefile
+index d4988410b410..55e886239e7e 100644
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -47,6 +47,7 @@ endif
  obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -70,18 +74,20 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC_CORE) += kexec_core.o
-@@ -106,6 +107,8 @@
+@@ -103,6 +104,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
  
- $(obj)/configs.o: $(obj)/config_data.h
+ obj-$(CONFIG_HAS_IOMEM) += memremap.o
  
 +$(obj)/modsign_uefi.o: KBUILD_CFLAGS += -fshort-wchar
 +
+ $(obj)/configs.o: $(obj)/config_data.h
+ 
  # config_data.h contains the same information as ikconfig.h but gzipped.
- # Info from config_data can be extracted from /proc/config*
- targets += config_data.gz
-diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/modsign_uefi.c linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/modsign_uefi.c
---- linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64.orig/kernel/modsign_uefi.c	1970-01-01 03:00:00.000000000 +0300
-+++ linux-4.3.0-301.hu.1.uksm.bfs.bfq.fc23.x86_64/kernel/modsign_uefi.c	2015-11-27 18:07:20.833690223 +0300
+diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
+new file mode 100644
+index 000000000000..94b0eb38a284
+--- /dev/null
++++ b/kernel/modsign_uefi.c
 @@ -0,0 +1,92 @@
 +#include <linux/kernel.h>
 +#include <linux/sched.h>
@@ -175,3 +181,6 @@ diff -NurEbBH '--exclude=*.orig' '--exclude=*.rej' linux-4.3.0-301.hu.1.uksm.bfs
 +	return rc;
 +}
 +late_initcall(load_uefi_certs);
+-- 
+2.4.3
+

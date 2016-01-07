@@ -1,6 +1,7 @@
+From d4ae417828427de74e9f857f9caa49580aecf1fe Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
-Subject: [PATCH] Restrict /dev/mem and /dev/kmem when module loading is
+Subject: [PATCH 06/20] Restrict /dev/mem and /dev/kmem when module loading is
  restricted
 
 Allowing users to write to address space makes it possible for the kernel
@@ -36,3 +37,6 @@ index 53fe675f9bd7..b52c88860532 100644
  	if (p < (unsigned long) high_memory) {
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
+-- 
+2.4.3
+

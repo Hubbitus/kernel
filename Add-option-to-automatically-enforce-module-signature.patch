@@ -1,7 +1,8 @@
+From 37431394b3eeb1ef6d38d0e6b2693210606c2c2c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
-Subject: [PATCH] Add option to automatically enforce module signatures when in
- Secure Boot mode
+Subject: [PATCH 10/20] Add option to automatically enforce module signatures
+ when in Secure Boot mode
 
 UEFI Secure Boot provides a mechanism for ensuring that the firmware will
 only load signed bootloaders and kernels. Certain use cases may also
@@ -20,10 +21,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  7 files changed, 69 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
-index 82fbdbc1e0b0..a811210ad486 100644
+index 95a4d34af3fd..b8527c6b7646 100644
 --- a/Documentation/x86/zero-page.txt
 +++ b/Documentation/x86/zero-page.txt
-@@ -30,6 +30,8 @@ Offset	Proto	Name		Meaning
+@@ -31,6 +31,8 @@ Offset	Proto	Name		Meaning
  1E9/001	ALL	eddbuf_entries	Number of entries in eddbuf (below)
  1EA/001	ALL	edd_mbr_sig_buf_entries	Number of entries in edd_mbr_sig_buffer
  				(below)
@@ -33,10 +34,10 @@ index 82fbdbc1e0b0..a811210ad486 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 3dbb7e7909ca..4da6644b1fd0 100644
+index cc0d73eac047..14db458f4774 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1703,6 +1703,16 @@ config EFI_MIXED
+@@ -1734,6 +1734,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -54,7 +55,7 @@ index 3dbb7e7909ca..4da6644b1fd0 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 2c82bd150d43..1ef8ea7f8ed9 100644
+index ee1b6d346b98..b4de3faa3f29 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -115,7 +116,7 @@ index 2c82bd150d43..1ef8ea7f8ed9 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index ab456dc233b5..74ba4083e7ce 100644
+index 329254373479..b61f8533c0fd 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
 @@ -134,7 +134,8 @@ struct boot_params {
@@ -129,10 +130,10 @@ index ab456dc233b5..74ba4083e7ce 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 80f874bf999e..c2e4f52cad30 100644
+index baadbf90a7c5..1ac118146e90 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1160,6 +1160,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1135,6 +1135,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -146,10 +147,10 @@ index 80f874bf999e..c2e4f52cad30 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 57474384b66b..b69d657c3700 100644
+index db386349cd01..4b8df91f03cd 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -189,6 +189,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
+@@ -273,6 +273,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
  
  struct notifier_block;
  
@@ -163,10 +164,10 @@ index 57474384b66b..b69d657c3700 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index e9869c497175..87fa14fedc88 100644
+index 7f045246e123..2b403ab0ef29 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -4084,6 +4084,13 @@ void module_layout(struct module *mod,
+@@ -4088,6 +4088,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
@@ -180,3 +181,6 @@ index e9869c497175..87fa14fedc88 100644
  bool secure_modules(void)
  {
  #ifdef CONFIG_MODULE_SIG
+-- 
+2.4.3
+

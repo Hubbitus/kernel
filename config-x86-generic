@@ -36,9 +36,7 @@ CONFIG_MTRR_SANITIZER_SPARE_REG_NR_DEFAULT=1
 CONFIG_X86_PAT=y
 CONFIG_X86_PM_TIMER=y
 
-# This requires changes to binutils and the compiler.  Plus you can't actually
-# buy hardware with MPX yet.  So... leave it off until all of that seems set.
-# CONFIG_X86_INTEL_MPX is not set
+CONFIG_X86_INTEL_MPX=y
 
 CONFIG_EFI=y
 CONFIG_EFI_STUB=y
