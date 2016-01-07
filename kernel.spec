@@ -603,6 +603,24 @@ Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
 Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
+#rhbz 1275718
+Patch605: 0001-device-property-always-check-for-fwnode-type.patch
+Patch606: 0002-device-property-rename-helper-functions.patch
+Patch607: 0003-device-property-refactor-built-in-properties-support.patch
+Patch608: 0004-device-property-keep-single-value-inplace.patch
+Patch609: 0005-device-property-helper-macros-for-property-entry-cre.patch
+Patch610: 0006-device-property-improve-readability-of-macros.patch
+Patch611: 0007-device-property-return-EINVAL-when-property-isn-t-fo.patch
+Patch612: 0008-device-property-Fallback-to-secondary-fwnode-if-prim.patch
+Patch613: 0009-device-property-Take-a-copy-of-the-property-set.patch
+Patch614: 0010-driver-core-platform-Add-support-for-built-in-device.patch
+Patch615: 0011-driver-core-Do-not-overwrite-secondary-fwnode-with-N.patch
+Patch616: 0012-mfd-core-propagate-device-properties-to-sub-devices-.patch
+Patch617: 0013-mfd-intel-lpss-Add-support-for-passing-device-proper.patch
+Patch618: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
+Patch619: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
+Patch620: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2046,6 +2064,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 07 2016 Laura Abbott <labbott@redhat.com>
+- Bring back patches for Lenovo Yoga touchpad (rhbz 1275718)
+
 * Thu Jan 07 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc8.git2.1
 - Linux v4.4-rc8-26-gb06f3a1
 
