@@ -1,6 +1,7 @@
+From 16d2ba5d5bc46e67e6aa7a3d113fbcc18c217388 Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
 Date: Fri, 30 Aug 2013 09:28:51 -0400
-Subject: [PATCH] Add sysrq option to disable secure boot mode
+Subject: [PATCH 20/20] Add sysrq option to disable secure boot mode
 
 Bugzilla: N/A
 Upstream-status: Fedora mustard
@@ -15,7 +16,7 @@ Upstream-status: Fedora mustard
  7 files changed, 64 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 5def6b4143fa..1eac9d22cb0b 100644
+index f93826b8522c..41679b1aca83 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -30,7 +31,7 @@ index 5def6b4143fa..1eac9d22cb0b 100644
  #include <video/edid.h>
  
  #include <asm/mtrr.h>
-@@ -1286,6 +1291,37 @@ void __init i386_reserve_resources(void)
+@@ -1261,6 +1266,37 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */
  
@@ -69,10 +70,10 @@ index 5def6b4143fa..1eac9d22cb0b 100644
  	.notifier_call = dump_kernel_offset
  };
 diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
-index 421e29e4cd81..61c1eb97806c 100644
+index 345df9b03aed..dea6a6c4a39b 100644
 --- a/drivers/input/misc/uinput.c
 +++ b/drivers/input/misc/uinput.c
-@@ -366,6 +366,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
+@@ -364,6 +364,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
  	if (!udev->dev)
  		return -ENOMEM;
  
@@ -81,10 +82,10 @@ index 421e29e4cd81..61c1eb97806c 100644
  	input_set_drvdata(udev->dev, udev);
  
 diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index b5b427888b24..289c7898a3b0 100644
+index 95b330a9ea98..dfa3e154a719 100644
 --- a/drivers/tty/sysrq.c
 +++ b/drivers/tty/sysrq.c
-@@ -465,6 +465,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+@@ -472,6 +472,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
  	/* x: May be registered on mips for TLB dump */
  	/* x: May be registered on ppc/powerpc for xmon */
  	/* x: May be registered on sparc64 for global PMU dump */
@@ -92,7 +93,7 @@ index b5b427888b24..289c7898a3b0 100644
  	NULL,				/* x */
  	/* y: May be registered on sparc64 for global register dump */
  	NULL,				/* y */
-@@ -508,7 +509,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
+@@ -515,7 +516,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
                  sysrq_key_table[i] = op_p;
  }
  
@@ -101,7 +102,7 @@ index b5b427888b24..289c7898a3b0 100644
  {
  	struct sysrq_key_op *op_p;
  	int orig_log_level;
-@@ -528,11 +529,15 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -535,11 +536,15 @@ void __handle_sysrq(int key, bool check_mask)
  
          op_p = __sysrq_get_key_op(key);
          if (op_p) {
@@ -118,7 +119,7 @@ index b5b427888b24..289c7898a3b0 100644
  			pr_cont("%s\n", op_p->action_msg);
  			console_loglevel = orig_log_level;
  			op_p->handler(key);
-@@ -564,7 +569,7 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -571,7 +576,7 @@ void __handle_sysrq(int key, bool check_mask)
  void handle_sysrq(int key)
  {
  	if (sysrq_on())
@@ -127,7 +128,7 @@ index b5b427888b24..289c7898a3b0 100644
  }
  EXPORT_SYMBOL(handle_sysrq);
  
-@@ -645,7 +650,7 @@ static void sysrq_do_reset(unsigned long _state)
+@@ -652,7 +657,7 @@ static void sysrq_do_reset(unsigned long _state)
  static void sysrq_handle_reset_request(struct sysrq_state *state)
  {
  	if (state->reset_requested)
@@ -136,7 +137,7 @@ index b5b427888b24..289c7898a3b0 100644
  
  	if (sysrq_reset_downtime_ms)
  		mod_timer(&state->keyreset_timer,
-@@ -796,8 +801,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
+@@ -803,8 +808,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
  
  	default:
  		if (sysrq->active && value && value != 2) {
@@ -148,7 +149,7 @@ index b5b427888b24..289c7898a3b0 100644
  		}
  		break;
  	}
-@@ -1077,7 +1084,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+@@ -1084,7 +1091,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
  
  		if (get_user(c, buf))
  			return -EFAULT;
@@ -228,7 +229,7 @@ index 4121345498e0..0ff3cef5df96 100644
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index 87fa14fedc88..61385e686d49 100644
+index 2b403ab0ef29..7818c110e95c 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
 @@ -292,7 +292,7 @@ static void module_assert_mutex_or_preempt(void)
@@ -240,3 +241,6 @@ index 87fa14fedc88..61385e686d49 100644
  #ifndef CONFIG_MODULE_SIG_FORCE
  module_param(sig_enforce, bool_enable_only, 0644);
  #endif /* !CONFIG_MODULE_SIG_FORCE */
+-- 
+2.4.3
+

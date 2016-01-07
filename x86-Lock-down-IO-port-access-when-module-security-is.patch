@@ -1,6 +1,8 @@
+From 7a3cdd26e6d38031338a6cb591ec2f3faaa9234b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
-Subject: [PATCH] x86: Lock down IO port access when module security is enabled
+Subject: [PATCH 03/20] x86: Lock down IO port access when module security is
+ enabled
 
 IO port access would permit users to gain access to PCI configuration
 registers, which in turn (on a lot of hardware) give access to MMIO register
@@ -65,3 +67,6 @@ index 6b1721f978c2..53fe675f9bd7 100644
  	if (!access_ok(VERIFY_READ, buf, count))
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
+-- 
+2.4.3
+

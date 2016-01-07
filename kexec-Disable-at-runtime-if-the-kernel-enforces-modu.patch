@@ -1,3 +1,4 @@
+From 6306cad6e5663424c08e5ebdfdcfd799c5537bfe Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 03:33:56 -0400
 Subject: [PATCH] kexec: Disable at runtime if the kernel enforces module
@@ -13,18 +14,18 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/kernel/kexec.c b/kernel/kexec.c
-index a785c1015e25..81d6b404f33c 100644
+index 4c5edc357923..db431971dbd4 100644
 --- a/kernel/kexec.c
 +++ b/kernel/kexec.c
-@@ -36,6 +36,7 @@
- #include <linux/syscore_ops.h>
- #include <linux/compiler.h>
- #include <linux/hugetlb.h>
+@@ -10,6 +10,7 @@
+ #include <linux/mm.h>
+ #include <linux/file.h>
+ #include <linux/kexec.h>
 +#include <linux/module.h>
- 
- #include <asm/page.h>
- #include <asm/uaccess.h>
-@@ -1258,6 +1259,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ #include <linux/mutex.h>
+ #include <linux/list.h>
+ #include <linux/syscalls.h>
+@@ -133,6 +134,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
  		return -EPERM;
  
  	/*
@@ -38,3 +39,6 @@ index a785c1015e25..81d6b404f33c 100644
  	 * Verify we have a legal set of flags
  	 * This leaves us room for future extensions.
  	 */
+-- 
+2.4.3
+

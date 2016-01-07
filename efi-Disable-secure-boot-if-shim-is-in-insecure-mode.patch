@@ -1,6 +1,7 @@
+From 9ef94251448aa463c5937ee8e8e27d6fd9529509 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Tue, 5 Feb 2013 19:25:05 -0500
-Subject: [PATCH] efi: Disable secure boot if shim is in insecure mode
+Subject: [PATCH 11/20] efi: Disable secure boot if shim is in insecure mode
 
 A user can manually tell the shim boot loader to disable validation of
 images it loads.  When a user does this, it creates a UEFI variable called
@@ -14,7 +15,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index 1ef8ea7f8ed9..d82dc9c1c19e 100644
+index b4de3faa3f29..5cc2ef570390 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -830,8 +830,9 @@ out:
@@ -52,3 +53,6 @@ index 1ef8ea7f8ed9..d82dc9c1c19e 100644
  	return 1;
  }
  
+-- 
+2.4.3
+
