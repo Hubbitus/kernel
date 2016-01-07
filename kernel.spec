@@ -469,7 +469,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.2/patch-4.2-pf3.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.3/patch-4.3-pf3.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -2126,6 +2126,9 @@ fi
 # and build.
 #
 %changelog
+* Thu Jan 07 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-300.hu.1.pf3
+- Merge Fedora 23 kernel 4.3.3, aply new v4.3-pf3 - https://pf.natalenko.name/news/?p=111.
+
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
 - Merge 4.3.3 from stabilization branch
