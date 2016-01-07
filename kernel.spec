@@ -601,6 +601,8 @@ Patch572: alua_fix.patch
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
+Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2044,6 +2046,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
+- Quiet i915 gen8 irq messages
+
 * Wed Jan 06 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc8.git1.1
 - Linux v4.4-rc8-5-gee9a7d2
 - Reenable debugging options.
