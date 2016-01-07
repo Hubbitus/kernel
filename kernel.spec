@@ -621,6 +621,9 @@ Patch618: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
 Patch619: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
 Patch620: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
 
+#rhbz 1295646
+Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2064,6 +2067,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 07 2016 Laura Abbott <labbott@redhat.com>
+- Fix unlocked gem warning (rhbz 1295646)
+
 * Thu Jan 07 2016 Laura Abbott <labbott@redhat.com>
 - Bring back patches for Lenovo Yoga touchpad (rhbz 1275718)
 
