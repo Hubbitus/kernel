@@ -2150,6 +2150,9 @@ fi
 # and build.
 #
 %changelog
+* Thu Jan 07 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-300.hu.1.uksm.bfs.bfq
+- Merge 4.3.3 from Fedora 23.
+
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
 - Merge 4.3.3 from stabilization branch
@@ -2203,36 +2206,35 @@ fi
 * Sun Nov 22 2015 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix sound issue on some ARM devices (tested on Arndale)
 
-* Fri Nov 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.30-200.hu.1.uksm.bfs.bfq
-- Step myself (ahead of Fedora) to kernel 4.3.0.
-- Update patches:
-    o bfs: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
-    o bfq:
-        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.3.patch
-        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.3.patch
-        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.3.0.patch
-- Drop old patches:
-    o showmem-cma-correct-reserved-memory-calculation.patch
-    o regulator-axp20x-module-alias.patch
-    o regulator-anatop-module-alias.patch
-    o input-silence-i8042-noise.patch
-    o drm-i915-hush-check-crtc-state.patch
-    o HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
-    o iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
-    o nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
-    o 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
-    o 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
-    o 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
-    o 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
-    o 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
-    o vmwgfx-Rework-device-initialization.patch
-    o drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
-    o RDS-verify-the-underlying-transport-exists-before-cr.patch
-    o RDS-fix-race-condition-when-sending-a-message-on-unb.patch
-    o 0001-ipv6-Avoid-creating-RTF_CACHE-from-a-rt-that-is-not-.patch
-    o BFS-3.13-compile-fix-hu.patch
-- Rebase other patches.
-
+#* Fri Nov 27 2015 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.0-200.hu.1.uksm.bfs.bfq
+#- Step myself (ahead of Fedora) to kernel 4.3.0.
+#- Update patches:
+#    o bfs: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
+#    o bfq:
+#        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0001-block-cgroups-kconfig-build-bits-for-BFQ-v7r8-4.3.patch
+#        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0002-block-introduce-the-BFQ-v7r8-I-O-sched-for-4.3.patch
+#        http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/0003-block-bfq-add-Early-Queue-Merge-EQM-to-BFQ-v7r8-for-4.3.0.patch
+#- Drop old patches:
+#    o showmem-cma-correct-reserved-memory-calculation.patch
+#    o regulator-axp20x-module-alias.patch
+#    o regulator-anatop-module-alias.patch
+#    o input-silence-i8042-noise.patch
+#    o drm-i915-hush-check-crtc-state.patch
+#    o HID-chicony-Add-support-for-Acer-Aspire-Switch-12.patch
+#    o iSCSI-let-session-recovery_tmo-sysfs-writes-persist.patch
+#    o nv46-Change-mc-subdev-oclass-from-nv44-to-nv4c.patch
+#    o 0001-KEYS-Fix-crash-when-attempt-to-garbage-collect-an-un.patch
+#    o 0001-KVM-x86-build-kvm_userspace_memory_region-in-x86_set.patch
+#    o 0002-KEYS-Don-t-permit-request_key-to-construct-a-new-key.patch
+#    o 0002-KVM-x86-map-unmap-private-slots-in-__x86_set_memory_.patch
+#    o 0003-KVM-x86-fix-previous-commit-for-32-bit.patch
+#    o vmwgfx-Rework-device-initialization.patch
+#    o drm-vmwgfx-Allow-dropped-masters-render-node-like-ac.patch
+#    o RDS-verify-the-underlying-transport-exists-before-cr.patch
+#    o RDS-fix-race-condition-when-sending-a-message-on-unb.patch
+#    o 0001-ipv6-Avoid-creating-RTF_CACHE-from-a-rt-that-is-not-.patch
+#    o BFS-3.13-compile-fix-hu.patch
+#- Rebase other patches.
 
 * Fri Nov 20 2015 Justin M. Forbes <jmforbes@fedoraproject.org> - 4.2.6-301
 - Fix for GRE tunnel running in IPSec (rhbz 1272571)
