@@ -650,6 +650,9 @@ Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
 Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
+#CVE-2015-7513 rhbz 1284847 1296142
+Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2094,6 +2097,7 @@ fi
 # 
 %changelog
 * Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
+- CVE-2015-7513 kvm: divide by zero DoS (rhbz 1284847 1296142)
 - Quiet i915 gen8 irq messages
 
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
