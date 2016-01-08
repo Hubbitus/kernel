@@ -659,6 +659,9 @@ Patch606: HID-multitouch-Fetch-feature-reports-on-demand-for-W.patch
 #rhbz 1281368
 Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
 
+#rhbz 1296820
+Patch608: drm-nouveau-pmu-do-not-assume-a-PMU-is-present.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2103,6 +2106,7 @@ fi
 # 
 %changelog
 * Fri Jan 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in nouveau driver for devices that don't have a PMU (rhbz 1296820)
 - Fix warnings from pre-nv50 cards (rhbz 1281368)
 - Fix touchpad on Dell XPS 13 9350 (rhbz 1296677)
 
