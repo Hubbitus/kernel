@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 8
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2067,6 +2067,9 @@ fi
 #
 # 
 %changelog
+* Fri Jan 08 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-0.rc8.git3.1
+- Linux v4.4-rc8-36-g02006f7a
+
 * Thu Jan 07 2016 Laura Abbott <labbott@redhat.com>
 - Fix unlocked gem warning (rhbz 1295646)
 
