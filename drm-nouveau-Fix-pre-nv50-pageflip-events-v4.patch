@@ -1,0 +1,204 @@
+From 424f582d0ec7f206dcc59d34c9a2fa1c8087a8aa Mon Sep 17 00:00:00 2001
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date: Tue, 10 Nov 2015 17:37:31 +0100
+Subject: [PATCH] drm/nouveau: Fix pre-nv50 pageflip events (v4)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Apparently pre-nv50 pageflip events happen before the actual vblank
+period. Therefore that functionality got semi-disabled in
+
+commit af4870e406126b7ac0ae7c7ce5751f25ebe60f28
+Author: Mario Kleiner <mario.kleiner.de@gmail.com>
+Date:   Tue May 13 00:42:08 2014 +0200
+
+    drm/nouveau/kms/nv04-nv40: fix pageflip events via special case.
+
+Unfortunately that hack got uprooted in
+
+commit cc1ef118fc099295ae6aabbacc8af94d8d8885eb
+Author: Thierry Reding <treding@nvidia.com>
+Date:   Wed Aug 12 17:00:31 2015 +0200
+
+    drm/irq: Make pipe unsigned and name consistent
+
+Triggering a warning when trying to sample the vblank timestamp for a
+non-existing pipe. There's a few ways to fix this:
+
+- Open-code the old behaviour, which just enshrines this slight
+  breakage of the userspace ABI.
+
+- Revert Mario's commit and again inflict broken timestamps, again not
+  pretty.
+
+- Fix this for real by delaying the pageflip TS until the next vblank
+  interrupt, thereby making it accurate.
+
+This patch implements the third option. Since having a page flip
+interrupt that happens when the pageflip gets armed and not when it
+completes in the next vblank seems to be fairly common (older i915 hw
+works very similarly) create a new helper to arm vblank events for
+such drivers.
+
+v2 (Mario Kleiner):
+- Fix function prototypes in drmP.h
+- Add missing vblank_put() for pageflip completion without
+  pageflip event.
+- Initialize sequence number for queued pageflip event to avoid
+  trouble in drm_handle_vblank_events().
+- Remove dead code and spelling fix.
+
+v3 (Mario Kleiner):
+- Add a signed-off-by and cc stable tag per Ilja's advice.
+
+v4 (Thierry Reding):
+- Fix kerneldoc typo, discovered by Michel Dänzer
+- Rearrange tags and changelog
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=106431
+Cc: Thierry Reding <treding@nvidia.com>
+Cc: Mario Kleiner <mario.kleiner.de@gmail.com>
+Acked-by: Ben Skeggs <bskeggs@redhat.com>
+Cc: Ilia Mirkin <imirkin@alum.mit.edu>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+Reviewed-by: Mario Kleiner <mario.kleiner.de@gmail.com>
+Cc: stable@vger.kernel.org # v4.3
+Signed-off-by: Mario Kleiner <mario.kleiner.de@gmail.com>
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Signed-off-by: Dave Airlie <airlied@redhat.com>
+---
+ drivers/gpu/drm/drm_irq.c                 | 54 ++++++++++++++++++++++++++++++-
+ drivers/gpu/drm/nouveau/nouveau_display.c | 19 ++++++-----
+ include/drm/drmP.h                        |  4 +++
+ 3 files changed, 68 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_irq.c b/drivers/gpu/drm/drm_irq.c
+index 22d207e211e7..c5f20e41dcc6 100644
+--- a/drivers/gpu/drm/drm_irq.c
++++ b/drivers/gpu/drm/drm_irq.c
+@@ -944,7 +944,8 @@ static void send_vblank_event(struct drm_device *dev,
+ 		struct drm_pending_vblank_event *e,
+ 		unsigned long seq, struct timeval *now)
+ {
+-	WARN_ON_SMP(!spin_is_locked(&dev->event_lock));
++	assert_spin_locked(&dev->event_lock);
++
+ 	e->event.sequence = seq;
+ 	e->event.tv_sec = now->tv_sec;
+ 	e->event.tv_usec = now->tv_usec;
+@@ -957,6 +958,57 @@ static void send_vblank_event(struct drm_device *dev,
+ }
+ 
+ /**
++ * drm_arm_vblank_event - arm vblank event after pageflip
++ * @dev: DRM device
++ * @pipe: CRTC index
++ * @e: the event to prepare to send
++ *
++ * A lot of drivers need to generate vblank events for the very next vblank
++ * interrupt. For example when the page flip interrupt happens when the page
++ * flip gets armed, but not when it actually executes within the next vblank
++ * period. This helper function implements exactly the required vblank arming
++ * behaviour.
++ *
++ * Caller must hold event lock. Caller must also hold a vblank reference for
++ * the event @e, which will be dropped when the next vblank arrives.
++ *
++ * This is the legacy version of drm_crtc_arm_vblank_event().
++ */
++void drm_arm_vblank_event(struct drm_device *dev, unsigned int pipe,
++			  struct drm_pending_vblank_event *e)
++{
++	assert_spin_locked(&dev->event_lock);
++
++	e->pipe = pipe;
++	e->event.sequence = drm_vblank_count(dev, pipe);
++	list_add_tail(&e->base.link, &dev->vblank_event_list);
++}
++EXPORT_SYMBOL(drm_arm_vblank_event);
++
++/**
++ * drm_crtc_arm_vblank_event - arm vblank event after pageflip
++ * @crtc: the source CRTC of the vblank event
++ * @e: the event to send
++ *
++ * A lot of drivers need to generate vblank events for the very next vblank
++ * interrupt. For example when the page flip interrupt happens when the page
++ * flip gets armed, but not when it actually executes within the next vblank
++ * period. This helper function implements exactly the required vblank arming
++ * behaviour.
++ *
++ * Caller must hold event lock. Caller must also hold a vblank reference for
++ * the event @e, which will be dropped when the next vblank arrives.
++ *
++ * This is the native KMS version of drm_arm_vblank_event().
++ */
++void drm_crtc_arm_vblank_event(struct drm_crtc *crtc,
++			       struct drm_pending_vblank_event *e)
++{
++	drm_arm_vblank_event(crtc->dev, drm_crtc_index(crtc), e);
++}
++EXPORT_SYMBOL(drm_crtc_arm_vblank_event);
++
++/**
+  * drm_send_vblank_event - helper to send vblank event after pageflip
+  * @dev: DRM device
+  * @pipe: CRTC index
+diff --git a/drivers/gpu/drm/nouveau/nouveau_display.c b/drivers/gpu/drm/nouveau/nouveau_display.c
+index e905c00acf1a..54183bcca48f 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_display.c
++++ b/drivers/gpu/drm/nouveau/nouveau_display.c
+@@ -827,7 +827,6 @@ nouveau_finish_page_flip(struct nouveau_channel *chan,
+ 	struct drm_device *dev = drm->dev;
+ 	struct nouveau_page_flip_state *s;
+ 	unsigned long flags;
+-	int crtcid = -1;
+ 
+ 	spin_lock_irqsave(&dev->event_lock, flags);
+ 
+@@ -839,15 +838,19 @@ nouveau_finish_page_flip(struct nouveau_channel *chan,
+ 
+ 	s = list_first_entry(&fctx->flip, struct nouveau_page_flip_state, head);
+ 	if (s->event) {
+-		/* Vblank timestamps/counts are only correct on >= NV-50 */
+-		if (drm->device.info.family >= NV_DEVICE_INFO_V0_TESLA)
+-			crtcid = s->crtc;
++		if (drm->device.info.family < NV_DEVICE_INFO_V0_TESLA) {
++			drm_arm_vblank_event(dev, s->crtc, s->event);
++		} else {
++			drm_send_vblank_event(dev, s->crtc, s->event);
+ 
+-		drm_send_vblank_event(dev, crtcid, s->event);
++			/* Give up ownership of vblank for page-flipped crtc */
++			drm_vblank_put(dev, s->crtc);
++		}
++	}
++	else {
++		/* Give up ownership of vblank for page-flipped crtc */
++		drm_vblank_put(dev, s->crtc);
+ 	}
+-
+-	/* Give up ownership of vblank for page-flipped crtc */
+-	drm_vblank_put(dev, s->crtc);
+ 
+ 	list_del(&s->head);
+ 	if (ps)
+diff --git a/include/drm/drmP.h b/include/drm/drmP.h
+index 8b5ce7c5d9bb..c98f01046bd0 100644
+--- a/include/drm/drmP.h
++++ b/include/drm/drmP.h
+@@ -932,6 +932,10 @@ extern void drm_send_vblank_event(struct drm_device *dev, unsigned int pipe,
+ 				  struct drm_pending_vblank_event *e);
+ extern void drm_crtc_send_vblank_event(struct drm_crtc *crtc,
+ 				       struct drm_pending_vblank_event *e);
++extern void drm_arm_vblank_event(struct drm_device *dev, unsigned int pipe,
++				 struct drm_pending_vblank_event *e);
++extern void drm_crtc_arm_vblank_event(struct drm_crtc *crtc,
++				      struct drm_pending_vblank_event *e);
+ extern bool drm_handle_vblank(struct drm_device *dev, unsigned int pipe);
+ extern bool drm_crtc_handle_vblank(struct drm_crtc *crtc);
+ extern int drm_vblank_get(struct drm_device *dev, unsigned int pipe);
+-- 
+2.5.0
+

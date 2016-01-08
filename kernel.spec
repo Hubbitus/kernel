@@ -656,6 +656,9 @@ Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
 #rhbz 1296677
 Patch606: HID-multitouch-Fetch-feature-reports-on-demand-for-W.patch
 
+#rhbz 1281368
+Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2100,6 +2103,7 @@ fi
 # 
 %changelog
 * Fri Jan 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix warnings from pre-nv50 cards (rhbz 1281368)
 - Fix touchpad on Dell XPS 13 9350 (rhbz 1296677)
 
 * Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
