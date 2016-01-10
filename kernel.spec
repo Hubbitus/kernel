@@ -2112,7 +2112,7 @@ fi
 
 * Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
 - CVE-2015-7513 kvm: divide by zero DoS (rhbz 1284847 1296142)
-- Quiet i915 gen8 irq messages
+- Quiet i915 gen8 irq messages (rhbz 1297143)
 
 * Tue Jan 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8709 ptrace: potential priv escalation with userns (rhbz 1295287 1295288)
