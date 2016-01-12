@@ -665,6 +665,9 @@ Patch608: drm-nouveau-pmu-do-not-assume-a-PMU-is-present.patch
 #rhbz 1083853
 Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 
+#CVE-2015-7566 rhbz 1296466 1297517
+Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2109,6 +2112,7 @@ fi
 # 
 %changelog
 * Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7566 usb: visor: Crash on invalid USB dev descriptors (rhbz 1296466 1297517)
 - Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
 
 * Fri Jan 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
