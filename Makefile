@@ -88,6 +88,7 @@ debug:
 	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_ATOMIC_SLEEP is not set/CONFIG_DEBUG_ATOMIC_SLEEP=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DETECT_HUNG_TASK is not set/CONFIG_DETECT_HUNG_TASK=y/' config-nodebug
+	@perl -pi -e 's/# CONFIG_WQ_WATCHDOG is not set/CONFIG_WQ_WATCHDOG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_KMEMLEAK is not set/CONFIG_DEBUG_KMEMLEAK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_X86_DEBUG_STATIC_CPU_HAS is not set/CONFIG_X86_DEBUG_STATIC_CPU_HAS=y/' config-nodebug
