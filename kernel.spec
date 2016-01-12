@@ -624,6 +624,9 @@ Patch620: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
 #rhbz 1295646
 Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 
+#rhbz 1083853
+Patch622: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2067,6 +2070,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
+
 * Mon Jan 11 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-1
 - Linux v4.4
 - Disable debugging options.
