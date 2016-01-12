@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -661,6 +661,9 @@ Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
 
 #rhbz 1296820
 Patch608: drm-nouveau-pmu-do-not-assume-a-PMU-is-present.patch
+
+#rhbz 1083853
+Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2105,6 +2108,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
+
 * Fri Jan 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in nouveau driver for devices that don't have a PMU (rhbz 1296820)
 - Fix warnings from pre-nv50 cards (rhbz 1281368)
