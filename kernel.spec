@@ -627,6 +627,9 @@ Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 #rhbz 1083853
 Patch622: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 
+#CVE-2015-7566 rhbz 1296466 1297517
+Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2071,6 +2074,7 @@ fi
 # 
 %changelog
 * Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7566 usb: visor: Crash on invalid USB dev descriptors (rhbz 1296466 1297517)
 - Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
 
 * Mon Jan 11 2016 Laura Abbott <labbott@redhat.com> - 4.4.0-1
