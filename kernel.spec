@@ -582,7 +582,7 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
-Patch503: drm-i915-turn-off-wc-mmaps.patch
+# Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
@@ -2072,6 +2072,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 12 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- drop i915 patch to turn off wc mmaps
+
 * Tue Jan 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git1.1
 - Linux v4.4-1175-g03891f9
 - Reenable debugging options.
