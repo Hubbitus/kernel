@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -600,29 +600,8 @@ Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
 Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
-#rhbz 1275718
-Patch605: 0001-device-property-always-check-for-fwnode-type.patch
-Patch606: 0002-device-property-rename-helper-functions.patch
-Patch607: 0003-device-property-refactor-built-in-properties-support.patch
-Patch608: 0004-device-property-keep-single-value-inplace.patch
-Patch609: 0005-device-property-helper-macros-for-property-entry-cre.patch
-Patch610: 0006-device-property-improve-readability-of-macros.patch
-Patch611: 0007-device-property-return-EINVAL-when-property-isn-t-fo.patch
-Patch612: 0008-device-property-Fallback-to-secondary-fwnode-if-prim.patch
-Patch613: 0009-device-property-Take-a-copy-of-the-property-set.patch
-Patch614: 0010-driver-core-platform-Add-support-for-built-in-device.patch
-Patch615: 0011-driver-core-Do-not-overwrite-secondary-fwnode-with-N.patch
-Patch616: 0012-mfd-core-propagate-device-properties-to-sub-devices-.patch
-Patch617: 0013-mfd-intel-lpss-Add-support-for-passing-device-proper.patch
-Patch618: 0014-mfd-intel-lpss-Pass-SDA-hold-time-to-I2C-host-contro.patch
-Patch619: 0015-mfd-intel-lpss-Pass-HSUART-configuration-via-propert.patch
-Patch620: 0016-i2c-designware-Convert-to-use-unified-device-propert.patch
-
 #rhbz 1295646
 Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
-
-#rhbz 1083853
-Patch622: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 
 #CVE-2015-7566 rhbz 1296466 1297517
 Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
@@ -2072,6 +2051,9 @@ fi
 #
 # 
 %changelog
+* Wed Jan 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git2.1
+- Linux v4.4-3408-g6799060
+
 * Tue Jan 12 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - drop i915 patch to turn off wc mmaps
 
