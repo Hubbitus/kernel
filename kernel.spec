@@ -2114,7 +2114,7 @@ fi
 #
 # 
 %changelog
-* Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
 - Fix garbled video on some i915 machines (rhbz 1298309)
 
 * Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
