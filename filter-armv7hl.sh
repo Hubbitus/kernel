@@ -13,4 +13,6 @@ driverdirs="atm auxdisplay bcma bluetooth firewire fmc infiniband isdn media mem
 
 ethdrvs="3com adaptec alteon altera amd atheros broadcom cadence chelsio cisco dec dlink emulex icplus mellanox micrel myricom natsemi neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis sun tehuti via wiznet xircom"
 
+drmdrvs="amd armada bridge ast exynos i2c imx mgag200 msm omapdrm panel nouveau radeon rockchip tegra tilcdc via"
+
 singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject target_core_user sbp_target"
