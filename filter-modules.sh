@@ -20,6 +20,8 @@ netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
 ethdrvs="3com adaptec alteon amd atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
 
+inputdrvs="gameport tablet touchscreen"
+
 scsidrvs="aacraid aic7xxx aic94xx be2iscsi bfa bnx2i bnx2fc csiostor cxgbi esas2r fcoe fnic isci libsas lpfc megaraid mpt2sas mpt3sas mvsas pm8001 qla2xxx qla4xxx sym53c8xx_2 ufs"
 
 ttydrvs="ipwireless"
@@ -93,6 +95,12 @@ done
 for scsi in ${scsidrvs}
 do
 	filter_dir $1 drivers/scsi/${scsi}
+done
+
+# Input
+for input in ${inputdrvs}
+do
+	filter_dir $1 drivers/input/${input}
 done
 
 # TTY
