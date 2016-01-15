@@ -671,6 +671,9 @@ Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 #rhbz 1298309
 Patch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
 
+#rhbz 1298996
+Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2114,6 +2117,9 @@ fi
 #
 # 
 %changelog
+* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix block errors on PAE machines (rhbz 1298996)
+
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
 - Fix garbled video on some i915 machines (rhbz 1298309)
 
