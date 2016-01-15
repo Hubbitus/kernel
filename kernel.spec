@@ -668,6 +668,9 @@ Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 #CVE-2015-7566 rhbz 1296466 1297517
 Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 
+#rhbz 1298309
+Patch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2111,6 +2114,9 @@ fi
 #
 # 
 %changelog
+* Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix garbled video on some i915 machines (rhbz 1298309)
+
 * Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-7566 usb: visor: Crash on invalid USB dev descriptors (rhbz 1296466 1297517)
 - Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
