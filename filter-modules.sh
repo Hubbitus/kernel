@@ -24,7 +24,7 @@ scsidrvs="aacraid aic7xxx aic94xx be2iscsi bfa bnx2i bnx2fc csiostor cxgbi esas2
 
 ttydrvs="ipwireless"
 
-usbdrvs="atm wusbcore"
+usbdrvs="atm image misc serial wusbcore"
 
 fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs udf ufs"
 
