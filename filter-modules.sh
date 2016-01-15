@@ -14,7 +14,7 @@
 # listed here.
 
 # Set the default dirs/modules to filter out
-driverdirs="atm auxdisplay bcma bluetooth fmc iio infiniband isdn leds media memstick mfd mmc mtd nfc ntb pcmcia platform power ssb staging uio uwb"
+driverdirs="atm auxdisplay bcma bluetooth firewire fmc iio infiniband isdn leds media memstick mfd mmc mtd mwave nfc ntb pcmcia platform power ssb staging uio uwb w1"
 
 netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
@@ -34,7 +34,7 @@ netprots="appletalk atm ax25 batman-adv bluetooth can dccp dsa ieee802154 irda l
 
 drmdrvs="ast gma500 mgag200 via nouveau"
 
-singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user"
+singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user sbp_target"
 
 # Grab the arch-specific filter list overrides
 source ./filter-$2.sh
