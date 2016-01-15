@@ -11,4 +11,6 @@
 
 driverdirs="atm auxdisplay bcma bluetooth fmc infiniband isdn media memstick message nfc ntb pcmcia platform ssb staging uio uwb"
 
+ethdrvs="3com adaptec alteon altera amd atheros broadcom cadence chelsio cisco dec dlink emulex icplus mellanox micrel myricom natsemi neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis sun tehuti via wiznet xircom"
+
 singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject target_core_user"
