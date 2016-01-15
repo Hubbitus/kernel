@@ -14,7 +14,7 @@
 # listed here.
 
 # Set the default dirs/modules to filter out
-driverdirs="atm auxdisplay bcma bluetooth firewire fmc iio infiniband isdn leds media memstick mfd mmc mtd mwave nfc ntb pcmcia platform power ssb staging uio uwb w1"
+driverdirs="atm auxdisplay bcma bluetooth firewire fmc iio infiniband isdn leds media memstick mfd mmc mtd mwave nfc ntb pcmcia platform power ssb staging tty uio uwb w1"
 
 netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
@@ -23,8 +23,6 @@ ethdrvs="3com adaptec alteon amd atheros broadcom cadence calxeda chelsio cisco 
 inputdrvs="gameport tablet touchscreen"
 
 scsidrvs="aacraid aic7xxx aic94xx be2iscsi bfa bnx2i bnx2fc csiostor cxgbi esas2r fcoe fnic isci libsas lpfc megaraid mpt2sas mpt3sas mvsas pm8001 qla2xxx qla4xxx sym53c8xx_2 ufs"
-
-ttydrvs="ipwireless"
 
 usbdrvs="atm image misc serial wusbcore"
 
@@ -101,12 +99,6 @@ done
 for input in ${inputdrvs}
 do
 	filter_dir $1 drivers/input/${input}
-done
-
-# TTY
-for tty in ${ttydrvs}
-do
-	filter_dir $1 drivers/tty/${tty}
 done
 
 # USB
