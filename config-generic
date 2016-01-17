@@ -5459,7 +5459,8 @@ CONFIG_INPUT_GP2A=m
 
 # CONFIG_INTEL_MENLOW is not set
 CONFIG_ENCLOSURE_SERVICES=m
-CONFIG_IPWIRELESS=m
+# Disable temporarily while I (pbr) work out why this filters properly when build with rpmbuild but not in koji
+# CONFIG_IPWIRELESS is not set
 
 CONFIG_MEMSTICK=m
 # CONFIG_MEMSTICK_DEBUG is not set
