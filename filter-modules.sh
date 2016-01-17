@@ -14,7 +14,9 @@
 # listed here.
 
 # Set the default dirs/modules to filter out
-driverdirs="atm auxdisplay bcma bluetooth firewire fmc iio infiniband isdn leds media memstick mfd mmc mtd mwave nfc ntb pcmcia platform power ssb staging tty uio uwb w1"
+driverdirs="atm auxdisplay bcma bluetooth firewire fmc iio infiniband isdn leds media memstick mfd mmc mtd nfc ntb pcmcia platform power ssb staging tty uio uwb w1"
+
+chardrvs="mwave pcmcia"
 
 netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
@@ -81,6 +83,12 @@ done
 for netdrv in ${netdrvs}
 do
 	filter_dir $1 drivers/net/${netdrv}
+done
+
+# Filter the char drivers
+for char in ${chardrvs}
+do
+	filter_dir $1 drivers/char/${input}
 done
 
 # Filter the ethernet drivers
