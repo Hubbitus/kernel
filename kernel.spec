@@ -674,6 +674,9 @@ Patch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
 #rhbz 1298996
 Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
 
+#rhbz 1298192
+Patch626: selinux-fix-bug-in-conditional-rules-handling.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2117,6 +2120,9 @@ fi
 #
 # 
 %changelog
+* Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix SELinux issue with conditional rules (rhbz 1298192)
+
 * Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix block errors on PAE machines (rhbz 1298996)
 
