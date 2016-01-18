@@ -1,0 +1,101 @@
+From 61feb31b0dfecfd7949e672a54ac7256f4dd2c3d Mon Sep 17 00:00:00 2001
+From: Christophe Le Roy <christophe.fish@gmail.com>
+Date: Fri, 11 Dec 2015 09:13:42 +0100
+Subject: [PATCH] PNP: Add Broadwell to Intel MCH size workaround
+
+Add device ID 0x1604 for Broadwell to commit cb171f7abb9a ("PNP:
+Work around BIOS defects in Intel MCH area reporting").
+
+>From a Lenovo ThinkPad T550:
+
+  system 00:01: [io  0x1800-0x189f] could not be reserved
+  system 00:01: [io  0x0800-0x087f] has been reserved
+  system 00:01: [io  0x0880-0x08ff] has been reserved
+  system 00:01: [io  0x0900-0x097f] has been reserved
+  system 00:01: [io  0x0980-0x09ff] has been reserved
+  system 00:01: [io  0x0a00-0x0a7f] has been reserved
+  system 00:01: [io  0x0a80-0x0aff] has been reserved
+  system 00:01: [io  0x0b00-0x0b7f] has been reserved
+  system 00:01: [io  0x0b80-0x0bff] has been reserved
+  system 00:01: [io  0x15e0-0x15ef] has been reserved
+  system 00:01: [io  0x1600-0x167f] has been reserved
+  system 00:01: [io  0x1640-0x165f] has been reserved
+  system 00:01: [mem 0xf8000000-0xfbffffff] could not be reserved
+  system 00:01: [mem 0xfed1c000-0xfed1ffff] has been reserved
+  system 00:01: [mem 0xfed10000-0xfed13fff] has been reserved
+  system 00:01: [mem 0xfed18000-0xfed18fff] has been reserved
+  system 00:01: [mem 0xfed19000-0xfed19fff] has been reserved
+  system 00:01: [mem 0xfed45000-0xfed4bfff] has been reserved
+  system 00:01: Plug and Play ACPI device, IDs PNP0c02 (active)
+  [...]
+  resource sanity check: requesting [mem 0xfed10000-0xfed15fff], which spans more than pnp 00:01 [mem 0xfed10000-0xfed13fff]
+  ------------[ cut here ]------------
+  WARNING: CPU: 2 PID: 1 at /build/linux-CrHvZ_/linux-4.2.6/arch/x86/mm/ioremap.c:198 __ioremap_caller+0x2ee/0x360()
+  Info: mapping multiple BARs. Your kernel is fine.
+  Modules linked in:
+  CPU: 2 PID: 1 Comm: swapper/0 Not tainted 4.2.0-1-amd64 #1 Debian 4.2.6-1
+  Hardware name: LENOVO 20CKCTO1WW/20CKCTO1WW, BIOS N11ET34W (1.10 ) 08/20/2015
+   0000000000000000 ffffffff817e6868 ffffffff8154e2f6 ffff8802241efbf8
+   ffffffff8106e5b1 ffffc90000e98000 0000000000006000 ffffc90000e98000
+   0000000000006000 0000000000000000 ffffffff8106e62a ffffffff817e68c8
+  Call Trace:
+   [<ffffffff8154e2f6>] ? dump_stack+0x40/0x50
+   [<ffffffff8106e5b1>] ? warn_slowpath_common+0x81/0xb0
+   [<ffffffff8106e62a>] ? warn_slowpath_fmt+0x4a/0x50
+   [<ffffffff810742a3>] ? iomem_map_sanity_check+0xb3/0xc0
+   [<ffffffff8105dade>] ? __ioremap_caller+0x2ee/0x360
+   [<ffffffff81036ae6>] ? snb_uncore_imc_init_box+0x66/0x90
+   [<ffffffff810351a8>] ? uncore_pci_probe+0xc8/0x1a0
+   [<ffffffff81302d7f>] ? local_pci_probe+0x3f/0xa0
+   [<ffffffff81303ea4>] ? pci_device_probe+0xc4/0x110
+   [<ffffffff813d9b1e>] ? driver_probe_device+0x1ee/0x450
+   [<ffffffff813d9dfb>] ? __driver_attach+0x7b/0x80
+   [<ffffffff813d9d80>] ? driver_probe_device+0x450/0x450
+   [<ffffffff813d796a>] ? bus_for_each_dev+0x5a/0x90
+   [<ffffffff813d9091>] ? bus_add_driver+0x1f1/0x290
+   [<ffffffff81b37fa8>] ? uncore_cpu_setup+0xc/0xc
+   [<ffffffff813da73f>] ? driver_register+0x5f/0xe0
+   [<ffffffff81b38074>] ? intel_uncore_init+0xcc/0x2b0
+   [<ffffffff81b37fa8>] ? uncore_cpu_setup+0xc/0xc
+   [<ffffffff8100213e>] ? do_one_initcall+0xce/0x200
+   [<ffffffff8108a100>] ? parse_args+0x140/0x4e0
+   [<ffffffff81b2b0cb>] ? kernel_init_freeable+0x162/0x1e8
+   [<ffffffff815443f0>] ? rest_init+0x80/0x80
+   [<ffffffff815443fe>] ? kernel_init+0xe/0xf0
+   [<ffffffff81553e5f>] ? ret_from_fork+0x3f/0x70
+   [<ffffffff815443f0>] ? rest_init+0x80/0x80
+  ---[ end trace 472e7959536abf12 ]---
+
+  00:00.0 Host bridge: Intel Corporation Broadwell-U Host Bridge -OPI (rev 09)
+          Subsystem: Lenovo Device 2223
+          Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx-
+          Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort+ >SERR- <PERR- INTx-
+          Latency: 0
+          Capabilities: [e0] Vendor Specific Information: Len=0c <?>
+          Kernel driver in use: bdw_uncore
+  00: 86 80 04 16 06 00 90 20 09 00 00 06 00 00 00 00
+  10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+  20: 00 00 00 00 00 00 00 00 00 00 00 00 aa 17 23 22
+  30: 00 00 00 00 e0 00 00 00 00 00 00 00 00 00 00 00
+
+Signed-off-by: Christophe Le Roy <christophe.fish@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/pnp/quirks.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/pnp/quirks.c b/drivers/pnp/quirks.c
+index 943c1cb9566c..f700723ca5d6 100644
+--- a/drivers/pnp/quirks.c
++++ b/drivers/pnp/quirks.c
+@@ -343,6 +343,7 @@ static void quirk_amd_mmconfig_area(struct pnp_dev *dev)
+ static const unsigned int mch_quirk_devices[] = {
+ 	0x0154,	/* Ivy Bridge */
+ 	0x0c00,	/* Haswell */
++	0x1604, /* Broadwell */
+ };
+ 
+ static struct pci_dev *get_intel_host(void)
+-- 
+2.5.0
+
