@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -648,7 +648,7 @@ Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
-Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
+#atch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
 #CVE-2015-7513 rhbz 1284847 1296142
 Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
@@ -669,7 +669,7 @@ Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
 Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 
 #rhbz 1298309
-Patch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
+#atch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
 
 #rhbz 1298996
 Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
@@ -679,6 +679,8 @@ Patch626: selinux-fix-bug-in-conditional-rules-handling.patch
 
 #rhbz 1295272
 Patch627: ideapad-laptop-Add-Lenovo-Yoga-700-to-no_hw_rfkill-d.patch 
+
+Patch628: i915-stable-backports.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2123,7 +2125,8 @@ fi
 #
 # 
 %changelog
-* Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-302
+- Backport stable fixed marked in upstream 4.4
 - Fix rfkill issues on Yoga 700 (rhbz 1295272)
 - Fix SELinux issue with conditional rules (rhbz 1298192)
 
