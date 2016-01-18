@@ -2044,8 +2044,9 @@ fi
 # 
 %changelog
 * Sun Jan 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
-- Minor updates to aarch64/ARMv7/PowerPC
+- Minor updates and cleanups to aarch64/ARMv7/PowerPC
 - ARM: enable nvmem drivers
+- Build usb gadget/OTG on aarch64
 
 * Fri Jan 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git4.1
 - Linux v4.4-5966-g7d1fc01
