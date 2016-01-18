@@ -677,6 +677,9 @@ Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
 #rhbz 1298192
 Patch626: selinux-fix-bug-in-conditional-rules-handling.patch
 
+#rhbz 1295272
+Patch627: ideapad-laptop-Add-Lenovo-Yoga-700-to-no_hw_rfkill-d.patch 
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2121,6 +2124,7 @@ fi
 # 
 %changelog
 * Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix rfkill issues on Yoga 700 (rhbz 1295272)
 - Fix SELinux issue with conditional rules (rhbz 1298192)
 
 * Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
