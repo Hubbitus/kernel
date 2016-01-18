@@ -1,0 +1,69 @@
+From 951660dcf5d09f7040ab1d56817ae952a1076978 Mon Sep 17 00:00:00 2001
+From: Jani Nikula <jani.nikula@intel.com>
+Date: Thu, 7 Jan 2016 10:29:10 +0200
+Subject: [PATCH] drm/i915: shut up gen8+ SDE irq dmesg noise, again
+
+We still keep getting
+
+[    4.249930] [drm:gen8_irq_handler [i915]] *ERROR* The master control interrupt lied (SDE)!
+
+This reverts
+
+commit 820da7ae46332fa709b171eb7ba57cbd023fa6df
+Author: Jani Nikula <jani.nikula@intel.com>
+Date:   Wed Nov 25 16:47:23 2015 +0200
+
+    Revert "drm/i915: shut up gen8+ SDE irq dmesg noise"
+
+which in itself is a revert, so this is just doing
+
+commit 97e5ed1111dcc5300a0f59a55248cd243937a8ab
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri Oct 23 10:56:12 2015 +0200
+
+    drm/i915: shut up gen8+ SDE irq dmesg noise
+
+all over again. I'll stop pretending I understand what's going on like I
+did when I thought I'd fixed this for good in
+
+commit 6a39d7c986be4fd18eb019e9cdbf774ec36c9f77
+Author: Jani Nikula <jani.nikula@intel.com>
+Date:   Wed Nov 25 16:47:22 2015 +0200
+
+    drm/i915: fix the SDE irq dmesg warnings properly
+
+Reported-by: Chris Wilson <chris@chris-wilson.co.uk>
+Reference: http://mid.gmane.org/20151213124945.GA5715@nuc-i3427.alporthouse.com
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=92084
+Cc: drm-intel-fixes@lists.freedesktop.org
+Fixes: 820da7ae4633 ("Revert "drm/i915: shut up gen8+ SDE irq dmesg noise"")
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+
+[Backported to 4.3.y by Josh Boyer <jwboyer@fedoraproject.org>]
+---
+ drivers/gpu/drm/i915/i915_irq.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
+index 39d73dbc1c47..fa7f82d54762 100644
+--- a/drivers/gpu/drm/i915/i915_irq.c
++++ b/drivers/gpu/drm/i915/i915_irq.c
+@@ -2168,8 +2168,13 @@ static irqreturn_t gen8_irq_handler(int irq, void *arg)
+ 			I915_WRITE(SDEIIR, pch_iir);
+ 			ret = IRQ_HANDLED;
+ 			cpt_irq_handler(dev, pch_iir);
+-		} else
+-			DRM_ERROR("The master control interrupt lied (SDE)!\n");
++		} else {
++			/*
++			 * Like on previous PCH there seems to be something
++			 * fishy going on with forwarding PCH interrupts.
++			 */
++			DRM_DEBUG_DRIVER("The master control interrupt lied (SDE)!\n");
++		}
+ 
+ 	}
+ 
+-- 
+2.5.0
+

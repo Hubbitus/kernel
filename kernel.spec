@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -651,6 +651,33 @@ Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
+Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
+
+#CVE-2015-7513 rhbz 1284847 1296142
+Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
+
+#rhbz 1296677
+Patch606: HID-multitouch-Fetch-feature-reports-on-demand-for-W.patch
+
+#rhbz 1281368
+Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
+
+#rhbz 1296820
+Patch608: drm-nouveau-pmu-do-not-assume-a-PMU-is-present.patch
+
+#rhbz 1083853
+Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
+
+#CVE-2015-7566 rhbz 1296466 1297517
+Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
+
+#rhbz 1298309
+Patch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
+
+#rhbz 1298996
+Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
+
+
 ################# Hubbitus patches
 # UKSM
 Patch40001: uksm-0.1.2.4-beta-for-linux-v4.3-Hubbitus.patch
@@ -683,7 +710,6 @@ Patch40005: http://algo.ing.unimo.it/people/paolo/disk_sched/patches/4.3.0-v7r8/
 #? Patch40006: http://tuxonice.nigelcunningham.com.au/downloads/all/tuxonice-for-linux-3.15.2-2014-06-27.patch.bz2
 
 #//////////////// end Hubbitus patches
-
 
 # END OF PATCH DEFINITIONS
 
@@ -2150,6 +2176,25 @@ fi
 # and build.
 #
 %changelog
+* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix block errors on PAE machines (rhbz 1298996)
+
+* Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
+- Fix garbled video on some i915 machines (rhbz 1298309)
+
+* Tue Jan 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-7566 usb: visor: Crash on invalid USB dev descriptors (rhbz 1296466 1297517)
+- Fix backtrace from PNP conflict on Broadwell (rhbz 1083853)
+
+* Fri Jan 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in nouveau driver for devices that don't have a PMU (rhbz 1296820)
+- Fix warnings from pre-nv50 cards (rhbz 1281368)
+- Fix touchpad on Dell XPS 13 9350 (rhbz 1296677)
+
+* Thu Jan 07 2016 Josh Boyer <jwboyer@fedorparoject.org>
+- CVE-2015-7513 kvm: divide by zero DoS (rhbz 1284847 1296142)
+- Quiet i915 gen8 irq messages (rhbz 1297143)
+
 * Thu Jan 07 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-300.hu.1.uksm.bfs.bfq
 - Merge 4.3.3 from Fedora 23.
 
