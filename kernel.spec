@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -589,8 +589,6 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
-
-Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
 #rhbz 1295646
 Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
@@ -2043,6 +2041,9 @@ fi
 #
 # 
 %changelog
+* Mon Jan 18 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git5.1
+- Linux v4.4-8606-g5807fca
+
 * Sun Jan 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor updates and cleanups to aarch64/ARMv7/PowerPC
 - ARM: enable nvmem drivers
