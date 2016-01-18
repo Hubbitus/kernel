@@ -2130,7 +2130,7 @@ fi
 - Fix rfkill issues on Yoga 700 (rhbz 1295272)
 - Fix SELinux issue with conditional rules (rhbz 1298192)
 
-* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Jan 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix block errors on PAE machines (rhbz 1298996)
 
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
