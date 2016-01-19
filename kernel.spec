@@ -2129,7 +2129,7 @@ fi
 #
 # 
 %changelog
-* Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-303
 - Backport nouveau stable fixes (rhbz 1299349)
 - CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623 1297475)
 - Add currently queued networking stable patches
