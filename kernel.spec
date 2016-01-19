@@ -672,6 +672,7 @@ Patch626: selinux-fix-bug-in-conditional-rules-handling.patch
 Patch627: ideapad-laptop-Add-Lenovo-Yoga-700-to-no_hw_rfkill-d.patch 
 
 Patch628: i915-stable-backports.patch
+Patch635: nouveau-stable-backports.patch
 
 #rhbz 1299810
 Patch629: SCSI-refactor-device-matching-code-in-scsi_devinfo.c.patch
@@ -2129,6 +2130,7 @@ fi
 # 
 %changelog
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport nouveau stable fixes (rhbz 1299349)
 - CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623 xxxxxxx)
 - Add currently queued networking stable patches
 - Add a couple btrfs patches cc'd to stable upstream
