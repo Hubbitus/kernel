@@ -682,6 +682,10 @@ Patch627: ideapad-laptop-Add-Lenovo-Yoga-700-to-no_hw_rfkill-d.patch
 
 Patch628: i915-stable-backports.patch
 
+#rhbz 1299810
+Patch629: SCSI-refactor-device-matching-code-in-scsi_devinfo.c.patch
+Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2125,6 +2129,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add SCSI patches to avoid blacklist false positives (rhbz 1299810)
+
 * Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-302
 - Backport stable fixed marked in upstream 4.4
 - Fix rfkill issues on Yoga 700 (rhbz 1295272)
