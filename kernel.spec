@@ -2044,6 +2044,9 @@ fi
 #
 # 
 %changelog
+* Tue Jan 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix boot on TI am33xx/omap devices
+
 * Mon Jan 18 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git5.1
 - Linux v4.4-8606-g5807fca
 
