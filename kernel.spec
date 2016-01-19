@@ -683,7 +683,7 @@ Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
 
 Patch633: net_43.mbox
 
-#CVE-2016-0728 rhbz 1296623 xxxxxxx
+#CVE-2016-0728 rhbz 1296623 1297475
 Patch634: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
 # END OF PATCH DEFINITIONS
@@ -2131,7 +2131,7 @@ fi
 %changelog
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport nouveau stable fixes (rhbz 1299349)
-- CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623 xxxxxxx)
+- CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623 1297475)
 - Add currently queued networking stable patches
 - Add a couple btrfs patches cc'd to stable upstream
 - Add SCSI patches to avoid blacklist false positives (rhbz 1299810)
