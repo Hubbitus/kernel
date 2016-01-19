@@ -634,16 +634,7 @@ Patch574: ovl-fix-permission-checking-for-setattr.patch
 #CVE-2015-7550 rhbz 1291197 1291198
 Patch575: KEYS-Fix-race-between-read-and-revoke.patch
 
-#CVE-2015-8543 rhbz 1290475 1290477
-Patch576: net-add-validation-for-the-socket-syscall-protocol-a.patch
-
-#CVE-2015-8569 rhbz 1292045 1292047
-Patch600: pptp-verify-sockaddr_len-in-pptp_bind-and-pptp_conne.patch
-
 Patch601: vrf-fix-memory-leak-on-registration.patch
-
-#CVE-2015-8575 rhbz 1292840 1292841
-Patch602: bluetooth-Validate-socket-address-length-in-sco_sock.patch
 
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
@@ -688,6 +679,8 @@ Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
 
 Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
 Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
+
+Patch633: net_43.mbox
 
 # END OF PATCH DEFINITIONS
 
@@ -2133,6 +2126,7 @@ fi
 # 
 %changelog
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add currently queued networking stable patches
 - Add a couple btrfs patches cc'd to stable upstream
 - Add SCSI patches to avoid blacklist false positives (rhbz 1299810)
 
