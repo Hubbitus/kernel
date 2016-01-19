@@ -686,6 +686,9 @@ Patch628: i915-stable-backports.patch
 Patch629: SCSI-refactor-device-matching-code-in-scsi_devinfo.c.patch
 Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
 
+Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
+Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2130,6 +2133,7 @@ fi
 # 
 %changelog
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add a couple btrfs patches cc'd to stable upstream
 - Add SCSI patches to avoid blacklist false positives (rhbz 1299810)
 
 * Mon Jan 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-302
