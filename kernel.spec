@@ -596,6 +596,9 @@ Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 #CVE-2015-7566 rhbz 1296466 1297517
 Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 
+# https://patchwork.kernel.org/patch/8055301/
+Patch625: cpupower-Fix-build-error-in-cpufreq-info.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
