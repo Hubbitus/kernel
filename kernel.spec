@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -598,6 +598,9 @@ Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 
 # https://patchwork.kernel.org/patch/8055301/
 Patch625: cpupower-Fix-build-error-in-cpufreq-info.patch
+
+#CVE-2016-0728 rhbz 1296623
+Patch626: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2044,6 +2047,10 @@ fi
 #
 # 
 %changelog
+* Tue Jan 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git6.1
+- Linux v4.4-8855-ga200dcb
+- CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623)
+
 * Tue Jan 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix boot on TI am33xx/omap devices
 
