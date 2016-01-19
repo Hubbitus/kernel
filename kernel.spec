@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 303
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -681,6 +681,9 @@ Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
 Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
 
 Patch633: net_43.mbox
+
+#CVE-2016-0728 rhbz 1296623 xxxxxxx
+Patch634: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2126,6 +2129,7 @@ fi
 # 
 %changelog
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623 xxxxxxx)
 - Add currently queued networking stable patches
 - Add a couple btrfs patches cc'd to stable upstream
 - Add SCSI patches to avoid blacklist false positives (rhbz 1299810)
