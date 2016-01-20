@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -598,9 +598,6 @@ Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 
 # https://patchwork.kernel.org/patch/8055301/
 Patch625: cpupower-Fix-build-error-in-cpufreq-info.patch
-
-#CVE-2016-0728 rhbz 1296623
-Patch626: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
 #CVE-2016-0723 rhbz 1296253 1300224
 Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
@@ -2050,6 +2047,9 @@ fi
 #
 # 
 %changelog
+* Wed Jan 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git7.1
+- Linux v4.4-8950-g2b4015e
+
 * Wed Jan 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-0723 memory disclosure and crash in tty layer (rhbz 1296253 1300224)
 
