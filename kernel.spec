@@ -602,6 +602,9 @@ Patch625: cpupower-Fix-build-error-in-cpufreq-info.patch
 #CVE-2016-0728 rhbz 1296623
 Patch626: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
+#CVE-2016-0723 rhbz 1296253 1300224
+Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2047,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Wed Jan 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-0723 memory disclosure and crash in tty layer (rhbz 1296253 1300224)
+
 * Tue Jan 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git6.1
 - Linux v4.4-8855-ga200dcb
 - CVE-2016-0728 Keys: reference leak in join_session_keyring (rhbz 1296623)
