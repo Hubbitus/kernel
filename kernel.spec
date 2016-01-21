@@ -602,6 +602,9 @@ Patch625: cpupower-Fix-build-error-in-cpufreq-info.patch
 #CVE-2016-0723 rhbz 1296253 1300224
 Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
 
+#rhbz 1279653
+Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2047,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 21 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect country code issue on RTL8812AE devices (rhbz 1279653)
+
 * Wed Jan 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git7.1
 - Linux v4.4-8950-g2b4015e
 
