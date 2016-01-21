@@ -695,6 +695,9 @@ Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
 #rhbz 1279653
 Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
 
+#CVE-XXXX-XXXX rhbz 1300731 1300732
+Patch639: netfilter-nf_nat_redirect-add-missing-NULL-pointer-c.patch 
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2139,6 +2142,7 @@ fi
 # 
 %changelog
 * Thu Jan 21 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-XXXX-XXXX missing null ptr check in nf_nat_redirect_ipv4 (rhbz 1300731 1300732)
 - Fix incorrect country code issue on RTL8812AE devices (rhbz 1279653)
 
 * Wed Jan 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
