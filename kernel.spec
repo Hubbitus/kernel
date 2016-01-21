@@ -692,6 +692,9 @@ Patch636: unix-properly-account-for-FDs-passed-over-unix-socke.patch
 #CVE-2016-0723 rhbz 1296253 1300224
 Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
 
+#rhbz 1279653
+Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2135,6 +2138,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 21 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix incorrect country code issue on RTL8812AE devices (rhbz 1279653)
+
 * Wed Jan 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-0723 memory disclosure and crash in tty layer (rhbz 1296253 1300224)
 - CVE-2013-4312 file descr passed over unix sockects not properly accounted (rhbz 1297813 1300216)
