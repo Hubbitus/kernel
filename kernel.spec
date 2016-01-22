@@ -602,6 +602,9 @@ Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
 #rhbz 1279653
 Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
 
+#rhbz 1300955
+Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2047,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Fri Jan 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix backtrace from PNP conflict on Haswell-ULT (rhbz 1300955)
+
 * Thu Jan 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git8.1
 - Linux v4.4-10062-g30f0530
 
