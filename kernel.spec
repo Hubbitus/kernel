@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -587,9 +587,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
-#CVE-2015-8709 rhbz 1295287 1295288
-Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
-
 #rhbz 1295646
 Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 
@@ -604,6 +601,9 @@ Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
 
 #rhbz 1300955
 Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
+
+#Required for some persistent memory options
+Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2050,6 +2050,9 @@ fi
 #
 # 
 %changelog
+* Fri Jan 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc0.git9.1
+- Linux v4.4-10454-g3e1e21c
+
 * Fri Jan 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix backtrace from PNP conflict on Haswell-ULT (rhbz 1300955)
 
