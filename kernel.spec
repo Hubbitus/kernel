@@ -2176,7 +2176,10 @@ fi
 # and build.
 #
 %changelog
-* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Jan 18 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-301.hu.1.uksm.bfs.bfq
+- Merge Fedora 4.3.3-301
+
+* Sat Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix block errors on PAE machines (rhbz 1298996)
 
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
