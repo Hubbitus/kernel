@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf3
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.3.3 v4.3-pf3: https://pf.natalenko.name/news/?p=111
+#+Hu Pf against 4.3.3 v4.3-pf4: https://pf.natalenko.name/news/?p=139
 %define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -469,7 +469,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.3/patch-4.3-pf3.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.3/patch-4.3-pf4.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -2152,7 +2152,11 @@ fi
 # and build.
 #
 %changelog
-* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon Jan 18 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-301.hu.1.pf4
+- Merge Fedora 4.3.3-301
+- Update to 4.3-pf4 (https://pf.natalenko.name/news/?p=139)
+
+* Sat Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix block errors on PAE machines (rhbz 1298996)
 
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
