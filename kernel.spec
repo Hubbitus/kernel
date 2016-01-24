@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 303
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -631,11 +631,6 @@ Patch572: alua_fix.patch
 #CVE-XXXX-XXXX rhbz 1291329 1291332
 Patch574: ovl-fix-permission-checking-for-setattr.patch
 
-#CVE-2015-7550 rhbz 1291197 1291198
-Patch575: KEYS-Fix-race-between-read-and-revoke.patch
-
-Patch601: vrf-fix-memory-leak-on-registration.patch
-
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
@@ -680,11 +675,6 @@ Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
 
 Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
 Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
-
-Patch633: net_43.mbox
-
-#CVE-2016-0728 rhbz 1296623 1297475
-Patch634: KEYS-Fix-keyring-ref-leak-in-join_session_keyring.patch
 
 #CVE-2013-4312 rhbz 1297813 1300216
 Patch636: unix-properly-account-for-FDs-passed-over-unix-socke.patch
@@ -2144,6 +2134,9 @@ fi
 #
 # 
 %changelog
+* Sat Jan 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
+- Linux v4.3.4
+
 * Fri Jan 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix backtrace from PNP conflict on Haswell-ULT (rhbz 1300955)
 
