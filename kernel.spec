@@ -2203,6 +2203,9 @@ fi
 # and build.
 #
 %changelog
+* Sat Jan 23 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-303.hu.1.uksm.bfs.bfq
+- Merge ~15 Fedora patches.
+
 * Fri Jan 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix backtrace from PNP conflict on Haswell-ULT (rhbz 1300955)
 
@@ -2226,11 +2229,11 @@ fi
 - Fix rfkill issues on Yoga 700 (rhbz 1295272)
 - Fix SELinux issue with conditional rules (rhbz 1298192)
 
-* Fri Jan 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Fix block errors on PAE machines (rhbz 1298996)
-
 * Mon Jan 18 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-301.hu.1.uksm.bfs.bfq
 - Merge Fedora 4.3.3-301
+
+* Fri Jan 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix block errors on PAE machines (rhbz 1298996)
 
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301
 - Fix garbled video on some i915 machines (rhbz 1298309)
