@@ -641,6 +641,7 @@ Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
 
 #rhbz 1296677
 Patch606: HID-multitouch-Fetch-feature-reports-on-demand-for-W.patch
+Patch641: HID-multitouch-fix-input-mode-switching-on-some-Elan.patch
 
 #rhbz 1281368
 Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
@@ -2134,7 +2135,10 @@ fi
 #
 # 
 %changelog
-* Sat Jan 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
+* Mon Jan 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
+- Add patch to fix some Elan touchpads (rhbz 1296677)
+
+* Sat Jan 23 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v4.3.4
 
 * Fri Jan 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
