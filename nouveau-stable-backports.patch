@@ -1,0 +1,105 @@
+From fe9c94340928d8ec3ea1ae74f99c3c9b18684129 Mon Sep 17 00:00:00 2001
+From: Martin Peres <martin.peres@free.fr>
+Date: Sun, 29 Nov 2015 16:10:18 +0200
+Subject: [PATCH 1/3] drm/nouveau/bios/fan: hardcode the fan mode to linear
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+This is an oversight that made use of the trip-point-based fan managenent on
+cards that never expose those. This led the fan to stay at fan_min.
+
+Fortunately, the emergency code would kick when the temperature would reach
+90°C.
+
+Reported-by: Tom Englund <tomenglund26@gmail.com>
+Tested-by: Tom Englund <tomenglund26@gmail.com>
+Signed-off-by: Martin Peres <martin.peres@free.fr>
+Tested-by: Daemon32 <lnf.purple@gmail.com>
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=92126
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/nouveau/nvkm/subdev/bios/fan.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/fan.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/fan.c
+index 43006db6fd58..80fed7e78dcb 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/fan.c
++++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/fan.c
+@@ -83,6 +83,7 @@ nvbios_fan_parse(struct nvkm_bios *bios, struct nvbios_therm_fan *fan)
+ 			fan->type = NVBIOS_THERM_FAN_UNK;
+ 		}
+ 
++		fan->fan_mode = NVBIOS_THERM_FAN_LINEAR;
+ 		fan->min_duty = nvbios_rd08(bios, data + 0x02);
+ 		fan->max_duty = nvbios_rd08(bios, data + 0x03);
+ 
+-- 
+2.5.0
+
+
+From acdc10375119fc5dd76d7051a5ae4a41f61c45aa Mon Sep 17 00:00:00 2001
+From: Ben Skeggs <bskeggs@redhat.com>
+Date: Mon, 4 Jan 2016 09:01:13 +1000
+Subject: [PATCH 2/3] drm/nouveau/gr/nv40: fix oops in interrupt handler
+
+fdo#93557
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c b/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
+index ffa902ece872..05a895496fc6 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/gr/nv40.c
+@@ -156,6 +156,7 @@ nv40_gr_chan_new(struct nvkm_gr *base, struct nvkm_fifo_chan *fifoch,
+ 		return -ENOMEM;
+ 	nvkm_object_ctor(&nv40_gr_chan, oclass, &chan->object);
+ 	chan->gr = gr;
++	chan->fifo = fifoch;
+ 	*pobject = &chan->object;
+ 
+ 	spin_lock_irqsave(&chan->gr->base.engine.lock, flags);
+-- 
+2.5.0
+
+
+From c5d07dcb6d6260a51a2309d5f62c3391637afa86 Mon Sep 17 00:00:00 2001
+From: Ben Skeggs <bskeggs@redhat.com>
+Date: Fri, 8 Jan 2016 08:56:51 +1000
+Subject: [PATCH 3/3] drm/nouveau/kms: take mode_config mutex in connector
+ hotplug path
+
+fdo#93634
+
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/nouveau/nouveau_connector.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_connector.c b/drivers/gpu/drm/nouveau/nouveau_connector.c
+index 2e7cbe933533..2a5ed7460354 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_connector.c
++++ b/drivers/gpu/drm/nouveau/nouveau_connector.c
+@@ -969,10 +969,13 @@ nouveau_connector_hotplug(struct nvif_notify *notify)
+ 
+ 		NV_DEBUG(drm, "%splugged %s\n", plugged ? "" : "un", name);
+ 
++		mutex_lock(&drm->dev->mode_config.mutex);
+ 		if (plugged)
+ 			drm_helper_connector_dpms(connector, DRM_MODE_DPMS_ON);
+ 		else
+ 			drm_helper_connector_dpms(connector, DRM_MODE_DPMS_OFF);
++		mutex_unlock(&drm->dev->mode_config.mutex);
++
+ 		drm_helper_hpd_irq_event(connector->dev);
+ 	}
+ 
+-- 
+2.5.0
+
