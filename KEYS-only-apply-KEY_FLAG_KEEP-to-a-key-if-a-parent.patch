@@ -1,0 +1,51 @@
+From 7707055082a7005ad94ba81e5240644db8c0324a
+From: David Howells <dhowells@redhat.com>
+Date:   Tue Jan 26 16:28:17 2016 +0000
+Subject: [PATCH] KEYS: Only apply KEY_FLAG_KEEP to a key if a parent keyring has it set
+
+    KEY_FLAG_KEEP should only be applied to a key if the keyring it is being
+    linked into has KEY_FLAG_KEEP set.
+    
+    To this end, partially revert the following patch:
+    
+    	commit 1d6d167c2efcfe9539d9cffb1a1be9c92e39c2c0
+    	Author: Mimi Zohar <zohar@linux.vnet.ibm.com>
+    	Date:   Thu Jan 7 07:46:36 2016 -0500
+    	KEYS: refcount bug fix
+    
+    to undo the change that made it unconditional (Mimi got it right the first
+    time).
+    
+    Without undoing this change, it becomes impossible to delete, revoke or
+    invalidate keys added to keyrings through __key_instantiate_and_link()
+    where the keyring has itself been linked to.  To test this, run the
+    following command sequence:
+    
+        keyctl newring foo @s
+        keyctl add user a a %:foo
+        keyctl unlink %user:a %:foo
+        keyctl clear %:foo
+    
+    With the commit mentioned above the third and fourth commands fail with
+    EPERM when they should succeed.
+    
+    Reported-by: Stephen Gallager <sgallagh@redhat.com>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+    cc: Mimi Zohar <zohar@linux.vnet.ibm.com>
+    cc: keyrings@vger.kernel.org
+    cc: stable@vger.kernel.org
+
+diff --git a/security/keys/key.c b/security/keys/key.c
+index 07a87311055c..09ef276c4bdc 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -430,7 +430,8 @@ static int __key_instantiate_and_link(struct key *key,
+ 
+ 			/* and link it into the destination keyring */
+ 			if (keyring) {
+-				set_bit(KEY_FLAG_KEEP, &key->flags);
++				if (test_bit(KEY_FLAG_KEEP, &keyring->flags))
++					set_bit(KEY_FLAG_KEEP, &key->flags);
+ 
+ 				__key_link(key, _edit);
+ 			}

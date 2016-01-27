@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -604,6 +604,9 @@ Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
+
+#rhbz 1301099
+Patch642: KEYS-only-apply-KEY_FLAG_KEEP-to-a-key-if-a-parent.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2050,6 +2053,9 @@ fi
 #
 # 
 %changelog
+* Wed Jan 27 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc1.git0.2
+- Only apply KEY_FLAG_KEEP to a key if a parent keyring has it set (rhbz 1301099)
+
 * Mon Jan 25 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc1.git0.1
 - Disable debugging options.
 - Linux v4.5-rc1
