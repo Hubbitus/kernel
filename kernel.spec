@@ -692,6 +692,10 @@ Patch639: netfilter-nf_nat_redirect-add-missing-NULL-pointer-c.patch
 #rhbz 1300955
 Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 
+#rhbz 1302037
+Patch644: wext-fix-message-delay-ordering.patch
+Patch645: cfg80211-wext-fix-message-ordering.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2135,6 +2139,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix suprious NEWLINK netlink messages (rhbz 1302037)
+
 * Mon Jan 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
 - Add patch to fix some Elan touchpads (rhbz 1296677)
 
