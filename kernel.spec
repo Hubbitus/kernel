@@ -608,6 +608,10 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 #rhbz 1301099
 Patch642: KEYS-only-apply-KEY_FLAG_KEEP-to-a-key-if-a-parent.patch
 
+#rhbz 1302037
+Patch644: wext-fix-message-delay-ordering.patch
+Patch645: cfg80211-wext-fix-message-ordering.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2053,6 +2057,9 @@ fi
 #
 # 
 %changelog
+* Thu Jan 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patches to fix suprious NEWLINK netlink messages (rhbz 1302037)
+
 * Thu Jan 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc1.git1.1
 - Linux v4.5-rc1-28-g03c21cb
 - Reenable debugging options.
