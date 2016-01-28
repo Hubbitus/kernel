@@ -692,6 +692,10 @@ Patch639: netfilter-nf_nat_redirect-add-missing-NULL-pointer-c.patch
 #rhbz 1300955
 Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 
+#rhbz 1278942
+Patch642: media-Revert-media-ivtv-avoid-going-past-input-audio.patch
+Patch643: media-ivtv-avoid-going-past-input-audio-array.patch
+
 #rhbz 1302037
 Patch644: wext-fix-message-delay-ordering.patch
 Patch645: cfg80211-wext-fix-message-ordering.patch
@@ -2140,6 +2144,7 @@ fi
 # 
 %changelog
 * Thu Jan 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix issues with ivtv driver on PVR350 devices (rhbz 1278942)
 - Add patches to fix suprious NEWLINK netlink messages (rhbz 1302037)
 
 * Mon Jan 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
