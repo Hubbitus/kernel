@@ -612,6 +612,9 @@ Patch642: KEYS-only-apply-KEY_FLAG_KEEP-to-a-key-if-a-parent.patch
 Patch644: wext-fix-message-delay-ordering.patch
 Patch645: cfg80211-wext-fix-message-ordering.patch
 
+#rhbz 1255325
+Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2057,6 +2060,9 @@ fi
 #
 # 
 %changelog
+* Fri Jan 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport HID sony patch to fix some gamepads (rhbz 1255235)
+
 * Fri Jan 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc1.git2.1
 - Linux v4.5-rc1-32-g26cd836
 
