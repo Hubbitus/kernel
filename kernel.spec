@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -592,13 +592,6 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#CVE-2015-7799 rhbz 1271134 1271135
-Patch512: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
-Patch513: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
-
-#CVE-2015-8104 rhbz 1278496 1279691
-Patch551: KVM-svm-unconditionally-intercept-DB.patch
-
 #rhbz 1269300
 Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
 
@@ -676,9 +669,6 @@ Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
 
 Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
 Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
-
-#CVE-2013-4312 rhbz 1297813 1300216
-Patch636: unix-properly-account-for-FDs-passed-over-unix-socke.patch
 
 #CVE-2016-0723 rhbz 1296253 1300224
 Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
@@ -2146,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Sun Jan 31 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.5-300
+- Linux v4.3.5
+
 * Fri Jan 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport HID sony patch to fix some gamepads (rhbz 1255235)
 
