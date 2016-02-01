@@ -65,9 +65,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -122,7 +122,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -590,12 +590,6 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1295646
 Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 
-#CVE-2015-7566 rhbz 1296466 1297517
-Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
-
-#CVE-2016-0723 rhbz 1296253 1300224
-Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
-
 #rhbz 1279653
 Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
 
@@ -604,9 +598,6 @@ Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
-
-#rhbz 1301099
-Patch642: KEYS-only-apply-KEY_FLAG_KEEP-to-a-key-if-a-parent.patch
 
 #rhbz 1302037
 Patch644: wext-fix-message-delay-ordering.patch
@@ -2060,6 +2051,10 @@ fi
 #
 # 
 %changelog
+* Mon Feb 01 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc1.git0.1
+- Disable debugging options.
+- Linux v4.5-rc2
+
 * Fri Jan 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport HID sony patch to fix some gamepads (rhbz 1255235)
 
