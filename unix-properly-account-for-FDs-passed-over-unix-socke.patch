@@ -1,8 +1,9 @@
-From 0cd038d23b86853d68993c94f3c713e4375fd61f Mon Sep 17 00:00:00 2001
 From: willy tarreau <w@1wt.eu>
 Date: Sun, 10 Jan 2016 07:54:56 +0100
 Subject: [PATCH] unix: properly account for FDs passed over unix sockets
 
+
+From 0cd038d23b86853d68993c94f3c713e4375fd61f Mon Sep 17 00:00:00 2001
 It is possible for a process to allocate and accumulate far more FDs than
 the process' limit by sending them over a unix socket then closing them
 to keep the process' fd count low.

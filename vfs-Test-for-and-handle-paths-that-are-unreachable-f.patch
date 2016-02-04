@@ -1,9 +1,10 @@
-From 14588dfe2e411056df5ba85ef88ad51730a2fa0a Mon Sep 17 00:00:00 2001
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 Date: Sat, 15 Aug 2015 20:27:13 -0500
 Subject: [PATCH 2/2] vfs: Test for and handle paths that are unreachable from
  their mnt_root
 
+
+From 14588dfe2e411056df5ba85ef88ad51730a2fa0a Mon Sep 17 00:00:00 2001
 commit 397d425dc26da728396e66d392d5dcb8dac30c37 upstream.
 
 In rare cases a directory can be renamed out from under a bind mount.

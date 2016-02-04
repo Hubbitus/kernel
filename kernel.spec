@@ -664,14 +664,12 @@ Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
 #rhbz 1298996
 Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
 
-<<<<<<< HEAD
-
 ################# Hubbitus patches
 # UKSM
 Patch40001: uksm-0.1.2.4-beta-for-linux-v4.3-Hubbitus.patch
 
 # BFS
-Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-465.patch
+Patch40002: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-467.patch
 # My patch to resolve compile problem:
 #+ make -s ARCH=x86_64 V=1 -j3 bzImage
 #In file included from include/linux/srcu.h:33:0,
@@ -2195,6 +2193,10 @@ fi
 # and build.
 #
 %changelog
+* Tue Jan 26 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.4-300.hu.1.uksm.bfs.bfq
+- Merge Fedora step to 4.3.4.
+- Update bfs: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-467.patch
+
 * Mon Jan 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.4-300
 - Add patch to fix some Elan touchpads (rhbz 1296677)
 
@@ -2212,7 +2214,7 @@ fi
 - CVE-2016-0723 memory disclosure and crash in tty layer (rhbz 1296253 1300224)
 - CVE-2013-4312 file descr passed over unix sockects not properly accounted (rhbz 1297813 1300216)
 
-* Mon Jan 18 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-301.hu.1.uksm.bfs.bfq
+* Tue Jan 19 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.3-301.hu.1.uksm.bfs.bfq
 - Merge Fedora 4.3.3-301
 
 * Tue Jan 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-303
@@ -2227,7 +2229,7 @@ fi
 - Fix rfkill issues on Yoga 700 (rhbz 1295272)
 - Fix SELinux issue with conditional rules (rhbz 1298192)
 
-* Fri Jan 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Fri Jan 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix block errors on PAE machines (rhbz 1298996)
 
 * Wed Jan 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.3-301

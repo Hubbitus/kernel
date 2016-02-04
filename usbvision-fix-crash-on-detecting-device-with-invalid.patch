@@ -1,9 +1,10 @@
-From 2ea39fc263c6a7589e15edb7d2d1c89fa569be53 Mon Sep 17 00:00:00 2001
 From: Vladis Dronov <vdronov@redhat.com>
 Date: Mon, 16 Nov 2015 15:55:11 -0200
 Subject: [PATCH] usbvision: fix crash on detecting device with invalid
  configuration
 
+
+From 2ea39fc263c6a7589e15edb7d2d1c89fa569be53 Mon Sep 17 00:00:00 2001
 The usbvision driver crashes when a specially crafted usb device with invalid
 number of interfaces or endpoints is detected. This fix adds checks that the
 device has proper configuration expected by the driver.
