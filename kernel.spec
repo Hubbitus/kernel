@@ -496,10 +496,6 @@ Source5005: kbuild-AFTER_LINK.patch
 
 Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
-Patch452: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
-
-Patch453: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
-
 Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
