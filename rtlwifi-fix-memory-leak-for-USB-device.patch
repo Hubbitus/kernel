@@ -1,0 +1,36 @@
+From 17bc55864f81dd730d05f09b1641312a7990d636 Mon Sep 17 00:00:00 2001
+From: Peter Wu <peter@lekensteyn.nl>
+Date: Mon, 7 Dec 2015 01:07:31 +0100
+Subject: [PATCH] rtlwifi: fix memory leak for USB device
+
+Free skb for received frames with a wrong checksum. This can happen
+pretty rapidly, exhausting all memory.
+
+This fixes a memleak (detected with kmemleak). Originally found while
+using monitor mode, but it also appears during managed mode (once the
+link is up).
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Peter Wu <peter@lekensteyn.nl>
+ACKed-by: Larry Finger <Larry.Finger@lwfinger.net>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+---
+ drivers/net/wireless/rtlwifi/usb.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/net/wireless/rtlwifi/usb.c b/drivers/net/wireless/rtlwifi/usb.c
+index 2721cf8..aac1ed3 100644
+--- a/drivers/net/wireless/rtlwifi/usb.c
++++ b/drivers/net/wireless/rtlwifi/usb.c
+@@ -531,6 +531,8 @@ static void _rtl_usb_rx_process_noagg(struct ieee80211_hw *hw,
+ 			ieee80211_rx(hw, skb);
+ 		else
+ 			dev_kfree_skb_any(skb);
++	} else {
++		dev_kfree_skb_any(skb);
+ 	}
+ }
+ 
+-- 
+2.5.0
+

@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -595,13 +595,6 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#CVE-2015-7799 rhbz 1271134 1271135
-Patch512: isdn_ppp-Add-checks-for-allocation-failure-in-isdn_p.patch
-Patch513: ppp-slip-Validate-VJ-compression-slot-parameters-com.patch
-
-#CVE-2015-8104 rhbz 1278496 1279691
-Patch551: KVM-svm-unconditionally-intercept-DB.patch
-
 #rhbz 1269300
 Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
 
@@ -713,9 +706,6 @@ Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
 Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
 Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
 
-#CVE-2013-4312 rhbz 1297813 1300216
-Patch636: unix-properly-account-for-FDs-passed-over-unix-socke.patch
-
 #CVE-2016-0723 rhbz 1296253 1300224
 Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
 
@@ -727,6 +717,20 @@ Patch639: netfilter-nf_nat_redirect-add-missing-NULL-pointer-c.patch
 
 #rhbz 1300955
 Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
+
+#rhbz 1278942
+Patch642: media-Revert-media-ivtv-avoid-going-past-input-audio.patch
+Patch643: media-ivtv-avoid-going-past-input-audio-array.patch
+
+#rhbz 1302037
+Patch644: wext-fix-message-delay-ordering.patch
+Patch645: cfg80211-wext-fix-message-ordering.patch
+
+#rhbz 1255325
+Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
+
+#rhbz 1303270
+Patch647: rtlwifi-fix-memory-leak-for-USB-device.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2193,6 +2197,22 @@ fi
 # and build.
 #
 %changelog
+* Thu Feb 04 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.5-300.hu.1.uksm.bfs.bfq
+- Merge upstream changes. Update to 4.3.5-300.
+
+* Tue Feb 02 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport patch to fix memory leak in rtlwifi USB devices (rhbz 1303270)
+
+* Sun Jan 31 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.3.5-300
+- Linux v4.3.5
+
+* Fri Jan 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport HID sony patch to fix some gamepads (rhbz 1255235)
+
+* Thu Jan 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix issues with ivtv driver on PVR350 devices (rhbz 1278942)
+- Add patches to fix suprious NEWLINK netlink messages (rhbz 1302037)
+
 * Tue Jan 26 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.3.4-300.hu.1.uksm.bfs.bfq
 - Merge Fedora step to 4.3.4.
 - Update bfs: http://ck.kolivas.org/patches/bfs/4.0/4.3/4.3-sched-bfs-467.patch

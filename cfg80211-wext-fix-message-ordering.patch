@@ -1,0 +1,83 @@
+From cb150b9d23be6ee7f3a0fff29784f1c5b5ac514d Mon Sep 17 00:00:00 2001
+From: Johannes Berg <johannes.berg@intel.com>
+Date: Wed, 27 Jan 2016 13:29:34 +0100
+Subject: cfg80211/wext: fix message ordering
+
+Since cfg80211 frequently takes actions from its netdev notifier
+call, wireless extensions messages could still be ordered badly
+since the wext netdev notifier, since wext is built into the
+kernel, runs before the cfg80211 netdev notifier. For example,
+the following can happen:
+
+5: wlan1: <BROADCAST,MULTICAST> mtu 1500 qdisc mq state DOWN group default
+    link/ether 02:00:00:00:01:00 brd ff:ff:ff:ff:ff:ff
+5: wlan1: <BROADCAST,MULTICAST,UP>
+    link/ether
+
+when setting the interface down causes the wext message.
+
+To also fix this, export the wireless_nlevent_flush() function
+and also call it from the cfg80211 notifier.
+
+Cc: stable@vger.kernel.org
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+---
+ include/net/iw_handler.h | 6 ++++++
+ net/wireless/core.c      | 2 ++
+ net/wireless/wext-core.c | 3 ++-
+ 3 files changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/include/net/iw_handler.h b/include/net/iw_handler.h
+index 8f81bbb..e0f4109 100644
+--- a/include/net/iw_handler.h
++++ b/include/net/iw_handler.h
+@@ -439,6 +439,12 @@ int dev_get_wireless_info(char *buffer, char **start, off_t offset, int length);
+ /* Send a single event to user space */
+ void wireless_send_event(struct net_device *dev, unsigned int cmd,
+ 			 union iwreq_data *wrqu, const char *extra);
++#ifdef CONFIG_WEXT_CORE
++/* flush all previous wext events - if work is done from netdev notifiers */
++void wireless_nlevent_flush(void);
++#else
++static inline void wireless_nlevent_flush(void) {}
++#endif
+ 
+ /* We may need a function to send a stream of events to user space.
+  * More on that later... */
+diff --git a/net/wireless/core.c b/net/wireless/core.c
+index b091551..8f0bac7 100644
+--- a/net/wireless/core.c
++++ b/net/wireless/core.c
+@@ -1147,6 +1147,8 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
+ 		return NOTIFY_DONE;
+ 	}
+ 
++	wireless_nlevent_flush();
++
+ 	return NOTIFY_OK;
+ }
+ 
+diff --git a/net/wireless/wext-core.c b/net/wireless/wext-core.c
+index 87dd619..b50ee5d 100644
+--- a/net/wireless/wext-core.c
++++ b/net/wireless/wext-core.c
+@@ -342,7 +342,7 @@ static const int compat_event_type_size[] = {
+ 
+ /* IW event code */
+ 
+-static void wireless_nlevent_flush(void)
++void wireless_nlevent_flush(void)
+ {
+ 	struct sk_buff *skb;
+ 	struct net *net;
+@@ -355,6 +355,7 @@ static void wireless_nlevent_flush(void)
+ 				    GFP_KERNEL);
+ 	}
+ }
++EXPORT_SYMBOL_GPL(wireless_nlevent_flush);
+ 
+ static int wext_netdev_notifier_call(struct notifier_block *nb,
+ 				     unsigned long state, void *ptr)
+-- 
+cgit v0.12
+
