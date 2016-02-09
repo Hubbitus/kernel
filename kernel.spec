@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2069,6 +2069,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc3.git1.1
+- Linux v4.5-rc3-19-g7cf91ad
+
 * Tue Feb  9 2016 Laura Abbott <labbott@fedoraproject.org>
 - Let 'make prepare' succeed with kernel-devel
 
