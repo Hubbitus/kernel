@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -579,6 +579,8 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
+
+Patch510: 0001-Revert-powerpc-Simplify-module-TOC-handling.patch
 
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
@@ -2041,6 +2043,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb  9 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.0-0.rc3.git0.2
+- Fix Power64 kernel build
+
 * Mon Feb 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc3.git0.1
 - Disable debugging options.
 - Linux v4.5-rc3
