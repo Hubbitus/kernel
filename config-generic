@@ -4800,6 +4800,8 @@ CONFIG_HEADERS_CHECK=y
 # This breaks booting until the module patches are in-tree
 # CONFIG_DEBUG_KOBJECT_RELEASE is not set
 #
+# This just changes a default enable with workqueue.debug_force_rr_cpu
+# CONFIG_DEBUG_WQ_FORCE_RR_CPU is not set
 #
 # These debug options are deliberatly left on (even in 'make release' kernels).
 # They aren't that much of a performance impact, and the value
