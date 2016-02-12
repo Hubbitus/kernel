@@ -598,6 +598,9 @@ Patch645: cfg80211-wext-fix-message-ordering.patch
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
+#rhbz 1288684
+Patch647: 0001-vsock-Fix-blocking-ops-call-in-prepare_to_wait.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2069,6 +2072,9 @@ fi
 #
 # 
 %changelog
+* Fri Feb 12 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix warning spew from vmware sockets (rhbz 1288684)
+
 * Fri Feb 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc3.git3.1
 - Linux v4.5-rc3-83-gc05235d
 
