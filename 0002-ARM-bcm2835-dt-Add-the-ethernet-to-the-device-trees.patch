@@ -1,0 +1,105 @@
+From 60aa7209a0e3194208ae6d58145c28e3c951ca50 Mon Sep 17 00:00:00 2001
+From: Lubomir Rintel <lkundrak@v3.sk>
+Date: Wed, 3 Feb 2016 14:12:54 +0100
+Subject: [PATCH 2/4] ARM: bcm2835: dt: Add the ethernet to the device trees
+
+The hub and the ethernet in its port 1 are hardwired on the board.
+
+Compared to the adapters that can be plugged into the USB ports, this
+one has no serial EEPROM to store its MAC. Nevertheless, the Raspberry Pi
+has the MAC address for this adapter in its ROM, accessible from its
+firmware.
+
+U-Boot can read out the address and set the local-mac-address property of the
+node with "ethernet" alias. Let's add the node so that U-Boot can do its
+business.
+
+Signed-off-by: Lubomir Rintel <lkundrak@v3.sk>
+---
+ arch/arm/boot/dts/bcm2835-rpi-b-plus.dts | 18 ++++++++++++++++++
+ arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts | 18 ++++++++++++++++++
+ arch/arm/boot/dts/bcm283x.dtsi           |  2 ++
+ 3 files changed, 38 insertions(+)
+
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+index 57d313b..160ac85 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+@@ -6,6 +6,10 @@
+ 	compatible = "raspberrypi,model-b-plus", "brcm,bcm2835";
+ 	model = "Raspberry Pi Model B+";
+ 
++	aliases {
++		ethernet = &ethernet;
++	};
++
+ 	leds {
+ 		act {
+ 			gpios = <&gpio 47 0>;
+@@ -33,3 +37,17 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&usb {
++	usb1@01 {
++		compatible = "usb0424,9514";
++		reg = <01>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethernet: usbether@01 {
++			compatible = "usb0424,ec00";
++			reg = <01>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+index cf2774e..081dc56 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+@@ -6,6 +6,10 @@
+ 	compatible = "raspberrypi,model-b-rev2", "brcm,bcm2835";
+ 	model = "Raspberry Pi Model B rev2";
+ 
++	aliases {
++		ethernet = &ethernet;
++	};
++
+ 	leds {
+ 		act {
+ 			gpios = <&gpio 16 1>;
+@@ -26,3 +30,17 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&usb {
++	usb1@01 {
++		compatible = "usb0424,9512";
++		reg = <01>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		ethernet: usbether@01 {
++			compatible = "usb0424,ec00";
++			reg = <01>;
++		};
++	};
++};
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index 31cc2f2..2f1e7de 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -267,6 +267,8 @@
+ 			compatible = "brcm,bcm2835-usb";
+ 			reg = <0x7e980000 0x10000>;
+ 			interrupts = <1 9>;
++			#address-cells = <1>;
++			#size-cells = <0>;
+ 		};
+ 
+ 		v3d: v3d@7ec00000 {
+-- 
+2.5.5
+
