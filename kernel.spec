@@ -657,6 +657,8 @@ Patch702: x86-build-Build-compressed-x86-kernels-as-PIE.patch
 # Follow on for CVE-2016-3156
 Patch703: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
 
+Patch66601: 0001-ARM-bcm2835-dt-Add-Raspberry-Pi-Zero.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2180,6 +2182,7 @@ fi
 %changelog
 * Tue Apr 26 2016 Lubomir Rintel <lkundrak@v3.sk> - 4.5.1-300.pi1
 - Build for bcm2835/rpi
+- Add Raspberry Pi Zero dts
 
 * Tue Apr 26 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Change CONFIG_DW_DMAC to built-in to fix sound on some intel platforms
