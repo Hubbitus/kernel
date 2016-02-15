@@ -19,7 +19,7 @@ noarch:
 	fedpkg -v local --arch=noarch
 
 # 'make local' also needs to build the noarch firmware package
-local: noarch
+local:
 	fedpkg -v local
 
 extremedebug:
