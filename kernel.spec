@@ -705,6 +705,9 @@ Patch649: ALSA-usb-audio-avoid-freeing-umidi-object-twice.patch
 #CVE-2016-2383 rhbz 1308452 1308453
 Patch650: bpf-fix-branch-offset-adjustment-on-backjumps-after-.patch
 
+#rhbz 1306987
+Patch651: Input-elantech-mark-protocols-v2-and-v3-as-semi-mt.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2148,6 +2151,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport fix for elantech touchpads (rhbz 1306987)
+
 * Mon Feb 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-2383 incorrect branch fixups for eBPG allow arbitrary reads (rhbz 1308452 1308453)
 - CVE-2016-2384 double free in usb-audio from invalid USB descriptor (rhbz 1308444 1308445)
