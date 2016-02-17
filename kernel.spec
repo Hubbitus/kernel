@@ -2123,6 +2123,9 @@ fi
 #
 # 
 %changelog
+* Tue Feb 16 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor Aarch64 cleanups
+
 * Mon Feb 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc4.git0.1
 - Disable debugging options.
 - Linux v4.5-rc4
