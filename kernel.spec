@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -707,6 +707,9 @@ Patch650: bpf-fix-branch-offset-adjustment-on-backjumps-after-.patch
 
 #rhbz 1306987
 Patch651: Input-elantech-mark-protocols-v2-and-v3-as-semi-mt.patch
+
+#rhbz 1305181 1299901
+Patch652: drm-mgag200-fix-kernel-hang-in-cursor-code.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2151,6 +2154,9 @@ fi
 #
 # 
 %changelog
+* Wed Feb 17 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Backport mgag200 cursor hang fix (rhbz 1305181 1299901)
+
 * Tue Feb 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport fix for elantech touchpads (rhbz 1306987)
 
