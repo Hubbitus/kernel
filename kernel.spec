@@ -711,6 +711,9 @@ Patch651: Input-elantech-mark-protocols-v2-and-v3-as-semi-mt.patch
 #rhbz 1305181 1299901
 Patch652: drm-mgag200-fix-kernel-hang-in-cursor-code.patch
 
+#CVE-2015-8812 rhbz 1303532 1309548
+Patch653: iw_cxgb3-Fix-incorrectly-returning-error-on-success.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2154,6 +2157,9 @@ fi
 #
 # 
 %changelog
+* Thu Feb 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8812 cxgb3 use after free (rhbz 1303532 1309548)
+
 * Wed Feb 17 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Backport mgag200 cursor hang fix (rhbz 1305181 1299901)
 
