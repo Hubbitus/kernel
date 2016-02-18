@@ -1,3 +1,4 @@
+From ede02df9a481ba07348e6fd4393ba2e273ef16d8 Mon Sep 17 00:00:00 2001
 From: Mark Salter <msalter@redhat.com>
 Date: Wed, 25 Mar 2015 14:17:50 -0400
 Subject: [PATCH] arm64: avoid needing console= to enable serial console
@@ -14,13 +15,13 @@ Signed-off-by: Mark Salter <msalter@redhat.com>
  1 file changed, 19 insertions(+)
 
 diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index f3067d4d4e35..6f8d814c4e5c 100644
+index 8119479..ea9ff80 100644
 --- a/arch/arm64/kernel/setup.c
 +++ b/arch/arm64/kernel/setup.c
-@@ -568,3 +568,22 @@ const struct seq_operations cpuinfo_op = {
- 	.stop	= c_stop,
- 	.show	= c_show
- };
+@@ -381,3 +381,22 @@ static int __init topology_init(void)
+ 	return 0;
+ }
+ subsys_initcall(topology_init);
 +
 +/*
 + * Temporary hack to avoid need for console= on command line
@@ -40,3 +41,6 @@ index f3067d4d4e35..6f8d814c4e5c 100644
 +	return 0;
 +}
 +early_initcall(arm64_console_setup);
+-- 
+2.5.0
+

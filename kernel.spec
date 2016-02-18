@@ -40,19 +40,19 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 3
+%define base_sublevel 4
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -502,15 +502,9 @@ Patch453: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
 
 Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 
-Patch455: usb-make-xhci-platform-driver-use-64-bit-or-32-bit-D.patch
-
 Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
-
-Patch458: ARM-dts-Add-am335x-bonegreen.patch
-
-Patch459: 0001-watchdog-omap_wdt-fix-null-pointer-dereference.patch
 
 Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
 
@@ -592,25 +586,8 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#rhbz 1269300
-Patch552: megaraid_sas-Do-not-use-PAGE_SIZE-for-max_sectors.patch
-
-#rhbz 1275490
-Patch553: ideapad-laptop-Add-Lenovo-Yoga-900-to-no_hw_rfkill-d.patch
-
-#rhbz 1279189
-Patch556: netfilter-ipset-Fix-extension-alignment.patch
-Patch557: netfilter-ipset-Fix-hash-type-expiration.patch
-Patch558: netfilter-ipset-Fix-hash-type-expire-release-empty-h.patch
-
-#rhbz 1284059
-Patch566: KEYS-Fix-handling-of-stored-error-in-a-negatively-in.patch
-
 #CVE-2015-7833 rhbz 1270158 1270160
 Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
-
-#CVE-2015-7515 rhbz 1285326 1285331
-Patch568: Input-aiptek-fix-crash-on-detecting-device-without-e.patch
 
 #rhbz 1287819
 Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
@@ -621,69 +598,18 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1288687
 Patch572: alua_fix.patch
 
-#CVE-XXXX-XXXX rhbz 1291329 1291332
-Patch574: ovl-fix-permission-checking-for-setattr.patch
-
 #CVE-2015-8709 rhbz 1295287 1295288
 Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
 
-#atch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
-
-#CVE-2015-7513 rhbz 1284847 1296142
-Patch605: KVM-x86-Reload-pit-counters-for-all-channels-when-re.patch
-
-#rhbz 1296677
-Patch606: HID-multitouch-Fetch-feature-reports-on-demand-for-W.patch
-Patch641: HID-multitouch-fix-input-mode-switching-on-some-Elan.patch
-
-#rhbz 1281368
-Patch607: drm-nouveau-Fix-pre-nv50-pageflip-events-v4.patch
-
-#rhbz 1296820
-Patch608: drm-nouveau-pmu-do-not-assume-a-PMU-is-present.patch
+Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
 #rhbz 1083853
 Patch610: PNP-Add-Broadwell-to-Intel-MCH-size-workaround.patch
-
-#CVE-2015-7566 rhbz 1296466 1297517
-Patch623: usb-serial-visor-fix-crash-on-detecting-device-witho.patch
-
-#rhbz 1298309
-#atch624: drm-i915-Do-a-better-job-at-disabling-primary-plane-.patch
-
-#rhbz 1298996
-Patch625: block-ensure-to-split-after-potentially-bouncing-a-b.patch
-
-#rhbz 1298192
-Patch626: selinux-fix-bug-in-conditional-rules-handling.patch
-
-#rhbz 1295272
-Patch627: ideapad-laptop-Add-Lenovo-Yoga-700-to-no_hw_rfkill-d.patch 
-
-Patch628: i915-stable-backports.patch
-Patch635: nouveau-stable-backports.patch
-
-#rhbz 1299810
-Patch629: SCSI-refactor-device-matching-code-in-scsi_devinfo.c.patch
-Patch630: SCSI-fix-bug-in-scsi_dev_info_list-matching.patch
-
-Patch631: btrfs-handle-invalid-num_stripes-in-sys_array.patch
-Patch632: Btrfs-fix-fitrim-discarding-device-area-reserved-for.patch
-
-#CVE-2016-0723 rhbz 1296253 1300224
-Patch637: tty-Fix-unsafe-ldisc-reference-via-ioctl-TIOCGETD.patch
-
-#rhbz 1279653
-Patch638: rtlwifi-rtl8821ae-Fix-5G-failure-when-EEPROM-is-inco.patch
-
-#CVE-XXXX-XXXX rhbz 1300731 1300732
-Patch639: netfilter-nf_nat_redirect-add-missing-NULL-pointer-c.patch 
 
 #rhbz 1300955
 Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 
 #rhbz 1278942
-Patch642: media-Revert-media-ivtv-avoid-going-past-input-audio.patch
 Patch643: media-ivtv-avoid-going-past-input-audio-array.patch
 
 #rhbz 1302037
@@ -693,23 +619,14 @@ Patch645: cfg80211-wext-fix-message-ordering.patch
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
-#rhbz 1303270
-Patch647: rtlwifi-fix-memory-leak-for-USB-device.patch
-
 #CVE-2016-0617 rhbz 1305803 1305804
 Patch648: fs-hugetlbfs-inode.c-fix-bugs-in-hugetlb_vmtruncate_.patch
-
-#CVE-2016-2384 rhbz 1308444 1308445
-Patch649: ALSA-usb-audio-avoid-freeing-umidi-object-twice.patch
 
 #CVE-2016-2383 rhbz 1308452 1308453
 Patch650: bpf-fix-branch-offset-adjustment-on-backjumps-after-.patch
 
 #rhbz 1306987
 Patch651: Input-elantech-mark-protocols-v2-and-v3-as-semi-mt.patch
-
-#rhbz 1305181 1299901
-Patch652: drm-mgag200-fix-kernel-hang-in-cursor-code.patch
 
 #CVE-2015-8812 rhbz 1303532 1309548
 Patch653: iw_cxgb3-Fix-incorrectly-returning-error-on-success.patch
@@ -2157,6 +2074,9 @@ fi
 #
 # 
 %changelog
+* Thu Feb 18 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.2-300
+- Linux v4.4.2
+
 * Thu Feb 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2015-8812 cxgb3 use after free (rhbz 1303532 1309548)
 
