@@ -69,6 +69,8 @@ CONFIG_RCU_FANOUT=64
 CONFIG_SPARSE_IRQ=y
 CONFIG_SPARSEMEM_VMEMMAP=y
 
+# CONFIG_ARM64_RANDOMIZE_TEXT_OFFSET is not set
+
 # CONFIG_SYS_HYPERVISOR is not set
 
 CONFIG_EFI=y
@@ -126,21 +128,6 @@ CONFIG_PCI_XGENE=y
 CONFIG_PCI_XGENE_MSI=y
 CONFIG_I2C_XGENE_SLIMPRO=m
 
-# busted build for various reasons
-#  uses pci_* for some reason to allocate DMA buffers
-# CONFIG_DVB_B2C2_FLEXCOP_USB is not set
-#  weird include chain resulting in missing u64 type
-# CONFIG_USB_SPEEDTOUCH is not set
-#  dma issues in headers
-# CONFIG_PARPORT_PC is not set
-# CONFIG_VGA_CONSOLE is not set
-
-# CONFIG_HOTPLUG_PCI_SHPC is not set
-
-# CONFIG_ARM64_RANDOMIZE_TEXT_OFFSET is not set
-
-# CONFIG_PNP_DEBUG_MESSAGES is not set
-
 # AMD Seattle
 CONFIG_NET_SB1000=y
 CONFIG_AMD_XGBE=m
@@ -158,8 +145,6 @@ CONFIG_PCI_HISI=y
 # ThunderX
 # CONFIG_MDIO_OCTEON is not set
 
-# CONFIG_IMX_THERMAL is not set
-
 CONFIG_DMI=y
 CONFIG_DMIID=y
 CONFIG_DMI_SYSFS=y
@@ -171,12 +156,25 @@ CONFIG_BTT=y
 CONFIG_ND_BTT=m
 CONFIG_ND_BLK=m
 
-# CONFIG_SND_SOC is not set
-
 # CONFIG_PMIC_OPREGION is not set
 # CONFIG_DEBUG_RODATA is not set
 
 CONFIG_DEBUG_SECTION_MISMATCH=y
 
+# CONFIG_SND_SOC is not set
+
+# busted build for various reasons
+#  uses pci_* for some reason to allocate DMA buffers
+# CONFIG_DVB_B2C2_FLEXCOP_USB is not set
+#  weird include chain resulting in missing u64 type
+# CONFIG_USB_SPEEDTOUCH is not set
+#  dma issues in headers
+# CONFIG_PARPORT_PC is not set
+# CONFIG_VGA_CONSOLE is not set
+
+# CONFIG_HOTPLUG_PCI_SHPC is not set
+
 # CONFIG_FSL_MC_BUS is not set
 # CONFIG_FUJITSU_ES is not set
+# CONFIG_IMX_THERMAL is not set
+# CONFIG_PNP_DEBUG_MESSAGES is not set

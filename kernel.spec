@@ -496,10 +496,6 @@ Source5005: kbuild-AFTER_LINK.patch
 
 Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
-Patch452: amd-xgbe-a0-Add-support-for-XGBE-on-A0.patch
-
-Patch453: amd-xgbe-phy-a0-Add-support-for-XGBE-PHY-on-A0.patch
-
 Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
@@ -2074,6 +2070,10 @@ fi
 #
 # 
 %changelog
+* Sat Feb 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Drop AMD xgbe-a0 driver (fix aarch64 FTBFS)
+- Minor aarch64 config cleanup
+
 * Thu Feb 18 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.2-300
 - Linux v4.4.2
 
