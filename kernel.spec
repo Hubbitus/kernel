@@ -2072,7 +2072,8 @@ fi
 %changelog
 * Sat Feb 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop AMD xgbe-a0 driver (fix aarch64 FTBFS)
-- Minor aarch64 config cleanup
+- Minor aarch64/ARMv7 config cleanup
+- ARM: enable nvmem drivers
 
 * Thu Feb 18 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.2-300
 - Linux v4.4.2
