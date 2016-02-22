@@ -1,4 +1,4 @@
-From 951660dcf5d09f7040ab1d56817ae952a1076978 Mon Sep 17 00:00:00 2001
+From 41ed5ee704b784a4fca02787311d59c243563013 Mon Sep 17 00:00:00 2001
 From: Jani Nikula <jani.nikula@intel.com>
 Date: Thu, 7 Jan 2016 10:29:10 +0200
 Subject: [PATCH] drm/i915: shut up gen8+ SDE irq dmesg noise, again
@@ -38,22 +38,21 @@ Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=92084
 Cc: drm-intel-fixes@lists.freedesktop.org
 Fixes: 820da7ae4633 ("Revert "drm/i915: shut up gen8+ SDE irq dmesg noise"")
 Signed-off-by: Jani Nikula <jani.nikula@intel.com>
-
-[Backported to 4.3.y by Josh Boyer <jwboyer@fedoraproject.org>]
 ---
- drivers/gpu/drm/i915/i915_irq.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/i915/i915_irq.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/i915_irq.c b/drivers/gpu/drm/i915/i915_irq.c
-index 39d73dbc1c47..fa7f82d54762 100644
+index 0d228f909dcb..0f42a2782afc 100644
 --- a/drivers/gpu/drm/i915/i915_irq.c
 +++ b/drivers/gpu/drm/i915/i915_irq.c
-@@ -2168,8 +2168,13 @@ static irqreturn_t gen8_irq_handler(int irq, void *arg)
- 			I915_WRITE(SDEIIR, pch_iir);
- 			ret = IRQ_HANDLED;
- 			cpt_irq_handler(dev, pch_iir);
+@@ -2354,9 +2354,13 @@ static irqreturn_t gen8_irq_handler(int irq, void *arg)
+ 				spt_irq_handler(dev, pch_iir);
+ 			else
+ 				cpt_irq_handler(dev, pch_iir);
 -		} else
 -			DRM_ERROR("The master control interrupt lied (SDE)!\n");
+-
 +		} else {
 +			/*
 +			 * Like on previous PCH there seems to be something
@@ -61,9 +60,9 @@ index 39d73dbc1c47..fa7f82d54762 100644
 +			 */
 +			DRM_DEBUG_DRIVER("The master control interrupt lied (SDE)!\n");
 +		}
- 
  	}
  
+ 	I915_WRITE_FW(GEN8_MASTER_IRQ, GEN8_MASTER_IRQ_CONTROL);
 -- 
 2.5.0
 
