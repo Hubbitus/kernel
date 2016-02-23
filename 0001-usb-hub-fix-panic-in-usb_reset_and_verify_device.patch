@@ -1,0 +1,30 @@
+From 07197eb61cfabc153846b1ae9d080a5d6c449d12 Mon Sep 17 00:00:00 2001
+From: "Du, Changbin" <changbin.du@intel.com>
+Date: Mon, 22 Feb 2016 10:08:36 +0800
+Subject: [PATCH] usb: hub: fix panic in usb_reset_and_verify_device
+
+Signed-off-by: Du, Changbin <changbin.du@intel.com>
+---
+ drivers/usb/core/hub.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/core/hub.c b/drivers/usb/core/hub.c
+index 350dcd9..045f951 100644
+--- a/drivers/usb/core/hub.c
++++ b/drivers/usb/core/hub.c
+@@ -5501,8 +5501,10 @@ done:
+ 	return 0;
+ 
+ re_enumerate:
+-	usb_release_bos_descriptor(udev);
+-	udev->bos = bos;
++	if (udev->bos != bos) {
++		usb_release_bos_descriptor(udev);
++		udev->bos = bos;
++	}
+ re_enumerate_no_bos:
+ 	/* LPM state doesn't matter when we're about to destroy the device. */
+ 	hub_port_logical_disconnect(parent_hub, port1);
+-- 
+2.5.0
+
