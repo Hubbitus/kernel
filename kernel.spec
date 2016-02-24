@@ -633,6 +633,9 @@ Patch654: 0001-usb-hub-fix-panic-in-usb_reset_and_verify_device.patch
 #rhbz 1310258
 Patch655: iommu-fix.patch
 
+#CVE-2016-2550 rhbz 1311517 1311518
+Patch656: unix-correctly-track-in-flight-fds-in-sending-proces.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2076,6 +2079,9 @@ fi
 #
 # 
 %changelog
+* Wed Feb 24 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-2550 af_unix: incorrect accounting on in-flight fds (rhbz 1311517 1311518)
+
 * Tue Feb 23 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.2-301
 - Fix a known use after free issue in the USB hub code
 - Fix AMD IOMMU warning spew on every boot (rhbz 1310258)
