@@ -502,6 +502,8 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 Patch457: ARM-tegra-usb-no-reset.patch
 
+Patch458: drm-nouveau-platform-Fix-deferred-probe.patch
+
 Patch460: mfd-wm8994-Ensure-that-the-whole-MFD-is-built-into-a.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
@@ -2079,6 +2081,9 @@ fi
 #
 # 
 %changelog
+* Thu Feb 25 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix deferred nouveau module loading on tegra
+
 * Wed Feb 24 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-2550 af_unix: incorrect accounting on in-flight fds (rhbz 1311517 1311518)
 
