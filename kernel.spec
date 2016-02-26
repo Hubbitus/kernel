@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -596,9 +596,6 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #rhbz 1288687
 Patch572: alua_fix.patch
 
-#CVE-2015-8709 rhbz 1295287 1295288
-Patch603: ptrace-being-capable-wrt-a-process-requires-mapped-u.patch
-
 Patch604: drm-i915-shut-up-gen8-SDE-irq-dmesg-noise-again.patch
 
 #rhbz 1083853
@@ -617,14 +614,8 @@ Patch645: cfg80211-wext-fix-message-ordering.patch
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
-#CVE-2016-0617 rhbz 1305803 1305804
-Patch648: fs-hugetlbfs-inode.c-fix-bugs-in-hugetlb_vmtruncate_.patch
-
 #CVE-2016-2383 rhbz 1308452 1308453
 Patch650: bpf-fix-branch-offset-adjustment-on-backjumps-after-.patch
-
-#rhbz 1306987
-Patch651: Input-elantech-mark-protocols-v2-and-v3-as-semi-mt.patch
 
 #CVE-2015-8812 rhbz 1303532 1309548
 Patch653: iw_cxgb3-Fix-incorrectly-returning-error-on-success.patch
@@ -638,6 +629,10 @@ Patch655: iommu-fix.patch
 #CVE-2016-2550 rhbz 1311517 1311518
 Patch656: unix-correctly-track-in-flight-fds-in-sending-proces.patch
 
+#rhbz 1310682
+Patch657: 0001-Test-ata-fix.patch
+
+Patch658: nouveau-displayoff-fix.patch
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2081,6 +2076,11 @@ fi
 #
 # 
 %changelog
+* Fri Feb 26 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.3-300
+- Linux v4.4.3
+- Fix automounting behavior of ATA drives (rhbz 1310682)
+- Fix suspend blacklight blanking behavior
+
 * Thu Feb 25 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix deferred nouveau module loading on tegra
 
