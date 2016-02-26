@@ -605,6 +605,9 @@ Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 #rhbz 1288684
 Patch647: 0001-vsock-Fix-blocking-ops-call-in-prepare_to_wait.patch
 
+#rhbz 1309658
+Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2124,6 +2127,9 @@ fi
 #
 # 
 %changelog
+* Thu Feb 25 2016 Laura Abbott <labbott@fedoraproject.org>
+- Re-enable ZONE_DMA (rhbz 1309658)
+
 * Thu Feb 25 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.0-0.rc5.git0.2
 - Fix tegra nouveau module load (thank kwizart for reference)
 - PowerPC Little Endian ToC fix
