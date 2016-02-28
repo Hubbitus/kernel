@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.2.pf4
+%define buildid .hu.1.pf5
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -469,7 +469,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.3/patch-4.3-pf4.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.4/patch-4.4-pf5.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -2103,8 +2103,9 @@ fi
 # and build.
 #
 %changelog
-* Mon Feb 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.2-300
+* Mon Feb 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.2-300.hu.1.pf5
 - Merge upstream changes. Step to 4.4.2!
+- Update pf patch to v4.4-pf5
 
 * Sat Feb 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Drop AMD xgbe-a0 driver (fix aarch64 FTBFS)
