@@ -1,0 +1,116 @@
+From patchwork Wed Feb 24 17:34:43 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: drm/nouveau: platform: Fix deferred probe
+From: Thierry Reding <thierry.reding@gmail.com>
+X-Patchwork-Id: 587554
+Message-Id: <1456335283-22097-1-git-send-email-thierry.reding@gmail.com>
+To: Ben Skeggs <bskeggs@redhat.com>
+Cc: Alexandre Courbot <gnurou@gmail.com>, Nicolas Chauvet <kwizart@gmail.com>,
+ dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org
+Date: Wed, 24 Feb 2016 18:34:43 +0100
+
+From: Thierry Reding <treding@nvidia.com>
+
+The error cleanup paths aren't quite correct and will crash upon
+deferred probe.
+
+Cc: stable@vger.kernel.org # v4.3+
+Signed-off-by: Thierry Reding <treding@nvidia.com>
+Reviewed-by: Ben Skeggs <bskeggs@redhat.com>
+Reviewed-by: Alexandre Courbot <acourbot@nvidia.com>
+---
+ drivers/gpu/drm/nouveau/nouveau_platform.c         |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c | 40 ++++++++++++++++------
+ 2 files changed, 30 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_platform.c b/drivers/gpu/drm/nouveau/nouveau_platform.c
+index 8a70cec59bcd..2dfe58af12e4 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_platform.c
++++ b/drivers/gpu/drm/nouveau/nouveau_platform.c
+@@ -24,7 +24,7 @@
+ static int nouveau_platform_probe(struct platform_device *pdev)
+ {
+ 	const struct nvkm_device_tegra_func *func;
+-	struct nvkm_device *device;
++	struct nvkm_device *device = NULL;
+ 	struct drm_device *drm;
+ 	int ret;
+ 
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c b/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
+index 7f8a42721eb2..e7e581d6a8ff 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/device/tegra.c
+@@ -252,32 +252,40 @@ nvkm_device_tegra_new(const struct nvkm_device_tegra_func *func,
+ 
+ 	if (!(tdev = kzalloc(sizeof(*tdev), GFP_KERNEL)))
+ 		return -ENOMEM;
+-	*pdevice = &tdev->device;
++
+ 	tdev->func = func;
+ 	tdev->pdev = pdev;
+ 	tdev->irq = -1;
+ 
+ 	tdev->vdd = devm_regulator_get(&pdev->dev, "vdd");
+-	if (IS_ERR(tdev->vdd))
+-		return PTR_ERR(tdev->vdd);
++	if (IS_ERR(tdev->vdd)) {
++		ret = PTR_ERR(tdev->vdd);
++		goto free;
++	}
+ 
+ 	tdev->rst = devm_reset_control_get(&pdev->dev, "gpu");
+-	if (IS_ERR(tdev->rst))
+-		return PTR_ERR(tdev->rst);
++	if (IS_ERR(tdev->rst)) {
++		ret = PTR_ERR(tdev->rst);
++		goto free;
++	}
+ 
+ 	tdev->clk = devm_clk_get(&pdev->dev, "gpu");
+-	if (IS_ERR(tdev->clk))
+-		return PTR_ERR(tdev->clk);
++	if (IS_ERR(tdev->clk)) {
++		ret = PTR_ERR(tdev->clk);
++		goto free;
++	}
+ 
+ 	tdev->clk_pwr = devm_clk_get(&pdev->dev, "pwr");
+-	if (IS_ERR(tdev->clk_pwr))
+-		return PTR_ERR(tdev->clk_pwr);
++	if (IS_ERR(tdev->clk_pwr)) {
++		ret = PTR_ERR(tdev->clk_pwr);
++		goto free;
++	}
+ 
+ 	nvkm_device_tegra_probe_iommu(tdev);
+ 
+ 	ret = nvkm_device_tegra_power_up(tdev);
+ 	if (ret)
+-		return ret;
++		goto remove;
+ 
+ 	tdev->gpu_speedo = tegra_sku_info.gpu_speedo_value;
+ 	ret = nvkm_device_ctor(&nvkm_device_tegra_func, NULL, &pdev->dev,
+@@ -285,9 +293,19 @@ nvkm_device_tegra_new(const struct nvkm_device_tegra_func *func,
+ 			       cfg, dbg, detect, mmio, subdev_mask,
+ 			       &tdev->device);
+ 	if (ret)
+-		return ret;
++		goto powerdown;
++
++	*pdevice = &tdev->device;
+ 
+ 	return 0;
++
++powerdown:
++	nvkm_device_tegra_power_down(tdev);
++remove:
++	nvkm_device_tegra_remove_iommu(tdev);
++free:
++	kfree(tdev);
++	return ret;
+ }
+ #else
+ int
