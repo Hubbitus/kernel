@@ -608,6 +608,9 @@ Patch647: 0001-vsock-Fix-blocking-ops-call-in-prepare_to_wait.patch
 #rhbz 1309658
 Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
 
+#rhbz 1312102
+Patch649: perf-tools-Fix-python-extension-build.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2127,6 +2130,9 @@ fi
 #
 # 
 %changelog
+* Mon Feb 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix erroneously installed .o files in python-perf subpackage (rhbz 1312102)
+
 * Thu Feb 25 2016 Laura Abbott <labbott@fedoraproject.org>
 - Re-enable ZONE_DMA (rhbz 1309658)
 
