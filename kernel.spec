@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -65,7 +65,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 5
+%define rcrev 6
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -506,8 +506,6 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch457: ARM-tegra-usb-no-reset.patch
 
-Patch458: drm-nouveau-platform-Fix-deferred-probe.patch
-
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -601,9 +599,6 @@ Patch645: cfg80211-wext-fix-message-ordering.patch
 
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
-
-#rhbz 1288684
-Patch647: 0001-vsock-Fix-blocking-ops-call-in-prepare_to_wait.patch
 
 #rhbz 1309658
 Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
@@ -2130,6 +2125,9 @@ fi
 #
 # 
 %changelog
+* Mon Feb 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc6.git0.1
+- Linux v4.5-rc6
+
 * Mon Feb 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable DHT11 (rhbz 1312888)
 - Fix erroneously installed .o files in python-perf subpackage (rhbz 1312102)
