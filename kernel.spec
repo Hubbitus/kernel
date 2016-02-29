@@ -2131,6 +2131,7 @@ fi
 # 
 %changelog
 * Mon Feb 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable DHT11 (rhbz 1312888)
 - Fix erroneously installed .o files in python-perf subpackage (rhbz 1312102)
 
 * Thu Feb 25 2016 Laura Abbott <labbott@fedoraproject.org>

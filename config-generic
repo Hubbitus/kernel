@@ -3003,7 +3003,7 @@ CONFIG_ACPI_ALS=m
 # CONFIG_BMG160 is not set
 # CONFIG_ADIS16400 is not set
 # CONFIG_ADIS16480 is not set
-# CONFIG_DHT11 is not set
+CONFIG_DHT11=m
 # CONFIG_MPL3115 is not set
 # CONFIG_MS5611 is not set
 # CONFIG_MPL115 is not set
