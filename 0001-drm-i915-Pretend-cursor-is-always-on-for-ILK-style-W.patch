@@ -1,0 +1,67 @@
+From e2e407dc093f530b771ee8bf8fe1be41e3cea8b3 Mon Sep 17 00:00:00 2001
+From: Matt Roper <matthew.d.roper@intel.com>
+Date: Mon, 8 Feb 2016 11:05:28 -0800
+Subject: [PATCH] drm/i915: Pretend cursor is always on for ILK-style WM
+ calculations (v2)
+
+Due to our lack of two-step watermark programming, our driver has
+historically pretended that the cursor plane is always on for the
+purpose of watermark calculations; this helps avoid serious flickering
+when the cursor turns off/on (e.g., when the user moves the mouse
+pointer to a different screen).  That workaround was accidentally
+dropped as we started working toward atomic watermark updates.  Since we
+still aren't quite there yet with two-stage updates, we need to
+resurrect the workaround and treat the cursor as always active.
+
+v2: Tweak cursor width calculations slightly to more closely match the
+    logic we used before the atomic overhaul began.  (Ville)
+
+Cc: simdev11@outlook.com
+Cc: manfred.kitzbichler@gmail.com
+Cc: drm-intel-fixes@lists.freedesktop.org
+Reported-by: simdev11@outlook.com
+Reported-by: manfred.kitzbichler@gmail.com
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=93892
+Fixes: 43d59eda1 ("drm/i915: Eliminate usage of plane_wm_parameters from ILK-style WM code (v2)")
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1454479611-6804-1-git-send-email-matthew.d.roper@intel.com
+(cherry picked from commit b2435692dbb709d4c8ff3b2f2815c9b8423b72bb)
+Signed-off-by: Jani Nikula <jani.nikula@intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1454958328-30129-1-git-send-email-matthew.d.roper@intel.com
+---
+ drivers/gpu/drm/i915/intel_pm.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index eb5fa05..a234687 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -1783,16 +1783,20 @@ static uint32_t ilk_compute_cur_wm(const struct intel_crtc_state *cstate,
+ 				   const struct intel_plane_state *pstate,
+ 				   uint32_t mem_value)
+ {
+-	int bpp = pstate->base.fb ? pstate->base.fb->bits_per_pixel / 8 : 0;
++	/*
++	 * We treat the cursor plane as always-on for the purposes of watermark
++	 * calculation.  Until we have two-stage watermark programming merged,
++	 * this is necessary to avoid flickering.
++	 */
++	int cpp = 4;
++	int width = pstate->visible ? pstate->base.crtc_w : 64;
+ 
+-	if (!cstate->base.active || !pstate->visible)
++	if (!cstate->base.active)
+ 		return 0;
+ 
+ 	return ilk_wm_method2(ilk_pipe_pixel_rate(cstate),
+ 			      cstate->base.adjusted_mode.crtc_htotal,
+-			      drm_rect_width(&pstate->dst),
+-			      bpp,
+-			      mem_value);
++			      width, cpp, mem_value);
+ }
+ 
+ /* Only for WM_LP. */
+-- 
+2.5.0
+

@@ -637,8 +637,10 @@ Patch658: nouveau-displayoff-fix.patch
 #Mitigates CVE-2013-4312 rhbz 1313428 1313433
 Patch659: pipe-limit-the-per-user-amount-of-pages-allocated-in.patch
 
-# END OF PATCH DEFINITIONS
+#rhbz 1310252 1313318
+Patch660: 0001-drm-i915-Pretend-cursor-is-always-on-for-ILK-style-W.patch
 
+# END OF PATCH DEFINITIONS
 %endif
 
 BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
@@ -2080,6 +2082,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 02 2016 Laura Abbott <labbott@redhat.com>
+- Fix for flickering on Intel graphics (rhbz 1310252 1313318)
+
 * Wed Mar 02 2016 Laura Abbott <labbott@redhat.com>
 - Re-enable dropped CONFIG_ACPI_REV_OVERRIDE_POSSIBLE (rhbz 1313434)
 
