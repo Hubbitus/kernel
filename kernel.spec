@@ -2080,6 +2080,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 02 2016 Laura Abbott <labbott@redhat.com>
+- Re-enable dropped CONFIG_ACPI_REV_OVERRIDE_POSSIBLE (rhbz 1313434)
+
 * Wed Mar 02 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - pipe: limit the per-user amount of pages allocated in pipes (rhbz 1313428 1313433)
 
