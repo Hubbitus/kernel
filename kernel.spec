@@ -640,6 +640,9 @@ Patch659: pipe-limit-the-per-user-amount-of-pages-allocated-in.patch
 #rhbz 1310252 1313318
 Patch660: 0001-drm-i915-Pretend-cursor-is-always-on-for-ILK-style-W.patch
 
+#rhbz 1314253 1314255
+Patch661: x86-entry-compat-Add-missing-CLAC-to-entry_INT80_32.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2082,6 +2085,9 @@ fi
 #
 # 
 %changelog
+* Thu Mar 03 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Partial SMAP bypass on 64-bit kernels (rhbz 1314253 1314255)
+
 * Wed Mar 02 2016 Laura Abbott <labbott@redhat.com>
 - Fix for flickering on Intel graphics (rhbz 1310252 1313318)
 
