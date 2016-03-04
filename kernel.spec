@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -648,6 +648,7 @@ Requires(pre): %{kernel_prereq}\
 Requires(pre): %{initrd_prereq}\
 Requires(pre): linux-firmware >= 20150904-56.git6ebf5d57\
 Requires(preun): systemd >= 200\
+Conflicts: xfsprogs < 4.3.0-1\
 Conflicts: xorg-x11-drv-vmmouse < 13.0.99\
 %{expand:%%{?kernel%{?1:_%{1}}_conflicts:Conflicts: %%{kernel%{?1:_%{1}}_conflicts}}}\
 %{expand:%%{?kernel%{?1:_%{1}}_obsoletes:Obsoletes: %%{kernel%{?1:_%{1}}_obsoletes}}}\
@@ -2067,6 +2068,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 04 2016 Laura Abbott <labbott@redhat.com> -4.4.4-301
+- Require updated XFS utilities
+
 * Thu Mar 03 2016 Laura Abbott <labbott@redhat.com> - 4.4.4-300
 - Linux v4.4.4
 - Switch back to not using CONFIG_ACPI_REV_OVERRIDE_POSSIBLE
