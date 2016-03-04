@@ -2067,8 +2067,9 @@ fi
 #
 # 
 %changelog
-* Thu Mar 03 2016 Laura Abbott <labbott@redhat.com>
+* Thu Mar 03 2016 Laura Abbott <labbott@redhat.com> - 4.4.4-300
 - Linux v4.4.4
+- Switch back to not using CONFIG_ACPI_REV_OVERRIDE_POSSIBLE
 
 * Thu Mar 03 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Partial SMAP bypass on 64-bit kernels (rhbz 1314253 1314255)
