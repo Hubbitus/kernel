@@ -506,6 +506,17 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch457: ARM-tegra-usb-no-reset.patch
 
+Patch458: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
+
+# http://www.spinics.net/lists/arm-kernel/msg480703.html
+Patch459: Geekbox-device-tree-support.patch
+
+# http://www.spinics.net/lists/arm-kernel/msg483898.html
+Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
+
+# http://www.spinics.net/lists/linux-tegra/msg25152.html
+Patch461: Fix-tegra-to-use-stdout-path-for-serial-console.patch
+
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2127,6 +2138,12 @@ fi
 #
 # 
 %changelog
+* Sat Mar  5 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Updates and new SoCs for aarch64 and ARMv7
+- Add aarch64 support for PINE64 and Geekbox devices
+- Fix ethernet naming on Armada 38x devices
+- Serial console fixes for Tegra
+
 * Fri Mar 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc6.git3.1
 - Linux v4.5-rc6-41-ge3c2ef4
 
