@@ -52,12 +52,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-<<<<<<< HEAD
 #+Hu Pf against 4.4.2(?) v4.4-pf5: https://pf.natalenko.name/news/?p=157
 %define stable_update 2
-=======
-%define stable_update 3
->>>>>>> 046b8e241965544e2e53642a573eb5c4c7a517c8
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2113,6 +2109,9 @@ fi
 # and build.
 #
 %changelog
+* Sun Feb 28 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.2-301.hu.1.pf5
+- PF patch stick on 4.4.2 (https://pf.natalenko.name/news/?p=157) yet, but pull all Fedora patches and fixes.
+
 * Fri Feb 26 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.3-300
 - Linux v4.4.3
 - Fix automounting behavior of ATA drives (rhbz 1310682)
