@@ -604,10 +604,6 @@ Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
-#rhbz 1302037
-Patch644: wext-fix-message-delay-ordering.patch
-Patch645: cfg80211-wext-fix-message-ordering.patch
-
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
