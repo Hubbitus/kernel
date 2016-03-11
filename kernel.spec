@@ -613,6 +613,9 @@ Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
 #rhbz 1312102
 Patch649: perf-tools-Fix-python-extension-build.patch
 
+#rhbz 1316136
+Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2134,6 +2137,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for ICP DAS I-756xU devices (rhbz 1316136)
+
 * Thu Mar 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-0.rc7.git3.1
 - Linux v4.5-rc7-215-gf2c1242
 
