@@ -628,6 +628,9 @@ Patch662: 0001-cdc-acm-fix-NULL-pointer-reference.patch
 #rhbz 1316136
 Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 
+#CVE-2016-3135 rhbz 1317386 1317387
+Patch664: netfilter-x_tables-check-for-size-overflow.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2071,6 +2074,9 @@ fi
 #
 # 
 %changelog
+* Mon Mar 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3135 netfilter: size overflow in x_tables (rhbz 1317386 1317387)
+
 * Fri Mar 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch for ICP DAS I-756xU devices (rhbz 1316136)
 
