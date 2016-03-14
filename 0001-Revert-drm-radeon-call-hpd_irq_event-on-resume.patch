@@ -1,0 +1,25 @@
+From b461a1b881b40fa9b75b9b8f54d6f9fefc2f2fef Mon Sep 17 00:00:00 2001
+From: Laura Abbott <labbott@fedoraproject.org>
+Date: Tue, 15 Mar 2016 11:34:47 -0700
+Subject: [PATCH] Revert "drm/radeon: call hpd_irq_event on resume"
+
+This reverts commit b36e52c44ce6728824546d8b5f05b844cede96f1.
+---
+ drivers/gpu/drm/radeon/radeon_device.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon_device.c b/drivers/gpu/drm/radeon/radeon_device.c
+index d690df5..c566993 100644
+--- a/drivers/gpu/drm/radeon/radeon_device.c
++++ b/drivers/gpu/drm/radeon/radeon_device.c
+@@ -1744,7 +1744,6 @@ int radeon_resume_kms(struct drm_device *dev, bool resume, bool fbcon)
+ 	}
+ 
+ 	drm_kms_helper_poll_enable(dev);
+-	drm_helper_hpd_irq_event(dev);
+ 
+ 	/* set the power state here in case we are a PX system or headless */
+ 	if ((rdev->pm.pm_method == PM_METHOD_DPM) && rdev->pm.dpm_enabled)
+-- 
+2.5.0
+

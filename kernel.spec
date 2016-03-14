@@ -637,6 +637,8 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #CVE-2016-3135 rhbz 1318172 1318270
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
+#rhbz 1317300 1317179
+Patch667: 0001-Revert-drm-radeon-call-hpd_irq_event-on-resume.patch
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2080,6 +2082,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 16 2016 Laura Abbott <labbott@redhat.com>
+- Revert patch causing radeon breakage (rhbz 1317300 1317179)
+
 * Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
 
