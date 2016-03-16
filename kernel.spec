@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -603,10 +603,6 @@ Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 #rhbz 1278942
 Patch643: media-ivtv-avoid-going-past-input-audio-array.patch
 
-#rhbz 1302037
-Patch644: wext-fix-message-delay-ordering.patch
-Patch645: cfg80211-wext-fix-message-ordering.patch
-
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
@@ -618,9 +614,6 @@ Patch659: pipe-limit-the-per-user-amount-of-pages-allocated-in.patch
 
 #rhbz 1310252 1313318
 Patch660: 0001-drm-i915-Pretend-cursor-is-always-on-for-ILK-style-W.patch
-
-#Fix for known arm64 breakage. No bugzilla becuase proactivity \o/
-Patch661: 0001-arm64-account-for-sparsemem-section-alignment-when-c.patch
 
 #rhbz 1316719
 Patch662: 0001-cdc-acm-fix-NULL-pointer-reference.patch
@@ -637,8 +630,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #CVE-2016-3135 rhbz 1318172 1318270
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
-#rhbz 1317300 1317179
-Patch667: 0001-Revert-drm-radeon-call-hpd_irq_event-on-resume.patch
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2082,6 +2073,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 16 2016 Laura Abbott <labbott@redhat.com> - 4.4.6-300
+- Linux v4.4.6
+
 * Wed Mar 16 2016 Laura Abbott <labbott@redhat.com>
 - Revert patch causing radeon breakage (rhbz 1317300 1317179)
 
