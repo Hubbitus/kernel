@@ -619,6 +619,9 @@ Patch664: netfilter-x_tables-check-for-size-overflow.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#CVE-2016-3135 rhbz 1318172 1318270
+Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2140,6 +2143,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
+
 * Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git2.1
 - Linux v4.5-760-g710d60cbf1b3
 
