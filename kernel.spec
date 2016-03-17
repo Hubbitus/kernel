@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -621,6 +621,8 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #CVE-2016-3135 rhbz 1318172 1318270
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
+
+Patch667: 0001-Temp-fix-for-intel_pstate-oopses-and-lockdep-report-.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2143,6 +2145,10 @@ fi
 #
 # 
 %changelog
+* Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add temporary patch to fix intel_pstate oops and lockdep report on
+  various atom based CPUs.
+
 * Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git7.1
 - Linux v4.5-2535-g09fd671ccb24
 - fbdev, media, libnvdimm, dm, scsi, ibft merges
