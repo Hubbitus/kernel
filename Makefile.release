@@ -74,7 +74,6 @@ config-release:
 	@perl -pi -e 's/CONFIG_XFS_WARN=y/# CONFIG_XFS_WARN is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_EDAC_DEBUG=y/# CONFIG_EDAC_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_RTLWIFI_DEBUG=y/# CONFIG_RTLWIFI_DEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_X86_DEBUG_STATIC_CPU_HAS=y/# CONFIG_X86_DEBUG_STATIC_CPU_HAS is not set/' config-nodebug
 
 	@# Undo anything that make extremedebug might have set
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-debug
