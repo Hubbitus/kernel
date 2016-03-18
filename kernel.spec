@@ -347,7 +347,7 @@ Summary: The Linux kernel
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, systemd >= 203-2
+%define kernel_prereq  coreutils, systemd >= 203-2
 %define initrd_prereq  dracut >= 027
 
 
@@ -858,7 +858,8 @@ Provides: kernel-devel = %{version}-%{release}%{?1:+%{1}}\
 Provides: kernel-devel-uname-r = %{KVERREL}%{?variant}%{?1:+%{1}}\
 Provides: installonlypkg(kernel)\
 AutoReqProv: no\
-Requires(pre): /usr/bin/find\
+Requires(pre): findutils\
+Requires: findutils\
 Requires: perl\
 %description %{?1:%{1}-}devel\
 This package provides kernel headers and makefiles sufficient to build modules\
@@ -2166,6 +2167,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Change requires to updated package names and correctly Requires findutils
+  in -devel package (rhbz 1319131)
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git10.1
 - Linux v4.5-5842-g9ea446352047
 - staging, rdma merges
