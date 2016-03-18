@@ -649,6 +649,8 @@ Patch676: cdc-acm-more-sanity-checking.patch
 #CVE-2016-3140 rhbz 1317010 1316995
 Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
+Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2171,6 +2173,7 @@ fi
 # 
 %changelog
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- ims-pcu: sanity checking on missing interfaces
 - CVE-2016-3140 digi_acceleport: oops on invalid USB descriptors (rhbz 1317010 1316995)
 - CVE-2016-3138 cdc_acm: oops on invalid USB descriptors (rhbz 1317010 1316204)
 - CVE-2016-2185 ati_remote2: oops on invalid USB descriptors (rhbz 1317014 1317471)
