@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -623,6 +623,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
 Patch667: 0001-Temp-fix-for-intel_pstate-oopses-and-lockdep-report-.patch
+
+#rhbz 1318596
+Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2145,6 +2148,12 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git8.1
+- Linux v4.5-3654-g5cd0911a9e0e
+- Fix oops from tsc subsystem (rhbz 1318596)
+- crypto, security, docs, rproc, dmaengine, powersupply, hsi, vfio, driver-core,
+  tty, char, usb, configfs, ext4, dlm, gfs2, pstore merges
+
 * Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add temporary patch to fix intel_pstate oops and lockdep report on
   various atom based CPUs.
