@@ -634,6 +634,9 @@ Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
 Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
 
+#CVE-2016-3137 rhbz 1317010 1316996
+Patch672: cypress_m8-add-sanity-checking.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2078,6 +2081,7 @@ fi
 # 
 %changelog
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3137 cypress_m8: oops on invalid USB descriptors (rhbz 1317010 1316996)
 - CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
 
 * Wed Mar 16 2016 Laura Abbott <labbott@redhat.com> - 4.4.6-300
