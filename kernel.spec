@@ -625,6 +625,10 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #CVE-2016-3135 rhbz 1318172 1318270
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
+#CVE-2016-2184 rhbz 1317012 1317470
+Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
+Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2146,6 +2150,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
+
 * Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
 
