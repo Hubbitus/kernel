@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,9 +604,6 @@ Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
-#rhbz 1255325
-Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
-
 #rhbz 1309658
 Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
 
@@ -622,7 +619,7 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #CVE-2016-3135 rhbz 1318172 1318270
 Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
-Patch667: 0001-Temp-fix-for-intel_pstate-oopses-and-lockdep-report-.patch
+Patch667: intel_pstate-Do-not-call-wrmsrl_on_cpu-with-disabled.patch
 
 #rhbz 1318596
 Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
@@ -633,9 +630,6 @@ Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
 
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
-
-#CVE-2016-2186 rhbz 1317015 1317464
-Patch673: USB-input-powermate-fix-oops-with-malicious-USB-desc.patch
 
 #CVE-2016-2188 rhbz 1317018 1317467
 Patch674: USB-iowarrior-fix-oops-with-malicious-USB-descriptor.patch
@@ -2172,6 +2166,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git9.1
+- Linux v4.5-4071-g10fdfee7f7fd
+- input, livepatching, trivial, hid, gpio, m68knommu, arm64, selftest merges
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - ims-pcu: sanity checking on missing interfaces
 - CVE-2016-3140 digi_acceleport: oops on invalid USB descriptors (rhbz 1317010 1316995)
