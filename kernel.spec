@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 10
+%define gitrev 11
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -623,10 +623,6 @@ Patch667: intel_pstate-Do-not-call-wrmsrl_on_cpu-with-disabled.patch
 
 #rhbz 1318596
 Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
-
-#CVE-2016-2184 rhbz 1317012 1317470
-Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
-Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
 
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
@@ -2167,6 +2163,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git11.1
+- Linux v4.5-6229-gf7813ad5cbfd
+- ipmi, mfd, sound merges
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Change requires to updated package names and correctly Requires findutils
   in -devel package (rhbz 1319131)
