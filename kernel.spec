@@ -640,6 +640,9 @@ Patch672: cypress_m8-add-sanity-checking.patch
 #CVE-2016-2186 rhbz 1317015 1317464
 Patch673: USB-input-powermate-fix-oops-with-malicious-USB-desc.patch
 
+#CVE-2016-2188 rhbz 1317018 1317467
+Patch674: USB-iowarrior-fix-oops-with-malicious-USB-descriptor.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2084,6 +2087,7 @@ fi
 # 
 %changelog
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-2188 iowarrior: oops on invalid USB descriptors (rhbz 1317018 1317467)
 - CVE-2016-2186 powermate: oops on invalid USB descriptors (rhbz 1317015 1317464)
 - CVE-2016-3137 cypress_m8: oops on invalid USB descriptors (rhbz 1317010 1316996)
 - CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
