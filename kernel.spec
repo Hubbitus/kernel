@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2166,6 +2166,10 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git10.1
+- Linux v4.5-5842-g9ea446352047
+- staging, rdma merges
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git9.1
 - Linux v4.5-4071-g10fdfee7f7fd
 - input, livepatching, trivial, hid, gpio, m68knommu, arm64, selftest merges
