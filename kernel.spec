@@ -649,6 +649,9 @@ Patch675: usb_driver_claim_interface-add-sanity-checking.patch
 #CVE-2016-3138 rhbz 1317010 1316204
 Patch676: cdc-acm-more-sanity-checking.patch
 
+#CVE-2016-3140 rhbz 1317010 1316995
+Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2093,6 +2096,7 @@ fi
 # 
 %changelog
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3140 digi_acceleport: oops on invalid USB descriptors (rhbz 1317010 1316995)
 - CVE-2016-3138 cdc_acm: oops on invalid USB descriptors (rhbz 1317010 1316204)
 - CVE-2016-2185 ati_remote2: oops on invalid USB descriptors (rhbz 1317014 1317471)
 - CVE-2016-2188 iowarrior: oops on invalid USB descriptors (rhbz 1317018 1317467)
