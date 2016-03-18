@@ -627,6 +627,10 @@ Patch667: 0001-Temp-fix-for-intel_pstate-oopses-and-lockdep-report-.patch
 #rhbz 1318596
 Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
 
+#CVE-2016-2184 rhbz 1317012 1317470
+Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
+Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2148,6 +2152,9 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git8.1
 - Linux v4.5-3654-g5cd0911a9e0e
 - Fix oops from tsc subsystem (rhbz 1318596)
