@@ -1,0 +1,2155 @@
+From 59fb5b800868d984e836ab4a38d8ba1598dc675a Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Fri, 18 Mar 2016 19:18:51 +0000
+Subject: [PATCH] bcm283x: add aux uart support, extra DT bits, initial rpi3,
+ VC4 fixes and VC4 DT bindings
+
+---
+ .../devicetree/bindings/arm/bcm/brcm,bcm2835.txt   |   4 +
+ .../bindings/serial/brcm,bcm2835-aux-uart.txt      |  18 +
+ arch/arm/boot/dts/Makefile                         |   4 +-
+ arch/arm/boot/dts/bcm2835-rpi-a-plus.dts           |   4 +
+ arch/arm/boot/dts/bcm2835-rpi-a.dts                |  28 +
+ arch/arm/boot/dts/bcm2835-rpi-b-plus.dts           |   4 +
+ arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts           |   4 +
+ arch/arm/boot/dts/bcm2835-rpi-b.dts                |   4 +
+ arch/arm/boot/dts/bcm2835-rpi.dtsi                 |  25 +
+ arch/arm/boot/dts/bcm2836-rpi-2-b.dts              |   4 +
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts              |  22 +
+ arch/arm/boot/dts/bcm2837.dtsi                     |  68 +++
+ arch/arm/boot/dts/bcm283x.dtsi                     |  90 ++-
+ drivers/clk/bcm/clk-bcm2835.c                      |  12 +-
+ drivers/gpu/drm/vc4/vc4_bo.c                       |   7 +-
+ drivers/gpu/drm/vc4/vc4_crtc.c                     | 134 +++--
+ drivers/gpu/drm/vc4/vc4_drv.h                      |  12 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c                     |  42 +-
+ drivers/gpu/drm/vc4/vc4_hvs.c                      |  97 ++++
+ drivers/gpu/drm/vc4/vc4_kms.c                      |   9 +
+ drivers/gpu/drm/vc4/vc4_plane.c                    | 603 +++++++++++++++++++--
+ drivers/gpu/drm/vc4/vc4_regs.h                     | 120 +++-
+ drivers/gpu/drm/vc4/vc4_v3d.c                      |   1 +
+ drivers/tty/serial/8250/8250_bcm2835aux.c          | 146 +++++
+ drivers/tty/serial/8250/Kconfig                    |  24 +
+ drivers/tty/serial/8250/Makefile                   |   1 +
+ 26 files changed, 1365 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+ create mode 100644 arch/arm/boot/dts/bcm2835-rpi-a.dts
+ create mode 100644 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+ create mode 100644 arch/arm/boot/dts/bcm2837.dtsi
+ create mode 100644 drivers/tty/serial/8250/8250_bcm2835aux.c
+
+diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
+index 11d3056..6ffe087 100644
+--- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
++++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
+@@ -30,6 +30,10 @@ Raspberry Pi 2 Model B
+ Required root node properties:
+ compatible = "raspberrypi,2-model-b", "brcm,bcm2836";
+ 
++Raspberry Pi 3 Model B
++Required root node properties:
++compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
++
+ Raspberry Pi Compute Module
+ Required root node properties:
+ compatible = "raspberrypi,compute-module", "brcm,bcm2835";
+diff --git a/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+new file mode 100644
+index 0000000..b5cc629
+--- /dev/null
++++ b/Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
+@@ -0,0 +1,18 @@
++* BCM2835 AUXILIAR UART
++
++Required properties:
++
++- compatible: "brcm,bcm2835-aux-uart"
++- reg: The base address of the UART register bank.
++- interrupts: A single interrupt specifier.
++- clocks: Clock driving the hardware; used to figure out the baud rate
++  divisor.
++
++Example:
++
++	uart1: serial@7e215040 {
++		compatible = "brcm,bcm2835-aux-uart";
++		reg = <0x7e215040 0x40>;
++		interrupts = <1 29>;
++		clocks = <&aux BCM2835_AUX_CLOCK_UART>;
++	};
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index a4a6d70..a8a0767 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -60,10 +60,12 @@ dtb-$(CONFIG_ARCH_AXXIA) += \
+ 	axm5516-amarillo.dtb
+ dtb-$(CONFIG_ARCH_BCM2835) += \
+ 	bcm2835-rpi-b.dtb \
++	bcm2835-rpi-a.dtb \
+ 	bcm2835-rpi-b-rev2.dtb \
+ 	bcm2835-rpi-b-plus.dtb \
+ 	bcm2835-rpi-a-plus.dtb \
+-	bcm2836-rpi-2-b.dtb
++	bcm2836-rpi-2-b.dtb \
++	bcm2837-rpi-3-b.dtb
+ dtb-$(CONFIG_ARCH_BCM_5301X) += \
+ 	bcm4708-asus-rt-ac56u.dtb \
+ 	bcm4708-asus-rt-ac68u.dtb \
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts b/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
+index 228614f..35ff4e7a 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
+@@ -29,3 +29,7 @@
+ 		brcm,function = <BCM2835_FSEL_ALT0>;
+ 	};
+ };
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-a.dts b/arch/arm/boot/dts/bcm2835-rpi-a.dts
+new file mode 100644
+index 0000000..306a84e
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2835-rpi-a.dts
+@@ -0,0 +1,28 @@
++/dts-v1/;
++#include "bcm2835.dtsi"
++#include "bcm2835-rpi.dtsi"
++
++/ {
++	compatible = "raspberrypi,model-a", "brcm,bcm2835";
++	model = "Raspberry Pi Model A";
++
++	leds {
++		act {
++			gpios = <&gpio 16 1>;
++		};
++	};
++};
++
++&gpio {
++	pinctrl-0 = <&gpioout &alt0 &i2s_alt2 &alt3>;
++
++	/* I2S interface */
++	i2s_alt2: i2s_alt2 {
++		brcm,pins = <28 29 30 31>;
++		brcm,function = <BCM2835_FSEL_ALT2>;
++	};
++};
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+index ef54050..57d313b 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+@@ -29,3 +29,7 @@
+ 		brcm,function = <BCM2835_FSEL_ALT0>;
+ 	};
+ };
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+index 86f1f2f..cf2774e 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+@@ -22,3 +22,7 @@
+ 		brcm,function = <BCM2835_FSEL_ALT2>;
+ 	};
+ };
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b.dts b/arch/arm/boot/dts/bcm2835-rpi-b.dts
+index 4859e9d..8b15f9c 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b.dts
+@@ -16,3 +16,7 @@
+ &gpio {
+ 	pinctrl-0 = <&gpioout &alt0 &alt3>;
+ };
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi.dtsi b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+index 3afb9fe..40510df 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi.dtsi
++++ b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+@@ -1,3 +1,5 @@
++#include <dt-bindings/power/raspberrypi-power.h>
++
+ / {
+ 	memory {
+ 		reg = <0 0x10000000>;
+@@ -18,6 +20,12 @@
+ 			compatible = "raspberrypi,bcm2835-firmware";
+ 			mboxes = <&mailbox>;
+ 		};
++
++		power: power {
++			compatible = "raspberrypi,bcm2835-power";
++			firmware = <&firmware>;
++			#power-domain-cells = <1>;
++		};
+ 	};
+ };
+ 
+@@ -58,3 +66,20 @@
+ 	status = "okay";
+ 	bus-width = <4>;
+ };
++
++&usb {
++	power-domains = <&power RPI_POWER_DOMAIN_USB>;
++};
++
++&pwm {
++	status = "okay";
++};
++
++&v3d {
++	power-domains = <&power RPI_POWER_DOMAIN_V3D>;
++};
++
++&hdmi {
++	power-domains = <&power RPI_POWER_DOMAIN_HDMI>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2836-rpi-2-b.dts b/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
+index ff94666..c4743f4 100644
+--- a/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
++++ b/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
+@@ -33,3 +33,7 @@
+ 		brcm,function = <BCM2835_FSEL_ALT0>;
+ 	};
+ };
++
++&hdmi {
++	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
++};
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+new file mode 100644
+index 0000000..5e8eafd
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -0,0 +1,22 @@
++/dts-v1/;
++#include "bcm2837.dtsi"
++#include "bcm2835-rpi.dtsi"
++
++/ {
++	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
++	model = "Raspberry Pi 3 Model B";
++
++	memory {
++		reg = <0 0x40000000>;
++	};
++};
++
++&gpio {
++	pinctrl-0 = <&gpioout &alt0 &i2s_alt0 &alt3>;
++
++	/* I2S interface */
++	i2s_alt0: i2s_alt0 {
++		brcm,pins = <28 29 30 31>;
++		brcm,function = <BCM2835_FSEL_ALT2>;
++	};
++};
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+new file mode 100644
+index 0000000..2f36722
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -0,0 +1,68 @@
++#include "bcm283x.dtsi"
++
++/ {
++	compatible = "brcm,bcm2836";
++
++	soc {
++		ranges = <0x7e000000 0x3f000000 0x1000000>,
++			 <0x40000000 0x40000000 0x00001000>;
++		dma-ranges = <0xc0000000 0x00000000 0x3f000000>;
++
++		local_intc: local_intc {
++			compatible = "brcm,bcm2836-l1-intc";
++			reg = <0x40000000 0x100>;
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			interrupt-parent = <&local_intc>;
++		};
++	};
++
++	timer {
++		compatible = "arm,armv7-timer";
++		interrupt-parent = <&local_intc>;
++		interrupts = <0>, // PHYS_SECURE_PPI
++			     <1>, // PHYS_NONSECURE_PPI
++			     <3>, // VIRT_PPI
++			     <2>; // HYP_PPI
++		always-on;
++	};
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		cpu0: cpu@0 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <0>;
++		};
++
++		cpu1: cpu@1 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <1>;
++		};
++
++		cpu2: cpu@2 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <2>;
++		};
++
++		cpu3: cpu@3 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <3>;
++		};
++	};
++};
++
++/* Make the BCM2835-style global interrupt controller be a child of the
++ * CPU-local interrupt controller.
++ */
++&intc {
++	compatible = "brcm,bcm2836-armctrl-ic";
++	reg = <0x7e00b200 0x200>;
++	interrupt-parent = <&local_intc>;
++	interrupts = <8>;
++};
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index 971e741..31cc2f2 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -1,5 +1,7 @@
+ #include <dt-bindings/pinctrl/bcm2835.h>
+ #include <dt-bindings/clock/bcm2835.h>
++#include <dt-bindings/clock/bcm2835-aux.h>
++#include <dt-bindings/gpio/gpio.h>
+ #include "skeleton.dtsi"
+ 
+ /* This include file covers the common peripherals and configuration between
+@@ -111,7 +113,7 @@
+ 			#interrupt-cells = <2>;
+ 		};
+ 
+-		uart0: uart@7e201000 {
++		uart0: serial@7e201000 {
+ 			compatible = "brcm,bcm2835-pl011", "arm,pl011", "arm,primecell";
+ 			reg = <0x7e201000 0x1000>;
+ 			interrupts = <2 25>;
+@@ -152,6 +154,18 @@
+ 			status = "disabled";
+ 		};
+ 
++		pixelvalve@7e206000 {
++			compatible = "brcm,bcm2835-pixelvalve0";
++			reg = <0x7e206000 0x100>;
++			interrupts = <2 13>; /* pwa0 */
++		};
++
++		pixelvalve@7e207000 {
++			compatible = "brcm,bcm2835-pixelvalve1";
++			reg = <0x7e207000 0x100>;
++			interrupts = <2 14>; /* pwa1 */
++		};
++
+ 		aux: aux@0x7e215000 {
+ 			compatible = "brcm,bcm2835-aux";
+ 			#clock-cells = <1>;
+@@ -159,6 +173,44 @@
+ 			clocks = <&clocks BCM2835_CLOCK_VPU>;
+ 		};
+ 
++		uart1: serial@7e215040 {
++			compatible = "brcm,bcm2835-aux-uart";
++			reg = <0x7e215040 0x40>;
++			interrupts = <1 29>;
++			clocks = <&aux BCM2835_AUX_CLOCK_UART>;
++			status = "disabled";
++		};
++
++		spi1: spi@7e215080 {
++			compatible = "brcm,bcm2835-aux-spi";
++			reg = <0x7e215080 0x40>;
++			interrupts = <1 29>;
++			clocks = <&aux BCM2835_AUX_CLOCK_SPI1>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
++		spi2: spi@7e2150c0 {
++			compatible = "brcm,bcm2835-aux-spi";
++			reg = <0x7e2150c0 0x40>;
++			interrupts = <1 29>;
++			clocks = <&aux BCM2835_AUX_CLOCK_SPI2>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++		};
++
++		pwm: pwm@7e20c000 {
++			compatible = "brcm,bcm2835-pwm";
++			reg = <0x7e20c000 0x28>;
++			clocks = <&clocks BCM2835_CLOCK_PWM>;
++			assigned-clocks = <&clocks BCM2835_CLOCK_PWM>;
++			assigned-clock-rates = <10000000>;
++			#pwm-cells = <2>;
++			status = "disabled";
++		};
++
+ 		sdhci: sdhci@7e300000 {
+ 			compatible = "brcm,bcm2835-sdhci";
+ 			reg = <0x7e300000 0x100>;
+@@ -167,6 +219,12 @@
+ 			status = "disabled";
+ 		};
+ 
++		hvs@7e400000 {
++			compatible = "brcm,bcm2835-hvs";
++			reg = <0x7e400000 0x6000>;
++			interrupts = <2 1>;
++		};
++
+ 		i2c1: i2c@7e804000 {
+ 			compatible = "brcm,bcm2835-i2c";
+ 			reg = <0x7e804000 0x1000>;
+@@ -187,11 +245,39 @@
+ 			status = "disabled";
+ 		};
+ 
+-		usb@7e980000 {
++		pixelvalve@7e807000 {
++			compatible = "brcm,bcm2835-pixelvalve2";
++			reg = <0x7e807000 0x100>;
++			interrupts = <2 10>; /* pixelvalve */
++		};
++
++		hdmi: hdmi@7e902000 {
++			compatible = "brcm,bcm2835-hdmi";
++			reg = <0x7e902000 0x600>,
++			      <0x7e808000 0x100>;
++			interrupts = <2 8>, <2 9>;
++			ddc = <&i2c2>;
++			clocks = <&clocks BCM2835_PLLH_PIX>,
++				 <&clocks BCM2835_CLOCK_HSM>;
++			clock-names = "pixel", "hdmi";
++			status = "disabled";
++		};
++
++		usb: usb@7e980000 {
+ 			compatible = "brcm,bcm2835-usb";
+ 			reg = <0x7e980000 0x10000>;
+ 			interrupts = <1 9>;
+ 		};
++
++		v3d: v3d@7ec00000 {
++			compatible = "brcm,bcm2835-v3d";
++			reg = <0x7ec00000 0x1000>;
++			interrupts = <1 10>;
++		};
++
++		vc4: gpu {
++			compatible = "brcm,bcm2835-vc4";
++		};
+ 	};
+ 
+ 	clocks {
+diff --git a/drivers/clk/bcm/clk-bcm2835.c b/drivers/clk/bcm/clk-bcm2835.c
+index 015e687..9f4df8f 100644
+--- a/drivers/clk/bcm/clk-bcm2835.c
++++ b/drivers/clk/bcm/clk-bcm2835.c
+@@ -1107,13 +1107,15 @@ static int bcm2835_pll_divider_set_rate(struct clk_hw *hw,
+ 	struct bcm2835_pll_divider *divider = bcm2835_pll_divider_from_hw(hw);
+ 	struct bcm2835_cprman *cprman = divider->cprman;
+ 	const struct bcm2835_pll_divider_data *data = divider->data;
+-	u32 cm;
+-	int ret;
++	u32 cm, div, max_div = 1 << A2W_PLL_DIV_BITS;
+ 
+-	ret = clk_divider_ops.set_rate(hw, rate, parent_rate);
+-	if (ret)
+-		return ret;
++	div = DIV_ROUND_UP_ULL(parent_rate, rate);
++
++	div = min(div, max_div);
++	if (div == max_div)
++		div = 0;
+ 
++	cprman_write(cprman, data->a2w_reg, div);
+ 	cm = cprman_read(cprman, data->cm_reg);
+ 	cprman_write(cprman, data->cm_reg, cm | data->load_mask);
+ 	cprman_write(cprman, data->cm_reg, cm & ~data->load_mask);
+diff --git a/drivers/gpu/drm/vc4/vc4_bo.c b/drivers/gpu/drm/vc4/vc4_bo.c
+index 22278bc..ac8eafe 100644
+--- a/drivers/gpu/drm/vc4/vc4_bo.c
++++ b/drivers/gpu/drm/vc4/vc4_bo.c
+@@ -499,11 +499,12 @@ vc4_create_shader_bo_ioctl(struct drm_device *dev, void *data,
+ 	if (IS_ERR(bo))
+ 		return PTR_ERR(bo);
+ 
+-	ret = copy_from_user(bo->base.vaddr,
++	if (copy_from_user(bo->base.vaddr,
+ 			     (void __user *)(uintptr_t)args->data,
+-			     args->size);
+-	if (ret != 0)
++			     args->size)) {
++		ret = -EFAULT;
+ 		goto fail;
++	}
+ 	/* Clear the rest of the memory from allocating from the BO
+ 	 * cache.
+ 	 */
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index 018145e..9032c06 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -49,22 +49,27 @@ struct vc4_crtc {
+ 	/* Which HVS channel we're using for our CRTC. */
+ 	int channel;
+ 
+-	/* Pointer to the actual hardware display list memory for the
+-	 * crtc.
+-	 */
+-	u32 __iomem *dlist;
+-
+-	u32 dlist_size; /* in dwords */
+-
+ 	struct drm_pending_vblank_event *event;
+ };
+ 
++struct vc4_crtc_state {
++	struct drm_crtc_state base;
++	/* Dlist area for this CRTC configuration. */
++	struct drm_mm_node mm;
++};
++
+ static inline struct vc4_crtc *
+ to_vc4_crtc(struct drm_crtc *crtc)
+ {
+ 	return (struct vc4_crtc *)crtc;
+ }
+ 
++static inline struct vc4_crtc_state *
++to_vc4_crtc_state(struct drm_crtc_state *crtc_state)
++{
++	return (struct vc4_crtc_state *)crtc_state;
++}
++
+ struct vc4_crtc_data {
+ 	/* Which channel of the HVS this pixelvalve sources from. */
+ 	int hvs_channel;
+@@ -83,7 +88,7 @@ static const struct {
+ } crtc_regs[] = {
+ 	CRTC_REG(PV_CONTROL),
+ 	CRTC_REG(PV_V_CONTROL),
+-	CRTC_REG(PV_VSYNCD),
++	CRTC_REG(PV_VSYNCD_EVEN),
+ 	CRTC_REG(PV_HORZA),
+ 	CRTC_REG(PV_HORZB),
+ 	CRTC_REG(PV_VERTA),
+@@ -183,6 +188,8 @@ static int vc4_get_clock_select(struct drm_crtc *crtc)
+ 
+ static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ {
++	struct drm_device *dev = crtc->dev;
++	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
+ 	struct drm_crtc_state *state = crtc->state;
+ 	struct drm_display_mode *mode = &state->adjusted_mode;
+@@ -212,6 +219,16 @@ static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 				 PV_HORZB_HFP) |
+ 		   VC4_SET_FIELD(mode->hdisplay, PV_HORZB_HACTIVE));
+ 
++	CRTC_WRITE(PV_VERTA,
++		   VC4_SET_FIELD(mode->vtotal - mode->vsync_end,
++				 PV_VERTA_VBP) |
++		   VC4_SET_FIELD(mode->vsync_end - mode->vsync_start,
++				 PV_VERTA_VSYNC));
++	CRTC_WRITE(PV_VERTB,
++		   VC4_SET_FIELD(mode->vsync_start - mode->vdisplay,
++				 PV_VERTB_VFP) |
++		   VC4_SET_FIELD(vactive, PV_VERTB_VACTIVE));
++
+ 	if (interlace) {
+ 		CRTC_WRITE(PV_VERTA_EVEN,
+ 			   VC4_SET_FIELD(mode->vtotal - mode->vsync_end - 1,
+@@ -241,6 +258,10 @@ static void vc4_crtc_mode_set_nofb(struct drm_crtc *crtc)
+ 		   PV_CONTROL_FIFO_CLR |
+ 		   PV_CONTROL_EN);
+ 
++	HVS_WRITE(SCALER_DISPBKGNDX(vc4_crtc->channel),
++		  SCALER_DISPBKGND_AUTOHS |
++		  (interlace ? SCALER_DISPBKGND_INTERLACE : 0));
++
+ 	if (debug_dump_regs) {
+ 		DRM_INFO("CRTC %d regs after:\n", drm_crtc_index(crtc));
+ 		vc4_crtc_dump_regs(vc4_crtc);
+@@ -319,11 +340,13 @@ static void vc4_crtc_enable(struct drm_crtc *crtc)
+ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
+ 				 struct drm_crtc_state *state)
+ {
++	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(state);
+ 	struct drm_device *dev = crtc->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	struct drm_plane *plane;
+-	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
++	unsigned long flags;
+ 	u32 dlist_count = 0;
++	int ret;
+ 
+ 	/* The pixelvalve can only feed one encoder (and encoders are
+ 	 * 1:1 with connectors.)
+@@ -346,18 +369,12 @@ static int vc4_crtc_atomic_check(struct drm_crtc *crtc,
+ 
+ 	dlist_count++; /* Account for SCALER_CTL0_END. */
+ 
+-	if (!vc4_crtc->dlist || dlist_count > vc4_crtc->dlist_size) {
+-		vc4_crtc->dlist = ((u32 __iomem *)vc4->hvs->dlist +
+-				   HVS_BOOTLOADER_DLIST_END);
+-		vc4_crtc->dlist_size = ((SCALER_DLIST_SIZE >> 2) -
+-					HVS_BOOTLOADER_DLIST_END);
+-
+-		if (dlist_count > vc4_crtc->dlist_size) {
+-			DRM_DEBUG_KMS("dlist too large for CRTC (%d > %d).\n",
+-				      dlist_count, vc4_crtc->dlist_size);
+-			return -EINVAL;
+-		}
+-	}
++	spin_lock_irqsave(&vc4->hvs->mm_lock, flags);
++	ret = drm_mm_insert_node(&vc4->hvs->dlist_mm, &vc4_state->mm,
++				 dlist_count, 1, 0);
++	spin_unlock_irqrestore(&vc4->hvs->mm_lock, flags);
++	if (ret)
++		return ret;
+ 
+ 	return 0;
+ }
+@@ -368,47 +385,29 @@ static void vc4_crtc_atomic_flush(struct drm_crtc *crtc,
+ 	struct drm_device *dev = crtc->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
++	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc->state);
+ 	struct drm_plane *plane;
+ 	bool debug_dump_regs = false;
+-	u32 __iomem *dlist_next = vc4_crtc->dlist;
++	u32 __iomem *dlist_start = vc4->hvs->dlist + vc4_state->mm.start;
++	u32 __iomem *dlist_next = dlist_start;
+ 
+ 	if (debug_dump_regs) {
+ 		DRM_INFO("CRTC %d HVS before:\n", drm_crtc_index(crtc));
+ 		vc4_hvs_dump_state(dev);
+ 	}
+ 
+-	/* Copy all the active planes' dlist contents to the hardware dlist.
+-	 *
+-	 * XXX: If the new display list was large enough that it
+-	 * overlapped a currently-read display list, we need to do
+-	 * something like disable scanout before putting in the new
+-	 * list.  For now, we're safe because we only have the two
+-	 * planes.
+-	 */
++	/* Copy all the active planes' dlist contents to the hardware dlist. */
+ 	drm_atomic_crtc_for_each_plane(plane, crtc) {
+ 		dlist_next += vc4_plane_write_dlist(plane, dlist_next);
+ 	}
+ 
+-	if (dlist_next == vc4_crtc->dlist) {
+-		/* If no planes were enabled, use the SCALER_CTL0_END
+-		 * at the start of the display list memory (in the
+-		 * bootloader section).  We'll rewrite that
+-		 * SCALER_CTL0_END, just in case, though.
+-		 */
+-		writel(SCALER_CTL0_END, vc4->hvs->dlist);
+-		HVS_WRITE(SCALER_DISPLISTX(vc4_crtc->channel), 0);
+-	} else {
+-		writel(SCALER_CTL0_END, dlist_next);
+-		dlist_next++;
+-
+-		HVS_WRITE(SCALER_DISPLISTX(vc4_crtc->channel),
+-			  (u32 __iomem *)vc4_crtc->dlist -
+-			  (u32 __iomem *)vc4->hvs->dlist);
+-
+-		/* Make the next display list start after ours. */
+-		vc4_crtc->dlist_size -= (dlist_next - vc4_crtc->dlist);
+-		vc4_crtc->dlist = dlist_next;
+-	}
++	writel(SCALER_CTL0_END, dlist_next);
++	dlist_next++;
++
++	WARN_ON_ONCE(dlist_next - dlist_start != vc4_state->mm.size);
++
++	HVS_WRITE(SCALER_DISPLISTX(vc4_crtc->channel),
++		  vc4_state->mm.start);
+ 
+ 	if (debug_dump_regs) {
+ 		DRM_INFO("CRTC %d HVS after:\n", drm_crtc_index(crtc));
+@@ -544,6 +543,7 @@ static int vc4_async_page_flip(struct drm_crtc *crtc,
+ 	/* Make sure all other async modesetes have landed. */
+ 	ret = down_interruptible(&vc4->async_modeset);
+ 	if (ret) {
++		drm_framebuffer_unreference(fb);
+ 		kfree(flip_state);
+ 		return ret;
+ 	}
+@@ -573,6 +573,36 @@ static int vc4_page_flip(struct drm_crtc *crtc,
+ 		return drm_atomic_helper_page_flip(crtc, fb, event, flags);
+ }
+ 
++static struct drm_crtc_state *vc4_crtc_duplicate_state(struct drm_crtc *crtc)
++{
++	struct vc4_crtc_state *vc4_state;
++
++	vc4_state = kzalloc(sizeof(*vc4_state), GFP_KERNEL);
++	if (!vc4_state)
++		return NULL;
++
++	__drm_atomic_helper_crtc_duplicate_state(crtc, &vc4_state->base);
++	return &vc4_state->base;
++}
++
++static void vc4_crtc_destroy_state(struct drm_crtc *crtc,
++				   struct drm_crtc_state *state)
++{
++	struct vc4_dev *vc4 = to_vc4_dev(crtc->dev);
++	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(state);
++
++	if (vc4_state->mm.allocated) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&vc4->hvs->mm_lock, flags);
++		drm_mm_remove_node(&vc4_state->mm);
++		spin_unlock_irqrestore(&vc4->hvs->mm_lock, flags);
++
++	}
++
++	__drm_atomic_helper_crtc_destroy_state(crtc, state);
++}
++
+ static const struct drm_crtc_funcs vc4_crtc_funcs = {
+ 	.set_config = drm_atomic_helper_set_config,
+ 	.destroy = vc4_crtc_destroy,
+@@ -581,8 +611,8 @@ static const struct drm_crtc_funcs vc4_crtc_funcs = {
+ 	.cursor_set = NULL, /* handled by drm_mode_cursor_universal */
+ 	.cursor_move = NULL, /* handled by drm_mode_cursor_universal */
+ 	.reset = drm_atomic_helper_crtc_reset,
+-	.atomic_duplicate_state = drm_atomic_helper_crtc_duplicate_state,
+-	.atomic_destroy_state = drm_atomic_helper_crtc_destroy_state,
++	.atomic_duplicate_state = vc4_crtc_duplicate_state,
++	.atomic_destroy_state = vc4_crtc_destroy_state,
+ };
+ 
+ static const struct drm_crtc_helper_funcs vc4_crtc_helper_funcs = {
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 51a6333..83db0b7 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -154,7 +154,17 @@ struct vc4_v3d {
+ struct vc4_hvs {
+ 	struct platform_device *pdev;
+ 	void __iomem *regs;
+-	void __iomem *dlist;
++	u32 __iomem *dlist;
++
++	/* Memory manager for CRTCs to allocate space in the display
++	 * list.  Units are dwords.
++	 */
++	struct drm_mm dlist_mm;
++	/* Memory manager for the LBM memory used by HVS scaling. */
++	struct drm_mm lbm_mm;
++	spinlock_t mm_lock;
++
++	struct drm_mm_node mitchell_netravali_filter;
+ };
+ 
+ struct vc4_plane {
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index c69c046..d8b8649 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -47,6 +47,7 @@ struct vc4_hdmi {
+ 	void __iomem *hdmicore_regs;
+ 	void __iomem *hd_regs;
+ 	int hpd_gpio;
++	bool hpd_active_low;
+ 
+ 	struct clk *pixel_clock;
+ 	struct clk *hsm_clock;
+@@ -95,6 +96,7 @@ static const struct {
+ 	HDMI_REG(VC4_HDMI_SW_RESET_CONTROL),
+ 	HDMI_REG(VC4_HDMI_HOTPLUG_INT),
+ 	HDMI_REG(VC4_HDMI_HOTPLUG),
++	HDMI_REG(VC4_HDMI_RAM_PACKET_CONFIG),
+ 	HDMI_REG(VC4_HDMI_HORZA),
+ 	HDMI_REG(VC4_HDMI_HORZB),
+ 	HDMI_REG(VC4_HDMI_FIFO_CTL),
+@@ -165,7 +167,8 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 
+ 	if (vc4->hdmi->hpd_gpio) {
+-		if (gpio_get_value(vc4->hdmi->hpd_gpio))
++		if (gpio_get_value_cansleep(vc4->hdmi->hpd_gpio) ^
++		    vc4->hdmi->hpd_active_low)
+ 			return connector_status_connected;
+ 		else
+ 			return connector_status_disconnected;
+@@ -495,6 +498,16 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 		goto err_put_i2c;
+ 	}
+ 
++	/* This is the rate that is set by the firmware.  The number
++	 * needs to be a bit higher than the pixel clock rate
++	 * (generally 148.5Mhz).
++	 */
++	ret = clk_set_rate(hdmi->hsm_clock, 163682864);
++	if (ret) {
++		DRM_ERROR("Failed to set HSM clock rate: %d\n", ret);
++		goto err_unprepare_pix;
++	}
++
+ 	ret = clk_prepare_enable(hdmi->hsm_clock);
+ 	if (ret) {
+ 		DRM_ERROR("Failed to turn on HDMI state machine clock: %d\n",
+@@ -506,17 +519,40 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	 * we'll use the HDMI core's register.
+ 	 */
+ 	if (of_find_property(dev->of_node, "hpd-gpios", &value)) {
+-		hdmi->hpd_gpio = of_get_named_gpio(dev->of_node, "hpd-gpios", 0);
++		enum of_gpio_flags hpd_gpio_flags;
++
++		hdmi->hpd_gpio = of_get_named_gpio_flags(dev->of_node,
++							 "hpd-gpios", 0,
++							 &hpd_gpio_flags);
+ 		if (hdmi->hpd_gpio < 0) {
+ 			ret = hdmi->hpd_gpio;
+ 			goto err_unprepare_hsm;
+ 		}
++
++		hdmi->hpd_active_low = hpd_gpio_flags & OF_GPIO_ACTIVE_LOW;
+ 	}
+ 
+ 	vc4->hdmi = hdmi;
+ 
+ 	/* HDMI core must be enabled. */
+-	WARN_ON_ONCE((HD_READ(VC4_HD_M_CTL) & VC4_HD_M_ENABLE) == 0);
++	if (!(HD_READ(VC4_HD_M_CTL) & VC4_HD_M_ENABLE)) {
++		HD_WRITE(VC4_HD_M_CTL, VC4_HD_M_SW_RST);
++		udelay(1);
++		HD_WRITE(VC4_HD_M_CTL, 0);
++
++		HD_WRITE(VC4_HD_M_CTL, VC4_HD_M_ENABLE);
++
++		HDMI_WRITE(VC4_HDMI_SW_RESET_CONTROL,
++			   VC4_HDMI_SW_RESET_HDMI |
++			   VC4_HDMI_SW_RESET_FORMAT_DETECT);
++
++		HDMI_WRITE(VC4_HDMI_SW_RESET_CONTROL, 0);
++
++		/* PHY should be in reset, like
++		 * vc4_hdmi_encoder_disable() does.
++		 */
++		HDMI_WRITE(VC4_HDMI_TX_PHY_RESET_CTL, 0xf << 16);
++	}
+ 
+ 	drm_encoder_init(drm, hdmi->encoder, &vc4_hdmi_encoder_funcs,
+ 			 DRM_MODE_ENCODER_TMDS, NULL);
+diff --git a/drivers/gpu/drm/vc4/vc4_hvs.c b/drivers/gpu/drm/vc4/vc4_hvs.c
+index 8098c5b..6fbab1c 100644
+--- a/drivers/gpu/drm/vc4/vc4_hvs.c
++++ b/drivers/gpu/drm/vc4/vc4_hvs.c
+@@ -100,12 +100,76 @@ int vc4_hvs_debugfs_regs(struct seq_file *m, void *unused)
+ }
+ #endif
+ 
++/* The filter kernel is composed of dwords each containing 3 9-bit
++ * signed integers packed next to each other.
++ */
++#define VC4_INT_TO_COEFF(coeff) (coeff & 0x1ff)
++#define VC4_PPF_FILTER_WORD(c0, c1, c2)				\
++	((((c0) & 0x1ff) << 0) |				\
++	 (((c1) & 0x1ff) << 9) |				\
++	 (((c2) & 0x1ff) << 18))
++
++/* The whole filter kernel is arranged as the coefficients 0-16 going
++ * up, then a pad, then 17-31 going down and reversed within the
++ * dwords.  This means that a linear phase kernel (where it's
++ * symmetrical at the boundary between 15 and 16) has the last 5
++ * dwords matching the first 5, but reversed.
++ */
++#define VC4_LINEAR_PHASE_KERNEL(c0, c1, c2, c3, c4, c5, c6, c7, c8,	\
++				c9, c10, c11, c12, c13, c14, c15)	\
++	{VC4_PPF_FILTER_WORD(c0, c1, c2),				\
++	 VC4_PPF_FILTER_WORD(c3, c4, c5),				\
++	 VC4_PPF_FILTER_WORD(c6, c7, c8),				\
++	 VC4_PPF_FILTER_WORD(c9, c10, c11),				\
++	 VC4_PPF_FILTER_WORD(c12, c13, c14),				\
++	 VC4_PPF_FILTER_WORD(c15, c15, 0)}
++
++#define VC4_LINEAR_PHASE_KERNEL_DWORDS 6
++#define VC4_KERNEL_DWORDS (VC4_LINEAR_PHASE_KERNEL_DWORDS * 2 - 1)
++
++/* Recommended B=1/3, C=1/3 filter choice from Mitchell/Netravali.
++ * http://www.cs.utexas.edu/~fussell/courses/cs384g/lectures/mitchell/Mitchell.pdf
++ */
++static const u32 mitchell_netravali_1_3_1_3_kernel[] =
++	VC4_LINEAR_PHASE_KERNEL(0, -2, -6, -8, -10, -8, -3, 2, 18,
++				50, 82, 119, 155, 187, 213, 227);
++
++static int vc4_hvs_upload_linear_kernel(struct vc4_hvs *hvs,
++					struct drm_mm_node *space,
++					const u32 *kernel)
++{
++	int ret, i;
++	u32 __iomem *dst_kernel;
++
++	ret = drm_mm_insert_node(&hvs->dlist_mm, space, VC4_KERNEL_DWORDS, 1,
++				 0);
++	if (ret) {
++		DRM_ERROR("Failed to allocate space for filter kernel: %d\n",
++			  ret);
++		return ret;
++	}
++
++	dst_kernel = hvs->dlist + space->start;
++
++	for (i = 0; i < VC4_KERNEL_DWORDS; i++) {
++		if (i < VC4_LINEAR_PHASE_KERNEL_DWORDS)
++			writel(kernel[i], &dst_kernel[i]);
++		else {
++			writel(kernel[VC4_KERNEL_DWORDS - i - 1],
++			       &dst_kernel[i]);
++		}
++	}
++
++	return 0;
++}
++
+ static int vc4_hvs_bind(struct device *dev, struct device *master, void *data)
+ {
+ 	struct platform_device *pdev = to_platform_device(dev);
+ 	struct drm_device *drm = dev_get_drvdata(master);
+ 	struct vc4_dev *vc4 = drm->dev_private;
+ 	struct vc4_hvs *hvs = NULL;
++	int ret;
+ 
+ 	hvs = devm_kzalloc(&pdev->dev, sizeof(*hvs), GFP_KERNEL);
+ 	if (!hvs)
+@@ -119,6 +183,33 @@ static int vc4_hvs_bind(struct device *dev, struct device *master, void *data)
+ 
+ 	hvs->dlist = hvs->regs + SCALER_DLIST_START;
+ 
++	spin_lock_init(&hvs->mm_lock);
++
++	/* Set up the HVS display list memory manager.  We never
++	 * overwrite the setup from the bootloader (just 128b out of
++	 * our 16K), since we don't want to scramble the screen when
++	 * transitioning from the firmware's boot setup to runtime.
++	 */
++	drm_mm_init(&hvs->dlist_mm,
++		    HVS_BOOTLOADER_DLIST_END,
++		    (SCALER_DLIST_SIZE >> 2) - HVS_BOOTLOADER_DLIST_END);
++
++	/* Set up the HVS LBM memory manager.  We could have some more
++	 * complicated data structure that allowed reuse of LBM areas
++	 * between planes when they don't overlap on the screen, but
++	 * for now we just allocate globally.
++	 */
++	drm_mm_init(&hvs->lbm_mm, 0, 96 * 1024);
++
++	/* Upload filter kernels.  We only have the one for now, so we
++	 * keep it around for the lifetime of the driver.
++	 */
++	ret = vc4_hvs_upload_linear_kernel(hvs,
++					   &hvs->mitchell_netravali_filter,
++					   mitchell_netravali_1_3_1_3_kernel);
++	if (ret)
++		return ret;
++
+ 	vc4->hvs = hvs;
+ 	return 0;
+ }
+@@ -129,6 +220,12 @@ static void vc4_hvs_unbind(struct device *dev, struct device *master,
+ 	struct drm_device *drm = dev_get_drvdata(master);
+ 	struct vc4_dev *vc4 = drm->dev_private;
+ 
++	if (vc4->hvs->mitchell_netravali_filter.allocated)
++		drm_mm_remove_node(&vc4->hvs->mitchell_netravali_filter);
++
++	drm_mm_takedown(&vc4->hvs->dlist_mm);
++	drm_mm_takedown(&vc4->hvs->lbm_mm);
++
+ 	vc4->hvs = NULL;
+ }
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+index f95f2df..4718ae5 100644
+--- a/drivers/gpu/drm/vc4/vc4_kms.c
++++ b/drivers/gpu/drm/vc4/vc4_kms.c
+@@ -49,6 +49,15 @@ vc4_atomic_complete_commit(struct vc4_commit *c)
+ 
+ 	drm_atomic_helper_commit_modeset_enables(dev, state);
+ 
++	/* Make sure that drm_atomic_helper_wait_for_vblanks()
++	 * actually waits for vblank.  If we're doing a full atomic
++	 * modeset (as opposed to a vc4_update_plane() short circuit),
++	 * then we need to wait for scanout to be done with our
++	 * display lists before we free it and potentially reallocate
++	 * and overwrite the dlist memory with a new modeset.
++	 */
++	state->legacy_cursor_update = false;
++
+ 	drm_atomic_helper_wait_for_vblanks(dev, state);
+ 
+ 	drm_atomic_helper_cleanup_planes(dev, state);
+diff --git a/drivers/gpu/drm/vc4/vc4_plane.c b/drivers/gpu/drm/vc4/vc4_plane.c
+index 0addbad..7b0c72a 100644
+--- a/drivers/gpu/drm/vc4/vc4_plane.c
++++ b/drivers/gpu/drm/vc4/vc4_plane.c
+@@ -24,19 +24,52 @@
+ #include "drm_fb_cma_helper.h"
+ #include "drm_plane_helper.h"
+ 
++enum vc4_scaling_mode {
++	VC4_SCALING_NONE,
++	VC4_SCALING_TPZ,
++	VC4_SCALING_PPF,
++};
++
+ struct vc4_plane_state {
+ 	struct drm_plane_state base;
++	/* System memory copy of the display list for this element, computed
++	 * at atomic_check time.
++	 */
+ 	u32 *dlist;
+-	u32 dlist_size; /* Number of dwords in allocated for the display list */
++	u32 dlist_size; /* Number of dwords allocated for the display list */
+ 	u32 dlist_count; /* Number of used dwords in the display list. */
+ 
+-	/* Offset in the dlist to pointer word 0. */
+-	u32 pw0_offset;
++	/* Offset in the dlist to various words, for pageflip or
++	 * cursor updates.
++	 */
++	u32 pos0_offset;
++	u32 pos2_offset;
++	u32 ptr0_offset;
+ 
+ 	/* Offset where the plane's dlist was last stored in the
+-	   hardware at vc4_crtc_atomic_flush() time.
+-	*/
+-	u32 *hw_dlist;
++	 * hardware at vc4_crtc_atomic_flush() time.
++	 */
++	u32 __iomem *hw_dlist;
++
++	/* Clipped coordinates of the plane on the display. */
++	int crtc_x, crtc_y, crtc_w, crtc_h;
++	/* Clipped area being scanned from in the FB. */
++	u32 src_x, src_y;
++
++	u32 src_w[2], src_h[2];
++
++	/* Scaling selection for the RGB/Y plane and the Cb/Cr planes. */
++	enum vc4_scaling_mode x_scaling[2], y_scaling[2];
++	bool is_unity;
++	bool is_yuv;
++
++	/* Offset to start scanning out from the start of the plane's
++	 * BO.
++	 */
++	u32 offsets[3];
++
++	/* Our allocation in LBM for temporary storage during scaling. */
++	struct drm_mm_node lbm;
+ };
+ 
+ static inline struct vc4_plane_state *
+@@ -50,6 +83,7 @@ static const struct hvs_format {
+ 	u32 hvs; /* HVS_FORMAT_* */
+ 	u32 pixel_order;
+ 	bool has_alpha;
++	bool flip_cbcr;
+ } hvs_formats[] = {
+ 	{
+ 		.drm = DRM_FORMAT_XRGB8888, .hvs = HVS_PIXEL_FORMAT_RGBA8888,
+@@ -59,6 +93,48 @@ static const struct hvs_format {
+ 		.drm = DRM_FORMAT_ARGB8888, .hvs = HVS_PIXEL_FORMAT_RGBA8888,
+ 		.pixel_order = HVS_PIXEL_ORDER_ABGR, .has_alpha = true,
+ 	},
++	{
++		.drm = DRM_FORMAT_RGB565, .hvs = HVS_PIXEL_FORMAT_RGB565,
++		.pixel_order = HVS_PIXEL_ORDER_XRGB, .has_alpha = false,
++	},
++	{
++		.drm = DRM_FORMAT_BGR565, .hvs = HVS_PIXEL_FORMAT_RGB565,
++		.pixel_order = HVS_PIXEL_ORDER_XBGR, .has_alpha = false,
++	},
++	{
++		.drm = DRM_FORMAT_ARGB1555, .hvs = HVS_PIXEL_FORMAT_RGBA5551,
++		.pixel_order = HVS_PIXEL_ORDER_ABGR, .has_alpha = true,
++	},
++	{
++		.drm = DRM_FORMAT_XRGB1555, .hvs = HVS_PIXEL_FORMAT_RGBA5551,
++		.pixel_order = HVS_PIXEL_ORDER_ABGR, .has_alpha = false,
++	},
++	{
++		.drm = DRM_FORMAT_YUV422,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV422_3PLANE,
++	},
++	{
++		.drm = DRM_FORMAT_YVU422,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV422_3PLANE,
++		.flip_cbcr = true,
++	},
++	{
++		.drm = DRM_FORMAT_YUV420,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV420_3PLANE,
++	},
++	{
++		.drm = DRM_FORMAT_YVU420,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV420_3PLANE,
++		.flip_cbcr = true,
++	},
++	{
++		.drm = DRM_FORMAT_NV12,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV420_2PLANE,
++	},
++	{
++		.drm = DRM_FORMAT_NV16,
++		.hvs = HVS_PIXEL_FORMAT_YCBCR_YUV422_2PLANE,
++	},
+ };
+ 
+ static const struct hvs_format *vc4_get_hvs_format(u32 drm_format)
+@@ -73,6 +149,16 @@ static const struct hvs_format *vc4_get_hvs_format(u32 drm_format)
+ 	return NULL;
+ }
+ 
++static enum vc4_scaling_mode vc4_get_scaling_mode(u32 src, u32 dst)
++{
++	if (dst > src)
++		return VC4_SCALING_PPF;
++	else if (dst < src)
++		return VC4_SCALING_TPZ;
++	else
++		return VC4_SCALING_NONE;
++}
++
+ static bool plane_enabled(struct drm_plane_state *state)
+ {
+ 	return state->fb && state->crtc;
+@@ -89,6 +175,8 @@ static struct drm_plane_state *vc4_plane_duplicate_state(struct drm_plane *plane
+ 	if (!vc4_state)
+ 		return NULL;
+ 
++	memset(&vc4_state->lbm, 0, sizeof(vc4_state->lbm));
++
+ 	__drm_atomic_helper_plane_duplicate_state(plane, &vc4_state->base);
+ 
+ 	if (vc4_state->dlist) {
+@@ -108,8 +196,17 @@ static struct drm_plane_state *vc4_plane_duplicate_state(struct drm_plane *plane
+ static void vc4_plane_destroy_state(struct drm_plane *plane,
+ 				    struct drm_plane_state *state)
+ {
++	struct vc4_dev *vc4 = to_vc4_dev(plane->dev);
+ 	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
+ 
++	if (vc4_state->lbm.allocated) {
++		unsigned long irqflags;
++
++		spin_lock_irqsave(&vc4->hvs->mm_lock, irqflags);
++		drm_mm_remove_node(&vc4_state->lbm);
++		spin_unlock_irqrestore(&vc4->hvs->mm_lock, irqflags);
++	}
++
+ 	kfree(vc4_state->dlist);
+ 	__drm_atomic_helper_plane_destroy_state(plane, &vc4_state->base);
+ 	kfree(state);
+@@ -148,84 +245,400 @@ static void vc4_dlist_write(struct vc4_plane_state *vc4_state, u32 val)
+ 	vc4_state->dlist[vc4_state->dlist_count++] = val;
+ }
+ 
++/* Returns the scl0/scl1 field based on whether the dimensions need to
++ * be up/down/non-scaled.
++ *
++ * This is a replication of a table from the spec.
++ */
++static u32 vc4_get_scl_field(struct drm_plane_state *state, int plane)
++{
++	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
++
++	switch (vc4_state->x_scaling[plane] << 2 | vc4_state->y_scaling[plane]) {
++	case VC4_SCALING_PPF << 2 | VC4_SCALING_PPF:
++		return SCALER_CTL0_SCL_H_PPF_V_PPF;
++	case VC4_SCALING_TPZ << 2 | VC4_SCALING_PPF:
++		return SCALER_CTL0_SCL_H_TPZ_V_PPF;
++	case VC4_SCALING_PPF << 2 | VC4_SCALING_TPZ:
++		return SCALER_CTL0_SCL_H_PPF_V_TPZ;
++	case VC4_SCALING_TPZ << 2 | VC4_SCALING_TPZ:
++		return SCALER_CTL0_SCL_H_TPZ_V_TPZ;
++	case VC4_SCALING_PPF << 2 | VC4_SCALING_NONE:
++		return SCALER_CTL0_SCL_H_PPF_V_NONE;
++	case VC4_SCALING_NONE << 2 | VC4_SCALING_PPF:
++		return SCALER_CTL0_SCL_H_NONE_V_PPF;
++	case VC4_SCALING_NONE << 2 | VC4_SCALING_TPZ:
++		return SCALER_CTL0_SCL_H_NONE_V_TPZ;
++	case VC4_SCALING_TPZ << 2 | VC4_SCALING_NONE:
++		return SCALER_CTL0_SCL_H_TPZ_V_NONE;
++	default:
++	case VC4_SCALING_NONE << 2 | VC4_SCALING_NONE:
++		/* The unity case is independently handled by
++		 * SCALER_CTL0_UNITY.
++		 */
++		return 0;
++	}
++}
++
++static int vc4_plane_setup_clipping_and_scaling(struct drm_plane_state *state)
++{
++	struct drm_plane *plane = state->plane;
++	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
++	struct drm_framebuffer *fb = state->fb;
++	struct drm_gem_cma_object *bo = drm_fb_cma_get_gem_obj(fb, 0);
++	u32 subpixel_src_mask = (1 << 16) - 1;
++	u32 format = fb->pixel_format;
++	int num_planes = drm_format_num_planes(format);
++	u32 h_subsample = 1;
++	u32 v_subsample = 1;
++	int i;
++
++	for (i = 0; i < num_planes; i++)
++		vc4_state->offsets[i] = bo->paddr + fb->offsets[i];
++
++	/* We don't support subpixel source positioning for scaling. */
++	if ((state->src_x & subpixel_src_mask) ||
++	    (state->src_y & subpixel_src_mask) ||
++	    (state->src_w & subpixel_src_mask) ||
++	    (state->src_h & subpixel_src_mask)) {
++		return -EINVAL;
++	}
++
++	vc4_state->src_x = state->src_x >> 16;
++	vc4_state->src_y = state->src_y >> 16;
++	vc4_state->src_w[0] = state->src_w >> 16;
++	vc4_state->src_h[0] = state->src_h >> 16;
++
++	vc4_state->crtc_x = state->crtc_x;
++	vc4_state->crtc_y = state->crtc_y;
++	vc4_state->crtc_w = state->crtc_w;
++	vc4_state->crtc_h = state->crtc_h;
++
++	vc4_state->x_scaling[0] = vc4_get_scaling_mode(vc4_state->src_w[0],
++						       vc4_state->crtc_w);
++	vc4_state->y_scaling[0] = vc4_get_scaling_mode(vc4_state->src_h[0],
++						       vc4_state->crtc_h);
++
++	if (num_planes > 1) {
++		vc4_state->is_yuv = true;
++
++		h_subsample = drm_format_horz_chroma_subsampling(format);
++		v_subsample = drm_format_vert_chroma_subsampling(format);
++		vc4_state->src_w[1] = vc4_state->src_w[0] / h_subsample;
++		vc4_state->src_h[1] = vc4_state->src_h[0] / v_subsample;
++
++		vc4_state->x_scaling[1] =
++			vc4_get_scaling_mode(vc4_state->src_w[1],
++					     vc4_state->crtc_w);
++		vc4_state->y_scaling[1] =
++			vc4_get_scaling_mode(vc4_state->src_h[1],
++					     vc4_state->crtc_h);
++
++		/* YUV conversion requires that scaling be enabled,
++		 * even on a plane that's otherwise 1:1.  Choose TPZ
++		 * for simplicity.
++		 */
++		if (vc4_state->x_scaling[0] == VC4_SCALING_NONE)
++			vc4_state->x_scaling[0] = VC4_SCALING_TPZ;
++		if (vc4_state->y_scaling[0] == VC4_SCALING_NONE)
++			vc4_state->y_scaling[0] = VC4_SCALING_TPZ;
++	}
++
++	vc4_state->is_unity = (vc4_state->x_scaling[0] == VC4_SCALING_NONE &&
++			       vc4_state->y_scaling[0] == VC4_SCALING_NONE &&
++			       vc4_state->x_scaling[1] == VC4_SCALING_NONE &&
++			       vc4_state->y_scaling[1] == VC4_SCALING_NONE);
++
++	/* No configuring scaling on the cursor plane, since it gets
++	   non-vblank-synced updates, and scaling requires requires
++	   LBM changes which have to be vblank-synced.
++	 */
++	if (plane->type == DRM_PLANE_TYPE_CURSOR && !vc4_state->is_unity)
++		return -EINVAL;
++
++	/* Clamp the on-screen start x/y to 0.  The hardware doesn't
++	 * support negative y, and negative x wastes bandwidth.
++	 */
++	if (vc4_state->crtc_x < 0) {
++		for (i = 0; i < num_planes; i++) {
++			u32 cpp = drm_format_plane_cpp(fb->pixel_format, i);
++			u32 subs = ((i == 0) ? 1 : h_subsample);
++
++			vc4_state->offsets[i] += (cpp *
++						  (-vc4_state->crtc_x) / subs);
++		}
++		vc4_state->src_w[0] += vc4_state->crtc_x;
++		vc4_state->src_w[1] += vc4_state->crtc_x / h_subsample;
++		vc4_state->crtc_x = 0;
++	}
++
++	if (vc4_state->crtc_y < 0) {
++		for (i = 0; i < num_planes; i++) {
++			u32 subs = ((i == 0) ? 1 : v_subsample);
++
++			vc4_state->offsets[i] += (fb->pitches[i] *
++						  (-vc4_state->crtc_y) / subs);
++		}
++		vc4_state->src_h[0] += vc4_state->crtc_y;
++		vc4_state->src_h[1] += vc4_state->crtc_y / v_subsample;
++		vc4_state->crtc_y = 0;
++	}
++
++	return 0;
++}
++
++static void vc4_write_tpz(struct vc4_plane_state *vc4_state, u32 src, u32 dst)
++{
++	u32 scale, recip;
++
++	scale = (1 << 16) * src / dst;
++
++	/* The specs note that while the reciprocal would be defined
++	 * as (1<<32)/scale, ~0 is close enough.
++	 */
++	recip = ~0 / scale;
++
++	vc4_dlist_write(vc4_state,
++			VC4_SET_FIELD(scale, SCALER_TPZ0_SCALE) |
++			VC4_SET_FIELD(0, SCALER_TPZ0_IPHASE));
++	vc4_dlist_write(vc4_state,
++			VC4_SET_FIELD(recip, SCALER_TPZ1_RECIP));
++}
++
++static void vc4_write_ppf(struct vc4_plane_state *vc4_state, u32 src, u32 dst)
++{
++	u32 scale = (1 << 16) * src / dst;
++
++	vc4_dlist_write(vc4_state,
++			SCALER_PPF_AGC |
++			VC4_SET_FIELD(scale, SCALER_PPF_SCALE) |
++			VC4_SET_FIELD(0, SCALER_PPF_IPHASE));
++}
++
++static u32 vc4_lbm_size(struct drm_plane_state *state)
++{
++	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
++	/* This is the worst case number.  One of the two sizes will
++	 * be used depending on the scaling configuration.
++	 */
++	u32 pix_per_line = max(vc4_state->src_w[0], (u32)vc4_state->crtc_w);
++	u32 lbm;
++
++	if (!vc4_state->is_yuv) {
++		if (vc4_state->is_unity)
++			return 0;
++		else if (vc4_state->y_scaling[0] == VC4_SCALING_TPZ)
++			lbm = pix_per_line * 8;
++		else {
++			/* In special cases, this multiplier might be 12. */
++			lbm = pix_per_line * 16;
++		}
++	} else {
++		/* There are cases for this going down to a multiplier
++		 * of 2, but according to the firmware source, the
++		 * table in the docs is somewhat wrong.
++		 */
++		lbm = pix_per_line * 16;
++	}
++
++	lbm = roundup(lbm, 32);
++
++	return lbm;
++}
++
++static void vc4_write_scaling_parameters(struct drm_plane_state *state,
++					 int channel)
++{
++	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
++
++	/* Ch0 H-PPF Word 0: Scaling Parameters */
++	if (vc4_state->x_scaling[channel] == VC4_SCALING_PPF) {
++		vc4_write_ppf(vc4_state,
++			      vc4_state->src_w[channel], vc4_state->crtc_w);
++	}
++
++	/* Ch0 V-PPF Words 0-1: Scaling Parameters, Context */
++	if (vc4_state->y_scaling[channel] == VC4_SCALING_PPF) {
++		vc4_write_ppf(vc4_state,
++			      vc4_state->src_h[channel], vc4_state->crtc_h);
++		vc4_dlist_write(vc4_state, 0xc0c0c0c0);
++	}
++
++	/* Ch0 H-TPZ Words 0-1: Scaling Parameters, Recip */
++	if (vc4_state->x_scaling[channel] == VC4_SCALING_TPZ) {
++		vc4_write_tpz(vc4_state,
++			      vc4_state->src_w[channel], vc4_state->crtc_w);
++	}
++
++	/* Ch0 V-TPZ Words 0-2: Scaling Parameters, Recip, Context */
++	if (vc4_state->y_scaling[channel] == VC4_SCALING_TPZ) {
++		vc4_write_tpz(vc4_state,
++			      vc4_state->src_h[channel], vc4_state->crtc_h);
++		vc4_dlist_write(vc4_state, 0xc0c0c0c0);
++	}
++}
++
+ /* Writes out a full display list for an active plane to the plane's
+  * private dlist state.
+  */
+ static int vc4_plane_mode_set(struct drm_plane *plane,
+ 			      struct drm_plane_state *state)
+ {
++	struct vc4_dev *vc4 = to_vc4_dev(plane->dev);
+ 	struct vc4_plane_state *vc4_state = to_vc4_plane_state(state);
+ 	struct drm_framebuffer *fb = state->fb;
+-	struct drm_gem_cma_object *bo = drm_fb_cma_get_gem_obj(fb, 0);
+ 	u32 ctl0_offset = vc4_state->dlist_count;
+ 	const struct hvs_format *format = vc4_get_hvs_format(fb->pixel_format);
+-	uint32_t offset = fb->offsets[0];
+-	int crtc_x = state->crtc_x;
+-	int crtc_y = state->crtc_y;
+-	int crtc_w = state->crtc_w;
+-	int crtc_h = state->crtc_h;
+-
+-	if (state->crtc_w << 16 != state->src_w ||
+-	    state->crtc_h << 16 != state->src_h) {
+-		/* We don't support scaling yet, which involves
+-		 * allocating the LBM memory for scaling temporary
+-		 * storage, and putting filter kernels in the HVS
+-		 * context.
+-		 */
+-		return -EINVAL;
++	int num_planes = drm_format_num_planes(format->drm);
++	u32 scl0, scl1;
++	u32 lbm_size;
++	unsigned long irqflags;
++	int ret, i;
++
++	ret = vc4_plane_setup_clipping_and_scaling(state);
++	if (ret)
++		return ret;
++
++	/* Allocate the LBM memory that the HVS will use for temporary
++	 * storage due to our scaling/format conversion.
++	 */
++	lbm_size = vc4_lbm_size(state);
++	if (lbm_size) {
++		if (!vc4_state->lbm.allocated) {
++			spin_lock_irqsave(&vc4->hvs->mm_lock, irqflags);
++			ret = drm_mm_insert_node(&vc4->hvs->lbm_mm,
++						 &vc4_state->lbm,
++						 lbm_size, 32, 0);
++			spin_unlock_irqrestore(&vc4->hvs->mm_lock, irqflags);
++		} else {
++			WARN_ON_ONCE(lbm_size != vc4_state->lbm.size);
++		}
+ 	}
+ 
+-	if (crtc_x < 0) {
+-		offset += drm_format_plane_cpp(fb->pixel_format, 0) * -crtc_x;
+-		crtc_w += crtc_x;
+-		crtc_x = 0;
+-	}
++	if (ret)
++		return ret;
+ 
+-	if (crtc_y < 0) {
+-		offset += fb->pitches[0] * -crtc_y;
+-		crtc_h += crtc_y;
+-		crtc_y = 0;
++	/* SCL1 is used for Cb/Cr scaling of planar formats.  For RGB
++	 * and 4:4:4, scl1 should be set to scl0 so both channels of
++	 * the scaler do the same thing.  For YUV, the Y plane needs
++	 * to be put in channel 1 and Cb/Cr in channel 0, so we swap
++	 * the scl fields here.
++	 */
++	if (num_planes == 1) {
++		scl0 = vc4_get_scl_field(state, 1);
++		scl1 = scl0;
++	} else {
++		scl0 = vc4_get_scl_field(state, 1);
++		scl1 = vc4_get_scl_field(state, 0);
+ 	}
+ 
++	/* Control word */
+ 	vc4_dlist_write(vc4_state,
+ 			SCALER_CTL0_VALID |
+ 			(format->pixel_order << SCALER_CTL0_ORDER_SHIFT) |
+ 			(format->hvs << SCALER_CTL0_PIXEL_FORMAT_SHIFT) |
+-			SCALER_CTL0_UNITY);
++			(vc4_state->is_unity ? SCALER_CTL0_UNITY : 0) |
++			VC4_SET_FIELD(scl0, SCALER_CTL0_SCL0) |
++			VC4_SET_FIELD(scl1, SCALER_CTL0_SCL1));
+ 
+ 	/* Position Word 0: Image Positions and Alpha Value */
++	vc4_state->pos0_offset = vc4_state->dlist_count;
+ 	vc4_dlist_write(vc4_state,
+ 			VC4_SET_FIELD(0xff, SCALER_POS0_FIXED_ALPHA) |
+-			VC4_SET_FIELD(crtc_x, SCALER_POS0_START_X) |
+-			VC4_SET_FIELD(crtc_y, SCALER_POS0_START_Y));
+-
+-	/* Position Word 1: Scaled Image Dimensions.
+-	 * Skipped due to SCALER_CTL0_UNITY scaling.
+-	 */
++			VC4_SET_FIELD(vc4_state->crtc_x, SCALER_POS0_START_X) |
++			VC4_SET_FIELD(vc4_state->crtc_y, SCALER_POS0_START_Y));
++
++	/* Position Word 1: Scaled Image Dimensions. */
++	if (!vc4_state->is_unity) {
++		vc4_dlist_write(vc4_state,
++				VC4_SET_FIELD(vc4_state->crtc_w,
++					      SCALER_POS1_SCL_WIDTH) |
++				VC4_SET_FIELD(vc4_state->crtc_h,
++					      SCALER_POS1_SCL_HEIGHT));
++	}
+ 
+ 	/* Position Word 2: Source Image Size, Alpha Mode */
++	vc4_state->pos2_offset = vc4_state->dlist_count;
+ 	vc4_dlist_write(vc4_state,
+ 			VC4_SET_FIELD(format->has_alpha ?
+ 				      SCALER_POS2_ALPHA_MODE_PIPELINE :
+ 				      SCALER_POS2_ALPHA_MODE_FIXED,
+ 				      SCALER_POS2_ALPHA_MODE) |
+-			VC4_SET_FIELD(crtc_w, SCALER_POS2_WIDTH) |
+-			VC4_SET_FIELD(crtc_h, SCALER_POS2_HEIGHT));
++			VC4_SET_FIELD(vc4_state->src_w[0], SCALER_POS2_WIDTH) |
++			VC4_SET_FIELD(vc4_state->src_h[0], SCALER_POS2_HEIGHT));
+ 
+ 	/* Position Word 3: Context.  Written by the HVS. */
+ 	vc4_dlist_write(vc4_state, 0xc0c0c0c0);
+ 
+-	vc4_state->pw0_offset = vc4_state->dlist_count;
+ 
+-	/* Pointer Word 0: RGB / Y Pointer */
+-	vc4_dlist_write(vc4_state, bo->paddr + offset);
++	/* Pointer Word 0/1/2: RGB / Y / Cb / Cr Pointers
++	 *
++	 * The pointers may be any byte address.
++	 */
++	vc4_state->ptr0_offset = vc4_state->dlist_count;
++	if (!format->flip_cbcr) {
++		for (i = 0; i < num_planes; i++)
++			vc4_dlist_write(vc4_state, vc4_state->offsets[i]);
++	} else {
++		WARN_ON_ONCE(num_planes != 3);
++		vc4_dlist_write(vc4_state, vc4_state->offsets[0]);
++		vc4_dlist_write(vc4_state, vc4_state->offsets[2]);
++		vc4_dlist_write(vc4_state, vc4_state->offsets[1]);
++	}
+ 
+-	/* Pointer Context Word 0: Written by the HVS */
+-	vc4_dlist_write(vc4_state, 0xc0c0c0c0);
++	/* Pointer Context Word 0/1/2: Written by the HVS */
++	for (i = 0; i < num_planes; i++)
++		vc4_dlist_write(vc4_state, 0xc0c0c0c0);
+ 
+-	/* Pitch word 0: Pointer 0 Pitch */
+-	vc4_dlist_write(vc4_state,
+-			VC4_SET_FIELD(fb->pitches[0], SCALER_SRC_PITCH));
++	/* Pitch word 0/1/2 */
++	for (i = 0; i < num_planes; i++) {
++		vc4_dlist_write(vc4_state,
++				VC4_SET_FIELD(fb->pitches[i], SCALER_SRC_PITCH));
++	}
++
++	/* Colorspace conversion words */
++	if (vc4_state->is_yuv) {
++		vc4_dlist_write(vc4_state, SCALER_CSC0_ITR_R_601_5);
++		vc4_dlist_write(vc4_state, SCALER_CSC1_ITR_R_601_5);
++		vc4_dlist_write(vc4_state, SCALER_CSC2_ITR_R_601_5);
++	}
++
++	if (!vc4_state->is_unity) {
++		/* LBM Base Address. */
++		if (vc4_state->y_scaling[0] != VC4_SCALING_NONE ||
++		    vc4_state->y_scaling[1] != VC4_SCALING_NONE) {
++			vc4_dlist_write(vc4_state, vc4_state->lbm.start);
++		}
++
++		if (num_planes > 1) {
++			/* Emit Cb/Cr as channel 0 and Y as channel
++			 * 1. This matches how we set up scl0/scl1
++			 * above.
++			 */
++			vc4_write_scaling_parameters(state, 1);
++		}
++		vc4_write_scaling_parameters(state, 0);
++
++		/* If any PPF setup was done, then all the kernel
++		 * pointers get uploaded.
++		 */
++		if (vc4_state->x_scaling[0] == VC4_SCALING_PPF ||
++		    vc4_state->y_scaling[0] == VC4_SCALING_PPF ||
++		    vc4_state->x_scaling[1] == VC4_SCALING_PPF ||
++		    vc4_state->y_scaling[1] == VC4_SCALING_PPF) {
++			u32 kernel = VC4_SET_FIELD(vc4->hvs->mitchell_netravali_filter.start,
++						   SCALER_PPF_KERNEL_OFFSET);
++
++			/* HPPF plane 0 */
++			vc4_dlist_write(vc4_state, kernel);
++			/* VPPF plane 0 */
++			vc4_dlist_write(vc4_state, kernel);
++			/* HPPF plane 1 */
++			vc4_dlist_write(vc4_state, kernel);
++			/* VPPF plane 1 */
++			vc4_dlist_write(vc4_state, kernel);
++		}
++	}
+ 
+ 	vc4_state->dlist[ctl0_offset] |=
+ 		VC4_SET_FIELD(vc4_state->dlist_count, SCALER_CTL0_SIZE);
+@@ -303,13 +716,13 @@ void vc4_plane_async_set_fb(struct drm_plane *plane, struct drm_framebuffer *fb)
+ 	 * scanout will start from this address as soon as the FIFO
+ 	 * needs to refill with pixels.
+ 	 */
+-	writel(addr, &vc4_state->hw_dlist[vc4_state->pw0_offset]);
++	writel(addr, &vc4_state->hw_dlist[vc4_state->ptr0_offset]);
+ 
+ 	/* Also update the CPU-side dlist copy, so that any later
+ 	 * atomic updates that don't do a new modeset on our plane
+ 	 * also use our updated address.
+ 	 */
+-	vc4_state->dlist[vc4_state->pw0_offset] = addr;
++	vc4_state->dlist[vc4_state->ptr0_offset] = addr;
+ }
+ 
+ static const struct drm_plane_helper_funcs vc4_plane_helper_funcs = {
+@@ -325,8 +738,83 @@ static void vc4_plane_destroy(struct drm_plane *plane)
+ 	drm_plane_cleanup(plane);
+ }
+ 
++/* Implements immediate (non-vblank-synced) updates of the cursor
++ * position, or falls back to the atomic helper otherwise.
++ */
++static int
++vc4_update_plane(struct drm_plane *plane,
++		 struct drm_crtc *crtc,
++		 struct drm_framebuffer *fb,
++		 int crtc_x, int crtc_y,
++		 unsigned int crtc_w, unsigned int crtc_h,
++		 uint32_t src_x, uint32_t src_y,
++		 uint32_t src_w, uint32_t src_h)
++{
++	struct drm_plane_state *plane_state;
++	struct vc4_plane_state *vc4_state;
++
++	if (plane != crtc->cursor)
++		goto out;
++
++	plane_state = plane->state;
++	vc4_state = to_vc4_plane_state(plane_state);
++
++	if (!plane_state)
++		goto out;
++
++	/* If we're changing the cursor contents, do that in the
++	 * normal vblank-synced atomic path.
++	 */
++	if (fb != plane_state->fb)
++		goto out;
++
++	/* No configuring new scaling in the fast path. */
++	if (crtc_w != plane_state->crtc_w ||
++	    crtc_h != plane_state->crtc_h ||
++	    src_w != plane_state->src_w ||
++	    src_h != plane_state->src_h) {
++		goto out;
++	}
++
++	/* Set the cursor's position on the screen.  This is the
++	 * expected change from the drm_mode_cursor_universal()
++	 * helper.
++	 */
++	plane_state->crtc_x = crtc_x;
++	plane_state->crtc_y = crtc_y;
++
++	/* Allow changing the start position within the cursor BO, if
++	 * that matters.
++	 */
++	plane_state->src_x = src_x;
++	plane_state->src_y = src_y;
++
++	/* Update the display list based on the new crtc_x/y. */
++	vc4_plane_atomic_check(plane, plane_state);
++
++	/* Note that we can't just call vc4_plane_write_dlist()
++	 * because that would smash the context data that the HVS is
++	 * currently using.
++	 */
++	writel(vc4_state->dlist[vc4_state->pos0_offset],
++	       &vc4_state->hw_dlist[vc4_state->pos0_offset]);
++	writel(vc4_state->dlist[vc4_state->pos2_offset],
++	       &vc4_state->hw_dlist[vc4_state->pos2_offset]);
++	writel(vc4_state->dlist[vc4_state->ptr0_offset],
++	       &vc4_state->hw_dlist[vc4_state->ptr0_offset]);
++
++	return 0;
++
++out:
++	return drm_atomic_helper_update_plane(plane, crtc, fb,
++					      crtc_x, crtc_y,
++					      crtc_w, crtc_h,
++					      src_x, src_y,
++					      src_w, src_h);
++}
++
+ static const struct drm_plane_funcs vc4_plane_funcs = {
+-	.update_plane = drm_atomic_helper_update_plane,
++	.update_plane = vc4_update_plane,
+ 	.disable_plane = drm_atomic_helper_disable_plane,
+ 	.destroy = vc4_plane_destroy,
+ 	.set_property = NULL,
+@@ -341,6 +829,7 @@ struct drm_plane *vc4_plane_init(struct drm_device *dev,
+ 	struct drm_plane *plane = NULL;
+ 	struct vc4_plane *vc4_plane;
+ 	u32 formats[ARRAY_SIZE(hvs_formats)];
++	u32 num_formats = 0;
+ 	int ret = 0;
+ 	unsigned i;
+ 
+@@ -351,12 +840,20 @@ struct drm_plane *vc4_plane_init(struct drm_device *dev,
+ 		goto fail;
+ 	}
+ 
+-	for (i = 0; i < ARRAY_SIZE(hvs_formats); i++)
+-		formats[i] = hvs_formats[i].drm;
++	for (i = 0; i < ARRAY_SIZE(hvs_formats); i++) {
++		/* Don't allow YUV in cursor planes, since that means
++		 * tuning on the scaler, which we don't allow for the
++		 * cursor.
++		 */
++		if (type != DRM_PLANE_TYPE_CURSOR ||
++		    hvs_formats[i].hvs < HVS_PIXEL_FORMAT_YCBCR_YUV420_3PLANE) {
++			formats[num_formats++] = hvs_formats[i].drm;
++		}
++	}
+ 	plane = &vc4_plane->base;
+ 	ret = drm_universal_plane_init(dev, plane, 0xff,
+ 				       &vc4_plane_funcs,
+-				       formats, ARRAY_SIZE(formats),
++				       formats, num_formats,
+ 				       type, NULL);
+ 
+ 	drm_plane_helper_add(plane, &vc4_plane_helper_funcs);
+diff --git a/drivers/gpu/drm/vc4/vc4_regs.h b/drivers/gpu/drm/vc4/vc4_regs.h
+index 4e52a0a..bf42a8e 100644
+--- a/drivers/gpu/drm/vc4/vc4_regs.h
++++ b/drivers/gpu/drm/vc4/vc4_regs.h
+@@ -187,7 +187,7 @@
+ # define PV_VCONTROL_CONTINUOUS			BIT(1)
+ # define PV_VCONTROL_VIDEN			BIT(0)
+ 
+-#define PV_VSYNCD				0x08
++#define PV_VSYNCD_EVEN				0x08
+ 
+ #define PV_HORZA				0x0c
+ # define PV_HORZA_HBP_MASK			VC4_MASK(31, 16)
+@@ -350,6 +350,17 @@
+ # define SCALER_DISPCTRLX_HEIGHT_SHIFT		0
+ 
+ #define SCALER_DISPBKGND0                       0x00000044
++# define SCALER_DISPBKGND_AUTOHS		BIT(31)
++# define SCALER_DISPBKGND_INTERLACE		BIT(30)
++# define SCALER_DISPBKGND_GAMMA			BIT(29)
++# define SCALER_DISPBKGND_TESTMODE_MASK		VC4_MASK(28, 25)
++# define SCALER_DISPBKGND_TESTMODE_SHIFT	25
++/* Enables filling the scaler line with the RGB value in the low 24
++ * bits before compositing.  Costs cycles, so should be skipped if
++ * opaque display planes will cover everything.
++ */
++# define SCALER_DISPBKGND_FILL			BIT(24)
++
+ #define SCALER_DISPSTAT0                        0x00000048
+ #define SCALER_DISPBASE0                        0x0000004c
+ # define SCALER_DISPSTATX_MODE_MASK		VC4_MASK(31, 30)
+@@ -362,6 +373,9 @@
+ # define SCALER_DISPSTATX_EMPTY			BIT(28)
+ #define SCALER_DISPCTRL1                        0x00000050
+ #define SCALER_DISPBKGND1                       0x00000054
++#define SCALER_DISPBKGNDX(x)			(SCALER_DISPBKGND0 +        \
++						 (x) * (SCALER_DISPBKGND1 - \
++							SCALER_DISPBKGND0))
+ #define SCALER_DISPSTAT1                        0x00000058
+ #define SCALER_DISPSTATX(x)			(SCALER_DISPSTAT0 +        \
+ 						 (x) * (SCALER_DISPSTAT1 - \
+@@ -456,6 +470,8 @@
+ #define VC4_HDMI_TX_PHY_RESET_CTL		0x2c0
+ 
+ #define VC4_HD_M_CTL				0x00c
++# define VC4_HD_M_REGISTER_FILE_STANDBY		(3 << 6)
++# define VC4_HD_M_RAM_STANDBY			(3 << 4)
+ # define VC4_HD_M_SW_RST			BIT(2)
+ # define VC4_HD_M_ENABLE			BIT(0)
+ 
+@@ -503,7 +519,12 @@ enum hvs_pixel_format {
+ 	HVS_PIXEL_FORMAT_RGB888 = 5,
+ 	HVS_PIXEL_FORMAT_RGBA6666 = 6,
+ 	/* 32bpp */
+-	HVS_PIXEL_FORMAT_RGBA8888 = 7
++	HVS_PIXEL_FORMAT_RGBA8888 = 7,
++
++	HVS_PIXEL_FORMAT_YCBCR_YUV420_3PLANE = 8,
++	HVS_PIXEL_FORMAT_YCBCR_YUV420_2PLANE = 9,
++	HVS_PIXEL_FORMAT_YCBCR_YUV422_3PLANE = 10,
++	HVS_PIXEL_FORMAT_YCBCR_YUV422_2PLANE = 11,
+ };
+ 
+ /* Note: the LSB is the rightmost character shown.  Only valid for
+@@ -536,6 +557,21 @@ enum hvs_pixel_format {
+ #define SCALER_CTL0_ORDER_MASK			VC4_MASK(14, 13)
+ #define SCALER_CTL0_ORDER_SHIFT			13
+ 
++#define SCALER_CTL0_SCL1_MASK			VC4_MASK(10, 8)
++#define SCALER_CTL0_SCL1_SHIFT			8
++
++#define SCALER_CTL0_SCL0_MASK			VC4_MASK(7, 5)
++#define SCALER_CTL0_SCL0_SHIFT			5
++
++#define SCALER_CTL0_SCL_H_PPF_V_PPF		0
++#define SCALER_CTL0_SCL_H_TPZ_V_PPF		1
++#define SCALER_CTL0_SCL_H_PPF_V_TPZ		2
++#define SCALER_CTL0_SCL_H_TPZ_V_TPZ		3
++#define SCALER_CTL0_SCL_H_PPF_V_NONE		4
++#define SCALER_CTL0_SCL_H_NONE_V_PPF		5
++#define SCALER_CTL0_SCL_H_NONE_V_TPZ		6
++#define SCALER_CTL0_SCL_H_TPZ_V_NONE		7
++
+ /* Set to indicate no scaling. */
+ #define SCALER_CTL0_UNITY			BIT(4)
+ 
+@@ -551,6 +587,12 @@ enum hvs_pixel_format {
+ #define SCALER_POS0_START_X_MASK		VC4_MASK(11, 0)
+ #define SCALER_POS0_START_X_SHIFT		0
+ 
++#define SCALER_POS1_SCL_HEIGHT_MASK		VC4_MASK(27, 16)
++#define SCALER_POS1_SCL_HEIGHT_SHIFT		16
++
++#define SCALER_POS1_SCL_WIDTH_MASK		VC4_MASK(11, 0)
++#define SCALER_POS1_SCL_WIDTH_SHIFT		0
++
+ #define SCALER_POS2_ALPHA_MODE_MASK		VC4_MASK(31, 30)
+ #define SCALER_POS2_ALPHA_MODE_SHIFT		30
+ #define SCALER_POS2_ALPHA_MODE_PIPELINE		0
+@@ -564,6 +606,80 @@ enum hvs_pixel_format {
+ #define SCALER_POS2_WIDTH_MASK			VC4_MASK(11, 0)
+ #define SCALER_POS2_WIDTH_SHIFT			0
+ 
++/* Color Space Conversion words.  Some values are S2.8 signed
++ * integers, except that the 2 integer bits map as {0x0: 0, 0x1: 1,
++ * 0x2: 2, 0x3: -1}
++ */
++/* bottom 8 bits of S2.8 contribution of Cr to Blue */
++#define SCALER_CSC0_COEF_CR_BLU_MASK		VC4_MASK(31, 24)
++#define SCALER_CSC0_COEF_CR_BLU_SHIFT		24
++/* Signed offset to apply to Y before CSC. (Y' = Y + YY_OFS) */
++#define SCALER_CSC0_COEF_YY_OFS_MASK		VC4_MASK(23, 16)
++#define SCALER_CSC0_COEF_YY_OFS_SHIFT		16
++/* Signed offset to apply to CB before CSC (Cb' = Cb - 128 + CB_OFS). */
++#define SCALER_CSC0_COEF_CB_OFS_MASK		VC4_MASK(15, 8)
++#define SCALER_CSC0_COEF_CB_OFS_SHIFT		8
++/* Signed offset to apply to CB before CSC (Cr' = Cr - 128 + CR_OFS). */
++#define SCALER_CSC0_COEF_CR_OFS_MASK		VC4_MASK(7, 0)
++#define SCALER_CSC0_COEF_CR_OFS_SHIFT		0
++#define SCALER_CSC0_ITR_R_601_5			0x00f00000
++#define SCALER_CSC0_ITR_R_709_3			0x00f00000
++#define SCALER_CSC0_JPEG_JFIF			0x00000000
++
++/* S2.8 contribution of Cb to Green */
++#define SCALER_CSC1_COEF_CB_GRN_MASK		VC4_MASK(31, 22)
++#define SCALER_CSC1_COEF_CB_GRN_SHIFT		22
++/* S2.8 contribution of Cr to Green */
++#define SCALER_CSC1_COEF_CR_GRN_MASK		VC4_MASK(21, 12)
++#define SCALER_CSC1_COEF_CR_GRN_SHIFT		12
++/* S2.8 contribution of Y to all of RGB */
++#define SCALER_CSC1_COEF_YY_ALL_MASK		VC4_MASK(11, 2)
++#define SCALER_CSC1_COEF_YY_ALL_SHIFT		2
++/* top 2 bits of S2.8 contribution of Cr to Blue */
++#define SCALER_CSC1_COEF_CR_BLU_MASK		VC4_MASK(1, 0)
++#define SCALER_CSC1_COEF_CR_BLU_SHIFT		0
++#define SCALER_CSC1_ITR_R_601_5			0xe73304a8
++#define SCALER_CSC1_ITR_R_709_3			0xf2b784a8
++#define SCALER_CSC1_JPEG_JFIF			0xea34a400
++
++/* S2.8 contribution of Cb to Red */
++#define SCALER_CSC2_COEF_CB_RED_MASK		VC4_MASK(29, 20)
++#define SCALER_CSC2_COEF_CB_RED_SHIFT		20
++/* S2.8 contribution of Cr to Red */
++#define SCALER_CSC2_COEF_CR_RED_MASK		VC4_MASK(19, 10)
++#define SCALER_CSC2_COEF_CR_RED_SHIFT		10
++/* S2.8 contribution of Cb to Blue */
++#define SCALER_CSC2_COEF_CB_BLU_MASK		VC4_MASK(19, 10)
++#define SCALER_CSC2_COEF_CB_BLU_SHIFT		10
++#define SCALER_CSC2_ITR_R_601_5			0x00066204
++#define SCALER_CSC2_ITR_R_709_3			0x00072a1c
++#define SCALER_CSC2_JPEG_JFIF			0x000599c5
++
++#define SCALER_TPZ0_VERT_RECALC			BIT(31)
++#define SCALER_TPZ0_SCALE_MASK			VC4_MASK(28, 8)
++#define SCALER_TPZ0_SCALE_SHIFT			8
++#define SCALER_TPZ0_IPHASE_MASK			VC4_MASK(7, 0)
++#define SCALER_TPZ0_IPHASE_SHIFT		0
++#define SCALER_TPZ1_RECIP_MASK			VC4_MASK(15, 0)
++#define SCALER_TPZ1_RECIP_SHIFT			0
++
++/* Skips interpolating coefficients to 64 phases, so just 8 are used.
++ * Required for nearest neighbor.
++ */
++#define SCALER_PPF_NOINTERP			BIT(31)
++/* Replaes the highest valued coefficient with one that makes all 4
++ * sum to unity.
++ */
++#define SCALER_PPF_AGC				BIT(30)
++#define SCALER_PPF_SCALE_MASK			VC4_MASK(24, 8)
++#define SCALER_PPF_SCALE_SHIFT			8
++#define SCALER_PPF_IPHASE_MASK			VC4_MASK(6, 0)
++#define SCALER_PPF_IPHASE_SHIFT			0
++
++#define SCALER_PPF_KERNEL_OFFSET_MASK		VC4_MASK(13, 0)
++#define SCALER_PPF_KERNEL_OFFSET_SHIFT		0
++#define SCALER_PPF_KERNEL_UNCACHED		BIT(31)
++
+ #define SCALER_SRC_PITCH_MASK			VC4_MASK(15, 0)
+ #define SCALER_SRC_PITCH_SHIFT			0
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_v3d.c b/drivers/gpu/drm/vc4/vc4_v3d.c
+index 31de5d1..e6d3c60 100644
+--- a/drivers/gpu/drm/vc4/vc4_v3d.c
++++ b/drivers/gpu/drm/vc4/vc4_v3d.c
+@@ -268,6 +268,7 @@ static int vc4_v3d_dev_remove(struct platform_device *pdev)
+ }
+ 
+ static const struct of_device_id vc4_v3d_dt_match[] = {
++	{ .compatible = "brcm,bcm2835-v3d" },
+ 	{ .compatible = "brcm,vc4-v3d" },
+ 	{}
+ };
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+new file mode 100644
+index 0000000..ecf89f1
+--- /dev/null
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -0,0 +1,146 @@
++/*
++ * Serial port driver for BCM2835AUX UART
++ *
++ * Copyright (C) 2016 Martin Sperl <kernel@martin.sperl.org>
++ *
++ * Based on 8250_lpc18xx.c:
++ * Copyright (C) 2015 Joachim Eastwood <manabian@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/clk.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/of.h>
++#include <linux/platform_device.h>
++
++#include "8250.h"
++
++struct bcm2835aux_data {
++	struct uart_8250_port uart;
++	struct clk *clk;
++	int line;
++};
++
++static int bcm2835aux_serial_probe(struct platform_device *pdev)
++{
++	struct bcm2835aux_data *data;
++	struct resource *res;
++	int ret;
++
++	/* allocate the custom structure */
++	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	/* initialize data */
++	spin_lock_init(&data->uart.port.lock);
++	data->uart.capabilities = UART_CAP_FIFO;
++	data->uart.port.dev = &pdev->dev;
++	data->uart.port.regshift = 2;
++	data->uart.port.type = PORT_16550;
++	data->uart.port.iotype = UPIO_MEM;
++	data->uart.port.fifosize = 8;
++	data->uart.port.flags = UPF_SHARE_IRQ |
++				UPF_FIXED_PORT |
++				UPF_FIXED_TYPE |
++				UPF_SKIP_TEST;
++
++	/* get the clock - this also enables the HW */
++	data->clk = devm_clk_get(&pdev->dev, NULL);
++	ret = PTR_ERR_OR_ZERO(data->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "could not get clk: %d\n", ret);
++		return ret;
++	}
++
++	/* get the interrupt */
++	data->uart.port.irq = platform_get_irq(pdev, 0);
++	if (data->uart.port.irq < 0) {
++		dev_err(&pdev->dev, "irq not found - %i",
++			data->uart.port.irq);
++		return data->uart.port.irq;
++	}
++
++	/* map the main registers */
++	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!res) {
++		dev_err(&pdev->dev, "memory resource not found");
++		return -EINVAL;
++	}
++	data->uart.port.membase = devm_ioremap_resource(&pdev->dev, res);
++	ret = PTR_ERR_OR_ZERO(data->uart.port.membase);
++	if (ret)
++		return ret;
++
++	/* Check for a fixed line number */
++	ret = of_alias_get_id(pdev->dev.of_node, "serial");
++	if (ret >= 0)
++		data->uart.port.line = ret;
++
++	/* enable the clock as a last step */
++	ret = clk_prepare_enable(data->clk);
++	if (ret) {
++		dev_err(&pdev->dev, "unable to enable uart clock - %d\n",
++			ret);
++		return ret;
++	}
++
++	/* the HW-clock divider for bcm2835aux is 8,
++	 * but 8250 expects a divider of 16,
++	 * so we have to multiply the actual clock by 2
++	 * to get identical baudrates.
++	 */
++	data->uart.port.uartclk = clk_get_rate(data->clk) * 2;
++
++	/* register the port */
++	ret = serial8250_register_8250_port(&data->uart);
++	if (ret < 0) {
++		dev_err(&pdev->dev, "unable to register 8250 port - %d\n",
++			ret);
++		goto dis_clk;
++	}
++	data->line = ret;
++
++	platform_set_drvdata(pdev, data);
++
++	return 0;
++
++dis_clk:
++	clk_disable_unprepare(data->clk);
++	return ret;
++}
++
++static int bcm2835aux_serial_remove(struct platform_device *pdev)
++{
++	struct bcm2835aux_data *data = platform_get_drvdata(pdev);
++
++	serial8250_unregister_port(data->uart.port.line);
++	clk_disable_unprepare(data->clk);
++
++	return 0;
++}
++
++static const struct of_device_id bcm2835aux_serial_match[] = {
++	{ .compatible = "brcm,bcm2835-aux-uart" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, bcm2835aux_serial_match);
++
++static struct platform_driver bcm2835aux_serial_driver = {
++	.driver = {
++		.name = "bcm2835-aux-uart",
++		.of_match_table = bcm2835aux_serial_match,
++	},
++	.probe  = bcm2835aux_serial_probe,
++	.remove = bcm2835aux_serial_remove,
++};
++module_platform_driver(bcm2835aux_serial_driver);
++
++MODULE_DESCRIPTION("BCM2835 auxiliar UART driver");
++MODULE_AUTHOR("Martin Sperl <kernel@martin.sperl.org>");
++MODULE_LICENSE("GPL v2");
+diff --git a/drivers/tty/serial/8250/Kconfig b/drivers/tty/serial/8250/Kconfig
+index b03cb517..67ad6b0 100644
+--- a/drivers/tty/serial/8250/Kconfig
++++ b/drivers/tty/serial/8250/Kconfig
+@@ -272,6 +272,30 @@ config SERIAL_8250_ACORN
+ 	  system, say Y to this option.  The driver can handle 1, 2, or 3 port
+ 	  cards.  If unsure, say N.
+ 
++config SERIAL_8250_BCM2835AUX
++	tristate "BCM2835 auxiliar mini UART support"
++	depends on ARCH_BCM2835 || COMPILE_TEST
++	depends on SERIAL_8250 && SERIAL_8250_SHARE_IRQ
++	help
++	  Support for the BCM2835 auxiliar mini UART.
++
++	  Features and limitations of the UART are
++	    Registers are similar to 16650 registers,
++              set bits in the control registers that are unsupported
++	      are ignored and read back as 0
++	    7/8 bit operation with 1 start and 1 stop bit
++	    8 symbols deep fifo for rx and tx
++	    SW controlled RTS and SW readable CTS
++	    Clock rate derived from system clock
++	    Uses 8 times oversampling (compared to 16 times for 16650)
++	    Missing break detection (but break generation)
++	    Missing framing error detection
++	    Missing parity bit
++	    Missing receive time-out interrupt
++	    Missing DCD, DSR, DTR and RI signals
++
++	  If unsure, say N.
++
+ config SERIAL_8250_FSL
+ 	bool
+ 	depends on SERIAL_8250_CONSOLE
+diff --git a/drivers/tty/serial/8250/Makefile b/drivers/tty/serial/8250/Makefile
+index b9b9bca..5c1869f 100644
+--- a/drivers/tty/serial/8250/Makefile
++++ b/drivers/tty/serial/8250/Makefile
+@@ -12,6 +12,7 @@ obj-$(CONFIG_SERIAL_8250_PCI)		+= 8250_pci.o
+ obj-$(CONFIG_SERIAL_8250_HP300)		+= 8250_hp300.o
+ obj-$(CONFIG_SERIAL_8250_CS)		+= serial_cs.o
+ obj-$(CONFIG_SERIAL_8250_ACORN)		+= 8250_acorn.o
++obj-$(CONFIG_SERIAL_8250_BCM2835AUX)	+= 8250_bcm2835aux.o
+ obj-$(CONFIG_SERIAL_8250_CONSOLE)	+= 8250_early.o
+ obj-$(CONFIG_SERIAL_8250_FOURPORT)	+= 8250_fourport.o
+ obj-$(CONFIG_SERIAL_8250_ACCENT)	+= 8250_accent.o
+-- 
+2.5.0
+

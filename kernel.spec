@@ -497,9 +497,13 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+# http://www.spinics.net/lists/netdev/msg369442.html
+Patch452: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
+Patch453: stmmac-fix-MDIO-settings.patch
 
-Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
+Patch454: bcm283x-add-aux-uart-support-extra-DT-bits-initial-r.patch
+
+Patch455: arm64-avoid-needing-console-to-enable-serial-console.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
@@ -508,8 +512,8 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch458: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg480703.html
-Patch459: Geekbox-device-tree-support.patch
+# http://www.spinics.net/lists/arm-kernel/msg490981.html
+Patch459: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
@@ -518,6 +522,8 @@ Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
 Patch461: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
 Patch463: arm-i.MX6-Utilite-device-dtb.patch
+
+Patch465: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
 
@@ -2170,6 +2176,11 @@ fi
 #
 # 
 %changelog
+* Fri Mar 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Upstream fix for stmmac driver regressions (AllWinner Gb NICs)
+- Update various ARM device support patches
+- General ARM updates
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - ims-pcu: sanity checking on missing interfaces
 - CVE-2016-3140 digi_acceleport: oops on invalid USB descriptors (rhbz 1317010 1316995)
@@ -2183,7 +2194,7 @@ fi
 * Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
 
-* Mon Mar 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-1
+* Mon Mar 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-300
 - Linux v4.5
 - Disable debugging options.
 
