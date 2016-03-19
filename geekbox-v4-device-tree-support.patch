@@ -1,19 +1,21 @@
-From a516bbf04744817e49e173b2a217a2a6366b5f9c Mon Sep 17 00:00:00 2001
+From 4d321bf15d2d5e5b1b674f2a26a1c5202090a800 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
-Date: Wed, 2 Mar 2016 18:12:09 +0000
-Subject: [PATCH] Geekbox device tree support
+Date: Thu, 17 Mar 2016 15:19:04 +0000
+Subject: [PATCH] geekbox v4 patchset
 
 ---
  Documentation/devicetree/bindings/arm/rockchip.txt |   9 +
  arch/arm64/boot/dts/rockchip/Makefile              |   2 +
- .../dts/rockchip/rk3368-geekbox-landingship.dts    |  56 ++++
- arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts    | 321 +++++++++++++++++++++
- 4 files changed, 388 insertions(+)
+ arch/arm64/boot/dts/rockchip/rk3368-evb.dtsi       |   2 +-
+ .../dts/rockchip/rk3368-geekbox-landingship.dts    |  57 ++++
+ arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts    | 319 +++++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3368-r88.dts        |   2 +-
+ 6 files changed, 389 insertions(+), 2 deletions(-)
  create mode 100644 arch/arm64/boot/dts/rockchip/rk3368-geekbox-landingship.dts
  create mode 100644 arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
 
 diff --git a/Documentation/devicetree/bindings/arm/rockchip.txt b/Documentation/devicetree/bindings/arm/rockchip.txt
-index 078c14f..c6d95f2 100644
+index 078c14f..ae84f4e 100644
 --- a/Documentation/devicetree/bindings/arm/rockchip.txt
 +++ b/Documentation/devicetree/bindings/arm/rockchip.txt
 @@ -87,6 +87,15 @@ Rockchip platforms device tree bindings
@@ -24,9 +26,9 @@ index 078c14f..c6d95f2 100644
 +    Required root node properties:
 +      - compatible = "geekbuying,geekbox", "rockchip,rk3368";
 +
-+- GeekBuying Landingship:
++- GeekBuying Landingship with GeekBox module:
 +    Required root node properties:
-+      - compatible = "geekbuying,landingship",
++      - compatible = "geekbuying,geekbox-landingship",
 +		     "geekbuying,geekbox", "rockchip,rk3368";
 +
  - Rockchip RK3368 evb:
@@ -43,12 +45,25 @@ index e3f0b5f..201bcd9 100644
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-r88.dtb
  
  always		:= $(dtb-y)
+diff --git a/arch/arm64/boot/dts/rockchip/rk3368-evb.dtsi b/arch/arm64/boot/dts/rockchip/rk3368-evb.dtsi
+index 8c219cc..e4ceb53 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3368-evb.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3368-evb.dtsi
+@@ -48,7 +48,7 @@
+ 		stdout-path = "serial2:115200n8";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x0 0x0 0x40000000>;
+ 	};
 diff --git a/arch/arm64/boot/dts/rockchip/rk3368-geekbox-landingship.dts b/arch/arm64/boot/dts/rockchip/rk3368-geekbox-landingship.dts
 new file mode 100644
-index 0000000..e4a1175
+index 0000000..a28ace9
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3368-geekbox-landingship.dts
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,57 @@
 +/*
 + * Copyright (c) 2016 Andreas Färber
 + *
@@ -95,11 +110,12 @@ index 0000000..e4a1175
 +
 +/ {
 +	model = "GeekBox on Landingship";
-+	compatible = "geekbuying,landingship", "geekbuying,geekbox", "rockchip,rk3368";
++	compatible = "geekbuying,geekbox-landingship",
++		     "geekbuying,geekbox", "rockchip,rk3368";
 +};
 +
 +&i2c1 {
-+	status = "okay";
++	status = "disabled";
 +};
 +
 +&i2c2 {
@@ -107,10 +123,10 @@ index 0000000..e4a1175
 +};
 diff --git a/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts b/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
 new file mode 100644
-index 0000000..7e51876
+index 0000000..46cdddf
 --- /dev/null
 +++ b/arch/arm64/boot/dts/rockchip/rk3368-geekbox.dts
-@@ -0,0 +1,321 @@
+@@ -0,0 +1,319 @@
 +/*
 + * Copyright (c) 2016 Andreas Färber
 + *
@@ -155,6 +171,7 @@ index 0000000..7e51876
 +
 +/dts-v1/;
 +#include "rk3368.dtsi"
++#include <dt-bindings/input/input.h>
 +
 +/ {
 +	model = "GeekBox";
@@ -164,7 +181,7 @@ index 0000000..7e51876
 +		stdout-path = "serial2:115200n8";
 +	};
 +
-+	memory {
++	memory@0 {
 +		device_type = "memory";
 +		reg = <0x0 0x0 0x0 0x80000000>;
 +	};
@@ -187,15 +204,12 @@ index 0000000..7e51876
 +		compatible = "gpio-keys";
 +		pinctrl-names = "default";
 +		pinctrl-0 = <&pwr_key>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
 +
-+		button@0 {
-+			reg = <0>;
-+			gpio-key,wakeup = <1>;
++		power {
 +			gpios = <&gpio0 2 GPIO_ACTIVE_LOW>;
 +			label = "GPIO Power";
-+			linux,code = <116>;
++			linux,code = <KEY_POWER>;
++			wakeup-source;
 +		};
 +	};
 +
@@ -390,13 +404,13 @@ index 0000000..7e51876
 +&pinctrl {
 +	ir {
 +		ir_int: ir-int {
-+			rockchip,pins = <3 30 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <3 30 RK_FUNC_GPIO &pcfg_pull_none>;
 +		};
 +	};
 +
 +	keys {
 +		pwr_key: pwr-key {
-+			rockchip,pins = <0 2 RK_FUNC_GPIO &pcfg_pull_up>;
++			rockchip,pins = <0 2 RK_FUNC_GPIO &pcfg_pull_none>;
 +		};
 +	};
 +
@@ -414,7 +428,7 @@ index 0000000..7e51876
 +&tsadc {
 +	status = "okay";
 +	rockchip,hw-tshut-mode = <0>; /* CRU */
-+	rockchip,hw-tshut-polarity = <0>; /* low */
++	rockchip,hw-tshut-polarity = <1>; /* high */
 +};
 +
 +&uart2 {
@@ -432,6 +446,19 @@ index 0000000..7e51876
 +&wdt {
 +	status = "okay";
 +};
+diff --git a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
+index 104cbee..9548129 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
+@@ -51,7 +51,7 @@
+ 		stdout-path = "serial2:115200n8";
+ 	};
+ 
+-	memory {
++	memory@0 {
+ 		device_type = "memory";
+ 		reg = <0x0 0x0 0x0 0x40000000>;
+ 	};
 -- 
 2.5.0
 

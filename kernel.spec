@@ -508,8 +508,8 @@ Patch457: ARM-tegra-usb-no-reset.patch
 
 Patch458: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg480703.html
-Patch459: Geekbox-device-tree-support.patch
+# http://www.spinics.net/lists/arm-kernel/msg490981.html
+Patch459: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
@@ -2166,6 +2166,7 @@ fi
 * Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM cleanups
 - Drop ARM_PATCH_IDIV work around
+- Update geekbox patch to v4
 
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git11.1
 - Linux v4.5-6229-gf7813ad5cbfd
