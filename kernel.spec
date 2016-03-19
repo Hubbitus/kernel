@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 11
+%define gitrev 12
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -608,9 +608,6 @@ Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
-#rhbz 1309658
-Patch648: 0001-mm-CONFIG_NR_ZONES_EXTENDED.patch
-
 #rhbz 1316136
 Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 
@@ -631,19 +628,14 @@ Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
 
-#CVE-2016-2188 rhbz 1317018 1317467
-Patch674: USB-iowarrior-fix-oops-with-malicious-USB-descriptor.patch
-
-#CVE-2016-2185 rhbz 1317014 1317471
-Patch675: usb_driver_claim_interface-add-sanity-checking.patch
-
-#CVE-2016-3138 rhbz 1317010 1316204
-Patch676: cdc-acm-more-sanity-checking.patch
-
 #CVE-2016-3140 rhbz 1317010 1316995
 Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
 Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
+
+Patch680: ALSA-hda-Really-restrict-i915-notifier-to-HSW.patch
+Patch681: ALSA-hda-Fix-forgotten-HDMI-monitor_present-update.patch
+Patch682: ALSA-hda-Fix-spurious-kernel-WARNING-on-Baytrail-HDM.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2167,6 +2159,10 @@ fi
 #
 # 
 %changelog
+* Sat Mar 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git12.1
+- Linux v4.5-6486-g6b5f04b6cf8e
+- cgroup, libata, workqueue, block, akpm, usb merges
+
 * Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM cleanups
 - Drop ARM_PATCH_IDIV work around
