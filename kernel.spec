@@ -2163,6 +2163,10 @@ fi
 #
 # 
 %changelog
+* Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM cleanups
+- Drop ARM_PATCH_IDIV work around
+
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git11.1
 - Linux v4.5-6229-gf7813ad5cbfd
 - ipmi, mfd, sound merges
