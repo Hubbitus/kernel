@@ -499,7 +499,11 @@ Source5005: kbuild-AFTER_LINK.patch
 
 Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
-Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
+Patch452: arm64-avoid-needing-console-to-enable-serial-console.patch
+
+# http://www.spinics.net/lists/netdev/msg369442.html
+Patch453: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
+Patch454: stmmac-fix-MDIO-settings.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
@@ -2167,6 +2171,7 @@ fi
 - Minor ARM cleanups
 - Drop ARM_PATCH_IDIV work around
 - Update geekbox patch to v4
+- Upstream fix for stmmac driver regressions (AllWinner Gb NICs)
 
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git11.1
 - Linux v4.5-6229-gf7813ad5cbfd
