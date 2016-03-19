@@ -2176,7 +2176,7 @@ fi
 #
 # 
 %changelog
-* Fri Mar 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Upstream fix for stmmac driver regressions (AllWinner Gb NICs)
 - Update various ARM device support patches
 - General ARM updates
