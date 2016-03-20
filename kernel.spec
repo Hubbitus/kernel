@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 12
+%define gitrev 13
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -502,8 +502,8 @@ Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 Patch452: arm64-avoid-needing-console-to-enable-serial-console.patch
 
 # http://www.spinics.net/lists/netdev/msg369442.html
-Patch453: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
-Patch454: stmmac-fix-MDIO-settings.patch
+#atch453 revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
+#atch454 stmmac-fix-MDIO-settings.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
 
@@ -611,14 +611,8 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 #rhbz 1316136
 Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 
-#CVE-2016-3135 rhbz 1317386 1317387
-Patch664: netfilter-x_tables-check-for-size-overflow.patch
-
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2016-3135 rhbz 1318172 1318270
-Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 
 Patch667: intel_pstate-Do-not-call-wrmsrl_on_cpu-with-disabled.patch
 
@@ -2159,6 +2153,10 @@ fi
 #
 # 
 %changelog
+* Sat Mar 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git13.1
+- Linux v4.5-8194-g1200b6809dfd
+- net merge
+
 * Sat Mar 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git12.1
 - Linux v4.5-6486-g6b5f04b6cf8e
 - cgroup, libata, workqueue, block, akpm, usb merges
