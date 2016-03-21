@@ -629,6 +629,15 @@ Patch680: ALSA-hda-Really-restrict-i915-notifier-to-HSW.patch
 Patch681: ALSA-hda-Fix-forgotten-HDMI-monitor_present-update.patch
 Patch682: ALSA-hda-Fix-spurious-kernel-WARNING-on-Baytrail-HDM.patch
 
+#rhbz 1315013
+Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
+
+#rhbz 1317190
+Patch684: thermal-fix.patch
+
+#rhbz 1318079
+Patch685: 0001-Input-synaptics-handle-spurious-release-of-trackstic.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2151,6 +2160,11 @@ fi
 #
 # 
 %changelog
+* Mon Mar 21 2016 Laura Abbott <labbott@fedoraproject.org>
+- uas: Limit qdepth at the scsi-host level (rhbz 1315013)
+- Fix for performance regression caused by thermal (rhbz 1317190)
+- Input: synaptics - handle spurious release of trackstick buttons, again (rhbz 1318079)
+
 * Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git16.1
 - Linux v4.5-9542-g643ad15d4741
 - pekeys, efi, objtool merges
