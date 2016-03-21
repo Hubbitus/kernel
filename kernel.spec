@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 14
+%define gitrev 15
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -509,8 +509,6 @@ Patch456: arm64-acpi-drop-expert-patch.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch457: ARM-tegra-usb-no-reset.patch
-
-Patch458: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch459: geekbox-v4-device-tree-support.patch
@@ -2153,6 +2151,10 @@ fi
 #
 # 
 %changelog
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git15.1
+- Linux v4.5-9406-g46e595a17dcf
+- xtensa, mailbox, vhost, all the armsoc merges
+
 * Mon Mar 21 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor aarch64 cleanups
 
