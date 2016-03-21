@@ -1,0 +1,31 @@
+From cb6fcfe5a7e9197ceb7e9eec56e9c526e4e76354 Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Mon, 14 Mar 2016 19:37:12 +0100
+Subject: [PATCH] Input: synaptics - handle spurious release of trackstick
+ buttons, again
+
+Looks like the fimware 8.2 stall has the extra buttons spurious release
+bug.
+
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+---
+ drivers/input/mouse/synaptics.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/input/mouse/synaptics.c b/drivers/input/mouse/synaptics.c
+index 6025eb4..4ef8d7a 100644
+--- a/drivers/input/mouse/synaptics.c
++++ b/drivers/input/mouse/synaptics.c
+@@ -863,7 +863,8 @@ static void synaptics_report_ext_buttons(struct psmouse *psmouse,
+ 		return;
+ 
+ 	/* Bug in FW 8.1, buttons are reported only when ExtBit is 1 */
+-	if (SYN_ID_FULL(priv->identity) == 0x801 &&
++	if ((SYN_ID_FULL(priv->identity) == 0x801 ||
++	     SYN_ID_FULL(priv->identity) == 0x802) &&
+ 	    !((psmouse->packet[0] ^ psmouse->packet[3]) & 0x02))
+ 		return;
+ 
+-- 
+2.5.0
+

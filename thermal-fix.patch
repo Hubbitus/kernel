@@ -1,0 +1,77 @@
+From 81ad4276b505e987dd8ebbdf63605f92cd172b52 Mon Sep 17 00:00:00 2001
+From: Zhang Rui <rui.zhang@intel.com>
+Date: Fri, 18 Mar 2016 10:03:24 +0800
+Subject: [PATCH] Thermal: Ignore invalid trip points
+
+In some cases, platform thermal driver may report invalid trip points,
+thermal core should not take any action for these trip points.
+
+CC: <stable@vger.kernel.org> #3.18+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1317190
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=114551
+Signed-off-by: Zhang Rui <rui.zhang@intel.com>
+---
+ drivers/thermal/thermal_core.c | 13 ++++++++++++-
+ include/linux/thermal.h        |  2 ++
+ 2 files changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/thermal_core.c b/drivers/thermal/thermal_core.c
+index a0a8fd1..d4b5465 100644
+--- a/drivers/thermal/thermal_core.c
++++ b/drivers/thermal/thermal_core.c
+@@ -454,6 +454,10 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip)
+ {
+ 	enum thermal_trip_type type;
+ 
++	/* Ignore disabled trip points */
++	if (test_bit(trip, &tz->trips_disabled))
++		return;
++
+ 	tz->ops->get_trip_type(tz, trip, &type);
+ 
+ 	if (type == THERMAL_TRIP_CRITICAL || type == THERMAL_TRIP_HOT)
+@@ -1800,6 +1804,7 @@ struct thermal_zone_device *thermal_zone_device_register(const char *type,
+ {
+ 	struct thermal_zone_device *tz;
+ 	enum thermal_trip_type trip_type;
++	int trip_temp;
+ 	int result;
+ 	int count;
+ 	int passive = 0;
+@@ -1871,9 +1876,15 @@ struct thermal_zone_device *thermal_zone_device_register(const char *type,
+ 		goto unregister;
+ 
+ 	for (count = 0; count < trips; count++) {
+-		tz->ops->get_trip_type(tz, count, &trip_type);
++		if (tz->ops->get_trip_type(tz, count, &trip_type))
++			set_bit(count, &tz->trips_disabled);
+ 		if (trip_type == THERMAL_TRIP_PASSIVE)
+ 			passive = 1;
++		if (tz->ops->get_trip_temp(tz, count, &trip_temp))
++			set_bit(count, &tz->trips_disabled);
++		/* Check for bogus trip points */
++		if (trip_temp == 0)
++			set_bit(count, &tz->trips_disabled);
+ 	}
+ 
+ 	if (!passive) {
+diff --git a/include/linux/thermal.h b/include/linux/thermal.h
+index 9c48199..a55d052 100644
+--- a/include/linux/thermal.h
++++ b/include/linux/thermal.h
+@@ -156,6 +156,7 @@ struct thermal_attr {
+  * @trip_hyst_attrs:	attributes for trip points for sysfs: trip hysteresis
+  * @devdata:	private pointer for device private data
+  * @trips:	number of trip points the thermal zone supports
++ * @trips_disabled;	bitmap for disabled trips
+  * @passive_delay:	number of milliseconds to wait between polls when
+  *			performing passive cooling.
+  * @polling_delay:	number of milliseconds to wait between polls when
+@@ -191,6 +192,7 @@ struct thermal_zone_device {
+ 	struct thermal_attr *trip_hyst_attrs;
+ 	void *devdata;
+ 	int trips;
++	unsigned long trips_disabled;	/* bitmap for disabled trips */
+ 	int passive_delay;
+ 	int polling_delay;
+ 	int temperature;
