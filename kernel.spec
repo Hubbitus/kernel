@@ -2153,6 +2153,9 @@ fi
 #
 # 
 %changelog
+* Mon Mar 21 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor aarch64 cleanups
+
 * Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git14.1
 - Linux v4.5-8524-g1e75a9f34a5e
 - watchdog, firewire, vfs, linux-arm, sh, powerpc, audit, device tree merges
