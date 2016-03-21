@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 16
+%define gitrev 17
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2160,6 +2160,10 @@ fi
 #
 # 
 %changelog
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git17.1
+- Linux v4.5-9714-g53d2e6976bd4
+- xfs, f2fs, cgroup merges
+
 * Mon Mar 21 2016 Laura Abbott <labbott@fedoraproject.org>
 - uas: Limit qdepth at the scsi-host level (rhbz 1315013)
 - Fix for performance regression caused by thermal (rhbz 1317190)

@@ -4511,6 +4511,8 @@ CONFIG_MFD_VIPERBOARD=m
 #
 CONFIG_MISC_FILESYSTEMS=y
 
+# CONFIG_FS_ENCRYPTION is not set
+
 # ext4 is used for ext2 and ext3 filesystems
 # CONFIG_EXT2_FS is not set
 # CONFIG_EXT3_FS is not set
