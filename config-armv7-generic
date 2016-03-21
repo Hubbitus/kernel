@@ -48,6 +48,9 @@ CONFIG_CPU_SW_DOMAIN_PAN=y
 # CONFIG_XIP_KERNEL is not set
 # CONFIG_ARM_VIRT_EXT is not set
 
+# CONFIG_DEBUG_RODATA is not set
+# CONFIG_DEBUG_ALIGN_RODATA is not set
+
 # Platforms enabled/disabled globally on ARMv7
 CONFIG_ARCH_BCM2835=y
 CONFIG_ARCH_EXYNOS=y
