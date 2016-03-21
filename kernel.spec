@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 15
+%define gitrev 16
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2151,6 +2151,10 @@ fi
 #
 # 
 %changelog
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git16.1
+- Linux v4.5-9542-g643ad15d4741
+- pekeys, efi, objtool merges
+
 * Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git15.1
 - Linux v4.5-9406-g46e595a17dcf
 - xtensa, mailbox, vhost, all the armsoc merges
