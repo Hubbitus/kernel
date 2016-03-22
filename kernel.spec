@@ -638,6 +638,9 @@ Patch684: thermal-fix.patch
 #rhbz 1318079
 Patch685: 0001-Input-synaptics-handle-spurious-release-of-trackstic.patch
 
+#CVE-2016-2187 rhbz 1317017 1317010
+Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2160,6 +2163,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git19.1
 - Linux v4.5-11118-g968f3e374faf
 - btrfs, mmc, md merges
