@@ -1,7 +1,7 @@
 From e9c2a3972496927631a1a98fef43e9538e9fd5d5 Mon Sep 17 00:00:00 2001
 From: Oliver Neukum <oneukum@suse.com>
 Date: Mon, 14 Mar 2016 15:53:38 +0100
-Subject: [PATCH] digi_acceleport: do sanity checking for the number of ports
+Subject: [PATCH v2] digi_acceleport: do sanity checking for the number of ports
 
 The driver can be crashed with devices that expose crafted
 descriptors with too few endpoints.
@@ -9,26 +9,62 @@ See:
 http://seclists.org/bugtraq/2016/Mar/61
 
 Signed-off-by: Oliver Neukum <ONeukum@suse.com>
+
+v1 - added sanity checks
+v2 - moved them to probe() to fix problems Johan pointed out
 ---
- drivers/usb/serial/digi_acceleport.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/usb/serial/digi_acceleport.c | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/usb/serial/digi_acceleport.c b/drivers/usb/serial/digi_acceleport.c
-index 12b0e67473ba..c4d4d4547d40 100644
+index 12b0e67..dab1dcf 100644
 --- a/drivers/usb/serial/digi_acceleport.c
 +++ b/drivers/usb/serial/digi_acceleport.c
-@@ -1260,6 +1260,11 @@ static int digi_startup(struct usb_serial *serial)
+@@ -1252,7 +1252,8 @@ static int digi_port_init(struct usb_serial_port *port, unsigned port_num)
+ static int digi_startup(struct usb_serial *serial)
+ {
+ 	struct digi_serial *serial_priv;
+-	int ret;
++	int ret = -ENODEV;
++	int i;
+ 
+ 	serial_priv = kzalloc(sizeof(*serial_priv), GFP_KERNEL);
+ 	if (!serial_priv)
+@@ -1260,18 +1261,31 @@ static int digi_startup(struct usb_serial *serial)
  
  	spin_lock_init(&serial_priv->ds_serial_lock);
  	serial_priv->ds_oob_port_num = serial->type->num_ports;
-+	if (!(serial_priv->ds_oob_port_num == 2 && serial->type == &digi_acceleport_2_device)
-+		&& !(serial_priv->ds_oob_port_num == 4 && serial->type == &digi_acceleport_4_device)) {
-+		kfree(serial_priv);
-+		return -EINVAL;
++
++	/* Check whether the expected number of ports matches the device */
++	if (serial->num_ports < serial_priv->ds_oob_port_num)
++		goto error;
++	/* all features must be present */
++	for (i = 0; i < serial->type->num_ports + 1 ; i++) {
++		if (!serial->port[i]->read_urb)
++			goto error;
++		if (!serial->port[i]->write_urb)
++			goto error;
 +	}
++
  	serial_priv->ds_oob_port = serial->port[serial_priv->ds_oob_port_num];
  
  	ret = digi_port_init(serial_priv->ds_oob_port,
+ 						serial_priv->ds_oob_port_num);
+-	if (ret) {
+-		kfree(serial_priv);
+-		return ret;
+-	}
++	if (ret)
++		goto error;
+ 
+ 	usb_set_serial_data(serial, serial_priv);
+ 
+ 	return 0;
++error:
++	kfree(serial_priv);
++	return ret;
+ }
+ 
+ 
 -- 
-2.5.0
-
+2.1.4
