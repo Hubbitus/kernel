@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 18
+%define gitrev 19
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2160,6 +2160,10 @@ fi
 #
 # 
 %changelog
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git19.1
+- Linux v4.5-11118-g968f3e374faf
+- btrfs, mmc, md merges
+
 * Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git18.1
 - Linux v4.5-10883-g770c4c1119db
 - drm, arm64-perf, arc, udf, quota merges
