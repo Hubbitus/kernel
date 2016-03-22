@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 19
+%define gitrev 20
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -624,10 +624,6 @@ Patch672: cypress_m8-add-sanity-checking.patch
 Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
 Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
-
-Patch680: ALSA-hda-Really-restrict-i915-notifier-to-HSW.patch
-Patch681: ALSA-hda-Fix-forgotten-HDMI-monitor_present-update.patch
-Patch682: ALSA-hda-Fix-spurious-kernel-WARNING-on-Baytrail-HDM.patch
 
 #rhbz 1315013
 Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
@@ -2166,6 +2162,10 @@ fi
 #
 # 
 %changelog
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git20.1
+- Linux v4.5-11312-g01cde1538e1d
+- nfs, overlayfs, fuse, xen, i2c, target, pci, sound, iommu merges
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3136 mct_u232: oops on invalid USB descriptors (rhbz 1317007 1317010)
 - CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
