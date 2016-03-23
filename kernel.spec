@@ -2162,6 +2162,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix Tegra Jetson TK1
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git20.1
 - Linux v4.5-11312-g01cde1538e1d
 - nfs, overlayfs, fuse, xen, i2c, target, pci, sound, iommu merges
