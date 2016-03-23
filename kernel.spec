@@ -2191,6 +2191,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix Tegra Jetson TK1
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3136 mct_u232: oops on invalid USB descriptors (rhbz 1317007 1317010)
 - CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
