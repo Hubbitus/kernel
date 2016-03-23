@@ -1,0 +1,58 @@
+From patchwork Mon Nov 23 09:32:42 2015
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [09/29] drm/udl: Use unlocked gem unreferencing
+From: Daniel Vetter <daniel.vetter@ffwll.ch>
+X-Patchwork-Id: 65722
+Message-Id: <1448271183-20523-10-git-send-email-daniel.vetter@ffwll.ch>
+To: DRI Development <dri-devel@lists.freedesktop.org>
+Cc: Daniel Vetter <daniel.vetter@intel.com>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Intel Graphics Development <intel-gfx@lists.freedesktop.org>,
+ Dave Airlie <airlied@redhat.com>
+Date: Mon, 23 Nov 2015 10:32:42 +0100
+
+For drm_gem_object_unreference callers are required to hold
+dev->struct_mutex, which these paths don't. Enforcing this requirement
+has become a bit more strict with
+
+commit ef4c6270bf2867e2f8032e9614d1a8cfc6c71663
+Author: Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Thu Oct 15 09:36:25 2015 +0200
+
+    drm/gem: Check locking in drm_gem_object_unreference
+
+Cc: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+---
+ drivers/gpu/drm/udl/udl_fb.c  | 2 +-
+ drivers/gpu/drm/udl/udl_gem.c | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/udl/udl_fb.c b/drivers/gpu/drm/udl/udl_fb.c
+index 200419d4d43c..18a2acbccb7d 100644
+--- a/drivers/gpu/drm/udl/udl_fb.c
++++ b/drivers/gpu/drm/udl/udl_fb.c
+@@ -538,7 +538,7 @@ static int udlfb_create(struct drm_fb_helper *helper,
+ out_destroy_fbi:
+ 	drm_fb_helper_release_fbi(helper);
+ out_gfree:
+-	drm_gem_object_unreference(&ufbdev->ufb.obj->base);
++	drm_gem_object_unreference_unlocked(&ufbdev->ufb.obj->base);
+ out:
+ 	return ret;
+ }
+diff --git a/drivers/gpu/drm/udl/udl_gem.c b/drivers/gpu/drm/udl/udl_gem.c
+index 2a0a784ab6ee..d7528e0d8442 100644
+--- a/drivers/gpu/drm/udl/udl_gem.c
++++ b/drivers/gpu/drm/udl/udl_gem.c
+@@ -52,7 +52,7 @@ udl_gem_create(struct drm_file *file,
+ 		return ret;
+ 	}
+ 
+-	drm_gem_object_unreference(&obj->base);
++	drm_gem_object_unreference_unlocked(&obj->base);
+ 	*handle_p = handle;
+ 	return 0;
+ }

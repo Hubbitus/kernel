@@ -669,6 +669,8 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 #CVE-2016-3136 rhbz 1317007 1317010
 Patch687: mct_u232-sanity-checking-in-probe.patch
 
+#rhbz 1295646
+Patch688: 09-29-drm-udl-Use-unlocked-gem-unreferencing.patch
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2112,6 +2114,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 23 2016 Laura Abbott <labbott@fedoraproject.org>
+- drm/udl: Use unlocked gem unreferencing (rhbz 1295646)
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3136 mct_u232: oops on invalid USB descriptors (rhbz 1317007 1317010)
 - CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
