@@ -646,6 +646,7 @@ Patch674: USB-iowarrior-fix-oops-with-malicious-USB-descriptor.patch
 
 #CVE-2016-2185 rhbz 1317014 1317471
 Patch675: usb_driver_claim_interface-add-sanity-checking.patch
+Patch669: Input-ati_remote2-fix-crashes-on-detecting-device-wi.patch
 
 #CVE-2016-3138 rhbz 1317010 1316204
 Patch676: cdc-acm-more-sanity-checking.patch
