@@ -620,6 +620,9 @@ Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
 
+#CVE-2016-2185 rhbz 1317014 1317471
+Patch669: Input-ati_remote2-fix-crashes-on-detecting-device-wi.patch
+
 #CVE-2016-3140 rhbz 1317010 1316995
 Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
