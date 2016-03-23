@@ -191,12 +191,15 @@ CONFIG_INFINIBAND_CXGB4=m
 CONFIG_SCSI_CXGB3_ISCSI=m
 CONFIG_SCSI_CXGB4_ISCSI=m
 # CONFIG_INFINIBAND_CXGB3_DEBUG is not set
+CONFIG_INFINIBAND_I40IW=m
 CONFIG_INFINIBAND_NES=m
 # CONFIG_INFINIBAND_NES_DEBUG is not set
 CONFIG_INFINIBAND_QIB=m
 CONFIG_INFINIBAND_QIB_DCA=y
 CONFIG_INFINIBAND_OCRDMA=m
 CONFIG_INFINIBAND_USNIC=m
+
+CONFIG_INFINIBAND_RDMAVT=m
 
 #
 # Executable file formats
@@ -4595,6 +4598,7 @@ CONFIG_MSDOS_FS=m
 CONFIG_VFAT_FS=m
 CONFIG_FAT_DEFAULT_CODEPAGE=437
 CONFIG_FAT_DEFAULT_IOCHARSET="ascii"
+# CONFIG_FAT_DEFAULT_UTF8 is not set
 # CONFIG_NTFS_FS is not set
 
 #
@@ -4874,6 +4878,8 @@ CONFIG_HEADERS_CHECK=y
 #
 # This just changes a default enable with workqueue.debug_force_rr_cpu
 # CONFIG_DEBUG_WQ_FORCE_RR_CPU is not set
+#
+# CONFIG_KCOV is not set
 #
 # These debug options are deliberatly left on (even in 'make release' kernels).
 # They aren't that much of a performance impact, and the value

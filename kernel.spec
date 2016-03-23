@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 20
+%define gitrev 21
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2162,6 +2162,10 @@ fi
 #
 # 
 %changelog
+* Wed Mar 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git21.1
+- Linux v4.5-11787-ga24e3d414e59
+- akpm, kvm, rdma
+
 * Wed Mar 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix Tegra Jetson TK1
 
