@@ -1056,8 +1056,8 @@ index 171085a..cc89d1f 100644
 --- a/drivers/clk/sunxi/clk-factors.h
 +++ b/drivers/clk/sunxi/clk-factors.h
 @@ -26,6 +26,7 @@ struct factors_data {
- 	struct clk_factors_config *table;
- 	void (*getter) (u32 *rate, u32 parent_rate, u8 *n, u8 *k, u8 *m, u8 *p);
+ 	void (*getter)(struct factors_request *req);
+ 	void (*recalc)(struct factors_request *req);
  	const char *name;
 +	int name_idx;
  };
