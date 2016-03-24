@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 23
+%define gitrev 24
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -613,9 +613,6 @@ Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 Patch667: intel_pstate-Do-not-call-wrmsrl_on_cpu-with-disabled.patch
-
-#rhbz 1318596
-Patch668: x86-tsc-Prevent-NULL-pointer-deref-in-calibrate_dela.patch
 
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
@@ -2165,6 +2162,10 @@ fi
 #
 # 
 %changelog
+* Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git24.1
+- Linux v4.5-12257-g8b97be054572
+- staging, timers, perf, irq, x86, sched, locking merges
+
 * Thu Mar 24 2016 jwboyer@gmail.com - 4.6.0-0.rc0.git23.1
 - Linux v4.5-12149-gaca04ce
 - net, pwm, target, platform-drivers merges
