@@ -1,0 +1,80 @@
+From cef7f62d5881e886cd514436bc386a7202af25f1 Mon Sep 17 00:00:00 2001
+From: Nicolai Stange <nicstange@gmail.com>
+Date: Tue, 15 Mar 2016 13:35:06 +0100
+Subject: [PATCH] sound/usb: fix NULL dereference in usb_audio_probe()
+
+With commit
+
+  aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+                 media resources")
+
+an access to quirk->media_device without checking for quirk != NULL has
+been introduced in usb_audio_probe().
+
+With a Plantronics USB headset (device ID 0x047f:0xc010) attached,
+this results in the following splat at boot time:
+
+  BUG: unable to handle kernel NULL pointer dereference at 0000000000000014
+  IP: [<ffffffffa089aa6c>] usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+  Oops: 0000 [#1] SMP
+  [...]
+  CPU: 2 PID: 696 Comm: systemd-udevd Not tainted 4.5.0-next-20160315 #13
+  Hardware name: Dell Inc. Latitude E6540/0725FP, BIOS A10 06/26/2014
+  task: ffff88021c88d7c0 ti: ffff88003d5b0000 task.ti: ffff88003d5b0000
+  RIP: 0010:[<ffffffffa089aa6c>]  [<ffffffffa089aa6c>]
+                                usb_audio_probe+0x2cc/0x9a0 [snd_usb_audio]
+  [...]
+  Call Trace:
+   [<ffffffff815a8e16>] usb_probe_interface+0x136/0x2d0
+   [<ffffffff81509edc>] driver_probe_device+0x22c/0x440
+   [<ffffffff8150a1c1>] __driver_attach+0xd1/0xf0
+   [<ffffffff8150a0f0>] ? driver_probe_device+0x440/0x440
+   [<ffffffff815077ec>] bus_for_each_dev+0x6c/0xc0
+   [<ffffffff815095ce>] driver_attach+0x1e/0x20
+   [<ffffffff81509013>] bus_add_driver+0x1c3/0x280
+   [<ffffffff8150ab10>] driver_register+0x60/0xe0
+   [<ffffffff815a7711>] usb_register_driver+0x81/0x140
+   [<ffffffffa08c7000>] ? 0xffffffffa08c7000
+   [<ffffffffa08c701e>] usb_audio_driver_init+0x1e/0x1000 [snd_usb_audio]
+   [<ffffffff81002123>] do_one_initcall+0xb3/0x1f0
+   [<ffffffff811fb091>] ? __vunmap+0x81/0xd0
+   [<ffffffff8121b8d2>] ? kmem_cache_alloc_trace+0x182/0x1d0
+   [<ffffffff811b0267>] ? do_init_module+0x27/0x1d8
+   [<ffffffff811b029f>] do_init_module+0x5f/0x1d8
+   [<ffffffff8112ce35>] load_module+0x1fe5/0x27a0
+   [<ffffffff81129870>] ? __symbol_put+0x60/0x60
+   [<ffffffff81241690>] ? vfs_read+0x110/0x130
+   [<ffffffff8112d866>] SYSC_finit_module+0xe6/0x120
+   [<ffffffff8112d8be>] SyS_finit_module+0xe/0x10
+   [<ffffffff81003d94>] do_syscall_64+0x64/0x110
+   [<ffffffff817c0b61>] entry_SYSCALL64_slow_path+0x25/0x25
+
+After encountering this, the system-udevd process seems to be blocked
+until it is killed when hitting its timeout of 3min.
+
+In analogy to the other accesses to members of quirk in usb_audio_probe(),
+check for quirk != NULL before accessing its ->media_device.
+
+Fixes: aebb2b89bff0 ("[media] sound/usb: Use Media Controller API to share
+                      media resources")
+Signed-off-by: Nicolai Stange <nicstange@gmail.com>
+---
+ sound/usb/card.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 63244bbba8c7..479621e775bc 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -612,7 +612,7 @@ static int usb_audio_probe(struct usb_interface *intf,
+ 	if (err < 0)
+ 		goto __error;
+ 
+-	if (quirk->media_device) {
++	if (quirk && quirk->media_device) {
+ 		/* don't want to fail when media_snd_device_create() fails */
+ 		media_snd_device_create(chip, intf);
+ 	}
+-- 
+2.5.5
+

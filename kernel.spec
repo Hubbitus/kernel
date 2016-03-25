@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 25
+%define gitrev 26
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -612,8 +612,6 @@ Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-Patch667: intel_pstate-Do-not-call-wrmsrl_on_cpu-with-disabled.patch
-
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
 
@@ -636,6 +634,8 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 
 #CVE-2016-3136 rhbz 1317007 1317010
 Patch687: mct_u232-sanity-checking-in-probe.patch
+
+Patch688: sound-usb-fix-NULL-dereference-in-usb_audio_probe.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2159,6 +2159,11 @@ fi
 #
 # 
 %changelog
+* Fri Mar 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git26.1
+- Linux v4.5-12596-g11caf57f6a4b
+- asm-generic, pm+acpi, rtc, hwmon, block, mtd, ubifs, nfsd, kbuild, parisc,
+  h8, arm64, armsoc
+
 * Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git25.1
 - Linux v4.5-12330-ge46b4e2b46e1
 - trace, thermal, nfsd merges
