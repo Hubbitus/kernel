@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 24
+%define gitrev 25
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -627,9 +627,6 @@ Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
 
 #rhbz 1315013
 Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
-
-#rhbz 1317190
-Patch684: thermal-fix.patch
 
 #rhbz 1318079
 Patch685: 0001-Input-synaptics-handle-spurious-release-of-trackstic.patch
@@ -2162,6 +2159,10 @@ fi
 #
 # 
 %changelog
+* Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git25.1
+- Linux v4.5-12330-ge46b4e2b46e1
+- trace, thermal, nfsd merges
+
 * Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git24.1
 - Linux v4.5-12257-g8b97be054572
 - staging, timers, perf, irq, x86, sched, locking merges
