@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 0
+%define rcrev 1
 # The git snapshot level
-%define gitrev 26
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -615,19 +615,11 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
 
-#CVE-2016-2185 rhbz 1317014 1317471
-Patch669: Input-ati_remote2-fix-crashes-on-detecting-device-wi.patch
-
 #CVE-2016-3140 rhbz 1317010 1316995
 Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
-Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
-
 #rhbz 1315013
 Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
-
-#rhbz 1318079
-Patch685: 0001-Input-synaptics-handle-spurious-release-of-trackstic.patch
 
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
@@ -2159,6 +2151,10 @@ fi
 #
 # 
 %changelog
+* Sun Mar 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc1.git0.1
+- Linux v4.6-rc1
+- Disable debugging options.
+
 * Fri Mar 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git26.1
 - Linux v4.5-12596-g11caf57f6a4b
 - asm-generic, pm+acpi, rtc, hwmon, block, mtd, ubifs, nfsd, kbuild, parisc,
