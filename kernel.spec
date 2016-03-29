@@ -672,6 +672,10 @@ Patch687: mct_u232-sanity-checking-in-probe.patch
 
 #rhbz 1295646
 Patch688: 09-29-drm-udl-Use-unlocked-gem-unreferencing.patch
+
+# CVE-2016-3157 rhbz 1315711 1321948
+Patch689: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2115,6 +2119,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3157 xen: priv escalation on 64bit PV domains with io port access (rhbz 1315711 1321948)
+
 * Wed Mar 23 2016 Laura Abbott <labbott@fedoraproject.org>
 - drm/udl: Use unlocked gem unreferencing (rhbz 1295646)
 
