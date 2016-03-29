@@ -671,6 +671,9 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 #CVE-2016-3136 rhbz 1317007 1317010
 Patch687: mct_u232-sanity-checking-in-probe.patch
 
+# CVE-2016-3157 rhbz 1315711 1321948
+Patch688: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2192,6 +2195,9 @@ fi
 #
 # 
 %changelog
+* Tue Mar 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3157 xen: priv escalation on 64bit PV domains with io port access (rhbz 1315711 1321948)
+
 * Tue Mar 29 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Turn off DEBUG_WX (rhbz 1318599)
 
