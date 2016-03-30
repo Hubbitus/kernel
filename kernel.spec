@@ -497,33 +497,44 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-# http://www.spinics.net/lists/netdev/msg369442.html
-Patch452: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
-Patch453: stmmac-fix-MDIO-settings.patch
+Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
 
-Patch454: bcm283x-add-aux-uart-support-extra-DT-bits-initial-r.patch
-
-Patch455: arm64-avoid-needing-console-to-enable-serial-console.patch
-
-Patch456: arm64-acpi-drop-expert-patch.patch
-
-# http://patchwork.ozlabs.org/patch/587554/
-Patch457: ARM-tegra-usb-no-reset.patch
-
-Patch458: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
+Patch421: arm64-acpi-drop-expert-patch.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
-Patch459: geekbox-v4-device-tree-support.patch
+Patch422: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
-Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
+Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
+
+# http://www.spinics.net/lists/arm-kernel/msg493431.html
+Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
+
+# http://patchwork.ozlabs.org/patch/587554/
+Patch430: ARM-tegra-usb-no-reset.patch
+
+Patch431: arm-i.MX6-Utilite-device-dtb.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg25152.html
-Patch461: Fix-tegra-to-use-stdout-path-for-serial-console.patch
+Patch432: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
-Patch463: arm-i.MX6-Utilite-device-dtb.patch
+Patch433: bcm283x-Pull-upstream-fixes.patch
 
-Patch465: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+# http://www.spinics.net/lists/netdev/msg369442.html
+Patch434: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
+Patch435: stmmac-fix-MDIO-settings.patch
+
+Patch436: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
+
+# mvebu usb fixes http://www.spinics.net/lists/arm-kernel/msg493305.html
+Patch437: 0001-ARM-mvebu-Correct-unit-address-for-linksys.patch
+
+# mvebu DSA switch fixes
+# http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
+Patch438: 0001-net-dsa-mv88e6xxx-Introduce-_mv88e6xxx_phy_page_-rea.patch
+Patch439: 0002-net-dsa-mv88e6xxx-Clear-the-PDOWN-bit-on-setup.patch
+
+Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
 
@@ -2195,6 +2206,11 @@ fi
 #
 # 
 %changelog
+* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream mvebu/DSA fixes
+- Minor ARMv7 fixes
+- Boot fix for aarch64 devices with 64K page size requirements (Seattle)
+
 * Tue Mar 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3157 xen: priv escalation on 64bit PV domains with io port access (rhbz 1315711 1321948)
 

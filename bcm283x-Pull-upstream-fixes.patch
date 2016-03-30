@@ -1,8 +1,7 @@
-From 59fb5b800868d984e836ab4a38d8ba1598dc675a Mon Sep 17 00:00:00 2001
+From 1039ba1b91421a9018312f5901855fe03fbb0d1f Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
-Date: Fri, 18 Mar 2016 19:18:51 +0000
-Subject: [PATCH] bcm283x: add aux uart support, extra DT bits, initial rpi3,
- VC4 fixes and VC4 DT bindings
+Date: Wed, 30 Mar 2016 10:32:41 +0100
+Subject: [PATCH] bcm283x: Pull upstream fixes
 
 ---
  .../devicetree/bindings/arm/bcm/brcm,bcm2835.txt   |   4 +
@@ -13,7 +12,7 @@ Subject: [PATCH] bcm283x: add aux uart support, extra DT bits, initial rpi3,
  arch/arm/boot/dts/bcm2835-rpi-b-plus.dts           |   4 +
  arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts           |   4 +
  arch/arm/boot/dts/bcm2835-rpi-b.dts                |   4 +
- arch/arm/boot/dts/bcm2835-rpi.dtsi                 |  25 +
+ arch/arm/boot/dts/bcm2835-rpi.dtsi                 |  21 +
  arch/arm/boot/dts/bcm2836-rpi-2-b.dts              |   4 +
  arch/arm/boot/dts/bcm2837-rpi-3-b.dts              |  22 +
  arch/arm/boot/dts/bcm2837.dtsi                     |  68 +++
@@ -31,7 +30,7 @@ Subject: [PATCH] bcm283x: add aux uart support, extra DT bits, initial rpi3,
  drivers/tty/serial/8250/8250_bcm2835aux.c          | 146 +++++
  drivers/tty/serial/8250/Kconfig                    |  24 +
  drivers/tty/serial/8250/Makefile                   |   1 +
- 26 files changed, 1365 insertions(+), 122 deletions(-)
+ 26 files changed, 1361 insertions(+), 122 deletions(-)
  create mode 100644 Documentation/devicetree/bindings/serial/brcm,bcm2835-aux-uart.txt
  create mode 100644 arch/arm/boot/dts/bcm2835-rpi-a.dts
  create mode 100644 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
@@ -178,7 +177,7 @@ index 4859e9d..8b15f9c 100644
 +	hpd-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
 +};
 diff --git a/arch/arm/boot/dts/bcm2835-rpi.dtsi b/arch/arm/boot/dts/bcm2835-rpi.dtsi
-index 3afb9fe..40510df 100644
+index 3afb9fe..b1e8145 100644
 --- a/arch/arm/boot/dts/bcm2835-rpi.dtsi
 +++ b/arch/arm/boot/dts/bcm2835-rpi.dtsi
 @@ -1,3 +1,5 @@
@@ -200,14 +199,10 @@ index 3afb9fe..40510df 100644
  	};
  };
  
-@@ -58,3 +66,20 @@
+@@ -58,3 +66,16 @@
  	status = "okay";
  	bus-width = <4>;
  };
-+
-+&usb {
-+	power-domains = <&power RPI_POWER_DOMAIN_USB>;
-+};
 +
 +&pwm {
 +	status = "okay";
@@ -2151,5 +2146,5 @@ index b9b9bca..5c1869f 100644
  obj-$(CONFIG_SERIAL_8250_FOURPORT)	+= 8250_fourport.o
  obj-$(CONFIG_SERIAL_8250_ACCENT)	+= 8250_accent.o
 -- 
-2.5.0
+2.7.3
 

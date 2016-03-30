@@ -1,0 +1,32 @@
+From 0eebfe3b5ae99d3a825be8e45395cea478fd83d8 Mon Sep 17 00:00:00 2001
+From: Patrick Uiterwijk <patrick@puiterwijk.org>
+Date: Mon, 28 Mar 2016 21:30:41 +0000
+Subject: [PATCH] ARM: mvebu: Correct unit address for linksys
+
+The USB2 port for Armada 38x is defined to be at 58000, not at
+50000.
+
+Acked-by: Imre Kaloz <kaloz@openwrt.org>
+Cc: <stable@vger.kernel.org>
+Fixes: 2d0a7addbd10 ("ARM: Kirkwood: Add support for many Synology NAS devices")
+Signed-off-by: Patrick Uiterwijk <patrick@puiterwijk.org>
+---
+ arch/arm/boot/dts/armada-385-linksys.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/armada-385-linksys.dtsi b/arch/arm/boot/dts/armada-385-linksys.dtsi
+index 3710755..85d2c37 100644
+--- a/arch/arm/boot/dts/armada-385-linksys.dtsi
++++ b/arch/arm/boot/dts/armada-385-linksys.dtsi
+@@ -117,7 +117,7 @@
+ 			};
+ 
+ 			/* USB part of the eSATA/USB 2.0 port */
+-			usb@50000 {
++			usb@58000 {
+ 				status = "okay";
+ 			};
+ 
+-- 
+2.5.0
+
