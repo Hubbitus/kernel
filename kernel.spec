@@ -497,29 +497,33 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
 
-Patch452: arm64-avoid-needing-console-to-enable-serial-console.patch
-
-# http://www.spinics.net/lists/netdev/msg369442.html
-#atch453 revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
-#atch454 stmmac-fix-MDIO-settings.patch
-
-Patch456: arm64-acpi-drop-expert-patch.patch
-
-# http://patchwork.ozlabs.org/patch/587554/
-Patch457: ARM-tegra-usb-no-reset.patch
+Patch421: arm64-acpi-drop-expert-patch.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
-Patch459: geekbox-v4-device-tree-support.patch
+Patch422: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
-Patch460: Initial-AllWinner-A64-and-PINE64-support.patch
+Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
+
+# http://patchwork.ozlabs.org/patch/587554/
+Patch430: ARM-tegra-usb-no-reset.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg25152.html
-Patch461: Fix-tegra-to-use-stdout-path-for-serial-console.patch
+Patch431: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
-Patch463: arm-i.MX6-Utilite-device-dtb.patch
+Patch432: arm-i.MX6-Utilite-device-dtb.patch
+
+# mvebu usb fixes http://www.spinics.net/lists/arm-kernel/msg493305.html
+Patch433: 0001-ARM-mvebu-Correct-unit-address-for-linksys.patch
+
+# mvebu DSA switch fixes
+# http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
+Patch434: 0001-net-dsa-mv88e6xxx-Introduce-_mv88e6xxx_phy_page_-rea.patch
+Patch435: 0002-net-dsa-mv88e6xxx-Clear-the-PDOWN-bit-on-setup.patch
+
+Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
 
@@ -2151,6 +2155,10 @@ fi
 #
 # 
 %changelog
+* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add ARMv7 mvebu fixes headed upstream
+- Minor ARMv7 cleanups
+
 * Sun Mar 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc1.git0.1
 - Linux v4.6-rc1
 - Disable debugging options.
