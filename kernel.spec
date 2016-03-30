@@ -2206,7 +2206,7 @@ fi
 #
 # 
 %changelog
-* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org> - 4.5.0-302
 - Add upstream mvebu/DSA fixes
 - Minor ARMv7 fixes
 - Boot fix for aarch64 devices with 64K page size requirements (Seattle)
