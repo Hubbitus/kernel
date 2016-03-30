@@ -507,6 +507,9 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
+# http://www.spinics.net/lists/arm-kernel/msg493431.html
+Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -2158,6 +2161,7 @@ fi
 * Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add ARMv7 mvebu fixes headed upstream
 - Minor ARMv7 cleanups
+- Boot fix for aarch64 devices with 64K page size requirements (Seattle)
 
 * Sun Mar 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc1.git0.1
 - Linux v4.6-rc1
