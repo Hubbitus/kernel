@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2119,6 +2119,9 @@ fi
 #
 # 
 %changelog
+* Wed Mar 30 2016 Laura Abbott <labbott@redhat.com> - 4.4.6-301
+- Bump and build
+
 * Tue Mar 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3157 xen: priv escalation on 64bit PV domains with io port access (rhbz 1315711 1321948)
 
