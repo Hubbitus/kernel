@@ -636,6 +636,9 @@ Patch687: mct_u232-sanity-checking-in-probe.patch
 
 Patch688: sound-usb-fix-NULL-dereference-in-usb_audio_probe.patch
 
+#rhbz 1321749
+Patch689: uapi-linux-stddef.h-Provide-__always_inline-to-users.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2162,6 +2165,7 @@ fi
 # 
 %changelog
 * Wed Mar 30 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix undefined __always_inline in exported headers (rhbz 1321749)
 - Make sure to install objtool in -devel subpackage if it exists (rhbz 1321628)
 
 * Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>

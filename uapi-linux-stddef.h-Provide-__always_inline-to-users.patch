@@ -1,0 +1,42 @@
+From dd39fab52b6b8e86381d0da847a0252384926832 Mon Sep 17 00:00:00 2001
+From: Denys Vlasenko <dvlasenk@redhat.com>
+Date: Wed, 30 Mar 2016 00:14:57 +0200
+Subject: [PATCH] uapi/linux/stddef.h: Provide __always_inline to userspace
+ headers
+
+Recent change to uapi/linux/swab.h needs this.
+
+Unfortunately, UAPI headers don't include compiler.h and fixing it there is not enough.
+
+Tested. Testcase: "make headers_install" and try to compile this:
+
+	#include <linux/swab.h>
+	void main() {}
+
+Signed-off-by: Denys Vlasenko <dvlasenk@redhat.com>
+CC: Josh Boyer <jwboyer@fedoraproject.org>
+CC: Thomas Graf <tgraf@suug.ch>
+CC: Peter Zijlstra <peterz@infradead.org>
+CC: David Rientjes <rientjes@google.com>
+CC: Arnd Bergmann <arnd@arndb.de>
+CC: Ingo Molnar <mingo@kernel.org>
+CC: Andrew Morton <akpm@linux-foundation.org>
+CC: Linus Torvalds <torvalds@linux-foundation.org>
+CC: linux-kernel@vger.kernel.org
+---
+ include/uapi/linux/stddef.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/uapi/linux/stddef.h b/include/uapi/linux/stddef.h
+index aa9f10428743..621fa8ac4425 100644
+--- a/include/uapi/linux/stddef.h
++++ b/include/uapi/linux/stddef.h
+@@ -1 +1,5 @@
+ #include <linux/compiler.h>
++
++#ifndef __always_inline
++#define __always_inline inline
++#endif
+-- 
+2.5.5
+
