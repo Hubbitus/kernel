@@ -619,6 +619,9 @@ Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#CVE-2016-2184 rhbz 1317012 1317470
+Patch668: ALSA-usb-audio-Fix-double-free-in-error-paths-after-.patch
+
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
 
@@ -2164,6 +2167,9 @@ fi
 #
 # 
 %changelog
+* Thu Mar 31 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add another patch for CVE-2016-2184
+
 * Wed Mar 30 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix undefined __always_inline in exported headers (rhbz 1321749)
 - Make sure to install objtool in -devel subpackage if it exists (rhbz 1321628)
