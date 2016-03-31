@@ -645,6 +645,8 @@ Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
 #CVE-2016-2184 rhbz 1317012 1317470
 Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
 Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
+Patch667: ALSA-usb-audio-Minor-code-cleanup-in-create_fixed_st.patch
+Patch668: ALSA-usb-audio-Fix-double-free-in-error-paths-after-.patch
 
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
@@ -2206,6 +2208,9 @@ fi
 #
 # 
 %changelog
+* Thu Mar 31 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add two more patches for CVE-2016-2184
+
 * Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org> - 4.5.0-302
 - Add upstream mvebu/DSA fixes
 - Minor ARMv7 fixes
