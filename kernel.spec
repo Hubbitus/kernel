@@ -2167,6 +2167,9 @@ fi
 #
 # 
 %changelog
+* Sun Apr  3 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some minor ARMv7/aarch64 cleanups
+
 * Thu Mar 31 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add another patch for CVE-2016-2184
 
