@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,7 +67,7 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 1
+%define rcrev 2
 # The git snapshot level
 %define gitrev 0
 # Set rpm version accordingly
@@ -523,8 +523,6 @@ Patch433: 0001-ARM-mvebu-Correct-unit-address-for-linksys.patch
 
 # mvebu DSA switch fixes
 # http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
-Patch434: 0001-net-dsa-mv88e6xxx-Introduce-_mv88e6xxx_phy_page_-rea.patch
-Patch435: 0002-net-dsa-mv88e6xxx-Clear-the-PDOWN-bit-on-setup.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -607,9 +605,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
-#rhbz 1295646
-Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
-
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
@@ -618,9 +613,6 @@ Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2016-2184 rhbz 1317012 1317470
-Patch668: ALSA-usb-audio-Fix-double-free-in-error-paths-after-.patch
 
 #CVE-2016-3137 rhbz 1317010 1316996
 Patch672: cypress_m8-add-sanity-checking.patch
@@ -638,9 +630,6 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 Patch687: mct_u232-sanity-checking-in-probe.patch
 
 Patch688: sound-usb-fix-NULL-dereference-in-usb_audio_probe.patch
-
-#rhbz 1321749
-Patch689: uapi-linux-stddef.h-Provide-__always_inline-to-users.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2167,6 +2156,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git0.1
+- Linux v4.6-rc2
+
 * Sun Apr  3 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some minor ARMv7/aarch64 cleanups
 
