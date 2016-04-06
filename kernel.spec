@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -628,8 +628,6 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 
 #CVE-2016-3136 rhbz 1317007 1317010
 Patch687: mct_u232-sanity-checking-in-probe.patch
-
-Patch688: sound-usb-fix-NULL-dereference-in-usb_audio_probe.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2156,6 +2154,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 06 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git2.1
+- Linux v4.6-rc2-84-g541d8f4
+
 * Tue Apr 05 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git1.1
 - Linux v4.6-rc2-42-g1e1e5ce
 - Reenable debugging options.
