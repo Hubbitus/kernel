@@ -687,6 +687,9 @@ Patch687: mct_u232-sanity-checking-in-probe.patch
 # CVE-2016-3157 rhbz 1315711 1321948
 Patch688: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
 
+# CVE-2016-3672 rhbz 1324749 1324750
+Patch689: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2208,6 +2211,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
+
 * Sun Apr  3 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some minor ARMv7/aarch64 cleanups
 
