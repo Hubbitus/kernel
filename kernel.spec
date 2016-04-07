@@ -678,6 +678,9 @@ Patch688: 09-29-drm-udl-Use-unlocked-gem-unreferencing.patch
 # CVE-2016-3157 rhbz 1315711 1321948
 Patch689: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
 
+# CVE-2016-3672 rhbz 1324749 1324750
+Patch690: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2121,6 +2124,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
+
 * Thu Mar 31 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add two more patches for CVE-2016-2184
 
