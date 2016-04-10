@@ -2154,6 +2154,9 @@ fi
 #
 # 
 %changelog
+* Sun Apr 10 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Use the correct MMC driver for some ARM platforms
+
 * Fri Apr 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git4.1
 - Linux v4.6-rc2-151-g3c96888
 
