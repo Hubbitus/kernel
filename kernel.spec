@@ -687,6 +687,10 @@ Patch692: ext4-move-unlocked-dio-protection-from-ext4_alloc_fi.patch
 Patch693: ext4-fix-races-between-buffered-IO-and-collapse-inse.patch
 Patch694: ext4-fix-races-of-writeback-with-punch-hole-and-zero.patch
 
+#CVE-2016-3951 rhbz 1324782 1324815
+Patch695: cdc_ncm-do-not-call-usbnet_link_change-from-cdc_ncm_.patch
+Patch696: usbnet-cleanup-after-bind-in-probe.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2131,6 +2135,7 @@ fi
 # 
 %changelog
 * Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3951 usbnet: crash on invalid USB descriptors (rhbz 1324782 1324815)
 - CVE-2015-8839 ext4: data corruption due to punch hole races (rhbz 1323577 1323579)
 
 * Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
