@@ -681,6 +681,12 @@ Patch689: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch690: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
 
+#CVE-2015-8839 rhbz 1323577 1323579
+Patch691: ext4-fix-races-between-page-faults-and-hole-punching.patch
+Patch692: ext4-move-unlocked-dio-protection-from-ext4_alloc_fi.patch
+Patch693: ext4-fix-races-between-buffered-IO-and-collapse-inse.patch
+Patch694: ext4-fix-races-of-writeback-with-punch-hole-and-zero.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2124,6 +2130,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2015-8839 ext4: data corruption due to punch hole races (rhbz 1323577 1323579)
+
 * Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
 
