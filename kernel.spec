@@ -520,7 +520,7 @@ Patch431: arm-i.MX6-Utilite-device-dtb.patch
 # http://www.spinics.net/lists/linux-tegra/msg25152.html
 Patch432: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
-Patch433: bcm283x-Pull-upstream-fixes.patch
+Patch433: bcm283x-Pull-upstream-fixes-plus-iproc-mmc-driver.patch
 
 # http://www.spinics.net/lists/netdev/msg369442.html
 Patch434: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
@@ -2215,6 +2215,7 @@ fi
 %changelog
 * Mon Apr 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add upstream patch to fix IDIV issue when booting on Cortex-A7/15/17 devices
+- Update bcm238x patch
 
 * Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
