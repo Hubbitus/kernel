@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3 
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -608,26 +608,14 @@ Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
-#rhbz 1316136
-Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
-
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2016-3137 rhbz 1317010 1316996
-Patch672: cypress_m8-add-sanity-checking.patch
-
-#CVE-2016-3140 rhbz 1317010 1316995
-Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
 
 #rhbz 1315013
 Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
 
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
-
-#CVE-2016-3136 rhbz 1317007 1317010
-Patch687: mct_u232-sanity-checking-in-probe.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2154,6 +2142,10 @@ fi
 #
 # 
 %changelog
+* Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git0.1
+- Linux v4.6-rc3
+- Disable debugging options.
+
 * Sun Apr 10 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Use the correct MMC driver for some ARM platforms
 
