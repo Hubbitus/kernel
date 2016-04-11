@@ -510,6 +510,8 @@ Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg493431.html
 Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
 
+Patch425: arm-fix-idiv.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -2211,6 +2213,9 @@ fi
 #
 # 
 %changelog
+* Mon Apr 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream patch to fix IDIV issue when booting on Cortex-A7/15/17 devices
+
 * Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
 
