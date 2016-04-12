@@ -1,0 +1,46 @@
+From 580549ef6b3e3fb3b958de490ca99f43a089a2cf Mon Sep 17 00:00:00 2001
+From: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date: Fri, 25 Mar 2016 15:26:55 +0100
+Subject: [PATCH] HID: wacom: fix Bamboo ONE oops
+
+Looks like recent changes in the Wacom driver made the Bamboo ONE crashes.
+The tablet behaves as if it was a regular Bamboo device with pen, touch
+and pad, but there is no physical pad connected to it.
+The weird part is that the pad is still sending events and given that
+there is no input node connected to it, we get  anull pointer exception.
+
+Link: https://bugzilla.redhat.com/show_bug.cgi?id=1317116
+
+Signed-off-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Acked-by: Ping Cheng <pingc@wacom.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jiri Kosina <jkosina@suse.cz>
+---
+ drivers/hid/wacom_wac.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/hid/wacom_wac.c b/drivers/hid/wacom_wac.c
+index bd198bbd4df0..02c4efea241c 100644
+--- a/drivers/hid/wacom_wac.c
++++ b/drivers/hid/wacom_wac.c
+@@ -2426,6 +2426,17 @@ void wacom_setup_device_quirks(struct wacom *wacom)
+ 	}
+ 
+ 	/*
++	 * Hack for the Bamboo One:
++	 * the device presents a PAD/Touch interface as most Bamboos and even
++	 * sends ghosts PAD data on it. However, later, we must disable this
++	 * ghost interface, and we can not detect it unless we set it here
++	 * to WACOM_DEVICETYPE_PAD or WACOM_DEVICETYPE_TOUCH.
++	 */
++	if (features->type == BAMBOO_PEN &&
++	    features->pktlen == WACOM_PKGLEN_BBTOUCH3)
++		features->device_type |= WACOM_DEVICETYPE_PAD;
++
++	/*
+ 	 * Raw Wacom-mode pen and touch events both come from interface
+ 	 * 0, whose HID descriptor has an application usage of 0xFF0D
+ 	 * (i.e., WACOM_VENDORDEFINED_PEN). We route pen packets back
+-- 
+2.5.5
+

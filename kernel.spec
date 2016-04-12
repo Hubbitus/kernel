@@ -691,6 +691,9 @@ Patch694: ext4-fix-races-of-writeback-with-punch-hole-and-zero.patch
 Patch695: cdc_ncm-do-not-call-usbnet_link_change-from-cdc_ncm_.patch
 Patch696: usbnet-cleanup-after-bind-in-probe.patch
 
+#rhbz 1317116
+Patch697: HID-wacom-fix-Bamboo-ONE-oops.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2134,6 +2137,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Bamboo ONE issues (rhbz 1317116)
+
 * Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3951 usbnet: crash on invalid USB descriptors (rhbz 1324782 1324815)
 - CVE-2015-8839 ext4: data corruption due to punch hole races (rhbz 1323577 1323579)
