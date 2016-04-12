@@ -44,7 +44,7 @@ index 37dae792dbbe..1ecc03ca3c15 100644
 +		if (!capable(CAP_SYS_RAWIO) || secure_modules())
  			return -EPERM;
  	}
- 	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) | (level << 12);
+ 	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) |
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
 index 6b1721f978c2..53fe675f9bd7 100644
 --- a/drivers/char/mem.c
