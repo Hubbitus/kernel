@@ -692,6 +692,9 @@ Patch688: x86-iopl-64-Properly-context-switch-IOPL-on-Xen-PV.patch
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch689: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
 
+#rhbz 1317116
+Patch697: HID-wacom-fix-Bamboo-ONE-oops.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2213,6 +2216,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix Bamboo ONE issues (rhbz 1317116)
+
 * Mon Apr 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add upstream patch to fix IDIV issue when booting on Cortex-A7/15/17 devices
 - Update bcm238x patch
