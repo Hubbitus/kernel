@@ -2,6 +2,7 @@ Linux 4.5 rebase notes:
 
 - Check on status of drm-i915-turn-off-wc-mmaps.patch
 - Check on status of disabled ZONE_DMA
+- Check on status of CONFIG_DW_DMAC_CORE
 
 Linux 4.4 rebase notes:
 
