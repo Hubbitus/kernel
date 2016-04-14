@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3 
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -517,9 +517,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 Patch431: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
 Patch432: arm-i.MX6-Utilite-device-dtb.patch
-
-# mvebu usb fixes http://www.spinics.net/lists/arm-kernel/msg493305.html
-Patch433: 0001-ARM-mvebu-Correct-unit-address-for-linksys.patch
 
 # mvebu DSA switch fixes
 # http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
@@ -2142,6 +2139,10 @@ fi
 #
 # 
 %changelog
+* Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git1.1
+- Linux v4.6-rc3-57-g90de6800c240
+- Reenable debugging options.
+
 * Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git0.1
 - Linux v4.6-rc3
 - Disable debugging options.
