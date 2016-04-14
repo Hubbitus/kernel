@@ -652,6 +652,9 @@ Patch696: usbnet-cleanup-after-bind-in-probe.patch
 #rhbz 1317116
 Patch697: HID-wacom-fix-Bamboo-ONE-oops.patch
 
+#rhbz 1309980
+Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2095,6 +2098,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 13 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for Skylake pstate issues (rhbz 1309980)
+
 * Tue Apr 12 2016 Laura Abbott <labbott@redhat.com> - 4.4.7-300
 - Linux v4.4.7
 
