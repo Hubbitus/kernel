@@ -2139,6 +2139,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable oprofile driver as userspace oprofile only uses perf (rhbz 1326944)
+
 * Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git1.1
 - Linux v4.6-rc3-57-g90de6800c240
 - Reenable debugging options.
