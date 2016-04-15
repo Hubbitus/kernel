@@ -614,6 +614,9 @@ Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 
+# CVE-2016-3961 rhbz 1327219 1323956
+Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2139,6 +2142,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3961 xen: hugetlbfs use may crash PV guests (rhbz 1327219 1323956)
+
 * Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git2.1
 - Linux v4.6-rc3-99-g806fdcce017d
 
