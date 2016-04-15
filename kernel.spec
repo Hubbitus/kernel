@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3 
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2139,6 +2139,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git2.1
+- Linux v4.6-rc3-99-g806fdcce017d
+
 * Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Disable oprofile driver as userspace oprofile only uses perf (rhbz 1326944)
 
