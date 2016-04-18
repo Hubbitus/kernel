@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3 
+%define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -507,9 +507,6 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg493431.html
-Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
-
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -607,9 +604,6 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#rhbz 1315013
-Patch683: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
 
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
@@ -2142,6 +2136,10 @@ fi
 #
 # 
 %changelog
+* Mon Apr 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git0.1
+- Linux v4.6-rc4
+- Disable debugging options.
+
 * Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3961 xen: hugetlbfs use may crash PV guests (rhbz 1327219 1323956)
 
