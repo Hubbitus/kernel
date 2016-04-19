@@ -655,6 +655,9 @@ Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
 # CVE-2016-3961 rhbz 1327219 1323956
 Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
 
+# CVE-2016-3955 rhbz 1328478 1328479
+Patch700: USB-usbip-fix-potential-out-of-bounds-write.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2176,6 +2179,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3955 usbip: buffer overflow by trusting length of incoming packets  (rhbz 1328478 1328479)
+
 * Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3961 xen: hugetlbfs use may crash PV guests (rhbz 1327219 1323956)
 
