@@ -2136,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable XILLYBUS (rhbz 1328394)
+
 * Mon Apr 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git0.1
 - Linux v4.6-rc4
 - Disable debugging options.
