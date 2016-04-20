@@ -644,6 +644,9 @@ Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
 # CVE-2016-3955 rhbz 1328478 1328479
 Patch700: USB-usbip-fix-potential-out-of-bounds-write.patch
 
+#rhbz 1309487
+Patch701: antenna_select.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2165,6 +2168,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 20 2016 Laura Abbott <labbott@fedoraproject.org>
+- Allow antenna selection for rtl8723be (rhbz 1309487)
+
 * Wed Apr 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.2-300
 - Linux v4.5.2
 
