@@ -611,6 +611,9 @@ Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 # CVE-2016-3961 rhbz 1327219 1323956
 Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
 
+#rhbz 1309487
+Patch701: antenna_select.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2136,6 +2139,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 20 2016 Laura Abbott <labbott@fedoraproject.org>
+- Allow antenna selection for rtl8723be (rhbz 1309487)
+
 * Wed Apr 20 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git1.1
 - Linux v4.6-rc4-13-g9a0e3eea25d3
 - Reenable debugging options.
