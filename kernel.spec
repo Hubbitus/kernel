@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -509,8 +509,6 @@ Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg493431.html
 Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
 
-Patch425: arm-fix-idiv.patch
-
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -616,9 +614,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #rhbz 1286293
 Patch571: ideapad-laptop-Add-Lenovo-ideapad-Y700-17ISK-to-no_h.patch
 
-#rhbz 1295646
-Patch621: drm-udl-Use-unlocked-gem-unreferencing.patch
-
 #Required for some persistent memory options
 Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
@@ -634,20 +629,11 @@ Patch664: netfilter-x_tables-check-for-size-overflow.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#CVE-2016-3135 rhbz 1318172 1318270
-Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
-
-#rhbz 1315013
-Patch679: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
-
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
 
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch689: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
-
-#rhbz 1317116
-Patch697: HID-wacom-fix-Bamboo-ONE-oops.patch
 
 #rhbz 1309980
 Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
@@ -2179,6 +2165,9 @@ fi
 #
 # 
 %changelog
+* Wed Apr 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.2-300
+- Linux v4.5.2
+
 * Tue Apr 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3955 usbip: buffer overflow by trusting length of incoming packets  (rhbz 1328478 1328479)
 
