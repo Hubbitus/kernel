@@ -52,7 +52,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -582,9 +582,6 @@ Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#CVE-2015-7833 rhbz 1270158 1270160
-Patch567: usbvision-fix-crash-on-detecting-device-with-invalid.patch
-
 #rhbz 1287819
 Patch570: HID-multitouch-enable-palm-rejection-if-device-imple.patch
 
@@ -615,26 +612,14 @@ Patch659: pipe-limit-the-per-user-amount-of-pages-allocated-in.patch
 #rhbz 1310252 1313318
 Patch660: 0001-drm-i915-Pretend-cursor-is-always-on-for-ILK-style-W.patch
 
-#rhbz 1316719
-Patch662: 0001-cdc-acm-fix-NULL-pointer-reference.patch
-
 #CVE-2016-3135 rhbz 1317386 1317387
 Patch664: netfilter-x_tables-check-for-size-overflow.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#CVE-2016-3135 rhbz 1318172 1318270
-Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
-
-#rhbz 1315013
-Patch679: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
-
 #CVE-2016-2187 rhbz 1317017 1317010
 Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
-
-#rhbz 1295646
-Patch688: 09-29-drm-udl-Use-unlocked-gem-unreferencing.patch
 
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch690: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
@@ -647,10 +632,6 @@ Patch694: ext4-fix-races-of-writeback-with-punch-hole-and-zero.patch
 
 #CVE-2016-3951 rhbz 1324782 1324815
 Patch695: cdc_ncm-do-not-call-usbnet_link_change-from-cdc_ncm_.patch
-Patch696: usbnet-cleanup-after-bind-in-probe.patch
-
-#rhbz 1317116
-Patch697: HID-wacom-fix-Bamboo-ONE-oops.patch
 
 #rhbz 1309980
 Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
@@ -660,6 +641,9 @@ Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
 
 # CVE-2016-3955 rhbz 1328478 1328479
 Patch700: USB-usbip-fix-potential-out-of-bounds-write.patch
+
+#rhbz 1309487
+Patch701: antenna_select.patch
 
 # END OF PATCH DEFINITIONS
 %endif
@@ -2104,6 +2088,10 @@ fi
 #
 # 
 %changelog
+* Wed Apr 20 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.8-300
+- Linux v4.4.8
+- Allow antenna selection for rtl8723be (rhbz 1309487)
+
 * Tue Apr 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3955 usbip: buffer overflow by trusting length of incoming packets  (rhbz 1328478 1328479)
 
