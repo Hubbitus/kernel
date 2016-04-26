@@ -2091,6 +2091,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IEEE802154_AT86RF230 on more arches (rhbz 1330356)
+
 * Wed Apr 20 2016 Laura Abbott <labbott@fedoraproject.org> - 4.4.8-300
 - Linux v4.4.8
 - Allow antenna selection for rtl8723be (rhbz 1309487)
