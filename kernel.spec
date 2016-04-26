@@ -658,9 +658,6 @@ Patch702: x86-build-Build-compressed-x86-kernels-as-PIE.patch
 Patch703: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
 
 Patch66601: 0001-ARM-bcm2835-dt-Add-Raspberry-Pi-Zero.patch
-Patch66602: 0002-ARM-bcm2835-dt-Add-the-ethernet-to-the-device-trees.patch
-Patch66603: 0003-USB-core-let-USB-device-know-device-node.patch
-Patch66604: 0004-net-smscx5xx-use-the-device-tree-for-mac-address.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2186,7 +2183,6 @@ fi
 * Tue Apr 26 2016 Lubomir Rintel <lkundrak@v3.sk> - 4.5.1-300.pi1
 - Build for bcm2835/rpi
 - Add Raspberry Pi Zero dts
-- Use stable MAC address for rpi boards with ethernet
 
 * Tue Apr 26 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Change CONFIG_DW_DMAC to built-in to fix sound on some intel platforms
