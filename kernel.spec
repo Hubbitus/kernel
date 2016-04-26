@@ -2174,6 +2174,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IEEE802154_AT86RF230 on more arches (rhbz 1330356)
+
 * Thu Apr 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.2-301
 - Build 32bit x86 compressed kernels as PIE (rhbz 1302071)
 
