@@ -645,6 +645,9 @@ Patch700: USB-usbip-fix-potential-out-of-bounds-write.patch
 #rhbz 1309487
 Patch701: antenna_select.patch
 
+# Follow on for CVE-2016-3156
+Patch702: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
