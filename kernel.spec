@@ -650,6 +650,9 @@ Patch701: antenna_select.patch
 #rhbz 1302071
 Patch702: x86-build-Build-compressed-x86-kernels-as-PIE.patch
 
+# Follow on for CVE-2016-3156
+Patch703: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
