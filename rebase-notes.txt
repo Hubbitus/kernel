@@ -1,8 +1,8 @@
 Linux 4.5 rebase notes:
 
-- Check on status of drm-i915-turn-off-wc-mmaps.patch
-- Check on status of disabled ZONE_DMA
-- Check on status of CONFIG_DW_DMAC_CORE
+- Check on status of drm-i915-turn-off-wc-mmaps.patch (Should be okay to remove in F24, but not F22 or F23)
+- Check on status of disabled ZONE_DMA (They can now coexist with ZONE_DEVICE)
+- Check on status of CONFIG_DW_DMAC_CORE ( Built-in DW_DMAC for now, revisit later)
 
 Linux 4.4 rebase notes:
 

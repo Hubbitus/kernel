@@ -2174,6 +2174,10 @@ fi
 #
 # 
 %changelog
+* Tue Apr 26 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Change CONFIG_DW_DMAC to built-in to fix sound on some intel platforms
+  This needs to be revisited later.
+
 * Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable IEEE802154_AT86RF230 on more arches (rhbz 1330356)
 

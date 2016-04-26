@@ -231,3 +231,6 @@ CONFIG_INFINIBAND_HFI1=m
 CONFIG_HFI1_VERBS_31BIT_PSN=y
 # CONFIG_SDMA_VERBOSITY is not set
 # CONFIG_PRESCAN_RXQ is not set
+
+# Temporary workaround until SND_SOC_INTEL_HASWELL_MACH no longer requires builtin
+CONFIG_DW_DMAC=y
