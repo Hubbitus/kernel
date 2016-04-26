@@ -2136,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable IEEE802154_AT86RF230 on more arches (rhbz 1330356)
+
 * Mon Apr 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git0.1
 - Linux v4.6-rc5
 - Disable debugging options.
