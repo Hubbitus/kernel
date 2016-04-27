@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 302
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -508,6 +508,12 @@ Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg493431.html
 Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
+
+# rhbz 1321330  http://www.spinics.net/lists/dri-devel/msg105829.html
+Patch425: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
+
+# http://www.spinics.net/lists/linux-tegra/msg26029.html
+Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
@@ -2174,6 +2180,10 @@ fi
 #
 # 
 %changelog
+* Wed Apr 27 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.2-302
+- Fix i.MX6 gpu loading - rhbz 1321330
+- Fix usb loading on some tegra devices
+
 * Tue Apr 26 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Change CONFIG_DW_DMAC to built-in to fix sound on some intel platforms
   This needs to be revisited later.
