@@ -507,6 +507,12 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
+# rhbz 1321330  http://www.spinics.net/lists/dri-devel/msg105829.html
+Patch425: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
+
+# http://www.spinics.net/lists/linux-tegra/msg26029.html
+Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -2136,6 +2142,10 @@ fi
 #
 # 
 %changelog
+* Thu Apr 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix i.MX6 gpu module loading
+- Add patch to fix Jetson TX1 usb
+
 * Wed Apr 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git1.1
 - Linux v4.6-rc5-69-gf28f20da704d
 - Require /usr/bin/kernel-install to fix installation after systemd package
