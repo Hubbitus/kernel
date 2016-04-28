@@ -617,6 +617,9 @@ Patch701: antenna_select.patch
 # Stop splashing crap about broken firmware BGRT
 Patch702: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
 
+#rhbz 1331092
+Patch703: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2142,6 +2145,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 28 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix KVM with THP corruption (rhbz 1331092)
+
 * Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git2.1
 - Linux v4.6-rc5-89-gb75a2bf899b6
 
