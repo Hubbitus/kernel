@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2142,6 +2142,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git2.1
+- Linux v4.6-rc5-89-gb75a2bf899b6
+
 * Thu Apr 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix i.MX6 gpu module loading
 - Add patch to fix Jetson TX1 usb
