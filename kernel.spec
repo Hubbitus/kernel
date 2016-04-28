@@ -347,7 +347,7 @@ Summary: The Linux kernel
 # Packages that need to be installed before the kernel is, because the %%post
 # scripts use them.
 #
-%define kernel_prereq  fileutils, systemd >= 203-2
+%define kernel_prereq  fileutils, systemd >= 203-2, /usr/bin/kernel-install
 %define initrd_prereq  dracut >= 027
 
 
@@ -2180,6 +2180,9 @@ fi
 #
 # 
 %changelog
+* Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Require /usr/bin/kernel-install (rhbz 1331012)
+
 * Wed Apr 27 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.2-302
 - Fix i.MX6 gpu loading - rhbz 1321330
 - Fix usb loading on some tegra devices
