@@ -1,0 +1,94 @@
+From 3e4f68f273ef86e6ed8be24a86f8ef514deaecc0 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Wed, 27 Apr 2016 08:37:41 -0400
+Subject: [PATCH] x86/efi-bgrt: Switch all pr_err() to pr_debug() for invalid
+ BGRT
+
+The promise of pretty boot splashes from firmware via BGRT was at
+best only that; a promise.  The kernel diligently checks to make
+sure the BGRT data firmware gives it is valid, and dutifully warns
+the user when it isn't.  However, it does so via the pr_err log
+level which seems unnecessary.  The user cannot do anything about
+this and there really isn't an error on the part of Linux to
+correct.
+
+This lowers the log level by using pr_debug instead.  Users will
+no longer have their boot process uglified by the kernel reminding
+us that firmware can and often is broken.  Ironic, considering
+BGRT is supposed to make boot pretty to begin with.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+---
+ arch/x86/platform/efi/efi-bgrt.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/platform/efi/efi-bgrt.c b/arch/x86/platform/efi/efi-bgrt.c
+index ea48449b2e63..87da4108785b 100644
+--- a/arch/x86/platform/efi/efi-bgrt.c
++++ b/arch/x86/platform/efi/efi-bgrt.c
+@@ -41,17 +41,17 @@ void __init efi_bgrt_init(void)
+ 		return;
+ 
+ 	if (bgrt_tab->header.length < sizeof(*bgrt_tab)) {
+-		pr_err("Ignoring BGRT: invalid length %u (expected %zu)\n",
++		pr_debug("Ignoring BGRT: invalid length %u (expected %zu)\n",
+ 		       bgrt_tab->header.length, sizeof(*bgrt_tab));
+ 		return;
+ 	}
+ 	if (bgrt_tab->version != 1) {
+-		pr_err("Ignoring BGRT: invalid version %u (expected 1)\n",
++		pr_debug("Ignoring BGRT: invalid version %u (expected 1)\n",
+ 		       bgrt_tab->version);
+ 		return;
+ 	}
+ 	if (bgrt_tab->status & 0xfe) {
+-		pr_err("Ignoring BGRT: reserved status bits are non-zero %u\n",
++		pr_debug("Ignoring BGRT: reserved status bits are non-zero %u\n",
+ 		       bgrt_tab->status);
+ 		return;
+ 	}
+@@ -61,12 +61,12 @@ void __init efi_bgrt_init(void)
+ 		return;
+ 	}
+ 	if (bgrt_tab->image_type != 0) {
+-		pr_err("Ignoring BGRT: invalid image type %u (expected 0)\n",
++		pr_debug("Ignoring BGRT: invalid image type %u (expected 0)\n",
+ 		       bgrt_tab->image_type);
+ 		return;
+ 	}
+ 	if (!bgrt_tab->image_address) {
+-		pr_err("Ignoring BGRT: null image address\n");
++		pr_debug("Ignoring BGRT: null image address\n");
+ 		return;
+ 	}
+ 
+@@ -76,7 +76,7 @@ void __init efi_bgrt_init(void)
+ 				       sizeof(bmp_header));
+ 		ioremapped = true;
+ 		if (!image) {
+-			pr_err("Ignoring BGRT: failed to map image header memory\n");
++			pr_debug("Ignoring BGRT: failed to map image header memory\n");
+ 			return;
+ 		}
+ 	}
+@@ -88,7 +88,7 @@ void __init efi_bgrt_init(void)
+ 
+ 	bgrt_image = kmalloc(bgrt_image_size, GFP_KERNEL | __GFP_NOWARN);
+ 	if (!bgrt_image) {
+-		pr_err("Ignoring BGRT: failed to allocate memory for image (wanted %zu bytes)\n",
++		pr_debug("Ignoring BGRT: failed to allocate memory for image (wanted %zu bytes)\n",
+ 		       bgrt_image_size);
+ 		return;
+ 	}
+@@ -97,7 +97,7 @@ void __init efi_bgrt_init(void)
+ 		image = early_ioremap(bgrt_tab->image_address,
+ 				       bmp_header.size);
+ 		if (!image) {
+-			pr_err("Ignoring BGRT: failed to map image memory\n");
++			pr_debug("Ignoring BGRT: failed to map image memory\n");
+ 			kfree(bgrt_image);
+ 			bgrt_image = NULL;
+ 			return;
+-- 
+2.5.5
+
