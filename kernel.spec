@@ -648,6 +648,9 @@ Patch701: antenna_select.patch
 # Follow on for CVE-2016-3156
 Patch702: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
 
+# Stop splashing crap about broken firmware BGRT
+Patch704: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2092,6 +2095,7 @@ fi
 # 
 %changelog
 * Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Don't splash warnings from broken BGRT firmware implementations
 - Require /usr/bin/kernel-install (rhbz 1331012)
 
 * Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
