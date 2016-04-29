@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2145,6 +2145,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 29 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git3.1
+- Linux v4.6-rc5-153-g92c19ea95357
+
 * Thu Apr 28 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix KVM with THP corruption (rhbz 1331092)
 
