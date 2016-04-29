@@ -496,6 +496,8 @@ Source5005: kbuild-AFTER_LINK.patch
 
 Patch451: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
+Patch452: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
+
 Patch454: arm64-avoid-needing-console-to-enable-serial-console.patch
 
 Patch456: arm64-acpi-drop-expert-patch.patch
@@ -2094,6 +2096,9 @@ fi
 #
 # 
 %changelog
+* Fri Apr 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix i.MX6 graphics
+
 * Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Don't splash warnings from broken BGRT firmware implementations
 - Require /usr/bin/kernel-install (rhbz 1331012)
