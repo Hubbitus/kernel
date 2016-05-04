@@ -620,6 +620,9 @@ Patch702: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
 #rhbz 1331092
 Patch703: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
 
+#CVE-2016-4482 rhbz 1332931 1332932
+Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2145,6 +2148,9 @@ fi
 #
 # 
 %changelog
+* Wed May 03 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
+
 * Tue May 03 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git1.1
 - Linux v4.6-rc6-72-g33656a1f2ee5
 
