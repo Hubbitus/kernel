@@ -2148,7 +2148,7 @@ fi
 #
 # 
 %changelog
-* Wed May 03 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
 
 * Tue May 03 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git1.1
