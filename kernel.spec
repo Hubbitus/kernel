@@ -653,6 +653,9 @@ Patch702: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
 # Stop splashing crap about broken firmware BGRT
 Patch704: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
 
+#CVE-2016-4482 rhbz 1332931 1332932
+Patch705: USB-usbfs-fix-potential-infoleak-in-devio.patch
+
 # END OF PATCH DEFINITIONS
 %endif
 
@@ -2096,6 +2099,9 @@ fi
 #
 # 
 %changelog
+* Wed May 03 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
+
 * Fri Apr 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch to fix i.MX6 graphics
 
