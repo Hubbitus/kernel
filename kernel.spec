@@ -2190,6 +2190,7 @@ fi
 # 
 %changelog
 * Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable NFC_NXP_NCI options (rhbz 1290556)
 - CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
 
 * Thu Apr 28 2016 Justin M. Forbes <jforbes@fedoraproject.org>
