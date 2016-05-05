@@ -653,6 +653,10 @@ Patch705: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
 
+#CVE-2016-4486 CVE-2016-4485 rhbz 1333316 1333309 1333321
+Patch707: net-fix-infoleak-in-llc.patch
+Patch708: net-fix-infoleak-in-rtnetlink.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2174,6 +2178,9 @@ fi
 #
 # 
 %changelog
+* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
+
 * Wed May 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.3-300
 - Linux v4.5.3
 
