@@ -623,6 +623,10 @@ Patch703: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
 
+#CVE-2016-4486 CVE-2016-4485 rhbz 1333316 1333309 1333321
+Patch707: net-fix-infoleak-in-llc.patch
+Patch708: net-fix-infoleak-in-rtnetlink.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2148,6 +2152,9 @@ fi
 #
 # 
 %changelog
+* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
+
 * Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git2.1
 - Linux v4.6-rc6-113-g83858a701cf3
 - Enable NFC_NXP_NCI options (rhbz 1290556)
