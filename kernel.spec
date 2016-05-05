@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2152,7 +2152,8 @@ fi
 #
 # 
 %changelog
-* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git3.1
+- Linux v4.6-rc6-123-g21a9703de304
 - CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
 
 * Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git2.1
