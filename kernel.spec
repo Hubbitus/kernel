@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 302
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -506,9 +506,6 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg493431.html
-Patch424: efi-arm64-don-t-apply-MEMBLOCK_NOMAP-to-UEFI-memory-map-mapping.patch
-
 # rhbz 1321330  http://www.spinics.net/lists/dri-devel/msg105829.html
 Patch425: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
 
@@ -530,9 +527,6 @@ Patch434: revert-stmmac-Fix-eth0-No-PHY-found-regression.patch
 Patch435: stmmac-fix-MDIO-settings.patch
 
 Patch436: ARM-mvebu-change-order-of-ethernet-DT-nodes-on-Armada-38x.patch
-
-# mvebu usb fixes http://www.spinics.net/lists/arm-kernel/msg493305.html
-Patch437: 0001-ARM-mvebu-Correct-unit-address-for-linksys.patch
 
 # mvebu DSA switch fixes
 # http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
@@ -635,20 +629,11 @@ Patch664: netfilter-x_tables-check-for-size-overflow.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#CVE-2016-2187 rhbz 1317017 1317010
-Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
-
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch689: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
 
 #rhbz 1309980
 Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
-
-# CVE-2016-3961 rhbz 1327219 1323956
-Patch699: x86-xen-suppress-hugetlbfs-in-PV-guests.patch
-
-# CVE-2016-3955 rhbz 1328478 1328479
-Patch700: USB-usbip-fix-potential-out-of-bounds-write.patch
 
 #rhbz 1309487
 Patch701: antenna_select.patch
@@ -2189,6 +2174,9 @@ fi
 #
 # 
 %changelog
+* Wed May 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.3-300
+- Linux v4.5.3
+
 * Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable NFC_NXP_NCI options (rhbz 1290556)
 - CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
