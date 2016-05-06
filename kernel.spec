@@ -657,6 +657,9 @@ Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
 Patch707: net-fix-infoleak-in-llc.patch
 Patch708: net-fix-infoleak-in-rtnetlink.patch
 
+#CVE-2016-xxxx rhbz 1333712 1333713
+Patch709: propogate_mnt-Handle-the-first-propogated-copy-being.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2178,6 +2181,9 @@ fi
 #
 # 
 %changelog
+* Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Oops in propogate_mnt if first copy is slave (rhbz 1333712 1333713)
+
 * Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
 
