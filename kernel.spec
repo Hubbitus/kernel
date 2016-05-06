@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -616,9 +616,6 @@ Patch701: antenna_select.patch
 
 # Stop splashing crap about broken firmware BGRT
 Patch702: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
-
-#rhbz 1331092
-Patch703: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
 
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
@@ -2152,6 +2149,9 @@ fi
 #
 # 
 %changelog
+* Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git4.1
+- Linux v4.6-rc6-165-g9caa7e78481f
+
 * Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git3.1
 - Linux v4.6-rc6-123-g21a9703de304
 - CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
