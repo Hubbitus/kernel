@@ -660,6 +660,10 @@ Patch708: net-fix-infoleak-in-rtnetlink.patch
 #CVE-2016-xxxx rhbz 1333712 1333713
 Patch709: propogate_mnt-Handle-the-first-propogated-copy-being.patch
 
+#CVE-2016-4557 CVE-2016-4558 rhbz 1334307 1334303 1334311
+Patch711: bpf-fix-double-fdput-in-replace_map_fd_with_map_ptr.patch
+Patch712: bpf-fix-refcnt-overflow.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2181,6 +2185,10 @@ fi
 #
 # 
 %changelog
+* Mon May 09 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4557 bpf: Use after free vulnerability via double fdput
+  CVE-2016-4558 bpf: refcnt overflow (rhbz 1334307 1334303 1334311)
+ 
 * Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Oops in propogate_mnt if first copy is slave (rhbz 1333712 1333713)
 
