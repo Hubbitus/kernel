@@ -1,4 +1,4 @@
-From 27844237d77df76c816034a78178b23c070eef88 Mon Sep 17 00:00:00 2001
+From ba23dd7749dfeab511f2eab29eef21dde31ad480 Mon Sep 17 00:00:00 2001
 From: "Eric W. Biederman" <ebiederm@xmission.com>
 Date: Thu, 5 May 2016 09:29:29 -0500
 Subject: [PATCH] propogate_mnt: Handle the first propogated copy being a slave
@@ -68,17 +68,15 @@ Reported-by: Tycho Andersen <tycho.andersen@canonical.com>
 Reviewed-by: Seth Forshee <seth.forshee@canonical.com>
 Tested-by: Seth Forshee <seth.forshee@canonical.com>
 Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
-
-Backported-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- fs/pnode.c | 32 ++++++++++++++++++++------------
- 1 file changed, 20 insertions(+), 12 deletions(-)
+ fs/pnode.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
 
 diff --git a/fs/pnode.c b/fs/pnode.c
-index 6367e1e435c6..e7705149d430 100644
+index c524fdddc7fb..99899705b105 100644
 --- a/fs/pnode.c
 +++ b/fs/pnode.c
-@@ -198,10 +198,15 @@ static struct mount *next_group(struct mount *m, struct mount *origin)
+@@ -198,7 +198,7 @@ static struct mount *next_group(struct mount *m, struct mount *origin)
  
  /* all accesses are serialized by namespace_sem */
  static struct user_namespace *user_ns;
@@ -87,20 +85,7 @@ index 6367e1e435c6..e7705149d430 100644
  static struct mountpoint *mp;
  static struct hlist_head *list;
  
-+static inline bool peers(struct mount *m1, struct mount *m2)
-+{
-+       return m1->mnt_group_id == m2->mnt_group_id && m1->mnt_group_id;
-+}
-+
- static int propagate_one(struct mount *m)
- {
- 	struct mount *child;
-@@ -212,24 +217,26 @@ static int propagate_one(struct mount *m)
- 	/* skip if mountpoint isn't covered by it */
- 	if (!is_subdir(mp->m_dentry, m->mnt.mnt_root))
- 		return 0;
--	if (m->mnt_group_id == last_dest->mnt_group_id) {
-+	if (peers(m,last_dest)) {
+@@ -221,20 +221,22 @@ static int propagate_one(struct mount *m)
  		type = CL_MAKE_SHARED;
  	} else {
  		struct mount *n, *p;
@@ -112,7 +97,7 @@ index 6367e1e435c6..e7705149d430 100644
 -					last_source = last_source->mnt_master;
 -					last_dest = last_source->mnt_parent;
 -				}
--				if (n->mnt_group_id != last_dest->mnt_group_id) {
+-				if (!peers(n, last_dest)) {
 -					last_source = last_source->mnt_master;
 -					last_dest = last_source->mnt_parent;
 -				}
@@ -133,7 +118,7 @@ index 6367e1e435c6..e7705149d430 100644
  		type = CL_SLAVE;
  		/* beginning of peer group among the slaves? */
  		if (IS_MNT_SHARED(m))
-@@ -281,6 +288,7 @@ int propagate_mnt(struct mount *dest_mnt, struct mountpoint *dest_mp,
+@@ -286,6 +288,7 @@ int propagate_mnt(struct mount *dest_mnt, struct mountpoint *dest_mp,
  	 */
  	user_ns = current->nsproxy->mnt_ns->user_ns;
  	last_dest = dest_mnt;

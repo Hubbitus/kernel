@@ -1,7 +1,9 @@
-Linux 3.4 rebase notes:
+Linux 4.5 rebase notes:
 
-* Look at the CPU modalias patches from Andi.  See if they are sufficient to
-  build the cpufreq drivers as modules again (rhbz 713572 but mostly to just
-  make this person in IRC be quiet)
+- Check on status of drm-i915-turn-off-wc-mmaps.patch (Should be okay to remove in F24, but not F22 or F23)
+- Check on status of disabled ZONE_DMA (They can now coexist with ZONE_DEVICE)
+- Check on status of CONFIG_DW_DMAC_CORE ( Built-in DW_DMAC for now, revisit later)
 
-* Make sure X32 stays disabled.  Preferably forever
+Linux 4.4 rebase notes:
+
+CONFIG_RTL8XXXU_UNTESTED should be turned off. Great for rawhide, not for stable
