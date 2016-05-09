@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -507,9 +507,6 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
-# rhbz 1321330  http://www.spinics.net/lists/dri-devel/msg105829.html
-Patch425: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
-
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
@@ -613,9 +610,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #rhbz 1309487
 Patch701: antenna_select.patch
-
-# Stop splashing crap about broken firmware BGRT
-Patch702: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
 
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
@@ -2149,6 +2143,9 @@ fi
 #
 # 
 %changelog
+* Mon May 09 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git0.1
+- Linux v4.6-rc7
+
 * Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git4.1
 - Linux v4.6-rc6-165-g9caa7e78481f
 
