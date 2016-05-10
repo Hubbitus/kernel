@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -613,10 +613,6 @@ Patch701: antenna_select.patch
 
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
-
-#CVE-2016-4486 CVE-2016-4485 rhbz 1333316 1333309 1333321
-Patch707: net-fix-infoleak-in-llc.patch
-Patch708: net-fix-infoleak-in-rtnetlink.patch
 
 #CVE-2016-4569 rhbz 1334643 1334645
 Patch714: ALSA-timer-Fix-leak-in-SNDRV_TIMER_IOCTL_PARAMS.patch
@@ -2148,6 +2144,9 @@ fi
 #
 # 
 %changelog
+* Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git1.1
+- Linux v4.6-rc7-45-g2d0bd9534c8d
+
 * Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable XEN SCSI front and backend (rhbz 1334512)
 - CVE-2016-4569 info leak in sound module (rhbz 1334643 1334645)
