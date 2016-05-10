@@ -2194,6 +2194,7 @@ fi
 # 
 %changelog
 * Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Enable XEN SCSI front and backend (rhbz 1334512)
 - CVE-2016-4569 info leak in sound module (rhbz 1334643 1334645)
 
 * Mon May 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> -4.5.3-200
