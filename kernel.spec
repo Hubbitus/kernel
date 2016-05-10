@@ -667,6 +667,11 @@ Patch712: bpf-fix-refcnt-overflow.patch
 #rhbz 1328633
 Patch713: sp5100_tco-properly-check-for-new-register-layouts.patch
 
+#CVE-2016-4569 rhbz 1334643 1334645
+Patch714: ALSA-timer-Fix-leak-in-SNDRV_TIMER_IOCTL_PARAMS.patch
+Patch715: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_cca.patch
+Patch716: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_tin.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2188,6 +2193,9 @@ fi
 #
 # 
 %changelog
+* Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4569 info leak in sound module (rhbz 1334643 1334645)
+
 * Mon May 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> -4.5.3-200
 - Linux v4.5.3 rebase
 
