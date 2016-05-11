@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -506,9 +506,6 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
-# rhbz 1321330  http://www.spinics.net/lists/dri-devel/msg105829.html
-Patch425: 0001-gpu-ipu-v3-Fix-imx-ipuv3-crtc-module-autoloading.patch
-
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
@@ -632,9 +629,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 # CVE-2016-3672 rhbz 1324749 1324750
 Patch689: x86-mm-32-Enable-full-randomization-on-i386-and-X86_.patch
 
-#rhbz 1309980
-Patch698: 0001-ACPI-processor-Request-native-thermal-interrupt-hand.patch
-
 #rhbz 1309487
 Patch701: antenna_select.patch
 
@@ -656,9 +650,6 @@ Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
 #CVE-2016-4486 CVE-2016-4485 rhbz 1333316 1333309 1333321
 Patch707: net-fix-infoleak-in-llc.patch
 Patch708: net-fix-infoleak-in-rtnetlink.patch
-
-#CVE-2016-xxxx rhbz 1333712 1333713
-Patch709: propogate_mnt-Handle-the-first-propogated-copy-being.patch
 
 #CVE-2016-4557 CVE-2016-4558 rhbz 1334307 1334303 1334311
 Patch711: bpf-fix-double-fdput-in-replace_map_fd_with_map_ptr.patch
@@ -2193,6 +2184,9 @@ fi
 #
 # 
 %changelog
+* Wed May 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.4-300
+- Linux v4.5.4
+
 * Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable XEN SCSI front and backend (rhbz 1334512)
 - CVE-2016-4569 info leak in sound module (rhbz 1334643 1334645)
