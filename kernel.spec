@@ -2144,6 +2144,9 @@ fi
 #
 # 
 %changelog
+* Thu May 12 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some minor ARMv7 platform fixes from F-24
+
 * Wed May 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git2.1
 - Linux v4.6-rc7-55-gc5114626f33b
 
