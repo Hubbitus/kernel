@@ -2184,6 +2184,9 @@ fi
 #
 # 
 %changelog
+* Thu May 12 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable PCI_HOST_GENERIC for all ARM arches (Jeremy Linton)
+
 * Wed May 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.4-300
 - Linux v4.5.4
 
