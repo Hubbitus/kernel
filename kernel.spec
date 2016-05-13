@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2144,6 +2144,9 @@ fi
 #
 # 
 %changelog
+* Fri May 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git3.1
+- Linux v4.6-rc7-116-ga2ccb68b1e6a
+
 * Thu May 12 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some minor ARMv7 platform fixes from F-24
 - Enable PCI_HOST_GENERIC for all ARM arches (Jeremy Linton)
