@@ -619,6 +619,9 @@ Patch714: ALSA-timer-Fix-leak-in-SNDRV_TIMER_IOCTL_PARAMS.patch
 Patch715: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_cca.patch
 Patch716: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_tin.patch
 
+#CVE-2016-3713 rhbz 1332139 1336410
+Patch717: KVM-MTRR-remove-MSR-0x2f8.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2146,6 +2149,7 @@ fi
 %changelog
 * Mon May 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-1
 - Linux v4.6
+- CVE-2016-3713 kvm: out-of-bounds access in set_var_mtrr_msr (rhbz 1332139 1336410)
 
 * Fri May 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git3.1
 - Linux v4.6-rc7-116-ga2ccb68b1e6a
