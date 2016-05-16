@@ -2190,6 +2190,9 @@ fi
 #
 # 
 %changelog
+* Mon May 16 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Disable CONFIG_DEBUG_VM_PGFLAGS on non debug kernels (rhbz 1335173)
+
 * Mon May 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3713 kvm: out-of-bounds access in set_var_mtrr_msr (rhbz 1332139 1336410)
 
