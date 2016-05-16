@@ -1,8 +1,7 @@
-From 37431394b3eeb1ef6d38d0e6b2693210606c2c2c Mon Sep 17 00:00:00 2001
+From 8802c7e62531b3867580068ee8b50415b966d22c Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 18:36:30 -0400
-Subject: [PATCH 10/20] Add option to automatically enforce module signatures
- when in Secure Boot mode
+Subject: [PATCH 10/20] Add option to automatically enforce module signatures when in Secure Boot mode
 
 UEFI Secure Boot provides a mechanism for ensuring that the firmware will
 only load signed bootloaders and kernels. Certain use cases may also
@@ -12,16 +11,16 @@ that enforces this automatically when enabled.
 Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
 ---
  Documentation/x86/zero-page.txt       |  2 ++
- arch/x86/Kconfig                      | 10 ++++++++++
- arch/x86/boot/compressed/eboot.c      | 36 +++++++++++++++++++++++++++++++++++
- arch/x86/include/uapi/asm/bootparam.h |  3 ++-
- arch/x86/kernel/setup.c               |  6 ++++++
- include/linux/module.h                |  6 ++++++
- kernel/module.c                       |  7 +++++++
- 7 files changed, 69 insertions(+), 1 deletion(-)
+ arch/x86/Kconfig                      | 10 ++++++
+ arch/x86/boot/compressed/eboot.c      | 66 +++++++++++++++++++++++++++++++++++
+ arch/x86/include/uapi/asm/bootparam.h |  3 +-
+ arch/x86/kernel/setup.c               |  6 ++++
+ include/linux/module.h                |  6 ++++
+ kernel/module.c                       |  7 ++++
+ 7 files changed, 99 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
-index 95a4d34af3fd..b8527c6b7646 100644
+index 95a4d34..b8527c6 100644
 --- a/Documentation/x86/zero-page.txt
 +++ b/Documentation/x86/zero-page.txt
 @@ -31,6 +31,8 @@ Offset	Proto	Name		Meaning
@@ -34,10 +33,10 @@ index 95a4d34af3fd..b8527c6b7646 100644
  290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
  2D0/A00	ALL	e820_map	E820 memory map table
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index cc0d73eac047..14db458f4774 100644
+index 2dc18605..a701d09 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -1734,6 +1734,16 @@ config EFI_MIXED
+@@ -1785,6 +1785,16 @@ config EFI_MIXED
  
  	   If unsure, say N.
  
@@ -55,7 +54,7 @@ index cc0d73eac047..14db458f4774 100644
  	def_bool y
  	prompt "Enable seccomp to safely compute untrusted bytecode"
 diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
-index ee1b6d346b98..b4de3faa3f29 100644
+index 52fef60..6b8b9a7 100644
 --- a/arch/x86/boot/compressed/eboot.c
 +++ b/arch/x86/boot/compressed/eboot.c
 @@ -12,6 +12,7 @@
@@ -66,8 +65,8 @@ index ee1b6d346b98..b4de3faa3f29 100644
  
  #include "../string.h"
  #include "eboot.h"
-@@ -827,6 +828,37 @@ out:
- 	return status;
+@@ -571,6 +572,67 @@ free_handle:
+ 	efi_call_early(free_pool, pci_handle);
  }
  
 +static int get_secure_boot(void)
@@ -101,10 +100,40 @@ index ee1b6d346b98..b4de3faa3f29 100644
 +}
 +
 +
- /*
-  * See if we have Graphics Output Protocol
-  */
-@@ -1412,6 +1444,10 @@ struct boot_params *efi_main(struct efi_config *c,
++/*
++ * See if we have Graphics Output Protocol
++ */
++static efi_status_t setup_gop(struct screen_info *si, efi_guid_t *proto,
++			      unsigned long size)
++{
++	efi_status_t status;
++	void **gop_handle = NULL;
++
++	status = efi_call_early(allocate_pool, EFI_LOADER_DATA,
++				size, (void **)&gop_handle);
++	if (status != EFI_SUCCESS)
++		return status;
++
++	status = efi_call_early(locate_handle,
++				EFI_LOCATE_BY_PROTOCOL,
++				proto, NULL, &size, gop_handle);
++	if (status != EFI_SUCCESS)
++		goto free_handle;
++
++	if (efi_early->is64)
++		status = setup_gop64(si, proto, size, gop_handle);
++	else
++		status = setup_gop32(si, proto, size, gop_handle);
++
++free_handle:
++	efi_call_early(free_pool, gop_handle);
++	return status;
++}
++
+ static efi_status_t
+ setup_uga32(void **uga_handle, unsigned long size, u32 *width, u32 *height)
+ {
+@@ -1126,6 +1188,10 @@ struct boot_params *efi_main(struct efi_config *c,
  	else
  		setup_boot_services32(efi_early);
  
@@ -116,7 +145,7 @@ index ee1b6d346b98..b4de3faa3f29 100644
  
  	setup_efi_pci(boot_params);
 diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
-index 329254373479..b61f8533c0fd 100644
+index 3292543..b61f853 100644
 --- a/arch/x86/include/uapi/asm/bootparam.h
 +++ b/arch/x86/include/uapi/asm/bootparam.h
 @@ -134,7 +134,8 @@ struct boot_params {
@@ -130,10 +159,10 @@ index 329254373479..b61f8533c0fd 100644
  	 * The sentinel is set to a nonzero value (0xff) in header.S.
  	 *
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index baadbf90a7c5..1ac118146e90 100644
+index 2367ae0..1a78bf7 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
-@@ -1135,6 +1135,12 @@ void __init setup_arch(char **cmdline_p)
+@@ -1146,6 +1146,12 @@ void __init setup_arch(char **cmdline_p)
  
  	io_delay_init();
  
@@ -147,7 +176,7 @@ index baadbf90a7c5..1ac118146e90 100644
  	 * Parse the ACPI tables for possible boot-time SMP configuration.
  	 */
 diff --git a/include/linux/module.h b/include/linux/module.h
-index db386349cd01..4b8df91f03cd 100644
+index ab13009..e072b84 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
 @@ -273,6 +273,12 @@ const struct exception_table_entry *search_exception_tables(unsigned long add);
@@ -164,10 +193,10 @@ index db386349cd01..4b8df91f03cd 100644
  
  extern int modules_disabled; /* for sysctl */
 diff --git a/kernel/module.c b/kernel/module.c
-index 7f045246e123..2b403ab0ef29 100644
+index 392ac8c..676c578 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -4088,6 +4088,13 @@ void module_layout(struct module *mod,
+@@ -4081,6 +4081,13 @@ void module_layout(struct module *mod,
  EXPORT_SYMBOL(module_layout);
  #endif
  
@@ -182,5 +211,5 @@ index 7f045246e123..2b403ab0ef29 100644
  {
  #ifdef CONFIG_MODULE_SIG
 -- 
-2.4.3
+2.5.5
 

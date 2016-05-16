@@ -1,4 +1,4 @@
-From 24ceffbbe2764a31328e1146a2cf4bdcf85664e7 Mon Sep 17 00:00:00 2001
+From 6fb2a60e6bfb5ce2d3a4964e7b47ac5c7ecd6f82 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
 Subject: [PATCH] Add EFI signature data types
@@ -15,12 +15,12 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 333d0ca6940f..b3efb6d06344 100644
+index fb0734f..b80227a 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -603,6 +603,12 @@ void efi_native_runtime_setup(void);
- 	EFI_GUID(0x3152bca5, 0xeade, 0x433d, \
- 		 0x86, 0x2e, 0xc0, 0x1c, 0xdc, 0x29, 0x1f, 0x44)
+@@ -653,6 +653,12 @@ void efi_native_runtime_setup(void);
+ 	EFI_GUID(0x4a67b082, 0x0a4c, 0x41cf, \
+ 		 0xb6, 0xc7, 0x44, 0x0b, 0x29, 0xbb, 0x8c, 0x4f)
  
 +#define EFI_CERT_SHA256_GUID \
 +    EFI_GUID(  0xc1c41626, 0x504c, 0x4092, 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 )
@@ -31,9 +31,9 @@ index 333d0ca6940f..b3efb6d06344 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -827,6 +833,20 @@ typedef struct {
- 
- #define EFI_INVALID_TABLE_ADDR		(~0UL)
+@@ -885,6 +891,20 @@ typedef struct {
+ 	efi_memory_desc_t entry[0];
+ } efi_memory_attributes_table_t;
  
 +typedef struct  {
 +	efi_guid_t signature_owner;
@@ -53,5 +53,5 @@ index 333d0ca6940f..b3efb6d06344 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-2.5.0
+2.5.5
 
