@@ -222,3 +222,6 @@ CONFIG_DEBUG_SECTION_MISMATCH=y
 # CONFIG_FUJITSU_ES is not set
 # CONFIG_IMX_THERMAL is not set
 # CONFIG_PNP_DEBUG_MESSAGES is not set
+
+# Will probably need to be changed later
+# CONFIG_NUMA is not set

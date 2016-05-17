@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -498,8 +498,6 @@ Source5005: kbuild-AFTER_LINK.patch
 # Standalone patches
 
 Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
-
-Patch421: arm64-acpi-drop-expert-patch.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
@@ -2147,6 +2145,11 @@ fi
 #
 # 
 %changelog
+* Tue May 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git2.1
+- Linux v4.6-1278-g1649098
+- Enable CONFIG_INTEL_POWERCLAMP
+- pm, ACPI, mmc, regulator, i2c, hwmon, edac, led, arm64, x86, sched, RAS merges
+
 * Mon May 16 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git1.1
 - Linux v4.6-153-g3469d26
 - Reenable debugging options.
