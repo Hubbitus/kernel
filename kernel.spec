@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -510,9 +510,6 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
-
-# http://www.spinics.net/lists/linux-tegra/msg25152.html
-Patch431: Fix-tegra-to-use-stdout-path-for-serial-console.patch
 
 Patch432: arm-i.MX6-Utilite-device-dtb.patch
 
@@ -2142,6 +2139,10 @@ fi
 #
 # 
 %changelog
+* Thu May 19 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git4.1
+- Linux v4.6-5028-g2600a46
+- trace, audit, input, media, scsi, armsoc merges
+
 * Wed May 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git3.1
 - Linux v4.6-3623-g0b7962a
 - ata, regulator, gpio, HID, livepatching, networking, dm, block, vfs, fs,
