@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -635,9 +635,6 @@ Patch701: antenna_select.patch
 #rhbz 1302071
 Patch702: x86-build-Build-compressed-x86-kernels-as-PIE.patch
 
-# Follow on for CVE-2016-3156
-Patch703: ipv4-fib-don-t-warn-when-primary-address-is-missing-.patch
-
 # Stop splashing crap about broken firmware BGRT
 Patch704: x86-efi-bgrt-Switch-all-pr_err-to-pr_debug-for-inval.patch
 
@@ -646,14 +643,6 @@ Patch705: mm-thp-kvm-fix-memory-corruption-in-KVM-with-THP-ena.patch
 
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
-
-#CVE-2016-4486 CVE-2016-4485 rhbz 1333316 1333309 1333321
-Patch707: net-fix-infoleak-in-llc.patch
-Patch708: net-fix-infoleak-in-rtnetlink.patch
-
-#CVE-2016-4557 CVE-2016-4558 rhbz 1334307 1334303 1334311
-Patch711: bpf-fix-double-fdput-in-replace_map_fd_with_map_ptr.patch
-Patch712: bpf-fix-refcnt-overflow.patch
 
 #rhbz 1328633
 Patch713: sp5100_tco-properly-check-for-new-register-layouts.patch
@@ -668,9 +657,6 @@ Patch717: KEYS-Fix-ASN.1-indefinite-length-object-parsing.patch
 
 #CVE-2016-3713 rhbz 1332139 1336410
 Patch718: KVM-MTRR-remove-MSR-0x2f8.patch
-
-#CVE-2016-4913 rhbz 1337528 1337529
-Patch719: get_rock_ridge_filename-handle-malformed-NM-entries.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2193,7 +2179,8 @@ fi
 #
 # 
 %changelog
-* Thu May 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu May 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.5.5-200
+- Linux v4.5.5
 - CVE-2016-4913 isofs: info leak with malformed NM entries (rhbz 1337528 1337529)
 
 * Mon May 16 2016 Justin M. Forbes <jforbes@fedoraproject.org>
