@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -562,7 +562,10 @@ Patch487: Add-EFI-signature-data-types.patch
 
 Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
 
-Patch489: KEYS-Add-a-system-blacklist-keyring.patch
+# This doesn't apply. It seems like it could be replaced by
+# https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=5ac7eace2d00eab5ae0e9fdee63e38aee6001f7c
+# which has an explicit line about blacklisting
+# Patch489: KEYS-Add-a-system-blacklist-keyring.patch
 
 Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 
@@ -605,14 +608,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #CVE-2016-4482 rhbz 1332931 1332932
 Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
-
-#CVE-2016-4569 rhbz 1334643 1334645
-Patch714: ALSA-timer-Fix-leak-in-SNDRV_TIMER_IOCTL_PARAMS.patch
-Patch715: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_cca.patch
-Patch716: ALSA-timer-Fix-leak-in-events-via-snd_timer_user_tin.patch
-
-#CVE-2016-3713 rhbz 1332139 1336410
-Patch717: KVM-MTRR-remove-MSR-0x2f8.patch
 
 #CVE-2016-4440 rhbz 1337806 1337807
 Patch719: kvm-vmx-more-complete-state-update-on-APICv-on-off.patch
@@ -2142,6 +2137,10 @@ fi
 #
 # 
 %changelog
+* Fri May 20 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git5.1
+- Linux v4.6-6148-g03b979d
+- Docs, i2c, md, iommu, sound, pci, pinctrl, dmaengine, kvm, security merges
+
 * Fri May 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4440 kvm: incorrect state leading to APIC register access (rhbz 1337806 1337807)
 

@@ -547,3 +547,6 @@ CONFIG_CHECKPOINT_RESTORE=y
 
 # CONFIG_HW_RANDOM_HISI is not set
 # CONFIG_QRTR is not set
+
+# This Xilinx option is now built for arm64 as well as ARM
+CONFIG_XILINX_VDMA=m

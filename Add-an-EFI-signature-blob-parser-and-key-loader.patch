@@ -1,4 +1,4 @@
-From c279ba86f93cf6a75d078e2d0e3f59d4ba8a2dd0 Mon Sep 17 00:00:00 2001
+From 8cd53548ce7b88b08cc6345c8fca7d28d1f3a7f2 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:36:28 -0400
 Subject: [PATCH 16/20] Add an EFI signature blob parser and key loader.
@@ -6,20 +6,21 @@ Subject: [PATCH 16/20] Add an EFI signature blob parser and key loader.
 X.509 certificates are loaded into the specified keyring as asymmetric type
 keys.
 
+[labbott@fedoraproject.org: Drop KEY_ALLOC_TRUSTED]
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
  crypto/asymmetric_keys/Kconfig      |   8 +++
  crypto/asymmetric_keys/Makefile     |   1 +
- crypto/asymmetric_keys/efi_parser.c | 109 ++++++++++++++++++++++++++++++++++++
+ crypto/asymmetric_keys/efi_parser.c | 108 ++++++++++++++++++++++++++++++++++++
  include/linux/efi.h                 |   4 ++
- 4 files changed, 122 insertions(+)
+ 4 files changed, 121 insertions(+)
  create mode 100644 crypto/asymmetric_keys/efi_parser.c
 
 diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index 4870f28403f5..4a1b50d73b80 100644
+index e28e912..94024e8 100644
 --- a/crypto/asymmetric_keys/Kconfig
 +++ b/crypto/asymmetric_keys/Kconfig
-@@ -67,4 +67,12 @@ config SIGNED_PE_FILE_VERIFICATION
+@@ -60,4 +60,12 @@ config SIGNED_PE_FILE_VERIFICATION
  	  This option provides support for verifying the signature(s) on a
  	  signed PE binary.
  
@@ -33,10 +34,11 @@ index 4870f28403f5..4a1b50d73b80 100644
 +
  endif # ASYMMETRIC_KEY_TYPE
 diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index cd1406f9b14a..d9db380bbe53 100644
+index 6516855..c099fe1 100644
 --- a/crypto/asymmetric_keys/Makefile
 +++ b/crypto/asymmetric_keys/Makefile
-@@ -7,5 +7,6 @@ asymmetric_keys-y := asymmetric_type.o signature.o
+@@ -10,6 +10,7 @@ asymmetric_keys-y := \
+ 	signature.o
  
  obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) += public_key.o
 +obj-$(CONFIG_EFI_SIGNATURE_LIST_PARSER) += efi_parser.o
@@ -45,10 +47,10 @@ index cd1406f9b14a..d9db380bbe53 100644
  # X.509 Certificate handling
 diff --git a/crypto/asymmetric_keys/efi_parser.c b/crypto/asymmetric_keys/efi_parser.c
 new file mode 100644
-index 000000000000..424896a0b169
+index 0000000..636feb1
 --- /dev/null
 +++ b/crypto/asymmetric_keys/efi_parser.c
-@@ -0,0 +1,109 @@
+@@ -0,0 +1,108 @@
 +/* EFI signature/key/certificate list parser
 + *
 + * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
@@ -139,8 +141,7 @@ index 000000000000..424896a0b169
 +				esize - sizeof(*elem),
 +				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
 +				KEY_USR_VIEW,
-+				KEY_ALLOC_NOT_IN_QUOTA |
-+				KEY_ALLOC_TRUSTED);
++				KEY_ALLOC_NOT_IN_QUOTA);
 +
 +			if (IS_ERR(key))
 +				pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
@@ -159,10 +160,10 @@ index 000000000000..424896a0b169
 +	return 0;
 +}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index fac43c611614..414c3c3d988d 100644
+index b80227a..18443e3 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -941,6 +941,10 @@ extern bool efi_poweroff_required(void);
+@@ -1050,6 +1050,10 @@ extern int efi_memattr_apply_permissions(struct mm_struct *mm,
  char * __init efi_md_typeattr_format(char *buf, size_t size,
  				     const efi_memory_desc_t *md);
  
@@ -174,5 +175,5 @@ index fac43c611614..414c3c3d988d 100644
   * efi_range_is_wc - check the WC bit on an address range
   * @start: starting kvirt address
 -- 
-2.4.3
+2.5.5
 
