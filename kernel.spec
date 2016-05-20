@@ -2139,6 +2139,9 @@ fi
 #
 # 
 %changelog
+* Fri May 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM cleanups, enable Tegra USB-3 controller
+
 * Thu May 19 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git4.1
 - Linux v4.6-5028-g2600a46
 - trace, audit, input, media, scsi, armsoc merges
