@@ -658,6 +658,9 @@ Patch717: KEYS-Fix-ASN.1-indefinite-length-object-parsing.patch
 #CVE-2016-3713 rhbz 1332139 1336410
 Patch718: KVM-MTRR-remove-MSR-0x2f8.patch
 
+#CVE-2016-4440 rhbz 1337806 1337807
+Patch719: kvm-vmx-more-complete-state-update-on-APICv-on-off.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2179,6 +2182,9 @@ fi
 #
 # 
 %changelog
+* Fri May 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4440 kvm: incorrect state leading to APIC register access (rhbz 1337806 1337807)
+
 * Thu May 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.5.5-200
 - Linux v4.5.5
 - CVE-2016-4913 isofs: info leak with malformed NM entries (rhbz 1337528 1337529)
