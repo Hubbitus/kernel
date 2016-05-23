@@ -661,6 +661,9 @@ Patch718: KVM-MTRR-remove-MSR-0x2f8.patch
 #CVE-2016-4440 rhbz 1337806 1337807
 Patch719: kvm-vmx-more-complete-state-update-on-APICv-on-off.patch
 
+#CVE-2016-4951 rhbz 1338625 1338626
+Patch720: tipc-check-nl-sock-before-parsing-nested-attributes.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2182,6 +2185,9 @@ fi
 #
 # 
 %changelog
+* Mon May 23 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4951 null ptr deref in tipc_nl_publ_dump (rhbz 1338625 1338626)
+
 * Fri May 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4440 kvm: incorrect state leading to APIC register access (rhbz 1337806 1337807)
 
