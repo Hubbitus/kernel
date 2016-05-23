@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -503,7 +503,8 @@ Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
 Patch422: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
-Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
+# This has major conflicts and needs to be rebased
+# Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
@@ -605,9 +606,6 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2016-4482 rhbz 1332931 1332932
-Patch706: USB-usbfs-fix-potential-infoleak-in-devio.patch
 
 #CVE-2016-4440 rhbz 1337806 1337807
 Patch719: kvm-vmx-more-complete-state-update-on-APICv-on-off.patch
@@ -2137,6 +2135,11 @@ fi
 #
 # 
 %changelog
+* Mon May 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git6.1
+- Linux v4.6-8907-g7639dad
+- trace, f2fs, btrfs, rtc, mailbox, akpm, staging, driver core, char, usb,
+  tty, clk, net, devicetree, rdma, mfd, iio, powerpc, arm merges
+
 * Fri May 20 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git5.1
 - Linux v4.6-6148-g03b979d
 - Docs, i2c, md, iommu, sound, pci, pinctrl, dmaengine, kvm, security merges
