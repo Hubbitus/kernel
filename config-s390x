@@ -183,7 +183,7 @@ CONFIG_VIRTIO_CONSOLE=y
 
 CONFIG_MEMORY_HOTPLUG=y
 CONFIG_MEMORY_HOTREMOVE=y
-# CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE is not set
+CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE=y
 CONFIG_CHSC_SCH=m
 
 # drivers/isdn/hardware/mISDN/hfcmulti.c:5255:2: error: #error "not running on big endian machines now"

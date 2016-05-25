@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -553,8 +553,6 @@ Patch482: Add-option-to-automatically-enforce-module-signature.patch
 
 Patch483: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
 
-Patch484: efi-Make-EFI_SECURE_BOOT_SIG_ENFORCE-depend-on-EFI.patch
-
 Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
 
 Patch486: hibernate-Disable-in-a-signed-modules-environment.patch
@@ -566,7 +564,7 @@ Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
 # This doesn't apply. It seems like it could be replaced by
 # https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=5ac7eace2d00eab5ae0e9fdee63e38aee6001f7c
 # which has an explicit line about blacklisting
-# Patch489: KEYS-Add-a-system-blacklist-keyring.patch
+Patch489: KEYS-Add-a-system-blacklist-keyring.patch
 
 Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 
@@ -2135,6 +2133,11 @@ fi
 #
 # 
 %changelog
+* Tue May 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.7.0-0.rc0.git7.1
+- Linux v4.6-10203-g84787c572d40
+- Enable CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE (rhbz 1339281)
+- Fixup SB patchset to work with upstream changes
+
 * Mon May 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git6.1
 - Linux v4.6-8907-g7639dad
 - trace, f2fs, btrfs, rtc, mailbox, akpm, staging, driver core, char, usb,

@@ -1,7 +1,7 @@
-From 6fb2a60e6bfb5ce2d3a4964e7b47ac5c7ecd6f82 Mon Sep 17 00:00:00 2001
+From 5216de8394ff599e41c8540c0572368c18c51459 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
-Subject: [PATCH] Add EFI signature data types
+Subject: [PATCH 4/9] Add EFI signature data types
 
 Add the data types that are used for containing hashes, keys and certificates
 for cryptographic verification.
@@ -15,10 +15,10 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index fb0734f..b80227a 100644
+index 8cb38cfcba74..8c274b4ea8e6 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -653,6 +653,12 @@ void efi_native_runtime_setup(void);
+@@ -647,6 +647,12 @@ void efi_native_runtime_setup(void);
  	EFI_GUID(0x4a67b082, 0x0a4c, 0x41cf, \
  		 0xb6, 0xc7, 0x44, 0x0b, 0x29, 0xbb, 0x8c, 0x4f)
  
@@ -31,7 +31,7 @@ index fb0734f..b80227a 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -885,6 +891,20 @@ typedef struct {
+@@ -879,6 +885,20 @@ typedef struct {
  	efi_memory_desc_t entry[0];
  } efi_memory_attributes_table_t;
  
