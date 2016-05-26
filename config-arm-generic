@@ -170,6 +170,15 @@ CONFIG_SND_HDA_TEGRA=m
 # CONFIG_ARM_TEGRA20_CPUFREQ is not set
 # CONFIG_MFD_NVEC is not set
 
+# Qualcomm - Don't currently support IPQ router devices
+# CONFIG_IPQ_GCC_806X is not set
+# CONFIG_IPQ_LCC_806X is not set
+# CONFIG_IPQ_GCC_4019 is not st
+# CONFIG_PHY_QCOM_IPQ806X_SATA is not set
+# CONFIG_DWMAC_IPQ806X is not set
+# CONFIG_PINCTRL_IPQ8064 is not set
+# CONFIG_PINCTRL_IPQ4019 is not set
+
 # Virt
 CONFIG_PARAVIRT=y
 CONFIG_PARAVIRT_TIME_ACCOUNTING=y
