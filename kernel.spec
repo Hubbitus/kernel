@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 9
+%define gitrev 10
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2133,6 +2133,10 @@ fi
 #
 # 
 %changelog
+* Fri May 27 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git10.1
+- Linux v4.6-11010-gdc03c0f
+- Kconfig, Kbuild, ceph, nfs, xfs, mmc, hwmon merges
+
 * Thu May 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git9.1
 - Linux v4.6-10675-g2f7c3a1
 - EFI, sched, perf, objtool, acpi, pm, drm merges
