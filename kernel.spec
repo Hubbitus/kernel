@@ -2133,6 +2133,9 @@ fi
 #
 # 
 %changelog
+* Sat May 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update Utilite patch
+
 * Fri May 27 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git10.1
 - Linux v4.6-11010-gdc03c0f
 - Kconfig, Kbuild, ceph, nfs, xfs, mmc, hwmon merges
