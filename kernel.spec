@@ -506,6 +506,8 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
+Patch424: dmaengine-sun4i-support-module-autoloading.patch
+
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
@@ -2187,6 +2189,7 @@ fi
 %changelog
 * Sun May 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update Utilite patch
+- Fix AllWinner DMA driver loading
 
 * Mon May 23 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4951 null ptr deref in tipc_nl_publ_dump (rhbz 1338625 1338626)
