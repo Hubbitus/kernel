@@ -2190,6 +2190,7 @@ fi
 * Sun May 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update Utilite patch
 - Fix AllWinner DMA driver loading
+- Minor cleanups for ARM power/cpufreq management
 
 * Mon May 23 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4951 null ptr deref in tipc_nl_publ_dump (rhbz 1338625 1338626)
