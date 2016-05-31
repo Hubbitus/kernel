@@ -34,7 +34,7 @@ netprots="6lowpan appletalk atm ax25 batman-adv bluetooth can dccp dsa ieee80215
 
 drmdrvs="amd ast gma500 i2c i915 mgag200 nouveau radeon via "
 
-singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user sbp_target"
+singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user sbp_target cxgbit"
 
 # Grab the arch-specific filter list overrides
 source ./filter-$2.sh
