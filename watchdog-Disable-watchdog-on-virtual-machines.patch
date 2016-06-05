@@ -25,9 +25,9 @@ index 18f34cf..6aadffe 100644
 --- a/kernel/watchdog.c
 +++ b/kernel/watchdog.c
 @@ -20,6 +20,7 @@
- #include <linux/smpboot.h>
  #include <linux/sched/rt.h>
  #include <linux/tick.h>
+ #include <linux/workqueue.h>
 +#include <linux/dmi.h>
  
  #include <asm/irq_regs.h>
