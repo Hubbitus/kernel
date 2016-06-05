@@ -22,7 +22,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf6
+%define buildid .hu.1.pf8
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -40,7 +40,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -52,8 +52,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.4.4 v4.4-pf6: https://pf.natalenko.name/news/?p=161
-%define stable_update 4
+#+Hu Pf against 4.4.5 v4.4-pf8: https://pf.natalenko.name/news/?p=166, https://pf.natalenko.name/news/?p=165
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -469,7 +469,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #%%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.4/patch-4.4-pf6.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.4/patch-4.4-pf8.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -631,27 +631,71 @@ Patch640: PNP-Add-Haswell-ULT-to-Intel-MCH-size-workaround.patch
 #rhbz 1278942
 Patch643: media-ivtv-avoid-going-past-input-audio-array.patch
 
-#rhbz 1302037
-Patch644: wext-fix-message-delay-ordering.patch
-Patch645: cfg80211-wext-fix-message-ordering.patch
-
 #rhbz 1255325
 Patch646: HID-sony-do-not-bail-out-when-the-sixaxis-refuses-th.patch
 
 #Known use after free, possibly rhbz 1310579
 Patch654: 0001-usb-hub-fix-panic-in-usb_reset_and_verify_device.patch
 
-#rhbz 1310258
-Patch655: iommu-fix.patch
-
-#rhbz 1310682
-Patch657: 0001-Test-ata-fix.patch
-
 #Mitigates CVE-2013-4312 rhbz 1313428 1313433
 Patch659: pipe-limit-the-per-user-amount-of-pages-allocated-in.patch
 
 #rhbz 1310252 1313318
 Patch660: 0001-drm-i915-Pretend-cursor-is-always-on-for-ILK-style-W.patch
+
+#rhbz 1316719
+Patch662: 0001-cdc-acm-fix-NULL-pointer-reference.patch
+
+#rhbz 1316136
+Patch663: USB-serial-ftdi_sio-Add-support-for-ICP-DAS-I-756xU-.patch
+
+#CVE-2016-3135 rhbz 1317386 1317387
+Patch664: netfilter-x_tables-check-for-size-overflow.patch
+
+#CVE-2016-3134 rhbz 1317383 1317384
+Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
+
+#CVE-2016-3135 rhbz 1318172 1318270
+Patch666: ipv4-Dont-do-expensive-useless-work-during-inetdev-des.patch
+
+#CVE-2016-2184 rhbz 1317012 1317470
+Patch670: ALSA-usb-audio-Fix-NULL-dereference-in-create_fixed_.patch
+Patch671: ALSA-usb-audio-Add-sanity-checks-for-endpoint-access.patch
+
+#CVE-2016-3137 rhbz 1317010 1316996
+Patch672: cypress_m8-add-sanity-checking.patch
+
+#CVE-2016-2186 rhbz 1317015 1317464
+Patch673: USB-input-powermate-fix-oops-with-malicious-USB-desc.patch
+
+#CVE-2016-2188 rhbz 1317018 1317467
+Patch674: USB-iowarrior-fix-oops-with-malicious-USB-descriptor.patch
+
+#CVE-2016-2185 rhbz 1317014 1317471
+Patch675: usb_driver_claim_interface-add-sanity-checking.patch
+
+#CVE-2016-3138 rhbz 1317010 1316204
+Patch676: cdc-acm-more-sanity-checking.patch
+
+#CVE-2016-3140 rhbz 1317010 1316995
+Patch677: digi_acceleport-do-sanity-checking-for-the-number-of.patch
+
+Patch678: ims-pcu-sanity-check-against-missing-interfaces.patch
+
+#rhbz 1315013
+Patch679: 0001-uas-Limit-qdepth-at-the-scsi-host-level.patch
+
+#rhbz 1317190
+Patch680: thermal-fix.patch
+
+#rhbz 1318079
+Patch681: 0001-Input-synaptics-handle-spurious-release-of-trackstic.patch
+
+#CVE-2016-2187 rhbz 1317017 1317010
+Patch686: input-gtco-fix-crash-on-detecting-device-without-end.patch
+
+#CVE-2016-3136 rhbz 1317007 1317010
+Patch687: mct_u232-sanity-checking-in-probe.patch
 
 # END OF PATCH DEFINITIONS
 %endif
@@ -2101,6 +2145,52 @@ fi
 # and build.
 #
 %changelog
+* Wed Mar 23 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.5-300.hu.1.pf8
+- Merge upstream changes (4.4.6).
+- Update pf patch to v4.4-pf8, but it stick on 4.4.5 (https://pf.natalenko.name/news/?p=166, https://pf.natalenko.name/news/?p=165)
+
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3136 mct_u232: oops on invalid USB descriptors (rhbz 1317007 1317010)
+- CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
+
+* Mon Mar 21 2016 Laura Abbott <labbott@fedoraproject.org>
+- uas: Limit qdepth at the scsi-host level (rhbz 1315013)
+- Fix for performance regression caused by thermal (rhbz 1317190)
+- Input: synaptics - handle spurious release of trackstick buttons, again (rhbz 1318079)
+
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- ims-pcu: sanity checking on missing interfaces
+- CVE-2016-3140 digi_acceleport: oops on invalid USB descriptors (rhbz 1317010 1316995)
+- CVE-2016-3138 cdc_acm: oops on invalid USB descriptors (rhbz 1317010 1316204)
+- CVE-2016-2185 ati_remote2: oops on invalid USB descriptors (rhbz 1317014 1317471)
+- CVE-2016-2188 iowarrior: oops on invalid USB descriptors (rhbz 1317018 1317467)
+- CVE-2016-2186 powermate: oops on invalid USB descriptors (rhbz 1317015 1317464)
+- CVE-2016-3137 cypress_m8: oops on invalid USB descriptors (rhbz 1317010 1316996)
+- CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
+
+* Wed Mar 16 2016 Laura Abbott <labbott@redhat.com> - 4.4.6-300
+- Linux v4.4.6
+
+* Wed Mar 16 2016 Laura Abbott <labbott@redhat.com>
+- Revert patch causing radeon breakage (rhbz 1317300 1317179)
+
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
+
+* Mon Mar 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-3134 netfilter: missing bounds check in ipt_entry struct (rhbz 1317383 1317384)
+- CVE-2016-3135 netfilter: size overflow in x_tables (rhbz 1317386 1317387)
+
+* Fri Mar 11 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch for ICP DAS I-756xU devices (rhbz 1316136)
+
+* Thu Mar 10 2016 Laura Abbott <labbott@redhat.com>
+- cdc-acm: fix NULL pointer reference (rhbz 1316719)
+
+* Wed Mar 09 2016 Laura Abbott <labbott@redhat.com> - 4.4.5-300
+- Linux v4.4.5
+- Fix for known arm64 bootup issue
+
 * Tue Mar 08 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.4-301.hu.1.pf6
 - Merge Fedora changes.
 - Step to kernel 4.4.4.
