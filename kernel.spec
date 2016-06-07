@@ -660,6 +660,9 @@ Patch719: kvm-vmx-more-complete-state-update-on-APICv-on-off.patch
 #CVE-2016-4951 rhbz 1338625 1338626
 Patch720: tipc-check-nl-sock-before-parsing-nested-attributes.patch
 
+#CVE-2016-5243 rhbz 1343338 1343335
+Patch721: tipc-fix-an-infoleak-in-tipc_nl_compat_link_dump.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2181,6 +2184,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-5243 info leak in tipc (rhbz 1343338 1343335)
+
 * Wed Jun 01 2016 Justin M. Forbes <jforbes@fedoraproject.org> 4.5.6-300
 - Linux v4.5.6
 
