@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2136,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 07 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git1.1
+- Linux v4.7-rc2-4-g3613a62
+
 * Tue Jun 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-5244 info leak in rds (rhbz 1343338 1343337)
 - CVE-2016-5243 info leak in tipc (rhbz 1343338 1343335)
