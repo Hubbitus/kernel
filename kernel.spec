@@ -2185,6 +2185,10 @@ fi
 # and build.
 #
 %changelog
+* Sun Jun 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.5.6-200.hu.1.pf4
+- 4.5.6-200.hu.1.pf4
+- Pf v4.5-pf4 https://pf.natalenko.name/news/?p=177
+
 * Wed Jun 01 2016 Justin M. Forbes <jforbes@fedoraproject.org> 4.5.6-200
 - Linux v4.5.6
 
