@@ -605,6 +605,9 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#CVE-2016-5243 rhbz 1343338 1343335
+Patch721: tipc-fix-an-infoleak-in-tipc_nl_compat_link_dump.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2130,6 +2133,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-5243 info leak in tipc (rhbz 1343338 1343335)
+
 * Mon Jun 06 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git0.1
 - Linux v4.7-rc2
 - Disable debugging options.
