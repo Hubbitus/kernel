@@ -2136,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM/aarch64 config updates
+
 * Tue Jun 07 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git1.1
 - Linux v4.7-rc2-4-g3613a62
 
