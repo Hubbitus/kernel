@@ -2136,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun  9 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ARM big.LITTLE on ARMv7 LPAE kernels
+
 * Wed Jun 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git2.1
 - Linux v4.7-rc2-20-gc8ae067
 
