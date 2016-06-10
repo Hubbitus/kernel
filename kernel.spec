@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2133,6 +2133,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 10 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git3.1
+- Linux v4.7-rc2-64-g147d9e7
+
 * Thu Jun  9 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable ARM big.LITTLE on ARMv7 LPAE kernels
 
