@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 2
+%define rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -601,12 +601,6 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2016-5243 rhbz 1343338 1343335
-Patch721: tipc-fix-an-infoleak-in-tipc_nl_compat_link_dump.patch
-
-#CVE-2016-5244 rhbz 1343338 1343337
-Patch722: rds-fix-an-infoleak-in-rds_inc_info_copy.txt
 
 # END OF PATCH DEFINITIONS
 
@@ -2133,6 +2127,10 @@ fi
 #
 # 
 %changelog
+* Mon Jun 13 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git0.1
+- Linux v4.7-rc3
+- Disable debugging options.
+
 * Fri Jun 10 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.7.0-0.rc2.git3.2
 - Fix Power64 module filters
 - Minor ARM updates
