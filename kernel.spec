@@ -660,6 +660,12 @@ Patch721: tipc-fix-an-infoleak-in-tipc_nl_compat_link_dump.patch
 #CVE-2016-5244 rhbz 1343338 1343337
 Patch722: rds-fix-an-infoleak-in-rds_inc_info_copy.txt
 
+#CVE-2016-1583 rhbz 1344721 1344722
+Patch723: proc-prevent-stacking-filesystems-on-top.patch
+Patch724: ecryptfs-fix-handling-of-directory-opening.patch
+Patch725: ecryptfs-forbid-opening-files-without-mmap-handler.patch
+Patch726: sched-panic-on-corrupted-stack-end.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2181,6 +2187,9 @@ fi
 #
 # 
 %changelog
+* Mon Jun 13 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-1583 stack overflow via ecryptfs and /proc (rhbz 1344721 1344722)
+
 * Wed Jun 08 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.5.7-300
 - Linux v4.5.7
 
