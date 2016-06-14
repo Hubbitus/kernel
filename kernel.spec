@@ -602,6 +602,9 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#rhbz 1346145
+Patch666: ath9k-fix-GPIO-mask-for-AR9462-and-AR9565.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2127,6 +2130,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 14 2016 Laura Abbott <labbott@redhat.com>
+- ath9k: fix GPIO mask for AR9462 and AR9565 (rhbz 1346145)
+
 * Tue Jun 14 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git1.1
 - Linux v4.7-rc3-9-gdb06d75
 - Reenable debugging options.

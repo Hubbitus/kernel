@@ -1,0 +1,80 @@
+From patchwork Fri Jun  3 05:46:57 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: ath9k: fix GPIO mask for AR9462 and AR9565
+From: miaoqing pan <miaoqing@codeaurora.org>
+X-Patchwork-Id: 9151847
+Message-Id: <1464932817-30988-1-git-send-email-miaoqing@codeaurora.org>
+To: kvalo@qca.qualcomm.com
+Cc: linux-wireless@vger.kernel.org, ath9k-devel@qca.qualcomm.com,
+ sudipm.mukherjee@gmail.com, Miaoqing Pan <miaoqing@codeaurora.org>
+Date: Fri,  3 Jun 2016 13:46:57 +0800
+
+From: Miaoqing Pan <miaoqing@codeaurora.org>
+
+The incorrect GPIO mask cause kernel warning, when AR9462 access GPIO11.
+Also fix the mask for AR9565.
+
+WARNING: CPU: 1 PID: 199 at ../drivers/net/wireless/ath/ath9k/hw.c:2778 ath9k_hw_gpio_get+0x1a9/0x1b0 [ath9k_hw]
+CPU: 1 PID: 199 Comm: kworker/u16:9 Not tainted 4.7.0-rc1-next-20160530+ #5
+Hardware name: Acer TravelMate P243/BA40_HC, BIOS V1.01 04/20/2012
+Workqueue: events_power_efficient rfkill_poll
+ 0000000000000000 ffff88002cf73d28 ffffffff813b8ddc 0000000000000000
+ 0000000000000000 ffff88002cf73d68 ffffffff8107a331 00000ada00000086
+ ffff880148d9c018 000000000000000b ffff880147e68720 0000000000000200
+Call Trace:
+ [<ffffffff813b8ddc>] dump_stack+0x63/0x87
+ [<ffffffff8107a331>] __warn+0xd1/0xf0
+ [<ffffffff8107a41d>] warn_slowpath_null+0x1d/0x20
+ [<ffffffffc0775b19>] ath9k_hw_gpio_get+0x1a9/0x1b0 [ath9k_hw]
+ [<ffffffffc047f3e4>] ath9k_rfkill_poll_state+0x34/0x60 [ath9k]
+ [<ffffffffc06dbb53>] ieee80211_rfkill_poll+0x33/0x40 [mac80211]
+ [<ffffffffc03ad65a>] cfg80211_rfkill_poll+0x2a/0xc0 [cfg80211]
+ [<ffffffff817c5514>] rfkill_poll+0x24/0x50
+ [<ffffffff81093183>] process_one_work+0x153/0x3f0
+ [<ffffffff8109393b>] worker_thread+0x12b/0x4b0
+ [<ffffffff81093810>] ? rescuer_thread+0x340/0x340
+ [<ffffffff81099129>] kthread+0xc9/0xe0
+ [<ffffffff817d8f1f>] ret_from_fork+0x1f/0x40
+ [<ffffffff81099060>] ? kthread_park+0x60/0x60
+
+Signed-off-by: Miaoqing Pan <miaoqing@codeaurora.org>
+---
+ drivers/net/wireless/ath/ath9k/reg.h | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/ath/ath9k/reg.h b/drivers/net/wireless/ath/ath9k/reg.h
+index 9272ca9..80ff69f 100644
+--- a/drivers/net/wireless/ath/ath9k/reg.h
++++ b/drivers/net/wireless/ath/ath9k/reg.h
+@@ -1122,12 +1122,12 @@ enum {
+ #define AR9300_NUM_GPIO                          16
+ #define AR9330_NUM_GPIO				 16
+ #define AR9340_NUM_GPIO				 23
+-#define AR9462_NUM_GPIO				 10
++#define AR9462_NUM_GPIO				 14
+ #define AR9485_NUM_GPIO				 12
+ #define AR9531_NUM_GPIO				 18
+ #define AR9550_NUM_GPIO				 24
+ #define AR9561_NUM_GPIO				 23
+-#define AR9565_NUM_GPIO				 12
++#define AR9565_NUM_GPIO				 14
+ #define AR9580_NUM_GPIO				 16
+ #define AR7010_NUM_GPIO                          16
+ 
+@@ -1139,12 +1139,12 @@ enum {
+ #define AR9300_GPIO_MASK			 0x0000F4FF
+ #define AR9330_GPIO_MASK			 0x0000F4FF
+ #define AR9340_GPIO_MASK			 0x0000000F
+-#define AR9462_GPIO_MASK			 0x000003FF
++#define AR9462_GPIO_MASK			 0x00003FFF
+ #define AR9485_GPIO_MASK			 0x00000FFF
+ #define AR9531_GPIO_MASK			 0x0000000F
+ #define AR9550_GPIO_MASK			 0x0000000F
+ #define AR9561_GPIO_MASK			 0x0000000F
+-#define AR9565_GPIO_MASK			 0x00000FFF
++#define AR9565_GPIO_MASK			 0x00003FFF
+ #define AR9580_GPIO_MASK			 0x0000F4FF
+ #define AR7010_GPIO_MASK			 0x0000FFFF
+ 
