@@ -2127,6 +2127,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 14 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Infiniband on ARM now we have HW
+
 * Mon Jun 13 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git0.1
 - Linux v4.7-rc3
 - Disable debugging options.
