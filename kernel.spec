@@ -2130,6 +2130,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable support for TI dm81xx devices (kwizart)
+
 * Tue Jun 14 2016 Laura Abbott <labbott@redhat.com>
 - ath9k: fix GPIO mask for AR9462 and AR9565 (rhbz 1346145)
 
