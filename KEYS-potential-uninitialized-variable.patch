@@ -1,0 +1,30 @@
+From 82a50018782f84e733e718d4b24e1653d19333be Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Wed, 15 Jun 2016 09:31:45 -0400
+Subject: [PATCH] KEYS: potential uninitialized variable
+
+If __key_link_begin() failed then "edit" would be uninitialized.  I've
+added a check to fix that.
+
+Fixes: f70e2e06196a ('KEYS: Do preallocation for __key_link()')
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ security/keys/key.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/security/keys/key.c b/security/keys/key.c
+index bd5a272f28a6..346fbf201c22 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -597,7 +597,7 @@ int key_reject_and_link(struct key *key,
+ 
+ 	mutex_unlock(&key_construction_mutex);
+ 
+-	if (keyring)
++	if (keyring && link_ret == 0)
+ 		__key_link_end(keyring, &key->index_key, edit);
+ 
+ 	/* wake up anyone waiting for a key to be constructed */
+-- 
+2.5.5
+

@@ -605,6 +605,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #rhbz 1346145
 Patch666: ath9k-fix-GPIO-mask-for-AR9462-and-AR9565.patch
 
+#CVE-2016-4470 rhbz 1341716 1346626
+Patch727: KEYS-potential-uninitialized-variable.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2130,6 +2133,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-4470 keys: uninitialized variable crash (rhbz 1341716 1346626)
+
 * Wed Jun 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable support for TI dm81xx devices (kwizart)
 
