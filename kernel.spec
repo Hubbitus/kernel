@@ -608,6 +608,9 @@ Patch666: ath9k-fix-GPIO-mask-for-AR9462-and-AR9565.patch
 #CVE-2016-4470 rhbz 1341716 1346626
 Patch727: KEYS-potential-uninitialized-variable.patch
 
+#rhbz 1338025
+Patch728: hp-wmi-fix-wifi-cannot-be-hard-unblock.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2133,6 +2136,9 @@ fi
 #
 # 
 %changelog
+* Wed Jun 15 2016 Laura Abbott <labbott@fedoraproject.org>
+- hp-wmi: fix wifi cannot be hard-unblock (rhbz 1338025)
+
 * Wed Jun 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4470 keys: uninitialized variable crash (rhbz 1341716 1346626)
 
