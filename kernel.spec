@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,9 +604,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #rhbz 1346145
 Patch666: ath9k-fix-GPIO-mask-for-AR9462-and-AR9565.patch
-
-#CVE-2016-4470 rhbz 1341716 1346626
-Patch727: KEYS-potential-uninitialized-variable.patch
 
 #rhbz 1338025
 Patch728: hp-wmi-fix-wifi-cannot-be-hard-unblock.patch
@@ -2136,6 +2133,10 @@ fi
 #
 # 
 %changelog
+* Fri Jun 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git3.1
+- Linux v4.7-rc3-87-gbb96727
+- enable CONFIG_PWM (rhbz 1347454)
+
 * Thu Jun 16 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git2.1
 - Linux v4.7-rc3-55-gd325ea8
 
