@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2155,6 +2155,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git2.1
+- Linux v4.7-rc4-20-gf9020d1
+
 * Wed Jun 22 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Bring in patch-series from drm-next to fix skl_update_other_pipe_wm issues
   (rhbz 1305038)
