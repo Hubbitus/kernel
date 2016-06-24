@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -626,9 +626,6 @@ Patch814: 0014-drm-i915-gen9-Propagate-watermark-calculation-failur.patch
 Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
 Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
 Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
-
-#other drm/kms fixes (most Cc-ed stable)
-Patch821: 0001-i915-fbc-Disable-on-HSW-by-default-for-now.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2155,6 +2152,9 @@ fi
 #
 # 
 %changelog
+* Fri Jun 24 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git3.1
+- Linux v4.7-rc4-76-g63c04ee
+
 * Thu Jun 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git2.1
 - Linux v4.7-rc4-20-gf9020d1
 
