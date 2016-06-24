@@ -1,7 +1,14 @@
-From 97345b0e9b02d6d794fc772e366efe6e44b9340a Mon Sep 17 00:00:00 2001
+From patchwork Mon Jun 13 11:44:00 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: hp-wmi: fix wifi cannot be hard-unblock
 From: Alex Hung <alex.hung@canonical.com>
+X-Patchwork-Id: 9172765
+Message-Id: <1465818240-11994-1-git-send-email-alex.hung@canonical.com>
+To: dvhart@infradead.org, platform-driver-x86@vger.kernel.org,
+ alex.hung@canonical.com, david.ward@ll.mit.edu
 Date: Mon, 13 Jun 2016 19:44:00 +0800
-Subject: [PATCH] hp-wmi: fix wifi cannot be hard-unblock
 
 Several users reported wifi cannot be unblocked as discussed in [1].
 This patch removes the useof 2009 flag by BIOS but uses the actual WMI
@@ -15,10 +22,10 @@ Signed-off-by: Alex Hung <alex.hung@canonical.com>
  1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/platform/x86/hp-wmi.c b/drivers/platform/x86/hp-wmi.c
-index fb4dd7b..af2046c 100644
+index 6f145f2..96ffda4 100644
 --- a/drivers/platform/x86/hp-wmi.c
 +++ b/drivers/platform/x86/hp-wmi.c
-@@ -723,6 +723,11 @@ static int __init hp_wmi_rfkill_setup(struct platform_device *device)
+@@ -718,6 +718,11 @@ static int __init hp_wmi_rfkill_setup(struct platform_device *device)
  	if (err)
  		return err;
  
@@ -30,8 +37,8 @@ index fb4dd7b..af2046c 100644
  	if (wireless & 0x1) {
  		wifi_rfkill = rfkill_alloc("hp-wifi", &device->dev,
  					   RFKILL_TYPE_WLAN,
-@@ -910,7 +915,7 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
- 	gps_rfkill = NULL;
+@@ -882,7 +887,7 @@ static int __init hp_wmi_bios_setup(struct platform_device *device)
+ 	wwan_rfkill = NULL;
  	rfkill2_count = 0;
  
 -	if (hp_wmi_bios_2009_later() || hp_wmi_rfkill_setup(device))
@@ -39,6 +46,3 @@ index fb4dd7b..af2046c 100644
  		hp_wmi_rfkill2_setup(device);
  
  	err = device_create_file(&device->dev, &dev_attr_display);
--- 
-2.5.5
-

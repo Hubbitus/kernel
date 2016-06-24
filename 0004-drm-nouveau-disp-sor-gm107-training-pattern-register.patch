@@ -1,0 +1,195 @@
+From eb4668302adce316f53896b0fd8144ffe380a3ad Mon Sep 17 00:00:00 2001
+From: Fedora Kernel Team <kernel-team@fedoraproject.org>
+Date: Mon, 20 Jun 2016 14:52:06 +0200
+Subject: [PATCH 4/6] drm/nouveau/disp/sor/gm107: training pattern registers
+ are like gm200
+
+Upstream: drm-fixes for 4.7 (and cc'd 4.6-stable)
+commit 4691409b3e2250ed66aa8dcefa23fe765daf7add
+
+Author:     Ben Skeggs <bskeggs@redhat.com>
+AuthorDate: Fri Jun 3 15:05:52 2016 +1000
+Commit:     Ben Skeggs <bskeggs@redhat.com>
+CommitDate: Tue Jun 7 08:11:25 2016 +1000
+
+    drm/nouveau/disp/sor/gm107: training pattern registers are like gm200
+
+    Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+    Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/Kbuild    |  1 +
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c   |  2 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/disp/outpdp.h  |  9 +++-
+ .../gpu/drm/nouveau/nvkm/engine/disp/sorgf119.c    |  2 +-
+ .../nvkm/engine/disp/{gm107.c => sorgm107.c}       | 50 +++++++++++-----------
+ .../gpu/drm/nouveau/nvkm/engine/disp/sorgm200.c    | 15 +------
+ 6 files changed, 36 insertions(+), 43 deletions(-)
+ copy drivers/gpu/drm/nouveau/nvkm/engine/disp/{gm107.c => sorgm107.c} (55%)
+
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/Kbuild b/drivers/gpu/drm/nouveau/nvkm/engine/disp/Kbuild
+index a74c5dd..e2a64ed 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/Kbuild
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/Kbuild
+@@ -18,6 +18,7 @@ nvkm-y += nvkm/engine/disp/piornv50.o
+ nvkm-y += nvkm/engine/disp/sornv50.o
+ nvkm-y += nvkm/engine/disp/sorg94.o
+ nvkm-y += nvkm/engine/disp/sorgf119.o
++nvkm-y += nvkm/engine/disp/sorgm107.o
+ nvkm-y += nvkm/engine/disp/sorgm200.o
+ nvkm-y += nvkm/engine/disp/dport.o
+ 
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c
+index b694414..f4b9cf8 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c
+@@ -36,7 +36,7 @@ gm107_disp = {
+ 	.outp.internal.crt = nv50_dac_output_new,
+ 	.outp.internal.tmds = nv50_sor_output_new,
+ 	.outp.internal.lvds = nv50_sor_output_new,
+-	.outp.internal.dp = gf119_sor_dp_new,
++	.outp.internal.dp = gm107_sor_dp_new,
+ 	.dac.nr = 3,
+ 	.dac.power = nv50_dac_power,
+ 	.dac.sense = nv50_dac_sense,
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outpdp.h b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outpdp.h
+index e9067ba..4e983f6 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/outpdp.h
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/outpdp.h
+@@ -62,7 +62,12 @@ int g94_sor_dp_lnk_pwr(struct nvkm_output_dp *, int);
+ int gf119_sor_dp_new(struct nvkm_disp *, int, struct dcb_output *,
+ 		     struct nvkm_output **);
+ int gf119_sor_dp_lnk_ctl(struct nvkm_output_dp *, int, int, bool);
++int gf119_sor_dp_drv_ctl(struct nvkm_output_dp *, int, int, int, int);
+ 
+-int  gm200_sor_dp_new(struct nvkm_disp *, int, struct dcb_output *,
+-		      struct nvkm_output **);
++int gm107_sor_dp_new(struct nvkm_disp *, int, struct dcb_output *,
++		     struct nvkm_output **);
++int gm107_sor_dp_pattern(struct nvkm_output_dp *, int);
++
++int gm200_sor_dp_new(struct nvkm_disp *, int, struct dcb_output *,
++		     struct nvkm_output **);
+ #endif
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgf119.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgf119.c
+index 5111560..22706c0 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgf119.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgf119.c
+@@ -63,7 +63,7 @@ gf119_sor_dp_lnk_ctl(struct nvkm_output_dp *outp, int nr, int bw, bool ef)
+ 	return 0;
+ }
+ 
+-static int
++int
+ gf119_sor_dp_drv_ctl(struct nvkm_output_dp *outp,
+ 		     int ln, int vs, int pe, int pc)
+ {
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm107.c
+similarity index 55%
+copy from drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c
+copy to drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm107.c
+index b694414..37790b2 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/gm107.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm107.c
+@@ -1,5 +1,5 @@
+ /*
+- * Copyright 2012 Red Hat Inc.
++ * Copyright 2016 Red Hat Inc.
+  *
+  * Permission is hereby granted, free of charge, to any person obtaining a
+  * copy of this software and associated documentation files (the "Software"),
+@@ -19,35 +19,35 @@
+  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+  * OTHER DEALINGS IN THE SOFTWARE.
+  *
+- * Authors: Ben Skeggs
++ * Authors: Ben Skeggs <bskeggs@redhat.com>
+  */
+ #include "nv50.h"
+-#include "rootnv50.h"
++#include "outpdp.h"
+ 
+-static const struct nv50_disp_func
+-gm107_disp = {
+-	.intr = gf119_disp_intr,
+-	.uevent = &gf119_disp_chan_uevent,
+-	.super = gf119_disp_intr_supervisor,
+-	.root = &gm107_disp_root_oclass,
+-	.head.vblank_init = gf119_disp_vblank_init,
+-	.head.vblank_fini = gf119_disp_vblank_fini,
+-	.head.scanoutpos = gf119_disp_root_scanoutpos,
+-	.outp.internal.crt = nv50_dac_output_new,
+-	.outp.internal.tmds = nv50_sor_output_new,
+-	.outp.internal.lvds = nv50_sor_output_new,
+-	.outp.internal.dp = gf119_sor_dp_new,
+-	.dac.nr = 3,
+-	.dac.power = nv50_dac_power,
+-	.dac.sense = nv50_dac_sense,
+-	.sor.nr = 4,
+-	.sor.power = nv50_sor_power,
+-	.sor.hda_eld = gf119_hda_eld,
+-	.sor.hdmi = gk104_hdmi_ctrl,
++int
++gm107_sor_dp_pattern(struct nvkm_output_dp *outp, int pattern)
++{
++	struct nvkm_device *device = outp->base.disp->engine.subdev.device;
++	const u32 soff = outp->base.or * 0x800;
++	const u32 data = 0x01010101 * pattern;
++	if (outp->base.info.sorconf.link & 1)
++		nvkm_mask(device, 0x61c110 + soff, 0x0f0f0f0f, data);
++	else
++		nvkm_mask(device, 0x61c12c + soff, 0x0f0f0f0f, data);
++	return 0;
++}
++
++static const struct nvkm_output_dp_func
++gm107_sor_dp_func = {
++	.pattern = gm107_sor_dp_pattern,
++	.lnk_pwr = g94_sor_dp_lnk_pwr,
++	.lnk_ctl = gf119_sor_dp_lnk_ctl,
++	.drv_ctl = gf119_sor_dp_drv_ctl,
+ };
+ 
+ int
+-gm107_disp_new(struct nvkm_device *device, int index, struct nvkm_disp **pdisp)
++gm107_sor_dp_new(struct nvkm_disp *disp, int index,
++		 struct dcb_output *dcbE, struct nvkm_output **poutp)
+ {
+-	return gf119_disp_new_(&gm107_disp, device, index, pdisp);
++	return nvkm_output_dp_new_(&gm107_sor_dp_func, disp, index, dcbE, poutp);
+ }
+diff --git a/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm200.c b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm200.c
+index 2cfbef9..c44fa7e 100644
+--- a/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm200.c
++++ b/drivers/gpu/drm/nouveau/nvkm/engine/disp/sorgm200.c
+@@ -57,19 +57,6 @@ gm200_sor_dp_lane_map(struct nvkm_device *device, u8 lane)
+ }
+ 
+ static int
+-gm200_sor_dp_pattern(struct nvkm_output_dp *outp, int pattern)
+-{
+-	struct nvkm_device *device = outp->base.disp->engine.subdev.device;
+-	const u32 soff = gm200_sor_soff(outp);
+-	const u32 data = 0x01010101 * pattern;
+-	if (outp->base.info.sorconf.link & 1)
+-		nvkm_mask(device, 0x61c110 + soff, 0x0f0f0f0f, data);
+-	else
+-		nvkm_mask(device, 0x61c12c + soff, 0x0f0f0f0f, data);
+-	return 0;
+-}
+-
+-static int
+ gm200_sor_dp_lnk_pwr(struct nvkm_output_dp *outp, int nr)
+ {
+ 	struct nvkm_device *device = outp->base.disp->engine.subdev.device;
+@@ -129,7 +116,7 @@ gm200_sor_dp_drv_ctl(struct nvkm_output_dp *outp,
+ 
+ static const struct nvkm_output_dp_func
+ gm200_sor_dp_func = {
+-	.pattern = gm200_sor_dp_pattern,
++	.pattern = gm107_sor_dp_pattern,
+ 	.lnk_pwr = gm200_sor_dp_lnk_pwr,
+ 	.lnk_ctl = gf119_sor_dp_lnk_ctl,
+ 	.drv_ctl = gm200_sor_dp_drv_ctl,
+-- 
+2.7.4
+

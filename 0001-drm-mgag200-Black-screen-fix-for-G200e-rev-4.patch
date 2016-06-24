@@ -1,0 +1,58 @@
+From 1e5895f2c6068fb9ae5356e3a751a29a22af5f01 Mon Sep 17 00:00:00 2001
+From: Fedora Kernel Team <kernel-team@fedoraproject.org>
+Date: Mon, 20 Jun 2016 14:53:03 +0200
+Subject: [PATCH 1/6] drm/mgag200: Black screen fix for G200e rev 4
+
+Upstream: since drm-fixes-for-v4.7
+commit d3922b69617b62bb2509936b68301f837229d9f0
+
+Author:     Mathieu Larouche <mathieu.larouche@matrox.com>
+AuthorDate: Fri May 27 15:12:50 2016 -0400
+Commit:     Dave Airlie <airlied@redhat.com>
+CommitDate: Wed Jun 1 15:25:04 2016 +1000
+
+    drm/mgag200: Black screen fix for G200e rev 4
+
+    - Fixed black screen for some resolutions of G200e rev4
+    - Fixed testm & testn which had predetermined value.
+
+    Reported-by: Jan Beulich <jbeulich@suse.com>
+
+    Signed-off-by: Mathieu Larouche <mathieu.larouche@matrox.com>
+    Cc: stable@vger.kernel.org
+    Signed-off-by: Dave Airlie <airlied@redhat.com>
+---
+ drivers/gpu/drm/mgag200/mgag200_mode.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/mgag200/mgag200_mode.c
+index 14e64e0..d347dca 100644
+--- a/drivers/gpu/drm/mgag200/mgag200_mode.c
++++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+@@ -182,7 +182,7 @@ static int mga_g200se_set_plls(struct mga_device *mdev, long clock)
+ 			}
+ 		}
+ 
+-		fvv = pllreffreq * testn / testm;
++		fvv = pllreffreq * (n + 1) / (m + 1);
+ 		fvv = (fvv - 800000) / 50000;
+ 
+ 		if (fvv > 15)
+@@ -202,6 +202,14 @@ static int mga_g200se_set_plls(struct mga_device *mdev, long clock)
+ 	WREG_DAC(MGA1064_PIX_PLLC_M, m);
+ 	WREG_DAC(MGA1064_PIX_PLLC_N, n);
+ 	WREG_DAC(MGA1064_PIX_PLLC_P, p);
++
++	if (mdev->unique_rev_id >= 0x04) {
++		WREG_DAC(0x1a, 0x09);
++		msleep(20);
++		WREG_DAC(0x1a, 0x01);
++
++	}
++
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
+
