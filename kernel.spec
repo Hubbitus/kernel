@@ -650,6 +650,9 @@ Patch823: 0003-drm-nouveau-disp-sor-gf119-both-links-use-the-same-t.patch
 Patch824: 0004-drm-nouveau-disp-sor-gm107-training-pattern-register.patch
 Patch825: 0005-i915-fbc-Disable-on-HSW-by-default-for-now.patch
 
+#CVE-2016-5829 rhbz 1350509 1350513
+Patch826: HID-hiddev-validate-num_values-for-HIDIOCGUSAGES-HID.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2175,6 +2178,9 @@ fi
 #
 # 
 %changelog
+* Mon Jun 27 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-5829 heap overflow in hiddev (rhbz 1350509 1350513)
+
 * Fri Jun 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.3-300
 - Linux v4.6.3
 
