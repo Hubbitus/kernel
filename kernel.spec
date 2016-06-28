@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -652,6 +652,10 @@ Patch825: 0005-i915-fbc-Disable-on-HSW-by-default-for-now.patch
 
 #CVE-2016-5829 rhbz 1350509 1350513
 Patch826: HID-hiddev-validate-num_values-for-HIDIOCGUSAGES-HID.patch
+
+#CVE-2016-1237 rhbz 1350845 1350847
+Patch830: posix_acl-Add-set_posix_acl.patch
+Patch831: nfsd-check-permissions-when-setting-ACLs.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2178,6 +2182,9 @@ fi
 #
 # 
 %changelog
+* Tue Jun 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-1237 missing check for permissions setting ACL (rhbz 1350845 1350847)
+
 * Mon Jun 27 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-5829 heap overflow in hiddev (rhbz 1350509 1350513)
 
