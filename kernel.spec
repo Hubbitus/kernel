@@ -507,6 +507,8 @@ Patch422: geekbox-v4-device-tree-support.patch
 # http://www.spinics.net/lists/arm-kernel/msg483898.html
 Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
+Patch424: net-smsc911x-Fix-bug-where-PHY-interrupts-are-overwritten-by-0.patch
+
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
@@ -2182,6 +2184,9 @@ fi
 #
 # 
 %changelog
+* Thu Jun 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Pull upstream fix for smsc911x
+
 * Tue Jun 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-1237 missing check for permissions setting ACL (rhbz 1350845 1350847)
 
