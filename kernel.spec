@@ -2184,6 +2184,9 @@ fi
 #
 # 
 %changelog
+* Fri Jul 01 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Reenable CONFIG_DW_DMAC_CORE=y to fix sound on some Broadwell machines (rhbz 1351738 1352176)
+
 * Thu Jun 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Pull upstream fix for smsc911x
 
