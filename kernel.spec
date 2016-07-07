@@ -624,6 +624,9 @@ Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
 Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
 Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
 
+#rbhz 1351205
+Patch833: drm-nouveau-disp-sor-gf119-select-correct-sor-when.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2149,6 +2152,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blank screen on some nvidia cards (rbhz 1351205)
+
 * Thu Jul  7 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable Marvell mvebu for aarch64
 
