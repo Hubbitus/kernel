@@ -662,6 +662,9 @@ Patch831: nfsd-check-permissions-when-setting-ACLs.patch
 #CVE-2016-6156 rhbz 1353490 1353491
 Patch832: platform-chrome-cros_ec_dev-double-fetch-bug-in-ioct.patch
 
+#rbhz 1351205
+Patch833: drm-nouveau-disp-sor-gf119-select-correct-sor-when.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2188,6 +2191,7 @@ fi
 # 
 %changelog
 * Thu Jul 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix blank screen on some nvidia cards (rbhz 1351205)
 - CVE-2016-6156 race condition in chrome chardev driver (rhbz 1353490 1353491)
 
 * Fri Jul 01 2016 Josh Boyer <jwboyer@fedoraproject.org>
