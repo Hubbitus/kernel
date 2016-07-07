@@ -665,6 +665,9 @@ Patch832: platform-chrome-cros_ec_dev-double-fetch-bug-in-ioct.patch
 #rbhz 1351205
 Patch833: drm-nouveau-disp-sor-gf119-select-correct-sor-when.patch
 
+#rhbz 1346753
+Patch834: qla2xxx-Fix-NULL-pointer-deref-in-QLA-interrupt.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2191,6 +2194,7 @@ fi
 # 
 %changelog
 * Thu Jul 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix oops in qla2xxx driver (rhbz 1346753)
 - Fix blank screen on some nvidia cards (rbhz 1351205)
 - CVE-2016-6156 race condition in chrome chardev driver (rhbz 1353490 1353491)
 
