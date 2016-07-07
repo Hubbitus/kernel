@@ -2149,6 +2149,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul  7 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Marvell mvebu for aarch64
+
 * Tue Jul 05 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git0.1
 - Linux v4.7-rc6
 - Disable debugging options.
