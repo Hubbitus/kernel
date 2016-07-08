@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -629,6 +629,9 @@ Patch833: drm-nouveau-disp-sor-gf119-select-correct-sor-when.patch
 
 #rhbz 1346753
 Patch834: qla2xxx-Fix-NULL-pointer-deref-in-QLA-interrupt.patch
+
+#Workaround for glibc update
+Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2155,6 +2158,9 @@ fi
 #
 # 
 %changelog
+* Fri Jul 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git2.2
+- Workaround for glibc change
+
 * Fri Jul 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git2.1
 - Linux v4.7-rc6-94-gcc23c61
 
