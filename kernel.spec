@@ -627,6 +627,9 @@ Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
 #Workaround for glibc update
 Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
+#CVE-2016-5389 CVE-2016-5969 rhbz 1354708 1355615
+Patch836: tcp-make-challenge-acks-less-predictable.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2152,6 +2155,9 @@ fi
 #
 # 
 %changelog
+* Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-5389 CVE-2016-5969 tcp challenge ack info leak (rhbz 1354708 1355615)
+
 * Mon Jul 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git0.1
 - Disable debugging options.
 - linux v4.7-rc7
