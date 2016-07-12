@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2196,7 +2196,7 @@ fi
 #
 # 
 %changelog
-* Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-301
 - CVE-2016-5389 CVE-2016-5969 tcp challenge ack info leak (rhbz 1354708 1355615)
 
 * Mon Jul 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-300
