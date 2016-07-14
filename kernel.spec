@@ -630,6 +630,11 @@ Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 #CVE-2016-5389 CVE-2016-5969 rhbz 1354708 1355615
 Patch836: tcp-make-challenge-acks-less-predictable.patch
 
+# https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
+Patch837: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
+Patch838: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
+Patch839: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2155,6 +2160,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
+
 * Wed Jul 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git2.1
 - Linux v4.7-rc7-27-gf97d104
 
