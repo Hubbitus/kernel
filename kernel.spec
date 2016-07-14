@@ -671,6 +671,11 @@ Patch834: qla2xxx-Fix-NULL-pointer-deref-in-QLA-interrupt.patch
 #CVE-2016-5389 CVE-2016-5969 rhbz 1354708 1355615
 Patch835: tcp-make-challenge-acks-less-predictable.patch
 
+# https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
+Patch836: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
+Patch837: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
+Patch838: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2196,6 +2201,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
+
 * Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-301
 - CVE-2016-5389 CVE-2016-5969 tcp challenge ack info leak (rhbz 1354708 1355615)
 
