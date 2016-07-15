@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2160,6 +2160,9 @@ fi
 #
 # 
 %changelog
+* Fri Jul 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git3.1
+- Linux v4.7-rc7-78-gfa3a9f574
+
 * Thu Jul 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
 
