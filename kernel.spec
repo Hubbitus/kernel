@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2159,6 +2159,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc7.git4.1
+- Linux v4.7-rc7-92-g47ef4ad
+
 * Mon Jul 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM config updates, update bcm238x patches
 
