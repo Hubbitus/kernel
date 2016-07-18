@@ -111,9 +111,6 @@ release: config-release
 
 include Makefile.release
 
-unused-kernel-patches:
-	@for f in *.patch; do if [ -e $$f ]; then (egrep -q "^Patch[[:digit:]]+:[[:space:]]+$$f" $(SPECFILE) || echo "Unused:    $$f") && egrep -q "^ApplyPatch[[:space:]]+$$f|^ApplyOptionalPatch[[:space:]]+$$f" $(SPECFILE) || echo "Unapplied: $$f"; fi; done
-
 ifeq ($(MAKECMDGOALS),me a sandwich)
 .PHONY: me a sandwich
 me a:
