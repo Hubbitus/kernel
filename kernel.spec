@@ -512,10 +512,9 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
-Patch432: arm-i.MX6-Utilite-device-dtb.patch
+Patch431: bcm283x-upstream-fixes.patch
 
-# mvebu DSA switch fixes
-# http://www.spinics.net/lists/netdev/msg370841.html http://www.spinics.net/lists/netdev/msg370842.html
+Patch432: arm-i.MX6-Utilite-device-dtb.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2160,6 +2159,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config updates, update bcm238x patches
+
 * Fri Jul 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git3.1
 - Linux v4.7-rc7-78-gfa3a9f574
 

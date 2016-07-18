@@ -1,0 +1,194 @@
+From da77f737f9f5a487f3a1f80f8546585ee18cd7b9 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Fri, 4 Mar 2016 10:39:28 -0800
+Subject: [PATCH 27/36] dt-bindings: Add root properties for Raspberry Pi 3
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
+index 11d3056..6ffe087 100644
+--- a/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
++++ b/Documentation/devicetree/bindings/arm/bcm/brcm,bcm2835.txt
+@@ -30,6 +30,10 @@ Raspberry Pi 2 Model B
+ Required root node properties:
+ compatible = "raspberrypi,2-model-b", "brcm,bcm2836";
+ 
++Raspberry Pi 3 Model B
++Required root node properties:
++compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
++
+ Raspberry Pi Compute Module
+ Required root node properties:
+ compatible = "raspberrypi,compute-module", "brcm,bcm2835";
+-- 
+2.7.3
+
+From b76b1cdf2e569cceab41dcf3b3f6a90965d0a02c Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Fri, 4 Mar 2016 10:39:29 -0800
+Subject: [PATCH 28/36] ARM: bcm2835: Add devicetree for the Raspberry Pi 3.
+
+For now this doesn't support the new hardware present on the Pi 3 (BT,
+wifi, GPIO expander).  Since the GPIO expander isn't supported, we
+also don't have the LEDs like the other board files do.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Acked-by: Stephen Warren <swarren@wwwdotorg.org>
+---
+ arch/arm/boot/dts/Makefile            |  3 +-
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 22 ++++++++++++
+ arch/arm/boot/dts/bcm2837.dtsi        | 68 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 92 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+ create mode 100644 arch/arm/boot/dts/bcm2837.dtsi
+
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index d000814..a8a0767 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -64,7 +64,8 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
+ 	bcm2835-rpi-b-rev2.dtb \
+ 	bcm2835-rpi-b-plus.dtb \
+ 	bcm2835-rpi-a-plus.dtb \
+-	bcm2836-rpi-2-b.dtb
++	bcm2836-rpi-2-b.dtb \
++	bcm2837-rpi-3-b.dtb
+ dtb-$(CONFIG_ARCH_BCM_5301X) += \
+ 	bcm4708-asus-rt-ac56u.dtb \
+ 	bcm4708-asus-rt-ac68u.dtb \
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+new file mode 100644
+index 0000000..5e8eafd
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -0,0 +1,22 @@
++/dts-v1/;
++#include "bcm2837.dtsi"
++#include "bcm2835-rpi.dtsi"
++
++/ {
++	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
++	model = "Raspberry Pi 3 Model B";
++
++	memory {
++		reg = <0 0x40000000>;
++	};
++};
++
++&gpio {
++	pinctrl-0 = <&gpioout &alt0 &i2s_alt0 &alt3>;
++
++	/* I2S interface */
++	i2s_alt0: i2s_alt0 {
++		brcm,pins = <28 29 30 31>;
++		brcm,function = <BCM2835_FSEL_ALT2>;
++	};
++};
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+new file mode 100644
+index 0000000..2f36722
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -0,0 +1,68 @@
++#include "bcm283x.dtsi"
++
++/ {
++	compatible = "brcm,bcm2836";
++
++	soc {
++		ranges = <0x7e000000 0x3f000000 0x1000000>,
++			 <0x40000000 0x40000000 0x00001000>;
++		dma-ranges = <0xc0000000 0x00000000 0x3f000000>;
++
++		local_intc: local_intc {
++			compatible = "brcm,bcm2836-l1-intc";
++			reg = <0x40000000 0x100>;
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			interrupt-parent = <&local_intc>;
++		};
++	};
++
++	timer {
++		compatible = "arm,armv7-timer";
++		interrupt-parent = <&local_intc>;
++		interrupts = <0>, // PHYS_SECURE_PPI
++			     <1>, // PHYS_NONSECURE_PPI
++			     <3>, // VIRT_PPI
++			     <2>; // HYP_PPI
++		always-on;
++	};
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		cpu0: cpu@0 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <0>;
++		};
++
++		cpu1: cpu@1 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <1>;
++		};
++
++		cpu2: cpu@2 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <2>;
++		};
++
++		cpu3: cpu@3 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <3>;
++		};
++	};
++};
++
++/* Make the BCM2835-style global interrupt controller be a child of the
++ * CPU-local interrupt controller.
++ */
++&intc {
++	compatible = "brcm,bcm2836-armctrl-ic";
++	reg = <0x7e00b200 0x200>;
++	interrupt-parent = <&local_intc>;
++	interrupts = <8>;
++};
+-- 
+2.7.3
+
+From 528285e99c25249456023d28f521689bf9e9eb8b Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Wed, 30 Mar 2016 09:35:13 +0100
+Subject: [PATCH 32/36] drop usb power domain support for the moment, kills usb
+
+---
+ arch/arm/boot/dts/bcm2835-rpi.dtsi | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/arm/boot/dts/bcm2835-rpi.dtsi b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+index caf2707..b1e8145 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi.dtsi
++++ b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+@@ -71,10 +71,6 @@
+ 	status = "okay";
+ };
+ 
+-&usb {
+-	power-domains = <&power RPI_POWER_DOMAIN_USB>;
+-};
+-
+ &v3d {
+ 	power-domains = <&power RPI_POWER_DOMAIN_V3D>;
+ };
+-- 
+2.7.3
+
