@@ -506,6 +506,9 @@ Patch422: geekbox-v4-device-tree-support.patch
 # This has major conflicts and needs to be rebased
 # Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
+Patch424: arm64-pcie-acpi.patch
+Patch425: arm64-pcie-quirks-xgene.patch
+
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
@@ -2159,6 +2162,9 @@ fi
 #
 # 
 %changelog
+* Tue Jul 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add aarch64 ACPI pci-e patches headed for 4.8
+
 * Mon Jul 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc7.git4.1
 - Linux v4.7-rc7-92-g47ef4ad
 
