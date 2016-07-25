@@ -1,4 +1,4 @@
-From a1aaf20cffb1a949c5d6b1198690c7c30cfda4d5 Mon Sep 17 00:00:00 2001
+From 0f6eec5ca124baf1372fb4edeacd11a002378f5e Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
 Subject: [PATCH 01/20] Add secure_modules() call
@@ -17,19 +17,19 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 16 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 3a19c79918e0..db386349cd01 100644
+index 3daf2b3..082298a 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -635,6 +635,8 @@ static inline bool module_requested_async_probing(struct module *module)
- 	return module && module->async_probe_requested;
+@@ -655,6 +655,8 @@ static inline bool is_livepatch_module(struct module *mod)
  }
+ #endif /* CONFIG_LIVEPATCH */
  
 +extern bool secure_modules(void);
 +
  #else /* !CONFIG_MODULES... */
  
  /* Given an address, look for it in the exception tables. */
-@@ -751,6 +753,10 @@ static inline bool module_requested_async_probing(struct module *module)
+@@ -771,6 +773,10 @@ static inline bool module_requested_async_probing(struct module *module)
  	return false;
  }
  
@@ -41,10 +41,10 @@ index 3a19c79918e0..db386349cd01 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index b86b7bf1be38..7f045246e123 100644
+index 5f71aa6..3c38496 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -4087,3 +4087,13 @@ void module_layout(struct module *mod,
+@@ -4199,3 +4199,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif
@@ -59,5 +59,5 @@ index b86b7bf1be38..7f045246e123 100644
 +}
 +EXPORT_SYMBOL(secure_modules);
 -- 
-2.4.3
+2.5.5
 

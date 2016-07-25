@@ -1,50 +1,40 @@
-From 6a86f1d01bb25a687c59dd6b3e6deea362cf0ee1 Mon Sep 17 00:00:00 2001
-From: Fedora Kernel Team <kernel-team@fedoraproject.org>
-Date: Mon, 20 Jun 2016 12:40:40 +0200
+From a9abdc6767855e1668301a1dcc4b5fa8bed1ddfa Mon Sep 17 00:00:00 2001
+From: Matt Roper <matthew.d.roper@intel.com>
+Date: Thu, 12 May 2016 07:06:04 -0700
 Subject: [PATCH 10/17] drm/i915/gen9: Drop re-allocation of DDB at atomic
  commit (v2)
 
-Upstream: since drm-intel-next-2016-05-22
-commit a6d3460e62d17098a815a53f23e44d814cb347e0
+Now that we're properly pre-allocating the DDB during the atomic check
+phase and we trust that the allocation is appropriate, let's actually
+use the allocation computed and not duplicate that work during the
+commit phase.
 
-Author:     Matt Roper <matthew.d.roper@intel.com>
-AuthorDate: Thu May 12 07:06:04 2016 -0700
-Commit:     Matt Roper <matthew.d.roper@intel.com>
-CommitDate: Fri May 13 07:34:06 2016 -0700
+v2:
+ - Significant rebasing now that we can use cached data rates and
+   minimum block allocations to avoid grabbing additional plane states.
 
-    drm/i915/gen9: Drop re-allocation of DDB at atomic commit (v2)
-
-    Now that we're properly pre-allocating the DDB during the atomic check
-    phase and we trust that the allocation is appropriate, let's actually
-    use the allocation computed and not duplicate that work during the
-    commit phase.
-
-    v2:
-     - Significant rebasing now that we can use cached data rates and
-       minimum block allocations to avoid grabbing additional plane states.
-
-    Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-    Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-11-git-send-email-matthew.d.roper@intel.com
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-11-git-send-email-matthew.d.roper@intel.com
 ---
  drivers/gpu/drm/i915/intel_display.c |  14 +--
  drivers/gpu/drm/i915/intel_pm.c      | 224 +++++++++++------------------------
  2 files changed, 67 insertions(+), 171 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index 03e2635..b484fda 100644
+index ecad0ef..4db10d7 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -13522,6 +13522,7 @@ static int intel_atomic_commit(struct drm_device *dev,
+@@ -13627,6 +13627,7 @@ static int intel_atomic_commit(struct drm_device *dev,
  	drm_atomic_helper_swap_state(dev, state);
- 	dev_priv->wm.config = to_intel_atomic_state(state)->wm_config;
+ 	dev_priv->wm.config = intel_state->wm_config;
  	dev_priv->wm.distrust_bios_wm = false;
 +	dev_priv->wm.skl_results.ddb = intel_state->ddb;
+ 	intel_shared_dpll_commit(state);
  
  	if (intel_state->modeset) {
- 		memcpy(dev_priv->min_pixclk, intel_state->min_pixclk,
-@@ -13621,19 +13622,6 @@ static int intel_atomic_commit(struct drm_device *dev,
- 			modeset_put_power_domains(dev_priv, put_domains[i]);
+@@ -13744,19 +13745,6 @@ static int intel_atomic_commit(struct drm_device *dev,
+ 		intel_modeset_verify_crtc(crtc, old_crtc_state, crtc->state);
  	}
  
 -	/*
@@ -64,10 +54,10 @@ index 03e2635..b484fda 100644
  		intel_display_power_put(dev_priv, POWER_DOMAIN_MODESET);
  
 diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index f60519d..80f9f18 100644
+index cfa4f80..0f0d4e1 100644
 --- a/drivers/gpu/drm/i915/intel_pm.c
 +++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -2788,7 +2788,6 @@ skl_wm_plane_id(const struct intel_plane *plane)
+@@ -2849,7 +2849,6 @@ skl_wm_plane_id(const struct intel_plane *plane)
  static void
  skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
  				   const struct intel_crtc_state *cstate,
@@ -75,7 +65,7 @@ index f60519d..80f9f18 100644
  				   struct skl_ddb_entry *alloc, /* out */
  				   int *num_active /* out */)
  {
-@@ -2796,24 +2795,22 @@ skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
+@@ -2857,24 +2856,22 @@ skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
  	struct intel_atomic_state *intel_state = to_intel_atomic_state(state);
  	struct drm_i915_private *dev_priv = to_i915(dev);
  	struct drm_crtc *for_crtc = cstate->base.crtc;
@@ -107,7 +97,7 @@ index f60519d..80f9f18 100644
  	if (IS_BROXTON(dev))
  		ddb_size = BXT_DDB_SIZE;
  	else
-@@ -2822,50 +2819,23 @@ skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
+@@ -2883,50 +2880,23 @@ skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
  	ddb_size -= 4; /* 4 blocks for bypass path allocation */
  
  	/*
@@ -173,7 +163,7 @@ index f60519d..80f9f18 100644
  }
  
  static unsigned int skl_cursor_allocation(int num_active)
-@@ -2964,62 +2934,33 @@ skl_get_total_relative_data_rate(struct intel_crtc_state *intel_cstate)
+@@ -3025,62 +2995,33 @@ skl_get_total_relative_data_rate(struct intel_crtc_state *intel_cstate)
  	struct drm_crtc *crtc = cstate->crtc;
  	struct drm_device *dev = crtc->dev;
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
@@ -256,7 +246,7 @@ index f60519d..80f9f18 100644
  	}
  
  	/* Calculate CRTC's total data rate from cached values */
-@@ -3043,8 +2984,6 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
+@@ -3104,8 +3045,6 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
  	struct drm_atomic_state *state = cstate->base.state;
  	struct drm_crtc *crtc = cstate->base.crtc;
  	struct drm_device *dev = crtc->dev;
@@ -265,7 +255,7 @@ index f60519d..80f9f18 100644
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
  	struct intel_plane *intel_plane;
  	struct drm_plane *plane;
-@@ -3058,6 +2997,9 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
+@@ -3119,6 +3058,9 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
  	int num_active;
  	int id, i;
  
@@ -275,7 +265,7 @@ index f60519d..80f9f18 100644
  	if (!cstate->base.active) {
  		ddb->pipe[pipe].start = ddb->pipe[pipe].end = 0;
  		memset(ddb->plane[pipe], 0, sizeof(ddb->plane[pipe]));
-@@ -3065,8 +3007,7 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
+@@ -3126,8 +3068,7 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
  		return 0;
  	}
  
@@ -285,7 +275,7 @@ index f60519d..80f9f18 100644
  	alloc_size = skl_ddb_entry_size(alloc);
  	if (alloc_size == 0) {
  		memset(ddb->plane[pipe], 0, sizeof(ddb->plane[pipe]));
-@@ -3078,53 +3019,31 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
+@@ -3139,53 +3080,31 @@ skl_allocate_pipe_ddb(struct intel_crtc_state *cstate,
  	ddb->plane[pipe][PLANE_CURSOR].end = alloc->end;
  
  	alloc_size -= cursor_blocks;
@@ -359,7 +349,7 @@ index f60519d..80f9f18 100644
  	}
  
  	for (i = 0; i < PLANE_CURSOR; i++) {
-@@ -3675,7 +3594,6 @@ static bool skl_update_pipe_wm(struct drm_crtc *crtc,
+@@ -3736,7 +3655,6 @@ static bool skl_update_pipe_wm(struct drm_crtc *crtc,
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
  	struct intel_crtc_state *cstate = to_intel_crtc_state(crtc->state);
  
@@ -367,7 +357,7 @@ index f60519d..80f9f18 100644
  	skl_build_pipe_wm(cstate, ddb, pipe_wm);
  
  	if (!memcmp(&intel_crtc->wm.active.skl, pipe_wm, sizeof(*pipe_wm)))
-@@ -3739,16 +3657,6 @@ static void skl_clear_wm(struct skl_wm_values *watermarks, enum pipe pipe)
+@@ -3800,16 +3718,6 @@ static void skl_clear_wm(struct skl_wm_values *watermarks, enum pipe pipe)
  	memset(watermarks->plane_trans[pipe],
  	       0, sizeof(uint32_t) * I915_MAX_PLANES);
  	watermarks->plane_trans[pipe][PLANE_CURSOR] = 0;

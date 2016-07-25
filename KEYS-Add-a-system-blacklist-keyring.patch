@@ -1,7 +1,7 @@
-From f630ce576114bfede02d8a0bafa97e4d6f978a74 Mon Sep 17 00:00:00 2001
+From 096da19de900a115ee3610b666ecb7e55926623d Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
-Subject: [PATCH 17/20] KEYS: Add a system blacklist keyring
+Subject: [PATCH 6/9] KEYS: Add a system blacklist keyring
 
 This adds an additional keyring that is used to store certificates that
 are blacklisted.  This keyring is searched first when loading signed modules
@@ -10,52 +10,48 @@ useful in cases where third party certificates are used for module signing.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- certs/system_keyring.c        | 27 +++++++++++++++++++++++++++
+ certs/system_keyring.c        | 22 ++++++++++++++++++++++
  include/keys/system_keyring.h |  4 ++++
  init/Kconfig                  |  9 +++++++++
- 3 files changed, 40 insertions(+)
+ 3 files changed, 35 insertions(+)
 
 diff --git a/certs/system_keyring.c b/certs/system_keyring.c
-index 2570598b784d..53733822993f 100644
+index 50979d6dcecd..787eeead2f57 100644
 --- a/certs/system_keyring.c
 +++ b/certs/system_keyring.c
-@@ -20,6 +20,9 @@
- 
- struct key *system_trusted_keyring;
- EXPORT_SYMBOL_GPL(system_trusted_keyring);
+@@ -22,6 +22,9 @@ static struct key *builtin_trusted_keys;
+ #ifdef CONFIG_SECONDARY_TRUSTED_KEYRING
+ static struct key *secondary_trusted_keys;
+ #endif
 +#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +struct key *system_blacklist_keyring;
 +#endif
  
  extern __initconst const u8 system_certificate_list[];
  extern __initconst const unsigned long system_certificate_list_size;
-@@ -41,6 +44,20 @@ static __init int system_trusted_keyring_init(void)
- 		panic("Can't allocate system trusted keyring\n");
- 
- 	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_trusted_keyring->flags);
-+
-+	#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
+@@ -99,6 +102,16 @@ static __init int system_trusted_keyring_init(void)
+ 	if (key_link(secondary_trusted_keys, builtin_trusted_keys) < 0)
+ 		panic("Can't link trusted keyrings\n");
+ #endif
++#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +	system_blacklist_keyring = keyring_alloc(".system_blacklist_keyring",
-+				    KUIDT_INIT(0), KGIDT_INIT(0),
-+				    current_cred(),
-+				    (KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+				    KEY_USR_VIEW | KEY_USR_READ,
-+				    KEY_ALLOC_NOT_IN_QUOTA, NULL);
++			KUIDT_INIT(0), KGIDT_INIT(0), current_cred(),
++			((KEY_POS_ALL & ~KEY_POS_SETATTR) |
++			 KEY_USR_VIEW | KEY_USR_READ | KEY_USR_SEARCH),
++			KEY_ALLOC_NOT_IN_QUOTA,
++			NULL, NULL);
 +	if (IS_ERR(system_blacklist_keyring))
 +		panic("Can't allocate system blacklist keyring\n");
-+
-+	set_bit(KEY_FLAG_TRUSTED_ONLY, &system_blacklist_keyring->flags);
 +#endif
-+
+ 
  	return 0;
  }
- 
-@@ -138,6 +155,16 @@ int system_verify_data(const void *data, unsigned long len,
- 	if (ret < 0)
- 		goto error;
- 
+@@ -214,6 +227,15 @@ int verify_pkcs7_signature(const void *data, size_t len,
+ 		trusted_keys = builtin_trusted_keys;
+ #endif
+ 	}
 +#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
-+	ret = pkcs7_validate_trust(pkcs7, system_blacklist_keyring, &trusted);
++	ret = pkcs7_validate_trust(pkcs7, system_blacklist_keyring);
 +	if (!ret) {
 +		/* module is signed with a cert in the blacklist.  reject */
 +		pr_err("Module key is in the blacklist\n");
@@ -63,30 +59,29 @@ index 2570598b784d..53733822993f 100644
 +		goto error;
 +	}
 +#endif
-+
- 	ret = pkcs7_validate_trust(pkcs7, system_trusted_keyring, &trusted);
- 	if (ret < 0)
- 		goto error;
+ 	ret = pkcs7_validate_trust(pkcs7, trusted_keys);
+ 	if (ret < 0) {
+ 		if (ret == -ENOKEY)
 diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index b20cd885c1fd..51d8ddc60e0f 100644
+index fbd4647767e9..5bc291a3d261 100644
 --- a/include/keys/system_keyring.h
 +++ b/include/keys/system_keyring.h
-@@ -35,6 +35,10 @@ extern int system_verify_data(const void *data, unsigned long len,
- 			      enum key_being_used_for usage);
+@@ -33,6 +33,10 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
+ #define restrict_link_by_builtin_and_secondary_trusted restrict_link_by_builtin_trusted
  #endif
  
 +#ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
 +extern struct key *system_blacklist_keyring;
 +#endif
 +
- #ifdef CONFIG_IMA_MOK_KEYRING
- extern struct key *ima_mok_keyring;
+ #ifdef CONFIG_IMA_BLACKLIST_KEYRING
  extern struct key *ima_blacklist_keyring;
+ 
 diff --git a/init/Kconfig b/init/Kconfig
-index 02da9f1fd9df..782d26f02885 100644
+index a9c4aefd5436..e5449d5aeff9 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1783,6 +1783,15 @@ config SYSTEM_DATA_VERIFICATION
+@@ -1829,6 +1829,15 @@ config SYSTEM_DATA_VERIFICATION
  	  module verification, kexec image verification and firmware blob
  	  verification.
  
@@ -103,5 +98,5 @@ index 02da9f1fd9df..782d26f02885 100644
  	bool "Profiling support"
  	help
 -- 
-2.4.3
+2.5.5
 

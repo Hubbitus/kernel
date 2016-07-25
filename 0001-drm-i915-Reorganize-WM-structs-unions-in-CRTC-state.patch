@@ -1,64 +1,68 @@
-From 2a6f0971d09e2bb88d2ae40d91ceb2776090497d Mon Sep 17 00:00:00 2001
-From: Fedora Kernel Team <kernel-team@fedoraproject.org>
-Date: Mon, 20 Jun 2016 11:11:50 +0200
+From 0042e1e7a03a2fb5d6c464c03ce84d55b31add11 Mon Sep 17 00:00:00 2001
+From: Matt Roper <matthew.d.roper@intel.com>
+Date: Thu, 12 May 2016 07:05:55 -0700
 Subject: [PATCH 01/17] drm/i915: Reorganize WM structs/unions in CRTC state
 
-Upstream: since drm-intel-next-2016-05-22
-commit e8f1f02e7125220b99af8047703b63c11a7081d6
+Reorganize the nested structures and unions we have for pipe watermark
+data in intel_crtc_state so that platform-specific data can be added in
+a more sensible manner (and save a bit of memory at the same time).
 
-Author:     Matt Roper <matthew.d.roper@intel.com>
-AuthorDate: Thu May 12 07:05:55 2016 -0700
-Commit:     Matt Roper <matthew.d.roper@intel.com>
-CommitDate: Fri May 13 07:32:11 2016 -0700
+The change basically changes the organization from:
 
-    drm/i915: Reorganize WM structs/unions in CRTC state
+        union {
+                struct intel_pipe_wm ilk;
+                struct intel_pipe_wm skl;
+        } optimal;
 
-    Reorganize the nested structures and unions we have for pipe watermark
-    data in intel_crtc_state so that platform-specific data can be added in
-    a more sensible manner (and save a bit of memory at the same time).
+        struct intel_pipe_wm intermediate /* ILK-only */
 
-    The change basically changes the organization from:
+to
 
-            union {
-                    struct intel_pipe_wm ilk;
-                    struct intel_pipe_wm skl;
-            } optimal;
+        union {
+                struct {
+                        struct intel_pipe_wm intermediate;
+                        struct intel_pipe_wm optimal;
+                } ilk;
 
-            struct intel_pipe_wm intermediate /* ILK-only */
+                struct {
+                        struct intel_pipe_wm optimal;
+                } skl;
+        }
 
-    to
+There should be no functional change here, but it will allow us to add
+more platform-specific fields going forward (and more easily extend to
+other platform types like VLV).
 
-            union {
-                    struct {
-                            struct intel_pipe_wm intermediate;
-                            struct intel_pipe_wm optimal;
-                    } ilk;
+While we're at it, let's move the entire watermark substructure out to
+its own structure definition to make the code slightly more readable.
 
-                    struct {
-                            struct intel_pipe_wm optimal;
-                    } skl;
-            }
-
-    There should be no functional change here, but it will allow us to add
-    more platform-specific fields going forward (and more easily extend to
-    other platform types like VLV).
-
-    While we're at it, let's move the entire watermark substructure out to
-    its own structure definition to make the code slightly more readable.
-
-    Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-    Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-2-git-send-email-matthew.d.roper@intel.com
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-2-git-send-email-matthew.d.roper@intel.com
 ---
- drivers/gpu/drm/i915/intel_drv.h | 48 +++++++++++++++++++++++++++++++---------
- drivers/gpu/drm/i915/intel_pm.c  | 16 +++++++-------
- 2 files changed, 46 insertions(+), 18 deletions(-)
+ drivers/gpu/drm/i915/intel_display.c |  2 +-
+ drivers/gpu/drm/i915/intel_drv.h     | 61 +++++++++++++++++++++---------------
+ drivers/gpu/drm/i915/intel_pm.c      | 18 +++++------
+ 3 files changed, 45 insertions(+), 36 deletions(-)
 
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index d19b392..4633aec 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -12027,7 +12027,7 @@ static int intel_crtc_atomic_check(struct drm_crtc *crtc,
+ 		}
+ 	} else if (dev_priv->display.compute_intermediate_wm) {
+ 		if (HAS_PCH_SPLIT(dev_priv) && INTEL_GEN(dev_priv) < 9)
+-			pipe_config->wm.intermediate = pipe_config->wm.optimal.ilk;
++			pipe_config->wm.ilk.intermediate = pipe_config->wm.ilk.optimal;
+ 	}
+ 
+ 	if (INTEL_INFO(dev)->gen >= 9) {
 diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
-index 3a30b37..7d19baf 100644
+index 4a24b00..5a186bf 100644
 --- a/drivers/gpu/drm/i915/intel_drv.h
 +++ b/drivers/gpu/drm/i915/intel_drv.h
-@@ -363,6 +363,40 @@ struct skl_pipe_wm {
+@@ -405,6 +405,40 @@ struct skl_pipe_wm {
  	uint32_t linetime;
  };
  
@@ -99,65 +103,81 @@ index 3a30b37..7d19baf 100644
  struct intel_crtc_state {
  	struct drm_crtc_state base;
  
-@@ -509,16 +543,10 @@ struct intel_crtc_state {
+@@ -558,32 +592,7 @@ struct intel_crtc_state {
  	/* IVB sprite scaling w/a (WaCxSRDisabledForSpriteScaling:ivb) */
  	bool disable_lp_wm;
  
 -	struct {
 -		/*
--		 * optimal watermarks, programmed post-vblank when this state
--		 * is committed
+-		 * Optimal watermarks, programmed post-vblank when this state
+-		 * is committed.
 -		 */
 -		union {
 -			struct intel_pipe_wm ilk;
 -			struct skl_pipe_wm skl;
 -		} optimal;
+-
+-		/*
+-		 * Intermediate watermarks; these can be programmed immediately
+-		 * since they satisfy both the current configuration we're
+-		 * switching away from and the new configuration we're switching
+-		 * to.
+-		 */
+-		struct intel_pipe_wm intermediate;
+-
+-		/*
+-		 * Platforms with two-step watermark programming will need to
+-		 * update watermark programming post-vblank to switch from the
+-		 * safe intermediate watermarks to the optimal final
+-		 * watermarks.
+-		 */
+-		bool need_postvbl_update;
 -	} wm;
 +	struct intel_crtc_wm_state wm;
-+
-+	/* Gamma mode programmed on the pipe */
-+	uint32_t gamma_mode;
- };
  
- struct vlv_wm_state {
+ 	/* Gamma mode programmed on the pipe */
+ 	uint32_t gamma_mode;
 diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index 54ab023..0da1d60 100644
+index a7ef45d..4353fec 100644
 --- a/drivers/gpu/drm/i915/intel_pm.c
 +++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -2302,7 +2302,7 @@ static int ilk_compute_pipe_wm(struct intel_crtc *intel_crtc,
- 	if (IS_ERR(cstate))
- 		return PTR_ERR(cstate);
+@@ -2309,7 +2309,7 @@ static int ilk_compute_pipe_wm(struct intel_crtc_state *cstate)
+ 	int level, max_level = ilk_wm_max_level(dev), usable_level;
+ 	struct ilk_wm_maximums max;
  
 -	pipe_wm = &cstate->wm.optimal.ilk;
 +	pipe_wm = &cstate->wm.ilk.optimal;
- 	memset(pipe_wm, 0, sizeof(*pipe_wm));
  
  	for_each_intel_plane_on_crtc(dev, intel_crtc, intel_plane) {
-@@ -2385,7 +2385,7 @@ static void ilk_merge_wm_level(struct drm_device *dev,
- 	for_each_intel_crtc(dev, intel_crtc) {
- 		const struct intel_crtc_state *cstate =
- 			to_intel_crtc_state(intel_crtc->base.state);
--		const struct intel_pipe_wm *active = &cstate->wm.optimal.ilk;
-+		const struct intel_pipe_wm *active = &cstate->wm.ilk.optimal;
- 		const struct intel_wm_level *wm = &active->wm[level];
+ 		struct intel_plane_state *ps;
+@@ -2391,7 +2391,7 @@ static int ilk_compute_intermediate_wm(struct drm_device *dev,
+ 				       struct intel_crtc *intel_crtc,
+ 				       struct intel_crtc_state *newstate)
+ {
+-	struct intel_pipe_wm *a = &newstate->wm.intermediate;
++	struct intel_pipe_wm *a = &newstate->wm.ilk.intermediate;
+ 	struct intel_pipe_wm *b = &intel_crtc->wm.active.ilk;
+ 	int level, max_level = ilk_wm_max_level(dev);
  
- 		if (!active->pipe_enabled)
-@@ -2536,12 +2536,12 @@ static void ilk_compute_wm_results(struct drm_device *dev,
- 		const struct intel_crtc_state *cstate =
- 			to_intel_crtc_state(intel_crtc->base.state);
- 		enum pipe pipe = intel_crtc->pipe;
--		const struct intel_wm_level *r = &cstate->wm.optimal.ilk.wm[0];
-+		const struct intel_wm_level *r = &cstate->wm.ilk.optimal.wm[0];
+@@ -2400,7 +2400,7 @@ static int ilk_compute_intermediate_wm(struct drm_device *dev,
+ 	 * currently active watermarks to get values that are safe both before
+ 	 * and after the vblank.
+ 	 */
+-	*a = newstate->wm.optimal.ilk;
++	*a = newstate->wm.ilk.optimal;
+ 	a->pipe_enabled |= b->pipe_enabled;
+ 	a->sprites_enabled |= b->sprites_enabled;
+ 	a->sprites_scaled |= b->sprites_scaled;
+@@ -2429,7 +2429,7 @@ static int ilk_compute_intermediate_wm(struct drm_device *dev,
+ 	 * If our intermediate WM are identical to the final WM, then we can
+ 	 * omit the post-vblank programming; only update if it's different.
+ 	 */
+-	if (memcmp(a, &newstate->wm.optimal.ilk, sizeof(*a)) == 0)
++	if (memcmp(a, &newstate->wm.ilk.optimal, sizeof(*a)) == 0)
+ 		newstate->wm.need_postvbl_update = false;
  
- 		if (WARN_ON(!r->enable))
- 			continue;
- 
--		results->wm_linetime[pipe] = cstate->wm.optimal.ilk.linetime;
-+		results->wm_linetime[pipe] = cstate->wm.ilk.optimal.linetime;
- 
- 		results->wm_pipe[pipe] =
- 			(r->pri_val << WM0_PIPE_PLANE_SHIFT) |
-@@ -3617,7 +3617,7 @@ static void skl_update_wm(struct drm_crtc *crtc)
+ 	return 0;
+@@ -3678,7 +3678,7 @@ static void skl_update_wm(struct drm_crtc *crtc)
  	struct drm_i915_private *dev_priv = dev->dev_private;
  	struct skl_wm_values *results = &dev_priv->wm.skl_results;
  	struct intel_crtc_state *cstate = to_intel_crtc_state(crtc->state);
@@ -166,16 +186,25 @@ index 54ab023..0da1d60 100644
  
  
  	/* Clear all dirty flags */
-@@ -3711,7 +3711,7 @@ static void ilk_update_wm(struct drm_crtc *crtc)
- 		intel_wait_for_vblank(crtc->dev, intel_crtc->pipe);
- 	}
+@@ -3757,7 +3757,7 @@ static void ilk_initial_watermarks(struct intel_crtc_state *cstate)
+ 	struct intel_crtc *intel_crtc = to_intel_crtc(cstate->base.crtc);
  
--	intel_crtc->wm.active.ilk = cstate->wm.optimal.ilk;
-+	intel_crtc->wm.active.ilk = cstate->wm.ilk.optimal;
- 
- 	ilk_program_watermarks(cstate);
+ 	mutex_lock(&dev_priv->wm.wm_mutex);
+-	intel_crtc->wm.active.ilk = cstate->wm.intermediate;
++	intel_crtc->wm.active.ilk = cstate->wm.ilk.intermediate;
+ 	ilk_program_watermarks(dev_priv);
+ 	mutex_unlock(&dev_priv->wm.wm_mutex);
  }
-@@ -3767,7 +3767,7 @@ static void skl_pipe_wm_get_hw_state(struct drm_crtc *crtc)
+@@ -3769,7 +3769,7 @@ static void ilk_optimize_watermarks(struct intel_crtc_state *cstate)
+ 
+ 	mutex_lock(&dev_priv->wm.wm_mutex);
+ 	if (cstate->wm.need_postvbl_update) {
+-		intel_crtc->wm.active.ilk = cstate->wm.optimal.ilk;
++		intel_crtc->wm.active.ilk = cstate->wm.ilk.optimal;
+ 		ilk_program_watermarks(dev_priv);
+ 	}
+ 	mutex_unlock(&dev_priv->wm.wm_mutex);
+@@ -3826,7 +3826,7 @@ static void skl_pipe_wm_get_hw_state(struct drm_crtc *crtc)
  	struct skl_wm_values *hw = &dev_priv->wm.skl_hw;
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
  	struct intel_crtc_state *cstate = to_intel_crtc_state(crtc->state);
@@ -184,7 +213,7 @@ index 54ab023..0da1d60 100644
  	enum pipe pipe = intel_crtc->pipe;
  	int level, i, max_level;
  	uint32_t temp;
-@@ -3833,7 +3833,7 @@ static void ilk_pipe_wm_get_hw_state(struct drm_crtc *crtc)
+@@ -3892,7 +3892,7 @@ static void ilk_pipe_wm_get_hw_state(struct drm_crtc *crtc)
  	struct ilk_wm_values *hw = &dev_priv->wm.hw;
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
  	struct intel_crtc_state *cstate = to_intel_crtc_state(crtc->state);

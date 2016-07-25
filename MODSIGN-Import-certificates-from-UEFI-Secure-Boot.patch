@@ -1,4 +1,4 @@
-From 2246a781c8dbb1207a0b0abbfae201f998c3954b Mon Sep 17 00:00:00 2001
+From ba2b209daf984514229626803472e0b055832345 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
 Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
@@ -18,18 +18,56 @@ signed with those from loading.
 
 Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
- include/linux/efi.h   |  6 ++++
- init/Kconfig          |  9 +++++
- kernel/Makefile       |  3 ++
- kernel/modsign_uefi.c | 92 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 110 insertions(+)
+ certs/system_keyring.c        | 13 ++++++
+ include/keys/system_keyring.h |  1 +
+ include/linux/efi.h           |  6 +++
+ init/Kconfig                  |  9 ++++
+ kernel/Makefile               |  3 ++
+ kernel/modsign_uefi.c         | 99 +++++++++++++++++++++++++++++++++++++++++++
+ 6 files changed, 131 insertions(+)
  create mode 100644 kernel/modsign_uefi.c
 
+diff --git a/certs/system_keyring.c b/certs/system_keyring.c
+index 787eeead2f57..4d9123ed5c07 100644
+--- a/certs/system_keyring.c
++++ b/certs/system_keyring.c
+@@ -30,6 +30,19 @@ extern __initconst const u8 system_certificate_list[];
+ extern __initconst const unsigned long system_certificate_list_size;
+ 
+ /**
++ * get_system_keyring - Return a pointer to the system keyring
++ *
++ */
++struct key *get_system_keyring(void)
++{
++	struct key *system_keyring = NULL;
++
++	system_keyring = builtin_trusted_keys;
++	return system_keyring;
++}
++EXPORT_SYMBOL_GPL(get_system_keyring);
++
++/**
+  * restrict_link_to_builtin_trusted - Restrict keyring addition by built in CA
+  *
+  * Restrict the addition of keys into a keyring based on the key-to-be-added
+diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
+index 5bc291a3d261..56ff5715ab67 100644
+--- a/include/keys/system_keyring.h
++++ b/include/keys/system_keyring.h
+@@ -36,6 +36,7 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
+ #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
+ extern struct key *system_blacklist_keyring;
+ #endif
++extern struct key *get_system_keyring(void);
+ 
+ #ifdef CONFIG_IMA_BLACKLIST_KEYRING
+ extern struct key *ima_blacklist_keyring;
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 85ef051ac6fb..a042b2ece788 100644
+index ff1877145aa4..2483de19c719 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -600,6 +600,12 @@ typedef struct {
+@@ -658,6 +658,12 @@ typedef struct {
  	u64 table;
  } efi_config_table_64_t;
  
@@ -43,10 +81,10 @@ index 85ef051ac6fb..a042b2ece788 100644
  	efi_guid_t guid;
  	u32 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index 02da9f1fd9df..90c73a0564b1 100644
+index e5449d5aeff9..5408c96f6604 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1924,6 +1924,15 @@ config MODULE_SIG_ALL
+@@ -1979,6 +1979,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -63,10 +101,10 @@ index 02da9f1fd9df..90c73a0564b1 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index d4988410b410..55e886239e7e 100644
+index e2ec54e2b952..8dab549985d8 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
-@@ -47,6 +47,7 @@ endif
+@@ -57,6 +57,7 @@ endif
  obj-$(CONFIG_UID16) += uid16.o
  obj-$(CONFIG_MODULES) += module.o
  obj-$(CONFIG_MODULE_SIG) += module_signing.o
@@ -74,7 +112,7 @@ index d4988410b410..55e886239e7e 100644
  obj-$(CONFIG_KALLSYMS) += kallsyms.o
  obj-$(CONFIG_BSD_PROCESS_ACCT) += acct.o
  obj-$(CONFIG_KEXEC_CORE) += kexec_core.o
-@@ -103,6 +104,8 @@ obj-$(CONFIG_TORTURE_TEST) += torture.o
+@@ -113,6 +114,8 @@ obj-$(CONFIG_MEMBARRIER) += membarrier.o
  
  obj-$(CONFIG_HAS_IOMEM) += memremap.o
  
@@ -85,10 +123,10 @@ index d4988410b410..55e886239e7e 100644
  # config_data.h contains the same information as ikconfig.h but gzipped.
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
 new file mode 100644
-index 000000000000..94b0eb38a284
+index 000000000000..fe4a6f2bf10a
 --- /dev/null
 +++ b/kernel/modsign_uefi.c
-@@ -0,0 +1,92 @@
+@@ -0,0 +1,99 @@
 +#include <linux/kernel.h>
 +#include <linux/sched.h>
 +#include <linux/cred.h>
@@ -139,10 +177,17 @@ index 000000000000..94b0eb38a284
 +	void *db = NULL, *dbx = NULL, *mok = NULL;
 +	unsigned long dbsize = 0, dbxsize = 0, moksize = 0;
 +	int rc = 0;
++	struct key *keyring = NULL;
 +
 +	/* Check if SB is enabled and just return if not */
 +	if (!efi_enabled(EFI_SECURE_BOOT))
 +		return 0;
++
++	keyring = get_system_keyring();
++	if (!keyring) {
++		pr_err("MODSIGN: Couldn't get system keyring\n");
++		return -EINVAL;
++	}
 +
 +	/* Get db, MokListRT, and dbx.  They might not exist, so it isn't
 +	 * an error if we can't get them.
@@ -151,7 +196,7 @@ index 000000000000..94b0eb38a284
 +	if (!db) {
 +		pr_err("MODSIGN: Couldn't get UEFI db list\n");
 +	} else {
-+		rc = parse_efi_signature_list(db, dbsize, system_trusted_keyring);
++		rc = parse_efi_signature_list(db, dbsize, keyring);
 +		if (rc)
 +			pr_err("Couldn't parse db signatures: %d\n", rc);
 +		kfree(db);
@@ -161,7 +206,7 @@ index 000000000000..94b0eb38a284
 +	if (!mok) {
 +		pr_info("MODSIGN: Couldn't get UEFI MokListRT\n");
 +	} else {
-+		rc = parse_efi_signature_list(mok, moksize, system_trusted_keyring);
++		rc = parse_efi_signature_list(mok, moksize, keyring);
 +		if (rc)
 +			pr_err("Couldn't parse MokListRT signatures: %d\n", rc);
 +		kfree(mok);
@@ -182,5 +227,5 @@ index 000000000000..94b0eb38a284
 +}
 +late_initcall(load_uefi_certs);
 -- 
-2.4.3
+2.5.5
 

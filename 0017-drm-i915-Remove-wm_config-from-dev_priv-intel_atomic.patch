@@ -1,27 +1,17 @@
-From ebe515b1696401259781bc183e211a81287242f6 Mon Sep 17 00:00:00 2001
-From: Fedora Kernel Team <kernel-team@fedoraproject.org>
-Date: Mon, 20 Jun 2016 12:42:13 +0200
+From 73a35468564f4e47deade0a4a5eb7ec289611ebc Mon Sep 17 00:00:00 2001
+From: Matt Roper <matthew.d.roper@intel.com>
+Date: Thu, 12 May 2016 07:06:11 -0700
 Subject: [PATCH 17/17] drm/i915: Remove wm_config from
  dev_priv/intel_atomic_state
 
-Upstream: since drm-intel-next-2016-05-22
-commit 5b483747a92570176259bb896dcf2468291f3e42
+We calculate the watermark config into intel_atomic_state and then save
+it into dev_priv, but never actually use it from there.  This is
+left-over from some early ILK-style watermark programming designs that
+got changed over time.
 
-Author:     Matt Roper <matthew.d.roper@intel.com>
-AuthorDate: Thu May 12 07:06:11 2016 -0700
-Commit:     Matt Roper <matthew.d.roper@intel.com>
-CommitDate: Fri May 13 07:36:05 2016 -0700
-
-    drm/i915: Remove wm_config from dev_priv/intel_atomic_state
-
-    We calculate the watermark config into intel_atomic_state and then save
-    it into dev_priv, but never actually use it from there.  This is
-    left-over from some early ILK-style watermark programming designs that
-    got changed over time.
-
-    Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-    Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-18-git-send-email-matthew.d.roper@intel.com
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-18-git-send-email-matthew.d.roper@intel.com
 ---
  drivers/gpu/drm/i915/i915_drv.h      |  3 ---
  drivers/gpu/drm/i915/intel_display.c | 31 -------------------------------
@@ -29,10 +19,10 @@ CommitDate: Fri May 13 07:36:05 2016 -0700
  3 files changed, 35 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 67c76b6..59092cb 100644
+index e7bde72..608f8e4 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -1973,9 +1973,6 @@ struct drm_i915_private {
+@@ -1961,9 +1961,6 @@ struct drm_i915_private {
  		 */
  		uint16_t skl_latency[8];
  
@@ -43,10 +33,10 @@ index 67c76b6..59092cb 100644
  		 * The skl_wm_values structure is a bit too big for stack
  		 * allocation, so we keep the staging struct where we store
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index 1726ea4..f5eefb1 100644
+index a75daac..9c109c6 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -13226,35 +13226,6 @@ static int calc_watermark_data(struct drm_atomic_state *state)
+@@ -13343,35 +13343,6 @@ static int calc_watermark_data(struct drm_atomic_state *state)
  {
  	struct drm_device *dev = state->dev;
  	struct drm_i915_private *dev_priv = to_i915(dev);
@@ -82,15 +72,15 @@ index 1726ea4..f5eefb1 100644
  
  	/* Is there platform-specific watermark information to calculate? */
  	if (dev_priv->display.compute_global_watermarks)
-@@ -13520,7 +13491,6 @@ static int intel_atomic_commit(struct drm_device *dev,
+@@ -13625,7 +13596,6 @@ static int intel_atomic_commit(struct drm_device *dev,
  	}
  
  	drm_atomic_helper_swap_state(dev, state);
--	dev_priv->wm.config = to_intel_atomic_state(state)->wm_config;
+-	dev_priv->wm.config = intel_state->wm_config;
  	dev_priv->wm.distrust_bios_wm = false;
  	dev_priv->wm.skl_results = intel_state->wm_results;
- 
-@@ -15334,7 +15304,6 @@ retry:
+ 	intel_shared_dpll_commit(state);
+@@ -15405,7 +15375,6 @@ retry:
  	}
  
  	/* Write calculated watermark values back */
@@ -99,17 +89,17 @@ index 1726ea4..f5eefb1 100644
  		struct intel_crtc_state *cs = to_intel_crtc_state(cstate);
  
 diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
-index e5543b8..148f79d 100644
+index ab0be7a..8d73c20 100644
 --- a/drivers/gpu/drm/i915/intel_drv.h
 +++ b/drivers/gpu/drm/i915/intel_drv.h
-@@ -270,7 +270,6 @@ struct intel_atomic_state {
+@@ -305,7 +305,6 @@ struct intel_atomic_state {
  	unsigned int min_pixclk[I915_MAX_PIPES];
  
  	struct intel_shared_dpll_config shared_dpll[I915_NUM_PLLS];
 -	struct intel_wm_config wm_config;
  
- 	/* Gen9+ only */
- 	struct skl_wm_values wm_results;
+ 	/*
+ 	 * Current watermarks can't be trusted during hardware readout, so
 -- 
 2.7.4
 

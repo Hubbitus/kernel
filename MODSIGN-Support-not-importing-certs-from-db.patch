@@ -1,7 +1,7 @@
-From d7c9efa4ab647d6ccb617f2504e79a398d56f7d4 Mon Sep 17 00:00:00 2001
+From 7ce860189df19a38176c1510f4e5615bf35495c1 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Thu, 3 Oct 2013 10:14:23 -0400
-Subject: [PATCH 19/20] MODSIGN: Support not importing certs from db
+Subject: [PATCH 2/2] MODSIGN: Support not importing certs from db
 
 If a user tells shim to not use the certs/hashes in the UEFI db variable
 for verification purposes, shim will set a UEFI variable called MokIgnoreDB.
@@ -14,7 +14,7 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
  1 file changed, 31 insertions(+), 9 deletions(-)
 
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
-index 94b0eb38a284..ae28b974d49a 100644
+index 03f601a0052c..321c79a3b282 100644
 --- a/kernel/modsign_uefi.c
 +++ b/kernel/modsign_uefi.c
 @@ -8,6 +8,23 @@
@@ -41,16 +41,18 @@ index 94b0eb38a284..ae28b974d49a 100644
  static __init void *get_cert_list(efi_char16_t *name, efi_guid_t *guid, unsigned long *size)
  {
  	efi_status_t status;
-@@ -47,23 +64,28 @@ static int __init load_uefi_certs(void)
+@@ -47,7 +64,7 @@ static int __init load_uefi_certs(void)
  	efi_guid_t mok_var = EFI_SHIM_LOCK_GUID;
  	void *db = NULL, *dbx = NULL, *mok = NULL;
  	unsigned long dbsize = 0, dbxsize = 0, moksize = 0;
 -	int rc = 0;
 +	int ignore_db, rc = 0;
+ 	struct key *keyring = NULL;
  
  	/* Check if SB is enabled and just return if not */
- 	if (!efi_enabled(EFI_SECURE_BOOT))
- 		return 0;
+@@ -60,17 +77,22 @@ static int __init load_uefi_certs(void)
+ 		return -EINVAL;
+ 	}
  
 +	/* See if the user has setup Ignore DB mode */
 +	ignore_db = check_ignore_db();
@@ -62,7 +64,7 @@ index 94b0eb38a284..ae28b974d49a 100644
 -	if (!db) {
 -		pr_err("MODSIGN: Couldn't get UEFI db list\n");
 -	} else {
--		rc = parse_efi_signature_list(db, dbsize, system_trusted_keyring);
+-		rc = parse_efi_signature_list(db, dbsize, keyring);
 -		if (rc)
 -			pr_err("Couldn't parse db signatures: %d\n", rc);
 -		kfree(db);
@@ -71,7 +73,7 @@ index 94b0eb38a284..ae28b974d49a 100644
 +		if (!db) {
 +			pr_err("MODSIGN: Couldn't get UEFI db list\n");
 +		} else {
-+			rc = parse_efi_signature_list(db, dbsize, system_trusted_keyring);
++			rc = parse_efi_signature_list(db, dbsize, keyring);
 +			if (rc)
 +				pr_err("Couldn't parse db signatures: %d\n", rc);
 +			kfree(db);
@@ -80,5 +82,5 @@ index 94b0eb38a284..ae28b974d49a 100644
  
  	mok = get_cert_list(L"MokListRT", &mok_var, &moksize);
 -- 
-2.4.3
+2.5.5
 

@@ -1,70 +1,60 @@
-From 0e9cf00438e4df1d97af44d3c52cc1cacc4dd2c9 Mon Sep 17 00:00:00 2001
-From: Fedora Kernel Team <kernel-team@fedoraproject.org>
-Date: Mon, 20 Jun 2016 12:40:26 +0200
+From fbf53d8f1b7d1bcea1411f1f2cd0df6a6cc95332 Mon Sep 17 00:00:00 2001
+From: Matt Roper <matthew.d.roper@intel.com>
+Date: Thu, 12 May 2016 07:06:03 -0700
 Subject: [PATCH 09/17] drm/i915/gen9: Compute DDB allocation at atomic check
  time (v4)
 
-Upstream: since drm-intel-next-2016-05-22
-commit 98d39494d3759f84ce50e505059bc80f54c1c47b
+Calculate the DDB blocks needed to satisfy the current atomic
+transaction at atomic check time.  This is a prerequisite to calculating
+SKL watermarks during the 'check' phase and rejecting any configurations
+that we can't find valid watermarks for.
 
-Author:     Matt Roper <matthew.d.roper@intel.com>
-AuthorDate: Thu May 12 07:06:03 2016 -0700
-Commit:     Matt Roper <matthew.d.roper@intel.com>
-CommitDate: Fri May 13 07:34:00 2016 -0700
+Due to the nature of DDB allocation, it's possible for the addition of a
+new CRTC to make the watermark configuration already in use on another,
+unchanged CRTC become invalid.  A change in which CRTC's are active
+triggers a recompute of the entire DDB, which unfortunately means we
+need to disallow any other atomic commits from racing with such an
+update.  If the active CRTC's change, we need to grab the lock on all
+CRTC's and run all CRTC's through their 'check' handler to recompute and
+re-check their per-CRTC DDB allocations.
 
-    drm/i915/gen9: Compute DDB allocation at atomic check time (v4)
+Note that with this patch we only compute the DDB allocation but we
+don't actually use the computed values during watermark programming yet.
+For ease of review/testing/bisecting, we still recompute the DDB at
+watermark programming time and just WARN() if it doesn't match the
+precomputed values.  A future patch will switch over to using the
+precomputed values once we're sure they're being properly computed.
 
-    Calculate the DDB blocks needed to satisfy the current atomic
-    transaction at atomic check time.  This is a prerequisite to calculating
-    SKL watermarks during the 'check' phase and rejecting any configurations
-    that we can't find valid watermarks for.
+Another clarifying note:  DDB allocation itself shouldn't ever fail with
+the algorithm we use today (i.e., we have enough DDB blocks on BXT to
+support the minimum needs of the worst-case scenario of every pipe/plane
+enabled at full size).  However the watermarks calculations based on the
+DDB may fail and we'll be moving those to the atomic check as well in
+future patches.
 
-    Due to the nature of DDB allocation, it's possible for the addition of a
-    new CRTC to make the watermark configuration already in use on another,
-    unchanged CRTC become invalid.  A change in which CRTC's are active
-    triggers a recompute of the entire DDB, which unfortunately means we
-    need to disallow any other atomic commits from racing with such an
-    update.  If the active CRTC's change, we need to grab the lock on all
-    CRTC's and run all CRTC's through their 'check' handler to recompute and
-    re-check their per-CRTC DDB allocations.
+v2:
+ - Skip DDB calculations in the rare case where our transaction doesn't
+   actually touch any CRTC's at all.  Assuming at least one CRTC state
+   is present in our transaction, then it means we can't race with any
+   transactions that would update dev_priv->active_crtcs (which requires
+   _all_ CRTC locks).
 
-    Note that with this patch we only compute the DDB allocation but we
-    don't actually use the computed values during watermark programming yet.
-    For ease of review/testing/bisecting, we still recompute the DDB at
-    watermark programming time and just WARN() if it doesn't match the
-    precomputed values.  A future patch will switch over to using the
-    precomputed values once we're sure they're being properly computed.
+v3:
+ - Also calculate DDB during initial hw readout, to prevent using
+   incorrect bios values. (Maarten)
 
-    Another clarifying note:  DDB allocation itself shouldn't ever fail with
-    the algorithm we use today (i.e., we have enough DDB blocks on BXT to
-    support the minimum needs of the worst-case scenario of every pipe/plane
-    enabled at full size).  However the watermarks calculations based on the
-    DDB may fail and we'll be moving those to the atomic check as well in
-    future patches.
+v4:
+ - Use new distrust_bios_wm flag instead of skip_initial_wm (which was
+   never actually set).
+ - Set intel_state->active_pipe_changes instead of just realloc_pipes
 
-    v2:
-     - Skip DDB calculations in the rare case where our transaction doesn't
-       actually touch any CRTC's at all.  Assuming at least one CRTC state
-       is present in our transaction, then it means we can't race with any
-       transactions that would update dev_priv->active_crtcs (which requires
-       _all_ CRTC locks).
-
-    v3:
-     - Also calculate DDB during initial hw readout, to prevent using
-       incorrect bios values. (Maarten)
-
-    v4:
-     - Use new distrust_bios_wm flag instead of skip_initial_wm (which was
-       never actually set).
-     - Set intel_state->active_pipe_changes instead of just realloc_pipes
-
-    Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Cc: Lyude Paul <cpaul@redhat.com>
-    Cc: Radhakrishna Sripada <radhakrishna.sripada@intel.com>
-    Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
-    Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-    Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-10-git-send-email-matthew.d.roper@intel.com
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Lyude Paul <cpaul@redhat.com>
+Cc: Radhakrishna Sripada <radhakrishna.sripada@intel.com>
+Signed-off-by: Matt Roper <matthew.d.roper@intel.com>
+Signed-off-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Reviewed-by: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Link: http://patchwork.freedesktop.org/patch/msgid/1463061971-19638-10-git-send-email-matthew.d.roper@intel.com
 ---
  drivers/gpu/drm/i915/i915_drv.h      |  5 +++
  drivers/gpu/drm/i915/intel_display.c | 18 ++++++++
@@ -73,10 +63,10 @@ CommitDate: Fri May 13 07:34:00 2016 -0700
  4 files changed, 105 insertions(+)
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index ae7932a..237df9f 100644
+index e21960d..b908a41 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -296,6 +296,10 @@ struct i915_hotplug {
+@@ -339,6 +339,10 @@ struct i915_hotplug {
  #define for_each_intel_crtc(dev, intel_crtc) \
  	list_for_each_entry(intel_crtc, &dev->mode_config.crtc_list, base.head)
  
@@ -87,19 +77,19 @@ index ae7932a..237df9f 100644
  #define for_each_intel_encoder(dev, intel_encoder)		\
  	list_for_each_entry(intel_encoder,			\
  			    &(dev)->mode_config.encoder_list,	\
-@@ -638,6 +642,7 @@ struct drm_i915_display_funcs {
- 	int (*compute_pipe_wm)(struct intel_crtc *crtc,
- 			       struct drm_atomic_state *state);
- 	void (*program_watermarks)(struct intel_crtc_state *cstate);
+@@ -594,6 +598,7 @@ struct drm_i915_display_funcs {
+ 				       struct intel_crtc_state *newstate);
+ 	void (*initial_watermarks)(struct intel_crtc_state *cstate);
+ 	void (*optimize_watermarks)(struct intel_crtc_state *cstate);
 +	int (*compute_global_watermarks)(struct drm_atomic_state *state);
  	void (*update_wm)(struct drm_crtc *crtc);
  	int (*modeset_calc_cdclk)(struct drm_atomic_state *state);
  	void (*modeset_commit_cdclk)(struct drm_atomic_state *state);
 diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
-index 786f3d9..03e2635 100644
+index a9d2e30..ecad0ef 100644
 --- a/drivers/gpu/drm/i915/intel_display.c
 +++ b/drivers/gpu/drm/i915/intel_display.c
-@@ -13225,6 +13225,7 @@ static int intel_modeset_checks(struct drm_atomic_state *state)
+@@ -13342,6 +13342,7 @@ static int intel_modeset_checks(struct drm_atomic_state *state)
  static void calc_watermark_data(struct drm_atomic_state *state)
  {
  	struct drm_device *dev = state->dev;
@@ -107,7 +97,7 @@ index 786f3d9..03e2635 100644
  	struct intel_atomic_state *intel_state = to_intel_atomic_state(state);
  	struct drm_crtc *crtc;
  	struct drm_crtc_state *cstate;
-@@ -13254,6 +13255,10 @@ static void calc_watermark_data(struct drm_atomic_state *state)
+@@ -13371,6 +13372,10 @@ static void calc_watermark_data(struct drm_atomic_state *state)
  		    pstate->crtc_h != pstate->src_h >> 16)
  			intel_state->wm_config.sprites_scaled = true;
  	}
@@ -118,8 +108,8 @@ index 786f3d9..03e2635 100644
  }
  
  /**
-@@ -13616,6 +13621,19 @@ static int intel_atomic_commit(struct drm_device *dev,
- 			modeset_put_power_domains(dev_priv, put_domains[i]);
+@@ -13739,6 +13744,19 @@ static int intel_atomic_commit(struct drm_device *dev,
+ 		intel_modeset_verify_crtc(crtc, old_crtc_state, crtc->state);
  	}
  
 +	/*
@@ -139,13 +129,13 @@ index 786f3d9..03e2635 100644
  		intel_display_power_put(dev_priv, POWER_DOMAIN_MODESET);
  
 diff --git a/drivers/gpu/drm/i915/intel_drv.h b/drivers/gpu/drm/i915/intel_drv.h
-index 672ca56..4d6336a 100644
+index d19e83e..2218290 100644
 --- a/drivers/gpu/drm/i915/intel_drv.h
 +++ b/drivers/gpu/drm/i915/intel_drv.h
-@@ -271,6 +271,9 @@ struct intel_atomic_state {
- 
- 	struct intel_shared_dpll_config shared_dpll[I915_NUM_PLLS];
- 	struct intel_wm_config wm_config;
+@@ -312,6 +312,9 @@ struct intel_atomic_state {
+ 	 * don't bother calculating intermediate watermarks.
+ 	 */
+ 	bool skip_intermediate_wm;
 +
 +	/* Gen9+ only */
 +	struct skl_ddb_allocation ddb;
@@ -153,10 +143,10 @@ index 672ca56..4d6336a 100644
  
  struct intel_plane_state {
 diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index 6a09d7a..f60519d 100644
+index a49faa7..cfa4f80 100644
 --- a/drivers/gpu/drm/i915/intel_pm.c
 +++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -3751,6 +3751,84 @@ static void skl_clear_wm(struct skl_wm_values *watermarks, enum pipe pipe)
+@@ -3812,6 +3812,84 @@ static void skl_clear_wm(struct skl_wm_values *watermarks, enum pipe pipe)
  
  }
  
@@ -241,9 +231,9 @@ index 6a09d7a..f60519d 100644
  static void skl_update_wm(struct drm_crtc *crtc)
  {
  	struct intel_crtc *intel_crtc = to_intel_crtc(crtc);
-@@ -7258,6 +7336,7 @@ void intel_init_pm(struct drm_device *dev)
- 			dev_priv->display.init_clock_gating =
- 				bxt_init_clock_gating;
+@@ -7384,6 +7462,7 @@ void intel_init_pm(struct drm_device *dev)
+ 	if (INTEL_INFO(dev)->gen >= 9) {
+ 		skl_setup_wm_latency(dev);
  		dev_priv->display.update_wm = skl_update_wm;
 +		dev_priv->display.compute_global_watermarks = skl_compute_wm;
  	} else if (HAS_PCH_SPLIT(dev)) {
