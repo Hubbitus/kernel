@@ -634,6 +634,9 @@ Patch837: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
 Patch838: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
 Patch839: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
 
+#CVE-2016-6136 rhbz 1353533 1353534
+Patch841: audit-fix-a-double-fetch-in-audit_log_single_execve_arg.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2159,6 +2162,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 25 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-6136 race condition in auditsc.c (rhbz 1353533 1353534)
+
 * Mon Jul 25 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-1
 - Linux v4.7
 
