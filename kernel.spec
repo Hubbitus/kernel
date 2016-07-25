@@ -677,6 +677,9 @@ Patch836: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
 Patch837: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
 Patch838: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
 
+#CVE-2016-5400 rhbz 1358184 1358186
+Patch840: airspy-fix-error-logic-during-device-register.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2202,6 +2205,9 @@ fi
 #
 # 
 %changelog
+* Mon Jul 25 2016 Justin Forbes <jforbes@fedoraproject.org>
+- CVE-2016-5400 Fix memory leak in airspy driver (rhbz 1358184 1358186)
+
 * Thu Jul 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
 
