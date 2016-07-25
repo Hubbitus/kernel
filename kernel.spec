@@ -670,6 +670,7 @@ Patch834: qla2xxx-Fix-NULL-pointer-deref-in-QLA-interrupt.patch
 
 #CVE-2016-5389 CVE-2016-5969 rhbz 1354708 1355615
 Patch835: tcp-make-challenge-acks-less-predictable.patch
+Patch839: tcp-enable-per-socket-rate-limiting-of-all-challenge.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch836: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
