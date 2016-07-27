@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -603,9 +603,6 @@ Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#rhbz 1338025
-Patch728: hp-wmi-fix-wifi-cannot-be-hard-unblock.patch
 
 #skl_update_other_pipe_wm issue patch-series from drm-next, rhbz 1305038
 Patch801: 0001-drm-i915-Reorganize-WM-structs-unions-in-CRTC-state.patch
@@ -2162,6 +2159,10 @@ fi
 #
 # 
 %changelog
+* Wed Jul 27 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git1.1
+- Linux v4.7-3199-g0e06f5c
+- Reenable debugging options.
+
 * Tue Jul 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-2
 - rebuild for koji errors
 
