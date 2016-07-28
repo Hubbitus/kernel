@@ -722,6 +722,7 @@ CONFIG_R8188EU=m
 # CONFIG_CAN_TI_HECC is not set
 # CONFIG_CAN_FLEXCAN is not set
 # CONFIG_CAN_RCAR is not set
+# CONFIG_CAN_RCAR_CANFD is not set
 
 # Needs work/investigation
 # CONFIG_ARM_KPROBES_TEST is not set
