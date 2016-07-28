@@ -634,6 +634,10 @@ Patch839: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
 #CVE-2016-6136 rhbz 1353533 1353534
 Patch841: audit-fix-a-double-fetch-in-audit_log_single_execve_arg.patch
 
+#CVE-2016-5412 rhbz 1349916 1361040
+Patch842: kvm-ppc-Book3S-HV-Pull-out-TM-state-save.patch
+Patch843: kvm-ppc-Book3S-HV-Save-restore-TM-state.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2168,6 +2172,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- CVE-2016-5412 powerpc: kvm: Infinite loop in HV mode (rhbz 1349916 1361040)
+
 * Thu Jul 28 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.0-0.rc0.git1.1
 - Filter nvme rdma modules to extras
 - Fix IP Wireless driver filtering (rhbz 1356043) thanks lkundrak
