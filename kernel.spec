@@ -2188,6 +2188,9 @@ fi
 #
 # 
 %changelog
+* Thu Jul 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix IP Wireless driver filtering (rhbz 1356043) thanks lkundrak
+
 * Wed Jul 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.5-300
 - Linux v4.6.5
 
