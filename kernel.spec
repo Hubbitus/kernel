@@ -810,7 +810,7 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|.*%%{_bindir}/iio_event_monitor(\.debug)?|.*%%{_bindir}/iio_generic_buffer(\.debug)?|.*%%{_bindir}/lsiio(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
 
 %endif # with_tools
 
@@ -1707,6 +1707,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
 pushd tools/thermal/tmon/
 %{make}
 popd
+pushd tools/iio/
+%{make}
+popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1872,6 +1875,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
    popd
 %endif #turbostat/x86_energy_perf_policy
 pushd tools/thermal/tmon
+make INSTALL_ROOT=%{buildroot} install
+popd
+pushd tools/iio
 make INSTALL_ROOT=%{buildroot} install
 popd
 %endif
@@ -2065,6 +2071,9 @@ fi
 %{_mandir}/man8/turbostat*
 %endif
 %{_bindir}/tmon
+%{_bindir}/iio_event_monitor
+%{_bindir}/iio_generic_buffer
+%{_bindir}/lsiio
 %endif
 
 %if %{with_debuginfo}
@@ -2159,7 +2168,12 @@ fi
 #
 # 
 %changelog
-* Wed Jul 27 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git1.1
+* Thu Jul 28 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.0-0.rc0.git1.1
+- Filter nvme rdma modules to extras
+- Fix IP Wireless driver filtering (rhbz 1356043) thanks lkundrak
+- Build IIO tools
+
+* Wed Jul 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Linux v4.7-3199-g0e06f5c
 - Reenable debugging options.
 
