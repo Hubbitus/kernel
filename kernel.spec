@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 3
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -597,9 +597,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
-
-#Required for some persistent memory options
-Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
@@ -2172,6 +2169,9 @@ fi
 #
 # 
 %changelog
+* Fri Jul 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git3.1
+- Linux v4.7-6438-gc624c86
+
 * Fri Jul 29 2016 Bastien Nocera <bnocera@redhat.com>
 - Add touchscreen and pen driver for the Surface 3
 - Add CrystalCove PWM support, for CherryTrail devices
