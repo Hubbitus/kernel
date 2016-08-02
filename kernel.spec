@@ -603,8 +603,7 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
-Patch838: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
-Patch839: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
+Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
 
 #CVE-2016-5412 rhbz 1349916 1361040
 Patch842: kvm-ppc-Book3S-HV-Pull-out-TM-state-save.patch
@@ -2144,6 +2143,10 @@ fi
 #
 # 
 %changelog
+* Tue Aug  2 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Sync skylake hdaudio __unclaimed_reg WARN_ON fix with latest upstream version
+- Drop drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch for now
+
 * Tue Aug 02 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git4.1
 - Linux v4.7-10753-g731c7d3
 
