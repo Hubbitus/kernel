@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -517,8 +517,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm283x-upstream-fixes.patch
 
-Patch432: arm-i.MX6-Utilite-device-dtb.patch
-
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -601,35 +599,12 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#skl_update_other_pipe_wm issue patch-series from drm-next, rhbz 1305038
-Patch801: 0001-drm-i915-Reorganize-WM-structs-unions-in-CRTC-state.patch
-Patch802: 0002-drm-i915-Rename-s-skl_compute_pipe_wm-skl_build_pipe.patch
-Patch803: 0003-drm-i915-gen9-Cache-plane-data-rates-in-CRTC-state.patch
-Patch804: 0004-drm-i915-gen9-Allow-calculation-of-data-rate-for-in-.patch
-Patch805: 0005-drm-i915-gen9-Store-plane-minimum-blocks-in-CRTC-wm-.patch
-Patch806: 0006-drm-i915-Track-whether-an-atomic-transaction-changes.patch
-Patch807: 0007-drm-i915-gen9-Allow-skl_allocate_pipe_ddb-to-operate.patch
-Patch808: 0008-drm-i915-Add-distrust_bios_wm-flag-to-dev_priv-v2.patch
-Patch809: 0009-drm-i915-gen9-Compute-DDB-allocation-at-atomic-check.patch
-Patch810: 0010-drm-i915-gen9-Drop-re-allocation-of-DDB-at-atomic-co.patch
-Patch811: 0011-drm-i915-gen9-Calculate-plane-WM-s-from-state.patch
-Patch812: 0012-drm-i915-gen9-Allow-watermark-calculation-on-in-flig.patch
-Patch813: 0013-drm-i915-gen9-Use-a-bitmask-to-track-dirty-pipe-wate.patch
-Patch814: 0014-drm-i915-gen9-Propagate-watermark-calculation-failur.patch
-Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
-Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
-Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
-
 #Workaround for glibc update
 Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
-Patch837: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
 Patch838: drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch
 Patch839: Revert-ALSA-hda-remove-controller-dependency-on-i915.patch
-
-#CVE-2016-6136 rhbz 1353533 1353534
-Patch841: audit-fix-a-double-fetch-in-audit_log_single_execve_arg.patch
 
 #CVE-2016-5412 rhbz 1349916 1361040
 Patch842: kvm-ppc-Book3S-HV-Pull-out-TM-state-save.patch
@@ -2169,6 +2144,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 02 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git4.1
+- Linux v4.7-10753-g731c7d3
+
 * Fri Jul 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git3.1
 - Linux v4.7-6438-gc624c86
 

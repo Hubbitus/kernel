@@ -1,4 +1,4 @@
-From 5fc9d375bac02e054fcaaf14a06bebc6c7118008 Mon Sep 17 00:00:00 2001
+From 75ec12176f3ae89ed2ccf35ae675cf605970d2fa Mon Sep 17 00:00:00 2001
 From: "cpaul@redhat.com" <cpaul@redhat.com>
 Date: Tue, 12 Jul 2016 13:36:03 -0400
 Subject: [PATCH] drm/i915/skl: Add support for the SAGV, fix underrun hangs
@@ -62,10 +62,10 @@ Reviewed-by: Matt Roper <matthew.d.roper@intel.com>
  3 files changed, 117 insertions(+)
 
 diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index 608f8e44f353..274b57ac1a91 100644
+index 915a3d0..04a7ceb 100644
 --- a/drivers/gpu/drm/i915/i915_drv.h
 +++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -1942,6 +1942,8 @@ struct drm_i915_private {
+@@ -1962,6 +1962,8 @@ struct drm_i915_private {
  	struct i915_suspend_saved_registers regfile;
  	struct vlv_s0ix_state vlv_s0ix_state;
  
@@ -75,10 +75,10 @@ index 608f8e44f353..274b57ac1a91 100644
  		/*
  		 * Raw watermark latency values:
 diff --git a/drivers/gpu/drm/i915/i915_reg.h b/drivers/gpu/drm/i915/i915_reg.h
-index b407411e31ba..9472949e8442 100644
+index ce14fe0..90d84b6 100644
 --- a/drivers/gpu/drm/i915/i915_reg.h
 +++ b/drivers/gpu/drm/i915/i915_reg.h
-@@ -7094,6 +7094,11 @@ enum skl_disp_power_wells {
+@@ -7165,6 +7165,11 @@ enum {
  #define   HSW_PCODE_DE_WRITE_FREQ_REQ		0x17
  #define   DISPLAY_IPS_CONTROL			0x19
  #define	  HSW_PCODE_DYNAMIC_DUTY_CYCLE_CONTROL	0x1A
@@ -91,10 +91,10 @@ index b407411e31ba..9472949e8442 100644
  #define   GEN6_PCODE_FREQ_IA_RATIO_SHIFT	8
  #define   GEN6_PCODE_FREQ_RING_RATIO_SHIFT	16
 diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
-index f764d284e6a0..439a38b08760 100644
+index f4f3fcc..f9f55ca 100644
 --- a/drivers/gpu/drm/i915/intel_pm.c
 +++ b/drivers/gpu/drm/i915/intel_pm.c
-@@ -2847,6 +2847,109 @@ skl_wm_plane_id(const struct intel_plane *plane)
+@@ -2876,6 +2876,109 @@ skl_wm_plane_id(const struct intel_plane *plane)
  }
  
  static void
@@ -204,8 +204,8 @@ index f764d284e6a0..439a38b08760 100644
  skl_ddb_get_pipe_allocation_limits(struct drm_device *dev,
  				   const struct intel_crtc_state *cstate,
  				   struct skl_ddb_entry *alloc, /* out */
-@@ -3525,6 +3628,11 @@ static void skl_write_wm_values(struct drm_i915_private *dev_priv,
- 	struct drm_device *dev = dev_priv->dev;
+@@ -3686,6 +3789,11 @@ static void skl_write_wm_values(struct drm_i915_private *dev_priv,
+ 	struct drm_device *dev = &dev_priv->drm;
  	struct intel_crtc *crtc;
  
 +	if (dev_priv->active_crtcs == 1)
@@ -216,15 +216,15 @@ index f764d284e6a0..439a38b08760 100644
  	for_each_intel_crtc(dev, crtc) {
  		int i, level, max_level = ilk_wm_max_level(dev);
  		enum pipe pipe = crtc->pipe;
-@@ -4072,6 +4180,8 @@ void skl_wm_get_hw_state(struct drm_device *dev)
- 				skl_plane_relative_data_rate(cstate, pstate, 1);
+@@ -4154,6 +4262,8 @@ static void skl_pipe_wm_active_state(uint32_t val,
+ 						PLANE_WM_LINES_MASK;
  		}
  	}
 +
 +	skl_sagv_get_hw_state(dev_priv);
  }
  
- static void ilk_pipe_wm_get_hw_state(struct drm_crtc *crtc)
+ static void skl_pipe_wm_get_hw_state(struct drm_crtc *crtc)
 -- 
-2.7.4
+2.9.2
 
