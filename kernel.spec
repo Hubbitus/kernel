@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -506,7 +506,6 @@ Patch422: geekbox-v4-device-tree-support.patch
 # This has major conflicts and needs to be rebased
 # Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
 
-Patch424: arm64-pcie-acpi.patch
 Patch425: arm64-pcie-quirks-xgene.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
@@ -604,10 +603,6 @@ Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
-
-#CVE-2016-5412 rhbz 1349916 1361040
-Patch842: kvm-ppc-Book3S-HV-Pull-out-TM-state-save.patch
-Patch843: kvm-ppc-Book3S-HV-Save-restore-TM-state.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2143,6 +2138,9 @@ fi
 #
 # 
 %changelog
+* Wed Aug 03 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git5.1
+- Linux v4.7-11470-gd52bd54
+
 * Tue Aug  2 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Sync skylake hdaudio __unclaimed_reg WARN_ON fix with latest upstream version
 - Drop drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch for now

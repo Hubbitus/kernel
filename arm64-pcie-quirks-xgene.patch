@@ -1,13 +1,13 @@
-From 767b70aa55d013f0c7589955f410d488fed5776a Mon Sep 17 00:00:00 2001
+From 965e95a91066290f6555546f066a6e2aaba1199e Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Tue, 5 Jul 2016 23:49:39 +0100
-Subject: [PATCH 1/4] Some platforms may not be fully compliant with generic
- set of PCI config accessors. For these cases we implement the way to
- overwrite accessors set. Algorithm traverses available quirk list, matches
- against <oem_id, oem_table_id, domain, bus number> tuple and returns
- corresponding PCI config ops. oem_id and oem_table_id come from MCFG table
- standard header. All quirks can be defined using DECLARE_ACPI_MCFG_FIXUP()
- macro and kept self contained. Example:
+Subject: [PATCH] Some platforms may not be fully compliant with generic set of
+ PCI config accessors. For these cases we implement the way to overwrite
+ accessors set. Algorithm traverses available quirk list, matches against
+ <oem_id, oem_table_id, domain, bus number> tuple and returns corresponding
+ PCI config ops. oem_id and oem_table_id come from MCFG table standard header.
+ All quirks can be defined using DECLARE_ACPI_MCFG_FIXUP() macro and kept self
+ contained. Example:
 
 /* Custom PCI config ops */
 static struct pci_generic_ecam_ops foo_pci_ops = {
@@ -30,7 +30,7 @@ Signed-off-by: Dongdong Liu <liudongdong3@huawei.com>
  3 files changed, 65 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index d3c3e85..deb0077 100644
+index b5b376e..a5c9067 100644
 --- a/drivers/acpi/pci_mcfg.c
 +++ b/drivers/acpi/pci_mcfg.c
 @@ -22,6 +22,10 @@
@@ -45,7 +45,7 @@ index d3c3e85..deb0077 100644
  /* Structure to hold entries from the MCFG table */
  struct mcfg_entry {
 @@ -35,6 +39,38 @@ struct mcfg_entry {
- /* List to save mcfg entries */
+ /* List to save MCFG entries */
  static LIST_HEAD(pci_mcfg_list);
  
 +extern struct pci_cfg_fixup __start_acpi_mcfg_fixups[];
@@ -103,10 +103,10 @@ index d3c3e85..deb0077 100644
  	arr = kcalloc(n, sizeof(*arr), GFP_KERNEL);
  	if (!arr)
 diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 6a67ab9..43604fc 100644
+index 2456397..c49bd36 100644
 --- a/include/asm-generic/vmlinux.lds.h
 +++ b/include/asm-generic/vmlinux.lds.h
-@@ -300,6 +300,13 @@
+@@ -308,6 +308,13 @@
  		VMLINUX_SYMBOL(__end_pci_fixups_suspend_late) = .;	\
  	}								\
  									\
@@ -159,12 +159,12 @@ index 7d63a66..c8a6559 100644
  extern struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
  					    struct acpi_pci_root_ops *ops,
 -- 
-2.7.4
+2.9.2
 
-From 4f86a9b006b25dd7336043dab26058ed6fb2802d Mon Sep 17 00:00:00 2001
+From 817d09d7650319a827f00bd3b4c9b407d3977ba0 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Tue, 5 Jul 2016 23:52:46 +0100
-Subject: [PATCH 2/4] pci_generic_ecam_ops is used by default. Since there are
+Subject: [PATCH] pci_generic_ecam_ops is used by default. Since there are
  platforms which have non-compliant ECAM space we need to overwrite these
  accessors prior to PCI buses enumeration. In order to do that we call
  pci_mcfg_get_ops to retrieve pci_ecam_ops structure so that we can use proper
@@ -178,10 +178,10 @@ Signed-off-by: Tomasz Nowicki <tn@semihalf.com>
  1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
-index 94cd43c..a891bda 100644
+index acf3872..ec513f1 100644
 --- a/arch/arm64/kernel/pci.c
 +++ b/arch/arm64/kernel/pci.c
-@@ -139,6 +139,7 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
+@@ -126,6 +126,7 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
  	struct pci_config_window *cfg;
  	struct resource cfgres;
  	unsigned int bsz;
@@ -189,7 +189,7 @@ index 94cd43c..a891bda 100644
  
  	/* Use address from _CBA if present, otherwise lookup MCFG */
  	if (!root->mcfg_addr)
-@@ -150,12 +151,12 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
+@@ -137,12 +138,12 @@ pci_acpi_setup_ecam_mapping(struct acpi_pci_root *root)
  		return NULL;
  	}
  
@@ -206,12 +206,12 @@ index 94cd43c..a891bda 100644
  		dev_err(&root->device->dev, "%04x:%pR error %ld mapping ECAM\n",
  			seg, bus_res, PTR_ERR(cfg));
 -- 
-2.7.4
+2.9.2
 
-From cbdbd697bd6d716eb9d1705ee55445432e73eabb Mon Sep 17 00:00:00 2001
+From ac5cff2e2304a1969e39e967567aa41cade1839f Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Tue, 5 Jul 2016 23:53:59 +0100
-Subject: [PATCH 3/4] The ECAM quirk matching criteria per the discussion on
+Subject: [PATCH] The ECAM quirk matching criteria per the discussion on
  https://lkml.org/lkml/2016/6/13/944 includes: OEM ID, OEM Table ID and OEM
  Revision. So this patch adds OEM Table ID into the check to match platform
  specific ECAM quirks as well.
@@ -227,7 +227,7 @@ Signed-off-by: Duc Dang <dhdang@apm.com>
  2 files changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/acpi/pci_mcfg.c b/drivers/acpi/pci_mcfg.c
-index deb0077..307ca9a 100644
+index a5c9067..5137d16 100644
 --- a/drivers/acpi/pci_mcfg.c
 +++ b/drivers/acpi/pci_mcfg.c
 @@ -62,9 +62,12 @@ struct pci_ecam_ops *pci_mcfg_get_ops(struct acpi_pci_root *root)
@@ -274,12 +274,12 @@ index c8a6559..5148c8d 100644
  extern int acpi_pci_probe_root_resources(struct acpi_pci_root_info *info);
  extern struct pci_bus *acpi_pci_root_create(struct acpi_pci_root *root,
 -- 
-2.7.4
+2.9.2
 
-From 78766cf255bc6aafac2f57372a0446f78322da19 Mon Sep 17 00:00:00 2001
+From b9c1592c6b615da0c26168c5c3e0f8fc256a23ca Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Tue, 5 Jul 2016 23:55:11 +0100
-Subject: [PATCH 4/4] X-Gene PCIe controller does not fully support ECAM. This
+Subject: [PATCH] X-Gene PCIe controller does not fully support ECAM. This
  patch adds required ECAM fixup to allow X-Gene PCIe controller to be
  functional in ACPI boot mode.
 
@@ -291,10 +291,10 @@ Signed-off-by: Duc Dang <dhdang@apm.com>
  create mode 100644 drivers/pci/host/pci-xgene-ecam.c
 
 diff --git a/drivers/pci/host/Makefile b/drivers/pci/host/Makefile
-index 9c8698e..3480696 100644
+index 8843410..af4f505 100644
 --- a/drivers/pci/host/Makefile
 +++ b/drivers/pci/host/Makefile
-@@ -14,7 +14,7 @@ obj-$(CONFIG_PCIE_SPEAR13XX) += pcie-spear13xx.o
+@@ -15,7 +15,7 @@ obj-$(CONFIG_PCIE_SPEAR13XX) += pcie-spear13xx.o
  obj-$(CONFIG_PCI_KEYSTONE) += pci-keystone-dw.o pci-keystone.o
  obj-$(CONFIG_PCIE_XILINX) += pcie-xilinx.o
  obj-$(CONFIG_PCIE_XILINX_NWL) += pcie-xilinx-nwl.o
@@ -504,5 +504,5 @@ index 0000000..1bea63f
 +                       PCI_MCFG_DOMAIN_ANY, PCI_MCFG_BUS_ANY);
 +#endif
 -- 
-2.7.4
+2.9.2
 
