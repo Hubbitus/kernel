@@ -373,12 +373,12 @@ Requires: kernel-modules-uname-r = %{KVERREL}%{?variant}
 BuildRequires: kmod, patch, bash, sh-utils, tar, git
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
-BuildRequires: net-tools, hostname, bc
+BuildRequires: net-tools, hostname, bc, elfutils-devel
 %if %{with_sparse}
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
+BuildRequires: zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 %ifnarch s390 s390x %{arm}
 BuildRequires: numactl-devel
