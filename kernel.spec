@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -597,9 +597,6 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#Workaround for glibc update
-Patch835: 0001-Work-around-for-addition-of-metag-def-but-not-reloca.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
@@ -2138,6 +2135,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 04 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git6.1
+- Linux v4.7-11544-g96b5852
+
 * Wed Aug 03 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git5.1
 - Linux v4.7-11470-gd52bd54
 
