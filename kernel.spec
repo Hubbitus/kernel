@@ -1270,7 +1270,7 @@ cd ..
 # This affects the vDSO images in vmlinux, and the vmlinux image in bzImage.
 export AFTER_LINK=\
 'sh -xc "/usr/lib/rpm/debugedit -b $$RPM_BUILD_DIR -d /usr/src/debug \
-    				-i $@ > $@.id"'
+                                -i $@ > $@.id"'
 %endif
 
 cp_vmlinux()
@@ -1367,7 +1367,7 @@ BuildKernel() {
     mv vmlinuz.signed $KernelImage
     %endif
     $CopyKernel $KernelImage \
-    		$RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
+                $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     chmod 755 $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     cp $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer $RPM_BUILD_ROOT/lib/modules/$KernelVer/$InstallName
 
@@ -1516,13 +1516,13 @@ BuildKernel() {
     }
 
     collect_modules_list networking \
-    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
+      'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
     collect_modules_list block \
-    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_alloc_queue|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size' 'pktcdvd.ko|dm-mod.ko'
+      'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_alloc_queue|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size' 'pktcdvd.ko|dm-mod.ko'
     collect_modules_list drm \
-    			 'drm_open|drm_init'
+      'drm_open|drm_init'
     collect_modules_list modesetting \
-    			 'drm_crtc_init'
+      'drm_crtc_init'
 
     # detect missing or incorrect license tags
     ( find $RPM_BUILD_ROOT/lib/modules/$KernelVer -name '*.ko' | xargs /sbin/modinfo -l | \
@@ -1553,9 +1553,9 @@ BuildKernel() {
     # Find all the module files and filter them out into the core and modules
     # lists.  This actually removes anything going into -modules from the dir.
     find lib/modules/$KernelVer/kernel -name *.ko | sort -n > modules.list
-	cp $RPM_SOURCE_DIR/filter-*.sh .
+    cp $RPM_SOURCE_DIR/filter-*.sh .
     %{SOURCE99} modules.list %{_target_cpu}
-	rm filter-*.sh
+    rm filter-*.sh
 
     # Run depmod on the resulting module tree and make sure it isn't broken
     depmod -b . -aeF ./System.map $KernelVer &> depmod.out
@@ -1760,7 +1760,7 @@ make ARCH=%{hdrarch} INSTALL_HDR_PATH=$RPM_BUILD_ROOT/usr headers_install
 
 find $RPM_BUILD_ROOT/usr/include \
      \( -name .install -o -name .check -o \
-     	-name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
+        -name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
 
 %endif
 
@@ -1770,7 +1770,7 @@ make ARCH=%{hdrarch} INSTALL_HDR_PATH=$RPM_BUILD_ROOT/usr/tmp-headers headers_in
 
 find $RPM_BUILD_ROOT/usr/tmp-headers/include \
      \( -name .install -o -name .check -o \
-     	-name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
+        -name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
 
 # Copy all the architectures we care about to their respective asm directories
 for arch in arm arm64 powerpc s390 x86 ; do
