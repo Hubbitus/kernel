@@ -341,7 +341,7 @@ Summary: The Linux kernel
 %endif
 
 # Architectures we build tools/cpupower on
-%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64 
+%define cpupowerarchs %{ix86} x86_64 %{power64} %{arm} aarch64
 
 #
 # Packages that need to be installed before the kernel is, because the %%post
@@ -947,7 +947,7 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package 
+%kernel_variant_package
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
@@ -2133,7 +2133,7 @@ fi
 # plz don't put in a version string unless you're going to tag
 # and build.
 #
-# 
+#
 %changelog
 * Fri Aug 05 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git7.1
 - Linux v4.7-11891-gdd7fd3a
@@ -2386,7 +2386,7 @@ fi
 * Wed May 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git3.1
 - Linux v4.6-3623-g0b7962a
 - ata, regulator, gpio, HID, livepatching, networking, dm, block, vfs, fs,
-  timers, crypto merges 
+  timers, crypto merges
 
 * Tue May 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git2.2
 - Adjust solib for cpupower
@@ -2719,7 +2719,7 @@ fi
 - Reenable debugging options.
 
 * Tue Mar 08 2016 Thorsten Leemhuis <fedora@leemhuis.info>
-- add signkernel macro to make signing kernel and signing modules 
+- add signkernel macro to make signing kernel and signing modules
   independent from each other
 - sign modules on all archs
 
@@ -3675,7 +3675,7 @@ fi
 - Inital ARM updates for 4.1
 - Temporarily disable AMD ARM64 xgbe-a0 driver
 
-* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org> 
+* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v4.0-9804-gdb4fd9c5d072
 
 * Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git11.1
@@ -3910,7 +3910,7 @@ fi
 - kernel-arm64.patch merge, but leave it off.
 - kernel-arm64-fix-psci-when-pg.patch: when -pg (because of ftrace) is enabled
   we must explicitly annotate which registers should be assigned, otherwise
-  gcc will do unexpected things behind our backs. 
+  gcc will do unexpected things behind our backs.
 
 * Tue Feb 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git7.1
 - Linux v3.19-7478-g796e1c55717e
