@@ -2191,6 +2191,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Build CONFIG_POWERNV_CPUFREQ in on ppc64* (rhbz 1351346)
+
 * Tue Aug  2 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Sync skylake hdaudio __unclaimed_reg WARN_ON fix with latest upstream version
 - Drop drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch for now
