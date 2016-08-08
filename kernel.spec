@@ -2135,6 +2135,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Build CONFIG_POWERNV_CPUFREQ in on ppc64* (rhbz 1351346)
+
 * Mon Aug 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git0.1
 - Linux v4.8-rc1
 - Disable debugging options.
