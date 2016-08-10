@@ -1,0 +1,44 @@
+From 6abb0cfdc1f6a42367a20ac2baf4099fc8af08b5 Mon Sep 17 00:00:00 2001
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Date: Wed, 10 Aug 2016 09:54:30 -0700
+Subject: [PATCH] mm, rmap: fix false positive VM_BUG() in page_add_file_rmap()
+
+PageTransCompound() doesn't distinguish THP from from any other type of
+compound pages. This can lead to false-positive VM_BUG_ON() in
+page_add_file_rmap() if called on compound page from a driver[1].
+
+I think we can exclude such cases by checking if the page belong to a
+mapping.
+
+The VM_BUG_ON_PAGE() is downgraded to VM_WARN_ON_ONCE(). This path
+should not cause any harm to non-THP page, but good to know if we step
+on anything else.
+
+[1]
+http://lkml.kernel.org/r/c711e067-0bff-a6cb-3c37-04dfe77d2db1@redhat.com
+
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reported-by: Laura Abbott <labbott@redhat.com>
+---
+ mm/rmap.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 709bc83..d4f5606 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -1284,8 +1284,9 @@ void page_add_file_rmap(struct page *page, bool compound)
+ 		VM_BUG_ON_PAGE(!PageSwapBacked(page), page);
+ 		__inc_node_page_state(page, NR_SHMEM_PMDMAPPED);
+ 	} else {
+-		if (PageTransCompound(page)) {
+-			VM_BUG_ON_PAGE(!PageLocked(page), page);
++		if (PageTransCompound(page) && page_mapping(page)) {
++			VM_WARN_ON_ONCE(!PageLocked(page));
++
+ 			SetPageDoubleMap(compound_head(page));
+ 			if (PageMlocked(page))
+ 				clear_page_mlock(compound_head(page));
+-- 
+2.7.4
+

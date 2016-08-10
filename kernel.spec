@@ -601,6 +601,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
 
+#rhbz 1365686
+Patch840: 0001-mm-rmap-fix-false-positive-VM_BUG-in-page_add_file_r.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2135,6 +2138,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 10 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix false positive VM_BUG() in page_add_file_rmap (rhbz 1365686)
+
 * Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git2.1
 - Linux v4.8-rc1-53-ga0cba21
 
