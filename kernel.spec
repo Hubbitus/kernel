@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2138,6 +2138,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git3.1
+- Linux v4.8-rc1-70-g9512c47
+
 * Wed Aug 10 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix false positive VM_BUG() in page_add_file_rmap (rhbz 1365686)
 
