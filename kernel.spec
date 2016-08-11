@@ -2138,6 +2138,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git3.1
 - Linux v4.8-rc1-70-g9512c47
 
