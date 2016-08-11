@@ -577,7 +577,8 @@ Patch494: disable-i8042-check-on-apple-mac.patch
 
 Patch495: lis3-improve-handling-of-null-rate.patch
 
-Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
+# In theory this has been fixed so should no longer be needed, it also causes problems with aarch64 DMI, so disable to see for sure if it's fixed
+# Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 Patch497: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -2140,6 +2141,7 @@ fi
 %changelog
 * Thu Aug 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
+- Disable long running watchdog in VM patch (in theory fixed)
 
 * Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git3.1
 - Linux v4.8-rc1-70-g9512c47
