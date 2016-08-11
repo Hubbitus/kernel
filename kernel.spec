@@ -652,6 +652,9 @@ Patch841: audit-fix-a-double-fetch-in-audit_log_single_execve_arg.patch
 Patch842: kvm-ppc-Book3S-HV-Pull-out-TM-state-save.patch
 Patch843: kvm-ppc-Book3S-HV-Save-restore-TM-state.patch
 
+#rhbz 1361414
+Patch844: openstack_fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2177,6 +2180,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for crash seen with Open Stack (rhbz 1361414)
+
 * Wed Aug 10 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.6-300
 - Linux v4.6.6
 
