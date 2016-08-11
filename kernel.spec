@@ -605,6 +605,9 @@ Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
 #rhbz 1365686
 Patch840: 0001-mm-rmap-fix-false-positive-VM_BUG-in-page_add_file_r.patch
 
+#rhbz 1361414
+Patch841: openstack_fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2139,6 +2142,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for crash seen with open stack (rhbz 1361414)
+
 * Thu Aug 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 - Disable long running watchdog in VM patch (in theory fixed)
