@@ -2176,7 +2176,7 @@ fi
 #
 # 
 %changelog
-* Thu Aug 16 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.7-300
+* Tue Aug 16 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.7-300
 - Linux v4.6.7
 
 * Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
