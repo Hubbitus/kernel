@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -636,10 +636,6 @@ Patch814: 0014-drm-i915-gen9-Propagate-watermark-calculation-failur.patch
 Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
 Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
 Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
-
-#CVE-2016-5389 CVE-2016-5969 rhbz 1354708 1355615
-Patch835: tcp-make-challenge-acks-less-predictable.patch
-Patch839: tcp-enable-per-socket-rate-limiting-of-all-challenge.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch836: drm-amdgpu-Disable-RPM-helpers-while-reprobing.patch
@@ -2180,6 +2176,9 @@ fi
 #
 # 
 %changelog
+* Thu Aug 16 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.7-300
+- Linux v4.6.7
+
 * Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for crash seen with Open Stack (rhbz 1361414)
 
