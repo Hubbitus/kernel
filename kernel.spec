@@ -651,6 +651,9 @@ Patch843: kvm-ppc-Book3S-HV-Save-restore-TM-state.patch
 #rhbz 1361414
 Patch844: openstack_fix.patch
 
+#rhbz 1367091,1367092
+Patch855: tcp-fix-use-after-free-in-tcp_xmit_retransmit_queue.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2176,7 +2179,10 @@ fi
 #
 # 
 %changelog
-* Tue Aug 16 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.7-300
+* Wed Aug 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.7-300
+- tcp fix use after free in tcp_xmit_retransmit_queue (rhbz 1367091 1367092)
+
+* Tue Aug 16 2016 Laura Abbott <labbott@fedoraproject.org>
 - Linux v4.6.7
 
 * Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
