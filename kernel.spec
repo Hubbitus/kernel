@@ -2264,7 +2264,7 @@ fi
 - Reenable debugging options.
 
 * Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-5389 CVE-2016-5969 tcp challenge ack info leak (rhbz 1354708 1355615)
+- CVE-2016-5389 CVE-2016-5696 tcp challenge ack info leak (rhbz 1354708 1355615)
 
 * Mon Jul 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git0.1
 - Disable debugging options.
