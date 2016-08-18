@@ -2217,7 +2217,7 @@ fi
 - Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
 
 * Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-301
-- CVE-2016-5389 CVE-2016-5969 tcp challenge ack info leak (rhbz 1354708 1355615)
+- CVE-2016-5389 CVE-2016-5696 tcp challenge ack info leak (rhbz 1354708 1355615)
 
 * Mon Jul 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-300
 - Linux v4.6.4
