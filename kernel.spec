@@ -608,7 +608,7 @@ Patch841: openstack_fix.patch
 #rhbz 1200901 (There should be something better upstream at some point)
 Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
 
-#rhbz 1367091,1367092
+#CVE-2016-6828 rhbz 1367091,1367092
 Patch843: tcp-fix-use-after-free-in-tcp_xmit_retransmit_queue.patch
 
 # END OF PATCH DEFINITIONS
@@ -2147,7 +2147,7 @@ fi
 %changelog
 * Wed Aug 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git2.1
 - Linux v4.8-rc2-42-g5ff132c
-- tcp fix use after free in tcp_xmit_retransmit_queue (rhbz 1367091 1367092)
+- CVE-2016-6828 tcp fix use after free in tcp_xmit_retransmit_queue (rhbz 1367091 1367092)
 
 * Tue Aug 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git1.1
 - Linux v4.8-rc2-17-gae5d68b
