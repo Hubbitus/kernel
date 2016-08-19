@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -601,9 +601,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 # https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
 Patch839: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
-
-#rhbz 1361414
-Patch841: openstack_fix.patch
 
 #rhbz 1200901 (There should be something better upstream at some point)
 Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
@@ -2145,6 +2142,9 @@ fi
 #
 #
 %changelog
+* Fri Aug 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git3.1
+- Linux v4.8-rc2-232-g3408fef
+
 * Fri Aug 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor Tegra changes
 
