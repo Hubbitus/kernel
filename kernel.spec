@@ -511,6 +511,9 @@ Patch425: arm64-pcie-quirks-xgene.patch
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
+# http://www.spinics.net/lists/linux-omap/msg130698.html
+Patch427: omap-rtc-fix-am33xx.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -2139,6 +2142,9 @@ fi
 #
 #
 %changelog
+* Sat Aug 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add fix for RTC crash on ARMv7 am33xx devices
+
 * Fri Aug 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git4.1
 - Linux v4.8-rc2-348-g6040e57
 
