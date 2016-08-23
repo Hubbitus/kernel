@@ -629,6 +629,9 @@ Patch838: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
 #rhbz 1353558
 Patch844: 0001-selinux-Only-apply-bounds-checking-to-source-types.patch
 
+#CVE-2016-6480 rhbz 1362466 1362467
+Patch855: aacraid-Check-size-values-after-double-fetch-from-us.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2154,6 +2157,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 23 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-6480 aacraid: Check size values after double-fetch from user (rhbz 1362466 1362467)
+
 * Mon Aug 22 2016 Laura Abbott <labbott@redhat.com> - 4.7.2-200
 - Linux v4.7.2
 
