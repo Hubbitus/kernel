@@ -497,7 +497,8 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
+# http://www.spinics.net/lists/arm-kernel/msg523359.html
+Patch420: arm64-ACPI-parse-SPCR-table.patch
 
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
@@ -2147,6 +2148,7 @@ fi
 %changelog
 * Tue Aug 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Qualcomm QDF2432 errata fix
+- Move to upstream patches for ACPI SPCR (serial console)
 
 * Mon Aug 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git0.1
 - Linux v4.8-rc3
