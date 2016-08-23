@@ -2149,6 +2149,7 @@ fi
 * Tue Aug 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Qualcomm QDF2432 errata fix
 - Move to upstream patches for ACPI SPCR (serial console)
+- Adjust max CPUs on ARM platforms to reflect newer real world hardware
 
 * Mon Aug 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git0.1
 - Linux v4.8-rc3
