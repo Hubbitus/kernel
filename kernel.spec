@@ -612,6 +612,9 @@ Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
 #CVE-2016-6828 rhbz 1367091,1367092
 Patch843: tcp-fix-use-after-free-in-tcp_xmit_retransmit_queue.patch
 
+#rhbz 1365940
+Patch844: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2146,6 +2149,9 @@ fi
 #
 #
 %changelog
+* Tue Aug 23 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for inabiltiy to send zero sized UDP packets (rhbz 1365940)
+
 * Tue Aug 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Qualcomm QDF2432 errata fix
 - Move to upstream patches for ACPI SPCR (serial console)
