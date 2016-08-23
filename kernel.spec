@@ -632,6 +632,9 @@ Patch844: 0001-selinux-Only-apply-bounds-checking-to-source-types.patch
 #CVE-2016-6480 rhbz 1362466 1362467
 Patch855: aacraid-Check-size-values-after-double-fetch-from-us.patch
 
+#rhbz 1365940
+Patch856: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2157,6 +2160,9 @@ fi
 #
 # 
 %changelog
+* Tue Aug 23 2016 Laura Abbott <labbot@fedoraproject.org>
+- Fix for inabiltiy to send zero sized UDP packets (rhbz 1365940)
+
 * Tue Aug 23 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-6480 aacraid: Check size values after double-fetch from user (rhbz 1362466 1362467)
 
