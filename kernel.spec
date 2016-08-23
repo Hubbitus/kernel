@@ -499,6 +499,9 @@ Source5005: kbuild-AFTER_LINK.patch
 
 Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
 
+# a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
+Patch421: qcom-QDF2432-tmp-errata.patch
+
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
@@ -2142,6 +2145,9 @@ fi
 #
 #
 %changelog
+* Tue Aug 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Qualcomm QDF2432 errata fix
+
 * Mon Aug 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git0.1
 - Linux v4.8-rc3
 - Disable debugging options.
