@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 3
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -614,6 +614,12 @@ Patch843: tcp-fix-use-after-free-in-tcp_xmit_retransmit_queue.patch
 
 #rhbz 1365940
 Patch844: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
+
+# From kernel list, currently in linux-next
+Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
+
+#rhbz 1366224
+Patch846: i8042-set-up-shared-ps2_cmd_mutex-for-aux-ports.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2149,6 +2155,11 @@ fi
 #
 #
 %changelog
+* Wed Aug 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git1.1
+- Linux v4.8-rc3-26-gcad9d20
+- Reenable debugging options.
+- Fix keyboard input for some devices (rhbz 1366224)
+
 * Tue Aug 23 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for inabiltiy to send zero sized UDP packets (rhbz 1365940)
 
