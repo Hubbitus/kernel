@@ -1,0 +1,121 @@
+From a7f80308bac4013728e33e2bcb9b60eee78f60fb Mon Sep 17 00:00:00 2001
+From: Michal Hocko <mhocko@kernel.org>
+Date: Mon, 22 Aug 2016 11:32:49 +0200
+Subject: [PATCH] OOM detection regressions since 4.7
+
+Hi,
+there have been multiple reports [1][2][3][4][5] about pre-mature OOM
+killer invocations since 4.7 which contains oom detection rework. All of
+them were for order-2 (kernel stack) alloaction requests failing because
+of a high fragmentation and compaction failing to make any forward
+progress. While investigating this we have found out that the compaction
+just gives up too early. Vlastimil has been working on compaction
+improvement for quite some time and his series [6] is already sitting
+in mmotm tree. This already helps a lot because it drops some heuristics
+which are more aimed at lower latencies for high orders rather than
+reliability. Joonsoo has then identified further problem with too many
+blocks being marked as unmovable [7] and Vlastimil has prepared a patch
+on top of his series [8] which is also in the mmotm tree now.
+
+That being said, the regression is real and should be fixed for 4.7
+stable users. [6][8] was reported to help and ooms are no longer
+reproducible. I know we are quite late (rc3) in 4.8 but I would vote
+for mergeing those patches and have them in 4.8. For 4.7 I would go
+with a partial revert of the detection rework for high order requests
+(see patch below). This patch is really trivial. If those compaction
+improvements are just too large for 4.8 then we can use the same patch
+as for 4.7 stable for now and revert it in 4.9 after compaction changes
+are merged.
+
+Thoughts?
+
+[1] http://lkml.kernel.org/r/20160731051121.GB307@x4
+[2] http://lkml.kernel.org/r/201608120901.41463.a.miskiewicz@gmail.com
+[3] http://lkml.kernel.org/r/20160801192620.GD31957@dhcp22.suse.cz
+[4] https://lists.opensuse.org/opensuse-kernel/2016-08/msg00021.html
+[5] https://bugzilla.opensuse.org/show_bug.cgi?id=994066
+[6] http://lkml.kernel.org/r/20160810091226.6709-1-vbabka@suse.cz
+[7] http://lkml.kernel.org/r/20160816031222.GC16913@js1304-P5Q-DELUXE
+[8] http://lkml.kernel.org/r/f7a9ea9d-bb88-bfd6-e340-3a933559305a@suse.cz
+---
+ mm/page_alloc.c | 50 ++------------------------------------------------
+ 1 file changed, 2 insertions(+), 48 deletions(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 8b3e134..6e35419 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -3254,53 +3254,6 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+ 	return NULL;
+ }
+ 
+-static inline bool
+-should_compact_retry(struct alloc_context *ac, int order, int alloc_flags,
+-		     enum compact_result compact_result, enum migrate_mode *migrate_mode,
+-		     int compaction_retries)
+-{
+-	int max_retries = MAX_COMPACT_RETRIES;
+-
+-	if (!order)
+-		return false;
+-
+-	/*
+-	 * compaction considers all the zone as desperately out of memory
+-	 * so it doesn't really make much sense to retry except when the
+-	 * failure could be caused by weak migration mode.
+-	 */
+-	if (compaction_failed(compact_result)) {
+-		if (*migrate_mode == MIGRATE_ASYNC) {
+-			*migrate_mode = MIGRATE_SYNC_LIGHT;
+-			return true;
+-		}
+-		return false;
+-	}
+-
+-	/*
+-	 * make sure the compaction wasn't deferred or didn't bail out early
+-	 * due to locks contention before we declare that we should give up.
+-	 * But do not retry if the given zonelist is not suitable for
+-	 * compaction.
+-	 */
+-	if (compaction_withdrawn(compact_result))
+-		return compaction_zonelist_suitable(ac, order, alloc_flags);
+-
+-	/*
+-	 * !costly requests are much more important than __GFP_REPEAT
+-	 * costly ones because they are de facto nofail and invoke OOM
+-	 * killer to move on while costly can fail and users are ready
+-	 * to cope with that. 1/4 retries is rather arbitrary but we
+-	 * would need much more detailed feedback from compaction to
+-	 * make a better decision.
+-	 */
+-	if (order > PAGE_ALLOC_COSTLY_ORDER)
+-		max_retries /= 4;
+-	if (compaction_retries <= max_retries)
+-		return true;
+-
+-	return false;
+-}
+ #else
+ static inline struct page *
+ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+@@ -3311,6 +3264,8 @@ __alloc_pages_direct_compact(gfp_t gfp_mask, unsigned int order,
+ 	return NULL;
+ }
+ 
++#endif /* CONFIG_COMPACTION */
++
+ static inline bool
+ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_flags,
+ 		     enum compact_result compact_result,
+@@ -3337,7 +3292,6 @@ should_compact_retry(struct alloc_context *ac, unsigned int order, int alloc_fla
+ 	}
+ 	return false;
+ }
+-#endif /* CONFIG_COMPACTION */
+ 
+ /* Perform direct synchronous page reclaim */
+ static int
+-- 
+2.7.4
+

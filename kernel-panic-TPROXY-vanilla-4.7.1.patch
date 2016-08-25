@@ -1,0 +1,85 @@
+From patchwork Wed Aug 17 16:04:31 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: kernel panic TPROXY , vanilla 4.7.1
+From: Eric Dumazet <eric.dumazet@gmail.com>
+X-Patchwork-Id: 660174
+X-Patchwork-Delegate: davem@davemloft.net
+Message-Id: <1471449871.29842.3.camel@edumazet-glaptop3.roam.corp.google.com>
+To: Denys Fedoryshchenko <nuclearcat@nuclearcat.com>
+Cc: Linux Kernel Network Developers <netdev@vger.kernel.org>,
+ netfilter-devel@vger.kernel.org
+Date: Wed, 17 Aug 2016 09:04:31 -0700
+
+On Wed, 2016-08-17 at 08:42 -0700, Eric Dumazet wrote:
+> On Wed, 2016-08-17 at 17:31 +0300, Denys Fedoryshchenko wrote:
+> > Hi!
+> > 
+> > Tried to run squid on latest kernel, and hit a panic
+> > Sometimes it just shows warning in dmesg (but doesnt work properly)
+> > [   75.701666] IPv4: Attempt to release TCP socket in state 10 
+> > ffff88102d430780
+> > [   83.866974] squid (2700) used greatest stack depth: 12912 bytes left
+> > [   87.506644] IPv4: Attempt to release TCP socket in state 10 
+> > ffff880078a48780
+> > [  114.704295] IPv4: Attempt to release TCP socket in state 10 
+> > ffff881029f8ad00
+> > 
+> > I cannot catch yet oops/panic message, netconsole not working.
+> > 
+> > After triggering warning message 3 times, i am unable to run squid 
+> > anymore (without reboot), and in netstat it doesnt show port running.
+> > 
+> > firewall is:
+> > *mangle
+> > -A PREROUTING -p tcp -m socket -j DIVERT
+> > -A PREROUTING -p tcp -m tcp --dport 80 -i eno1 -j TPROXY --on-port 3129 
+> > --on-ip 0.0.0.0 --tproxy-mark 0x1/0x1
+> > -A DIVERT -j MARK --set-xmark 0x1/0xffffffff
+> > -A DIVERT -j ACCEPT
+> > 
+> > routing
+> > ip rule add fwmark 1 lookup 100
+> > ip route add local default dev eno1 table 100
+> > 
+> > 
+> > squid config is default with tproxy option
+> > http_port 3129 tproxy
+> > 
+> 
+> Hmppff... sorry for this, I will send a fix.
+> 
+> Thanks for the report !
+> 
+
+
+Could you try the following ?
+
+Thanks !
+
+ net/netfilter/xt_TPROXY.c |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/net/netfilter/xt_TPROXY.c b/net/netfilter/xt_TPROXY.c
+index 7f4414d26a66..663c4c3c9072 100644
+--- a/net/netfilter/xt_TPROXY.c
++++ b/net/netfilter/xt_TPROXY.c
+@@ -127,6 +127,8 @@ nf_tproxy_get_sock_v4(struct net *net, struct sk_buff *skb, void *hp,
+ 						    daddr, dport,
+ 						    in->ifindex);
+ 
++			if (sk && !atomic_inc_not_zero(&sk->sk_refcnt))
++				sk = NULL;
+ 			/* NOTE: we return listeners even if bound to
+ 			 * 0.0.0.0, those are filtered out in
+ 			 * xt_socket, since xt_TPROXY needs 0 bound
+@@ -195,6 +197,8 @@ nf_tproxy_get_sock_v6(struct net *net, struct sk_buff *skb, int thoff, void *hp,
+ 						   daddr, ntohs(dport),
+ 						   in->ifindex);
+ 
++			if (sk && !atomic_inc_not_zero(&sk->sk_refcnt))
++				sk = NULL;
+ 			/* NOTE: we return listeners even if bound to
+ 			 * 0.0.0.0, those are filtered out in
+ 			 * xt_socket, since xt_TPROXY needs 0 bound

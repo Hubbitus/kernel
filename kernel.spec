@@ -635,6 +635,12 @@ Patch855: aacraid-Check-size-values-after-double-fetch-from-us.patch
 #rhbz 1365940
 Patch856: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
 
+#rhbz 13700161
+Patch857: kernel-panic-TPROXY-vanilla-4.7.1.patch
+
+# lkml.kernel.org/r/<20160822093249.GA14916@dhcp22.suse.cz>
+Patch858: 0001-OOM-detection-regressions-since-4.7.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2162,6 +2168,10 @@ fi
 #
 # 
 %changelog
+* Thu Aug 25 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for TPROXY panic (rhbz 1370061)
+- Fix for known OOM regression
+
 * Tue Aug 23 2016 Laura Abbott <labbot@fedoraproject.org>
 - Fix for inabiltiy to send zero sized UDP packets (rhbz 1365940)
 
