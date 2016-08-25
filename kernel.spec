@@ -617,6 +617,9 @@ Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
 # SELinux OverlayFS support (queued for 4.9)
 Patch846: security-selinux-overlayfs-support.patch
 
+#rhbz: 1260862
+Patch847: rc-core-fix-repeat-events.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2153,6 +2156,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 29 2016 Laura Abbott <labbott@fedoraproject.org>
+- Add event decoding fix (rhbz 1360688)
+
 * Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Reenable debugging options.
 - Add SELinux OverlayFS support.
