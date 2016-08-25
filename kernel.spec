@@ -637,6 +637,9 @@ Patch857: kernel-panic-TPROXY-vanilla-4.7.1.patch
 # lkml.kernel.org/r/<20160822093249.GA14916@dhcp22.suse.cz>
 Patch858: 0001-OOM-detection-regressions-since-4.7.patch
 
+#rhbz 1360688
+Patch859: rc-core-fix-repeat-events.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2164,6 +2167,9 @@ fi
 #
 # 
 %changelog
+* Mon Aug 29 2016 Laura Abbott <labbott@fedoraproject.org>
+- Add event decoding fix (rhbz 1360688)
+
 * Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM updates
 
