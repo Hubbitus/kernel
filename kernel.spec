@@ -2155,6 +2155,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 24 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Config updates and fixes for ARMv7 platforms
+
 * Wed Aug 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git1.1
 - Linux v4.8-rc3-26-gcad9d20
 - Reenable debugging options.
