@@ -502,10 +502,6 @@ Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg483898.html
-# This has major conflicts and needs to be rebased
-# Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
-
 Patch424: arm64-pcie-acpi.patch
 Patch425: arm64-pcie-quirks-xgene.patch
 
@@ -2168,6 +2164,9 @@ fi
 #
 # 
 %changelog
+* Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Fri Aug 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.2-201
 - Bump and build
 
