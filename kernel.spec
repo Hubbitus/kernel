@@ -506,10 +506,6 @@ Patch421: qcom-QDF2432-tmp-errata.patch
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg483898.html
-# This has major conflicts and needs to be rebased
-# Patch423: Initial-AllWinner-A64-and-PINE64-support.patch
-
 Patch425: arm64-pcie-quirks-xgene.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
@@ -2157,6 +2153,9 @@ fi
 #
 #
 %changelog
+* Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM updates
+
 * Thu Aug 25 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git2.1
 - Linux v4.8-rc3-39-g61c0457
 
