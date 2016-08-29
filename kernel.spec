@@ -640,6 +640,9 @@ Patch858: 0001-OOM-detection-regressions-since-4.7.patch
 #rhbz 1360688
 Patch859: rc-core-fix-repeat-events.patch
 
+#rhbz 1371237
+Patch860: 0001-SUNRPC-Fix-infinite-looping-in-rpc_clnt_iterate_for_.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2169,6 +2172,7 @@ fi
 %changelog
 * Mon Aug 29 2016 Laura Abbott <labbott@fedoraproject.org>
 - Add event decoding fix (rhbz 1360688)
+- Add fix for NFS client issue (rhbz 1371237)
 
 * Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM updates
