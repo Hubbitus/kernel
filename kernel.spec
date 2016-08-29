@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -613,6 +613,9 @@ Patch844: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
 
 # From kernel list, currently in linux-next
 Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
+
+# SELinux OverlayFS support (queued for 4.9)
+Patch846: security-selinux-overlayfs-support.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2150,6 +2153,10 @@ fi
 #
 #
 %changelog
+* Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Reenable debugging options.
+- Add SELinux OverlayFS support.
+
 * Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git0.1
 - Disable debugging options.
 - Linux v4.8-rc4
