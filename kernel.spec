@@ -617,7 +617,7 @@ Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
 # SELinux OverlayFS support (queued for 4.9)
 Patch846: security-selinux-overlayfs-support.patch
 
-#rhbz: 1260862
+#rhbz 1360688
 Patch847: rc-core-fix-repeat-events.patch
 
 # END OF PATCH DEFINITIONS
