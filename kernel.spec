@@ -511,7 +511,7 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
-Patch431: bcm283x-upstream-fixes.patch
+Patch431: bcm2837-initial-support.patch
 
 Patch432: arm-i.MX6-Utilite-device-dtb.patch
 
