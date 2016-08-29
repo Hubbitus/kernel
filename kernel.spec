@@ -517,7 +517,7 @@ Patch427: omap-rtc-fix-am33xx.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
-Patch431: bcm283x-upstream-fixes.patch
+Patch431: bcm2837-initial-support.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
