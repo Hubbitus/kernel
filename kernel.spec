@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 3
+%define rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -613,9 +613,6 @@ Patch844: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
 
 # From kernel list, currently in linux-next
 Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
-
-#rhbz 1366224
-Patch846: i8042-set-up-shared-ps2_cmd_mutex-for-aux-ports.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2153,6 +2150,10 @@ fi
 #
 #
 %changelog
+* Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git0.1
+- Disable debugging options.
+- Linux v4.8-rc4
+
 * Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM updates
 
