@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 4
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,12 +604,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #rhbz 1200901 (There should be something better upstream at some point)
 Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
-
-#CVE-2016-6828 rhbz 1367091,1367092
-Patch843: tcp-fix-use-after-free-in-tcp_xmit_retransmit_queue.patch
-
-#rhbz 1365940
-Patch844: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
 
 # From kernel list, currently in linux-next
 Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
@@ -2156,6 +2150,9 @@ fi
 #
 #
 %changelog
+* Tue Aug 30 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git1.1
+- Linux v4.8-rc4-119-ge4e98c4
+
 * Mon Aug 29 2016 Laura Abbott <labbott@fedoraproject.org>
 - Add event decoding fix (rhbz 1360688)
 
