@@ -970,6 +970,7 @@ input and output, etc.
 
 %prep
 # do a few sanity-checks for --with *only builds
+ulimit -a
 %if %{with_baseonly}
 %if !%{with_up}%{with_pae}
 echo "Cannot build --with baseonly, up build is disabled"
