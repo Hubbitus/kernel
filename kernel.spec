@@ -2154,6 +2154,7 @@ fi
 * Sun Sep  4 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Use IIO BMP280 driver instead of old misc driver, wider HW support
 - Minor sensor driver changes
+- Disable omap_aes currently broken
 
 * Fri Sep 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git4.1
 - Linux v4.8-rc4-199-gcc4163d
