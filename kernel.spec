@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf4
+%define buildid .hu.1.pf2
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.5.6(?) v4.5-pf4: https://pf.natalenko.name/news/?p=177
-%define stable_update 6
+#+Hu Pf against 4.7.2 v4.7-pf2: https://pf.natalenko.name/news/?p=190
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2185,6 +2185,10 @@ fi
 # and build.
 #
 %changelog
+* Mon Sep 05 2016 Pavel Alexeev <Pahan@Hubbitus.info>
+- Step to build kernels for Fedora 24.
+- Update patch to 4.7-pf2 - https://pf.natalenko.name/news/?p=190
+
 * Sun Jun 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.5.6-200.hu.1.pf4
 - 4.5.6-200.hu.1.pf4
 - Pf v4.5-pf4 https://pf.natalenko.name/news/?p=177
