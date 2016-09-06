@@ -59,7 +59,6 @@ config-release:
 	@perl -pi -e 's/CONFIG_CARL9170_DEBUGFS=y/# CONFIG_CARL9170_DEBUGFS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_IWLWIFI_DEVICE_TRACING=y/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DMADEVICES_DEBUG=y/# CONFIG_DMADEVICES_DEBUG is not set/' config-nodebug
-	@perl -pi -e 's/CONFIG_DMADEVICES_VDEBUG=y/# CONFIG_DMADEVICES_VDEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CEPH_LIB_PRETTYDEBUG=y/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_QUOTA_DEBUG=y/# CONFIG_QUOTA_DEBUG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/' config-nodebug
@@ -69,6 +68,7 @@ config-release:
 	@perl -pi -e 's/CONFIG_TEST_STRING_HELPERS=m/# CONFIG_TEST_STRING_HELPERS is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_ATOMIC_SLEEP=y/# CONFIG_DEBUG_ATOMIC_SLEEP is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DETECT_HUNG_TASK=y/# CONFIG_DETECT_HUNG_TASK is not set/' config-nodebug
+	@perl -pi -e 's/CONFIG_WQ_WATCHDOG=y/# CONFIG_WQ_WATCHDOG is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_DEBUG_KMEMLEAK=y/# CONFIG_DEBUG_KMEMLEAK is not set/' config-nodebug
 	@perl -pi -e 's/CONFIG_MAC80211_MESSAGE_TRACING=y/# CONFIG_MAC80211_MESSAGE_TRACING is not set/' config-nodebug

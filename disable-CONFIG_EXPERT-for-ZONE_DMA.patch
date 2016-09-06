@@ -1,4 +1,4 @@
-From 888ba9b2a02e8d144c3a9ae5e01a1a94280cd2bf Mon Sep 17 00:00:00 2001
+From 78bd7226c92c8309d1c6c1378f1224dcd591b49f Mon Sep 17 00:00:00 2001
 From: Fedora Kernel Team <kernel-team@fedoraproject.org>
 Date: Fri, 22 Jan 2016 13:03:36 -0600
 Subject: [PATCH] Make ZONE_DMA not depend on CONFIG_EXPERT
@@ -13,12 +13,12 @@ Signed-off-by: Justin Forbes <jforbes@fedoraproject.org>
  2 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a02c842..ea2eaeb 100644
+index 3c74b549ea9a..8a5b7b8cc425 100644
 --- a/arch/x86/Kconfig
 +++ b/arch/x86/Kconfig
-@@ -315,7 +315,7 @@ source "kernel/Kconfig.freezer"
+@@ -318,7 +318,7 @@ source "kernel/Kconfig.freezer"
  menu "Processor type and features"
-
+ 
  config ZONE_DMA
 -	bool "DMA memory allocation support" if EXPERT
 +	bool "DMA memory allocation support"
@@ -26,18 +26,18 @@ index a02c842..ea2eaeb 100644
  	help
  	  DMA memory allocation support allows devices with less than 32-bit
 diff --git a/mm/Kconfig b/mm/Kconfig
-index 97a4e06..26bbbe0 100644
+index 05efa6a5199e..c1a01e50c293 100644
 --- a/mm/Kconfig
 +++ b/mm/Kconfig
 @@ -650,7 +650,7 @@ config IDLE_PAGE_TRACKING
  	  See Documentation/vm/idle_page_tracking.txt for more details.
-
+ 
  config ZONE_DEVICE
 -	bool "Device memory (pmem, etc...) hotplug support" if EXPERT
 +	bool "Device memory (pmem, etc...) hotplug support"
- 	default !ZONE_DMA
- 	depends on !ZONE_DMA
  	depends on MEMORY_HOTPLUG
+ 	depends on MEMORY_HOTREMOVE
+ 	depends on SPARSEMEM_VMEMMAP
 -- 
 2.5.0
 

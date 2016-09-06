@@ -1,7 +1,8 @@
-From 8010b5eb4680df797575e6306d4d891200e303ab Mon Sep 17 00:00:00 2001
+From 7a3cdd26e6d38031338a6cb591ec2f3faaa9234b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
-Subject: [PATCH] x86: Lock down IO port access when module security is enabled
+Subject: [PATCH 03/20] x86: Lock down IO port access when module security is
+ enabled
 
 IO port access would permit users to gain access to PCI configuration
 registers, which in turn (on a lot of hardware) give access to MMIO register
@@ -15,7 +16,7 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kernel/ioport.c b/arch/x86/kernel/ioport.c
-index 589b3193f102..ab8372443efb 100644
+index 37dae792dbbe..1ecc03ca3c15 100644
 --- a/arch/x86/kernel/ioport.c
 +++ b/arch/x86/kernel/ioport.c
 @@ -15,6 +15,7 @@
@@ -35,7 +36,7 @@ index 589b3193f102..ab8372443efb 100644
  		return -EPERM;
  
  	/*
-@@ -108,7 +109,7 @@ SYSCALL_DEFINE1(iopl, unsigned int, level)
+@@ -103,7 +104,7 @@ SYSCALL_DEFINE1(iopl, unsigned int, level)
  		return -EINVAL;
  	/* Trying to gain more privileges? */
  	if (level > old) {
@@ -45,7 +46,7 @@ index 589b3193f102..ab8372443efb 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) |
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 71025c2f6bbb..86e5bfa91563 100644
+index 6b1721f978c2..53fe675f9bd7 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
 @@ -27,6 +27,7 @@
@@ -67,5 +68,5 @@ index 71025c2f6bbb..86e5bfa91563 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-2.5.5
+2.4.3
 

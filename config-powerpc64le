@@ -2,5 +2,7 @@ CONFIG_CPU_LITTLE_ENDIAN=y
 
 CONFIG_POWER7_CPU=y
 
+CONFIG_DISABLE_MPROFILE_KERNEL=y
+
 # https://fedoraproject.org/wiki/Features/Checkpoint_Restore
 CONFIG_CHECKPOINT_RESTORE=y

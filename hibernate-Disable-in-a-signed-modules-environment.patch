@@ -24,7 +24,7 @@ index 690f78f210f2..037303a1cba9 100644
 +#include <linux/module.h>
  #include <trace/events/power.h>
  
- #include "tuxonice.h"
+ #include "power.h"
 @@ -66,7 +67,7 @@ static const struct platform_hibernation_ops *hibernation_ops;
  
  bool hibernation_available(void)

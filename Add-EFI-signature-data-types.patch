@@ -1,7 +1,7 @@
-From 47f6b5c281137394d627e275cb80980492d00d84 Mon Sep 17 00:00:00 2001
+From 5216de8394ff599e41c8540c0572368c18c51459 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
-Subject: [PATCH 15/20] Add EFI signature data types
+Subject: [PATCH 4/9] Add EFI signature data types
 
 Add the data types that are used for containing hashes, keys and certificates
 for cryptographic verification.
@@ -15,12 +15,12 @@ Signed-off-by: David Howells <dhowells@redhat.com>
  1 file changed, 20 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 4dc970e..82d6218 100644
+index 8cb38cfcba74..8c274b4ea8e6 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -599,6 +599,12 @@ void efi_native_runtime_setup(void);
- #define EFI_PROPERTIES_TABLE_GUID \
-     EFI_GUID(  0x880aaca3, 0x4adc, 0x4a04, 0x90, 0x79, 0xb7, 0x47, 0x34, 0x08, 0x25, 0xe5 )
+@@ -647,6 +647,12 @@ void efi_native_runtime_setup(void);
+ 	EFI_GUID(0x4a67b082, 0x0a4c, 0x41cf, \
+ 		 0xb6, 0xc7, 0x44, 0x0b, 0x29, 0xbb, 0x8c, 0x4f)
  
 +#define EFI_CERT_SHA256_GUID \
 +    EFI_GUID(  0xc1c41626, 0x504c, 0x4092, 0xac, 0xa9, 0x41, 0xf9, 0x36, 0x93, 0x43, 0x28 )
@@ -31,9 +31,9 @@ index 4dc970e..82d6218 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -823,6 +829,20 @@ typedef struct {
- 
- #define EFI_INVALID_TABLE_ADDR		(~0UL)
+@@ -879,6 +885,20 @@ typedef struct {
+ 	efi_memory_desc_t entry[0];
+ } efi_memory_attributes_table_t;
  
 +typedef struct  {
 +	efi_guid_t signature_owner;
@@ -53,5 +53,5 @@ index 4dc970e..82d6218 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-2.5.0
+2.5.5
 

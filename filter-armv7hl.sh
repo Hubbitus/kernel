@@ -9,10 +9,10 @@
 # modifications to the overrides below.  If something should be removed across
 # all arches, remove it in the default instead of per-arch.
 
-driverdirs="atm auxdisplay bcma bluetooth firewire fmc infiniband isdn media memstick message mwave nfc ntb pcmcia platform ssb staging uio uwb w1"
+driverdirs="atm auxdisplay bcma bluetooth firewire fmc infiniband isdn media memstick message mwave nfc ntb pcmcia platform ssb staging tty uio uwb w1"
 
 ethdrvs="3com adaptec alteon altera amd atheros broadcom cadence chelsio cisco dec dlink emulex icplus mellanox micrel myricom natsemi neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis sun tehuti via wiznet xircom"
 
 drmdrvs="amd armada bridge ast exynos i2c imx mgag200 msm omapdrm panel nouveau radeon rockchip tegra tilcdc via"
 
-singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject target_core_user sbp_target"
+singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma nvmet-rdma nvme-rdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject target_core_user sbp_target cxgbit iw_cxgb3 iw_cxgb4 cxgb3i cxgb3i cxgb3i_ddp cxgb4i"

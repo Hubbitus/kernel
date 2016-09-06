@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rpmbuild --target aarch64 --with cross --without debuginfo --without perf --without tools --define "__strip /usr/bin/aarch64-linux-gnu-strip" --rebuild $1
