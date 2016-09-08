@@ -2150,6 +2150,9 @@ fi
 #
 #
 %changelog
+* Thu Sep  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable some popular audio addon drivers
+
 * Wed Sep 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git2.1
 - Linux v4.8-rc5-62-gd060e0f
 - Reenable debugging options.
