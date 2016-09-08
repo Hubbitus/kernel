@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -510,9 +510,6 @@ Patch425: arm64-pcie-quirks-xgene.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
-
-# http://www.spinics.net/lists/linux-omap/msg130698.html
-Patch427: omap-rtc-fix-am33xx.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
@@ -2150,6 +2147,9 @@ fi
 #
 #
 %changelog
+* Thu Sep 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git3.1
+- Linux v4.8-rc5-129-g711bef6
+
 * Thu Sep  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable some popular audio addon drivers
 
