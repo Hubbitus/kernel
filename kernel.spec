@@ -611,6 +611,12 @@ Patch846: security-selinux-overlayfs-support.patch
 #rhbz 1360688
 Patch847: rc-core-fix-repeat-events.patch
 
+#rhbz 1374212
+Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
+
+#ongoing complaint, full discussion delayed until ksummit/plumbers
+Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2147,6 +2153,10 @@ fi
 #
 #
 %changelog
+* Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for incorrect return checking in cpupower (rhbz 1374212)
+- Let iio tools build on older kernels
+
 * Tue Sep 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git1.1
 - Linux v4.8-rc6-147-ge8988e0
 - Reenable debugging options.
