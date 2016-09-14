@@ -640,6 +640,12 @@ Patch861: 0001-cgroup-reduce-read-locked-section-of-cgroup_threadgr.patch
 #rhbz 1350174
 Patch862: tip-x86-boot-x86-KASLR-x86-power-Remove-x86-hibernation-restrictions.patch
 
+#rhbz 1374212
+Patch863: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
+
+#ongoing complaint, full discussion delayed until ksummit/plumbers
+Patch864: 0001-iio-Use-event-header-from-kernel-tree.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2167,6 +2173,10 @@ fi
 #
 # 
 %changelog
+* Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for incorrect return checking in cpupower (rhbz 1374212)
+- Let iio tools build on older kernels
+
 * Wed Sep 07 2016 <labbott@fedoraproject.org> - 4.7.3-200
 - Linux v4.7.3
 - Silence KASLR warning (rhbz 1350174)
