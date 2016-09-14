@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.7.2 v4.7-pf2: https://pf.natalenko.name/news/?p=190
-%define stable_update 2
+#+Hu Pf against 4.7.3 v4.7-pf3: https://pf.natalenko.name/news/?p=193
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 # %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.7/patch-4.7-pf2.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.7/patch-4.7-pf3.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -624,14 +624,8 @@ Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
 Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
 Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
 
-# https://lists.fedoraproject.org/archives/list/kernel@lists.fedoraproject.org/message/A4YCP7OGMX6JLFT5V44H57GOMAQLC3M4/
-Patch838: drm-i915-Acquire-audio-powerwell-for-HD-Audio-regist.patch
-
 #rhbz 1353558
 Patch844: 0001-selinux-Only-apply-bounds-checking-to-source-types.patch
-
-#CVE-2016-6480 rhbz 1362466 1362467
-Patch855: aacraid-Check-size-values-after-double-fetch-from-us.patch
 
 #rhbz 1365940
 Patch856: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
@@ -645,11 +639,11 @@ Patch858: 0001-OOM-detection-regressions-since-4.7.patch
 #rhbz 1360688
 Patch859: rc-core-fix-repeat-events.patch
 
-#rhbz 1371237
-Patch860: 0001-SUNRPC-Fix-infinite-looping-in-rpc_clnt_iterate_for_.patch
-
 # https://lkml.org/lkml/2016/8/30/566
 Patch861: 0001-cgroup-reduce-read-locked-section-of-cgroup_threadgr.patch
+
+#rhbz 1350174
+Patch862: tip-x86-boot-x86-KASLR-x86-power-Remove-x86-hibernation-restrictions.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1001,10 +995,10 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package
+%kernel_variant_package 
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
-Linux operating system. The kernel handles the basic functions
+Linux operating system.  The kernel handles the basic functions
 of the operating system: memory allocation, process allocation, device
 input and output, etc.
 
@@ -2184,6 +2178,14 @@ fi
 #
 #
 %changelog
+* Tue Sep 13 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.3-200.hu.1.pf3
+- Pull Fedora updates to kernel 4.7.3.
+- Update pf patch to v4.7-pf3 (https://pf.natalenko.name/news/?p=193)
+
+* Wed Sep 07 2016 <labbott@fedoraproject.org> - 4.7.3-200
+- Linux v4.7.3
+- Silence KASLR warning (rhbz 1350174)
+
 * Mon Sep 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.2-201.hu.1.pf2
 - Step to build kernels for Fedora 24.
 - Update patch to 4.7-pf2 - https://pf.natalenko.name/news/?p=190
