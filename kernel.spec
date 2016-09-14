@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2153,6 +2153,9 @@ fi
 #
 #
 %changelog
+* Wed Sep 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git2.1
+- Linux v4.8-rc6-211-g77e5bdf
+
 * Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for incorrect return checking in cpupower (rhbz 1374212)
 - Let iio tools build on older kernels
