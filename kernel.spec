@@ -2153,6 +2153,9 @@ fi
 #
 #
 %changelog
+* Thu Sep 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch for bcm2837 (RPi3) HDMI EDID detection
+
 * Wed Sep 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git2.1
 - Linux v4.8-rc6-211-g77e5bdf
 
