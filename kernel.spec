@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -633,9 +633,6 @@ Patch858: 0001-OOM-detection-regressions-since-4.7.patch
 
 #rhbz 1360688
 Patch859: rc-core-fix-repeat-events.patch
-
-# https://lkml.org/lkml/2016/8/30/566
-Patch861: 0001-cgroup-reduce-read-locked-section-of-cgroup_threadgr.patch
 
 #rhbz 1350174
 Patch862: tip-x86-boot-x86-KASLR-x86-power-Remove-x86-hibernation-restrictions.patch
@@ -2173,6 +2170,9 @@ fi
 #
 # 
 %changelog
+* Thu Sep 15 2016 Laura Abbott <labbott@fedoraproject.org> - 4.7.4-200
+- Linux v4.7.4
+
 * Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for incorrect return checking in cpupower (rhbz 1374212)
 - Let iio tools build on older kernels
