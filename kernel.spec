@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 6
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2153,6 +2153,9 @@ fi
 #
 #
 %changelog
+* Thu Sep 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git3.1
+- Linux v4.8-rc6-214-g4cea877
+
 * Thu Sep 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add patch for bcm2837 (RPi3) HDMI EDID detection
 
