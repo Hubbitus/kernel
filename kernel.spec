@@ -506,7 +506,9 @@ Patch421: qcom-QDF2432-tmp-errata.patch
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
-Patch425: arm64-pcie-quirks-xgene.patch
+# http://www.spinics.net/lists/linux-pci/msg53991.html
+# https://patchwork.kernel.org/patch/9337113/
+Patch425: arm64-pcie-quirks.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
@@ -2156,6 +2158,7 @@ fi
 * Sat Sep 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable CPU IDLE on ARMv7
 - Tweak big.LITTLE on ARMv7
+- Update ARM64 pci-e quicks to latest upstream, update x-gene quirks patch
 
 * Fri Sep 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git4.1
 - Linux v4.8-rc6-231-g024c7e3
