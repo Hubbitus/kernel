@@ -2153,6 +2153,10 @@ fi
 #
 #
 %changelog
+* Sat Sep 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable CPU IDLE on ARMv7
+- Tweak big.LITTLE on ARMv7
+
 * Fri Sep 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git4.1
 - Linux v4.8-rc6-231-g024c7e3
 
