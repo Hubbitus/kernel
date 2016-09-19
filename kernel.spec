@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%define rcrev 6
+%define rcrev 7
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -618,6 +618,9 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+#CVE-2016-7425 rhbz 1377330 1377331
+Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2155,6 +2158,11 @@ fi
 #
 #
 %changelog
+* Mon Sep 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git0.1
+- Linux v4.8-rc7
+- Disable debugging options.
+- CVE-2016-7425 SCSI arcmsr buffer overflow (rhbz 1377330 1377331)
+
 * Sat Sep 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable CPU IDLE on ARMv7
 - Tweak big.LITTLE on ARMv7
