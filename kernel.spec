@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf2
+%define buildid .hu.1.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.7.3 v4.7-pf3: https://pf.natalenko.name/news/?p=193
-%define stable_update 3
+#+Hu Pf against 4.7.4 v4.7-pf4: https://pf.natalenko.name/news/?p=195
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 # %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.7/patch-4.7-pf3.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.7/patch-4.7-pf4.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -639,11 +639,14 @@ Patch858: 0001-OOM-detection-regressions-since-4.7.patch
 #rhbz 1360688
 Patch859: rc-core-fix-repeat-events.patch
 
-# https://lkml.org/lkml/2016/8/30/566
-Patch861: 0001-cgroup-reduce-read-locked-section-of-cgroup_threadgr.patch
-
 #rhbz 1350174
 Patch862: tip-x86-boot-x86-KASLR-x86-power-Remove-x86-hibernation-restrictions.patch
+
+#rhbz 1374212
+Patch863: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
+
+#ongoing complaint, full discussion delayed until ksummit/plumbers
+Patch864: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2178,6 +2181,17 @@ fi
 #
 #
 %changelog
+* Mon Sep 19 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.1.pf4
+- Merge Fedora upstream: kernel 4.7.4.
+- Update pf patch: 4.7-pf4 - https://pf.natalenko.name/news/?p=195
+
+* Thu Sep 15 2016 Laura Abbott <labbott@fedoraproject.org> - 4.7.4-200
+- Linux v4.7.4
+
+* Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for incorrect return checking in cpupower (rhbz 1374212)
+- Let iio tools build on older kernels
+
 * Tue Sep 13 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.3-200.hu.1.pf3
 - Pull Fedora updates to kernel 4.7.3.
 - Update pf patch to v4.7-pf3 (https://pf.natalenko.name/news/?p=193)
