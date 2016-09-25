@@ -2158,6 +2158,9 @@ fi
 #
 #
 %changelog
+* Sun Sep 25 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Updates to crash driver from Dave Anderson
+
 * Fri Sep 23 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git4.1
 - Linux v4.8-rc7-158-g78bbf15
 
