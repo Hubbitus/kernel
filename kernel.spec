@@ -2158,6 +2158,9 @@ fi
 #
 #
 %changelog
+* Mon Sep 26 2016 Laura Abbott <labbott@fedoraproject.org>
+- Enable CONFIG_DEBUG_MODULE_RONX for arm targets
+
 * Mon Sep 26 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git0.1
 - Linux v4.8-rc8
 - Disable debugging options.
