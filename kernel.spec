@@ -518,6 +518,8 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
+Patch432: bcm283x-vc4-fixes.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2158,6 +2160,9 @@ fi
 #
 #
 %changelog
+* Fri Sep 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some bcm283x VC4 fixes for Raspberry Pi
+
 * Fri Sep 30 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git3.1
 - Linux v4.8-rc8-28-g9a2172a
 
