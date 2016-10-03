@@ -2160,7 +2160,8 @@ fi
 #
 #
 %changelog
-* Fri Sep 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Sun Oct  2 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config cleanups, some minor general cleanups
 - Some bcm283x VC4 fixes for Raspberry Pi
 
 * Fri Sep 30 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git3.1
