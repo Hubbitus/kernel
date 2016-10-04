@@ -624,6 +624,9 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 #CVE-2016-7425 rhbz 1377330 1377331
 Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
 
+#rhbz 1366842
+Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2160,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Tue Oct 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix Xorg starting with virtio (rhbz 1366842)
+
 * Mon Oct 03 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-1
 - Disable debugging options.
 - Linux v4.8
