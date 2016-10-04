@@ -4,6 +4,8 @@ CONFIG_64BIT=y
 # CONFIG_MK8 is not set
 # CONFIG_MPSC is not set
 CONFIG_GENERIC_CPU=y
+# Turn this on to see what exciting things we find
+CONFIG_VMAP_STACK=y
 
 # CONFIG_X86_VSMP is not set
 CONFIG_X86_UV=y
@@ -18,6 +20,8 @@ CONFIG_ACPI_NFIT=m
 CONFIG_X86_NUMACHIP=y
 CONFIG_NUMA_BALANCING=y
 CONFIG_NUMA_BALANCING_DEFAULT_ENABLED=y
+
+CONFIG_MLX_PLATFORM=m
 
 # https://lists.fedoraproject.org/pipermail/kernel/2013-November/004601.html
 CONFIG_NR_CPUS=1024

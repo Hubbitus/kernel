@@ -1,7 +1,7 @@
-From d4ae417828427de74e9f857f9caa49580aecf1fe Mon Sep 17 00:00:00 2001
+From 3dfb34906e9e57e70bd497ee21e8d59325c841d2 Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Mar 2012 09:28:15 -0500
-Subject: [PATCH 06/20] Restrict /dev/mem and /dev/kmem when module loading is
+Subject: [PATCH] Restrict /dev/mem and /dev/kmem when module loading is
  restricted
 
 Allowing users to write to address space makes it possible for the kernel
@@ -14,10 +14,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 53fe675f9bd7..b52c88860532 100644
+index 5bb1985..74ee6a4 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
-@@ -167,6 +167,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
+@@ -163,6 +163,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
  	if (p != *ppos)
  		return -EFBIG;
  
@@ -27,9 +27,9 @@ index 53fe675f9bd7..b52c88860532 100644
  	if (!valid_phys_addr_range(p, count))
  		return -EFAULT;
  
-@@ -513,6 +516,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
- 	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
- 	int err = 0;
+@@ -515,6 +518,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+ 	if (!pfn_valid(PFN_DOWN(p)))
+ 		return -EIO;
  
 +	if (secure_modules())
 +		return -EPERM;
@@ -38,5 +38,5 @@ index 53fe675f9bd7..b52c88860532 100644
  		unsigned long to_write = min_t(unsigned long, count,
  					       (unsigned long)high_memory - p);
 -- 
-2.4.3
+2.7.4
 
