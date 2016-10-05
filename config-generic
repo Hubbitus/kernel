@@ -222,6 +222,12 @@ CONFIG_BINFMT_MISC=m
 # CONFIG_COMMON_CLK_OXNAS is not set
 # CONFIG_COMMON_CLK_HI3519 is not set
 # CONFIG_SUNXI_CCU is not set
+# CONFIG_COMMON_CLK_MT8135 is not set
+# CONFIG_COMMON_CLK_MT8173 is not set
+# CONFIG_SUN6I_A31_CCU is not set
+# CONFIG_SUN8I_A23_CCU is not set
+# CONFIG_SUN8I_A33_CCU is not set
+
 
 #
 # Generic Driver Options
@@ -5455,11 +5461,14 @@ CONFIG_LEDS_TRIGGER_DISK=y
 CONFIG_LEDS_WM8350=m
 CONFIG_LEDS_WM831X_STATUS=m
 # CONFIG_LEDS_DAC124S085 is not set
+# CONFIG_LEDS_IS31FL319X is not set
 # Do not enable the below.  They selects the fw user helper, which we don't want
 # CONFIG_LEDS_LP5521 is not set
 # CONFIG_LEDS_LP5523 is not set
 # CONFIG_LEDS_LP5562 is not set
 # CONFIG_LEDS_LP55XX_COMMON is not set
+# CONFIG_LEDS_PM8058 is not set
+# CONFIG_LEDS_MLXCPLD is not set
 
 CONFIG_DMADEVICES=y
 CONFIG_DMA_ENGINE=y

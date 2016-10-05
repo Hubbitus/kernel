@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -605,9 +605,6 @@ Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
 
 # From kernel list, currently in linux-next
 Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
-
-# SELinux OverlayFS support (queued for 4.9)
-Patch846: security-selinux-overlayfs-support.patch
 
 #rhbz 1360688
 Patch847: rc-core-fix-repeat-events.patch
@@ -2157,6 +2154,9 @@ fi
 #
 #
 %changelog
+* Wed Oct 05 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git2.1
+- Linux v4.8-2283-ga3443cd
+
 * Tue Oct 04 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git1.1
 - Linux v4.8-1558-g21f54dd
 - Reenable debugging options.
