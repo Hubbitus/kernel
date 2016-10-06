@@ -1,0 +1,43 @@
+From b0a46f7c26a6c754ff4fc716741c5aeacf125ec9 Mon Sep 17 00:00:00 2001
+From: Laura Abbott <labbott@redhat.com>
+Date: Thu, 6 Oct 2016 11:15:11 -0700
+Subject: [PATCH] drivers: net: phy: Correct duplicate MDIO_XGENE entry
+
+An extra entry for MDIO_XGENE got added during merging.
+Delete the extra.
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Signed-off-by: Laura Abbott <labbott@redhat.com>
+---
+ drivers/net/phy/Kconfig | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
+
+diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
+index 5078a0d..2651c8d 100644
+--- a/drivers/net/phy/Kconfig
++++ b/drivers/net/phy/Kconfig
+@@ -142,6 +142,7 @@ config MDIO_THUNDER
+ 
+ config MDIO_XGENE
+ 	tristate "APM X-Gene SoC MDIO bus controller"
++	depends on ARCH_XGENE || COMPILE_TEST
+ 	help
+ 	  This module provides a driver for the MDIO busses found in the
+ 	  APM X-Gene SoC's.
+@@ -320,13 +321,6 @@ config XILINX_GMII2RGMII
+          the Reduced Gigabit Media Independent Interface(RGMII) between
+          Ethernet physical media devices and the Gigabit Ethernet controller.
+ 
+-config MDIO_XGENE
+-	tristate "APM X-Gene SoC MDIO bus controller"
+-	depends on ARCH_XGENE || COMPILE_TEST
+-	help
+-	  This module provides a driver for the MDIO busses found in the
+-	  APM X-Gene SoC's.
+-
+ endif # PHYLIB
+ 
+ config MICREL_KS8995MA
+-- 
+2.7.4
+

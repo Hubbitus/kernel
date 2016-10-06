@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -617,6 +617,9 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 #CVE-2016-7425 rhbz 1377330 1377331
 Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
+
+# Fix came in locally
+Patch851: 0001-drivers-net-phy-Correct-duplicate-MDIO_XGENE-entry.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2154,6 +2157,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 06 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git3.1
+- Linux v4.8-8780-gd230ec7
+
 * Wed Oct 05 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git2.1
 - Linux v4.8-2283-ga3443cd
 
