@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 0
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.1-1
+- Linux v4.8.1
+
 * Tue Oct 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch to fix Xorg starting with virtio (rhbz 1366842)
 
