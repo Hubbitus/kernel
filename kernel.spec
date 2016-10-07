@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- update baserelease for Fedora 25
+
 * Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.1-1
 - Linux v4.8.1
 
