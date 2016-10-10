@@ -1,4 +1,4 @@
-From a2858804c7f5f4585b718543236b7ba3b3ec813a Mon Sep 17 00:00:00 2001
+From f06dd7d37ae66a4441b1c17f55e26f8bf8349531 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Mon, 29 Aug 2016 09:14:15 +0100
 Subject: [PATCH] ARM: bcm283x: Add devicetree for the Raspberry Pi 3.
@@ -10,23 +10,21 @@ Rebased to the patch that went upstream for ARM64
 
 Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
 ---
- arch/arm/boot/dts/Makefile            |  3 +-
+ arch/arm/boot/dts/Makefile            |  1 +
  arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 30 ++++++++++++++
  arch/arm/boot/dts/bcm2837.dtsi        | 76 +++++++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+), 1 deletion(-)
+ 3 files changed, 107 insertions(+)
  create mode 100644 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
  create mode 100644 arch/arm/boot/dts/bcm2837.dtsi
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index faacd52..ec41888 100644
+index befcd26..68993e2 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -69,7 +69,8 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
- 	bcm2835-rpi-b-rev2.dtb \
- 	bcm2835-rpi-b-plus.dtb \
+@@ -71,6 +71,7 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
  	bcm2835-rpi-a-plus.dtb \
--	bcm2836-rpi-2-b.dtb
-+	bcm2836-rpi-2-b.dtb \
+ 	bcm2836-rpi-2-b.dtb \
+ 	bcm2835-rpi-zero.dtb
 +	bcm2837-rpi-3-b.dtb
  dtb-$(CONFIG_ARCH_BCM_5301X) += \
  	bcm4708-asus-rt-ac56u.dtb \
@@ -150,4 +148,5 @@ index 0000000..8216bbb
 +	interrupts = <8>;
 +};
 -- 
-2.9.3
+2.7.4
+

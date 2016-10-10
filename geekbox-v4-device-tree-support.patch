@@ -1,4 +1,4 @@
-From 277aa4c25655e8f746f02879d26298772244958a Mon Sep 17 00:00:00 2001
+From 11aa129d33635fb33304b6e9b945e502f5ba707a Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Thu, 17 Mar 2016 15:19:04 +0000
 Subject: [PATCH] geekbox v4 patchset
@@ -13,10 +13,10 @@ Subject: [PATCH] geekbox v4 patchset
  create mode 100644 arch/arm64/boot/dts/rockchip/rk3368-geekbox-landingship.dts
 
 diff --git a/Documentation/devicetree/bindings/arm/rockchip.txt b/Documentation/devicetree/bindings/arm/rockchip.txt
-index 715d960..7cfadac 100644
+index 55f388f..989a039 100644
 --- a/Documentation/devicetree/bindings/arm/rockchip.txt
 +++ b/Documentation/devicetree/bindings/arm/rockchip.txt
-@@ -95,6 +95,15 @@ Rockchip platforms device tree bindings
+@@ -99,6 +99,15 @@ Rockchip platforms device tree bindings
      Required root node properties:
        - compatible = "mqmaker,miqi", "rockchip,rk3288";
  
@@ -33,12 +33,13 @@ index 715d960..7cfadac 100644
      Required root node properties:
        - compatible = "rockchip,rk3368-evb-act8846", "rockchip,rk3368";
 diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-index 7037a16..e002ebe 100644
+index 87669f6..9aec54e 100644
 --- a/arch/arm64/boot/dts/rockchip/Makefile
 +++ b/arch/arm64/boot/dts/rockchip/Makefile
-@@ -1,5 +1,6 @@
+@@ -1,6 +1,7 @@
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-evb-act8846.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-geekbox.dtb
+ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-orion-r68-meta.dtb
 +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-geekbox-landingship.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-r88.dtb
  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-evb.dtb
@@ -120,7 +121,7 @@ index 0000000..a28ace9
 +	status = "okay";
 +};
 diff --git a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
-index b56b720..5ea68c4 100644
+index eed1ef6..18e2b77 100644
 --- a/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
 +++ b/arch/arm64/boot/dts/rockchip/rk3368-r88.dts
 @@ -52,7 +52,7 @@
@@ -133,5 +134,5 @@ index b56b720..5ea68c4 100644
  		reg = <0x0 0x0 0x0 0x40000000>;
  	};
 -- 
-2.5.5
+2.7.4
 

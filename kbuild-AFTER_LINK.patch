@@ -1,4 +1,4 @@
-From a9488dbeccf188f0bd83b9d5704892f2c0f97fdc Mon Sep 17 00:00:00 2001
+From 22e118d8d8dd13cda14973e28e198ec76c6a9a3b Mon Sep 17 00:00:00 2001
 From: Roland McGrath <roland@redhat.com>
 Date: Mon, 6 Oct 2008 23:03:03 -0700
 Subject: [PATCH] kbuild: AFTER_LINK
@@ -21,10 +21,10 @@ Signed-off-by: Roland McGrath <roland@redhat.com>
  7 files changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/arch/arm64/kernel/vdso/Makefile b/arch/arm64/kernel/vdso/Makefile
-index b467fd0..feeff5e 100644
+index 62c84f7..f44236a 100644
 --- a/arch/arm64/kernel/vdso/Makefile
 +++ b/arch/arm64/kernel/vdso/Makefile
-@@ -55,7 +55,8 @@ $(obj-vdso): %.o: %.S FORCE
+@@ -54,7 +54,8 @@ $(obj-vdso): %.o: %.S FORCE
  
  # Actual build commands
  quiet_cmd_vdsold = VDSOL   $@
@@ -35,10 +35,10 @@ index b467fd0..feeff5e 100644
        cmd_vdsoas = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/powerpc/kernel/vdso32/Makefile b/arch/powerpc/kernel/vdso32/Makefile
-index 6abffb7..7b103bb 100644
+index 78a7449..c9592c0 100644
 --- a/arch/powerpc/kernel/vdso32/Makefile
 +++ b/arch/powerpc/kernel/vdso32/Makefile
-@@ -43,7 +43,8 @@ $(obj-vdso32): %.o: %.S
+@@ -44,7 +44,8 @@ $(obj-vdso32): %.o: %.S FORCE
  
  # actual build commands
  quiet_cmd_vdso32ld = VDSO32L $@
@@ -49,24 +49,24 @@ index 6abffb7..7b103bb 100644
        cmd_vdso32as = $(CROSS32CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/powerpc/kernel/vdso64/Makefile b/arch/powerpc/kernel/vdso64/Makefile
-index 8c8f2ae..a743ebe 100644
+index 31107bf..96aded3 100644
 --- a/arch/powerpc/kernel/vdso64/Makefile
 +++ b/arch/powerpc/kernel/vdso64/Makefile
-@@ -36,7 +36,8 @@ $(obj-vdso64): %.o: %.S
+@@ -33,7 +33,8 @@ $(obj)/%.so: $(obj)/%.so.dbg FORCE
  
  # actual build commands
  quiet_cmd_vdso64ld = VDSO64L $@
 -      cmd_vdso64ld = $(CC) $(c_flags) -o $@ -Wl,-T$(filter %.lds,$^) $(filter %.o,$^)
 +      cmd_vdso64ld = $(CC) $(c_flags) -o $@ -Wl,-T$(filter %.lds,$^) $(filter %.o,$^) \
-+		     $(if $(AFTER_LINK),; $(AFTER_LINK))
- quiet_cmd_vdso64as = VDSO64A $@
-       cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
++		    $(if $(AFTER_LINK),; $(AFTER_LINK))
  
+ # install commands for the unstripped file
+ quiet_cmd_vdso_install = INSTALL $@
 diff --git a/arch/s390/kernel/vdso32/Makefile b/arch/s390/kernel/vdso32/Makefile
-index ee8a18e..63e33fa 100644
+index 6cc9478..94fb536 100644
 --- a/arch/s390/kernel/vdso32/Makefile
 +++ b/arch/s390/kernel/vdso32/Makefile
-@@ -43,7 +43,8 @@ $(obj-vdso32): %.o: %.S
+@@ -46,7 +46,8 @@ $(obj-vdso32): %.o: %.S
  
  # actual build commands
  quiet_cmd_vdso32ld = VDSO32L $@
@@ -77,10 +77,10 @@ index ee8a18e..63e33fa 100644
        cmd_vdso32as = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/s390/kernel/vdso64/Makefile b/arch/s390/kernel/vdso64/Makefile
-index c4b03f9..550450f 100644
+index 2d54c18..a0e3e9d 100644
 --- a/arch/s390/kernel/vdso64/Makefile
 +++ b/arch/s390/kernel/vdso64/Makefile
-@@ -43,7 +43,8 @@ $(obj-vdso64): %.o: %.S
+@@ -46,7 +46,8 @@ $(obj-vdso64): %.o: %.S
  
  # actual build commands
  quiet_cmd_vdso64ld = VDSO64L $@
@@ -91,10 +91,10 @@ index c4b03f9..550450f 100644
        cmd_vdso64as = $(CC) $(a_flags) -c -o $@ $<
  
 diff --git a/arch/x86/entry/vdso/Makefile b/arch/x86/entry/vdso/Makefile
-index 265c0ed..fd90c7d 100644
+index d540966..eeb47b6 100644
 --- a/arch/x86/entry/vdso/Makefile
 +++ b/arch/x86/entry/vdso/Makefile
-@@ -159,8 +159,9 @@ $(obj)/vdso32.so.dbg: FORCE \
+@@ -167,8 +167,9 @@ $(obj)/vdso32.so.dbg: FORCE \
  quiet_cmd_vdso = VDSO    $@
        cmd_vdso = $(CC) -nostdlib -o $@ \
  		       $(VDSO_LDFLAGS) $(VDSO_LDFLAGS_$(filter %.lds,$(^F))) \
@@ -107,7 +107,7 @@ index 265c0ed..fd90c7d 100644
  VDSO_LDFLAGS = -fPIC -shared $(call cc-ldoption, -Wl$(comma)--hash-style=both) \
  	$(call cc-ldoption, -Wl$(comma)--build-id) -Wl,-Bsymbolic $(LTO_CFLAGS)
 diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index dacf71a..72cbefd 100755
+index 4f727eb..7f73bee 100755
 --- a/scripts/link-vmlinux.sh
 +++ b/scripts/link-vmlinux.sh
 @@ -65,6 +65,10 @@ vmlinux_link()
@@ -122,5 +122,5 @@ index dacf71a..72cbefd 100755
  
  
 -- 
-2.5.0
+2.7.4
 
