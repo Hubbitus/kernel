@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf4
+%define buildid .hu.2.pf4
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -497,6 +497,9 @@ Source5000: patch-4.%{base_sublevel}-git%{gitrev}.xz
 Source5005: kbuild-AFTER_LINK.patch
 
 %if !%{nopatches}
+
+# Source, not patch! Becuse it applyed manually after Source5000
+Source5002:   bfs497-build_other_arches.patch
 
 # Git trees.
 
@@ -1180,6 +1183,7 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 %if 0%{?gitrev}
     xzcat %{SOURCE5000} | patch -p1 -F1 -s
 %endif
+
 %endif
     git init
     git config user.email "kernel-team@fedoraproject.org"
@@ -1219,6 +1223,8 @@ fi
 %if 0%{?stable_base}
 # This is special because the kernel spec is hell and nothing is consistent
 xzcat %{SOURCE5000} | patch -p1 -F1 -s
+# Hotfix: http://ck.kolivas.org/patches/bfs/4.0/4.7/Pending/bfs497-build_other_arches.patch
+patch -p1 < %{SOURCE5002}
 git commit -a -m "Stable update"
 %endif
 
@@ -2181,6 +2187,9 @@ fi
 #
 #
 %changelog
+* Tue Sep 20 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.2.pf4
+- Add patch1 http://ck.kolivas.org/patches/bfs/4.0/4.7/Pending/bfs497-build_other_arches.patch from Oleksand Natalenko
+
 * Mon Sep 19 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.1.pf4
 - Merge Fedora upstream: kernel 4.7.4.
 - Update pf patch: 4.7-pf4 - https://pf.natalenko.name/news/?p=195
