@@ -1580,7 +1580,7 @@ BuildKernel() {
 
     # Go back and find all of the various directories in the tree.  We use this
     # for the dir lists in kernel-core
-    find lib/modules/$KernelVer/kernel -type d | sort -n > module-dirs.list
+    find lib/modules/$KernelVer/kernel -mindepth 1 -type d | sort -n > module-dirs.list
 
     # Cleanup
     rm System.map
