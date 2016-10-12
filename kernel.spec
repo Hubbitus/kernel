@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -515,8 +515,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch432: bcm283x-vc4-fixes.patch
-
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -600,24 +598,11 @@ Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#rhbz 1200901 (There should be something better upstream at some point)
-Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
-
-#rhbz 1360688
-Patch847: rc-core-fix-repeat-events.patch
-
 #rhbz 1374212
 Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# Fix came in locally
-Patch851: 0001-drivers-net-phy-Correct-duplicate-MDIO_XGENE-entry.patch
-
-# Maybe related to perf build failures?
-Patch852: 0001-Revert-tools-build-Support-compiling-C-source-file.patch
-Patch853: 0002-Revert-tools-build-Add-support-for-host-programs-for.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1660,7 +1645,7 @@ BuildKernel %make_target %kernel_image
 %endif
 
 %global perf_make \
-  make -s EXTRA_CFLAGS="${RPM_OPT_FLAGS}" LDFLAGS="%{__global_ldflags}" %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
+  make -s EXTRA_CFLAGS="${RPM_OPT_FLAGS}" LDFLAGS="%{__global_ldflags}" %{?cross_opts} -C tools/perf V=1 NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT all
@@ -2155,6 +2140,11 @@ fi
 #
 #
 %changelog
+* Wed Oct 12 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git7.1
+- Linux v4.8-14109-g1573d2c
+- Drop the extra parallel build optiosn from perf since perf does that on
+  its own.
+
 * Wed Oct 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Adjust aarch64 config options
 
