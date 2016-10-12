@@ -2155,6 +2155,9 @@ fi
 #
 #
 %changelog
+* Wed Oct 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Adjust aarch64 config options
+
 * Tue Oct 11 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git6.2
 - Revert possible commits causing perf build failures
 
