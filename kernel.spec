@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %define rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2142,6 +2142,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 13 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git8.1
+- Linux v4.8-14230-gb67be92
+
 * Wed Oct 12 2016 Laura Abbott <labbott@redhat.com>
 - Add script to remove binary diffs
 
