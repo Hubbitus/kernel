@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Sat Oct 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in AXP20X_I2C (should fix rhbz 1352140)
+
 * Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - update baserelease for Fedora 25
 
