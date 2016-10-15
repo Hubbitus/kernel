@@ -2144,6 +2144,7 @@ fi
 %changelog
 * Sat Oct 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config cleanups
+- Re-enable omap-aes as should now be fixed
 
 * Fri Oct 14 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc0.git9.1
 - Linux v4.8-14604-g29fbff8
