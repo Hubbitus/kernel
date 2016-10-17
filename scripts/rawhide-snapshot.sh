@@ -23,13 +23,24 @@ if [ ! -d "$LINUX_GIT" ]; then
 	exit 1
 fi
 
-pushd $LINUX_GIT
-git pull
+git -C $LINUX_GIT pull
 if [ ! $? -eq 0 ]; then
 	echo "Git pull failed. Is your tree clean/correct?"
 	exit 1
 fi
-popd
+
+git -C $LINUX_GIT describe --tags HEAD | grep -q "\-g"
+if [ ! $? -eq 0 ]; then
+	echo "Trying to snapshot off of a tagged git."
+	echo "I don't think this is what you want"
+	exit 1
+fi
+
+if [ "$(git -C $LINUX_GIT rev-parse origin/master)" == `cat gitrev` ]; then
+	echo "Last snapshot commit matches current master. Nothing to do"
+	echo "\o/"
+	exit 0
+fi
 
 GIT=`grep "%define gitrev" kernel.spec | cut -d ' ' -f 3`
 if [ "$GIT" -eq 0 ]; then
