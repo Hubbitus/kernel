@@ -1,4 +1,4 @@
-From 3fbd61fbbbfa7ae15cd3f3e2ff7a97e106be2b43 Mon Sep 17 00:00:00 2001
+From 973e23bf27b0b2e5021321357fc570cccea3104c Mon Sep 17 00:00:00 2001
 From: Dave Anderson <anderson@redhat.com>
 Date: Tue, 26 Nov 2013 12:42:46 -0500
 Subject: [PATCH] crash-driver
@@ -149,19 +149,16 @@ index 0000000..404bcb9
 +
 +#endif /* _ASM_IA64_CRASH_H */
 diff --git a/arch/ia64/kernel/ia64_ksyms.c b/arch/ia64/kernel/ia64_ksyms.c
-index 0967310..e888878 100644
+index d111248..b14b4c6 100644
 --- a/arch/ia64/kernel/ia64_ksyms.c
 +++ b/arch/ia64/kernel/ia64_ksyms.c
-@@ -84,6 +84,9 @@ EXPORT_SYMBOL(ia64_save_scratch_fpregs);
- #include <asm/unwind.h>
- EXPORT_SYMBOL(unw_init_running);
- 
+@@ -9,3 +9,6 @@
+ EXPORT_SYMBOL(min_low_pfn);	/* defined by bootmem.c, but not exported by generic code */
+ EXPORT_SYMBOL(max_low_pfn);	/* defined by bootmem.c, but not exported by generic code */
+ #endif
++
 +#include <linux/efi.h>
 +EXPORT_SYMBOL_GPL(efi_mem_type);
-+
- #if defined(CONFIG_IA64_ESI) || defined(CONFIG_IA64_ESI_MODULE)
- extern void esi_call_phys (void);
- EXPORT_SYMBOL_GPL(esi_call_phys);
 diff --git a/arch/powerpc/include/asm/crash-driver.h b/arch/powerpc/include/asm/crash-driver.h
 new file mode 100644
 index 0000000..50092d9
@@ -270,7 +267,7 @@ index 0000000..fd4736e
 +
 +#endif /* _X86_CRASH_H */
 diff --git a/drivers/char/Kconfig b/drivers/char/Kconfig
-index fdb8f3e..7dd3a49 100644
+index dcc0973..99b99d5 100644
 --- a/drivers/char/Kconfig
 +++ b/drivers/char/Kconfig
 @@ -4,6 +4,9 @@
@@ -284,10 +281,10 @@ index fdb8f3e..7dd3a49 100644
  
  config DEVMEM
 diff --git a/drivers/char/Makefile b/drivers/char/Makefile
-index 55d16bf..a40ace9 100644
+index 6e6c244..29cc9c8 100644
 --- a/drivers/char/Makefile
 +++ b/drivers/char/Makefile
-@@ -61,3 +61,5 @@ js-rtc-y = rtc.o
+@@ -60,3 +60,5 @@ js-rtc-y = rtc.o
  obj-$(CONFIG_TILE_SROM)		+= tile-srom.o
  obj-$(CONFIG_XILLYBUS)		+= xillybus/
  obj-$(CONFIG_POWERNV_OP_PANEL)	+= powernv-op-panel.o
@@ -506,9 +503,9 @@ index 0000000..25ab986
 +
 +#endif /* __CRASH_H__ */
 -- 
-2.9.2
+2.7.4
 
-From 7523c19e1d22fbabeaeae9520c16a78202c0eefe Mon Sep 17 00:00:00 2001
+From 23d8bd48303acda2d3a95a3e1a662784a4fa9fcd Mon Sep 17 00:00:00 2001
 From: Fedora Kernel Team <kernel-team@fedoraproject.org>
 Date: Tue, 20 Sep 2016 19:39:46 +0200
 Subject: [PATCH] Update of crash driver to handle CONFIG_HARDENED_USERCOPY and
@@ -601,5 +598,5 @@ index 085378a..0258bf8 100644
  
  static struct miscdevice crash_dev = {
 -- 
-2.9.3
+2.7.4
 
