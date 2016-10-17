@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 1
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -597,6 +597,8 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
+
+Patch504: i8042-skip-selftest-asus-laptops.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
@@ -2163,6 +2165,10 @@ fi
 #
 #
 %changelog
+* Mon Oct 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.2-300
+- Linux v4.8.2
+- i8042 - skip selftest on ASUS laptops 
+
 * Sat Oct 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build in AXP20X_I2C (should fix rhbz 1352140)
 

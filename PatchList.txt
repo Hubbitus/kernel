@@ -76,3 +76,4 @@ firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 drm-i915-turn-off-wc-mmaps.patch
 
+i8042-skip-selftest-asus-laptops.patch
