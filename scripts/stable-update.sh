@@ -59,16 +59,9 @@ awk -v STABLE=$SUBLEVEL '/%define stable_update/ \
 			< kernel.spec > kernel.spec.tmp
 mv kernel.spec.tmp kernel.spec
 
-# Add the changelog entry. Ideally we would get rpmdev-bumpspec to do so
-# but that also bumps the release which we don't want so do this manually
-# for now
+# Reset the base release for use with rpmdev-bumpspec
+BASERELEASE=`cat kernel.spec | grep "%global baserelease" | cut -d ' ' -f 3 | head -c 1`00
+BASERELEASE=$(($BASERELEASE-1))
+BASERELEASE=$BASERELEASE perl -p -i -e 's|%global baserelease.*|%global baserelease $ENV{'BASERELEASE'}|' kernel.spec
 
-BASERELEASE=`cat kernel.spec | grep "%global baserelease" | cut -d ' ' -f 3`
-CURDATE=`date +"%a %b %d %Y"`
-PACKAGER=`rpmdev-packager`
-CHANGELOG="%changelog\n* $CURDATE $PACKAGER - $1\n- Linux v$1\n"
-
-awk -v CHANGE="$CHANGELOG" '/%changelog/ {print CHANGE } \
-			!/%changelog/ { print $0 }' \
-			< kernel.spec > kernel.spec.tmp
-mv kernel.spec.tmp kernel.spec
+rpmdev-bumpspec -c "Linux v$1" kernel.spec
