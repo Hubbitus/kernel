@@ -2165,6 +2165,9 @@ fi
 #
 #
 %changelog
+* Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable ACPI_CPPC_CPUFREQ on aarch64
+
 * Mon Oct 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.2-300
 - Linux v4.8.2
 - i8042 - skip selftest on ASUS laptops 
