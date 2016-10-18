@@ -2142,6 +2142,9 @@ fi
 #
 #
 %changelog
+* Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable ACPI_CPPC_CPUFREQ on aarch64
+
 * Tue Oct 18 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc1.git1.1
 - Linux v4.9-rc1-3-g14155ca
 
