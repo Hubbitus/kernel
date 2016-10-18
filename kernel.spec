@@ -520,6 +520,8 @@ Patch431: bcm2837-initial-support.patch
 
 Patch432: bcm283x-vc4-fixes.patch
 
+Patch433: AllWinner-net-emac.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2167,6 +2169,7 @@ fi
 %changelog
 * Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable ACPI_CPPC_CPUFREQ on aarch64
+- Add ethernet driver for AllWinner sun8i-emac (H3/OrangePi and Pine64)
 
 * Mon Oct 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.2-300
 - Linux v4.8.2
