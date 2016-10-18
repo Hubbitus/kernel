@@ -595,6 +595,8 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
+Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
+
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
@@ -603,6 +605,9 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+#rhbz 1384701
+Patch850: 0001-arm64-kernel-numa-fix-ACPI-boot-cpu-numa-node-mappin.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2142,6 +2147,10 @@ fi
 #
 #
 %changelog
+* Tue Oct 18 2016 Laura Abbott <labbott@redhat.com>
+- Gracefully bail out of secureboot when EFI runtime is disabled
+- Fix for aarch64 boot regression (rhbz 1384701)
+
 * Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable ACPI_CPPC_CPUFREQ on aarch64
 
