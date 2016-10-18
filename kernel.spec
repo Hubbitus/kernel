@@ -629,6 +629,13 @@ Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
 #rhbz 1366842
 Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
 
+# Fix memory corruption caused by p8_ghash
+Patch852: 0001-crypto-ghash-generic-move-common-definitions-to-a-ne.patch
+Patch853: 0001-crypto-vmx-Fix-memory-corruption-caused-by-p8_ghash.patch
+
+#rhbz 1384606
+Patch854: 0001-Make-__xfs_xattr_put_listen-preperly-report-errors.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2165,6 +2172,10 @@ fi
 #
 #
 %changelog
+* Tue Oct 18 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix memory corruption caused by p8_ghash
+- Make __xfs_xattr_put_listen preperly report errors (rhbz 1384606)
+
 * Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable ACPI_CPPC_CPUFREQ on aarch64
 
