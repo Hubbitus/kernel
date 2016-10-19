@@ -1,7 +1,20 @@
-From 23339319c91c79986976381d4cea75f6608dee68 Mon Sep 17 00:00:00 2001
+From patchwork Mon Oct 17 14:56:49 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2] arm64: kernel: numa: fix ACPI boot cpu numa node mapping
 From: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Date: Mon, 17 Oct 2016 15:18:48 +0100
-Subject: [PATCH] arm64: kernel: numa: fix ACPI boot cpu numa node mapping
+X-Patchwork-Id: 9379531
+Message-Id: <20161017145649.6189-1-lorenzo.pieralisi@arm.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Andrew Jones <drjones@redhat.com>,
+ Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Will Deacon <will.deacon@arm.com>, 
+ linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+ Hanjun Guo <hanjun.guo@linaro.org>,
+ Zhen Lei <thunder.leizhen@huawei.com>, Laszlo Ersek <lersek@redhat.com>
+Date: Mon, 17 Oct 2016 15:56:49 +0100
 
 Commit 7ba5f605f3a0 ("arm64/numa: remove the limitation that cpu0 must
 bind to node0") removed the numa cpu<->node mapping restriction whereby
@@ -9,8 +22,8 @@ logical cpu 0 always corresponds to numa node 0; removing the
 restriction was correct, in that it does not really exist in practice
 but the commit only updated the early mapping of logical cpu 0 to its
 real numa node for the DT boot path, missing the ACPI one, leading to
-boot failures on ACPI systems with numa enabled owing to missing
-node<->cpu map for logical cpu 0.
+boot failures on ACPI systems owing to missing cpu<->node map for
+logical cpu 0.
 
 Fix the issue by updating the ACPI boot path with code that carries out
 the early cpu<->node mapping also for the boot cpu (ie cpu 0), mirroring
@@ -26,7 +39,11 @@ Cc: Hanjun Guo <hanjun.guo@linaro.org>
 Cc: Andrew Jones <drjones@redhat.com>
 Cc: Zhen Lei <thunder.leizhen@huawei.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
+Acked-by: Hanjun Guo <hanjun.guo@linaro.org>
 ---
+v1 -> v2
+	- Updated commit log to reflect boot failures set-ups
+ 
  arch/arm64/kernel/smp.c | 1 +
  1 file changed, 1 insertion(+)
 
@@ -42,6 +59,3 @@ index d3f151c..8507703 100644
  		return;
  	}
  
--- 
-2.7.4
-

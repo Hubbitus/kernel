@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2147,6 +2147,11 @@ fi
 #
 #
 %changelog
+* Wed Oct 19 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc1.git2.1
+- Linux v4.9-rc1-67-g1a1891d
+- Switch to v2 of the aarch64 boot regression patch
+- Enable CONFIG_LEDS_MLXCPLD per request on mailing list
+
 * Tue Oct 18 2016 Laura Abbott <labbott@redhat.com>
 - Gracefully bail out of secureboot when EFI runtime is disabled
 - Fix for aarch64 boot regression (rhbz 1384701)
