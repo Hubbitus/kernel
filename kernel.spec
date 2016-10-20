@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 1
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -605,9 +605,6 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-#rhbz 1384701
-Patch850: 0001-arm64-kernel-numa-fix-ACPI-boot-cpu-numa-node-mappin.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2147,6 +2144,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.9.0-0.rc1.git3.1
+- Linux v4.9-rc1-145-gf4814e6
+
 * Wed Oct 19 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc1.git2.1
 - Linux v4.9-rc1-67-g1a1891d
 - Switch to v2 of the aarch64 boot regression patch
