@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -634,9 +634,6 @@ Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
 # Fix memory corruption caused by p8_ghash
 Patch852: 0001-crypto-ghash-generic-move-common-definitions-to-a-ne.patch
 Patch853: 0001-crypto-vmx-Fix-memory-corruption-caused-by-p8_ghash.patch
-
-#rhbz 1384606
-Patch854: 0001-Make-__xfs_xattr_put_listen-preperly-report-errors.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2174,6 +2171,10 @@ fi
 #
 #
 %changelog
+* Thu Oct 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.3-300
+- Linux v4.8.3
+- CVE-2016-5195 (rhbz 1384344 1387080)
+
 * Tue Oct 18 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix memory corruption caused by p8_ghash
 - Make __xfs_xattr_put_listen preperly report errors (rhbz 1384606)
