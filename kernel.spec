@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.2.pf4
+%define buildid .hu.1.pf1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -42,20 +42,20 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 7
+%define base_sublevel 8
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.7.4 v4.7-pf4: https://pf.natalenko.name/news/?p=195
-%define stable_update 4
+#+Hu Pf against 4.8.0 v4.8-pf1: https://pf.natalenko.name/news/?p=204
+%define stable_update 1
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -377,12 +377,12 @@ Requires: kernel-modules-uname-r = %{KVERREL}%{?variant}
 BuildRequires: kmod, patch, bash, sh-utils, tar, git
 BuildRequires: bzip2, xz, findutils, gzip, m4, perl, perl-Carp, perl-devel, perl-generators, make, diffutils, gawk
 BuildRequires: gcc, binutils, redhat-rpm-config, hmaccalc
-BuildRequires: net-tools, hostname, bc
+BuildRequires: net-tools, hostname, bc, elfutils-devel
 %if %{with_sparse}
 BuildRequires: sparse
 %endif
 %if %{with_perf}
-BuildRequires: elfutils-devel zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
+BuildRequires: zlib-devel binutils-devel newt-devel python-devel perl(ExtUtils::Embed) bison flex xz-devel
 BuildRequires: audit-libs-devel
 %ifnarch s390 s390x %{arm}
 BuildRequires: numactl-devel
@@ -471,8 +471,8 @@ Source2001: cpupower.config
 # For a stable release kernel
 %if 0%{?stable_update}
 %if 0%{?stable_base}
-# %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.7/patch-4.7-pf4.xz
+#*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf1.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -498,20 +498,22 @@ Source5005: kbuild-AFTER_LINK.patch
 
 %if !%{nopatches}
 
-# Source, not patch! Becuse it applyed manually after Source5000
-Source5002:   bfs497-build_other_arches.patch
-
 # Git trees.
 
 # Standalone patches
 
-Patch420: arm64-avoid-needing-console-to-enable-serial-console.patch
+# http://www.spinics.net/lists/arm-kernel/msg523359.html
+Patch420: arm64-ACPI-parse-SPCR-table.patch
+
+# a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
+Patch421: qcom-QDF2432-tmp-errata.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
-Patch424: arm64-pcie-acpi.patch
-Patch425: arm64-pcie-quirks-xgene.patch
+# http://www.spinics.net/lists/linux-pci/msg53991.html
+# https://patchwork.kernel.org/patch/9337113/
+Patch425: arm64-pcie-quirks.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
@@ -521,7 +523,7 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch432: arm-i.MX6-Utilite-device-dtb.patch
+Patch432: bcm283x-vc4-fixes.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -584,7 +586,8 @@ Patch494: disable-i8042-check-on-apple-mac.patch
 
 Patch495: lis3-improve-handling-of-null-rate.patch
 
-Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
+# In theory this has been fixed so should no longer be needed, it also causes problems with aarch64 DMI, so disable to see for sure if it's fixed
+# Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 Patch497: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -602,54 +605,32 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
-#Required for some persistent memory options
-Patch641: disable-CONFIG_EXPERT-for-ZONE_DMA.patch
-
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
-#skl_update_other_pipe_wm issue patch-series from drm-next, rhbz 1305038
-Patch801: 0001-drm-i915-Reorganize-WM-structs-unions-in-CRTC-state.patch
-Patch802: 0002-drm-i915-Rename-s-skl_compute_pipe_wm-skl_build_pipe.patch
-Patch803: 0003-drm-i915-gen9-Cache-plane-data-rates-in-CRTC-state.patch
-Patch804: 0004-drm-i915-gen9-Allow-calculation-of-data-rate-for-in-.patch
-Patch805: 0005-drm-i915-gen9-Store-plane-minimum-blocks-in-CRTC-wm-.patch
-Patch806: 0006-drm-i915-Track-whether-an-atomic-transaction-changes.patch
-Patch807: 0007-drm-i915-gen9-Allow-skl_allocate_pipe_ddb-to-operate.patch
-Patch808: 0008-drm-i915-Add-distrust_bios_wm-flag-to-dev_priv-v2.patch
-Patch809: 0009-drm-i915-gen9-Compute-DDB-allocation-at-atomic-check.patch
-Patch810: 0010-drm-i915-gen9-Drop-re-allocation-of-DDB-at-atomic-co.patch
-Patch811: 0011-drm-i915-gen9-Calculate-plane-WM-s-from-state.patch
-Patch812: 0012-drm-i915-gen9-Allow-watermark-calculation-on-in-flig.patch
-Patch813: 0013-drm-i915-gen9-Use-a-bitmask-to-track-dirty-pipe-wate.patch
-Patch814: 0014-drm-i915-gen9-Propagate-watermark-calculation-failur.patch
-Patch815: 0015-drm-i915-gen9-Calculate-watermarks-during-atomic-che.patch
-Patch816: 0016-drm-i915-gen9-Reject-display-updates-that-exceed-wm-.patch
-Patch817: 0017-drm-i915-Remove-wm_config-from-dev_priv-intel_atomic.patch
+#rhbz 1200901 (There should be something better upstream at some point)
+Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
 
-#rhbz 1353558
-Patch844: 0001-selinux-Only-apply-bounds-checking-to-source-types.patch
+# From kernel list, currently in linux-next
+Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
 
-#rhbz 1365940
-Patch856: 0001-udp-fix-poll-issue-with-zero-sized-packets.patch
-
-#rhbz 13700161
-Patch857: kernel-panic-TPROXY-vanilla-4.7.1.patch
-
-# lkml.kernel.org/r/<20160822093249.GA14916@dhcp22.suse.cz>
-Patch858: 0001-OOM-detection-regressions-since-4.7.patch
+# SELinux OverlayFS support (queued for 4.9)
+Patch846: security-selinux-overlayfs-support.patch
 
 #rhbz 1360688
-Patch859: rc-core-fix-repeat-events.patch
-
-#rhbz 1350174
-Patch862: tip-x86-boot-x86-KASLR-x86-power-Remove-x86-hibernation-restrictions.patch
+Patch847: rc-core-fix-repeat-events.patch
 
 #rhbz 1374212
-Patch863: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
+Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
-Patch864: 0001-iio-Use-event-header-from-kernel-tree.patch
+Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+#CVE-2016-7425 rhbz 1377330 1377331
+Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
+
+#rhbz 1366842
+Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -659,10 +640,6 @@ BuildRoot: %{_tmppath}/kernel-%{KVERREL}-root
 
 %description
 The kernel meta package
-
-Hubbitus patched fork of Fedora Kernel (https://github.com/Hubbitus/kernel/).
-Post-factum (https://pf.natalenko.name/) branch.
-Binaries could be found at: http://hubbitus.info/wiki/Repository
 
 #
 # This macro does requires, provides, conflicts, obsoletes for a kernel package.
@@ -831,7 +808,7 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|.*%%{_bindir}/iio_event_monitor(\.debug)?|.*%%{_bindir}/iio_generic_buffer(\.debug)?|.*%%{_bindir}/lsiio(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
 
 %endif # with_tools
 
@@ -1001,7 +978,7 @@ on kernel bugs, as some of these options impact performance noticably.
 # And finally the main -core package
 
 %define variant_summary The Linux kernel
-%kernel_variant_package 
+%kernel_variant_package
 %description core
 The kernel package contains the Linux kernel (vmlinuz), the core of any
 Linux operating system.  The kernel handles the basic functions
@@ -1223,8 +1200,8 @@ fi
 %if 0%{?stable_base}
 # This is special because the kernel spec is hell and nothing is consistent
 xzcat %{SOURCE5000} | patch -p1 -F1 -s
-# Hotfix: http://ck.kolivas.org/patches/bfs/4.0/4.7/Pending/bfs497-build_other_arches.patch
-patch -p1 < %{SOURCE5002}
+#+Hu: Place for manual hotfixes!
+#patch -p1 < %%{SOURCE5002}
 git commit -a -m "Stable update"
 %endif
 
@@ -1329,7 +1306,7 @@ cd ..
 # This affects the vDSO images in vmlinux, and the vmlinux image in bzImage.
 export AFTER_LINK=\
 'sh -xc "/usr/lib/rpm/debugedit -b $$RPM_BUILD_DIR -d /usr/src/debug \
-    				-i $@ > $@.id"'
+                                -i $@ > $@.id"'
 %endif
 
 cp_vmlinux()
@@ -1426,7 +1403,7 @@ BuildKernel() {
     mv vmlinuz.signed $KernelImage
     %endif
     $CopyKernel $KernelImage \
-    		$RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
+                $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     chmod 755 $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer
     cp $RPM_BUILD_ROOT/%{image_install_path}/$InstallName-$KernelVer $RPM_BUILD_ROOT/lib/modules/$KernelVer/$InstallName
 
@@ -1577,13 +1554,13 @@ BuildKernel() {
     }
 
     collect_modules_list networking \
-    			 'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
+      'register_netdev|ieee80211_register_hw|usbnet_probe|phy_driver_register|rt(l_|2x00)(pci|usb)_probe|register_netdevice'
     collect_modules_list block \
-    			 'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_alloc_queue|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size' 'pktcdvd.ko|dm-mod.ko'
+      'ata_scsi_ioctl|scsi_add_host|scsi_add_host_with_dma|blk_alloc_queue|blk_init_queue|register_mtd_blktrans|scsi_esp_register|scsi_register_device_handler|blk_queue_physical_block_size' 'pktcdvd.ko|dm-mod.ko'
     collect_modules_list drm \
-    			 'drm_open|drm_init'
+      'drm_open|drm_init'
     collect_modules_list modesetting \
-    			 'drm_crtc_init'
+      'drm_crtc_init'
 
     # detect missing or incorrect license tags
     ( find $RPM_BUILD_ROOT/lib/modules/$KernelVer -name '*.ko' | xargs /sbin/modinfo -l | \
@@ -1614,9 +1591,9 @@ BuildKernel() {
     # Find all the module files and filter them out into the core and modules
     # lists.  This actually removes anything going into -modules from the dir.
     find lib/modules/$KernelVer/kernel -name *.ko | sort -n > modules.list
-	cp $RPM_SOURCE_DIR/filter-*.sh .
+    cp $RPM_SOURCE_DIR/filter-*.sh .
     %{SOURCE99} modules.list %{_target_cpu}
-	rm filter-*.sh
+    rm filter-*.sh
 
     # Run depmod on the resulting module tree and make sure it isn't broken
     depmod -b . -aeF ./System.map $KernelVer &> depmod.out
@@ -1735,6 +1712,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
 pushd tools/thermal/tmon/
 %{make}
 popd
+pushd tools/iio/
+%{make}
+popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1818,7 +1798,7 @@ make ARCH=%{hdrarch} INSTALL_HDR_PATH=$RPM_BUILD_ROOT/usr headers_install
 
 find $RPM_BUILD_ROOT/usr/include \
      \( -name .install -o -name .check -o \
-     	-name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
+        -name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
 
 %endif
 
@@ -1828,7 +1808,7 @@ make ARCH=%{hdrarch} INSTALL_HDR_PATH=$RPM_BUILD_ROOT/usr/tmp-headers headers_in
 
 find $RPM_BUILD_ROOT/usr/tmp-headers/include \
      \( -name .install -o -name .check -o \
-     	-name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
+        -name ..install.cmd -o -name ..check.cmd \) | xargs rm -f
 
 # Copy all the architectures we care about to their respective asm directories
 for arch in arm arm64 powerpc s390 x86 ; do
@@ -1900,6 +1880,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
    popd
 %endif #turbostat/x86_energy_perf_policy
 pushd tools/thermal/tmon
+make INSTALL_ROOT=%{buildroot} install
+popd
+pushd tools/iio
 make INSTALL_ROOT=%{buildroot} install
 popd
 %endif
@@ -2093,6 +2076,9 @@ fi
 %{_mandir}/man8/turbostat*
 %endif
 %{_bindir}/tmon
+%{_bindir}/iio_event_monitor
+%{_bindir}/iio_generic_buffer
+%{_bindir}/lsiio
 %endif
 
 %if %{with_debuginfo}
@@ -2187,15 +2173,88 @@ fi
 #
 #
 %changelog
-* Tue Sep 20 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.2.pf4
-- Add patch1 http://ck.kolivas.org/patches/bfs/4.0/4.7/Pending/bfs497-build_other_arches.patch from Oleksand Natalenko
+* Tue Oct 11 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.0-1.hu.1.pf1
+- Step to build kernels for Fedora 25.
+- Use new pf patch v4.8-pf1 - https://pf.natalenko.name/news/?p=204
 
-* Mon Sep 19 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.1.pf4
-- Merge Fedora upstream: kernel 4.7.4.
-- Update pf patch: 4.7-pf4 - https://pf.natalenko.name/news/?p=195
+* Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- update baserelease for Fedora 25
 
-* Thu Sep 15 2016 Laura Abbott <labbott@fedoraproject.org> - 4.7.4-200
-- Linux v4.7.4
+* Fri Oct 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.1-1
+- Linux v4.8.1
+
+* Tue Oct 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch to fix Xorg starting with virtio (rhbz 1366842)
+
+* Mon Oct 03 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-1
+- Disable debugging options.
+- Linux v4.8
+
+* Sun Oct  2 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config cleanups, some minor general cleanups
+- Some bcm283x VC4 fixes for Raspberry Pi
+
+* Fri Sep 30 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git3.1
+- Linux v4.8-rc8-28-g9a2172a
+
+* Thu Sep 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git2.1
+- Linux v4.8-rc8-13-g53061af
+
+* Wed Sep 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git1.1
+- Linux v4.8-rc8-8-gae6dd8d
+- Reenable debugging options.
+
+* Mon Sep 26 2016 Laura Abbott <labbott@fedoraproject.org>
+- Enable CONFIG_DEBUG_MODULE_RONX for arm targets
+
+* Mon Sep 26 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc8.git0.1
+- Linux v4.8-rc8
+- Disable debugging options.
+
+* Sun Sep 25 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Updates to crash driver from Dave Anderson
+
+* Fri Sep 23 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git4.1
+- Linux v4.8-rc7-158-g78bbf15
+
+* Thu Sep 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git3.1
+- Linux v4.8-rc7-142-gb1f2beb
+
+* Wed Sep 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git2.1
+- Linux v4.8-rc7-42-g7d1e042
+
+* Tue Sep 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git1.1
+- Linux v4.8-rc7-37-gd2ffb01
+- Reenable debugging options.
+
+#* Tue Sep 20 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.2.pf4
+#- Add patch1 http://ck.kolivas.org/patches/bfs/4.0/4.7/Pending/bfs497-build_other_arches.patch from Oleksand Natalenko
+
+#* Mon Sep 19 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.4-200.hu.1.pf4
+#- Merge Fedora upstream: kernel 4.7.4.
+#- Update pf patch: 4.7-pf4 - https://pf.natalenko.name/news/?p=195
+
+* Mon Sep 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc7.git0.1
+- Linux v4.8-rc7
+- Disable debugging options.
+- CVE-2016-7425 SCSI arcmsr buffer overflow (rhbz 1377330 1377331)
+
+* Sat Sep 17 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable CPU IDLE on ARMv7
+- Tweak big.LITTLE on ARMv7
+- Update ARM64 pci-e quicks to latest upstream, update x-gene quirks patch
+
+* Fri Sep 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git4.1
+- Linux v4.8-rc6-231-g024c7e3
+
+* Thu Sep 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git3.1
+- Linux v4.8-rc6-214-g4cea877
+
+* Thu Sep 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch for bcm2837 (RPi3) HDMI EDID detection
+
+* Wed Sep 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git2.1
+- Linux v4.8-rc6-211-g77e5bdf
 
 * Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for incorrect return checking in cpupower (rhbz 1374212)
@@ -2205,111 +2264,285 @@ fi
 - Pull Fedora updates to kernel 4.7.3.
 - Update pf patch to v4.7-pf3 (https://pf.natalenko.name/news/?p=193)
 
-* Wed Sep 07 2016 <labbott@fedoraproject.org> - 4.7.3-200
-- Linux v4.7.3
-- Silence KASLR warning (rhbz 1350174)
+* Tue Sep 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git1.1
+- Linux v4.8-rc6-147-ge8988e0
+- Reenable debugging options.
 
-* Mon Sep 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.2-201.hu.1.pf2
-- Step to build kernels for Fedora 24.
-- Update patch to 4.7-pf2 - https://pf.natalenko.name/news/?p=190
-- Merge Fedora 24 origin changes. Rebase and adjust some pathces.
-- Add CONFIG_BFQ_GROUP_IOSCHED=y config option (http://techpatterns.com/forums/about2517.html).
+* Mon Sep 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git0.1
+- Linux v4.8-rc6
+- Disable debugging options.
 
-* Fri Sep 02 2016 <labbott@fedoraproject.org>
-- Add fix for known cgroup deadlock
+* Sat Sep 10 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config tweaks
+
+* Fri Sep 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git4.1
+- Linux v4.8-rc5-176-gd0acc7d
+
+* Thu Sep 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git3.1
+- Linux v4.8-rc5-129-g711bef6
+
+* Thu Sep  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable some popular audio addon drivers
+
+* Wed Sep 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git2.1
+- Linux v4.8-rc5-62-gd060e0f
+- Reenable debugging options.
+
+* Tue Sep 06 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc5.git1.1
+- Linux v4.8-rc5-5-gbc4dee5
+- Disable debugging options.
+
+* Sun Sep  4 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Use IIO BMP280 driver instead of old misc driver, wider HW support
+- Minor sensor driver changes
+- Disable omap_aes currently broken
+
+* Fri Sep 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git4.1
+- Linux v4.8-rc4-199-gcc4163d
+
+* Thu Sep 01 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git3.1
+- Linux v4.8-rc4-162-g071e31e
+
+* Wed Aug 31 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git2.1
+- Linux v4.8-rc4-155-g86a1679
+
+* Tue Aug 30 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git1.1
+- Linux v4.8-rc4-119-ge4e98c4
 
 * Mon Aug 29 2016 Laura Abbott <labbott@fedoraproject.org>
 - Add event decoding fix (rhbz 1360688)
-- Add fix for NFS client issue (rhbz 1371237)
+
+* Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Reenable debugging options.
+- Add SELinux OverlayFS support.
+
+* Mon Aug 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc4.git0.1
+- Disable debugging options.
+- Linux v4.8-rc4
 
 * Sun Aug 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM updates
 
-* Fri Aug 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.2-201
-- Bump and build
+* Thu Aug 25 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git2.1
+- Linux v4.8-rc3-39-g61c0457
 
-* Thu Aug 25 2016 Laura Abbott <labbott@fedoraproject.org>
-- Fix for TPROXY panic (rhbz 1370061)
-- Fix for known OOM regression
+* Wed Aug 24 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Config updates and fixes for ARMv7 platforms
 
-* Tue Aug 23 2016 Laura Abbott <labbot@fedoraproject.org>
+* Wed Aug 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git1.1
+- Linux v4.8-rc3-26-gcad9d20
+- Reenable debugging options.
+- Fix keyboard input for some devices (rhbz 1366224)
+
+* Tue Aug 23 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for inabiltiy to send zero sized UDP packets (rhbz 1365940)
 
-* Tue Aug 23 2016 Justin M. Forbes <jforbes@fedoraproject.org>
-- CVE-2016-6480 aacraid: Check size values after double-fetch from user (rhbz 1362466 1362467)
+* Tue Aug 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Qualcomm QDF2432 errata fix
+- Move to upstream patches for ACPI SPCR (serial console)
+- Adjust max CPUs on ARM platforms to reflect newer real world hardware
 
-* Mon Aug 22 2016 Laura Abbott <labbott@redhat.com> - 4.7.2-200
-- Linux v4.7.2
+* Mon Aug 22 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc3.git0.1
+- Linux v4.8-rc3
+- Disable debugging options.
 
-* Wed Aug 17 2016 Laura Abbott <labbott@fedoraproject.org> - 4.7.1-200
-- Linux v4.7.1
+* Sat Aug 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add fix for RTC crash on ARMv7 am33xx devices
 
-* Wed Aug 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.7-300
-- tcp fix use after free in tcp_xmit_retransmit_queue (rhbz 1367091 1367092)
+* Fri Aug 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git4.1
+- Linux v4.8-rc2-348-g6040e57
 
-* Tue Aug 16 2016 Laura Abbott <labbott@fedoraproject.org>
-- Linux v4.6.7
+* Fri Aug 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git3.1
+- Linux v4.8-rc2-232-g3408fef
+
+* Fri Aug 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor Tegra changes
+
+* Wed Aug 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git2.1
+- Linux v4.8-rc2-42-g5ff132c
+- CVE-2016-6828 tcp fix use after free in tcp_xmit_retransmit_queue (rhbz 1367091 1367092)
+
+* Tue Aug 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git1.1
+- Linux v4.8-rc2-17-gae5d68b
+- Add patch for qxl cursor bug (rhbz 1200901)
+- Reenable debugging options.
+
+* Mon Aug 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc2.git0.1
+- Linux v4.8-rc2
+- Disable debugging options.
+
+* Fri Aug 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git5.1
+- Linux v4.8-rc1-166-g9909170
+
+* Thu Aug 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git4.1
+- Linux v4.8-rc1-88-g3b3ce01
 
 * Thu Aug 11 2016 Laura Abbott <labbott@fedoraproject.org>
-- Fix for crash seen with Open Stack (rhbz 1361414)
+- Fix for crash seen with open stack (rhbz 1361414)
 
-* Wed Aug 10 2016 Laura Abbott <labbott@fedoraproject.org> - 4.6.6-300
-- Linux v4.6.6
+* Thu Aug 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+- Disable long running watchdog in VM patch (in theory fixed)
+- Enable NUMA on aarch64
+- Enable Cavium ThunderX
+- Enable Atmel i2c TPM on ARM platforms
+
+* Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git3.1
+- Linux v4.8-rc1-70-g9512c47
+
+* Wed Aug 10 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix false positive VM_BUG() in page_add_file_rmap (rhbz 1365686)
+
+* Wed Aug 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git2.1
+- Linux v4.8-rc1-53-ga0cba21
+
+* Tue Aug 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git1.1
+- Linux v4.8-rc1-19-g81abf25
+- Reenable debugging options.
 
 * Mon Aug 08 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Build CONFIG_POWERNV_CPUFREQ in on ppc64* (rhbz 1351346)
+
+* Mon Aug 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc1.git0.1
+- Linux v4.8-rc1
+- Disable debugging options.
+
+* Fri Aug 05 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git7.1
+- Linux v4.7-11891-gdd7fd3a
+
+* Thu Aug 04 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git6.1
+- Linux v4.7-11544-g96b5852
+
+* Wed Aug 03 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git5.1
+- Linux v4.7-11470-gd52bd54
 
 * Tue Aug  2 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Sync skylake hdaudio __unclaimed_reg WARN_ON fix with latest upstream version
 - Drop drm-i915-skl-Add-support-for-the-SAGV-fix-underrun-hangs.patch for now
 
+* Tue Aug 02 2016 Laura Abbott <labbott@redhat.com> - 4.8.0-0.rc0.git4.1
+- Linux v4.7-10753-g731c7d3
+
+* Fri Jul 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git3.1
+- Linux v4.7-6438-gc624c86
+
+* Fri Jul 29 2016 Bastien Nocera <bnocera@redhat.com>
+- Add touchscreen and pen driver for the Surface 3
+- Add CrystalCove PWM support, for CherryTrail devices
+
+* Thu Jul 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc0.git2.1
+- Linux v4.7-5906-g194dc87
+
 * Thu Jul 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-5412 powerpc: kvm: Infinite loop in HV mode (rhbz 1349916 1361040)
 
-* Thu Jul 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Thu Jul 28 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.0-0.rc0.git1.1
+- Filter nvme rdma modules to extras
 - Fix IP Wireless driver filtering (rhbz 1356043) thanks lkundrak
+- Build IIO tools
 
-* Wed Jul 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.5-300
-- Linux v4.6.5
+* Wed Jul 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Linux v4.7-3199-g0e06f5c
+- Reenable debugging options.
+
+* Tue Jul 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-2
+- rebuild for koji errors
 
 * Mon Jul 25 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-6136 race condition in auditsc.c (rhbz 1353533 1353534)
 
-* Mon Jul 25 2016 Justin Forbes <jforbes@fedoraproject.org>
-- CVE-2016-5400 Fix memory leak in airspy driver (rhbz 1358184 1358186)
+* Mon Jul 25 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-1
+- Linux v4.7
+
+* Tue Jul 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add aarch64 ACPI pci-e patches headed for 4.8
+
+* Mon Jul 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc7.git4.1
+- Linux v4.7-rc7-92-g47ef4ad
+
+* Mon Jul 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM config updates, update bcm238x patches
+
+* Fri Jul 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git3.1
+- Linux v4.7-rc7-78-gfa3a9f574
 
 * Thu Jul 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix various i915 uncore oopses (rhbz 1340218 1325020 1342722 1347681)
 
-* Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-301
+* Wed Jul 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git2.1
+- Linux v4.7-rc7-27-gf97d104
+
+* Tue Jul 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git1.1
+- Linux v4.7-rc7-6-g63bab22
+- Reenable debugging options.
+
+* Tue Jul 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-5389 CVE-2016-5696 tcp challenge ack info leak (rhbz 1354708 1355615)
 
-* Mon Jul 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.4-300
-- Linux v4.6.4
+* Mon Jul 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.7.0-0.rc7.git0.1
+- Disable debugging options.
+- linux v4.7-rc7
+
+* Fri Jul 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git2.2
+- Workaround for glibc change
+
+* Fri Jul 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git2.1
+- Linux v4.7-rc6-94-gcc23c61
+
+* Thu Jul 07 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git1.1
+- Linux v4.7-rc6-74-g076501f
+- Reenable debugging options.
 
 * Thu Jul 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Fix oops in qla2xxx driver (rhbz 1346753)
 - Fix blank screen on some nvidia cards (rbhz 1351205)
-- CVE-2016-6156 race condition in chrome chardev driver (rhbz 1353490 1353491)
 
-#* Sun Jun 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.5.6-200.hu.1.pf4
-#- 4.5.6-200.hu.1.pf4
-#- Pf v4.5-pf4 https://pf.natalenko.name/news/?p=177
+* Thu Jul  7 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Marvell mvebu for aarch64
 
-* Fri Jul 01 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Reenable CONFIG_DW_DMAC_CORE=y to fix sound on some Broadwell machines (rhbz 1351738 1352176)
+* Tue Jul 05 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc6.git0.1
+- Linux v4.7-rc6
+- Disable debugging options.
 
-* Thu Jun 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
-- Pull upstream fix for smsc911x
+* Fri Jul 01 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc5.git3.1
+- Linux v4.7-rc5-254-g1a0a02d
 
-* Tue Jun 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-1237 missing check for permissions setting ACL (rhbz 1350845 1350847)
+* Thu Jun 30 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc5.git2.1
+- Linux v4.7-rc5-227-ge7bdea7
+- Reenable debugging options.
 
-* Mon Jun 27 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-5829 heap overflow in hiddev (rhbz 1350509 1350513)
+* Tue Jun 28 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc5.git1.1
+- Linux v4.7-rc5-28-g02184c6
 
-* Fri Jun 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.3-300
-- Linux v4.6.3
+* Mon Jun 27 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc5.git0.1
+- Linux v4.7-rc5
+- Disable debugging options.
+
+* Fri Jun 24 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git3.1
+- Linux v4.7-rc4-76-g63c04ee
+
+* Thu Jun 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git2.1
+- Linux v4.7-rc4-20-gf9020d1
+
+* Wed Jun 22 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Bring in patch-series from drm-next to fix skl_update_other_pipe_wm issues
+  (rhbz 1305038)
+- Disable fbc on haswell by default (fdo#96461)
+
+* Tue Jun 21 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git1.1
+- Linux v4.7-rc4-14-g67016f6
+- Reenable debugging options.
+
+* Mon Jun 20 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc4.git0.1
+- Linux v4.7-rc4
+- Disable debugging options.
+
+* Fri Jun 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git3.1
+- Linux v4.7-rc3-87-gbb96727
+- enable CONFIG_PWM (rhbz 1347454)
+
+* Thu Jun 16 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git2.1
+- Linux v4.7-rc3-55-gd325ea8
 
 * Wed Jun 15 2016 Laura Abbott <labbott@fedoraproject.org>
 - hp-wmi: fix wifi cannot be hard-unblock (rhbz 1338025)
@@ -2317,139 +2550,304 @@ fi
 * Wed Jun 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4470 keys: uninitialized variable crash (rhbz 1341716 1346626)
 
-* Mon Jun 13 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-1583 stack overflow via ecryptfs and /proc (rhbz 1344721 1344722)
+* Wed Jun 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable support for TI dm81xx devices (kwizart)
 
-* Wed Jun 08 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.5.7-300
-- Linux v4.5.7
+* Tue Jun 14 2016 Laura Abbott <labbott@redhat.com>
+- ath9k: fix GPIO mask for AR9462 and AR9565 (rhbz 1346145)
+
+* Tue Jun 14 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git1.1
+- Linux v4.7-rc3-9-gdb06d75
+- Reenable debugging options.
+
+* Tue Jun 14 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Infiniband on ARM now we have HW
+
+* Mon Jun 13 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc3.git0.1
+- Linux v4.7-rc3
+- Disable debugging options.
+
+* Fri Jun 10 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.7.0-0.rc2.git3.2
+- Fix Power64 module filters
+- Minor ARM updates
+
+* Fri Jun 10 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git3.1
+- Linux v4.7-rc2-64-g147d9e7
+
+* Thu Jun  9 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ARM big.LITTLE on ARMv7 LPAE kernels
+
+* Wed Jun 08 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git2.1
+- Linux v4.7-rc2-20-gc8ae067
+
+* Wed Jun  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM/aarch64 config updates
+
+* Tue Jun 07 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git1.1
+- Linux v4.7-rc2-4-g3613a62
 
 * Tue Jun 07 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-5244 info leak in rds (rhbz 1343338 1343337)
 - CVE-2016-5243 info leak in tipc (rhbz 1343338 1343335)
 
-* Wed Jun 01 2016 Justin M. Forbes <jforbes@fedoraproject.org> 4.5.6-300
-- Linux v4.5.6
+* Mon Jun 06 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc2.git0.1
+- Linux v4.7-rc2
+- Disable debugging options.
 
-* Sun May 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+#* Sun Jun 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.5.6-200.hu.1.pf4
+#- 4.5.6-200.hu.1.pf4
+#- Pf v4.5-pf4 https://pf.natalenko.name/news/?p=177
+
+* Fri Jun 03 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git4.1
+- Linux v4.7-rc1-122-g4340fa5
+
+* Thu Jun 02 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git3.1
+- Linux v4.7-rc1-104-g719af93
+
+* Wed Jun 01 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git2.2
+- Add filtering for i686 as well
+
+* Wed Jun 01 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git2.1
+- Linux v4.7-rc1-94-g6b15d66
+- Reenable debugging options.
+
+* Tue May 31 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git1.2
+- Update module filters
+
+* Tue May 31 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git1.1
+- Linux v4.7-rc1-12-g852f42a
+- Disable debugging options.
+
+* Mon May 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update Utilite patch
-- Fix AllWinner DMA driver loading
-- Minor cleanups for ARM power/cpufreq management
+- Minor ARM cleanups
 - Initial Qualcomm ARM64 support (Dragonboard 410c)
 
-* Mon May 23 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-4951 null ptr deref in tipc_nl_publ_dump (rhbz 1338625 1338626)
+* Fri May 27 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git10.1
+- Linux v4.6-11010-gdc03c0f
+- Kconfig, Kbuild, ceph, nfs, xfs, mmc, hwmon merges
+
+* Thu May 26 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git9.1
+- Linux v4.6-10675-g2f7c3a1
+- EFI, sched, perf, objtool, acpi, pm, drm merges
+
+* Wed May 25 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git8.1
+- Linux v4.6-10530-g28165ec
+- ARM SoC, asm-generic, nfsd, ext4, spi, mtd, xen, merges
+
+* Tue May 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.7.0-0.rc0.git7.1
+- Linux v4.6-10203-g84787c572d40
+- Enable CONFIG_MEMORY_HOTPLUG_DEFAULT_ONLINE (rhbz 1339281)
+- Fixup SB patchset to work with upstream changes
+
+* Mon May 23 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git6.1
+- Linux v4.6-8907-g7639dad
+- trace, f2fs, btrfs, rtc, mailbox, akpm, staging, driver core, char, usb,
+  tty, clk, net, devicetree, rdma, mfd, iio, powerpc, arm merges
+
+* Fri May 20 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git5.1
+- Linux v4.6-6148-g03b979d
+- Docs, i2c, md, iommu, sound, pci, pinctrl, dmaengine, kvm, security merges
 
 * Fri May 20 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-4440 kvm: incorrect state leading to APIC register access (rhbz 1337806 1337807)
 
-* Thu May 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.5.5-300
-- Linux v4.5.5
-- CVE-2016-4913 isofs: info leak with malformed NM entries (rhbz 1337528 1337529)
+* Fri May 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM cleanups, enable Tegra USB-3 controller
+
+* Thu May 19 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git4.1
+- Linux v4.6-5028-g2600a46
+- trace, audit, input, media, scsi, armsoc merges
+
+* Wed May 18 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git3.1
+- Linux v4.6-3623-g0b7962a
+- ata, regulator, gpio, HID, livepatching, networking, dm, block, vfs, fs,
+  timers, crypto merges
+
+* Tue May 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git2.2
+- Adjust solib for cpupower
+
+* Tue May 17 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git2.1
+- Linux v4.6-1278-g1649098
+- Enable CONFIG_INTEL_POWERCLAMP
+- pm, ACPI, mmc, regulator, i2c, hwmon, edac, led, arm64, x86, sched, RAS merges
+
+* Mon May 16 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc0.git1.1
+- Linux v4.6-153-g3469d26
+- Reenable debugging options.
+- locking, efi, signals, rcu merges
 
 * Mon May 16 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Disable CONFIG_DEBUG_VM_PGFLAGS on non debug kernels (rhbz 1335173)
 
-* Mon May 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Mon May 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-1
+- Linux v4.6
 - CVE-2016-3713 kvm: out-of-bounds access in set_var_mtrr_msr (rhbz 1332139 1336410)
 
-* Fri May 13 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-0758 pointer corruption in asn1 decoder (rhbz 1300257 1335386)
+* Fri May 13 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git3.1
+- Linux v4.6-rc7-116-ga2ccb68b1e6a
 
 * Thu May 12 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some minor ARMv7 platform fixes from F-24
 - Enable PCI_HOST_GENERIC for all ARM arches (Jeremy Linton)
 
-* Wed May 11 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.4-300
-- Linux v4.5.4
+* Wed May 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git2.1
+- Linux v4.6-rc7-55-gc5114626f33b
+
+* Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git1.1
+- Linux v4.6-rc7-45-g2d0bd9534c8d
 
 * Tue May 10 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable XEN SCSI front and backend (rhbz 1334512)
 - CVE-2016-4569 info leak in sound module (rhbz 1334643 1334645)
 
-* Mon May 09 2016 Justin M. Forbes <jforbes@fedoraproject.org>
-- Fix ACPI issues with sp5100_tco (rhbz 1328633)
+* Mon May 09 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc7.git0.1
+- Linux v4.6-rc7
 
-* Mon May 09 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-4557 bpf: Use after free vulnerability via double fdput
-  CVE-2016-4558 bpf: refcnt overflow (rhbz 1334307 1334303 1334311)
- 
-* Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Oops in propogate_mnt if first copy is slave (rhbz 1333712 1333713)
+* Fri May 06 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git4.1
+- Linux v4.6-rc6-165-g9caa7e78481f
 
-* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Thu May 05 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git3.1
+- Linux v4.6-rc6-123-g21a9703de304
 - CVE-2016-4486 CVE-2016-4485 info leaks (rhbz 1333316 1333309 1333321)
 
-* Wed May 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.3-300
-- Linux v4.5.3
-
-* Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Wed May 04 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git2.1
+- Linux v4.6-rc6-113-g83858a701cf3
 - Enable NFC_NXP_NCI options (rhbz 1290556)
 - CVE-2016-4482 info leak in devio.c (rhbz 1332931 1332932)
+
+* Tue May 03 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git1.1
+- Linux v4.6-rc6-72-g33656a1f2ee5
+
+* Mon May 02 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc6.git0.1
+- Linux v4.6-rc6
+- Disable debugging options.
+
+* Fri Apr 29 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git3.1
+- Linux v4.6-rc5-153-g92c19ea95357
 
 * Thu Apr 28 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix KVM with THP corruption (rhbz 1331092)
 
-* Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Don't splash warnings from broken BGRT firmware implementations
-- Require /usr/bin/kernel-install (rhbz 1331012)
+* Thu Apr 28 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git2.1
+- Linux v4.6-rc5-89-gb75a2bf899b6
 
-* Wed Apr 27 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.2-302
-- Fix i.MX6 gpu loading - rhbz 1321330
-- Fix usb loading on some tegra devices
+* Thu Apr 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to fix i.MX6 gpu module loading
+- Add patch to fix Jetson TX1 usb
 
-* Tue Apr 26 2016 Justin M. Forbes <jforbes@fedoraproject.org>
-- Change CONFIG_DW_DMAC to built-in to fix sound on some intel platforms
-  This needs to be revisited later.
+* Wed Apr 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git1.1
+- Linux v4.6-rc5-69-gf28f20da704d
+- Require /usr/bin/kernel-install to fix installation after systemd package
+  swizzling (rhbz 1331012)
+- Reenable debugging options.
 
 * Tue Apr 26 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Enable IEEE802154_AT86RF230 on more arches (rhbz 1330356)
 
-* Thu Apr 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.2-301
-- Build 32bit x86 compressed kernels as PIE (rhbz 1302071)
+* Mon Apr 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc5.git0.1
+- Linux v4.6-rc5
+- Disable debugging options.
+
+* Fri Apr 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git3.1
+- Linux v4.6-rc4-124-g5f44abd041c5
+
+* Thu Apr 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git2.1
+- Linux v4.6-rc4-17-g55f058e7574c
 
 * Wed Apr 20 2016 Laura Abbott <labbott@fedoraproject.org>
 - Allow antenna selection for rtl8723be (rhbz 1309487)
 
-* Wed Apr 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.2-300
-- Linux v4.5.2
+* Wed Apr 20 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git1.1
+- Linux v4.6-rc4-13-g9a0e3eea25d3
+- Reenable debugging options.
 
 * Tue Apr 19 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-3955 usbip: buffer overflow by trusting length of incoming packets  (rhbz 1328478 1328479)
+- Enable XILLYBUS (rhbz 1328394)
+
+* Mon Apr 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc4.git0.1
+- Linux v4.6-rc4
+- Disable debugging options.
 
 * Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3961 xen: hugetlbfs use may crash PV guests (rhbz 1327219 1323956)
 
-* Wed Apr 13 2016 Laura Abbott <labbott@fedoraproject.org>
-- Fix for Skylake pstate issues (rhbz 1309980)
+* Fri Apr 15 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git2.1
+- Linux v4.6-rc3-99-g806fdcce017d
 
-* Tue Apr 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.1-300
-- Linux v4.5.1
+* Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable oprofile driver as userspace oprofile only uses perf (rhbz 1326944)
 
-* Tue Apr 12 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Fix Bamboo ONE issues (rhbz 1317116)
+* Thu Apr 14 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git1.1
+- Linux v4.6-rc3-57-g90de6800c240
+- Reenable debugging options.
 
-* Mon Apr 11 2016 Peter Robinson <pbrobinson@fedoraproject.org>
-- Add upstream patch to fix IDIV issue when booting on Cortex-A7/15/17 devices
-- Update bcm238x patch
+* Mon Apr 11 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc3.git0.1
+- Linux v4.6-rc3
+- Disable debugging options.
 
-* Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
-- Enable Full Randomization on 32bit x86 CVE-2016-3672 (rhbz 1324749 1324750)
+* Sun Apr 10 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Use the correct MMC driver for some ARM platforms
+
+* Fri Apr 08 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git4.1
+- Linux v4.6-rc2-151-g3c96888
+
+* Thu Apr 07 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git3.1
+- Linux v4.6-rc2-88-gc4004b0
+
+* Wed Apr 06 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git2.1
+- Linux v4.6-rc2-84-g541d8f4
+
+* Tue Apr 05 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git1.1
+- Linux v4.6-rc2-42-g1e1e5ce
+- Reenable debugging options.
+
+* Mon Apr 04 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.6.0-0.rc2.git0.1
+- Linux v4.6-rc2
 
 * Sun Apr  3 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some minor ARMv7/aarch64 cleanups
 
 * Thu Mar 31 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- Add two more patches for CVE-2016-2184
+- Add another patch for CVE-2016-2184
 
-* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org> - 4.5.0-302
-- Add upstream mvebu/DSA fixes
-- Minor ARMv7 fixes
+* Wed Mar 30 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Fix undefined __always_inline in exported headers (rhbz 1321749)
+- Make sure to install objtool in -devel subpackage if it exists (rhbz 1321628)
+
+* Wed Mar 30 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add ARMv7 mvebu fixes headed upstream
+- Minor ARMv7 cleanups
 - Boot fix for aarch64 devices with 64K page size requirements (Seattle)
 
-* Tue Mar 29 2016 Josh Boyer <jwboyer@fedoraproject.org>
-- CVE-2016-3157 xen: priv escalation on 64bit PV domains with io port access (rhbz 1315711 1321948)
+* Sun Mar 27 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc1.git0.1
+- Linux v4.6-rc1
+- Disable debugging options.
 
-* Tue Mar 29 2016 Justin M. Forbes <jforbes@fedoraproject.org>
-- Turn off DEBUG_WX (rhbz 1318599)
+* Fri Mar 25 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git26.1
+- Linux v4.5-12596-g11caf57f6a4b
+- asm-generic, pm+acpi, rtc, hwmon, block, mtd, ubifs, nfsd, kbuild, parisc,
+  h8, arm64, armsoc
+
+* Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git25.1
+- Linux v4.5-12330-ge46b4e2b46e1
+- trace, thermal, nfsd merges
+
+* Thu Mar 24 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git24.1
+- Linux v4.5-12257-g8b97be054572
+- staging, timers, perf, irq, x86, sched, locking merges
+
+* Thu Mar 24 2016 jwboyer@gmail.com - 4.6.0-0.rc0.git23.1
+- Linux v4.5-12149-gaca04ce
+- net, pwm, target, platform-drivers merges
+
+* Wed Mar 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git22.1
+- Linux v4.5-12013-gc13042362033
+- crypto, mailbox, clk merges
+
+* Wed Mar 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git21.1
+- Linux v4.5-11787-ga24e3d414e59
+- akpm, kvm, rdma
 
 #* Wed Mar 23 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.5-300.hu.1.pf8
 #- Merge upstream changes (4.4.6).
@@ -2458,19 +2856,75 @@ fi
 * Wed Mar 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix Tegra Jetson TK1
 
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git20.1
+- Linux v4.5-11312-g01cde1538e1d
+- nfs, overlayfs, fuse, xen, i2c, target, pci, sound, iommu merges
+
 * Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3136 mct_u232: oops on invalid USB descriptors (rhbz 1317007 1317010)
 - CVE-2016-2187 gtco: oops on invalid USB descriptors (rhbz 1317017 1317010)
+
+* Tue Mar 22 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git19.1
+- Linux v4.5-11118-g968f3e374faf
+- btrfs, mmc, md merges
+
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git18.1
+- Linux v4.5-10883-g770c4c1119db
+- drm, arm64-perf, arc, udf, quota merges
+
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git17.1
+- Linux v4.5-9714-g53d2e6976bd4
+- xfs, f2fs, cgroup merges
 
 * Mon Mar 21 2016 Laura Abbott <labbott@fedoraproject.org>
 - uas: Limit qdepth at the scsi-host level (rhbz 1315013)
 - Fix for performance regression caused by thermal (rhbz 1317190)
 - Input: synaptics - handle spurious release of trackstick buttons, again (rhbz 1318079)
 
-* Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.5.0-301
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git16.1
+- Linux v4.5-9542-g643ad15d4741
+- pekeys, efi, objtool merges
+
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git15.1
+- Linux v4.5-9406-g46e595a17dcf
+- xtensa, mailbox, vhost, all the armsoc merges
+
+* Mon Mar 21 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor aarch64 cleanups
+
+* Mon Mar 21 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git14.1
+- Linux v4.5-8524-g1e75a9f34a5e
+- watchdog, firewire, vfs, linux-arm, sh, powerpc, audit, device tree merges
+
+* Sat Mar 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git13.1
+- Linux v4.5-8194-g1200b6809dfd
+- net merge
+
+* Sat Mar 19 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git12.1
+- Linux v4.5-6486-g6b5f04b6cf8e
+- cgroup, libata, workqueue, block, akpm, usb merges
+
+* Sat Mar 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM cleanups
+- Drop ARM_PATCH_IDIV work around
+- Update geekbox patch to v4
 - Upstream fix for stmmac driver regressions (AllWinner Gb NICs)
-- Update various ARM device support patches
-- General ARM updates
+
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git11.1
+- Linux v4.5-6229-gf7813ad5cbfd
+- ipmi, mfd, sound merges
+
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Change requires to updated package names and correctly Requires findutils
+  in -devel package (rhbz 1319131)
+
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git10.1
+- Linux v4.5-5842-g9ea446352047
+- staging, rdma merges
+
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git9.1
+- Linux v4.5-4071-g10fdfee7f7fd
+- input, livepatching, trivial, hid, gpio, m68knommu, arm64, selftest merges
 
 * Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - ims-pcu: sanity checking on missing interfaces
@@ -2482,10 +2936,48 @@ fi
 - CVE-2016-3137 cypress_m8: oops on invalid USB descriptors (rhbz 1317010 1316996)
 - CVE-2016-2184 alsa: panic on invalid USB descriptors (rhbz 1317012 1317470)
 
+* Fri Mar 18 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git8.1
+- Linux v4.5-3654-g5cd0911a9e0e
+- Fix oops from tsc subsystem (rhbz 1318596)
+- crypto, security, docs, rproc, dmaengine, powersupply, hsi, vfio, driver-core,
+  tty, char, usb, configfs, ext4, dlm, gfs2, pstore merges
+
+* Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add temporary patch to fix intel_pstate oops and lockdep report on
+  various atom based CPUs.
+
+* Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git7.1
+- Linux v4.5-2535-g09fd671ccb24
+- fbdev, media, libnvdimm, dm, scsi, ibft merges
+
+* Thu Mar 17 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git6.1
+- Linux v4.5-1822-g63e30271b04c
+- PCI, PM+ACPI merges
+
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git5.1
+- Linux v4.5-1523-g271ecc5253e2
+- akpm patches (mm subsystem, various)
+
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git4.1
+- Linux v4.5-1402-gaa6865d83641
+- s390, m68k, avr32, KVM, EDAC merges
+
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git3.1
+- Linux v4.5-1127-g9256d5a308c9
+- pinctrl, LED, rtc, hwmon, regulator, regmap, spi merges
+
 * Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - CVE-2016-3135 ipv4: DoS when destroying a network interface (rhbz 1318172 1318270)
 
-* Mon Mar 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-300
+* Wed Mar 16 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git2.1
+- Linux v4.5-760-g710d60cbf1b3
+
+* Tue Mar 15 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git1.1
+- Linux v4.5-481-ge23604edac2a
+- Enable RANDOMIZE_BASE
+- Reenable debugging options.
+
+* Mon Mar 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.5.0-1
 - Linux v4.5
 - Disable debugging options.
 
@@ -3509,7 +4001,7 @@ fi
 - Inital ARM updates for 4.1
 - Temporarily disable AMD ARM64 xgbe-a0 driver
 
-* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org> 
+* Wed Apr 22 2015 Josh Boyer <jwboyer@fedoraproject.org>
 - Linux v4.0-9804-gdb4fd9c5d072
 
 * Tue Apr 21 2015 Josh Boyer <jwboyer@fedoraproject.org> - 4.1.0-0.rc0.git11.1
@@ -3744,7 +4236,7 @@ fi
 - kernel-arm64.patch merge, but leave it off.
 - kernel-arm64-fix-psci-when-pg.patch: when -pg (because of ftrace) is enabled
   we must explicitly annotate which registers should be assigned, otherwise
-  gcc will do unexpected things behind our backs. 
+  gcc will do unexpected things behind our backs.
 
 * Tue Feb 17 2015 Josh Boyer <jwboyer@fedoraproject.org> - 3.20.0-0.rc0.git7.1
 - Linux v3.19-7478-g796e1c55717e

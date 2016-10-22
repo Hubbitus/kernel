@@ -1,0 +1,59 @@
+From edc7986d4d405daebaf2f66269b353da579fce5f Mon Sep 17 00:00:00 2001
+From: Christopher Covington <cov@codeaurora.org>
+Date: Tue, 31 May 2016 16:19:02 -0400
+Subject: arm64: Workaround for QDF2432 ID_AA64 SR accesses
+
+The ARMv8.0 architecture reserves several system register encodings for
+future use. These encodings should behave as read-only and always return
+zero on a read. As described in Errata 94, the CPU cores in the QDF2432
+errantly cause an instruction abort if an AArch64 MRS instruction attempts
+to read any of the following system register encodings:
+
+	Op0, Op1, CRn, CRm,        Op2
+	3,   0,   C0,  [C4-C7],    [2-3, 6-7]
+	3,   0,   C0,  C3,         [3-7]
+	3,   0,   C0,  [C4,C6,C7], [4-5]
+	3,   0,   C0,  C2,         [6-7]
+
+Naively projecting ARMv8.0 names, this space includes:
+
+	ID_AA64PFR[2-7]_EL1
+	ID_AA64DFR[2-3]_EL1
+	ID_AA64AFR[2-3]_EL1
+	ID_AA64ISAR[2-7]_EL1
+	ID_AA64MMFR[2-7]_EL1
+
+As of v4.8-rc2, Linux only attempts to query one register in this space,
+ID_AA64MMFR2_EL1. As simple workaround, skip that access when the affected
+MIDR is detected.
+
+Signed-off-by: Christopher Covington <cov@codeaurora.org>
+---
+ arch/arm64/kernel/cpuinfo.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/kernel/cpuinfo.c b/arch/arm64/kernel/cpuinfo.c
+index ed1b84f..790de6b 100644
+--- a/arch/arm64/kernel/cpuinfo.c
++++ b/arch/arm64/kernel/cpuinfo.c
+@@ -325,6 +325,8 @@ static void cpuinfo_detect_icache_policy(struct cpuinfo_arm64 *info)
+ 
+ static void __cpuinfo_store_cpu(struct cpuinfo_arm64 *info)
+ {
++	bool qdf2432_cpu = read_cpuid_id() == 0x510f2811;
++
+ 	info->reg_cntfrq = arch_timer_get_cntfrq();
+ 	info->reg_ctr = read_cpuid_cachetype();
+ 	info->reg_dczid = read_cpuid(DCZID_EL0);
+@@ -337,7 +339,7 @@ static void __cpuinfo_store_cpu(struct cpuinfo_arm64 *info)
+ 	info->reg_id_aa64isar1 = read_cpuid(ID_AA64ISAR1_EL1);
+ 	info->reg_id_aa64mmfr0 = read_cpuid(ID_AA64MMFR0_EL1);
+ 	info->reg_id_aa64mmfr1 = read_cpuid(ID_AA64MMFR1_EL1);
+-	info->reg_id_aa64mmfr2 = read_cpuid(ID_AA64MMFR2_EL1);
++	info->reg_id_aa64mmfr2 = qdf2432_cpu ? 0 : read_cpuid(ID_AA64MMFR2_EL1);
+ 	info->reg_id_aa64pfr0 = read_cpuid(ID_AA64PFR0_EL1);
+ 	info->reg_id_aa64pfr1 = read_cpuid(ID_AA64PFR1_EL1);
+ 
+-- 
+cgit v0.12
+

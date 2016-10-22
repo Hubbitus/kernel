@@ -1,52 +1,78 @@
-**** Backports and patches headed/already upsteram *****************************
+# This file contains patches that we intend to carry for longer than
+# "Should show up in a stable release soonish"
+# Some of these may eventually drop out
 
-* cpupower-Fix-segfault-due-to-incorrect-getopt_long-a.patch (rhbz 1000439)
-  - Queued for next upstream release I believe.  Fixes a segfault in cpupower
+kbuild-AFTER_LINK.patch
 
-* dm-cache-policy-mq_fix-large-scale-table-allocation-bug.patch (rhbz 993744)
-  - Still pending upstream
+arm64-avoid-needing-console-to-enable-serial-console.patch
 
-* ath9k_rx_dma_stop_check.patch (rhbz 892811)
-  - Fixes some DMA issue on specific hardware.  Taken from
-https://dev.openwrt.org/browser/trunk/package/mac80211/patches/552-ath9k_rx_dma_stop_check.patch?rev=34910
+geekbox-v4-device-tree-support.patch
 
-* secure-modules.patch
-* modsign-uefi.patch
-* sb-hibernate.patch
-* sysrq-secure-boot.patch
-  - Fedora secure boot support.
-  - Dear Matthew, this is your fault.  Run sed already and get a new set out.
+Initial-AllWinner-A64-and-PINE64-support.patch
 
-**** Other stuff that should go upstream (in decreasing likelyhood) ************
+arm64-pcie-quirks-xgene.patch
 
-* defaults-acpi-video.patch
-* disable-i8042-check-on-apple-mac.patch
-* no-pcspkr-modalias.patch
-* die-floppy-die.patch
-	Fedora policy decisions
-	Turn into CONFIG_ options and upstream ?
+usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
-* input-kill-stupid-messages.patch
-* silence-fbcon-logo.patch
-* silence-noise.patch
-	Fedora local 'hush' patches.  (TODO: push more upstream)
+ARM-tegra-usb-no-reset.patch
 
-* makefile-after_link.patch
-  Rolandware that is used by the debuginfo generation.
-  Possibly upstreamable ?
+bcm283x-upstream-fixes.patch
 
-* serial-460800.patch
-	Probably not upstreamable.
-	http://marc.theaimsgroup.com/?l=linux-kernel&m=112687270832687&w=2
-	https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=126403
-	http://lkml.org/lkml/2006/8/2/208
+lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
-********************************************************************************
+input-kill-stupid-messages.patch
 
-'MUSTARD' patches.  Fedora local patches that are very unlikely to go upstream.
+die-floppy-die.patch
 
-* crash-driver.patch
-	Unlikely to go upstream.
-	https://bugzilla.redhat.com/show_bug.cgi?id=492803
+no-pcspkr-modalias.patch
 
-********************************************************************************
+silence-fbcon-logo.patch
+
+Kbuild-Add-an-option-to-enable-GCC-VTA.patch
+
+crash-driver.patch
+
+#Secure boot patches
+Add-secure_modules-call.patch
+PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
+x86-Lock-down-IO-port-access-when-module-security-is.patch
+ACPI-Limit-access-to-custom_method.patch
+asus-wmi-Restrict-debugfs-interface-when-module-load.patch
+Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
+acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
+kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
+x86-Restrict-MSR-access-when-module-loading-is-restr.patch
+Add-option-to-automatically-enforce-module-signature.patch
+efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+efi-Add-EFI_SECURE_BOOT-bit.patch
+hibernate-Disable-in-a-signed-modules-environment.patch
+Add-EFI-signature-data-types.patch
+Add-an-EFI-signature-blob-parser-and-key-loader.patch
+KEYS-Add-a-system-blacklist-keyring.patch
+MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
+MODSIGN-Support-not-importing-certs-from-db.patch
+Add-sysrq-option-to-disable-secure-boot-mode.patch
+kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
+
+drm-i915-hush-check-crtc-state.patch
+
+disable-i8042-check-on-apple-mac.patch
+
+lis3-improve-handling-of-null-rate.patch
+
+watchdog-Disable-watchdog-on-virtual-machines.patch
+
+scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+
+criu-no-expert.patch
+
+ath9k-rx-dma-stop-check.patch
+
+xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+drm-i915-turn-off-wc-mmaps.patch
+

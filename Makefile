@@ -92,7 +92,6 @@ debug:
 	@perl -pi -e 's/# CONFIG_WQ_WATCHDOG is not set/CONFIG_WQ_WATCHDOG=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/' config-nodebug
 	@perl -pi -e 's/# CONFIG_DEBUG_KMEMLEAK is not set/CONFIG_DEBUG_KMEMLEAK=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_X86_DEBUG_STATIC_CPU_HAS is not set/CONFIG_X86_DEBUG_STATIC_CPU_HAS=y/' config-nodebug
 
 	@# just in case we're going from extremedebug -> debug
 	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
@@ -111,9 +110,6 @@ release: config-release
 	@rpmdev-bumpspec -c "Disable debugging options." kernel.spec
 
 include Makefile.release
-
-unused-kernel-patches:
-	@for f in *.patch; do if [ -e $$f ]; then (egrep -q "^Patch[[:digit:]]+:[[:space:]]+$$f" $(SPECFILE) || echo "Unused:    $$f") && egrep -q "^ApplyPatch[[:space:]]+$$f|^ApplyOptionalPatch[[:space:]]+$$f" $(SPECFILE) || echo "Unapplied: $$f"; fi; done
 
 ifeq ($(MAKECMDGOALS),me a sandwich)
 .PHONY: me a sandwich

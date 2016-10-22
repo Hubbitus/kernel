@@ -1,7 +1,7 @@
-From 0f6eec5ca124baf1372fb4edeacd11a002378f5e Mon Sep 17 00:00:00 2001
+From 3213f1513a744fb21b6b9e4d4f2650a204855b3e Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Fri, 9 Aug 2013 17:58:15 -0400
-Subject: [PATCH 01/20] Add secure_modules() call
+Subject: [PATCH] Add secure_modules() call
 
 Provide a single call to allow kernel code to determine whether the system
 has been configured to either disable module loading entirely or to load
@@ -17,10 +17,10 @@ Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
  2 files changed, 16 insertions(+)
 
 diff --git a/include/linux/module.h b/include/linux/module.h
-index 3daf2b3..082298a 100644
+index 0c3207d..05bd6c9 100644
 --- a/include/linux/module.h
 +++ b/include/linux/module.h
-@@ -655,6 +655,8 @@ static inline bool is_livepatch_module(struct module *mod)
+@@ -641,6 +641,8 @@ static inline bool is_livepatch_module(struct module *mod)
  }
  #endif /* CONFIG_LIVEPATCH */
  
@@ -28,8 +28,8 @@ index 3daf2b3..082298a 100644
 +
  #else /* !CONFIG_MODULES... */
  
- /* Given an address, look for it in the exception tables. */
-@@ -771,6 +773,10 @@ static inline bool module_requested_async_probing(struct module *module)
+ static inline struct module *__module_address(unsigned long addr)
+@@ -750,6 +752,10 @@ static inline bool module_requested_async_probing(struct module *module)
  	return false;
  }
  
@@ -41,10 +41,10 @@ index 3daf2b3..082298a 100644
  
  #ifdef CONFIG_SYSFS
 diff --git a/kernel/module.c b/kernel/module.c
-index 5f71aa6..3c38496 100644
+index 529efae..0332fdd 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -4199,3 +4199,13 @@ void module_layout(struct module *mod,
+@@ -4279,3 +4279,13 @@ void module_layout(struct module *mod,
  }
  EXPORT_SYMBOL(module_layout);
  #endif
@@ -59,5 +59,5 @@ index 5f71aa6..3c38496 100644
 +}
 +EXPORT_SYMBOL(secure_modules);
 -- 
-2.5.5
+2.9.2
 

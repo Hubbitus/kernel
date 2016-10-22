@@ -1,0 +1,636 @@
+From 9db79f3a51c97e0cfcde1b25299e8db9ee3d64ab Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 14 Sep 2016 19:21:29 +0100
+Subject: [PATCH 1/4] drm/vc4: Fall back to using an EDID probe in the absence
+ of a GPIO.
+
+On Pi0/1/2, we use an external GPIO line for hotplug detection, since
+the HDMI_HOTPLUG register isn't connected to anything.  However, with
+the Pi3 the HPD GPIO line has moved off to a GPIO expander that will
+be tricky to get to (the firmware is constantly polling the expander
+using i2c0, so we'll need to coordinate with it).
+
+As a stop-gap, if we don't have a GPIO line, use an EDID probe to
+detect connection.  Fixes HDMI display on the pi3.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 4452f36..5adc0c7 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -174,6 +174,9 @@ vc4_hdmi_connector_detect(struct drm_connector *connector, bool force)
+ 			return connector_status_disconnected;
+ 	}
+ 
++	if (drm_probe_ddc(vc4->hdmi->ddc))
++		return connector_status_connected;
++
+ 	if (HDMI_READ(VC4_HDMI_HOTPLUG) & VC4_HDMI_HOTPLUG_CONNECTED)
+ 		return connector_status_connected;
+ 	else
+-- 
+2.9.3
+
+From 7b4c39f34fbbdfe0cd0e626686ee01ab96601598 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Fri, 16 Sep 2016 10:59:45 +0100
+Subject: [PATCH 2/4] drm/vc4: Enable limited range RGB output on HDMI with CEA
+ modes.
+
+Fixes broken grayscale ramps on many HDMI monitors, where large areas
+at the ends of the ramp would all appear as black or white.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 31 +++++++++++++++++++++++++++++--
+ drivers/gpu/drm/vc4/vc4_regs.h |  9 ++++++++-
+ 2 files changed, 37 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 5adc0c7..5df4e74 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -276,6 +276,7 @@ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 				      struct drm_display_mode *unadjusted_mode,
+ 				      struct drm_display_mode *mode)
+ {
++	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
+ 	struct drm_device *dev = encoder->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	bool debug_dump_regs = false;
+@@ -291,6 +292,7 @@ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 	u32 vertb = (VC4_SET_FIELD(0, VC4_HDMI_VERTB_VSPO) |
+ 		     VC4_SET_FIELD(mode->vtotal - mode->vsync_end,
+ 				   VC4_HDMI_VERTB_VBP));
++	u32 csc_ctl;
+ 
+ 	if (debug_dump_regs) {
+ 		DRM_INFO("HDMI regs before:\n");
+@@ -329,9 +331,34 @@ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 		 (vsync_pos ? 0 : VC4_HD_VID_CTL_VSYNC_LOW) |
+ 		 (hsync_pos ? 0 : VC4_HD_VID_CTL_HSYNC_LOW));
+ 
++	csc_ctl = VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
++				VC4_HD_CSC_CTL_ORDER);
++
++	if (vc4_encoder->hdmi_monitor && drm_match_cea_mode(mode) > 1) {
++		/* CEA VICs other than #1 requre limited range RGB
++		 * output.  Apply a colorspace conversion to squash
++		 * 0-255 down to 16-235.  The matrix here is:
++		 *
++		 * [ 0      0      0.8594 16]
++		 * [ 0      0.8594 0      16]
++		 * [ 0.8594 0      0      16]
++		 * [ 0      0      0       1]
++		 */
++		csc_ctl |= VC4_HD_CSC_CTL_ENABLE;
++		csc_ctl |= VC4_HD_CSC_CTL_RGB2YCC;
++		csc_ctl |= VC4_SET_FIELD(VC4_HD_CSC_CTL_MODE_CUSTOM,
++					 VC4_HD_CSC_CTL_MODE);
++
++		HD_WRITE(VC4_HD_CSC_12_11, (0x000 << 16) | 0x000);
++		HD_WRITE(VC4_HD_CSC_14_13, (0x100 << 16) | 0x6e0);
++		HD_WRITE(VC4_HD_CSC_22_21, (0x6e0 << 16) | 0x000);
++		HD_WRITE(VC4_HD_CSC_24_23, (0x100 << 16) | 0x000);
++		HD_WRITE(VC4_HD_CSC_32_31, (0x000 << 16) | 0x6e0);
++		HD_WRITE(VC4_HD_CSC_34_33, (0x100 << 16) | 0x000);
++	}
++
+ 	/* The RGB order applies even when CSC is disabled. */
+-	HD_WRITE(VC4_HD_CSC_CTL, VC4_SET_FIELD(VC4_HD_CSC_CTL_ORDER_BGR,
+-					       VC4_HD_CSC_CTL_ORDER));
++	HD_WRITE(VC4_HD_CSC_CTL, csc_ctl);
+ 
+ 	HDMI_WRITE(VC4_HDMI_FIFO_CTL, VC4_HDMI_FIFO_CTL_MASTER_SLAVE_N);
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_regs.h b/drivers/gpu/drm/vc4/vc4_regs.h
+index 160942a..9ecd6ff 100644
+--- a/drivers/gpu/drm/vc4/vc4_regs.h
++++ b/drivers/gpu/drm/vc4/vc4_regs.h
+@@ -528,10 +528,17 @@
+ # define VC4_HD_CSC_CTL_MODE_SHIFT		2
+ # define VC4_HD_CSC_CTL_MODE_RGB_TO_SD_YPRPB	0
+ # define VC4_HD_CSC_CTL_MODE_RGB_TO_HD_YPRPB	1
+-# define VC4_HD_CSC_CTL_MODE_CUSTOM		2
++# define VC4_HD_CSC_CTL_MODE_CUSTOM		3
+ # define VC4_HD_CSC_CTL_RGB2YCC			BIT(1)
+ # define VC4_HD_CSC_CTL_ENABLE			BIT(0)
+ 
++#define VC4_HD_CSC_12_11			0x044
++#define VC4_HD_CSC_14_13			0x048
++#define VC4_HD_CSC_22_21			0x04c
++#define VC4_HD_CSC_24_23			0x050
++#define VC4_HD_CSC_32_31			0x054
++#define VC4_HD_CSC_34_33			0x058
++
+ #define VC4_HD_FRAME_COUNT			0x068
+ 
+ /* HVS display list information. */
+-- 
+2.9.3
+
+From 107d3188b3723840deddaa5efeffcaf167e462f2 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 28 Sep 2016 08:42:42 -0700
+Subject: [PATCH 3/4] drm/vc4: Fix races when the CS reads from render targets.
+
+With the introduction of bin/render pipelining, the previous job may
+not be completed when we start binning the next one.  If the previous
+job wrote our VBO, IB, or CS textures, then the binning stage might
+get stale or uninitialized results.
+
+Fixes the major rendering failure in glmark2 -b terrain.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Fixes: ca26d28bbaa3 ("drm/vc4: improve throughput by pipelining binning and rendering jobs")
+Cc: stable@vger.kernel.org
+---
+ drivers/gpu/drm/vc4/vc4_drv.h       | 19 ++++++++++++++++++-
+ drivers/gpu/drm/vc4/vc4_gem.c       | 13 +++++++++++++
+ drivers/gpu/drm/vc4/vc4_render_cl.c | 21 +++++++++++++++++----
+ drivers/gpu/drm/vc4/vc4_validate.c  | 17 ++++++++++++++---
+ 4 files changed, 62 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index 428e249..f696b75 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -122,9 +122,16 @@ to_vc4_dev(struct drm_device *dev)
+ struct vc4_bo {
+ 	struct drm_gem_cma_object base;
+ 
+-	/* seqno of the last job to render to this BO. */
++	/* seqno of the last job to render using this BO. */
+ 	uint64_t seqno;
+ 
++	/* seqno of the last job to use the RCL to write to this BO.
++	 *
++	 * Note that this doesn't include binner overflow memory
++	 * writes.
++	 */
++	uint64_t write_seqno;
++
+ 	/* List entry for the BO's position in either
+ 	 * vc4_exec_info->unref_list or vc4_dev->bo_cache.time_list
+ 	 */
+@@ -216,6 +223,9 @@ struct vc4_exec_info {
+ 	/* Sequence number for this bin/render job. */
+ 	uint64_t seqno;
+ 
++	/* Latest write_seqno of any BO that binning depends on. */
++	uint64_t bin_dep_seqno;
++
+ 	/* Last current addresses the hardware was processing when the
+ 	 * hangcheck timer checked on us.
+ 	 */
+@@ -230,6 +240,13 @@ struct vc4_exec_info {
+ 	struct drm_gem_cma_object **bo;
+ 	uint32_t bo_count;
+ 
++	/* List of BOs that are being written by the RCL.  Other than
++	 * the binner temporary storage, this is all the BOs written
++	 * by the job.
++	 */
++	struct drm_gem_cma_object *rcl_write_bo[4];
++	uint32_t rcl_write_bo_count;
++
+ 	/* Pointers for our position in vc4->job_list */
+ 	struct list_head head;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_gem.c b/drivers/gpu/drm/vc4/vc4_gem.c
+index b262c5c..ae1609e 100644
+--- a/drivers/gpu/drm/vc4/vc4_gem.c
++++ b/drivers/gpu/drm/vc4/vc4_gem.c
+@@ -471,6 +471,11 @@ vc4_update_bo_seqnos(struct vc4_exec_info *exec, uint64_t seqno)
+ 	list_for_each_entry(bo, &exec->unref_list, unref_head) {
+ 		bo->seqno = seqno;
+ 	}
++
++	for (i = 0; i < exec->rcl_write_bo_count; i++) {
++		bo = to_vc4_bo(&exec->rcl_write_bo[i]->base);
++		bo->write_seqno = seqno;
++	}
+ }
+ 
+ /* Queues a struct vc4_exec_info for execution.  If no job is
+@@ -673,6 +678,14 @@ vc4_get_bcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 		goto fail;
+ 
+ 	ret = vc4_validate_shader_recs(dev, exec);
++	if (ret)
++		goto fail;
++
++	/* Block waiting on any previous rendering into the CS's VBO,
++	 * IB, or textures, so that pixels are actually written by the
++	 * time we try to read them.
++	 */
++	ret = vc4_wait_for_seqno(dev, exec->bin_dep_seqno, ~0ull, true);
+ 
+ fail:
+ 	drm_free_large(temp);
+diff --git a/drivers/gpu/drm/vc4/vc4_render_cl.c b/drivers/gpu/drm/vc4/vc4_render_cl.c
+index 0f12418..08886a3 100644
+--- a/drivers/gpu/drm/vc4/vc4_render_cl.c
++++ b/drivers/gpu/drm/vc4/vc4_render_cl.c
+@@ -45,6 +45,8 @@ struct vc4_rcl_setup {
+ 
+ 	struct drm_gem_cma_object *rcl;
+ 	u32 next_offset;
++
++	u32 next_write_bo_index;
+ };
+ 
+ static inline void rcl_u8(struct vc4_rcl_setup *setup, u8 val)
+@@ -407,6 +409,8 @@ static int vc4_rcl_msaa_surface_setup(struct vc4_exec_info *exec,
+ 	if (!*obj)
+ 		return -EINVAL;
+ 
++	exec->rcl_write_bo[exec->rcl_write_bo_count++] = *obj;
++
+ 	if (surf->offset & 0xf) {
+ 		DRM_ERROR("MSAA write must be 16b aligned.\n");
+ 		return -EINVAL;
+@@ -417,7 +421,8 @@ static int vc4_rcl_msaa_surface_setup(struct vc4_exec_info *exec,
+ 
+ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 				 struct drm_gem_cma_object **obj,
+-				 struct drm_vc4_submit_rcl_surface *surf)
++				 struct drm_vc4_submit_rcl_surface *surf,
++				 bool is_write)
+ {
+ 	uint8_t tiling = VC4_GET_FIELD(surf->bits,
+ 				       VC4_LOADSTORE_TILE_BUFFER_TILING);
+@@ -440,6 +445,9 @@ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 	if (!*obj)
+ 		return -EINVAL;
+ 
++	if (is_write)
++		exec->rcl_write_bo[exec->rcl_write_bo_count++] = *obj;
++
+ 	if (surf->flags & VC4_SUBMIT_RCL_SURFACE_READ_IS_FULL_RES) {
+ 		if (surf == &exec->args->zs_write) {
+ 			DRM_ERROR("general zs write may not be a full-res.\n");
+@@ -542,6 +550,8 @@ vc4_rcl_render_config_surface_setup(struct vc4_exec_info *exec,
+ 	if (!*obj)
+ 		return -EINVAL;
+ 
++	exec->rcl_write_bo[exec->rcl_write_bo_count++] = *obj;
++
+ 	if (tiling > VC4_TILING_FORMAT_LT) {
+ 		DRM_ERROR("Bad tiling format\n");
+ 		return -EINVAL;
+@@ -599,15 +609,18 @@ int vc4_get_rcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = vc4_rcl_surface_setup(exec, &setup.color_read, &args->color_read);
++	ret = vc4_rcl_surface_setup(exec, &setup.color_read, &args->color_read,
++				    false);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = vc4_rcl_surface_setup(exec, &setup.zs_read, &args->zs_read);
++	ret = vc4_rcl_surface_setup(exec, &setup.zs_read, &args->zs_read,
++				    false);
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = vc4_rcl_surface_setup(exec, &setup.zs_write, &args->zs_write);
++	ret = vc4_rcl_surface_setup(exec, &setup.zs_write, &args->zs_write,
++				    true);
+ 	if (ret)
+ 		return ret;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_validate.c b/drivers/gpu/drm/vc4/vc4_validate.c
+index 9ce1d0a..26503e3 100644
+--- a/drivers/gpu/drm/vc4/vc4_validate.c
++++ b/drivers/gpu/drm/vc4/vc4_validate.c
+@@ -267,6 +267,9 @@ validate_indexed_prim_list(VALIDATE_ARGS)
+ 	if (!ib)
+ 		return -EINVAL;
+ 
++	exec->bin_dep_seqno = max(exec->bin_dep_seqno,
++				  to_vc4_bo(&ib->base)->write_seqno);
++
+ 	if (offset > ib->base.size ||
+ 	    (ib->base.size - offset) / index_size < length) {
+ 		DRM_ERROR("IB access overflow (%d + %d*%d > %zd)\n",
+@@ -555,8 +558,7 @@ static bool
+ reloc_tex(struct vc4_exec_info *exec,
+ 	  void *uniform_data_u,
+ 	  struct vc4_texture_sample_info *sample,
+-	  uint32_t texture_handle_index)
+-
++	  uint32_t texture_handle_index, bool is_cs)
+ {
+ 	struct drm_gem_cma_object *tex;
+ 	uint32_t p0 = *(uint32_t *)(uniform_data_u + sample->p_offset[0]);
+@@ -714,6 +716,11 @@ reloc_tex(struct vc4_exec_info *exec,
+ 
+ 	*validated_p0 = tex->paddr + p0;
+ 
++	if (is_cs) {
++		exec->bin_dep_seqno = max(exec->bin_dep_seqno,
++					  to_vc4_bo(&tex->base)->write_seqno);
++	}
++
+ 	return true;
+  fail:
+ 	DRM_INFO("Texture p0 at %d: 0x%08x\n", sample->p_offset[0], p0);
+@@ -835,7 +842,8 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 			if (!reloc_tex(exec,
+ 				       uniform_data_u,
+ 				       &validated_shader->texture_samples[tex],
+-				       texture_handles_u[tex])) {
++				       texture_handles_u[tex],
++				       i == 2)) {
+ 				return -EINVAL;
+ 			}
+ 		}
+@@ -867,6 +875,9 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 		uint32_t stride = *(uint8_t *)(pkt_u + o + 5);
+ 		uint32_t max_index;
+ 
++		exec->bin_dep_seqno = max(exec->bin_dep_seqno,
++					  to_vc4_bo(&vbo->base)->write_seqno);
++
+ 		if (state->addr & 0x8)
+ 			stride |= (*(uint32_t *)(pkt_u + 100 + i * 4)) & ~0xff;
+ 
+-- 
+2.9.3
+
+From f379f5432e4b74e3d1d894ce2fefbe1b8a3c24fd Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 28 Sep 2016 19:20:44 -0700
+Subject: [PATCH 4/4] drm/vc4: Increase timeout for HDMI_SCHEDULER_CONTROL
+ changes.
+
+Fixes occasional debug spew at boot when connected directly through
+HDMI, and probably confusing the HDMI state machine when we go trying
+to poke registers for the enable sequence too soon.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 5df4e74..9a6883d 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -399,7 +399,7 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+ 			   VC4_HDMI_SCHEDULER_CONTROL_MODE_HDMI);
+ 
+ 		ret = wait_for(HDMI_READ(VC4_HDMI_SCHEDULER_CONTROL) &
+-			       VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE, 1);
++			       VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE, 1000);
+ 		WARN_ONCE(ret, "Timeout waiting for "
+ 			  "VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE\n");
+ 	} else {
+@@ -411,7 +411,7 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+ 			   ~VC4_HDMI_SCHEDULER_CONTROL_MODE_HDMI);
+ 
+ 		ret = wait_for(!(HDMI_READ(VC4_HDMI_SCHEDULER_CONTROL) &
+-				 VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE), 1);
++				 VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE), 1000);
+ 		WARN_ONCE(ret, "Timeout waiting for "
+ 			  "!VC4_HDMI_SCHEDULER_CONTROL_HDMI_ACTIVE\n");
+ 	}
+-- 
+2.9.3
+
+From bd712d14886c37eb804036b2ac3036df79d33476 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Thu, 29 Sep 2016 15:34:43 -0700
+Subject: [PATCH] drm/vc4: Set up the AVI and SPD infoframes.
+
+Fixes a purple bar on the left side of the screen with my Dell
+2408WFP.  It will also be required for supporting the double-clocked
+video modes.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 136 +++++++++++++++++++++++++++++++++++++++--
+ drivers/gpu/drm/vc4/vc4_regs.h |   5 ++
+ 2 files changed, 136 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index 9a6883d..f722334 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -62,6 +62,8 @@ struct vc4_hdmi {
+ struct vc4_hdmi_encoder {
+ 	struct vc4_encoder base;
+ 	bool hdmi_monitor;
++	bool limited_rgb_range;
++	bool rgb_range_selectable;
+ };
+ 
+ static inline struct vc4_hdmi_encoder *
+@@ -205,6 +207,12 @@ static int vc4_hdmi_connector_get_modes(struct drm_connector *connector)
+ 		return -ENODEV;
+ 
+ 	vc4_encoder->hdmi_monitor = drm_detect_hdmi_monitor(edid);
++
++	if (edid && edid->input & DRM_EDID_INPUT_DIGITAL) {
++		vc4_encoder->rgb_range_selectable =
++			drm_rgb_quant_range_selectable(edid);
++	}
++
+ 	drm_mode_connector_update_edid_property(connector, edid);
+ 	ret = drm_add_edid_modes(connector, edid);
+ 
+@@ -272,6 +280,117 @@ static const struct drm_encoder_funcs vc4_hdmi_encoder_funcs = {
+ 	.destroy = vc4_hdmi_encoder_destroy,
+ };
+ 
++static int vc4_hdmi_stop_packet(struct drm_encoder *encoder,
++				enum hdmi_infoframe_type type)
++{
++	struct drm_device *dev = encoder->dev;
++	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	u32 packet_id = type - 0x80;
++
++	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG,
++		   HDMI_READ(VC4_HDMI_RAM_PACKET_CONFIG) & ~BIT(packet_id));
++
++	return wait_for(!(HDMI_READ(VC4_HDMI_RAM_PACKET_STATUS) &
++			  BIT(packet_id)), 100);
++}
++
++static void vc4_hdmi_write_infoframe(struct drm_encoder *encoder,
++				     union hdmi_infoframe *frame)
++{
++	struct drm_device *dev = encoder->dev;
++	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	u32 packet_id = frame->any.type - 0x80;
++	u32 packet_reg = VC4_HDMI_GCP_0 + VC4_HDMI_PACKET_STRIDE * packet_id;
++	uint8_t buffer[VC4_HDMI_PACKET_STRIDE];
++	ssize_t len, i;
++	int ret;
++
++	WARN_ONCE(!(HDMI_READ(VC4_HDMI_RAM_PACKET_CONFIG) &
++		    VC4_HDMI_RAM_PACKET_ENABLE),
++		  "Packet RAM has to be on to store the packet.");
++
++	len = hdmi_infoframe_pack(frame, buffer, sizeof(buffer));
++	if (len < 0)
++		return;
++
++	ret = vc4_hdmi_stop_packet(encoder, frame->any.type);
++	if (ret) {
++		DRM_ERROR("Failed to wait for infoframe to go idle: %d\n", ret);
++		return;
++	}
++
++	for (i = 0; i < len; i += 7) {
++		HDMI_WRITE(packet_reg,
++			   buffer[i + 0] << 0 |
++			   buffer[i + 1] << 8 |
++			   buffer[i + 2] << 16);
++		packet_reg += 4;
++
++		HDMI_WRITE(packet_reg,
++			   buffer[i + 3] << 0 |
++			   buffer[i + 4] << 8 |
++			   buffer[i + 5] << 16 |
++			   buffer[i + 6] << 24);
++		packet_reg += 4;
++	}
++
++	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG,
++		   HDMI_READ(VC4_HDMI_RAM_PACKET_CONFIG) | BIT(packet_id));
++	ret = wait_for((HDMI_READ(VC4_HDMI_RAM_PACKET_STATUS) &
++			BIT(packet_id)), 100);
++	if (ret)
++		DRM_ERROR("Failed to wait for infoframe to start: %d\n", ret);
++}
++
++static void vc4_hdmi_set_avi_infoframe(struct drm_encoder *encoder)
++{
++	struct vc4_hdmi_encoder *vc4_encoder = to_vc4_hdmi_encoder(encoder);
++	struct drm_crtc *crtc = encoder->crtc;
++	const struct drm_display_mode *mode = &crtc->state->adjusted_mode;
++	union hdmi_infoframe frame;
++	int ret;
++
++	ret = drm_hdmi_avi_infoframe_from_display_mode(&frame.avi, mode);
++	if (ret < 0) {
++		DRM_ERROR("couldn't fill AVI infoframe\n");
++		return;
++	}
++
++	if (vc4_encoder->rgb_range_selectable) {
++		if (vc4_encoder->limited_rgb_range) {
++			frame.avi.quantization_range =
++				HDMI_QUANTIZATION_RANGE_LIMITED;
++		} else {
++			frame.avi.quantization_range =
++				HDMI_QUANTIZATION_RANGE_FULL;
++		}
++	}
++
++	vc4_hdmi_write_infoframe(encoder, &frame);
++}
++
++static void vc4_hdmi_set_spd_infoframe(struct drm_encoder *encoder)
++{
++	union hdmi_infoframe frame;
++	int ret;
++
++	ret = hdmi_spd_infoframe_init(&frame.spd, "Broadcom", "Videocore");
++	if (ret < 0) {
++		DRM_ERROR("couldn't fill SPD infoframe\n");
++		return;
++	}
++
++	frame.spd.sdi = HDMI_SPD_SDI_PC;
++
++	vc4_hdmi_write_infoframe(encoder, &frame);
++}
++
++static void vc4_hdmi_set_infoframes(struct drm_encoder *encoder)
++{
++	vc4_hdmi_set_avi_infoframe(encoder);
++	vc4_hdmi_set_spd_infoframe(encoder);
++}
++
+ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 				      struct drm_display_mode *unadjusted_mode,
+ 				      struct drm_display_mode *mode)
+@@ -336,8 +455,9 @@ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 
+ 	if (vc4_encoder->hdmi_monitor && drm_match_cea_mode(mode) > 1) {
+ 		/* CEA VICs other than #1 requre limited range RGB
+-		 * output.  Apply a colorspace conversion to squash
+-		 * 0-255 down to 16-235.  The matrix here is:
++		 * output unless overridden by an AVI infoframe.
++		 * Apply a colorspace conversion to squash 0-255 down
++		 * to 16-235.  The matrix here is:
+ 		 *
+ 		 * [ 0      0      0.8594 16]
+ 		 * [ 0      0.8594 0      16]
+@@ -355,6 +475,9 @@ static void vc4_hdmi_encoder_mode_set(struct drm_encoder *encoder,
+ 		HD_WRITE(VC4_HD_CSC_24_23, (0x100 << 16) | 0x000);
+ 		HD_WRITE(VC4_HD_CSC_32_31, (0x000 << 16) | 0x6e0);
+ 		HD_WRITE(VC4_HD_CSC_34_33, (0x100 << 16) | 0x000);
++		vc4_encoder->limited_rgb_range = true;
++	} else {
++		vc4_encoder->limited_rgb_range = false;
+ 	}
+ 
+ 	/* The RGB order applies even when CSC is disabled. */
+@@ -373,6 +496,8 @@ static void vc4_hdmi_encoder_disable(struct drm_encoder *encoder)
+ 	struct drm_device *dev = encoder->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 
++	HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG, 0);
++
+ 	HDMI_WRITE(VC4_HDMI_TX_PHY_RESET_CTL, 0xf << 16);
+ 	HD_WRITE(VC4_HD_VID_CTL,
+ 		 HD_READ(VC4_HD_VID_CTL) & ~VC4_HD_VID_CTL_ENABLE);
+@@ -425,9 +550,10 @@ static void vc4_hdmi_encoder_enable(struct drm_encoder *encoder)
+ 			   HDMI_READ(VC4_HDMI_SCHEDULER_CONTROL) |
+ 			   VC4_HDMI_SCHEDULER_CONTROL_VERT_ALWAYS_KEEPOUT);
+ 
+-		/* XXX: Set HDMI_RAM_PACKET_CONFIG (1 << 16) and set
+-		 * up the infoframe.
+-		 */
++		HDMI_WRITE(VC4_HDMI_RAM_PACKET_CONFIG,
++			   VC4_HDMI_RAM_PACKET_ENABLE);
++
++		vc4_hdmi_set_infoframes(encoder);
+ 
+ 		drift = HDMI_READ(VC4_HDMI_FIFO_CTL);
+ 		drift &= VC4_HDMI_FIFO_VALID_WRITE_MASK;
+diff --git a/drivers/gpu/drm/vc4/vc4_regs.h b/drivers/gpu/drm/vc4/vc4_regs.h
+index 9ecd6ff..a4b5370 100644
+--- a/drivers/gpu/drm/vc4/vc4_regs.h
++++ b/drivers/gpu/drm/vc4/vc4_regs.h
+@@ -438,6 +438,8 @@
+ #define VC4_HDMI_RAM_PACKET_CONFIG		0x0a0
+ # define VC4_HDMI_RAM_PACKET_ENABLE		BIT(16)
+ 
++#define VC4_HDMI_RAM_PACKET_STATUS		0x0a4
++
+ #define VC4_HDMI_HORZA				0x0c4
+ # define VC4_HDMI_HORZA_VPOS			BIT(14)
+ # define VC4_HDMI_HORZA_HPOS			BIT(13)
+@@ -499,6 +501,9 @@
+ 
+ #define VC4_HDMI_TX_PHY_RESET_CTL		0x2c0
+ 
++#define VC4_HDMI_GCP_0				0x400
++#define VC4_HDMI_PACKET_STRIDE			0x24
++
+ #define VC4_HD_M_CTL				0x00c
+ # define VC4_HD_M_REGISTER_FILE_STANDBY		(3 << 6)
+ # define VC4_HD_M_RAM_STANDBY			(3 << 4)
+-- 
+2.9.3
+
