@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .hu.1.pf1
+%define buildid .pf2.hu.1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.0 v4.8-pf1: https://pf.natalenko.name/news/?p=204
-%define stable_update 1
+#+Hu Pf against 4.8.2 v4.8-pf2: https://pf.natalenko.name/news/?p=207
+%define stable_update 2
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf1.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf2.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -524,6 +524,8 @@ Patch430: ARM-tegra-usb-no-reset.patch
 Patch431: bcm2837-initial-support.patch
 
 Patch432: bcm283x-vc4-fixes.patch
+
+Patch433: AllWinner-net-emac.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -603,6 +605,8 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
 
+Patch504: i8042-skip-selftest-asus-laptops.patch
+
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
@@ -631,6 +635,10 @@ Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
 
 #rhbz 1366842
 Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
+
+# Fix memory corruption caused by p8_ghash
+Patch852: 0001-crypto-ghash-generic-move-common-definitions-to-a-ne.patch
+Patch853: 0001-crypto-vmx-Fix-memory-corruption-caused-by-p8_ghash.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2173,6 +2181,30 @@ fi
 #
 #
 %changelog
+* Sat Oct 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.0-300.pf2.hu.1
+- Update to v4.8-pf2 - https://pf.natalenko.name/news/?p=207
+    There BFS CPU scheduler has been replaced by its successor, MuQSS. Detailes: https://ck-hack.blogspot.de/2016/10/muqss-multiple-queue-skiplist-scheduler.html
+- Change naming scheme to 4.8.0-300.pf2.hu.1 from 4.8.0-300.hu.1.pf2
+
+* Thu Oct 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.3-300
+- Linux v4.8.3
+- CVE-2016-5195 (rhbz 1384344 1387080)
+
+* Tue Oct 18 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix memory corruption caused by p8_ghash
+- Make __xfs_xattr_put_listen preperly report errors (rhbz 1384606)
+
+* Tue Oct 18 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable ACPI_CPPC_CPUFREQ on aarch64
+- Add ethernet driver for AllWinner sun8i-emac (H3/OrangePi and Pine64)
+
+* Mon Oct 17 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.2-300
+- Linux v4.8.2
+- i8042 - skip selftest on ASUS laptops
+
+* Sat Oct 15 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in AXP20X_I2C (should fix rhbz 1352140)
+
 * Tue Oct 11 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.0-1.hu.1.pf1
 - Step to build kernels for Fedora 25.
 - Use new pf patch v4.8-pf1 - https://pf.natalenko.name/news/?p=204
@@ -2259,10 +2291,6 @@ fi
 * Wed Sep 14 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for incorrect return checking in cpupower (rhbz 1374212)
 - Let iio tools build on older kernels
-
-* Tue Sep 13 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.7.3-200.hu.1.pf3
-- Pull Fedora updates to kernel 4.7.3.
-- Update pf patch to v4.7-pf3 (https://pf.natalenko.name/news/?p=193)
 
 * Tue Sep 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.0-0.rc6.git1.1
 - Linux v4.8-rc6-147-ge8988e0
@@ -2594,10 +2622,6 @@ fi
 - Linux v4.7-rc2
 - Disable debugging options.
 
-#* Sun Jun 05 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.5.6-200.hu.1.pf4
-#- 4.5.6-200.hu.1.pf4
-#- Pf v4.5-pf4 https://pf.natalenko.name/news/?p=177
-
 * Fri Jun 03 2016 Laura Abbott <labbott@redhat.com> - 4.7.0-0.rc1.git4.1
 - Linux v4.7-rc1-122-g4340fa5
 
@@ -2848,10 +2872,6 @@ fi
 * Wed Mar 23 2016 Josh Boyer <jwboyer@fedoraproject.org> - 4.6.0-0.rc0.git21.1
 - Linux v4.5-11787-ga24e3d414e59
 - akpm, kvm, rdma
-
-#* Wed Mar 23 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.4.5-300.hu.1.pf8
-#- Merge upstream changes (4.4.6).
-#- Update pf patch to v4.4-pf8, but it stick on 4.4.5 (https://pf.natalenko.name/news/?p=166, https://pf.natalenko.name/news/?p=165)
 
 * Wed Mar 23 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix Tegra Jetson TK1

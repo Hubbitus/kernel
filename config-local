@@ -4,6 +4,8 @@
 CONFIG_IOSCHED_BFQ=m
 
 CONFIG_SCHED_BFS=y
+# BFS successor see https://pf.natalenko.name/news/?p=207
+CONFIG_SCHED_MUQSS=y
 
 CONFIG_SMT_NICE=n
 CONFIG_CGROUP_BFQIO=y
@@ -50,7 +52,6 @@ CONFIG_FTRACE_MCOUNT_RECORD=y
 # CONFIG_FTRACE_STARTUP_TEST is not set
 
 # Ulatencyd: Settings from https://wiki.archlinux.org/index.php/Ulatencyd
-PROC_EVENTS=y
 CONFIG_CGROUPS=y
 CONFIG_CGROUP_FREEZER=y
 CONFIG_CGROUP_DEVICE=y
