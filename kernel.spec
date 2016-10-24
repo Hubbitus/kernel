@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -624,16 +624,6 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-#CVE-2016-7425 rhbz 1377330 1377331
-Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
-
-#rhbz 1366842
-Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
-
-# Fix memory corruption caused by p8_ghash
-Patch852: 0001-crypto-ghash-generic-move-common-definitions-to-a-ne.patch
-Patch853: 0001-crypto-vmx-Fix-memory-corruption-caused-by-p8_ghash.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2171,6 +2161,9 @@ fi
 #
 #
 %changelog
+* Mon Oct 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.4-300
+- Linux v4.8.4
+
 * Thu Oct 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.3-300
 - Linux v4.8.3
 - CVE-2016-5195 (rhbz 1384344 1387080)
