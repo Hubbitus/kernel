@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2161,8 +2161,9 @@ fi
 #
 #
 %changelog
-* Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.4-301
 - Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
+- A collection of other clock fixes in -next for the RPi
 
 * Mon Oct 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.4-300
 - Linux v4.8.4
