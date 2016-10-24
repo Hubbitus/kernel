@@ -2161,6 +2161,9 @@ fi
 #
 #
 %changelog
+* Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
+
 * Mon Oct 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.4-300
 - Linux v4.8.4
 
