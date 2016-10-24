@@ -2181,7 +2181,7 @@ fi
 #
 #
 %changelog
-* Sat Oct 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.0-300.pf2.hu.1
+* Sat Oct 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.2-300.pf2.hu.1
 - Update to v4.8-pf2 - https://pf.natalenko.name/news/?p=207
     There BFS CPU scheduler has been replaced by its successor, MuQSS. Detailes: https://ck-hack.blogspot.de/2016/10/muqss-multiple-queue-skiplist-scheduler.html
 - Change naming scheme to 4.8.0-300.pf2.hu.1 from 4.8.0-300.hu.1.pf2
