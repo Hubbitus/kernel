@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -605,6 +605,9 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+#rhbz 1383451
+Patch850: resend-4.9-hw_random-Don-t-use-a-stack-buffer-in-add_early_randomness.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2144,6 +2147,10 @@ fi
 #
 #
 %changelog
+* Mon Oct 24 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc2.git0.2
+- Rebuild for build problems
+- Add fix for rng with VMAP_STACK (rhbz 1383451)
+
 * Mon Oct 24 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc2.git0.1
 - Linux v4.9-rc2
 
