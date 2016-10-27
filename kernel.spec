@@ -628,6 +628,9 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
 Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 
+# Skylake i915 fixes from 4.9
+Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2166,6 +2169,7 @@ fi
 %changelog
 * Thu Oct 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-9083 CVE-2016-9084 vfio multiple flaws (rhbz 1389258 1389259 1389285)
+- Skylake i915 fixes from 4.9
 
 * Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.4-301
 - Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
