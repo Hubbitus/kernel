@@ -1,7 +1,7 @@
-From 5216de8394ff599e41c8540c0572368c18c51459 Mon Sep 17 00:00:00 2001
+From ba3f737b8521314b62edaa7d4cc4bdc9aeefe394 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
 Date: Tue, 23 Oct 2012 09:30:54 -0400
-Subject: [PATCH 4/9] Add EFI signature data types
+Subject: [PATCH 15/20] Add EFI signature data types
 
 Add the data types that are used for containing hashes, keys and certificates
 for cryptographic verification.
@@ -11,14 +11,14 @@ Upstream-status: Fedora mustard for now
 
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- include/linux/efi.h | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ include/linux/efi.h | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 8cb38cfcba74..8c274b4ea8e6 100644
+index 5af91b58afae..190858d62fe3 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -647,6 +647,9 @@ void efi_native_runtime_setup(void);
+@@ -603,6 +603,9 @@ void efi_native_runtime_setup(void);
  #define LINUX_EFI_ARM_SCREEN_INFO_TABLE_GUID	EFI_GUID(0xe03fc20a, 0x85dc, 0x406e,  0xb9, 0x0e, 0x4a, 0xb5, 0x02, 0x37, 0x1d, 0x95)
  #define LINUX_EFI_LOADER_ENTRY_GUID		EFI_GUID(0x4a67b082, 0x0a4c, 0x41cf,  0xb6, 0xc7, 0x44, 0x0b, 0x29, 0xbb, 0x8c, 0x4f)
  
@@ -28,7 +28,7 @@ index 8cb38cfcba74..8c274b4ea8e6 100644
  typedef struct {
  	efi_guid_t guid;
  	u64 table;
-@@ -879,6 +885,20 @@ typedef struct {
+@@ -853,6 +856,20 @@ typedef struct {
  	efi_memory_desc_t entry[0];
  } efi_memory_attributes_table_t;
  
@@ -50,5 +50,5 @@ index 8cb38cfcba74..8c274b4ea8e6 100644
   * All runtime access to EFI goes through this structure:
   */
 -- 
-2.5.5
+2.9.3
 

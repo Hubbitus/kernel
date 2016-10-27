@@ -1,7 +1,7 @@
-From e27a9a98dcf3ff95568593026da065a72ad21b92 Mon Sep 17 00:00:00 2001
+From d9e0379e8d3cb51efe4e2b1a5a60c52c2c40bdfb Mon Sep 17 00:00:00 2001
 From: Kyle McMartin <kyle@redhat.com>
 Date: Fri, 30 Aug 2013 09:28:51 -0400
-Subject: [PATCH 9/9] Add sysrq option to disable secure boot mode
+Subject: [PATCH 20/20] Add sysrq option to disable secure boot mode
 
 Bugzilla: N/A
 Upstream-status: Fedora mustard
@@ -16,7 +16,7 @@ Upstream-status: Fedora mustard
  7 files changed, 64 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index a666b6c29c77..7732c769937b 100644
+index b93183336674..dab2882927c2 100644
 --- a/arch/x86/kernel/setup.c
 +++ b/arch/x86/kernel/setup.c
 @@ -70,6 +70,11 @@
@@ -70,7 +70,7 @@ index a666b6c29c77..7732c769937b 100644
  	.notifier_call = dump_kernel_offset
  };
 diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
-index abe1a927b332..f4126fcec10c 100644
+index 92595b98e7ed..894ed3f74f04 100644
 --- a/drivers/input/misc/uinput.c
 +++ b/drivers/input/misc/uinput.c
 @@ -379,6 +379,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
@@ -82,10 +82,10 @@ index abe1a927b332..f4126fcec10c 100644
  	input_set_drvdata(udev->dev, udev);
  
 diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index e5139402e7f8..5ef2e04a03ad 100644
+index 52bbd27e93ae..594bd731253a 100644
 --- a/drivers/tty/sysrq.c
 +++ b/drivers/tty/sysrq.c
-@@ -478,6 +478,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+@@ -479,6 +479,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
  	/* x: May be registered on mips for TLB dump */
  	/* x: May be registered on ppc/powerpc for xmon */
  	/* x: May be registered on sparc64 for global PMU dump */
@@ -93,7 +93,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  	NULL,				/* x */
  	/* y: May be registered on sparc64 for global register dump */
  	NULL,				/* y */
-@@ -521,7 +522,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
+@@ -522,7 +523,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
                  sysrq_key_table[i] = op_p;
  }
  
@@ -102,7 +102,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  {
  	struct sysrq_key_op *op_p;
  	int orig_log_level;
-@@ -541,11 +542,15 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -542,11 +543,15 @@ void __handle_sysrq(int key, bool check_mask)
  
          op_p = __sysrq_get_key_op(key);
          if (op_p) {
@@ -119,7 +119,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  			pr_cont("%s\n", op_p->action_msg);
  			console_loglevel = orig_log_level;
  			op_p->handler(key);
-@@ -577,7 +582,7 @@ void __handle_sysrq(int key, bool check_mask)
+@@ -578,7 +583,7 @@ void __handle_sysrq(int key, bool check_mask)
  void handle_sysrq(int key)
  {
  	if (sysrq_on())
@@ -128,7 +128,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  }
  EXPORT_SYMBOL(handle_sysrq);
  
-@@ -658,7 +663,7 @@ static void sysrq_do_reset(unsigned long _state)
+@@ -659,7 +664,7 @@ static void sysrq_do_reset(unsigned long _state)
  static void sysrq_handle_reset_request(struct sysrq_state *state)
  {
  	if (state->reset_requested)
@@ -137,7 +137,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  
  	if (sysrq_reset_downtime_ms)
  		mod_timer(&state->keyreset_timer,
-@@ -809,8 +814,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
+@@ -810,8 +815,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
  
  	default:
  		if (sysrq->active && value && value != 2) {
@@ -149,7 +149,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  		}
  		break;
  	}
-@@ -1094,7 +1101,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+@@ -1095,7 +1102,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
  
  		if (get_user(c, buf))
  			return -EFAULT;
@@ -159,7 +159,7 @@ index e5139402e7f8..5ef2e04a03ad 100644
  
  	return count;
 diff --git a/include/linux/input.h b/include/linux/input.h
-index 1e967694e9a5..2b56c6f9673c 100644
+index a65e3b24fb18..8b0357175049 100644
 --- a/include/linux/input.h
 +++ b/include/linux/input.h
 @@ -42,6 +42,7 @@ struct input_value {
@@ -229,10 +229,10 @@ index 2a20c0dfdafc..3d17205dab77 100644
  
  	return 0;
 diff --git a/kernel/module.c b/kernel/module.c
-index ea484f3a35b2..84b00659b0ee 100644
+index cb1f1da69bf4..5933c27ba19e 100644
 --- a/kernel/module.c
 +++ b/kernel/module.c
-@@ -269,7 +269,7 @@ static void module_assert_mutex_or_preempt(void)
+@@ -270,7 +270,7 @@ static void module_assert_mutex_or_preempt(void)
  #endif
  }
  
@@ -242,5 +242,5 @@ index ea484f3a35b2..84b00659b0ee 100644
  module_param(sig_enforce, bool_enable_only, 0644);
  #endif /* !CONFIG_MODULE_SIG_FORCE */
 -- 
-2.5.5
+2.9.3
 

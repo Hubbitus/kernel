@@ -549,7 +549,9 @@ Patch481: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
 
 Patch482: Add-option-to-automatically-enforce-module-signature.patch
 
-Patch483: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+Patch483: efi-Add-SHIM-and-image-security-database-GUID-defini.patch
+
+Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
 
 Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
 
@@ -2147,6 +2149,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 27 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Refresh SB patchset to fix bisectability issue
+
 * Thu Oct 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-9083 CVE-2016-9084 vfio multiple flaws (rhbz 1389258 1389259 1389285)
 

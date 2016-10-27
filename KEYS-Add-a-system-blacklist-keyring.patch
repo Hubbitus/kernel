@@ -1,7 +1,7 @@
-From 096da19de900a115ee3610b666ecb7e55926623d Mon Sep 17 00:00:00 2001
+From 2a54526850121cd0d7cf649a321488b4dab5731d Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:36:24 -0400
-Subject: [PATCH 6/9] KEYS: Add a system blacklist keyring
+Subject: [PATCH 17/20] KEYS: Add a system blacklist keyring
 
 This adds an additional keyring that is used to store certificates that
 are blacklisted.  This keyring is searched first when loading signed modules
@@ -78,10 +78,10 @@ index fbd4647767e9..5bc291a3d261 100644
  extern struct key *ima_blacklist_keyring;
  
 diff --git a/init/Kconfig b/init/Kconfig
-index a9c4aefd5436..e5449d5aeff9 100644
+index 34407f15e6d3..461ad575a608 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1829,6 +1829,15 @@ config SYSTEM_DATA_VERIFICATION
+@@ -1859,6 +1859,15 @@ config SYSTEM_DATA_VERIFICATION
  	  module verification, kexec image verification and firmware blob
  	  verification.
  
@@ -98,5 +98,5 @@ index a9c4aefd5436..e5449d5aeff9 100644
  	bool "Profiling support"
  	help
 -- 
-2.5.5
+2.9.3
 

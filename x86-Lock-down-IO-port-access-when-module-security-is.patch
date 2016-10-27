@@ -1,7 +1,8 @@
-From 8010b5eb4680df797575e6306d4d891200e303ab Mon Sep 17 00:00:00 2001
+From e7817a96c7ef1b502dba6f70b75f9e8993a8750b Mon Sep 17 00:00:00 2001
 From: Matthew Garrett <matthew.garrett@nebula.com>
 Date: Thu, 8 Mar 2012 10:35:59 -0500
-Subject: [PATCH] x86: Lock down IO port access when module security is enabled
+Subject: [PATCH 03/20] x86: Lock down IO port access when module security is
+ enabled
 
 IO port access would permit users to gain access to PCI configuration
 registers, which in turn (on a lot of hardware) give access to MMIO register
@@ -45,10 +46,10 @@ index 589b3193f102..ab8372443efb 100644
  	}
  	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) |
 diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 71025c2f6bbb..86e5bfa91563 100644
+index 5bb1985ec484..7f1a7ab5850d 100644
 --- a/drivers/char/mem.c
 +++ b/drivers/char/mem.c
-@@ -27,6 +27,7 @@
+@@ -28,6 +28,7 @@
  #include <linux/export.h>
  #include <linux/io.h>
  #include <linux/uio.h>
@@ -56,7 +57,7 @@ index 71025c2f6bbb..86e5bfa91563 100644
  
  #include <linux/uaccess.h>
  
-@@ -577,6 +578,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
+@@ -580,6 +581,9 @@ static ssize_t write_port(struct file *file, const char __user *buf,
  	unsigned long i = *ppos;
  	const char __user *tmp = buf;
  
@@ -67,5 +68,5 @@ index 71025c2f6bbb..86e5bfa91563 100644
  		return -EFAULT;
  	while (count-- > 0 && i < 65536) {
 -- 
-2.5.5
+2.9.3
 
