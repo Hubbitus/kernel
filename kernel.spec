@@ -625,6 +625,9 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
+# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
+Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2161,6 +2164,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-9083 CVE-2016-9084 vfio multiple flaws (rhbz 1389258 1389259 1389285)
+
 * Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.4-301
 - Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
 - A collection of other clock fixes in -next for the RPi
