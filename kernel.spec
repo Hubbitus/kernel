@@ -631,6 +631,9 @@ Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 # Skylake i915 fixes from 4.9
 Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
 
+#rhbz 1325354
+Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2170,6 +2173,7 @@ fi
 * Thu Oct 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-9083 CVE-2016-9084 vfio multiple flaws (rhbz 1389258 1389259 1389285)
 - Skylake i915 fixes from 4.9
+- Fix MS input devices identified as joysticks (rhbz 1325354)
 
 * Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.4-301
 - Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
