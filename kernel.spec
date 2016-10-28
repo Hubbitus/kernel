@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2149,6 +2149,9 @@ fi
 #
 #
 %changelog
+* Fri Oct 28 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc2.git2.1
+- Linux v4.9-rc2-138-g14970f2
+
 * Thu Oct 27 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Refresh SB patchset to fix bisectability issue
 
