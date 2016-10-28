@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -55,7 +55,7 @@ Summary: The Linux kernel
 
 # Do we have a -stable update to apply?
 #+Hu Pf against 4.8.2 v4.8-pf2: https://pf.natalenko.name/news/?p=207
-%define stable_update 2
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -630,15 +630,14 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
-#CVE-2016-7425 rhbz 1377330 1377331
-Patch850: arcmsr-buffer-overflow-in-archmsr_iop_message_xfer.patch
+# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
+Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 
-#rhbz 1366842
-Patch851: drm-virtio-reinstate-drm_virtio_set_busid.patch
+# Skylake i915 fixes from 4.9
+Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
 
-# Fix memory corruption caused by p8_ghash
-Patch852: 0001-crypto-ghash-generic-move-common-definitions-to-a-ne.patch
-Patch853: 0001-crypto-vmx-Fix-memory-corruption-caused-by-p8_ghash.patch
+#rhbz 1325354
+Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
 # END OF PATCH DEFINITIONS
 
