@@ -2168,6 +2168,9 @@ fi
 #
 #
 %changelog
+* Sat Oct 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor VC4 bug fix
+
 * Fri Oct 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.5-300
 - Linux v4.8.5
 
