@@ -1,0 +1,1 @@
+fedpkg --dist epel7 build --scratch --srpm --arch=x86_64

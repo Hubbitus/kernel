@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .pf2.hu.1
+%define buildid .pf4.hu.2
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.2 v4.8-pf2: https://pf.natalenko.name/news/?p=207
+#+Hu Pf against 4.8.4 v4.8-pf4: https://pf.natalenko.name/news/?p=209
 %define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf2.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf4.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -629,15 +629,6 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
-Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
-
-# Skylake i915 fixes from 4.9
-Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
-
-#rhbz 1325354
-Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1719,9 +1710,9 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
 pushd tools/thermal/tmon/
 %{make}
 popd
-pushd tools/iio/
-%{make}
-popd
+#-Hu1 pushd tools/iio/
+#-Hu1 %{make}
+#-Hu1 popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1889,9 +1880,9 @@ install -m644 %{SOURCE2001} %{buildroot}%{_sysconfdir}/sysconfig/cpupower
 pushd tools/thermal/tmon
 make INSTALL_ROOT=%{buildroot} install
 popd
-pushd tools/iio
-make INSTALL_ROOT=%{buildroot} install
-popd
+#-Hu1 pushd tools/iio
+#-Hu1 make INSTALL_ROOT=%{buildroot} install
+#-Hu1 popd
 %endif
 
 %if %{with_bootwrapper}
@@ -2083,9 +2074,9 @@ fi
 %{_mandir}/man8/turbostat*
 %endif
 %{_bindir}/tmon
-%{_bindir}/iio_event_monitor
-%{_bindir}/iio_generic_buffer
-%{_bindir}/lsiio
+#-Hu1 %{_bindir}/iio_event_monitor
+#-Hu1 %{_bindir}/iio_generic_buffer
+#-Hu1 %{_bindir}/lsiio
 %endif
 
 %if %{with_debuginfo}
@@ -2180,6 +2171,11 @@ fi
 #
 #
 %changelog
+* Thu Oct 27 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.4-301.pf4.hu.1
+- Pull Fedora changes. Step to 4.8.4.
+- Due to the error build on epel http://koji.fedoraproject.org/koji/getfile?taskID=16206974&name=build.log&offset=-4000 DISABLE build tools/iio!
+- Upodate pf to 4.8-pf4 - https://pf.natalenko.name/news/?p=211.
+
 * Sat Oct 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.2-300.pf2.hu.1
 - Update to v4.8-pf2 - https://pf.natalenko.name/news/?p=207
     There BFS CPU scheduler has been replaced by its successor, MuQSS. Detailes: https://ck-hack.blogspot.de/2016/10/muqss-multiple-queue-skiplist-scheduler.html
