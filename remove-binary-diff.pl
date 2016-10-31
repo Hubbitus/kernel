@@ -21,6 +21,8 @@ while(my $row = <>) {
 		@current_patch = ();
 	} elsif ($row =~ /Binary files (.)* differ$/) {
 		$is_binary = 1;
+	} elsif ($row =~ /GIT binary patch/) {
+		$is_binary = 1;
 	}
 	push (@current_patch, $row);
 }
