@@ -2149,6 +2149,9 @@ fi
 #
 #
 %changelog
+* Mon Oct 31 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- arm64: Enable 48bit VA
+
 * Mon Oct 31 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc3.git0.1
 - Linux v4.9-rc3
 
