@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -513,6 +513,14 @@ Patch425: arm64-pcie-quirks.patch
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
+# Fix OMAP4 (pandaboard)
+Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch428: ARM-OMAP4-Fix-crashes.patch
+
+# Not particularly happy we don't yet have a proper upstream resolution this is the right direction
+# https://www.spinics.net/lists/arm-kernel/msg535191.html
+Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -625,9 +633,6 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
 Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
-
-# Skylake i915 fixes from 4.9
-Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
 
 #rhbz 1325354
 Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
@@ -2168,6 +2173,13 @@ fi
 #
 #
 %changelog
+* Tue Nov  1 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.6-300
+- Linux v4.8.6
+- Add revert to fix omap4 mmc (panda)
+- Other minor omap4 fixes
+- Adjust config for some AllWinner devices that don't like modular bits
+- Add patch for aarch64 memory regions
+
 * Sat Oct 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor VC4 bug fix
 
