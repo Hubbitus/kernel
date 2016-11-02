@@ -510,6 +510,14 @@ Patch425: arm64-pcie-quirks.patch
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
+# Fix OMAP4 (pandaboard)
+Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch428: ARM-OMAP4-Fix-crashes.patch
+
+# Not particularly happy we don't yet have a proper upstream resolution this is the right direction
+# https://www.spinics.net/lists/arm-kernel/msg535191.html
+Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
+
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
 
@@ -2149,6 +2157,10 @@ fi
 #
 #
 %changelog
+* Wed Nov  2 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Some OMAP4 fixes
+- ARM64 fix for NUMA
+
 * Tue Nov 01 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc3.git1.1
 - Linux v4.9-rc3-243-g0c183d9
 
