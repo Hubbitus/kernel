@@ -637,6 +637,9 @@ Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 #rhbz 1325354
 Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
+#rhbz 1391279
+Patch853: 0001-dm-raid-fix-compat_features-validation.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2173,6 +2176,9 @@ fi
 #
 #
 %changelog
+* Wed Nov  2 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- dm raid: fix compat_features validation (rhbz 1391279)
+
 * Tue Nov  1 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.6-300
 - Linux v4.8.6
 - Add revert to fix omap4 mmc (panda)
