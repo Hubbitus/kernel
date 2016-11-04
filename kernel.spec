@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -615,9 +615,6 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
-Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2157,6 +2154,9 @@ fi
 #
 #
 %changelog
+* Fri Nov 04 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc3.git2.1
+- Linux v4.9-rc3-261-g577f12c
+
 * Wed Nov  2 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Some OMAP4 fixes
 - ARM64 fix for NUMA
