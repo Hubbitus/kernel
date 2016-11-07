@@ -2154,6 +2154,9 @@ fi
 #
 #
 %changelog
+* Mon Nov  7 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Mon Nov 07 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc4.git0.1
 - Linux v4.9-rc4
 
