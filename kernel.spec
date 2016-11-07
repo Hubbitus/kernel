@@ -2154,6 +2154,11 @@ fi
 #
 #
 %changelog
+* Mon Nov 07 2016 Laura Abbott <labbott@redhat.com>
+- Enable CONFIG_EXT4_ENCRYPTION (rhbz 1389509)
+- Enable CONFIG_NFSD_FLEXFILELAYOUT
+- Enable CONFIG_HIST_TRIGGERS (rhbz 1390783)
+
 * Mon Nov  7 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 
