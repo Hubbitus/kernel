@@ -1,1 +1,1 @@
-fedpkg --dist epel7 build --scratch --srpm --arch=x86_64
+time fedpkg --dist epel7 build --scratch --srpm --arch=x86_64

@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .pf4.hu.2
+%define buildid .pf5.hu.3
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.4 v4.8-pf4: https://pf.natalenko.name/news/?p=209
-%define stable_update 4
+#+Hu Pf against 4.8.5 v4.8-pf5: https://pf.natalenko.name/news/?p=213
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf4.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf5.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -605,8 +605,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
 
-Patch504: i8042-skip-selftest-asus-laptops.patch
-
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
@@ -629,6 +627,15 @@ Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
+Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
+
+# Skylake i915 fixes from 4.9
+Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
+
+#rhbz 1325354
+Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1158,7 +1165,6 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
 %if 0%{?gitrev}
     xzcat %{SOURCE5000} | patch -p1 -F1 -s
 %endif
-
 %endif
     git init
     git config user.email "kernel-team@fedoraproject.org"
@@ -2171,15 +2177,45 @@ fi
 #
 #
 %changelog
+* Wed Nov 02 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.3
+- CONFIG_SCHED_MUQSS=y
+
+* Mon Oct 31 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.2
+- Try build with CONFIG_SCHED_MUQSS=n by suggestipon of Oleksandr Natalenko in mail.
+
+* Sun Oct 30 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.1
+- Kernel 4.8.5.
+- Pull Fedora changes.
+- Update pf patch to v4.8-pf5 https://pf.natalenko.name/news/?p=213.
+
+* Sat Oct 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor VC4 bug fix
+
+* Fri Oct 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.5-300
+- Linux v4.8.5
+
 * Thu Oct 27 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.4-301.pf4.hu.1
 - Pull Fedora changes. Step to 4.8.4.
 - Due to the error build on epel http://koji.fedoraproject.org/koji/getfile?taskID=16206974&name=build.log&offset=-4000 DISABLE build tools/iio!
 - Upodate pf to 4.8-pf4 - https://pf.natalenko.name/news/?p=211.
 
+* Thu Oct 27 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-9083 CVE-2016-9084 vfio multiple flaws (rhbz 1389258 1389259 1389285)
+- Skylake i915 fixes from 4.9
+- Fix MS input devices identified as joysticks (rhbz 1325354)
+
+* Mon Oct 24 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.4-301
+- Upstream fix for Raspberry Pi to fix setting low-resolution video modes on HDMI
+- A collection of other clock fixes in -next for the RPi
+
+* Mon Oct 24 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.4-300
+- Linux v4.8.4
+
 * Sat Oct 22 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.2-300.pf2.hu.1
 - Update to v4.8-pf2 - https://pf.natalenko.name/news/?p=207
     There BFS CPU scheduler has been replaced by its successor, MuQSS. Detailes: https://ck-hack.blogspot.de/2016/10/muqss-multiple-queue-skiplist-scheduler.html
 - Change naming scheme to 4.8.0-300.pf2.hu.1 from 4.8.0-300.hu.1.pf2
+
 
 * Thu Oct 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.3-300
 - Linux v4.8.3
