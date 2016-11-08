@@ -523,6 +523,10 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
+Patch432: bcm283x-vc4-fixes.patch
+
+Patch433: AllWinner-net-emac.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2154,6 +2158,9 @@ fi
 #
 #
 %changelog
+* Tue Nov  8 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Sync some ARM patches from F-25 branch
+
 * Mon Nov 07 2016 Laura Abbott <labbott@redhat.com>
 - Enable CONFIG_EXT4_ENCRYPTION (rhbz 1389509)
 - Enable CONFIG_NFSD_FLEXFILELAYOUT
