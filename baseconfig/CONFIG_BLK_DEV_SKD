@@ -1,0 +1,1 @@
+CONFIG_BLK_DEV_SKD=m # 64-bit only but easier to put here

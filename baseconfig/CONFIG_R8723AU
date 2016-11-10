@@ -1,0 +1,1 @@
+CONFIG_R8723AU=m # Jes Sorensen maintains this (rhbz 1100162)

@@ -1,0 +1,1 @@
+CONFIG_R8712U=m # Larry Finger maintains this (rhbz 699618)

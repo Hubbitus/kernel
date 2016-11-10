@@ -1,0 +1,1 @@
+CONFIG_NF_CONNTRACK_PROCFS=y # check if contrack(8) in f17 supports netlink

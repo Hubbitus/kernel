@@ -425,38 +425,33 @@ Source98: filter-ppc64p7.sh
 Source99: filter-modules.sh
 %define modsign_cmd %{SOURCE18}
 
-Source19: Makefile.release
-Source20: Makefile.config
-Source21: config-debug
-Source22: config-nodebug
-Source23: config-generic
-Source24: config-no-extra
+Source20: kernel-aarch64.config
+Source21: kernel-aarch64-debug.config
+Source22: kernel-armv7hl.config
+Source23: kernel-armv7hl-debug.config
+Source24: kernel-armv7hl-lpae.config
+Source25: kernel-armv7hl-lpae-debug.config
+Source26: kernel-i686.config
+Source27: kernel-i686-debug.config
+Source28: kernel-i686-PAE.config
+Source29: kernel-i686-PAEdebug.config
+Source30: kernel-ppc64.config
+Source31: kernel-ppc64-debug.config
+Source32: kernel-ppc64le.config
+Source33: kernel-ppc64le-debug.config
+Source34: kernel-ppc64p7.config
+Source35: kernel-ppc64p7-debug.config
+Source36: kernel-s390x.config
+Source37: kernel-s390x-debug.config
+Source38: kernel-x86_64.config
+Source39: kernel-x86_64-debug.config
 
-Source30: config-x86-generic
-Source31: config-i686-PAE
-Source32: config-x86-32-generic
-
-Source40: config-x86_64-generic
-
-Source50: config-powerpc64-generic
-Source53: config-powerpc64
-Source54: config-powerpc64p7
-Source55: config-powerpc64le
-
-Source70: config-s390x
-
-Source100: config-arm-generic
-
-# Unified ARM kernels
-Source101: config-armv7-generic
-Source102: config-armv7
-Source103: config-armv7-lpae
-
-Source110: config-arm64
+Source40: generate_all_configs.sh
+Source41: generate_debug_configs.sh
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
-Source1000: config-local
+Source1000: kernel-local
 
 # Sources for kernel-tools
 Source2000: cpupower.service
@@ -1195,19 +1190,24 @@ git commit -a -m "Stable update"
 %endif
 
 # Drop some necessary files from the source dir into the buildroot
-cp $RPM_SOURCE_DIR/config-* .
+cp $RPM_SOURCE_DIR/kernel-*.config .
+cp %{SOURCE1000} .
 cp %{SOURCE15} .
+cp %{SOURCE40} .
+cp %{SOURCE41} .
 
 %if !%{debugbuildsenabled}
-%if %{with_release}
 # The normal build is a really debug build and the user has explicitly requested
 # a release kernel. Change the config files into non-debug versions.
-make -f %{SOURCE19} config-release
-%endif
+%if !%{with_release}
+VERSION=%{version} ./generate_debug_configs.sh
+%else
+VERSION=%{version} ./generate_all_configs.sh
 %endif
 
-# Dynamically generate kernel .config files from config-* files
-make -f %{SOURCE20} VERSION=%{version} configs
+%else
+VERSION=%{version} ./generate_all_configs.sh
+%endif
 
 # Merge in any user-provided local config option changes
 %ifnarch %nobuildarches

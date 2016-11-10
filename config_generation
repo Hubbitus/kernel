@@ -1,0 +1,37 @@
+# config-variant=config:config:config
+# kernel.config files are build on the fly based on this config,
+# the first arg is arch and variant, the second is a hierarchy of
+# config options, lowest priority to highest
+
+# x86_64
+x86_64=baseconfig:baseconfig-x86:baseconfig-x86-x86_64
+x86_64-debug=baseconfig:baseconfig-x86:baseconfig-x86-x86_64:debugconfig:debugconfig-x86
+
+# i686
+i686=baseconfig:baseconfig-x86:baseconfig-x86-i686
+i686-debug=baseconfig:baseconfig-x86:baseconfig-x86-i686:debugconfig:debugconfig-x86
+i686-PAE=baseconfig:baseconfig-x86:baseconfig-x86-i686PAE
+i686-PAEdebug=baseconfig:baseconfig-x86:baseconfig-x86-i686PAE:debugconfig:debugconfig-x86
+
+# ppc64
+ppc64=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64
+ppc64-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64:debugconfig
+
+# ppc64le
+ppc64le=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64le
+ppc64le-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64le:debugconfig
+ppc64p7=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64p7
+ppc64p7-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64p7:debugconfig
+# s390x
+s390x=baseconfig:baseconfig-s390x
+s390x-debug=baseconfig:baseconfig-s390x:debugconfig
+
+# aarch64
+aarch64=baseconfig:baseconfig-arm:baseconfig-arm-arm64
+aarch64-debug=baseconfig:baseconfig-arm:baseconfig-arm-arm64:debugconfig:debugconfig-arm
+
+# arm
+armv7hl=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-armv7
+armv7hl-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-armv7:debugconfig:debugconfig-arm:debugconfig-arm-armv7
+armv7hl-lpae=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-lpae
+armv7hl-lpae-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-lpae:debugconfig:debugconfig-arm:debugconfig-arm-armv7

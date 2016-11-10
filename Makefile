@@ -10,9 +10,7 @@ help:
 	@echo "Try fedpkg $@ or something like that"
 	@exit 1
 
-include Makefile.config
-
-prep:
+prep: config-files
 	fedpkg -v prep
 
 noarch:
@@ -25,91 +23,22 @@ local:
 extremedebug:
 	@perl -pi -e 's/# CONFIG_DEBUG_PAGEALLOC is not set/CONFIG_DEBUG_PAGEALLOC=y/' config-nodebug
 
+config-files:
+	@./build_configs.sh
+
 debug:
-	@perl -pi -e 's/# CONFIG_LOCK_STAT is not set/CONFIG_LOCK_STAT=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_STACK_USAGE is not set/CONFIG_DEBUG_STACK_USAGE=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_SLAB is not set/CONFIG_DEBUG_SLAB=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_MUTEXES is not set/CONFIG_DEBUG_MUTEXES=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_RT_MUTEXES is not set/CONFIG_DEBUG_RT_MUTEXES=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_LOCK_ALLOC is not set/CONFIG_DEBUG_LOCK_ALLOC=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_LOCK_TORTURE_TEST is not set/CONFIG_LOCK_TORTURE_TEST=m/' config-nodebug
-	@perl -pi -e 's/# CONFIG_PROVE_LOCKING is not set/CONFIG_PROVE_LOCKING=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_PROVE_RCU is not set/CONFIG_PROVE_RCU=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_SPINLOCK is not set/CONFIG_DEBUG_SPINLOCK=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_VM is not set/CONFIG_DEBUG_VM=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_VM_PGFLAGS is not set/CONFIG_DEBUG_VM_PGFLAGS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAULT_INJECTION is not set/CONFIG_FAULT_INJECTION=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAILSLAB is not set/CONFIG_FAILSLAB=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAIL_PAGE_ALLOC is not set/CONFIG_FAIL_PAGE_ALLOC=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAIL_IO_TIMEOUT is not set/CONFIG_FAIL_IO_TIMEOUT=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAIL_MAKE_REQUEST is not set/CONFIG_FAIL_MAKE_REQUEST=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAIL_MMC_REQUEST is not set/CONFIG_FAIL_MMC_REQUEST=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAULT_INJECTION_DEBUG_FS is not set/CONFIG_FAULT_INJECTION_DEBUG_FS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_FAULT_INJECTION_STACKTRACE_FILTER is not set/CONFIG_FAULT_INJECTION_STACKTRACE_FILTER=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_SG is not set/CONFIG_DEBUG_SG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_PI_LIST is not set/CONFIG_DEBUG_PI_LIST=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS is not set/CONFIG_DEBUG_OBJECTS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_FREE is not set/CONFIG_DEBUG_OBJECTS_FREE=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_TIMERS is not set/CONFIG_DEBUG_OBJECTS_TIMERS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_WORK is not set/CONFIG_DEBUG_OBJECTS_WORK=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER is not set/CONFIG_DEBUG_OBJECTS_PERCPU_COUNTER=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_OBJECTS_RCU_HEAD is not set/CONFIG_DEBUG_OBJECTS_RCU_HEAD=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_X86_PTDUMP is not set/CONFIG_X86_PTDUMP=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_ARM64_PTDUMP is not set/CONFIG_ARM64_PTDUMP=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_EFI_PGT_DUMP is not set/CONFIG_EFI_PGT_DUMP=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CAN_DEBUG_DEVICES is not set/CONFIG_CAN_DEBUG_DEVICES=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_MODULE_FORCE_UNLOAD is not set/CONFIG_MODULE_FORCE_UNLOAD=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_NOTIFIERS is not set/CONFIG_DEBUG_NOTIFIERS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DMA_API_DEBUG is not set/CONFIG_DMA_API_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_PM_TEST_SUSPEND is not set/CONFIG_PM_TEST_SUSPEND=y/' config-generic
-	@perl -pi -e 's/# CONFIG_PM_ADVANCED_DEBUG is not set/CONFIG_PM_ADVANCED_DEBUG=y/' config-generic
-	@perl -pi -e 's/# CONFIG_B43_DEBUG is not set/CONFIG_B43_DEBUG=y/' config-generic
-	@perl -pi -e 's/# CONFIG_B43LEGACY_DEBUG is not set/CONFIG_B43LEGACY_DEBUG=y/' config-generic
-	@perl -pi -e 's/# CONFIG_MMIOTRACE is not set/CONFIG_MMIOTRACE=y/' config-nodebug
-	@perl -pi -e 's/CONFIG_STRIP_ASM_SYMS=y/# CONFIG_STRIP_ASM_SYMS is not set/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_CREDENTIALS is not set/CONFIG_DEBUG_CREDENTIALS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_FORCE_WEAK_PER_CPU is not set/CONFIG_DEBUG_FORCE_WEAK_PER_CPU=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_ACPI_DEBUG is not set/CONFIG_ACPI_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_EXT4_DEBUG is not set/CONFIG_EXT4_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_PERF_USE_VMALLOC is not set/CONFIG_DEBUG_PERF_USE_VMALLOC=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_JBD2_DEBUG is not set/CONFIG_JBD2_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_NFSD_FAULT_INJECTION is not set/CONFIG_NFSD_FAULT_INJECTION=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_BLK_CGROUP is not set/CONFIG_DEBUG_BLK_CGROUP=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DRBD_FAULT_INJECTION is not set/CONFIG_DRBD_FAULT_INJECTION=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_ATH_DEBUG is not set/CONFIG_ATH_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CARL9170_DEBUGFS is not set/CONFIG_CARL9170_DEBUGFS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_IWLWIFI_DEVICE_TRACING is not set/CONFIG_IWLWIFI_DEVICE_TRACING=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DMADEVICES_DEBUG is not set/CONFIG_DMADEVICES_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CEPH_LIB_PRETTYDEBUG is not set/CONFIG_CEPH_LIB_PRETTYDEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_QUOTA_DEBUG is not set/CONFIG_QUOTA_DEBUG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_KGDB_KDB is not set/CONFIG_KGDB_KDB=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_KDB_KEYBOARD is not set/CONFIG_KDB_KEYBOARD=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_CPU_NOTIFIER_ERROR_INJECT is not set/CONFIG_CPU_NOTIFIER_ERROR_INJECT=m/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_PER_CPU_MAPS is not set/CONFIG_DEBUG_PER_CPU_MAPS=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_TEST_LIST_SORT is not set/CONFIG_TEST_LIST_SORT=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_ATOMIC_SLEEP is not set/CONFIG_DEBUG_ATOMIC_SLEEP=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DETECT_HUNG_TASK is not set/CONFIG_DETECT_HUNG_TASK=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_WQ_WATCHDOG is not set/CONFIG_WQ_WATCHDOG=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK is not set/CONFIG_X86_BOOTPARAM_MEMORY_CORRUPTION_CHECK=y/' config-nodebug
-	@perl -pi -e 's/# CONFIG_DEBUG_KMEMLEAK is not set/CONFIG_DEBUG_KMEMLEAK=y/' config-nodebug
-
-	@# just in case we're going from extremedebug -> debug
-	@perl -pi -e 's/CONFIG_DEBUG_PAGEALLOC=y/# CONFIG_DEBUG_PAGEALLOC is not set/' config-nodebug
-
-	@perl -pi -e 's/# CONFIG_MAXSMP is not set/CONFIG_MAXSMP=y/' config-x86-generic
-
 	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
 	@rpmdev-bumpspec -c "Reenable debugging options." kernel.spec
 
-nodebuginfo:
-	@perl -pi -e 's/^%define with_debuginfo %\{\?_without_debuginfo: 0\} %\{\?\!_without_debuginfo: 1\}/%define with_debuginfo %\{\?_without_debuginfo: 0\} %\{\?\!_without_debuginfo: 0\}/' kernel.spec
-nodebug: release
-	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
-release: config-release
+release:
 	@perl -pi -e 's/^%define debugbuildsenabled 0/%define debugbuildsenabled 1/' kernel.spec
 	@rpmdev-bumpspec -c "Disable debugging options." kernel.spec
 
-include Makefile.release
+nodebuginfo:
+	@perl -pi -e 's/^%define with_debuginfo %\{\?_without_debuginfo: 0\} %\{\?\!_without_debuginfo: 1\}/%define with_debuginfo %\{\?_without_debuginfo: 0\} %\{\?\!_without_debuginfo: 0\}/' kernel.spec
+
+nodebug: release
+	@perl -pi -e 's/^%define debugbuildsenabled 1/%define debugbuildsenabled 0/' kernel.spec
 
 ifeq ($(MAKECMDGOALS),me a sandwich)
 .PHONY: me a sandwich
