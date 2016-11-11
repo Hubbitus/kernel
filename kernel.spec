@@ -640,6 +640,9 @@ Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 #rhbz 1392885
 Patch853: 0001-drm-i915-Refresh-that-status-of-MST-capable-connecto.patch
 
+#rhbz 1390308
+Patch854: nouveau-add-maxwell-to-backlight-init.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2176,6 +2179,9 @@ fi
 #
 #
 %changelog
+* Fri Nov 10 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Nouveau: Add Maxwell to backlight initialization (rhbz 1390308)
+
 * Thu Nov 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.7-300
 - Linux v4.8.7
 - Fixes cve-2016-8630 (rhbz 1393350 1393358)
