@@ -2179,7 +2179,7 @@ fi
 #
 #
 %changelog
-* Fri Nov 10 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+* Fri Nov 11 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Nouveau: Add Maxwell to backlight initialization (rhbz 1390308)
 
 * Thu Nov 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.7-300
