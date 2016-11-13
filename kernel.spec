@@ -2158,6 +2158,9 @@ fi
 #
 #
 %changelog
+* Sun Nov 13 2016 Hans de Goede <jwrdegoede@fedoraproject.org>
+- ARM config updates to fix boot issues on Allwinner A23, A31 and A33
+
 * Fri Nov 11 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc4.git4.1
 - Linux v4.9-rc4-107-g015ed94
 
