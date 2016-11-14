@@ -643,6 +643,9 @@ Patch853: 0001-drm-i915-Refresh-that-status-of-MST-capable-connecto.patch
 #rhbz 1390308
 Patch854: nouveau-add-maxwell-to-backlight-init.patch
 
+#rhbz 1385823
+Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2179,6 +2182,9 @@ fi
 #
 #
 %changelog
+* Mon Nov 14 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for some Yoga laptop WIFI (rhbz 1385823)
+
 * Fri Nov 11 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - Nouveau: Add Maxwell to backlight initialization (rhbz 1390308)
 
