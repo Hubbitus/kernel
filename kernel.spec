@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 4
+%global rcrev 5
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -613,9 +613,6 @@ Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#rhbz 1374212
-Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
@@ -2158,6 +2155,9 @@ fi
 #
 #
 %changelog
+* Mon Nov 14 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc5.git0.1
+- Linux v4.9-rc5
+
 * Mon Nov 14 2016 Laura Abbott <labbott@redhat.com>
 - Disable debugging options.
 
