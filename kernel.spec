@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2155,6 +2155,9 @@ fi
 #
 #
 %changelog
+* Tue Nov 15 2016 Laura Abbott <labbott@redhat.com>
+- Linux v4.9-rc5-172-ge76d21c
+
 * Tue Nov 15 2016 Laura Abbott <labbott@redhat.com>
 - Reenable debugging options.
 
