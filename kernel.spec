@@ -2155,7 +2155,7 @@ fi
 #
 #
 %changelog
-* Tue Nov 16 2016 Josh Boyer <jwboyer@fedoraproject.org>
+* Tue Nov 15 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Dan Horák to change default CPU type for s390x to z10
 
 * Mon Nov 14 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc5.git0.1
