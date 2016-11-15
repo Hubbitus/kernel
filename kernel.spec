@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 7
+%define stable_update 8
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -645,6 +645,9 @@ Patch854: nouveau-add-maxwell-to-backlight-init.patch
 
 #rhbz 1385823
 Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
+
+#CVE-2016-8645 rhbz 1393904 1393908
+Patch856: 0001-tcp-take-care-of-truncations-done-by-sk_filter.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2182,6 +2185,10 @@ fi
 #
 #
 %changelog
+* Tue Nov 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.8-300
+- Linux v4.8.8
+- Fix crash in tcp_collapse CVE-2016-8645 (rhbz 1393904 1393908)
+
 * Mon Nov 14 2016 Laura Abbott <labbott@fedoraproject.org>
 - Fix for some Yoga laptop WIFI (rhbz 1385823)
 
