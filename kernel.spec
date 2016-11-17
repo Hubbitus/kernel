@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -616,6 +616,8 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+Patch850: Fix-BUG-in-calc_seckey.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2155,6 +2157,10 @@ fi
 #
 #
 %changelog
+* Thu Nov 17 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc5.git3.1
+- Linux v4.9-rc5-213-g961b708
+- Fix CIFS bug with VMAP_STACK
+
 * Wed Nov 16 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc5.git2.1
 - Linux v4.9-rc5-177-g81bcfe5
 
