@@ -2185,6 +2185,9 @@ fi
 #
 #
 %changelog
+* Sun Nov 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config tweaks
+
 * Tue Nov 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.8-300
 - Linux v4.8.8
 - Fix crash in tcp_collapse CVE-2016-8645 (rhbz 1393904 1393908)
