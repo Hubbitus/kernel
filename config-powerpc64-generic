@@ -183,6 +183,7 @@ CONFIG_FB_MATROX_G=y
 # CONFIG_FB_VGA16 is not set
 # CONFIG_FB_ATY128 is not set
 # CONFIG_FB_ATY is not set
+# CONFIG_AGP is not set
 
 # CONFIG_SND_SOC is not set
 # CONFIG_INPUT_PCSPKR is not set

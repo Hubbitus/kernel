@@ -2157,6 +2157,11 @@ fi
 #
 #
 %changelog
+* Sat Nov 19 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Various ARMv7/aarch64 updates
+- Enable CEC media input devices
+- General config cleanups
+
 * Fri Nov 18 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc5.git4.1
 - Linux v4.9-rc5-264-g6238986
 
