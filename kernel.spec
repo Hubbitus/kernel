@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 10
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -625,9 +625,6 @@ Patch846: security-selinux-overlayfs-support.patch
 #rhbz 1360688
 Patch847: rc-core-fix-repeat-events.patch
 
-#rhbz 1374212
-Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
-
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
@@ -645,9 +642,6 @@ Patch854: nouveau-add-maxwell-to-backlight-init.patch
 
 #rhbz 1385823
 Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
-
-#CVE-2016-8645 rhbz 1393904 1393908
-Patch856: 0001-tcp-take-care-of-truncations-done-by-sk_filter.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2185,6 +2179,9 @@ fi
 #
 #
 %changelog
+* Mon Nov 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.10-300
+- Linux v4.8.10
+
 * Sun Nov 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config tweaks
 
