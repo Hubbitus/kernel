@@ -1,0 +1,93 @@
+From patchwork Thu Oct  6 09:52:07 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: arm64: mm: Fix memmap to be initialized for the entire section
+From: Robert Richter <rrichter@cavium.com>
+X-Patchwork-Id: 9364537
+Message-Id: <1475747527-32387-1-git-send-email-rrichter@cavium.com>
+To: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon
+ <will.deacon@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>, linux-efi@vger.kernel.org,
+ David Daney <david.daney@cavium.com>,
+ Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+ linux-kernel@vger.kernel.org, Robert Richter <rrichter@cavium.com>,
+ Hanjun Guo <hanjun.guo@linaro.org>, linux-arm-kernel@lists.infradead.org
+Date: Thu, 6 Oct 2016 11:52:07 +0200
+
+There is a memory setup problem on ThunderX systems with certain
+memory configurations. The symptom is
+
+ kernel BUG at mm/page_alloc.c:1848!
+
+This happens for some configs with 64k page size enabled. The bug
+triggers for page zones with some pages in the zone not assigned to
+this particular zone. In my case some pages that are marked as nomap
+were not reassigned to the new zone of node 1, so those are still
+assigned to node 0.
+
+The reason for the mis-configuration is a change in pfn_valid() which
+reports pages marked nomap as invalid:
+
+ 68709f45385a arm64: only consider memblocks with NOMAP cleared for linear mapping
+
+This causes pages marked as nomap being no long reassigned to the new
+zone in memmap_init_zone() by calling __init_single_pfn().
+
+Fixing this by restoring the old behavior of pfn_valid() to use
+memblock_is_memory(). Also changing users of pfn_valid() in arm64 code
+to use memblock_is_map_memory() where necessary. This only affects
+code in ioremap.c. The code in mmu.c still can use the new version of
+pfn_valid().
+
+Should be marked stable v4.5..
+
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ arch/arm64/mm/init.c    | 2 +-
+ arch/arm64/mm/ioremap.c | 5 +++--
+ 2 files changed, 4 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+index bbb7ee76e319..25b8659c2a9f 100644
+--- a/arch/arm64/mm/init.c
++++ b/arch/arm64/mm/init.c
+@@ -147,7 +147,7 @@ static void __init zone_sizes_init(unsigned long min, unsigned long max)
+ #ifdef CONFIG_HAVE_ARCH_PFN_VALID
+ int pfn_valid(unsigned long pfn)
+ {
+-	return memblock_is_map_memory(pfn << PAGE_SHIFT);
++	return memblock_is_memory(pfn << PAGE_SHIFT);
+ }
+ EXPORT_SYMBOL(pfn_valid);
+ #endif
+diff --git a/arch/arm64/mm/ioremap.c b/arch/arm64/mm/ioremap.c
+index 01e88c8bcab0..c17c220b0c48 100644
+--- a/arch/arm64/mm/ioremap.c
++++ b/arch/arm64/mm/ioremap.c
+@@ -21,6 +21,7 @@
+  */
+ 
+ #include <linux/export.h>
++#include <linux/memblock.h>
+ #include <linux/mm.h>
+ #include <linux/vmalloc.h>
+ #include <linux/io.h>
+@@ -55,7 +56,7 @@ static void __iomem *__ioremap_caller(phys_addr_t phys_addr, size_t size,
+ 	/*
+ 	 * Don't allow RAM to be mapped.
+ 	 */
+-	if (WARN_ON(pfn_valid(__phys_to_pfn(phys_addr))))
++	if (WARN_ON(memblock_is_map_memory(phys_addr)))
+ 		return NULL;
+ 
+ 	area = get_vm_area_caller(size, VM_IOREMAP, caller);
+@@ -96,7 +97,7 @@ EXPORT_SYMBOL(__iounmap);
+ void __iomem *ioremap_cache(phys_addr_t phys_addr, size_t size)
+ {
+ 	/* For normal memory we already have a cacheable mapping. */
+-	if (pfn_valid(__phys_to_pfn(phys_addr)))
++	if (memblock_is_map_memory(phys_addr))
+ 		return (void __iomem *)__phys_to_virt(phys_addr);
+ 
+ 	return __ioremap_caller(phys_addr, size, __pgprot(PROT_NORMAL),

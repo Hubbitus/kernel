@@ -1,0 +1,97 @@
+From patchwork Wed Oct 26 15:17:01 2016
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [3/5] ARM: OMAP4+: Fix bad fallthrough for cpuidle
+From: Tony Lindgren <tony@atomide.com>
+X-Patchwork-Id: 9397501
+Message-Id: <20161026151703.24730-4-tony@atomide.com>
+To: linux-omap@vger.kernel.org
+Cc: Nishanth Menon <nm@ti.com>, Dmitry Lifshitz <lifshitz@compulab.co.il>,
+ Dave Gerlach <d-gerlach@ti.com>,
+ Enric Balletbo Serra <eballetbo@gmail.com>, 
+ "Dr . H . Nikolaus Schaller" <hns@goldelico.com>,
+ Pau Pajuel <ppajuel@gmail.com>, Grazvydas Ignotas <notasas@gmail.com>,
+ Benoit Cousson <bcousson@baylibre.com>,
+ Santosh Shilimkar <ssantosh@kernel.org>,
+ Javier Martinez Canillas <javier@dowhile0.org>,
+ Robert Nelson <robertcnelson@gmail.com>,
+ Marek Belisko <marek@goldelico.com>, linux-arm-kernel@lists.infradead.org
+Date: Wed, 26 Oct 2016 08:17:01 -0700
+
+We don't want to fall through to a bunch of errors for retention
+if PM_OMAP4_CPU_OSWR_DISABLE is not configured for a SoC.
+
+Fixes: 6099dd37c669 ("ARM: OMAP5 / DRA7: Enable CPU RET on suspend")
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ arch/arm/mach-omap2/omap-mpuss-lowpower.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/omap-mpuss-lowpower.c b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+--- a/arch/arm/mach-omap2/omap-mpuss-lowpower.c
++++ b/arch/arm/mach-omap2/omap-mpuss-lowpower.c
+@@ -244,10 +244,9 @@ int omap4_enter_lowpower(unsigned int cpu, unsigned int power_state)
+ 		save_state = 1;
+ 		break;
+ 	case PWRDM_POWER_RET:
+-		if (IS_PM44XX_ERRATUM(PM_OMAP4_CPU_OSWR_DISABLE)) {
++		if (IS_PM44XX_ERRATUM(PM_OMAP4_CPU_OSWR_DISABLE))
+ 			save_state = 0;
+-			break;
+-		}
++		break;
+ 	default:
+ 		/*
+ 		 * CPUx CSWR is invalid hardware state. Also CPUx OSWR
+From 5a78ff7bf7e25191144b550961001bbf6c734da4 Mon Sep 17 00:00:00 2001
+From: Peter Chen <peter.chen@nxp.com>
+Date: Thu, 11 Aug 2016 17:44:54 +0800
+Subject: [PATCH 04152/16809] Revert "gpu: drm: omapdrm: dss-of: add missing
+ of_node_put after calling of_parse_phandle"
+
+This reverts
+commit 2ab9f5879162499e1c4e48613287e3f59e593c4f
+Author: Peter Chen <peter.chen@nxp.com>
+Date:   Fri Jul 15 11:17:03 2016 +0800
+    gpu: drm: omapdrm: dss-of: add missing of_node_put after calling of_parse_phandle
+
+The of_get_next_parent will drop refcount on the passed node, so the reverted
+patch is wrong, thanks for Tomi Valkeinen points it.
+
+Cc: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Peter Chen <peter.chen@nxp.com>
+Acked-by: Tomi Valkeinen <tomi.valkeinen@ti.com>
+Signed-off-by: Sean Paul <seanpaul@chromium.org>
+Link: http://patchwork.freedesktop.org/patch/msgid/1470908694-16362-1-git-send-email-peter.chen@nxp.com
+---
+ drivers/gpu/drm/omapdrm/dss/dss-of.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/omapdrm/dss/dss-of.c b/drivers/gpu/drm/omapdrm/dss/dss-of.c
+index e256d87..dfd4e96 100644
+--- a/drivers/gpu/drm/omapdrm/dss/dss-of.c
++++ b/drivers/gpu/drm/omapdrm/dss/dss-of.c
+@@ -125,16 +125,15 @@ u32 dss_of_port_get_port_number(struct device_node *port)
+ 
+ static struct device_node *omapdss_of_get_remote_port(const struct device_node *node)
+ {
+-	struct device_node *np, *np_parent;
++	struct device_node *np;
+ 
+ 	np = of_parse_phandle(node, "remote-endpoint", 0);
+ 	if (!np)
+ 		return NULL;
+ 
+-	np_parent = of_get_next_parent(np);
+-	of_node_put(np);
++	np = of_get_next_parent(np);
+ 
+-	return np_parent;
++	return np;
+ }
+ 
+ struct device_node *
+-- 
+2.9.3
+

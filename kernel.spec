@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .pf5.hu.3
+%define buildid .pf6.hu.1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.5 v4.8-pf5: https://pf.natalenko.name/news/?p=213
-%define stable_update 5
+#+Hu Pf against 4.8.6 v4.8-pf6: https://pf.natalenko.name/news/?p=217
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf5.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf6.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -517,6 +517,14 @@ Patch425: arm64-pcie-quirks.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+
+# Fix OMAP4 (pandaboard)
+Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch428: ARM-OMAP4-Fix-crashes.patch
+
+# Not particularly happy we don't yet have a proper upstream resolution this is the right direction
+# https://www.spinics.net/lists/arm-kernel/msg535191.html
+Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch430: ARM-tegra-usb-no-reset.patch
@@ -631,11 +639,11 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
 Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 
-# Skylake i915 fixes from 4.9
-Patch851: drm_i915_skl_Backport_watermark_fixes_for_4.8.y.patch
-
 #rhbz 1325354
 Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
+
+#rhbz 1391279
+Patch853: 0001-dm-raid-fix-compat_features-validation.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2177,7 +2185,21 @@ fi
 #
 #
 %changelog
-* Wed Nov 02 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.3
+* Wed Nov 09 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.6-301.pf6.hu.1
+- Rebase Fedora changes - kernel 4.8.6.
+- Update pf patch to v4.8-pf6 - https://pf.natalenko.name/news/?p=217
+
+* Wed Nov  2 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.6-301
+- dm raid: fix compat_features validation (rhbz 1391279)
+
+* Tue Nov  1 2016 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.6-300
+- Linux v4.8.6
+- Add revert to fix omap4 mmc (panda)
+- Other minor omap4 fixes
+- Adjust config for some AllWinner devices that don't like modular bits
+- Add patch for aarch64 memory regions
+
+* Mon Oct 31 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.3
 - CONFIG_SCHED_MUQSS=y
 
 * Mon Oct 31 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.5-300.pf5.hu.2
