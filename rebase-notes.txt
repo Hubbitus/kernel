@@ -1,3 +1,6 @@
+Linux 4.9 rebase notes:
+- F25 and earlier arm64: disable 48bit VA
+
 Linux 4.8 rebase notes:
 - Make sure you apply drm-i915-turn-off-wc-mmaps.patch for F23
 - Check on status of qxl-reapply-cursor-after-SetCrtc-calls.patch
