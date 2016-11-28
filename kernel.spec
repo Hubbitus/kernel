@@ -2166,6 +2166,11 @@ fi
 #
 #
 %changelog
+* Mon Nov 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+- General config cleanups
+- Enable two 802.15.4 drivers
+
 * Wed Nov 23 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc6.git2.1
 - Linux v4.9-rc6-124-gded9b5d
 
