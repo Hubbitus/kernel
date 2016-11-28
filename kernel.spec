@@ -527,6 +527,8 @@ Patch432: bcm283x-vc4-fixes.patch
 
 Patch433: AllWinner-net-emac.patch
 
+Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2170,6 +2172,7 @@ fi
 - Minor ARM config updates
 - General config cleanups
 - Enable two 802.15.4 drivers
+- Add upstream patch to fix all ARMv7 devices set to initial 200Mhz
 
 * Wed Nov 23 2016 Laura Abbott <labbott@redhat.com> - 4.9.0-0.rc6.git2.1
 - Linux v4.9-rc6-124-gded9b5d
