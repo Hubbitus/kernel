@@ -530,6 +530,8 @@ Patch432: bcm283x-vc4-fixes.patch
 
 Patch433: AllWinner-net-emac.patch
 
+Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2179,6 +2181,9 @@ fi
 #
 #
 %changelog
+* Mon Nov 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream patch to fix all ARMv7 devices set to initial 200Mhz
+
 * Tue Nov 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Dave Anderson to fix live system crash analysis on Aarch64
 
