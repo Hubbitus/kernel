@@ -529,6 +529,8 @@ Patch433: AllWinner-net-emac.patch
 
 Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
 
+Patch435: imx6sx-Add-UDOO-Neo-support.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2168,6 +2170,9 @@ fi
 #
 #
 %changelog
+* Tue Nov 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream i.MX6sx Udoo NEO support
+
 * Tue Nov 29 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc7.git1.1
 - Linux v4.9-rc7-7-g88abd82
 
