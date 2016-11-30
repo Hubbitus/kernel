@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -620,8 +620,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-Patch850: Fix-BUG-in-calc_seckey.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2170,6 +2168,9 @@ fi
 #
 #
 %changelog
+* Wed Nov 30 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc7.git2.1
+- Linux v4.9-rc7-23-gded6e84
+
 * Tue Nov 29 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add upstream i.MX6sx Udoo NEO support
 
