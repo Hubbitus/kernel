@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 11
+%define stable_update 12
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -642,8 +642,8 @@ Patch854: nouveau-add-maxwell-to-backlight-init.patch
 #rhbz 1385823
 Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
 
-# CVE-2016-8650 rhbz 1395187 1398463
-Patch856: 0001-mpi-Fix-NULL-ptr-dereference-in-mpi_powm-ver-3.patch
+# CVE-2016-9755 rhbz 1400904 1400905
+Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2181,6 +2181,12 @@ fi
 #
 #
 %changelog
+* Fri Dec 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.12-300
+- Linux v4.8.12
+- CVE-2016-9755 Fix Out-of-bounds write issue when defragmenting ipv6 packets (rhbz 1400904 1400905)
+- CVE-2016-9756 Fix kvm: stack memory information leakage (rhbz 1400468 1400469)
+- Fix kvm: out of bounds memory access via vcpu_id (rhbz 1400804 1400805)
+
 * Mon Nov 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.11-300
 - Linux v4.8.11
 - CVE-2016-8650 Fix NULL ptr dereference in mpi_powm() (rhbz 1395187 1398463)
