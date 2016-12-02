@@ -1,1 +1,1 @@
-# CONFIG_OF_MDIO is not set
+CONFIG_OF_MDIO=y

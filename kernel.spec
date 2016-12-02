@@ -313,8 +313,10 @@ Summary: The Linux kernel
 # printed out?
 %if %{nopatches}
 %define listnewconfig_fail 0
+%define configmismatch_fail 0
 %else
 %define listnewconfig_fail 1
+%define configmismatch_fail 1
 %endif
 
 # To temporarily exclude an architecture from being built, add it to
@@ -448,6 +450,8 @@ Source39: kernel-x86_64-debug.config
 
 Source40: generate_all_configs.sh
 Source41: generate_debug_configs.sh
+
+Source42: check_configs.awk
 
 # This file is intentionally left empty in the stock kernel. Its a nicety
 # added for those wanting to do custom rebuilds with altered config opts.
@@ -1210,9 +1214,21 @@ rm -f kernel-%{version}-*debug.config
 
 %define make make %{?cross_opts}
 
+CheckConfigs() {
+     ./check_configs.awk $1 $2 > .mismatches
+     if [ -s .mismatches ]
+     then
+	echo "Error: Mismatches found in configuration files"
+	cat .mismatches
+	exit 1
+     fi
+}
+
+cp %{SOURCE42} .
 # now run oldconfig over all the config files
 for i in *.config
 do
+  cat $i > temp-$i
   mv $i .config
   Arch=`head -1 .config | cut -b 3-`
   make ARCH=$Arch listnewconfig | grep -E '^CONFIG_' >.newoptions || true
@@ -1226,6 +1242,10 @@ do
   make ARCH=$Arch oldnoconfig
   echo "# $Arch" > configs/$i
   cat .config >> configs/$i
+%if %{configmismatch_fail}
+  CheckConfigs configs/$i temp-$i
+%endif
+  rm temp-$i
 done
 # end of kernel config
 %endif

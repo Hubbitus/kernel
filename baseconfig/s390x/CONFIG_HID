@@ -1,1 +1,1 @@
-# CONFIG_HID is not set
+CONFIG_HID=m

@@ -1,1 +1,1 @@
-# CONFIG_PHYLIB is not set
+CONFIG_PHYLIB=m

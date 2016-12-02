@@ -1,1 +1,1 @@
-# CONFIG_TASKS_RCU is not set
+CONFIG_TASKS_RCU=y

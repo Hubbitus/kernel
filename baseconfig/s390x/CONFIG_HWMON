@@ -1,1 +1,1 @@
-# CONFIG_HWMON is not set
+CONFIG_HWMON=m

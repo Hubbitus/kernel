@@ -1,1 +1,1 @@
-# CONFIG_SPARSE_IRQ is not set
+CONFIG_SPARSE_IRQ=y
