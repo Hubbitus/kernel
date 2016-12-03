@@ -535,6 +535,8 @@ Patch432: bcm283x-vc4-fixes.patch
 
 Patch433: AllWinner-net-emac.patch
 
+Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -639,14 +641,14 @@ Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 #rhbz 1325354
 Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
-#rhbz 1392885
-Patch853: 0001-drm-i915-Refresh-that-status-of-MST-capable-connecto.patch
-
 #rhbz 1390308
 Patch854: nouveau-add-maxwell-to-backlight-init.patch
 
 #rhbz 1385823
 Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
+
+# CVE-2016-9755 rhbz 1400904 1400905
+Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1215,7 +1217,7 @@ fi
 %if 0%{?stable_base}
 # This is special because the kernel spec is hell and nothing is consistent
 xzcat %{SOURCE5000} | patch -p1 -F1 -s
-#+Hu: Place for manual hotfixes!
+#Hu+ Place for manual hotfixes!
 #patch -p1 < %%{SOURCE5002}
 git commit -a -m "Stable update"
 %endif
@@ -2188,6 +2190,23 @@ fi
 #
 #
 %changelog
+* Fri Dec 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.12-300
+- Linux v4.8.12
+- CVE-2016-9755 Fix Out-of-bounds write issue when defragmenting ipv6 packets (rhbz 1400904 1400905)
+- CVE-2016-9756 Fix kvm: stack memory information leakage (rhbz 1400468 1400469)
+- Fix kvm: out of bounds memory access via vcpu_id (rhbz 1400804 1400805)
+
+* Mon Nov 28 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.11-300
+- Linux v4.8.11
+- CVE-2016-8650 Fix NULL ptr dereference in mpi_powm() (rhbz 1395187 1398463)
+
+* Mon Nov 28 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add upstream patch to fix all ARMv7 devices set to initial 200Mhz
+
+* Tue Nov 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
+- Add patch from Dave Anderson to fix live system crash analysis on Aarch64
+
+
 * Mon Nov 21 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.7-300.pf7.hu.1
 - Merge Fedora upstream changes.
 - Update pf https://pf.natalenko.name/news/?p=219 to v4.8-pf7.
