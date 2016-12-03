@@ -1,0 +1,24 @@
+From bbe1f94a8b3f2e8622dd400a6827d3242005d951 Mon Sep 17 00:00:00 2001
+From: Faris Alsalama <farisbenbrahem@gmail.com>
+Date: Sat, 21 May 2016 14:41:43 -0400
+Subject: drm/nouveau/kms: add Maxwell to backlight initialization
+
+Signed-off-by: Faris Alsalama <farisbenbrahem@gmail.com>
+Acked-by: Acked-by: Pierre Moreau <pierre.morrow@free.fr>
+Signed-off-by: Ben Skeggs <bskeggs@redhat.com>
+
+diff --git a/drivers/gpu/drm/nouveau/nouveau_backlight.c b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+index f5101be..5e2c568 100644
+--- a/drivers/gpu/drm/nouveau/nouveau_backlight.c
++++ b/drivers/gpu/drm/nouveau/nouveau_backlight.c
+@@ -232,6 +232,7 @@ nouveau_backlight_init(struct drm_device *dev)
+ 		case NV_DEVICE_INFO_V0_TESLA:
+ 		case NV_DEVICE_INFO_V0_FERMI:
+ 		case NV_DEVICE_INFO_V0_KEPLER:
++		case NV_DEVICE_INFO_V0_MAXWELL:
+ 			return nv50_backlight_init(connector);
+ 		default:
+ 			break;
+-- 
+cgit v0.10.2
+

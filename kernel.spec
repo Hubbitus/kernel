@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .pf6.hu.1
+%define buildid .pf7.hu.1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 301
+%global baserelease 300
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,8 +54,8 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.6 v4.8-pf6: https://pf.natalenko.name/news/?p=217
-%define stable_update 6
+#+Hu Pf against 4.8.7 v4.8-pf6: https://pf.natalenko.name/news/?p=219
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf6.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf7.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -630,9 +630,6 @@ Patch846: security-selinux-overlayfs-support.patch
 #rhbz 1360688
 Patch847: rc-core-fix-repeat-events.patch
 
-#rhbz 1374212
-Patch848: 0001-cpupower-Correct-return-type-of-cpu_power_is_cpu_onl.patch
-
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
@@ -642,8 +639,14 @@ Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
 #rhbz 1325354
 Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
 
-#rhbz 1391279
-Patch853: 0001-dm-raid-fix-compat_features-validation.patch
+#rhbz 1392885
+Patch853: 0001-drm-i915-Refresh-that-status-of-MST-capable-connecto.patch
+
+#rhbz 1390308
+Patch854: nouveau-add-maxwell-to-backlight-init.patch
+
+#rhbz 1385823
+Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2185,6 +2188,31 @@ fi
 #
 #
 %changelog
+* Mon Nov 21 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.7-300.pf7.hu.1
+- Merge Fedora upstream changes.
+- Update pf https://pf.natalenko.name/news/?p=219 to v4.8-pf7.
+
+* Mon Nov 21 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.10-300
+- Linux v4.8.10
+
+* Sun Nov 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config tweaks
+
+* Tue Nov 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.8-300
+- Linux v4.8.8
+- Fix crash in tcp_collapse CVE-2016-8645 (rhbz 1393904 1393908)
+
+* Mon Nov 14 2016 Laura Abbott <labbott@fedoraproject.org>
+- Fix for some Yoga laptop WIFI (rhbz 1385823)
+
+* Fri Nov 11 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- Nouveau: Add Maxwell to backlight initialization (rhbz 1390308)
+
+* Thu Nov 10 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.7-300
+- Linux v4.8.7
+- Fixes cve-2016-8630 (rhbz 1393350 1393358)
+- Refresh status of MST capable connectors (rhbz 1392885)
+
 * Wed Nov 09 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.6-301.pf6.hu.1
 - Rebase Fedora changes - kernel 4.8.6.
 - Update pf patch to v4.8-pf6 - https://pf.natalenko.name/news/?p=217
