@@ -645,6 +645,9 @@ Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
 # CVE-2016-9755 rhbz 1400904 1400905
 Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
 
+# CVE-2016-8655 rhbz 1400019 1401820
+Patch857: 0001-packet-fix-race-condition-in-packet_set_ring.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2181,6 +2184,9 @@ fi
 #
 #
 %changelog
+* Tue Dec 06 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-8655 fix race condition in packet_set_ring (rhbz 1400019 1401820)
+
 * Fri Dec 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.12-300
 - Linux v4.8.12
 - CVE-2016-9755 Fix Out-of-bounds write issue when defragmenting ipv6 packets (rhbz 1400904 1400905)
