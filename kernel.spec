@@ -648,6 +648,9 @@ Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
 # CVE-2016-8655 rhbz 1400019 1401820
 Patch857: 0001-packet-fix-race-condition-in-packet_set_ring.patch
 
+# CVE-2016-9793 rhbz 1402013 1402014
+Patch858: 0001-net-avoid-signed-overflows-for-SO_-SND-RCV-BUFFORCE.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2184,6 +2187,9 @@ fi
 #
 #
 %changelog
+* Wed Dec 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-9793 avoid signed overflows for SO_{SND|RCV}BUFFORCE (rhbz 1402013 1402014)
+
 * Tue Dec 06 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-8655 fix race condition in packet_set_ring (rhbz 1400019 1401820)
 
