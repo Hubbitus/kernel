@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -615,9 +615,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-#rhbz 1401612
-Patch850: virtio-net-Fix-DMA-from-the-stack-in-virtnet_set_mac_address.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2171,6 +2168,10 @@ fi
 #
 #
 %changelog
+* Wed Dec 07 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc8.git2.1
+- Linux v4.9-rc8-55-gce779d6
+- Disable CONFIG_AF_KCM (rhbz 1402489)
+
 * Tue Dec 06 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc8.git1.1
 - Linux v4.9-rc8-9-gd9d0452
 - Fix DMA from stack in virtio-net (rhbz 1401612)
