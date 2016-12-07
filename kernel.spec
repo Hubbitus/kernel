@@ -2187,6 +2187,9 @@ fi
 #
 #
 %changelog
+* Wed Dec 07 2016 Laura Abbott <labbott@fedoraproject.org>
+- Disable CONFIG_AF_KCM (rhbz 1402489)
+
 * Wed Dec 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2016-9793 avoid signed overflows for SO_{SND|RCV}BUFFORCE (rhbz 1402013 1402014)
 
