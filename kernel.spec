@@ -616,6 +616,12 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
+# Work around thinkpad firmware memory layout issues and efi_mem_reserve()
+Patch850: 0001-efi-efi_print_memmap-Call-out-invalid-entries-in-the.patch
+Patch851: 0002-efi-efi_map_region-traceback-if-we-try-to-map-invali.patch
+Patch852: 0003-efi-efi_memmap_insert-don-t-insert-a-region-more-tha.patch
+Patch853: 0004-efi-efi_memmap_insert-don-t-split-regions-with-inval.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2168,6 +2174,9 @@ fi
 #
 #
 %changelog
+* Thu Dec 08 2016 Peter Jones <pjones@redhat.com>
+- Work around thinkpad firmware memory layout issues and efi_mem_reserve()
+
 * Wed Dec 07 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc8.git2.1
 - Linux v4.9-rc8-55-gce779d6
 - Disable CONFIG_AF_KCM (rhbz 1402489)
