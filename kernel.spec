@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 12
+%define stable_update 13
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -650,6 +650,9 @@ Patch857: 0001-packet-fix-race-condition-in-packet_set_ring.patch
 
 # CVE-2016-9793 rhbz 1402013 1402014
 Patch858: 0001-net-avoid-signed-overflows-for-SO_-SND-RCV-BUFFORCE.patch
+
+# CVE-2016-9576 rhbz 1403145 1403146
+Patch859: 0001-Don-t-feed-anything-but-regular-iovec-s-to-blk_rq_ma.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2187,6 +2190,10 @@ fi
 #
 #
 %changelog
+* Fri Dec 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.13-300
+- Linux v4.8.13
+- CVE-2016-9576 fix use after free in SCSI generic device interface (rhbz 1403145 1403146)
+
 * Wed Dec 07 2016 Laura Abbott <labbott@fedoraproject.org>
 - Disable CONFIG_AF_KCM (rhbz 1402489)
 
