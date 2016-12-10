@@ -492,6 +492,9 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
+# http://www.spinics.net/lists/linux-serial/msg24272.html
+Patch420: arm64-ACPI-parse-SPCR-table.patch
+
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
 
@@ -2174,6 +2177,9 @@ fi
 #
 #
 %changelog
+* Sat Dec 10 2016 Christopher Covington <cov@codeaurora.org>
+- Re-add ACPI SPCR (serial console) support
+
 * Fri Dec 09 2016 Laura Abbott <labbott@fedoraproject.org> - 4.9.0-0.rc8.git4.1
 - Linux v4.9-rc8-85-ga37102d
 
