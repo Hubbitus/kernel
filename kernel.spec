@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 13
+%define stable_update 14
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -644,15 +644,6 @@ Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
 
 # CVE-2016-9755 rhbz 1400904 1400905
 Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
-
-# CVE-2016-8655 rhbz 1400019 1401820
-Patch857: 0001-packet-fix-race-condition-in-packet_set_ring.patch
-
-# CVE-2016-9793 rhbz 1402013 1402014
-Patch858: 0001-net-avoid-signed-overflows-for-SO_-SND-RCV-BUFFORCE.patch
-
-# CVE-2016-9576 rhbz 1403145 1403146
-Patch859: 0001-Don-t-feed-anything-but-regular-iovec-s-to-blk_rq_ma.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2190,6 +2181,10 @@ fi
 #
 #
 %changelog
+* Mon Dec 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.14-300
+- Linux v4.8.14
+- CVE-2016-8399 Fix out OOB stack read in memcpy_fromiovec (rhbz 1403833 1403834)
+
 * Fri Dec 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.13-300
 - Linux v4.8.13
 - CVE-2016-9576 fix use after free in SCSI generic device interface (rhbz 1403145 1403146)
