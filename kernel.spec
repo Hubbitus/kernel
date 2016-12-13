@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -561,17 +561,17 @@ Patch480: kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
 
 Patch481: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
 
-Patch482: Add-option-to-automatically-enforce-module-signature.patch
+# Patch482: Add-option-to-automatically-enforce-module-signature.patch
 
-Patch483: efi-Add-SHIM-and-image-security-database-GUID-defini.patch
+# Patch483: efi-Add-SHIM-and-image-security-database-GUID-defini.patch
 
-Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+# Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
 
-Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
+# Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
 
 Patch486: hibernate-Disable-in-a-signed-modules-environment.patch
 
-Patch487: Add-EFI-signature-data-types.patch
+# Patch487: Add-EFI-signature-data-types.patch
 
 Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
 
@@ -2174,6 +2174,9 @@ fi
 #
 #
 %changelog
+* Tue Dec 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git1.1
+- Linux v4.9-2682-ge7aa8c2
+
 * Tue Dec 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.9.0-2
 - Reenable debugging options.
 
