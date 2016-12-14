@@ -1,0 +1,2159 @@
+From d1d5053106cd1f8b2ae52fb6ffb2962f76053bf0 Mon Sep 17 00:00:00 2001
+From: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Date: Wed, 23 Nov 2016 10:42:44 +0000
+Subject: [PATCH 01/32] efi: use typed function pointers for runtime services
+ table
+
+Instead of using void pointers, and casting them to correctly typed
+function pointers upon use, declare the runtime services pointers
+as function pointers using their respective prototypes, for which
+typedefs are already available.
+
+Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ include/linux/efi.h | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index a07a476..93a82de 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -508,24 +508,6 @@ typedef struct {
+ 	u64 query_variable_info;
+ } efi_runtime_services_64_t;
+
+-typedef struct {
+-	efi_table_hdr_t hdr;
+-	void *get_time;
+-	void *set_time;
+-	void *get_wakeup_time;
+-	void *set_wakeup_time;
+-	void *set_virtual_address_map;
+-	void *convert_pointer;
+-	void *get_variable;
+-	void *get_next_variable;
+-	void *set_variable;
+-	void *get_next_high_mono_count;
+-	void *reset_system;
+-	void *update_capsule;
+-	void *query_capsule_caps;
+-	void *query_variable_info;
+-} efi_runtime_services_t;
+-
+ typedef efi_status_t efi_get_time_t (efi_time_t *tm, efi_time_cap_t *tc);
+ typedef efi_status_t efi_set_time_t (efi_time_t *tm);
+ typedef efi_status_t efi_get_wakeup_time_t (efi_bool_t *enabled, efi_bool_t *pending,
+@@ -560,6 +542,24 @@ typedef efi_status_t efi_query_variable_store_t(u32 attributes,
+ 						unsigned long size,
+ 						bool nonblocking);
+
++typedef struct {
++	efi_table_hdr_t			hdr;
++	efi_get_time_t			*get_time;
++	efi_set_time_t			*set_time;
++	efi_get_wakeup_time_t		*get_wakeup_time;
++	efi_set_wakeup_time_t		*set_wakeup_time;
++	efi_set_virtual_address_map_t	*set_virtual_address_map;
++	void				*convert_pointer;
++	efi_get_variable_t		*get_variable;
++	efi_get_next_variable_t		*get_next_variable;
++	efi_set_variable_t		*set_variable;
++	efi_get_next_high_mono_count_t	*get_next_high_mono_count;
++	efi_reset_system_t		*reset_system;
++	efi_update_capsule_t		*update_capsule;
++	efi_query_capsule_caps_t	*query_capsule_caps;
++	efi_query_variable_info_t	*query_variable_info;
++} efi_runtime_services_t;
++
+ void efi_native_runtime_setup(void);
+
+ /*
+-- 
+2.9.3
+
+From 150ebd38630a3ac558b8ab839a7c7e5fd41cc5a8 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 21 Nov 2016 23:36:31 +0000
+Subject: [PATCH 02/32] x86/efi: Allow invocation of arbitrary runtime services
+
+Provide the ability to perform mixed-mode runtime service calls for x86 in
+the same way that commit 0a637ee61247bd4bed9b2a07568ef7a1cfc76187
+("x86/efi: Allow invocation of arbitrary boot services") provides the
+ability to invoke arbitrary boot services.
+
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/boot/compressed/eboot.c   | 1 +
+ arch/x86/boot/compressed/head_32.S | 6 +++---
+ arch/x86/boot/compressed/head_64.S | 8 ++++----
+ arch/x86/include/asm/efi.h         | 5 +++++
+ 4 files changed, 13 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index ff01c8f..c8c32eb 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -32,6 +32,7 @@ static void setup_boot_services##bits(struct efi_config *c)		\
+ 									\
+ 	table = (typeof(table))sys_table;				\
+ 									\
++	c->runtime_services = table->runtime;				\
+ 	c->boot_services = table->boottime;				\
+ 	c->text_output = table->con_out;				\
+ }
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index fd0b6a2..d85b962 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -82,7 +82,7 @@ ENTRY(efi_pe_entry)
+
+ 	/* Relocate efi_config->call() */
+ 	leal	efi32_config(%esi), %eax
+-	add	%esi, 32(%eax)
++	add	%esi, 40(%eax)
+ 	pushl	%eax
+
+ 	call	make_boot_params
+@@ -108,7 +108,7 @@ ENTRY(efi32_stub_entry)
+
+ 	/* Relocate efi_config->call() */
+ 	leal	efi32_config(%esi), %eax
+-	add	%esi, 32(%eax)
++	add	%esi, 40(%eax)
+ 	pushl	%eax
+ 2:
+ 	call	efi_main
+@@ -264,7 +264,7 @@ relocated:
+ #ifdef CONFIG_EFI_STUB
+ 	.data
+ efi32_config:
+-	.fill 4,8,0
++	.fill 5,8,0
+ 	.long efi_call_phys
+ 	.long 0
+ 	.byte 0
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index efdfba2..beab832 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -265,7 +265,7 @@ ENTRY(efi_pe_entry)
+ 	/*
+ 	 * Relocate efi_config->call().
+ 	 */
+-	addq	%rbp, efi64_config+32(%rip)
++	addq	%rbp, efi64_config+40(%rip)
+
+ 	movq	%rax, %rdi
+ 	call	make_boot_params
+@@ -285,7 +285,7 @@ handover_entry:
+ 	 * Relocate efi_config->call().
+ 	 */
+ 	movq	efi_config(%rip), %rax
+-	addq	%rbp, 32(%rax)
++	addq	%rbp, 40(%rax)
+ 2:
+ 	movq	efi_config(%rip), %rdi
+ 	call	efi_main
+@@ -457,14 +457,14 @@ efi_config:
+ #ifdef CONFIG_EFI_MIXED
+ 	.global efi32_config
+ efi32_config:
+-	.fill	4,8,0
++	.fill	5,8,0
+ 	.quad	efi64_thunk
+ 	.byte	0
+ #endif
+
+ 	.global efi64_config
+ efi64_config:
+-	.fill	4,8,0
++	.fill	5,8,0
+ 	.quad	efi_call
+ 	.byte	1
+ #endif /* CONFIG_EFI_STUB */
+diff --git a/arch/x86/include/asm/efi.h b/arch/x86/include/asm/efi.h
+index e99675b..2f77bce 100644
+--- a/arch/x86/include/asm/efi.h
++++ b/arch/x86/include/asm/efi.h
+@@ -191,6 +191,7 @@ static inline efi_status_t efi_thunk_set_virtual_address_map(
+ struct efi_config {
+ 	u64 image_handle;
+ 	u64 table;
++	u64 runtime_services;
+ 	u64 boot_services;
+ 	u64 text_output;
+ 	efi_status_t (*call)(unsigned long, ...);
+@@ -226,6 +227,10 @@ static inline bool efi_is_64bit(void)
+ #define __efi_call_early(f, ...)					\
+ 	__efi_early()->call((unsigned long)f, __VA_ARGS__);
+
++#define efi_call_runtime(f, ...)					\
++	__efi_early()->call(efi_table_attr(efi_runtime_services, f,	\
++		__efi_early()->runtime_services), __VA_ARGS__)
++
+ extern bool efi_reboot_required(void);
+
+ #else
+-- 
+2.9.3
+
+From 1342301133b5619b79f3288acf7e39450f8ba34f Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Tue, 22 Nov 2016 00:20:00 +0000
+Subject: [PATCH 03/32] arm/efi: Allow invocation of arbitrary runtime services
+
+efi_call_runtime() is provided for x86 to be able abstract mixed mode
+support.  Provide this for ARM also so that common code work in mixed mode
+also.
+
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/arm/include/asm/efi.h   | 1 +
+ arch/arm64/include/asm/efi.h | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/arch/arm/include/asm/efi.h b/arch/arm/include/asm/efi.h
+index 0b06f53..e4e6a9d6 100644
+--- a/arch/arm/include/asm/efi.h
++++ b/arch/arm/include/asm/efi.h
+@@ -55,6 +55,7 @@ void efi_virtmap_unload(void);
+
+ #define efi_call_early(f, ...)		sys_table_arg->boottime->f(__VA_ARGS__)
+ #define __efi_call_early(f, ...)	f(__VA_ARGS__)
++#define efi_call_runtime(f, ...)	sys_table_arg->runtime->f(__VA_ARGS__)
+ #define efi_is_64bit()			(false)
+
+ #define efi_call_proto(protocol, f, instance, ...)			\
+diff --git a/arch/arm64/include/asm/efi.h b/arch/arm64/include/asm/efi.h
+index 771b3f0..d74ae22 100644
+--- a/arch/arm64/include/asm/efi.h
++++ b/arch/arm64/include/asm/efi.h
+@@ -49,6 +49,7 @@ int efi_set_mapping_permissions(struct mm_struct *mm, efi_memory_desc_t *md);
+
+ #define efi_call_early(f, ...)		sys_table_arg->boottime->f(__VA_ARGS__)
+ #define __efi_call_early(f, ...)	f(__VA_ARGS__)
++#define efi_call_runtime(f, ...)	sys_table_arg->runtime->f(__VA_ARGS__)
+ #define efi_is_64bit()			(true)
+
+ #define efi_call_proto(protocol, f, instance, ...)			\
+-- 
+2.9.3
+
+From 2e25c5beef2a97abbb660e707bced77c0eb0ace9 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Tue, 22 Nov 2016 00:10:55 +0000
+Subject: [PATCH 04/32] efi: Add SHIM and image security database GUID
+ definitions
+
+Add the definitions for shim and image security database, both of which
+are used widely in various Linux distros.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+Reviewed-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+---
+ include/linux/efi.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 93a82de..c790455 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -610,6 +610,9 @@ void efi_native_runtime_setup(void);
+ #define EFI_CONSOLE_OUT_DEVICE_GUID		EFI_GUID(0xd3b36f2c, 0xd551, 0x11d4,  0x9a, 0x46, 0x00, 0x90, 0x27, 0x3f, 0xc1, 0x4d)
+ #define APPLE_PROPERTIES_PROTOCOL_GUID		EFI_GUID(0x91bd12fe, 0xf6c3, 0x44fb,  0xa5, 0xb7, 0x51, 0x22, 0xab, 0x30, 0x3a, 0xe0)
+
++#define EFI_IMAGE_SECURITY_DATABASE_GUID	EFI_GUID(0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0x0e, 0x67, 0x65, 0x6f)
++#define EFI_SHIM_LOCK_GUID			EFI_GUID(0x605dab50, 0xe046, 0x4300, 0xab, 0xb6, 0x3d, 0xd8, 0x10, 0xdd, 0x8b, 0x23)
++
+ /*
+  * This GUID is used to pass to the kernel proper the struct screen_info
+  * structure that was populated by the stub based on the GOP protocol instance
+-- 
+2.9.3
+
+From 820d2f84670080c406bad4c8469e80e1e5f8a191 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 21 Nov 2016 23:55:55 +0000
+Subject: [PATCH 05/32] efi: Get the secure boot status
+
+Get the firmware's secure-boot status in the kernel boot wrapper and stash
+it somewhere that the main kernel image can find.
+
+The efi_get_secureboot() function is extracted from the arm stub and (a)
+generalised so that it can be called from x86 and (b) made to use
+efi_call_runtime() so that it can be run in mixed-mode.
+
+Suggested-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ Documentation/x86/zero-page.txt           |  2 +
+ arch/x86/boot/compressed/eboot.c          |  2 +
+ arch/x86/boot/compressed/head_32.S        |  1 +
+ arch/x86/boot/compressed/head_64.S        |  1 +
+ arch/x86/include/asm/bootparam_utils.h    |  5 ++-
+ arch/x86/include/uapi/asm/bootparam.h     |  3 +-
+ arch/x86/kernel/asm-offsets.c             |  1 +
+ drivers/firmware/efi/libstub/Makefile     |  2 +-
+ drivers/firmware/efi/libstub/arm-stub.c   | 58 ++-------------------------
+ drivers/firmware/efi/libstub/secureboot.c | 66 +++++++++++++++++++++++++++++++
+ include/linux/efi.h                       |  8 ++++
+ 11 files changed, 90 insertions(+), 59 deletions(-)
+ create mode 100644 drivers/firmware/efi/libstub/secureboot.c
+
+diff --git a/Documentation/x86/zero-page.txt b/Documentation/x86/zero-page.txt
+index 95a4d34..b8527c6 100644
+--- a/Documentation/x86/zero-page.txt
++++ b/Documentation/x86/zero-page.txt
+@@ -31,6 +31,8 @@ Offset	Proto	Name		Meaning
+ 1E9/001	ALL	eddbuf_entries	Number of entries in eddbuf (below)
+ 1EA/001	ALL	edd_mbr_sig_buf_entries	Number of entries in edd_mbr_sig_buffer
+ 				(below)
++1EB/001	ALL     kbd_status      Numlock is enabled
++1EC/001	ALL     secure_boot	Secure boot is enabled in the firmware
+ 1EF/001	ALL	sentinel	Used to detect broken bootloaders
+ 290/040	ALL	edd_mbr_sig_buffer EDD MBR signatures
+ 2D0/A00	ALL	e820_map	E820 memory map table
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index c8c32eb..5b151c2 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -1158,6 +1158,8 @@ struct boot_params *efi_main(struct efi_config *c,
+ 	else
+ 		setup_boot_services32(efi_early);
+
++	boot_params->secure_boot = efi_get_secureboot(sys_table);
++
+ 	setup_graphics(boot_params);
+
+ 	setup_efi_pci(boot_params);
+diff --git a/arch/x86/boot/compressed/head_32.S b/arch/x86/boot/compressed/head_32.S
+index d85b962..c635f7e 100644
+--- a/arch/x86/boot/compressed/head_32.S
++++ b/arch/x86/boot/compressed/head_32.S
+@@ -61,6 +61,7 @@
+
+ 	__HEAD
+ ENTRY(startup_32)
++	movb	$0, BP_secure_boot(%esi)
+ #ifdef CONFIG_EFI_STUB
+ 	jmp	preferred_addr
+
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index beab832..ccd2c74 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -244,6 +244,7 @@ ENTRY(startup_64)
+ 	 * that maps our entire kernel(text+data+bss+brk), zero page
+ 	 * and command line.
+ 	 */
++	movb	$0, BP_secure_boot(%rsi)
+ #ifdef CONFIG_EFI_STUB
+ 	/*
+ 	 * The entry point for the PE/COFF executable is efi_pe_entry, so
+diff --git a/arch/x86/include/asm/bootparam_utils.h b/arch/x86/include/asm/bootparam_utils.h
+index 4a8cb8d..7e16d53 100644
+--- a/arch/x86/include/asm/bootparam_utils.h
++++ b/arch/x86/include/asm/bootparam_utils.h
+@@ -38,9 +38,10 @@ static void sanitize_boot_params(struct boot_params *boot_params)
+ 		memset(&boot_params->ext_ramdisk_image, 0,
+ 		       (char *)&boot_params->efi_info -
+ 			(char *)&boot_params->ext_ramdisk_image);
+-		memset(&boot_params->kbd_status, 0,
++		boot_params->kbd_status = 0;
++		memset(&boot_params->_pad5, 0,
+ 		       (char *)&boot_params->hdr -
+-		       (char *)&boot_params->kbd_status);
++		       (char *)&boot_params->_pad5);
+ 		memset(&boot_params->_pad7[0], 0,
+ 		       (char *)&boot_params->edd_mbr_sig_buffer[0] -
+ 			(char *)&boot_params->_pad7[0]);
+diff --git a/arch/x86/include/uapi/asm/bootparam.h b/arch/x86/include/uapi/asm/bootparam.h
+index b10bf31..5138dac 100644
+--- a/arch/x86/include/uapi/asm/bootparam.h
++++ b/arch/x86/include/uapi/asm/bootparam.h
+@@ -135,7 +135,8 @@ struct boot_params {
+ 	__u8  eddbuf_entries;				/* 0x1e9 */
+ 	__u8  edd_mbr_sig_buf_entries;			/* 0x1ea */
+ 	__u8  kbd_status;				/* 0x1eb */
+-	__u8  _pad5[3];					/* 0x1ec */
++	__u8  secure_boot;				/* 0x1ec */
++	__u8  _pad5[2];					/* 0x1ed */
+ 	/*
+ 	 * The sentinel is set to a nonzero value (0xff) in header.S.
+ 	 *
+diff --git a/arch/x86/kernel/asm-offsets.c b/arch/x86/kernel/asm-offsets.c
+index c62e015..de827d6 100644
+--- a/arch/x86/kernel/asm-offsets.c
++++ b/arch/x86/kernel/asm-offsets.c
+@@ -81,6 +81,7 @@ void common(void) {
+
+ 	BLANK();
+ 	OFFSET(BP_scratch, boot_params, scratch);
++	OFFSET(BP_secure_boot, boot_params, secure_boot);
+ 	OFFSET(BP_loadflags, boot_params, hdr.loadflags);
+ 	OFFSET(BP_hardware_subarch, boot_params, hdr.hardware_subarch);
+ 	OFFSET(BP_version, boot_params, hdr.version);
+diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
+index 6621b13..9af9668 100644
+--- a/drivers/firmware/efi/libstub/Makefile
++++ b/drivers/firmware/efi/libstub/Makefile
+@@ -28,7 +28,7 @@ OBJECT_FILES_NON_STANDARD	:= y
+ # Prevents link failures: __sanitizer_cov_trace_pc() is not linked in.
+ KCOV_INSTRUMENT			:= n
+
+-lib-y				:= efi-stub-helper.o gop.o
++lib-y				:= efi-stub-helper.o gop.o secureboot.o
+
+ # include the stub's generic dependencies from lib/ when building for ARM/arm64
+ arm-deps := fdt_rw.c fdt_ro.c fdt_wip.c fdt.c fdt_empty_tree.c fdt_sw.c sort.c
+diff --git a/drivers/firmware/efi/libstub/arm-stub.c b/drivers/firmware/efi/libstub/arm-stub.c
+index b4f7d78..06d5034 100644
+--- a/drivers/firmware/efi/libstub/arm-stub.c
++++ b/drivers/firmware/efi/libstub/arm-stub.c
+@@ -20,52 +20,6 @@
+
+ bool __nokaslr;
+
+-static int efi_get_secureboot(efi_system_table_t *sys_table_arg)
+-{
+-	static efi_char16_t const sb_var_name[] = {
+-		'S', 'e', 'c', 'u', 'r', 'e', 'B', 'o', 'o', 't', 0 };
+-	static efi_char16_t const sm_var_name[] = {
+-		'S', 'e', 't', 'u', 'p', 'M', 'o', 'd', 'e', 0 };
+-
+-	efi_guid_t var_guid = EFI_GLOBAL_VARIABLE_GUID;
+-	efi_get_variable_t *f_getvar = sys_table_arg->runtime->get_variable;
+-	u8 val;
+-	unsigned long size = sizeof(val);
+-	efi_status_t status;
+-
+-	status = f_getvar((efi_char16_t *)sb_var_name, (efi_guid_t *)&var_guid,
+-			  NULL, &size, &val);
+-
+-	if (status != EFI_SUCCESS)
+-		goto out_efi_err;
+-
+-	if (val == 0)
+-		return 0;
+-
+-	status = f_getvar((efi_char16_t *)sm_var_name, (efi_guid_t *)&var_guid,
+-			  NULL, &size, &val);
+-
+-	if (status != EFI_SUCCESS)
+-		goto out_efi_err;
+-
+-	if (val == 1)
+-		return 0;
+-
+-	return 1;
+-
+-out_efi_err:
+-	switch (status) {
+-	case EFI_NOT_FOUND:
+-		return 0;
+-	case EFI_DEVICE_ERROR:
+-		return -EIO;
+-	case EFI_SECURITY_VIOLATION:
+-		return -EACCES;
+-	default:
+-		return -EINVAL;
+-	}
+-}
+-
+ efi_status_t efi_open_volume(efi_system_table_t *sys_table_arg,
+ 			     void *__image, void **__fh)
+ {
+@@ -226,7 +180,7 @@ unsigned long efi_entry(void *handle, efi_system_table_t *sys_table,
+ 	efi_guid_t loaded_image_proto = LOADED_IMAGE_PROTOCOL_GUID;
+ 	unsigned long reserve_addr = 0;
+ 	unsigned long reserve_size = 0;
+-	int secure_boot = 0;
++	enum efi_secureboot_mode secure_boot = efi_secureboot_mode_unknown;
+ 	struct screen_info *si;
+
+ 	/* Check if we were booted by the EFI firmware */
+@@ -296,19 +250,13 @@ unsigned long efi_entry(void *handle, efi_system_table_t *sys_table,
+ 		pr_efi_err(sys_table, "Failed to parse EFI cmdline options\n");
+
+ 	secure_boot = efi_get_secureboot(sys_table);
+-	if (secure_boot > 0)
+-		pr_efi(sys_table, "UEFI Secure Boot is enabled.\n");
+-
+-	if (secure_boot < 0) {
+-		pr_efi_err(sys_table,
+-			"could not determine UEFI Secure Boot status.\n");
+-	}
+
+ 	/*
+ 	 * Unauthenticated device tree data is a security hazard, so
+ 	 * ignore 'dtb=' unless UEFI Secure Boot is disabled.
+ 	 */
+-	if (secure_boot != 0 && strstr(cmdline_ptr, "dtb=")) {
++	if (secure_boot != efi_secureboot_mode_disabled &&
++	    strstr(cmdline_ptr, "dtb=")) {
+ 		pr_efi(sys_table, "Ignoring DTB from command line.\n");
+ 	} else {
+ 		status = handle_cmdline_files(sys_table, image, cmdline_ptr,
+diff --git a/drivers/firmware/efi/libstub/secureboot.c b/drivers/firmware/efi/libstub/secureboot.c
+new file mode 100644
+index 0000000..70e2a36
+--- /dev/null
++++ b/drivers/firmware/efi/libstub/secureboot.c
+@@ -0,0 +1,66 @@
++/*
++ * Secure boot handling.
++ *
++ * Copyright (C) 2013,2014 Linaro Limited
++ *     Roy Franz <roy.franz@linaro.org
++ * Copyright (C) 2013 Red Hat, Inc.
++ *     Mark Salter <msalter@redhat.com>
++ *
++ * This file is part of the Linux kernel, and is made available under the
++ * terms of the GNU General Public License version 2.
++ *
++ */
++
++#include <linux/efi.h>
++#include <asm/efi.h>
++
++/* BIOS variables */
++static const efi_guid_t efi_variable_guid = EFI_GLOBAL_VARIABLE_GUID;
++static const efi_char16_t const efi_SecureBoot_name[] = {
++	'S', 'e', 'c', 'u', 'r', 'e', 'B', 'o', 'o', 't', 0
++};
++static const efi_char16_t const efi_SetupMode_name[] = {
++	'S', 'e', 't', 'u', 'p', 'M', 'o', 'd', 'e', 0
++};
++
++#define get_efi_var(name, vendor, ...) \
++	efi_call_runtime(get_variable, \
++			 (efi_char16_t *)(name), (efi_guid_t *)(vendor), \
++			 __VA_ARGS__);
++
++/*
++ * Determine whether we're in secure boot mode.  We return:
++ */
++enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
++{
++	u8 secboot, setupmode;
++	unsigned long size;
++	efi_status_t status;
++
++	size = sizeof(secboot);
++	status = get_efi_var(efi_SecureBoot_name, &efi_variable_guid,
++			     NULL, &size, &secboot);
++	if (status != EFI_SUCCESS)
++		goto out_efi_err;
++
++	size = sizeof(setupmode);
++	status = get_efi_var(efi_SetupMode_name, &efi_variable_guid,
++			     NULL, &size, &setupmode);
++	if (status != EFI_SUCCESS)
++		goto out_efi_err;
++
++	if (secboot == 0 || setupmode == 1)
++		goto secure_boot_disabled;
++
++	pr_efi(sys_table_arg, "UEFI Secure Boot is enabled.\n");
++	return efi_secureboot_mode_enabled;
++
++secure_boot_disabled:
++	return efi_secureboot_mode_disabled;
++
++out_efi_err:
++	pr_efi_err(sys_table_arg, "Could not determine UEFI Secure Boot status.\n");
++	if (status == EFI_NOT_FOUND)
++		goto secure_boot_disabled;
++	return efi_secureboot_mode_unknown;
++}
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index c790455..92e23f0 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -1477,6 +1477,14 @@ efi_status_t efi_setup_gop(efi_system_table_t *sys_table_arg,
+ bool efi_runtime_disabled(void);
+ extern void efi_call_virt_check_flags(unsigned long flags, const char *call);
+
++enum efi_secureboot_mode {
++	efi_secureboot_mode_unset,
++	efi_secureboot_mode_unknown,
++	efi_secureboot_mode_disabled,
++	efi_secureboot_mode_enabled,
++};
++enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table);
++
+ /*
+  * Arch code can implement the following three template macros, avoiding
+  * reptition for the void/non-void return cases of {__,}efi_call_virt():
+-- 
+2.9.3
+
+From baa6cdc01e6017c6bd798b1af89458359e13155e Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Mon, 21 Nov 2016 23:55:55 +0000
+Subject: [PATCH 06/32] efi: Disable secure boot if shim is in insecure mode
+
+A user can manually tell the shim boot loader to disable validation of
+images it loads.  When a user does this, it creates a UEFI variable called
+MokSBState that does not have the runtime attribute set.  Given that the
+user explicitly disabled validation, we can honor that and not enable
+secure boot mode if that variable is set.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/firmware/efi/libstub/secureboot.c | 24 +++++++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/efi/libstub/secureboot.c b/drivers/firmware/efi/libstub/secureboot.c
+index 70e2a36..ba6ef71 100644
+--- a/drivers/firmware/efi/libstub/secureboot.c
++++ b/drivers/firmware/efi/libstub/secureboot.c
+@@ -23,6 +23,12 @@ static const efi_char16_t const efi_SetupMode_name[] = {
+ 	'S', 'e', 't', 'u', 'p', 'M', 'o', 'd', 'e', 0
+ };
+
++/* SHIM variables */
++static const efi_guid_t shim_guid = EFI_SHIM_LOCK_GUID;
++static efi_char16_t const shim_MokSBState_name[] = {
++	'M', 'o', 'k', 'S', 'B', 'S', 't', 'a', 't', 'e', 0
++};
++
+ #define get_efi_var(name, vendor, ...) \
+ 	efi_call_runtime(get_variable, \
+ 			 (efi_char16_t *)(name), (efi_guid_t *)(vendor), \
+@@ -33,7 +39,8 @@ static const efi_char16_t const efi_SetupMode_name[] = {
+  */
+ enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
+ {
+-	u8 secboot, setupmode;
++	u32 attr;
++	u8 secboot, setupmode, moksbstate;
+ 	unsigned long size;
+ 	efi_status_t status;
+
+@@ -52,6 +59,21 @@ enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
+ 	if (secboot == 0 || setupmode == 1)
+ 		goto secure_boot_disabled;
+
++	/* See if a user has put shim into insecure mode.  If so, and if the
++	 * variable doesn't have the runtime attribute set, we might as well
++	 * honor that.
++	 */
++	size = sizeof(moksbstate);
++	status = get_efi_var(shim_MokSBState_name, &shim_guid,
++			     &attr, &size, &moksbstate);
++
++	/* If it fails, we don't care why.  Default to secure */
++	if (status != EFI_SUCCESS)
++		goto secure_boot_enabled;
++	if (!(attr & EFI_VARIABLE_RUNTIME_ACCESS) && moksbstate == 1)
++		goto secure_boot_disabled;
++
++secure_boot_enabled:
+ 	pr_efi(sys_table_arg, "UEFI Secure Boot is enabled.\n");
+ 	return efi_secureboot_mode_enabled;
+
+-- 
+2.9.3
+
+From 9079547f4808ea5c8cd844bf40d3895994bd175e Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Mon, 21 Nov 2016 23:55:55 +0000
+Subject: [PATCH 07/32] efi: Add EFI_SECURE_BOOT bit
+
+UEFI machines can be booted in Secure Boot mode.  Add a EFI_SECURE_BOOT bit
+that can be passed to efi_enabled() to find out whether secure boot is
+enabled.
+
+This will be used by the SysRq+x handler, registered by the x86 arch, to find
+out whether secure boot mode is enabled so that it can be disabled.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/kernel/setup.c | 15 +++++++++++++++
+ include/linux/efi.h     |  1 +
+ 2 files changed, 16 insertions(+)
+
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index 9c337b0..d8972ec 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -1152,6 +1152,21 @@ void __init setup_arch(char **cmdline_p)
+ 	/* Allocate bigger log buffer */
+ 	setup_log_buf(1);
+
++	if (IS_ENABLED(CONFIG_EFI)) {
++		switch (boot_params.secure_boot) {
++		case efi_secureboot_mode_disabled:
++			pr_info("Secure boot disabled\n");
++			break;
++		case efi_secureboot_mode_enabled:
++			set_bit(EFI_SECURE_BOOT, &efi.flags);
++			pr_info("Secure boot enabled\n");
++			break;
++		default:
++			pr_info("Secure boot could not be determined\n");
++			break;
++		}
++	}
++
+ 	reserve_initrd();
+
+ 	acpi_table_upgrade();
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 92e23f0..135ca9c 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -1066,6 +1066,7 @@ extern int __init efi_setup_pcdp_console(char *);
+ #define EFI_ARCH_1		7	/* First arch-specific bit */
+ #define EFI_DBG			8	/* Print additional debug info at runtime */
+ #define EFI_NX_PE_DATA		9	/* Can runtime data regions be mapped non-executable? */
++#define EFI_SECURE_BOOT		10	/* Are we in Secure Boot mode? */
+
+ #ifdef CONFIG_EFI
+ /*
+-- 
+2.9.3
+
+From eada0243f0b8fc21588a21c564187219dee03e3c Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 25 Nov 2016 11:52:05 +0000
+Subject: [PATCH 08/32] efi: Handle secure boot from UEFI-2.6
+
+UEFI-2.6 adds a new variable, DeployedMode.  If it exists, this must be 1
+if we're to engage lockdown mode.
+
+Reported-by: James Bottomley <James.Bottomley@HansenPartnership.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/firmware/efi/libstub/secureboot.c | 16 +++++++++++++++-
+ include/linux/efi.h                       |  4 ++++
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/firmware/efi/libstub/secureboot.c b/drivers/firmware/efi/libstub/secureboot.c
+index ba6ef71..333b159 100644
+--- a/drivers/firmware/efi/libstub/secureboot.c
++++ b/drivers/firmware/efi/libstub/secureboot.c
+@@ -22,6 +22,9 @@ static const efi_char16_t const efi_SecureBoot_name[] = {
+ static const efi_char16_t const efi_SetupMode_name[] = {
+ 	'S', 'e', 't', 'u', 'p', 'M', 'o', 'd', 'e', 0
+ };
++static const efi_char16_t const efi_DeployedMode_name[] = {
++	'D', 'e', 'p', 'l', 'o', 'y', 'e', 'd', 'M', 'o', 'd', 'e', 0
++};
+
+ /* SHIM variables */
+ static const efi_guid_t shim_guid = EFI_SHIM_LOCK_GUID;
+@@ -40,7 +43,7 @@ static efi_char16_t const shim_MokSBState_name[] = {
+ enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
+ {
+ 	u32 attr;
+-	u8 secboot, setupmode, moksbstate;
++	u8 secboot, setupmode, deployedmode, moksbstate;
+ 	unsigned long size;
+ 	efi_status_t status;
+
+@@ -59,6 +62,17 @@ enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
+ 	if (secboot == 0 || setupmode == 1)
+ 		goto secure_boot_disabled;
+
++	/* UEFI-2.6 requires DeployedMode to be 1. */
++	if (sys_table_arg->hdr.revision >= EFI_2_60_SYSTEM_TABLE_REVISION) {
++		size = sizeof(deployedmode);
++		status = get_efi_var(efi_DeployedMode_name, &efi_variable_guid,
++				     NULL, &size, &deployedmode);
++		if (status != EFI_SUCCESS)
++			goto out_efi_err;
++		if (deployedmode == 0)
++			goto secure_boot_disabled;
++	}
++
+ 	/* See if a user has put shim into insecure mode.  If so, and if the
+ 	 * variable doesn't have the runtime attribute set, we might as well
+ 	 * honor that.
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 135ca9c..e1893f5 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -645,6 +645,10 @@ typedef struct {
+
+ #define EFI_SYSTEM_TABLE_SIGNATURE ((u64)0x5453595320494249ULL)
+
++#define EFI_2_60_SYSTEM_TABLE_REVISION  ((2 << 16) | (60))
++#define EFI_2_50_SYSTEM_TABLE_REVISION  ((2 << 16) | (50))
++#define EFI_2_40_SYSTEM_TABLE_REVISION  ((2 << 16) | (40))
++#define EFI_2_31_SYSTEM_TABLE_REVISION  ((2 << 16) | (31))
+ #define EFI_2_30_SYSTEM_TABLE_REVISION  ((2 << 16) | (30))
+ #define EFI_2_20_SYSTEM_TABLE_REVISION  ((2 << 16) | (20))
+ #define EFI_2_10_SYSTEM_TABLE_REVISION  ((2 << 16) | (10))
+-- 
+2.9.3
+
+From 3b0695eda22ad712a2b9be9bb70979d875a37816 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 21 Nov 2016 23:36:17 +0000
+Subject: [PATCH 09/32] Add the ability to lock down access to the running
+ kernel image
+
+Provide a single call to allow kernel code to determine whether the system
+should be locked down, thereby disallowing various accesses that might
+allow the running kernel image to be changed including the loading of
+modules that aren't validly signed with a key we recognise, fiddling with
+MSR registers and disallowing hibernation,
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ include/linux/kernel.h   |  9 +++++++++
+ include/linux/security.h | 11 +++++++++++
+ security/Kconfig         | 15 +++++++++++++++
+ security/Makefile        |  3 +++
+ security/lock_down.c     | 40 ++++++++++++++++++++++++++++++++++++++++
+ 5 files changed, 78 insertions(+)
+ create mode 100644 security/lock_down.c
+
+diff --git a/include/linux/kernel.h b/include/linux/kernel.h
+index bc6ed52..8ab309d 100644
+--- a/include/linux/kernel.h
++++ b/include/linux/kernel.h
+@@ -268,6 +268,15 @@ extern int oops_may_print(void);
+ void do_exit(long error_code) __noreturn;
+ void complete_and_exit(struct completion *, long) __noreturn;
+
++#ifdef CONFIG_LOCK_DOWN_KERNEL
++extern bool kernel_is_locked_down(void);
++#else
++static inline bool kernel_is_locked_down(void)
++{
++	return false;
++}
++#endif
++
+ /* Internal, do not use. */
+ int __must_check _kstrtoul(const char *s, unsigned int base, unsigned long *res);
+ int __must_check _kstrtol(const char *s, unsigned int base, long *res);
+diff --git a/include/linux/security.h b/include/linux/security.h
+index c2125e9..41a7325 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1685,5 +1685,16 @@ static inline void free_secdata(void *secdata)
+ { }
+ #endif /* CONFIG_SECURITY */
+
++#ifdef CONFIG_LOCK_DOWN_KERNEL
++extern void lock_kernel_down(void);
++#ifdef CONFIG_ALLOW_LOCKDOWN_LIFT
++extern void lift_kernel_lockdown(void);
++#endif
++#else
++static inline void lock_kernel_down(void)
++{
++}
++#endif
++
+ #endif /* ! __LINUX_SECURITY_H */
+
+diff --git a/security/Kconfig b/security/Kconfig
+index 118f454..fa1a678 100644
+--- a/security/Kconfig
++++ b/security/Kconfig
+@@ -158,6 +158,21 @@ config HARDENED_USERCOPY_PAGESPAN
+ 	  been removed. This config is intended to be used only while
+ 	  trying to find such users.
+
++config LOCK_DOWN_KERNEL
++	bool "Allow the kernel to be 'locked down'"
++	help
++	  Allow the kernel to be locked down under certain circumstances, for
++	  instance if UEFI secure boot is enabled.  Locking down the kernel
++	  turns off various features that might otherwise allow access to the
++	  kernel image (eg. setting MSR registers).
++
++config ALLOW_LOCKDOWN_LIFT
++	bool
++	help
++	  Allow the lockdown on a kernel to be lifted, thereby restoring the
++	  ability of userspace to access the kernel image (eg. by SysRq+x under
++	  x86).
++
+ source security/selinux/Kconfig
+ source security/smack/Kconfig
+ source security/tomoyo/Kconfig
+diff --git a/security/Makefile b/security/Makefile
+index f2d71cd..8c4a43e 100644
+--- a/security/Makefile
++++ b/security/Makefile
+@@ -29,3 +29,6 @@ obj-$(CONFIG_CGROUP_DEVICE)		+= device_cgroup.o
+ # Object integrity file lists
+ subdir-$(CONFIG_INTEGRITY)		+= integrity
+ obj-$(CONFIG_INTEGRITY)			+= integrity/
++
++# Allow the kernel to be locked down
++obj-$(CONFIG_LOCK_DOWN_KERNEL)		+= lock_down.o
+diff --git a/security/lock_down.c b/security/lock_down.c
+new file mode 100644
+index 0000000..5788c60
+--- /dev/null
++++ b/security/lock_down.c
+@@ -0,0 +1,40 @@
++/* Lock down the kernel
++ *
++ * Copyright (C) 2016 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public Licence
++ * as published by the Free Software Foundation; either version
++ * 2 of the Licence, or (at your option) any later version.
++ */
++
++#include <linux/security.h>
++#include <linux/export.h>
++
++static __read_mostly bool kernel_locked_down;
++
++/*
++ * Put the kernel into lock-down mode.
++ */
++void lock_kernel_down(void)
++{
++	kernel_locked_down = true;
++}
++
++/*
++ * Take the kernel out of lockdown mode.
++ */
++void lift_kernel_lockdown(void)
++{
++	kernel_locked_down = false;
++}
++
++/**
++ * kernel_is_locked_down - Find out if the kernel is locked down
++ */
++bool kernel_is_locked_down(void)
++{
++	return kernel_locked_down;
++}
++EXPORT_SYMBOL(kernel_is_locked_down);
+-- 
+2.9.3
+
+From c1cc643f82e1c9efee123eb81befb58e41b87310 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Mon, 21 Nov 2016 23:55:55 +0000
+Subject: [PATCH 10/32] efi: Lock down the kernel if booted in secure boot mode
+
+UEFI Secure Boot provides a mechanism for ensuring that the firmware will
+only load signed bootloaders and kernels.  Certain use cases may also
+require that all kernel modules also be signed.  Add a configuration option
+that to lock down the kernel - which includes requiring validly signed
+modules - if the kernel is secure-booted.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/Kconfig        | 12 ++++++++++++
+ arch/x86/kernel/setup.c |  8 +++++++-
+ 2 files changed, 19 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index bada636..5b19997 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1786,6 +1786,18 @@ config EFI_MIXED
+
+ 	   If unsure, say N.
+
++config EFI_SECURE_BOOT_LOCK_DOWN
++	def_bool n
++	depends on EFI
++	prompt "Lock down the kernel when UEFI Secure Boot is enabled"
++	---help---
++	  UEFI Secure Boot provides a mechanism for ensuring that the firmware
++	  will only load signed bootloaders and kernels.  Certain use cases may
++	  also require that all kernel modules also be signed and that
++	  userspace is prevented from directly changing the running kernel
++	  image.  Say Y here to automatically lock down the kernel when a
++	  system boots with UEFI Secure Boot enabled.
++
+ config SECCOMP
+ 	def_bool y
+ 	prompt "Enable seccomp to safely compute untrusted bytecode"
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index d8972ec..facaeb9 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -69,6 +69,7 @@
+ #include <linux/crash_dump.h>
+ #include <linux/tboot.h>
+ #include <linux/jiffies.h>
++#include <linux/security.h>
+
+ #include <video/edid.h>
+
+@@ -1159,7 +1160,12 @@ void __init setup_arch(char **cmdline_p)
+ 			break;
+ 		case efi_secureboot_mode_enabled:
+ 			set_bit(EFI_SECURE_BOOT, &efi.flags);
+-			pr_info("Secure boot enabled\n");
++			if (IS_ENABLED(CONFIG_EFI_SECURE_BOOT_LOCK_DOWN)) {
++				lock_kernel_down();
++				pr_info("Secure boot enabled and kernel locked down\n");
++			} else {
++				pr_info("Secure boot enabled\n");
++			}
+ 			break;
+ 		default:
+ 			pr_info("Secure boot could not be determined\n");
+-- 
+2.9.3
+
+From 03ff1bcf82c3acc3df8e8fd1badbbc9f6a27a2e6 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 23 Nov 2016 13:22:22 +0000
+Subject: [PATCH 11/32] Enforce module signatures if the kernel is locked down
+
+If the kernel is locked down, require that all modules have valid
+signatures that we can verify.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/module.c b/kernel/module.c
+index f57dd63..2a021c3 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2744,7 +2744,7 @@ static int module_sig_check(struct load_info *info, int flags)
+ 	}
+
+ 	/* Not having a signature is only an error if we're strict. */
+-	if (err == -ENOKEY && !sig_enforce)
++	if (err == -ENOKEY && !sig_enforce && !kernel_is_locked_down())
+ 		err = 0;
+
+ 	return err;
+-- 
+2.9.3
+
+From 328104a3a9859084a25240ea031572e0d20ceaf4 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:16 +0000
+Subject: [PATCH 12/32] Restrict /dev/mem and /dev/kmem when the kernel is
+ locked down
+
+Allowing users to write to address space makes it possible for the kernel to
+be subverted, avoiding module loading restrictions.  Prevent this when the
+kernel has been locked down.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/char/mem.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 5bb1985..6441d21 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -163,6 +163,9 @@ static ssize_t write_mem(struct file *file, const char __user *buf,
+ 	if (p != *ppos)
+ 		return -EFBIG;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (!valid_phys_addr_range(p, count))
+ 		return -EFAULT;
+
+@@ -515,6 +518,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
+ 	if (!pfn_valid(PFN_DOWN(p)))
+ 		return -EIO;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (p < (unsigned long) high_memory) {
+ 		unsigned long to_write = min_t(unsigned long, count,
+ 					       (unsigned long)high_memory - p);
+-- 
+2.9.3
+
+From 2cfe484bdc7e42b42be4887f2b4d23ac9de79593 Mon Sep 17 00:00:00 2001
+From: Kyle McMartin <kyle@redhat.com>
+Date: Mon, 21 Nov 2016 23:55:56 +0000
+Subject: [PATCH 13/32] Add a sysrq option to exit secure boot mode
+
+Make sysrq+x exit secure boot mode on x86_64, thereby allowing the running
+kernel image to be modified.  This lifts the lockdown.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/Kconfig            | 10 ++++++++++
+ arch/x86/kernel/setup.c     | 31 +++++++++++++++++++++++++++++++
+ drivers/input/misc/uinput.c |  1 +
+ drivers/tty/sysrq.c         | 19 +++++++++++++------
+ include/linux/input.h       |  5 +++++
+ include/linux/sysrq.h       |  8 +++++++-
+ kernel/debug/kdb/kdb_main.c |  2 +-
+ 7 files changed, 68 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5b19997..c2b481b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -1798,6 +1798,16 @@ config EFI_SECURE_BOOT_LOCK_DOWN
+ 	  image.  Say Y here to automatically lock down the kernel when a
+ 	  system boots with UEFI Secure Boot enabled.
+
++config EFI_ALLOW_SECURE_BOOT_EXIT
++	def_bool n
++	depends on EFI_SECURE_BOOT_LOCK_DOWN && MAGIC_SYSRQ
++	select ALLOW_LOCKDOWN_LIFT
++	prompt "Allow secure boot mode to be exited with SysRq+x on a keyboard"
++	---help---
++	  Allow secure boot mode to be exited and the kernel lockdown lifted by
++	  typing SysRq+x on a keyboard attached to the system (not permitted
++	  through procfs).
++
+ config SECCOMP
+ 	def_bool y
+ 	prompt "Enable seccomp to safely compute untrusted bytecode"
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index facaeb9..de24041 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -71,6 +71,11 @@
+ #include <linux/jiffies.h>
+ #include <linux/security.h>
+
++#include <linux/fips.h>
++#include <linux/cred.h>
++#include <linux/sysrq.h>
++#include <linux/init_task.h>
++
+ #include <video/edid.h>
+
+ #include <asm/mtrr.h>
+@@ -1304,6 +1309,32 @@ void __init i386_reserve_resources(void)
+
+ #endif /* CONFIG_X86_32 */
+
++#ifdef CONFIG_EFI_ALLOW_SECURE_BOOT_EXIT
++
++static void sysrq_handle_secure_boot(int key)
++{
++	if (!efi_enabled(EFI_SECURE_BOOT))
++		return;
++
++	pr_info("Secure boot disabled\n");
++	lift_kernel_lockdown();
++}
++static struct sysrq_key_op secure_boot_sysrq_op = {
++	.handler	=	sysrq_handle_secure_boot,
++	.help_msg	=	"unSB(x)",
++	.action_msg	=	"Disabling Secure Boot restrictions",
++	.enable_mask	=	SYSRQ_DISABLE_USERSPACE,
++};
++static int __init secure_boot_sysrq(void)
++{
++	if (efi_enabled(EFI_SECURE_BOOT))
++		register_sysrq_key('x', &secure_boot_sysrq_op);
++	return 0;
++}
++late_initcall(secure_boot_sysrq);
++#endif /*CONFIG_EFI_ALLOW_SECURE_BOOT_EXIT*/
++
++
+ static struct notifier_block kernel_offset_notifier = {
+ 	.notifier_call = dump_kernel_offset
+ };
+diff --git a/drivers/input/misc/uinput.c b/drivers/input/misc/uinput.c
+index 92595b9..894ed3f 100644
+--- a/drivers/input/misc/uinput.c
++++ b/drivers/input/misc/uinput.c
+@@ -379,6 +379,7 @@ static int uinput_allocate_device(struct uinput_device *udev)
+ 	if (!udev->dev)
+ 		return -ENOMEM;
+
++	udev->dev->flags |= INPUTDEV_FLAGS_SYNTHETIC;
+ 	udev->dev->event = uinput_dev_event;
+ 	input_set_drvdata(udev->dev, udev);
+
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 52bbd27..72f46a1 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -479,6 +479,7 @@ static struct sysrq_key_op *sysrq_key_table[36] = {
+ 	/* x: May be registered on mips for TLB dump */
+ 	/* x: May be registered on ppc/powerpc for xmon */
+ 	/* x: May be registered on sparc64 for global PMU dump */
++	/* x: May be registered on x86_64 for disabling secure boot */
+ 	NULL,				/* x */
+ 	/* y: May be registered on sparc64 for global register dump */
+ 	NULL,				/* y */
+@@ -522,7 +523,7 @@ static void __sysrq_put_key_op(int key, struct sysrq_key_op *op_p)
+                 sysrq_key_table[i] = op_p;
+ }
+
+-void __handle_sysrq(int key, bool check_mask)
++void __handle_sysrq(int key, unsigned int from)
+ {
+ 	struct sysrq_key_op *op_p;
+ 	int orig_log_level;
+@@ -542,11 +543,15 @@ void __handle_sysrq(int key, bool check_mask)
+
+         op_p = __sysrq_get_key_op(key);
+         if (op_p) {
++		/* Ban synthetic events from some sysrq functionality */
++		if ((from == SYSRQ_FROM_PROC || from == SYSRQ_FROM_SYNTHETIC) &&
++		    op_p->enable_mask & SYSRQ_DISABLE_USERSPACE)
++			printk("This sysrq operation is disabled from userspace.\n");
+ 		/*
+ 		 * Should we check for enabled operations (/proc/sysrq-trigger
+ 		 * should not) and is the invoked operation enabled?
+ 		 */
+-		if (!check_mask || sysrq_on_mask(op_p->enable_mask)) {
++		if (from == SYSRQ_FROM_KERNEL || sysrq_on_mask(op_p->enable_mask)) {
+ 			pr_cont("%s\n", op_p->action_msg);
+ 			console_loglevel = orig_log_level;
+ 			op_p->handler(key);
+@@ -578,7 +583,7 @@ void __handle_sysrq(int key, bool check_mask)
+ void handle_sysrq(int key)
+ {
+ 	if (sysrq_on())
+-		__handle_sysrq(key, true);
++		__handle_sysrq(key, SYSRQ_FROM_KERNEL);
+ }
+ EXPORT_SYMBOL(handle_sysrq);
+
+@@ -659,7 +664,7 @@ static void sysrq_do_reset(unsigned long _state)
+ static void sysrq_handle_reset_request(struct sysrq_state *state)
+ {
+ 	if (state->reset_requested)
+-		__handle_sysrq(sysrq_xlate[KEY_B], false);
++		__handle_sysrq(sysrq_xlate[KEY_B], SYSRQ_FROM_KERNEL);
+
+ 	if (sysrq_reset_downtime_ms)
+ 		mod_timer(&state->keyreset_timer,
+@@ -810,8 +815,10 @@ static bool sysrq_handle_keypress(struct sysrq_state *sysrq,
+
+ 	default:
+ 		if (sysrq->active && value && value != 2) {
++			int from = sysrq->handle.dev->flags & INPUTDEV_FLAGS_SYNTHETIC ?
++					SYSRQ_FROM_SYNTHETIC : 0;
+ 			sysrq->need_reinject = false;
+-			__handle_sysrq(sysrq_xlate[code], true);
++			__handle_sysrq(sysrq_xlate[code], from);
+ 		}
+ 		break;
+ 	}
+@@ -1095,7 +1102,7 @@ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+
+ 		if (get_user(c, buf))
+ 			return -EFAULT;
+-		__handle_sysrq(c, false);
++		__handle_sysrq(c, SYSRQ_FROM_PROC);
+ 	}
+
+ 	return count;
+diff --git a/include/linux/input.h b/include/linux/input.h
+index a65e3b2..8b03571 100644
+--- a/include/linux/input.h
++++ b/include/linux/input.h
+@@ -42,6 +42,7 @@ struct input_value {
+  * @phys: physical path to the device in the system hierarchy
+  * @uniq: unique identification code for the device (if device has it)
+  * @id: id of the device (struct input_id)
++ * @flags: input device flags (SYNTHETIC, etc.)
+  * @propbit: bitmap of device properties and quirks
+  * @evbit: bitmap of types of events supported by the device (EV_KEY,
+  *	EV_REL, etc.)
+@@ -124,6 +125,8 @@ struct input_dev {
+ 	const char *uniq;
+ 	struct input_id id;
+
++	unsigned int flags;
++
+ 	unsigned long propbit[BITS_TO_LONGS(INPUT_PROP_CNT)];
+
+ 	unsigned long evbit[BITS_TO_LONGS(EV_CNT)];
+@@ -190,6 +193,8 @@ struct input_dev {
+ };
+ #define to_input_dev(d) container_of(d, struct input_dev, dev)
+
++#define	INPUTDEV_FLAGS_SYNTHETIC	0x000000001
++
+ /*
+  * Verify that we are in sync with input_device_id mod_devicetable.h #defines
+  */
+diff --git a/include/linux/sysrq.h b/include/linux/sysrq.h
+index 387fa7d..f7c52a9 100644
+--- a/include/linux/sysrq.h
++++ b/include/linux/sysrq.h
+@@ -28,6 +28,8 @@
+ #define SYSRQ_ENABLE_BOOT	0x0080
+ #define SYSRQ_ENABLE_RTNICE	0x0100
+
++#define SYSRQ_DISABLE_USERSPACE	0x00010000
++
+ struct sysrq_key_op {
+ 	void (*handler)(int);
+ 	char *help_msg;
+@@ -42,8 +44,12 @@ struct sysrq_key_op {
+  * are available -- else NULL's).
+  */
+
++#define SYSRQ_FROM_KERNEL	0x0001
++#define SYSRQ_FROM_PROC		0x0002
++#define SYSRQ_FROM_SYNTHETIC	0x0004
++
+ void handle_sysrq(int key);
+-void __handle_sysrq(int key, bool check_mask);
++void __handle_sysrq(int key, unsigned int from);
+ int register_sysrq_key(int key, struct sysrq_key_op *op);
+ int unregister_sysrq_key(int key, struct sysrq_key_op *op);
+ struct sysrq_key_op *__sysrq_get_key_op(int key);
+diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
+index 2a20c0d..d46d2e1 100644
+--- a/kernel/debug/kdb/kdb_main.c
++++ b/kernel/debug/kdb/kdb_main.c
+@@ -1968,7 +1968,7 @@ static int kdb_sr(int argc, const char **argv)
+ 		return KDB_ARGCOUNT;
+
+ 	kdb_trap_printk++;
+-	__handle_sysrq(*argv[1], check_mask);
++	__handle_sysrq(*argv[1], check_mask ? SYSRQ_FROM_KERNEL : 0);
+ 	kdb_trap_printk--;
+
+ 	return 0;
+-- 
+2.9.3
+
+From a82fdfceffac8e9cdc0287d874a8ba1b9d875e70 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:15 +0000
+Subject: [PATCH 14/32] kexec: Disable at runtime if the kernel is locked down
+
+kexec permits the loading and execution of arbitrary code in ring 0, which
+is something that lock-down is meant to prevent. It makes sense to disable
+kexec in this situation.
+
+This does not affect kexec_file_load() which can check for a signature on the
+image to be booted.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/kexec.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/kernel/kexec.c b/kernel/kexec.c
+index 980936a..46de8e6 100644
+--- a/kernel/kexec.c
++++ b/kernel/kexec.c
+@@ -194,6 +194,13 @@ SYSCALL_DEFINE4(kexec_load, unsigned long, entry, unsigned long, nr_segments,
+ 		return -EPERM;
+
+ 	/*
++	 * kexec can be used to circumvent module loading restrictions, so
++	 * prevent loading in that case
++	 */
++	if (kernel_is_locked_down())
++		return -EPERM;
++
++	/*
+ 	 * Verify we have a legal set of flags
+ 	 * This leaves us room for future extensions.
+ 	 */
+-- 
+2.9.3
+
+From 43d4cec4b9acbe2954afb355cc32dbd456ca77bd Mon Sep 17 00:00:00 2001
+From: Dave Young <dyoung@redhat.com>
+Date: Tue, 22 Nov 2016 08:46:15 +0000
+Subject: [PATCH 15/32] Copy secure_boot flag in boot params across kexec
+ reboot
+
+Kexec reboot in case secure boot being enabled does not keep the secure
+boot mode in new kernel, so later one can load unsigned kernel via legacy
+kexec_load.  In this state, the system is missing the protections provided
+by secure boot.
+
+Adding a patch to fix this by retain the secure_boot flag in original
+kernel.
+
+secure_boot flag in boot_params is set in EFI stub, but kexec bypasses the
+stub.  Fixing this issue by copying secure_boot flag across kexec reboot.
+
+Signed-off-by: Dave Young <dyoung@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/kernel/kexec-bzimage64.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/kernel/kexec-bzimage64.c b/arch/x86/kernel/kexec-bzimage64.c
+index 3407b14..b843a4e 100644
+--- a/arch/x86/kernel/kexec-bzimage64.c
++++ b/arch/x86/kernel/kexec-bzimage64.c
+@@ -179,6 +179,7 @@ setup_efi_state(struct boot_params *params, unsigned long params_load_addr,
+ 	if (efi_enabled(EFI_OLD_MEMMAP))
+ 		return 0;
+
++	params->secure_boot = boot_params.secure_boot;
+ 	ei->efi_loader_signature = current_ei->efi_loader_signature;
+ 	ei->efi_systab = current_ei->efi_systab;
+ 	ei->efi_systab_hi = current_ei->efi_systab_hi;
+-- 
+2.9.3
+
+From 7f303a867209a3641d3da378d914967314b60254 Mon Sep 17 00:00:00 2001
+From: "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+Date: Wed, 23 Nov 2016 13:49:19 +0000
+Subject: [PATCH 16/32] kexec_file: Disable at runtime if securelevel has been
+ set
+
+When KEXEC_VERIFY_SIG is not enabled, kernel should not loads image
+through kexec_file systemcall if securelevel has been set.
+
+This code was showed in Matthew's patch but not in git:
+https://lkml.org/lkml/2015/3/13/778
+
+Cc: Matthew Garrett <mjg59@srcf.ucam.org>
+Signed-off-by: Lee, Chun-Yi <jlee@suse.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/kexec_file.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index 037c321..04f48f2 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -264,6 +264,12 @@ SYSCALL_DEFINE5(kexec_file_load, int, kernel_fd, int, initrd_fd,
+ 	if (!capable(CAP_SYS_BOOT) || kexec_load_disabled)
+ 		return -EPERM;
+
++	/* Don't permit images to be loaded into trusted kernels if we're not
++	 * going to verify the signature on them
++	 */
++	if (!IS_ENABLED(CONFIG_KEXEC_VERIFY_SIG) && kernel_is_locked_down())
++		return -EPERM;
++
+ 	/* Make sure we have a legal set of flags */
+ 	if (flags != (flags & KEXEC_FILE_FLAGS))
+ 		return -EINVAL;
+-- 
+2.9.3
+
+From 7b42e60e328109fc2a04434c3cfedeb53eae6426 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@fedoraproject.org>
+Date: Tue, 22 Nov 2016 08:46:15 +0000
+Subject: [PATCH 17/32] hibernate: Disable when the kernel is locked down
+
+There is currently no way to verify the resume image when returning
+from hibernate.  This might compromise the signed modules trust model,
+so until we can work with signed hibernate images we disable it when the
+kernel is locked down.
+
+Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/power/hibernate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
+index b26dbc4..3732187 100644
+--- a/kernel/power/hibernate.c
++++ b/kernel/power/hibernate.c
+@@ -67,7 +67,7 @@ static const struct platform_hibernation_ops *hibernation_ops;
+
+ bool hibernation_available(void)
+ {
+-	return (nohibernate == 0);
++	return nohibernate == 0 && !kernel_is_locked_down();
+ }
+
+ /**
+-- 
+2.9.3
+
+From a2a550718c501375c22f5afdead9d25225abdcd3 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg59@srcf.ucam.org>
+Date: Wed, 23 Nov 2016 13:28:17 +0000
+Subject: [PATCH 18/32] uswsusp: Disable when the kernel is locked down
+
+uswsusp allows a user process to dump and then restore kernel state, which
+makes it possible to modify the running kernel.  Disable this if the kernel
+is locked down.
+
+Signed-off-by: Matthew Garrett <mjg59@srcf.ucam.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/power/user.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/power/user.c b/kernel/power/user.c
+index 35310b6..c9ef5e1 100644
+--- a/kernel/power/user.c
++++ b/kernel/power/user.c
+@@ -52,6 +52,9 @@ static int snapshot_open(struct inode *inode, struct file *filp)
+ 	if (!hibernation_available())
+ 		return -EPERM;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	lock_system_sleep();
+
+ 	if (!atomic_add_unless(&snapshot_device_available, -1, 0)) {
+-- 
+2.9.3
+
+From 81204660ab5d1914cb59fb246f103288ecf9a177 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:15 +0000
+Subject: [PATCH 19/32] PCI: Lock down BAR access when the kernel is locked
+ down
+
+Any hardware that can potentially generate DMA has to be locked down in
+order to avoid it being possible for an attacker to modify kernel code,
+allowing them to circumvent disabled module loading or module signing.
+Default to paranoid - in future we can potentially relax this for
+sufficiently IOMMU-isolated devices.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/pci/pci-sysfs.c | 9 +++++++++
+ drivers/pci/proc.c      | 8 +++++++-
+ drivers/pci/syscall.c   | 2 +-
+ 3 files changed, 17 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
+index bcd10c7..02b9c9e 100644
+--- a/drivers/pci/pci-sysfs.c
++++ b/drivers/pci/pci-sysfs.c
+@@ -716,6 +716,9 @@ static ssize_t pci_write_config(struct file *filp, struct kobject *kobj,
+ 	loff_t init_off = off;
+ 	u8 *data = (u8 *) buf;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (off > dev->cfg_size)
+ 		return 0;
+ 	if (off + count > dev->cfg_size) {
+@@ -1007,6 +1010,9 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
+ 	resource_size_t start, end;
+ 	int i;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	for (i = 0; i < PCI_ROM_RESOURCE; i++)
+ 		if (res == &pdev->resource[i])
+ 			break;
+@@ -1106,6 +1112,9 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
+ 				     struct bin_attribute *attr, char *buf,
+ 				     loff_t off, size_t count)
+ {
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	return pci_resource_io(filp, kobj, attr, buf, off, count, true);
+ }
+
+diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
+index 2408abe..eaccf9b 100644
+--- a/drivers/pci/proc.c
++++ b/drivers/pci/proc.c
+@@ -116,6 +116,9 @@ static ssize_t proc_bus_pci_write(struct file *file, const char __user *buf,
+ 	int size = dev->cfg_size;
+ 	int cnt;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (pos >= size)
+ 		return 0;
+ 	if (nbytes >= size)
+@@ -195,6 +198,9 @@ static long proc_bus_pci_ioctl(struct file *file, unsigned int cmd,
+ #endif /* HAVE_PCI_MMAP */
+ 	int ret = 0;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	switch (cmd) {
+ 	case PCIIOC_CONTROLLER:
+ 		ret = pci_domain_nr(dev->bus);
+@@ -233,7 +239,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
+ 	struct pci_filp_private *fpriv = file->private_data;
+ 	int i, ret, write_combine;
+
+-	if (!capable(CAP_SYS_RAWIO))
++	if (!capable(CAP_SYS_RAWIO) || kernel_is_locked_down())
+ 		return -EPERM;
+
+ 	/* Make sure the caller is mapping a real resource for this device */
+diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
+index b91c4da..81544dc 100644
+--- a/drivers/pci/syscall.c
++++ b/drivers/pci/syscall.c
+@@ -92,7 +92,7 @@ SYSCALL_DEFINE5(pciconfig_write, unsigned long, bus, unsigned long, dfn,
+ 	u32 dword;
+ 	int err = 0;
+
+-	if (!capable(CAP_SYS_ADMIN))
++	if (!capable(CAP_SYS_ADMIN) || kernel_is_locked_down())
+ 		return -EPERM;
+
+ 	dev = pci_get_bus_and_slot(bus, dfn);
+-- 
+2.9.3
+
+From 18f4177e0a147adccbbacb1fa95e340352228db3 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:16 +0000
+Subject: [PATCH 20/32] x86: Lock down IO port access when the kernel is locked
+ down
+
+IO port access would permit users to gain access to PCI configuration
+registers, which in turn (on a lot of hardware) give access to MMIO
+register space. This would potentially permit root to trigger arbitrary
+DMA, so lock it down by default.
+
+This also implicitly locks down the KDADDIO, KDDELIO, KDENABIO and
+KDDISABIO console ioctls.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/kernel/ioport.c | 4 ++--
+ drivers/char/mem.c       | 2 ++
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/ioport.c b/arch/x86/kernel/ioport.c
+index 589b319..f0789ab 100644
+--- a/arch/x86/kernel/ioport.c
++++ b/arch/x86/kernel/ioport.c
+@@ -28,7 +28,7 @@ asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int turn_on)
+
+ 	if ((from + num <= from) || (from + num > IO_BITMAP_BITS))
+ 		return -EINVAL;
+-	if (turn_on && !capable(CAP_SYS_RAWIO))
++	if (turn_on && (!capable(CAP_SYS_RAWIO) || kernel_is_locked_down()))
+ 		return -EPERM;
+
+ 	/*
+@@ -108,7 +108,7 @@ SYSCALL_DEFINE1(iopl, unsigned int, level)
+ 		return -EINVAL;
+ 	/* Trying to gain more privileges? */
+ 	if (level > old) {
+-		if (!capable(CAP_SYS_RAWIO))
++		if (!capable(CAP_SYS_RAWIO) || kernel_is_locked_down())
+ 			return -EPERM;
+ 	}
+ 	regs->flags = (regs->flags & ~X86_EFLAGS_IOPL) |
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 6441d21..f653c36 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -743,6 +743,8 @@ static loff_t memory_lseek(struct file *file, loff_t offset, int orig)
+
+ static int open_port(struct inode *inode, struct file *filp)
+ {
++	if (kernel_is_locked_down())
++		return -EPERM;
+ 	return capable(CAP_SYS_RAWIO) ? 0 : -EPERM;
+ }
+
+-- 
+2.9.3
+
+From bdd2ae6c0c8ce5a4dadaa41019a6e065e9aa9128 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:17 +0000
+Subject: [PATCH 21/32] x86: Restrict MSR access when the kernel is locked down
+
+Writing to MSRs should not be allowed if the kernel is locked down, since
+it could lead to execution of arbitrary code in kernel mode.  Based on a
+patch by Kees Cook.
+
+Cc: Kees Cook <keescook@chromium.org>
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ arch/x86/kernel/msr.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/x86/kernel/msr.c b/arch/x86/kernel/msr.c
+index 7f3550a..90cddc1 100644
+--- a/arch/x86/kernel/msr.c
++++ b/arch/x86/kernel/msr.c
+@@ -83,6 +83,9 @@ static ssize_t msr_write(struct file *file, const char __user *buf,
+ 	int err = 0;
+ 	ssize_t bytes = 0;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (count % 8)
+ 		return -EINVAL;	/* Invalid chunk size */
+
+@@ -130,6 +133,10 @@ static long msr_ioctl(struct file *file, unsigned int ioc, unsigned long arg)
+ 			err = -EBADF;
+ 			break;
+ 		}
++		if (kernel_is_locked_down()) {
++			err = -EPERM;
++			break;
++		}
+ 		if (copy_from_user(&regs, uregs, sizeof regs)) {
+ 			err = -EFAULT;
+ 			break;
+-- 
+2.9.3
+
+From 50d0b2fd4e13f1da62d7bfabe7559cdaaceee06b Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:16 +0000
+Subject: [PATCH 22/32] asus-wmi: Restrict debugfs interface when the kernel is
+ locked down
+
+We have no way of validating what all of the Asus WMI methods do on a given
+machine - and there's a risk that some will allow hardware state to be
+manipulated in such a way that arbitrary code can be executed in the
+kernel, circumventing module loading restrictions.  Prevent that if the
+kernel is locked down.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/platform/x86/asus-wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index ce6ca31..d860017 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -1872,6 +1872,9 @@ static int show_dsts(struct seq_file *m, void *data)
+ 	int err;
+ 	u32 retval = -1;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	err = asus_wmi_get_devstate(asus, asus->debug.dev_id, &retval);
+
+ 	if (err < 0)
+@@ -1888,6 +1891,9 @@ static int show_devs(struct seq_file *m, void *data)
+ 	int err;
+ 	u32 retval = -1;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	err = asus_wmi_set_devstate(asus->debug.dev_id, asus->debug.ctrl_param,
+ 				    &retval);
+
+@@ -1912,6 +1918,9 @@ static int show_call(struct seq_file *m, void *data)
+ 	union acpi_object *obj;
+ 	acpi_status status;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	status = wmi_evaluate_method(ASUS_WMI_MGMT_GUID,
+ 				     1, asus->debug.method_id,
+ 				     &input, &output);
+-- 
+2.9.3
+
+From 88156357adede0ba4060adb0934d08e75afb6e9d Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <matthew.garrett@nebula.com>
+Date: Tue, 22 Nov 2016 08:46:16 +0000
+Subject: [PATCH 23/32] ACPI: Limit access to custom_method when the kernel is
+ locked down
+
+custom_method effectively allows arbitrary access to system memory, making
+it possible for an attacker to circumvent restrictions on module loading.
+Disable it if the kernel is locked down.
+
+Signed-off-by: Matthew Garrett <matthew.garrett@nebula.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/acpi/custom_method.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+index c68e724..e4d721c 100644
+--- a/drivers/acpi/custom_method.c
++++ b/drivers/acpi/custom_method.c
+@@ -29,6 +29,9 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+ 	struct acpi_table_header table;
+ 	acpi_status status;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	if (!(*ppos)) {
+ 		/* parse the table header to get the table length */
+ 		if (count <= sizeof(struct acpi_table_header))
+-- 
+2.9.3
+
+From 960205f64271826552eec6d7ba34144b1615c376 Mon Sep 17 00:00:00 2001
+From: Josh Boyer <jwboyer@redhat.com>
+Date: Tue, 22 Nov 2016 08:46:16 +0000
+Subject: [PATCH 24/32] acpi: Ignore acpi_rsdp kernel param when the kernel has
+ been locked down
+
+This option allows userspace to pass the RSDP address to the kernel, which
+makes it possible for a user to circumvent any restrictions imposed on
+loading modules.  Ignore the option when the kernel is locked down.
+
+Signed-off-by: Josh Boyer <jwboyer@redhat.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/acpi/osl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/acpi/osl.c b/drivers/acpi/osl.c
+index 416953a..79f3d03 100644
+--- a/drivers/acpi/osl.c
++++ b/drivers/acpi/osl.c
+@@ -191,7 +191,7 @@ early_param("acpi_rsdp", setup_acpi_rsdp);
+ 	acpi_physical_address pa = 0;
+ 
+ #ifdef CONFIG_KEXEC
+-	if (acpi_rsdp)
++	if (acpi_rsdp && !kernel_is_locked_down())
+ 		return acpi_rsdp;
+ #endif
+
+-- 
+2.9.3
+
+From 2f200d295a041b154f3938940c2d8aa1742f1379 Mon Sep 17 00:00:00 2001
+From: Linn Crosetto <linn@hpe.com>
+Date: Wed, 23 Nov 2016 13:32:27 +0000
+Subject: [PATCH 25/32] acpi: Disable ACPI table override if the kernel is
+ locked down
+
+From the kernel documentation (initrd_table_override.txt):
+
+  If the ACPI_INITRD_TABLE_OVERRIDE compile option is true, it is possible
+  to override nearly any ACPI table provided by the BIOS with an
+  instrumented, modified one.
+
+When securelevel is set, the kernel should disallow any unauthenticated
+changes to kernel space.  ACPI tables contain code invoked by the kernel,
+so do not allow ACPI tables to be overridden if the kernel is locked down.
+
+Signed-off-by: Linn Crosetto <linn@hpe.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/acpi/tables.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/acpi/tables.c b/drivers/acpi/tables.c
+index cdd56c4..c657c08 100644
+--- a/drivers/acpi/tables.c
++++ b/drivers/acpi/tables.c
+@@ -545,6 +545,11 @@ void __init acpi_table_upgrade(void)
+ 	if (table_nr == 0)
+ 		return;
+
++	if (kernel_is_locked_down()) {
++		pr_notice("kernel is locked down, ignoring table override\n");
++		return;
++	}
++
+ 	acpi_tables_addr =
+ 		memblock_find_in_range(0, ACPI_TABLE_UPGRADE_MAX_PHYS,
+ 				       all_tables_size, PAGE_SIZE);
+-- 
+2.9.3
+
+From 6244dff831988f59797add76cee80c73961d5ac5 Mon Sep 17 00:00:00 2001
+From: Linn Crosetto <linn@hpe.com>
+Date: Wed, 23 Nov 2016 13:39:41 +0000
+Subject: [PATCH 26/32] acpi: Disable APEI error injection if the kernel is
+ locked down
+
+ACPI provides an error injection mechanism, EINJ, for debugging and testing
+the ACPI Platform Error Interface (APEI) and other RAS features.  If
+supported by the firmware, ACPI specification 5.0 and later provide for a
+way to specify a physical memory address to which to inject the error.
+
+Injecting errors through EINJ can produce errors which to the platform are
+indistinguishable from real hardware errors.  This can have undesirable
+side-effects, such as causing the platform to mark hardware as needing
+replacement.
+
+While it does not provide a method to load unauthenticated privileged code,
+the effect of these errors may persist across reboots and affect trust in
+the underlying hardware, so disable error injection through EINJ if
+the kernel is locked down.
+
+Signed-off-by: Linn Crosetto <linn@hpe.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/acpi/apei/einj.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
+index eebb7e3..e4f126a 100644
+--- a/drivers/acpi/apei/einj.c
++++ b/drivers/acpi/apei/einj.c
+@@ -518,6 +518,9 @@ static int einj_error_inject(u32 type, u32 flags, u64 param1, u64 param2,
+ 	int rc;
+ 	u64 base_addr, size;
+
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	/* If user manually set "flags", make sure it is legal */
+ 	if (flags && (flags &
+ 		~(SETWA_FLAGS_APICID|SETWA_FLAGS_MEM|SETWA_FLAGS_PCIE_SBDF)))
+-- 
+2.9.3
+
+From a17a541d1af379c3d6ff21924c212f9e2e38c1c8 Mon Sep 17 00:00:00 2001
+From: Matthew Garrett <mjg59@coreos.com>
+Date: Wed, 23 Nov 2016 13:41:23 +0000
+Subject: [PATCH 27/32] Enable cold boot attack mitigation
+
+---
+ arch/x86/boot/compressed/eboot.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+diff --git a/arch/x86/boot/compressed/eboot.c b/arch/x86/boot/compressed/eboot.c
+index 5b151c2..5093a76 100644
+--- a/arch/x86/boot/compressed/eboot.c
++++ b/arch/x86/boot/compressed/eboot.c
+@@ -774,6 +774,31 @@ void setup_graphics(struct boot_params *boot_params)
+ 	}
+ }
+
++#define MEMORY_ONLY_RESET_CONTROL_GUID \
++	EFI_GUID (0xe20939be, 0x32d4, 0x41be, 0xa1, 0x50, 0x89, 0x7f, 0x85, 0xd4, 0x98, 0x29)
++
++static void enable_reset_attack_mitigation(void)
++{
++	static const efi_guid_t var_guid = MEMORY_ONLY_RESET_CONTROL_GUID;
++	static const efi_char16_t MemoryOverwriteRequestControl_name[] = {
++		'M', 'e', 'm', 'o', 'r', 'y',
++		'O', 'v', 'e', 'r', 'w', 'r', 'i', 't', 'e',
++		'R', 'e', 'q', 'u', 'e', 's', 't',
++		'C', 'o', 'n', 't', 'r', 'o', 'l',
++		0
++	};
++	u8 val = 1;
++
++	/* Ignore the return value here - there's not really a lot we can do */
++	efi_call_runtime(set_variable,
++			(efi_char16_t *)MemoryOverwriteRequestControl_name,
++			(efi_guid_t *)&var_guid,
++			EFI_VARIABLE_NON_VOLATILE |
++			EFI_VARIABLE_BOOTSERVICE_ACCESS |
++			EFI_VARIABLE_RUNTIME_ACCESS,
++			sizeof(val), val);
++}
++
+ /*
+  * Because the x86 boot code expects to be passed a boot_params we
+  * need to create one ourselves (usually the bootloader would create
+@@ -1158,6 +1183,9 @@ struct boot_params *efi_main(struct efi_config *c,
+ 	else
+ 		setup_boot_services32(efi_early);
+
++	/* Ask the firmware to clear memory if we don't have a clean shutdown */
++	enable_reset_attack_mitigation();
++
+ 	boot_params->secure_boot = efi_get_secureboot(sys_table);
+
+ 	setup_graphics(boot_params);
+-- 
+2.9.3
+
+From c9c34942d873f7a09b9c7211bda3063354ff5706 Mon Sep 17 00:00:00 2001
+From: "Lee, Chun-Yi" <jlee@suse.com>
+Date: Wed, 23 Nov 2016 13:52:16 +0000
+Subject: [PATCH 28/32] bpf: Restrict kernel image access functions when the
+ kernel is locked down
+
+There are some bpf functions can be used to read kernel memory:
+bpf_probe_read, bpf_probe_write_user and bpf_trace_printk.  These allow
+private keys in kernel memory (e.g. the hibernation image signing key) to
+be read by an eBPF program.  Prohibit those functions when the kernel is
+locked down.
+
+Signed-off-by: Lee, Chun-Yi <jlee@suse.com>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ kernel/trace/bpf_trace.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index 5dcb992..474e001 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -65,6 +65,11 @@ BPF_CALL_3(bpf_probe_read, void *, dst, u32, size, const void *, unsafe_ptr)
+ {
+ 	int ret;
+
++	if (kernel_is_locked_down()) {
++		memset(dst, 0, size);
++		return -EPERM;
++	}
++
+ 	ret = probe_kernel_read(dst, unsafe_ptr, size);
+ 	if (unlikely(ret < 0))
+ 		memset(dst, 0, size);
+@@ -84,6 +89,9 @@ static const struct bpf_func_proto bpf_probe_read_proto = {
+ BPF_CALL_3(bpf_probe_write_user, void *, unsafe_ptr, const void *, src,
+ 	   u32, size)
+ {
++	if (kernel_is_locked_down())
++		return -EPERM;
++
+ 	/*
+ 	 * Ensure we're in user context which is safe for the helper to
+ 	 * run. This helper has no business in a kthread.
+@@ -143,6 +151,9 @@ BPF_CALL_5(bpf_trace_printk, char *, fmt, u32, fmt_size, u64, arg1,
+ 	if (fmt[--fmt_size] != 0)
+ 		return -EINVAL;
+
++	if (kernel_is_locked_down())
++		return __trace_printk(1, fmt, 0, 0, 0);
++
+ 	/* check format string for allowed specifiers */
+ 	for (i = 0; i < fmt_size; i++) {
+ 		if ((!isprint(fmt[i]) && !isspace(fmt[i])) || !isascii(fmt[i]))
+-- 
+2.9.3
+
+From 04485aa7865dc340f38e32ad29793c625167acf3 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Tue, 22 Nov 2016 10:10:34 +0000
+Subject: [PATCH 29/32] scsi: Lock down the eata driver
+
+When the kernel is running in secure boot mode, we lock down the kernel to
+prevent userspace from modifying the running kernel image.  Whilst this
+includes prohibiting access to things like /dev/mem, it must also prevent
+access by means of configuring driver modules in such a way as to cause a
+device to access or modify the kernel image.
+
+The eata driver takes a single string parameter that contains a slew of
+settings, including hardware resource configuration.  Prohibit use of the
+parameter if the kernel is locked down.
+
+Suggested-by: One Thousand Gnomes <gnomes@lxorguk.ukuu.org.uk>
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Dario Ballabio <ballabio_dario@emc.com>
+cc: "James E.J. Bottomley" <jejb@linux.vnet.ibm.com>
+cc: "Martin K. Petersen" <martin.petersen@oracle.com>
+cc: linux-scsi@vger.kernel.org
+---
+ drivers/scsi/eata.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/scsi/eata.c b/drivers/scsi/eata.c
+index 227dd2c..5c036d1 100644
+--- a/drivers/scsi/eata.c
++++ b/drivers/scsi/eata.c
+@@ -1552,8 +1552,13 @@ static int eata2x_detect(struct scsi_host_template *tpnt)
+
+ 	tpnt->proc_name = "eata2x";
+
+-	if (strlen(boot_options))
++	if (strlen(boot_options)) {
++		if (kernel_is_locked_down()) {
++			pr_err("Command line-specified device addresses, irqs and dma channels are not permitted when the kernel is locked down\n");
++			return -EPERM;
++		}
+ 		option_setup(boot_options);
++	}
+
+ #if defined(MODULE)
+ 	/* io_port could have been modified when loading as a module */
+-- 
+2.9.3
+
+From b1e8f012b7b17e0146f8e63de51f6f45819c859e Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Fri, 25 Nov 2016 14:37:45 +0000
+Subject: [PATCH 30/32] Prohibit PCMCIA CIS storage when the kernel is locked
+ down
+
+Prohibit replacement of the PCMCIA Card Information Structure when the
+kernel is locked down.
+
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/pcmcia/cistpl.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/pcmcia/cistpl.c b/drivers/pcmcia/cistpl.c
+index 55ef7d1..193e4f7 100644
+--- a/drivers/pcmcia/cistpl.c
++++ b/drivers/pcmcia/cistpl.c
+@@ -1578,6 +1578,11 @@ static ssize_t pccard_store_cis(struct file *filp, struct kobject *kobj,
+ 	struct pcmcia_socket *s;
+ 	int error;
+
++	if (kernel_is_locked_down()) {
++		pr_err("Direct CIS storage isn't permitted when the kernel is locked down\n");
++		return -EPERM;
++	}
++
+ 	s = to_socket(container_of(kobj, struct device, kobj));
+
+ 	if (off)
+-- 
+2.9.3
+
+From 66d9c09b9427719e3c6a34132e9ca0724cb1e3a8 Mon Sep 17 00:00:00 2001
+From: David Howells <dhowells@redhat.com>
+Date: Wed, 7 Dec 2016 10:28:39 +0000
+Subject: [PATCH 31/32] Lock down TIOCSSERIAL
+
+Lock down TIOCSSERIAL as that can be used to change the ioport and irq
+settings on a serial port.  This only appears to be an issue for the serial
+drivers that use the core serial code.  All other drivers seem to either
+ignore attempts to change port/irq or give an error.
+
+Reported-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
+ drivers/tty/serial/serial_core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+index f2303f3..f2c07fa 100644
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -819,6 +819,12 @@ static int uart_set_info(struct tty_struct *tty, struct tty_port *port,
+ 	new_flags = new_info->flags;
+ 	old_custom_divisor = uport->custom_divisor;
+
++	if ((change_port || change_irq) && kernel_is_locked_down()) {
++		pr_err("Using TIOCSSERIAL to change device addresses, irqs and dma channels is not permitted when the kernel is locked down\n");
++		retval = -EPERM;
++		goto exit;
++	}
++
+ 	if (!capable(CAP_SYS_ADMIN)) {
+ 		retval = -EPERM;
+ 		if (change_irq || change_port ||
+-- 
+2.9.3

@@ -20,7 +20,7 @@ index 46f9be3ad5a2..ad2e62e4cdba 100644
 +++ b/drivers/gpu/drm/i915/intel_display.c
 @@ -12970,7 +12970,7 @@ verify_crtc_state(struct drm_crtc *crtc,
  	sw_config = to_intel_crtc_state(crtc->state);
- 	if (!intel_pipe_config_compare(dev, sw_config,
+ 	if (!intel_pipe_config_compare(dev_priv, sw_config,
  				       pipe_config, false)) {
 -		I915_STATE_WARN(1, "pipe state doesn't match!\n");
 +		DRM_DEBUG_KMS("pipe state doesn't match!\n");

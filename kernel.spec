@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -492,9 +492,6 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-# http://www.spinics.net/lists/linux-serial/msg24272.html
-Patch420: arm64-ACPI-parse-SPCR-table.patch
-
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
 
@@ -521,8 +518,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch432: bcm283x-vc4-fixes.patch
-
 Patch433: AllWinner-net-emac.patch
 
 Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
@@ -543,35 +538,9 @@ Patch471: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
 
 Patch472: crash-driver.patch
 
-Patch473: Add-secure_modules-call.patch
+Patch473: efi-lockdown.patch
 
-Patch474: PCI-Lock-down-BAR-access-when-module-security-is-ena.patch
-
-Patch475: x86-Lock-down-IO-port-access-when-module-security-is.patch
-
-Patch476: ACPI-Limit-access-to-custom_method.patch
-
-Patch477: asus-wmi-Restrict-debugfs-interface-when-module-load.patch
-
-Patch478: Restrict-dev-mem-and-dev-kmem-when-module-loading-is.patch
-
-Patch479: acpi-Ignore-acpi_rsdp-kernel-parameter-when-module-l.patch
-
-Patch480: kexec-Disable-at-runtime-if-the-kernel-enforces-modu.patch
-
-Patch481: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
-
-# Patch482: Add-option-to-automatically-enforce-module-signature.patch
-
-# Patch483: efi-Add-SHIM-and-image-security-database-GUID-defini.patch
-
-# Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
-
-# Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
-
-Patch486: hibernate-Disable-in-a-signed-modules-environment.patch
-
-# Patch487: Add-EFI-signature-data-types.patch
+Patch487: Add-EFI-signature-data-types.patch
 
 Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
 
@@ -583,8 +552,6 @@ Patch489: KEYS-Add-a-system-blacklist-keyring.patch
 Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 
 Patch491: MODSIGN-Support-not-importing-certs-from-db.patch
-
-Patch492: Add-sysrq-option-to-disable-secure-boot-mode.patch
 
 Patch493: drm-i915-hush-check-crtc-state.patch
 
@@ -608,8 +575,6 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
-
-Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
 Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 
@@ -2174,6 +2139,9 @@ fi
 #
 #
 %changelog
+* Wed Dec 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git2.1
+- Linux v4.9-7150-gcdb98c2
+
 * Tue Dec 13 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git1.1
 - Linux v4.9-2682-ge7aa8c2
 
