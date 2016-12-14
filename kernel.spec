@@ -587,6 +587,9 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Work around thinkpad firmware memory layout issues and efi_mem_reserve()
 Patch850: 0001-efi-prune-invalid-memory-map-entries.patch
 
+# Fix build issue with armada_trace
+Patch851: Armada-trace-build-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif

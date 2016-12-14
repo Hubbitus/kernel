@@ -1,0 +1,20 @@
+From: Fedora Kernel Team <kernel-team@fedoraproject.org>
+Date: Wed, 14 Dec 2016 16:53:21 -0600
+Subject: [PATCH] Armada trace build fix
+
+---
+ drivers/gpu/drm/armada/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/gpu/drm/armada/Makefile b/drivers/gpu/drm/armada/Makefile
+--- a/drivers/gpu/drm/armada/Makefile
++++ b/drivers/gpu/drm/armada/Makefile
+@@ -4,3 +4,5 @@ armada-y	+= armada_510.o
+ armada-$(CONFIG_DEBUG_FS) += armada_debugfs.o
+
+ obj-$(CONFIG_DRM_ARMADA) := armada.o
++
++CFLAGS_armada_trace.o := -I$(src)
+-- 
+2.9.3
+
