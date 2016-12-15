@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -558,9 +558,6 @@ Patch493: drm-i915-hush-check-crtc-state.patch
 Patch494: disable-i8042-check-on-apple-mac.patch
 
 Patch495: lis3-improve-handling-of-null-rate.patch
-
-# In theory this has been fixed so should no longer be needed, it also causes problems with aarch64 DMI, so disable to see for sure if it's fixed
-# Patch496: watchdog-Disable-watchdog-on-virtual-machines.patch
 
 Patch497: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
@@ -2142,6 +2139,9 @@ fi
 #
 #
 %changelog
+* Thu Dec 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git3.1
+- Linux v4.9-8648-g5cc60ae
+
 * Wed Dec 14 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git2.1
 - Linux v4.9-7150-gcdb98c2
 

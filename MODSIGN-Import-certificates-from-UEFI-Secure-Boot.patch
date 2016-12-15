@@ -102,7 +102,7 @@ index eb26e12c6c2a..e0c2268cb97e 100644
 +
  $(obj)/configs.o: $(obj)/config_data.h
  
- # config_data.h contains the same information as ikconfig.h but gzipped.
+ targets += config_data.gz
 diff --git a/kernel/modsign_uefi.c b/kernel/modsign_uefi.c
 new file mode 100644
 index 000000000000..fe4a6f2bf10a
