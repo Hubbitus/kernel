@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -498,16 +498,11 @@ Patch421: qcom-QDF2432-tmp-errata.patch
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
 Patch422: geekbox-v4-device-tree-support.patch
 
-# http://www.spinics.net/lists/linux-pci/msg53991.html
-# https://patchwork.kernel.org/patch/9337113/
-Patch425: arm64-pcie-quirks.patch
-
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
 Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
-Patch428: ARM-OMAP4-Fix-crashes.patch
 
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
@@ -521,8 +516,6 @@ Patch431: bcm2837-initial-support.patch
 Patch433: AllWinner-net-emac.patch
 
 Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
-
-Patch435: imx6sx-Add-UDOO-Neo-support.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2139,6 +2132,9 @@ fi
 #
 #
 %changelog
+* Fri Dec 16 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git4.1
+- Linux v4.9-10415-g73e2e0c
+
 * Thu Dec 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git3.1
 - Linux v4.9-8648-g5cc60ae
 
