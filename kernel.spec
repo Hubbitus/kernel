@@ -2132,6 +2132,9 @@ fi
 #
 #
 %changelog
+* Tue Dec 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Mon Dec 19 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git5.1
 - Linux v4.9-11744-gb0b3a37
 
