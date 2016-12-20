@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2132,6 +2132,9 @@ fi
 #
 #
 %changelog
+* Tue Dec 20 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git6.1
+- Linux v4.9-11815-ge93b1cc
+
 * Tue Dec 20 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config updates
 - Enable some Qualcomm QDF2432 server platform options
