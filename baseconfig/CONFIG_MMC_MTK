@@ -1,1 +1,1 @@
-CONFIG_MMC_MTK=m
+# CONFIG_MMC_MTK is not set

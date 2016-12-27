@@ -2152,9 +2152,10 @@ fi
 #
 #
 %changelog
-* Mon Dec 26 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+* Tue Dec 27 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Linux v4.10-rc1
 - ARM config updates, minor general config cleanups
+- Enable Amlogic (meson) SoCs for ARMv7/aarch64
 
 * Fri Dec 23 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git9.1
 - Linux v4.9-11999-g50f6584
