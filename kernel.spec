@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 0
+%global rcrev 1
 # The git snapshot level
-%define gitrev 9
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2152,6 +2152,10 @@ fi
 #
 #
 %changelog
+* Mon Dec 26 2016 Peter Robinson <pbrobinson@fedoraproject.org>
+- Linux v4.10-rc1
+- ARM config updates, minor general config cleanups
+
 * Fri Dec 23 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc0.git9.1
 - Linux v4.9-11999-g50f6584
 
