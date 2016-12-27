@@ -496,6 +496,8 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
+Patch100: fixes-4.10.patch
+
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
 

@@ -1,0 +1,359 @@
+From b4b8664d291ac1998e0f0bcdc96b6397f0fe68b3 Mon Sep 17 00:00:00 2001
+From: Al Viro <viro@zeniv.linux.org.uk>
+Date: Mon, 26 Dec 2016 04:10:19 -0500
+Subject: [PATCH 1/3] arm64: don't pull uaccess.h into *.S
+
+Split asm-only parts of arm64 uaccess.h into a new header and use that
+from *.S.
+
+Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+---
+ arch/arm64/include/asm/asm-uaccess.h | 65 ++++++++++++++++++++++++++++++++++++
+ arch/arm64/include/asm/uaccess.h     | 64 -----------------------------------
+ arch/arm64/kernel/entry.S            |  2 +-
+ arch/arm64/lib/clear_user.S          |  2 +-
+ arch/arm64/lib/copy_from_user.S      |  2 +-
+ arch/arm64/lib/copy_in_user.S        |  2 +-
+ arch/arm64/lib/copy_to_user.S        |  2 +-
+ arch/arm64/mm/cache.S                |  2 +-
+ arch/arm64/xen/hypercall.S           |  2 +-
+ 9 files changed, 72 insertions(+), 71 deletions(-)
+ create mode 100644 arch/arm64/include/asm/asm-uaccess.h
+
+diff --git a/arch/arm64/include/asm/asm-uaccess.h b/arch/arm64/include/asm/asm-uaccess.h
+new file mode 100644
+index 0000000..df411f3
+--- /dev/null
++++ b/arch/arm64/include/asm/asm-uaccess.h
+@@ -0,0 +1,65 @@
++#ifndef __ASM_ASM_UACCESS_H
++#define __ASM_ASM_UACCESS_H
++
++#include <asm/alternative.h>
++#include <asm/kernel-pgtable.h>
++#include <asm/sysreg.h>
++#include <asm/assembler.h>
++
++/*
++ * User access enabling/disabling macros.
++ */
++#ifdef CONFIG_ARM64_SW_TTBR0_PAN
++	.macro	__uaccess_ttbr0_disable, tmp1
++	mrs	\tmp1, ttbr1_el1		// swapper_pg_dir
++	add	\tmp1, \tmp1, #SWAPPER_DIR_SIZE	// reserved_ttbr0 at the end of swapper_pg_dir
++	msr	ttbr0_el1, \tmp1		// set reserved TTBR0_EL1
++	isb
++	.endm
++
++	.macro	__uaccess_ttbr0_enable, tmp1
++	get_thread_info \tmp1
++	ldr	\tmp1, [\tmp1, #TSK_TI_TTBR0]	// load saved TTBR0_EL1
++	msr	ttbr0_el1, \tmp1		// set the non-PAN TTBR0_EL1
++	isb
++	.endm
++
++	.macro	uaccess_ttbr0_disable, tmp1
++alternative_if_not ARM64_HAS_PAN
++	__uaccess_ttbr0_disable \tmp1
++alternative_else_nop_endif
++	.endm
++
++	.macro	uaccess_ttbr0_enable, tmp1, tmp2
++alternative_if_not ARM64_HAS_PAN
++	save_and_disable_irq \tmp2		// avoid preemption
++	__uaccess_ttbr0_enable \tmp1
++	restore_irq \tmp2
++alternative_else_nop_endif
++	.endm
++#else
++	.macro	uaccess_ttbr0_disable, tmp1
++	.endm
++
++	.macro	uaccess_ttbr0_enable, tmp1, tmp2
++	.endm
++#endif
++
++/*
++ * These macros are no-ops when UAO is present.
++ */
++	.macro	uaccess_disable_not_uao, tmp1
++	uaccess_ttbr0_disable \tmp1
++alternative_if ARM64_ALT_PAN_NOT_UAO
++	SET_PSTATE_PAN(1)
++alternative_else_nop_endif
++	.endm
++
++	.macro	uaccess_enable_not_uao, tmp1, tmp2
++	uaccess_ttbr0_enable \tmp1, \tmp2
++alternative_if ARM64_ALT_PAN_NOT_UAO
++	SET_PSTATE_PAN(0)
++alternative_else_nop_endif
++	.endm
++
++#endif
+diff --git a/arch/arm64/include/asm/uaccess.h b/arch/arm64/include/asm/uaccess.h
+index d26750c..46da3ea 100644
+--- a/arch/arm64/include/asm/uaccess.h
++++ b/arch/arm64/include/asm/uaccess.h
+@@ -22,8 +22,6 @@
+ #include <asm/kernel-pgtable.h>
+ #include <asm/sysreg.h>
+ 
+-#ifndef __ASSEMBLY__
+-
+ /*
+  * User space memory access functions
+  */
+@@ -424,66 +422,4 @@ extern long strncpy_from_user(char *dest, const char __user *src, long count);
+ extern __must_check long strlen_user(const char __user *str);
+ extern __must_check long strnlen_user(const char __user *str, long n);
+ 
+-#else	/* __ASSEMBLY__ */
+-
+-#include <asm/assembler.h>
+-
+-/*
+- * User access enabling/disabling macros.
+- */
+-#ifdef CONFIG_ARM64_SW_TTBR0_PAN
+-	.macro	__uaccess_ttbr0_disable, tmp1
+-	mrs	\tmp1, ttbr1_el1		// swapper_pg_dir
+-	add	\tmp1, \tmp1, #SWAPPER_DIR_SIZE	// reserved_ttbr0 at the end of swapper_pg_dir
+-	msr	ttbr0_el1, \tmp1		// set reserved TTBR0_EL1
+-	isb
+-	.endm
+-
+-	.macro	__uaccess_ttbr0_enable, tmp1
+-	get_thread_info \tmp1
+-	ldr	\tmp1, [\tmp1, #TSK_TI_TTBR0]	// load saved TTBR0_EL1
+-	msr	ttbr0_el1, \tmp1		// set the non-PAN TTBR0_EL1
+-	isb
+-	.endm
+-
+-	.macro	uaccess_ttbr0_disable, tmp1
+-alternative_if_not ARM64_HAS_PAN
+-	__uaccess_ttbr0_disable \tmp1
+-alternative_else_nop_endif
+-	.endm
+-
+-	.macro	uaccess_ttbr0_enable, tmp1, tmp2
+-alternative_if_not ARM64_HAS_PAN
+-	save_and_disable_irq \tmp2		// avoid preemption
+-	__uaccess_ttbr0_enable \tmp1
+-	restore_irq \tmp2
+-alternative_else_nop_endif
+-	.endm
+-#else
+-	.macro	uaccess_ttbr0_disable, tmp1
+-	.endm
+-
+-	.macro	uaccess_ttbr0_enable, tmp1, tmp2
+-	.endm
+-#endif
+-
+-/*
+- * These macros are no-ops when UAO is present.
+- */
+-	.macro	uaccess_disable_not_uao, tmp1
+-	uaccess_ttbr0_disable \tmp1
+-alternative_if ARM64_ALT_PAN_NOT_UAO
+-	SET_PSTATE_PAN(1)
+-alternative_else_nop_endif
+-	.endm
+-
+-	.macro	uaccess_enable_not_uao, tmp1, tmp2
+-	uaccess_ttbr0_enable \tmp1, \tmp2
+-alternative_if ARM64_ALT_PAN_NOT_UAO
+-	SET_PSTATE_PAN(0)
+-alternative_else_nop_endif
+-	.endm
+-
+-#endif	/* __ASSEMBLY__ */
+-
+ #endif /* __ASM_UACCESS_H */
+diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+index a7504f4..923841f 100644
+--- a/arch/arm64/kernel/entry.S
++++ b/arch/arm64/kernel/entry.S
+@@ -31,7 +31,7 @@
+ #include <asm/memory.h>
+ #include <asm/ptrace.h>
+ #include <asm/thread_info.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ #include <asm/unistd.h>
+ 
+ /*
+diff --git a/arch/arm64/lib/clear_user.S b/arch/arm64/lib/clear_user.S
+index add4a13..e88fb99 100644
+--- a/arch/arm64/lib/clear_user.S
++++ b/arch/arm64/lib/clear_user.S
+@@ -17,7 +17,7 @@
+  */
+ #include <linux/linkage.h>
+ 
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ 
+ 	.text
+ 
+diff --git a/arch/arm64/lib/copy_from_user.S b/arch/arm64/lib/copy_from_user.S
+index fd6cd05..4b5d826 100644
+--- a/arch/arm64/lib/copy_from_user.S
++++ b/arch/arm64/lib/copy_from_user.S
+@@ -17,7 +17,7 @@
+ #include <linux/linkage.h>
+ 
+ #include <asm/cache.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ 
+ /*
+  * Copy from user space to a kernel buffer (alignment handled by the hardware)
+diff --git a/arch/arm64/lib/copy_in_user.S b/arch/arm64/lib/copy_in_user.S
+index d828540..47184c3 100644
+--- a/arch/arm64/lib/copy_in_user.S
++++ b/arch/arm64/lib/copy_in_user.S
+@@ -19,7 +19,7 @@
+ #include <linux/linkage.h>
+ 
+ #include <asm/cache.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ 
+ /*
+  * Copy from user space to user space (alignment handled by the hardware)
+diff --git a/arch/arm64/lib/copy_to_user.S b/arch/arm64/lib/copy_to_user.S
+index 3e6ae26..351f076 100644
+--- a/arch/arm64/lib/copy_to_user.S
++++ b/arch/arm64/lib/copy_to_user.S
+@@ -17,7 +17,7 @@
+ #include <linux/linkage.h>
+ 
+ #include <asm/cache.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ 
+ /*
+  * Copy to user space from a kernel buffer (alignment handled by the hardware)
+diff --git a/arch/arm64/mm/cache.S b/arch/arm64/mm/cache.S
+index 17f422a..83c27b6e 100644
+--- a/arch/arm64/mm/cache.S
++++ b/arch/arm64/mm/cache.S
+@@ -23,7 +23,7 @@
+ #include <asm/assembler.h>
+ #include <asm/cpufeature.h>
+ #include <asm/alternative.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ 
+ /*
+  *	flush_icache_range(start,end)
+diff --git a/arch/arm64/xen/hypercall.S b/arch/arm64/xen/hypercall.S
+index 47cf3f9..947830a 100644
+--- a/arch/arm64/xen/hypercall.S
++++ b/arch/arm64/xen/hypercall.S
+@@ -49,7 +49,7 @@
+ 
+ #include <linux/linkage.h>
+ #include <asm/assembler.h>
+-#include <linux/uaccess.h>
++#include <asm/asm-uaccess.h>
+ #include <xen/interface/xen.h>
+ 
+ 
+-- 
+2.9.3
+
+From b9d9d6911bd5c370ad4b3aa57d758c093d17aed5 Mon Sep 17 00:00:00 2001
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 26 Dec 2016 22:58:19 +0100
+Subject: [PATCH 2/3] smp/hotplug: Undo tglxs brainfart
+
+The attempt to prevent overwriting an active state resulted in a
+disaster which effectively disables all dynamically allocated hotplug
+states.
+
+Cleanup the mess.
+
+Fixes: dc280d936239 ("cpu/hotplug: Prevent overwriting of callbacks")
+Reported-by: Markus Trippelsdorf <markus@trippelsdorf.de>
+Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ kernel/cpu.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 042fd7e..f75c4d0 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1471,6 +1471,7 @@ int __cpuhp_setup_state(enum cpuhp_state state,
+ 			bool multi_instance)
+ {
+ 	int cpu, ret = 0;
++	bool dynstate;
+ 
+ 	if (cpuhp_cb_check(state) || !name)
+ 		return -EINVAL;
+@@ -1480,6 +1481,12 @@ int __cpuhp_setup_state(enum cpuhp_state state,
+ 	ret = cpuhp_store_callbacks(state, name, startup, teardown,
+ 				    multi_instance);
+ 
++	dynstate = state == CPUHP_AP_ONLINE_DYN;
++	if (ret > 0 && dynstate) {
++		state = ret;
++		ret = 0;
++	}
++
+ 	if (ret || !invoke || !startup)
+ 		goto out;
+ 
+@@ -1508,7 +1515,7 @@ int __cpuhp_setup_state(enum cpuhp_state state,
+ 	 * If the requested state is CPUHP_AP_ONLINE_DYN, return the
+ 	 * dynamically allocated state in case of success.
+ 	 */
+-	if (!ret && state == CPUHP_AP_ONLINE_DYN)
++	if (!ret && dynstate)
+ 		return state;
+ 	return ret;
+ }
+-- 
+2.9.3
+
+From 0dad3a3014a0b9e72521ff44f17e0054f43dcdea Mon Sep 17 00:00:00 2001
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 26 Dec 2016 22:58:20 +0100
+Subject: [PATCH 3/3] x86/mce/AMD: Make the init code more robust
+
+If mce_device_init() fails then the mce device pointer is NULL and the
+AMD mce code happily dereferences it.
+
+Add a sanity check.
+
+Reported-by: Markus Trippelsdorf <markus@trippelsdorf.de>
+Reported-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ arch/x86/kernel/cpu/mcheck/mce_amd.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/x86/kernel/cpu/mcheck/mce_amd.c b/arch/x86/kernel/cpu/mcheck/mce_amd.c
+index ffacfdc..a5fd137 100644
+--- a/arch/x86/kernel/cpu/mcheck/mce_amd.c
++++ b/arch/x86/kernel/cpu/mcheck/mce_amd.c
+@@ -1182,6 +1182,9 @@ static int threshold_create_bank(unsigned int cpu, unsigned int bank)
+ 	const char *name = get_name(bank, NULL);
+ 	int err = 0;
+ 
++	if (!dev)
++		return -ENODEV;
++
+ 	if (is_shared_bank(bank)) {
+ 		nb = node_to_amd_nb(amd_get_nb_id(cpu));
+ 
+-- 
+2.9.3
+
