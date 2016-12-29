@@ -16,11 +16,11 @@ if [ ! -d "$LINUX_GIT" ]; then
     exit 1
 fi
 
-VER=$(grep patch sources | head -n1 | awk '{ print $2 }' | sed s/patch-// | sed s/-git.*// | sed s/.xz//)
+VER=$(grep patch sources | head -n1 | awk '{ print $2 }' | sed s/patch-// | sed s/-git.*// | sed s/.xz// | sed s/[\(\)]//g)
 
 if [ -z "$VER" ] ;
 then
-    VER=$(grep linux sources | head -1 | awk '{ print $2 }' | sed s/linux-// | sed s/.tar.xz//)
+    VER=$(grep linux sources | head -1 | awk '{ print $2 }' | sed s/linux-// | sed s/.tar.xz// | sed s/[\(\)]//g)
 fi
 
 OLDGIT=$(grep gitrev kernel.spec | head -n1 | sed s/%define\ gitrev\ //)

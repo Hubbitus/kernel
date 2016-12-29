@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 1
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -495,8 +495,6 @@ Source5005: kbuild-AFTER_LINK.patch
 # Git trees.
 
 # Standalone patches
-
-Patch100: fixes-4.10.patch
 
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
@@ -2154,6 +2152,10 @@ fi
 #
 #
 %changelog
+* Thu Dec 29 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc1.git1.1
+- Linux v4.10-rc1-17-g2d706e7
+- Fix generate-git-snapshtot.sh to work with SHA512 sources
+
 * Tue Dec 27 2016 Peter Robinson <pbrobinson@fedoraproject.org>
 - Linux v4.10-rc1
 - ARM config updates, minor general config cleanups
