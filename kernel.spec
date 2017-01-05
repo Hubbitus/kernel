@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -518,8 +518,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 Patch431: bcm2837-initial-support.patch
 
 Patch433: AllWinner-net-emac.patch
-
-Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2154,6 +2152,9 @@ fi
 #
 #
 %changelog
+* Thu Jan 05 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc2.git3.1
+- Linux v4.10-rc2-183-gc433eb7
+
 * Wed Jan 04 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc2.git2.1
 - Linux v4.10-rc2-43-g62f8c40
 
