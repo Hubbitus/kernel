@@ -2152,6 +2152,9 @@ fi
 #
 #
 %changelog
+* Fri Jan  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Thu Jan 05 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc2.git3.1
 - Linux v4.10-rc2-183-gc433eb7
 

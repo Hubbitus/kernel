@@ -1,1 +1,1 @@
-# CONFIG_QCOM_TSENS is not set
+CONFIG_QCOM_TSENS=m
