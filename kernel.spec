@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 15
+%define stable_update 16
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2184,6 +2184,9 @@ fi
 #
 #
 %changelog
+* Fri Jan 06 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.16-300
+- Linux v4.8.16
+
 * Thu Dec 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.15-300
 - Linux v4.8.15
 - CVE-2016-9588 fix possible DoS in nVMX (rhbz 1404924 1404925)
