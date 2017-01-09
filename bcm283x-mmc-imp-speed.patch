@@ -1,0 +1,176 @@
+From d11469e272ed1c28030d2f36ad6ac5a364a633d8 Mon Sep 17 00:00:00 2001
+From: Scott Branden <scott.branden@broadcom.com>
+Date: Tue, 1 Nov 2016 09:37:57 -0700
+Subject: [PATCH 1/3] mmc: sdhci-iproc: support standard byte register accesses
+
+Add bytewise register accesses support for newer versions of IPROC
+SDHCI controllers.
+Previous sdhci-iproc versions of SDIO controllers
+(such as Raspberry Pi and Cygnus) only allowed for 32-bit register
+accesses.
+
+Signed-off-by: Srinath Mannam <srinath.mannam@broadcom.com>
+Signed-off-by: Scott Branden <scott.branden@broadcom.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+---
+ drivers/mmc/host/sdhci-iproc.c | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+index 7262466..d7046d6 100644
+--- a/drivers/mmc/host/sdhci-iproc.c
++++ b/drivers/mmc/host/sdhci-iproc.c
+@@ -143,6 +143,14 @@ static void sdhci_iproc_writeb(struct sdhci_host *host, u8 val, int reg)
+ }
+ 
+ static const struct sdhci_ops sdhci_iproc_ops = {
++	.set_clock = sdhci_set_clock,
++	.get_max_clock = sdhci_pltfm_clk_get_max_clock,
++	.set_bus_width = sdhci_set_bus_width,
++	.reset = sdhci_reset,
++	.set_uhs_signaling = sdhci_set_uhs_signaling,
++};
++
++static const struct sdhci_ops sdhci_iproc_32only_ops = {
+ 	.read_l = sdhci_iproc_readl,
+ 	.read_w = sdhci_iproc_readw,
+ 	.read_b = sdhci_iproc_readb,
+@@ -156,6 +164,28 @@ static const struct sdhci_ops sdhci_iproc_ops = {
+ 	.set_uhs_signaling = sdhci_set_uhs_signaling,
+ };
+ 
++static const struct sdhci_pltfm_data sdhci_iproc_cygnus_pltfm_data = {
++	.quirks = SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK,
++	.quirks2 = SDHCI_QUIRK2_ACMD23_BROKEN,
++	.ops = &sdhci_iproc_32only_ops,
++};
++
++static const struct sdhci_iproc_data iproc_cygnus_data = {
++	.pdata = &sdhci_iproc_cygnus_pltfm_data,
++	.caps = ((0x1 << SDHCI_MAX_BLOCK_SHIFT)
++			& SDHCI_MAX_BLOCK_MASK) |
++		SDHCI_CAN_VDD_330 |
++		SDHCI_CAN_VDD_180 |
++		SDHCI_CAN_DO_SUSPEND |
++		SDHCI_CAN_DO_HISPD |
++		SDHCI_CAN_DO_ADMA2 |
++		SDHCI_CAN_DO_SDMA,
++	.caps1 = SDHCI_DRIVER_TYPE_C |
++		 SDHCI_DRIVER_TYPE_D |
++		 SDHCI_SUPPORT_DDR50,
++	.mmc_caps = MMC_CAP_1_8V_DDR,
++};
++
+ static const struct sdhci_pltfm_data sdhci_iproc_pltfm_data = {
+ 	.quirks = SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK,
+ 	.quirks2 = SDHCI_QUIRK2_ACMD23_BROKEN,
+@@ -182,7 +212,7 @@ static const struct sdhci_pltfm_data sdhci_bcm2835_pltfm_data = {
+ 	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
+ 		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
+ 		  SDHCI_QUIRK_MISSING_CAPS,
+-	.ops = &sdhci_iproc_ops,
++	.ops = &sdhci_iproc_32only_ops,
+ };
+ 
+ static const struct sdhci_iproc_data bcm2835_data = {
+@@ -194,7 +224,8 @@ static const struct sdhci_iproc_data bcm2835_data = {
+ 
+ static const struct of_device_id sdhci_iproc_of_match[] = {
+ 	{ .compatible = "brcm,bcm2835-sdhci", .data = &bcm2835_data },
+-	{ .compatible = "brcm,sdhci-iproc-cygnus", .data = &iproc_data },
++	{ .compatible = "brcm,sdhci-iproc-cygnus", .data = &iproc_cygnus_data},
++	{ .compatible = "brcm,sdhci-iproc", .data = &iproc_data },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, sdhci_iproc_of_match);
+-- 
+2.9.3
+
+From 3dcb11900d7cde1fd378f154137272f99253a60c Mon Sep 17 00:00:00 2001
+From: Stefan Wahren <stefan.wahren@i2se.com>
+Date: Fri, 30 Dec 2016 15:24:32 +0000
+Subject: [PATCH 2/3] mmc: sdhci-iproc: Apply caps from bcm2835-mmc driver
+
+Since the mmc module on bcm2835 neither provide a capabilities register nor
+free documentation we must rely on the downstream implementation [1].
+
+So enable the following capabilities for bcm2835:
+
+MMC_CAP_MMC_HIGHSPEED
+MMC_CAP_SD_HIGHSPEED
+MMC_CAP_DRIVER_TYPE_A
+MMC_CAP_DRIVER_TYPE_C
+
+[1] - https://github.com/raspberrypi/linux/blob/rpi-4.4.y/drivers/mmc/host/bcm2835-mmc.c
+
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/mmc/host/sdhci-iproc.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+index d7046d6..30b3fdf 100644
+--- a/drivers/mmc/host/sdhci-iproc.c
++++ b/drivers/mmc/host/sdhci-iproc.c
+@@ -211,14 +211,17 @@ static const struct sdhci_iproc_data iproc_data = {
+ static const struct sdhci_pltfm_data sdhci_bcm2835_pltfm_data = {
+ 	.quirks = SDHCI_QUIRK_BROKEN_CARD_DETECTION |
+ 		  SDHCI_QUIRK_DATA_TIMEOUT_USES_SDCLK |
+-		  SDHCI_QUIRK_MISSING_CAPS,
++		  SDHCI_QUIRK_MISSING_CAPS |
++		  SDHCI_QUIRK_NO_HISPD_BIT,
+ 	.ops = &sdhci_iproc_32only_ops,
+ };
+ 
+ static const struct sdhci_iproc_data bcm2835_data = {
+ 	.pdata = &sdhci_bcm2835_pltfm_data,
+-	.caps = SDHCI_CAN_VDD_330,
+-	.caps1 = 0x00000000,
++	.caps = SDHCI_CAN_VDD_330 |
++		SDHCI_CAN_DO_HISPD,
++	.caps1 = SDHCI_DRIVER_TYPE_A |
++		 SDHCI_DRIVER_TYPE_C,
+ 	.mmc_caps = 0x00000000,
+ };
+ 
+-- 
+2.9.3
+
+From c43d8ee65e20df0672bd27238b11475dc3e8d447 Mon Sep 17 00:00:00 2001
+From: Stefan Wahren <stefan.wahren@i2se.com>
+Date: Fri, 30 Dec 2016 15:24:33 +0000
+Subject: [PATCH 3/3] mmc: sdhci-iproc: Increase max_blk_size for bcm2835
+
+According to the BCM2835 datasheet the maximum block size for the
+eMMC module is restricted to the internal data FIFO which is 1024 byte.
+But this is still an improvement to the default of 512 byte.
+
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Acked-by: Scott Branden <scott.branden@broadcom.com>
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ drivers/mmc/host/sdhci-iproc.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/sdhci-iproc.c b/drivers/mmc/host/sdhci-iproc.c
+index 30b3fdf..3275d49 100644
+--- a/drivers/mmc/host/sdhci-iproc.c
++++ b/drivers/mmc/host/sdhci-iproc.c
+@@ -218,7 +218,9 @@ static const struct sdhci_pltfm_data sdhci_bcm2835_pltfm_data = {
+ 
+ static const struct sdhci_iproc_data bcm2835_data = {
+ 	.pdata = &sdhci_bcm2835_pltfm_data,
+-	.caps = SDHCI_CAN_VDD_330 |
++	.caps = ((0x1 << SDHCI_MAX_BLOCK_SHIFT)
++			& SDHCI_MAX_BLOCK_MASK) |
++		SDHCI_CAN_VDD_330 |
+ 		SDHCI_CAN_DO_HISPD,
+ 	.caps1 = SDHCI_DRIVER_TYPE_A |
+ 		 SDHCI_DRIVER_TYPE_C,
+-- 
+2.9.3
+

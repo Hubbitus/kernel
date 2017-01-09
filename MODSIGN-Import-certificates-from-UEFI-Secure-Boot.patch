@@ -1,7 +1,7 @@
-From ba2b209daf984514229626803472e0b055832345 Mon Sep 17 00:00:00 2001
+From 8a4535bcfe24d317be675e53cdc8c61d22fdc7f3 Mon Sep 17 00:00:00 2001
 From: Josh Boyer <jwboyer@fedoraproject.org>
 Date: Fri, 26 Oct 2012 12:42:16 -0400
-Subject: [PATCH] MODSIGN: Import certificates from UEFI Secure Boot
+Subject: [PATCH 18/20] MODSIGN: Import certificates from UEFI Secure Boot
 
 Secure Boot stores a list of allowed certificates in the 'db' variable.
 This imports those certificates into the system trusted keyring.  This
@@ -20,11 +20,10 @@ Signed-off-by: Josh Boyer <jwboyer@fedoraproject.org>
 ---
  certs/system_keyring.c        | 13 ++++++
  include/keys/system_keyring.h |  1 +
- include/linux/efi.h           |  6 +++
  init/Kconfig                  |  9 ++++
  kernel/Makefile               |  3 ++
  kernel/modsign_uefi.c         | 99 +++++++++++++++++++++++++++++++++++++++++++
- 6 files changed, 131 insertions(+)
+ 5 files changed, 125 insertions(+)
  create mode 100644 kernel/modsign_uefi.c
 
 diff --git a/certs/system_keyring.c b/certs/system_keyring.c
@@ -63,28 +62,11 @@ index 5bc291a3d261..56ff5715ab67 100644
  
  #ifdef CONFIG_IMA_BLACKLIST_KEYRING
  extern struct key *ima_blacklist_keyring;
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index ff1877145aa4..2483de19c719 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -658,6 +658,12 @@ typedef struct {
- 	u64 table;
- } efi_config_table_64_t;
- 
-+#define EFI_IMAGE_SECURITY_DATABASE_GUID \
-+    EFI_GUID(  0xd719b2cb, 0x3d3a, 0x4596, 0xa3, 0xbc, 0xda, 0xd0, 0x0e, 0x67, 0x65, 0x6f )
-+
-+#define EFI_SHIM_LOCK_GUID \
-+    EFI_GUID(  0x605dab50, 0xe046, 0x4300, 0xab, 0xb6, 0x3d, 0xd8, 0x10, 0xdd, 0x8b, 0x23 )
-+
- typedef struct {
- 	efi_guid_t guid;
- 	u32 table;
 diff --git a/init/Kconfig b/init/Kconfig
-index e5449d5aeff9..5408c96f6604 100644
+index 461ad575a608..93646fd7b1c8 100644
 --- a/init/Kconfig
 +++ b/init/Kconfig
-@@ -1979,6 +1979,15 @@ config MODULE_SIG_ALL
+@@ -2009,6 +2009,15 @@ config MODULE_SIG_ALL
  comment "Do not forget to sign required modules with scripts/sign-file"
  	depends on MODULE_SIG_FORCE && !MODULE_SIG_ALL
  
@@ -101,7 +83,7 @@ index e5449d5aeff9..5408c96f6604 100644
  	prompt "Which hash algorithm should modules be signed with?"
  	depends on MODULE_SIG
 diff --git a/kernel/Makefile b/kernel/Makefile
-index e2ec54e2b952..8dab549985d8 100644
+index eb26e12c6c2a..e0c2268cb97e 100644
 --- a/kernel/Makefile
 +++ b/kernel/Makefile
 @@ -57,6 +57,7 @@ endif
@@ -227,5 +209,5 @@ index 000000000000..fe4a6f2bf10a
 +}
 +late_initcall(load_uefi_certs);
 -- 
-2.5.5
+2.9.3
 
