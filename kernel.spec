@@ -517,6 +517,9 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
+# http://www.spinics.net/lists/linux-mmc/msg41151.html
+Patch432: bcm283x-mmc-imp-speed.patch
+
 Patch433: AllWinner-net-emac.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
@@ -2152,6 +2155,9 @@ fi
 #
 #
 %changelog
+* Mon Jan  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add patch to improve MMC/SD speed on Raspberry Pi (bcm283x)
+
 * Fri Jan 06 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable JVMTI for perf (rhbz 1410296)
 
