@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2170,6 +2170,9 @@ fi
 #
 #
 %changelog
+* Thu Jan 12 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.3-200
+- Linux v4.9.3
+
 * Wed Jan 11 2017 Laura Abbott <labbott@fedoraproject.org>
 - Add fix for some thinkpads missed during the rebase.
 
