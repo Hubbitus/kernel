@@ -1,0 +1,141 @@
+From c7c7030a020405d5826c03839e38986e0f78f2ea Mon Sep 17 00:00:00 2001
+From: Peter Jones <pjones@redhat.com>
+Date: Tue, 13 Dec 2016 10:25:10 +0000
+Subject: [PATCH] efi: prune invalid memory map entries
+
+Some machines, such as the Lenovo ThinkPad W541 with firmware GNET80WW
+(2.28), include memory map entries with phys_addr=0x0 and num_pages=0.
+
+Currently the log output for this case (with efi=debug) looks like:
+
+[    0.000000] efi: mem45: [Reserved           |   |  |  |  |  |  |  |  |  |  |  |  ] range=[0x0000000000000000-0xffffffffffffffff] (0MB)
+
+This is clearly wrong, and also not as informative as it could be.  This
+patch changes it so that if we find obviously invalid memory map
+entries, we print an error and those entries.  It also detects the
+display of the address range calculation overflow, so the new output is:
+
+[    0.000000] efi: [Firmware Bug]: Invalid EFI memory map entries:
+[    0.000000] efi: mem45: [Reserved           |   |  |  |  |  |  |  |   |  |  |  |  ] range=[0x0000000000000000-0x0000000000000000] (invalid)
+
+It also detects memory map sizes that would overflow the physical
+address, for example phys_addr=0xfffffffffffff000 and
+num_pages=0x0200000000000001, and prints:
+
+[    0.000000] efi: [Firmware Bug]: Invalid EFI memory map entries:
+[    0.000000] efi: mem45: [Reserved           |   |  |  |  |  |  |  |   |  |  |  |  ] range=[phys_addr=0xfffffffffffff000-0x20ffffffffffffffff] (invalid)
+
+It then removes these entries from the memory map.
+
+Cc: Matt Fleming <matt@codeblueprint.co.uk>
+Signed-off-by: Peter Jones <pjones@redhat.com>
+[ardb: refactor for clarity with no functional changes, avoid PAGE_SHIFT]
+Signed-off-by: Ard Biesheuvel <ard.biesheuvel@linaro.org>
+---
+ arch/x86/platform/efi/efi.c | 70 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/efi.h         |  1 +
+ 2 files changed, 71 insertions(+)
+
+diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+index bf99aa7..0a1550b 100644
+--- a/arch/x86/platform/efi/efi.c
++++ b/arch/x86/platform/efi/efi.c
+@@ -210,6 +210,74 @@ int __init efi_memblock_x86_reserve_range(void)
+ 	return 0;
+ }
+ 
++#define OVERFLOW_ADDR_SHIFT	(64 - EFI_PAGE_SHIFT)
++#define OVERFLOW_ADDR_MASK	(U64_MAX << OVERFLOW_ADDR_SHIFT)
++#define U64_HIGH_BIT		(~(U64_MAX >> 1))
++
++static bool __init efi_memmap_entry_valid(const efi_memory_desc_t *md, int i)
++{
++	static __initdata bool once = true;
++	u64 end = (md->num_pages << EFI_PAGE_SHIFT) + md->phys_addr - 1;
++	u64 end_hi = 0;
++	char buf[64];
++
++	if (md->num_pages == 0) {
++		end = 0;
++	} else if (md->num_pages > EFI_PAGES_MAX ||
++		   EFI_PAGES_MAX - md->num_pages <
++		   (md->phys_addr >> EFI_PAGE_SHIFT)) {
++		end_hi = (md->num_pages & OVERFLOW_ADDR_MASK)
++			>> OVERFLOW_ADDR_SHIFT;
++
++		if ((md->phys_addr & U64_HIGH_BIT) && !(end & U64_HIGH_BIT))
++			end_hi += 1;
++	} else {
++		return true;
++	}
++
++	if (once) {
++		pr_warn(FW_BUG "Invalid EFI memory map entries:\n");
++		once = false;
++	}
++
++	if (end_hi) {
++		pr_warn("mem%02u: %s range=[0x%016llx-0x%llx%016llx] (invalid)\n",
++			i, efi_md_typeattr_format(buf, sizeof(buf), md),
++			md->phys_addr, end_hi, end);
++	} else {
++		pr_warn("mem%02u: %s range=[0x%016llx-0x%016llx] (invalid)\n",
++			i, efi_md_typeattr_format(buf, sizeof(buf), md),
++			md->phys_addr, end);
++	}
++	return false;
++}
++
++static void __init efi_clean_memmap(void)
++{
++	efi_memory_desc_t *out = efi.memmap.map;
++	const efi_memory_desc_t *in = out;
++	const efi_memory_desc_t *end = efi.memmap.map_end;
++	int i, n_removal;
++
++	for (i = n_removal = 0; in < end; i++) {
++		if (efi_memmap_entry_valid(in, i)) {
++			if (out != in)
++				memcpy(out, in, efi.memmap.desc_size);
++			out = (void *)out + efi.memmap.desc_size;
++		} else {
++			n_removal++;
++		}
++		in = (void *)in + efi.memmap.desc_size;
++	}
++
++	if (n_removal > 0) {
++		u64 size = efi.memmap.nr_map - n_removal;
++
++		pr_warn("Removing %d invalid memory map entries.\n", n_removal);
++		efi_memmap_install(efi.memmap.phys_map, size);
++	}
++}
++
+ void __init efi_print_memmap(void)
+ {
+ 	efi_memory_desc_t *md;
+@@ -472,6 +540,8 @@ void __init efi_init(void)
+ 		}
+ 	}
+ 
++	efi_clean_memmap();
++
+ 	if (efi_enabled(EFI_DBG))
+ 		efi_print_memmap();
+ }
+diff --git a/include/linux/efi.h b/include/linux/efi.h
+index 4c1b3ea..712a3aa 100644
+--- a/include/linux/efi.h
++++ b/include/linux/efi.h
+@@ -103,6 +103,7 @@ typedef	struct {
+ 
+ #define EFI_PAGE_SHIFT		12
+ #define EFI_PAGE_SIZE		(1UL << EFI_PAGE_SHIFT)
++#define EFI_PAGES_MAX		(U64_MAX >> EFI_PAGE_SHIFT)
+ 
+ typedef struct {
+ 	u32 type;
+-- 
+2.9.3
+

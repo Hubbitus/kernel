@@ -626,8 +626,11 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
+# Work around thinkpad firmware memory layout issues and efi_mem_reserve()
+Patch850: 0001-efi-prune-invalid-memory-map-entries.patch
+
 # Request from dwalsh
-Patch850: selinux-namespace-fix.patch
+Patch851: selinux-namespace-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2167,6 +2170,9 @@ fi
 #
 #
 %changelog
+* Wed Jan 11 2017 Laura Abbott <labbott@fedoraproject.org>
+- Add fix for some thinkpads missed during the rebase.
+
 * Mon Jan 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.2-200
 - Linux v4.9.2 rebase
 
