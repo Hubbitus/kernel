@@ -632,6 +632,9 @@ Patch850: 0001-efi-prune-invalid-memory-map-entries.patch
 # Request from dwalsh
 Patch851: selinux-namespace-fix.patch
 
+#rhbz 1390308
+Patch852: nouveau-add-maxwell-to-backlight-init.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
