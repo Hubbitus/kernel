@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 3
+%define stable_update 4
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -512,7 +512,6 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
 Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
-Patch428: ARM-OMAP4-Fix-crashes.patch
 
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
@@ -2182,6 +2181,9 @@ fi
 #
 #
 %changelog
+* Mon Jan 16 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.4-200
+- Linux v4.9.4
+
 * Mon Jan 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor updates for Raspberry Pi 3 support
 - Re-enable /sys/class/gpio/
