@@ -1073,8 +1073,8 @@ index 5bb1985..6441d21 100644
  		return -EFAULT;
 
 @@ -515,6 +518,9 @@ static ssize_t write_kmem(struct file *file, const char __user *buf,
- 	if (!pfn_valid(PFN_DOWN(p)))
- 		return -EIO;
+ 	char *kbuf; /* k-addr because vwrite() takes vmlist_lock rwlock */
+ 	int err = 0;
 
 +	if (kernel_is_locked_down())
 +		return -EPERM;
