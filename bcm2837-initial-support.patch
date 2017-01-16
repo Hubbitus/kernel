@@ -152,3 +152,56 @@ index 0000000..8216bbb
 -- 
 2.7.4
 
+From 345863374ebec9aa11ea97b99f5adbf97f99bbdf Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Mon, 16 Jan 2017 06:38:08 +0000
+Subject: [PATCH] add upstream RPi3 fixes from arm64 DT
+
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+---
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 8 +-------
+ arch/arm/boot/dts/bcm2837.dtsi        | 8 +++++++-
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+index 7841b72..c309633 100644
+--- a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -2,6 +2,7 @@
+ #include "bcm2837.dtsi"
+ #include "bcm2835-rpi.dtsi"
+ #include "bcm283x-rpi-smsc9514.dtsi"
++#include "bcm283x-rpi-usb-host.dtsi"
+ 
+ / {
+ 	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
+@@ -15,13 +16,6 @@
+ 		act {
+ 			gpios = <&gpio 47 0>;
+ 		};
+-
+-		pwr {
+-			label = "PWR";
+-			gpios = <&gpio 35 0>;
+-			default-state = "keep";
+-			linux,default-trigger = "default-on";
+-		};
+ 	};
+ };
+ 
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+index 8216bbb..19f2fe6 100644
+--- a/arch/arm/boot/dts/bcm2837.dtsi
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -1,7 +1,7 @@
+ #include "bcm283x.dtsi"
+ 
+ / {
+-	compatible = "brcm,bcm2836";
++	compatible = "brcm,bcm2837";
+ 
+ 	soc {
+ 		ranges = <0x7e000000 0x3f000000 0x1000000>,
+-- 
+2.9.3
+

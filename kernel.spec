@@ -2173,6 +2173,10 @@ fi
 #
 #
 %changelog
+* Mon Jan 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor updates for Raspberry Pi 3 support
+- Re-enable /sys/class/gpio/
+
 * Thu Jan 12 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.3-200
 - Linux v4.9.3
 
