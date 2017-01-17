@@ -1,1 +1,1 @@
-# CONFIG_IPV6_GRE is not set
+CONFIG_IPV6_GRE=m
