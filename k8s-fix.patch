@@ -1,0 +1,39 @@
+From 14221cc45caad2fcab3a8543234bb7eda9b540d5 Mon Sep 17 00:00:00 2001
+From: Artur Molchanov <arturmolchanov@gmail.com>
+Date: Fri, 30 Dec 2016 19:46:36 +0300
+Subject: bridge: netfilter: Fix dropping packets that moving through bridge
+ interface
+
+Problem:
+br_nf_pre_routing_finish() calls itself instead of
+br_nf_pre_routing_finish_bridge(). Due to this bug reverse path filter drops
+packets that go through bridge interface.
+
+User impact:
+Local docker containers with bridge network can not communicate with each
+other.
+
+Fixes: c5136b15ea36 ("netfilter: bridge: add and use br_nf_hook_thresh")
+Signed-off-by: Artur Molchanov <artur.molchanov@synesis.ru>
+Acked-by: Florian Westphal <fw@strlen.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ net/bridge/br_netfilter_hooks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
+index b12501a..135cc8a 100644
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -399,7 +399,7 @@ bridged_dnat:
+ 				br_nf_hook_thresh(NF_BR_PRE_ROUTING,
+ 						  net, sk, skb, skb->dev,
+ 						  NULL,
+-						  br_nf_pre_routing_finish);
++						  br_nf_pre_routing_finish_bridge);
+ 				return 0;
+ 			}
+ 			ether_addr_copy(eth_hdr(skb)->h_dest, dev->dev_addr);
+-- 
+cgit v0.12
+

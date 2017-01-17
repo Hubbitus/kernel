@@ -640,6 +640,9 @@ Patch854: drm-amdgpu-update-si-kicker-smc-firmware.patch
 Patch855: drm-radeon-drop-verde-dpm-quirks.patch
 Patch856: drm-radeon-update-smc-firmware-selection-for-si.patch
 
+#rhbz 1414068
+Patch857: k8s-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2187,6 +2190,9 @@ fi
 #
 #
 %changelog
+* Tue Jan 17 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix kubernetes networking issue (rhbz 1414068)
+
 * Tue Jan 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.4-201
 - Add possible ATI fixes
 
