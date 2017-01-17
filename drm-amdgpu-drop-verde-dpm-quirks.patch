@@ -1,0 +1,41 @@
+From 7192c54a68013f6058b1bb505645fcd07015191c Mon Sep 17 00:00:00 2001
+From: Alex Deucher <alexander.deucher@amd.com>
+Date: Thu, 5 Jan 2017 13:02:37 -0500
+Subject: drm/amdgpu: drop verde dpm quirks
+
+From: Alex Deucher <alexander.deucher@amd.com>
+
+commit 7192c54a68013f6058b1bb505645fcd07015191c upstream.
+
+Port of radeon change to amdgpu.
+
+Acked-by: Edward O'Callaghan <funfunctor@folklore1984.net>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+---
+ drivers/gpu/drm/amd/amdgpu/si_dpm.c |   13 -------------
+ 1 file changed, 13 deletions(-)
+
+--- a/drivers/gpu/drm/amd/amdgpu/si_dpm.c
++++ b/drivers/gpu/drm/amd/amdgpu/si_dpm.c
+@@ -3485,19 +3485,6 @@ static void si_apply_state_adjust_rules(
+ 		    (adev->pdev->device == 0x6817) ||
+ 		    (adev->pdev->device == 0x6806))
+ 			max_mclk = 120000;
+-	} else if (adev->asic_type == CHIP_VERDE) {
+-		if ((adev->pdev->revision == 0x81) ||
+-		    (adev->pdev->revision == 0x83) ||
+-		    (adev->pdev->revision == 0x87) ||
+-		    (adev->pdev->device == 0x6820) ||
+-		    (adev->pdev->device == 0x6821) ||
+-		    (adev->pdev->device == 0x6822) ||
+-		    (adev->pdev->device == 0x6823) ||
+-		    (adev->pdev->device == 0x682A) ||
+-		    (adev->pdev->device == 0x682B)) {
+-			max_sclk = 75000;
+-			max_mclk = 80000;
+-		}
+ 	} else if (adev->asic_type == CHIP_OLAND) {
+ 		if ((adev->pdev->revision == 0xC7) ||
+ 		    (adev->pdev->revision == 0x80) ||
