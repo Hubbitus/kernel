@@ -497,30 +497,32 @@ Source5005: kbuild-AFTER_LINK.patch
 # Standalone patches
 
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
-Patch421: qcom-QDF2432-tmp-errata.patch
+Patch420: qcom-QDF2432-tmp-errata.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg490981.html
-Patch422: geekbox-v4-device-tree-support.patch
+Patch421: geekbox-v4-device-tree-support.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
-Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+Patch422: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
-Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch423: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
-Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
+Patch424: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
-Patch430: ARM-tegra-usb-no-reset.patch
+Patch425: ARM-tegra-usb-no-reset.patch
 
-Patch431: bcm2837-initial-support.patch
+Patch426: AllWinner-net-emac.patch
+
+Patch430: bcm2837-initial-support.patch
 
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
-Patch432: bcm283x-mmc-imp-speed.patch
+Patch431: bcm283x-mmc-imp-speed.patch
 
-Patch433: AllWinner-net-emac.patch
+Patch432: bcm283x-VEC.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2152,6 +2154,9 @@ fi
 #
 #
 %changelog
+* Wed Jan 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable bcm283x VEC composite output
+
 * Tue Jan 17 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc4.git1.1
 - Linux v4.10-rc4-78-g4b19a9e
 
