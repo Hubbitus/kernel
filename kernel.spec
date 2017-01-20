@@ -524,6 +524,9 @@ Patch431: bcm283x-mmc-imp-speed.patch
 
 Patch432: bcm283x-VEC.patch
 
+# http://www.spinics.net/lists/arm-kernel/msg552554.html
+Patch434: arm-imx6-hummingboard2.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2154,6 +2157,9 @@ fi
 #
 #
 %changelog
+* Fri Jan 20 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Initial DT support for Hummingboard 2 (Edge/Gate)
+
 * Thu Jan 19 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc4.git3.1
 - Linux v4.10-rc4-122-g81aaeaa
 
