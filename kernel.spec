@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 201
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -522,8 +522,6 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch432: bcm283x-vc4-fixes.patch
-
 Patch433: bcm283x-fixes.patch
 
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
@@ -625,23 +623,11 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
-# Work around thinkpad firmware memory layout issues and efi_mem_reserve()
-Patch850: 0001-efi-prune-invalid-memory-map-entries.patch
-
 # Request from dwalsh
 Patch851: selinux-namespace-fix.patch
 
 #rhbz 1390308
 Patch852: nouveau-add-maxwell-to-backlight-init.patch
-
-# Possible ATI fixes?
-Patch853: drm-amdgpu-drop-verde-dpm-quirks.patch
-Patch854: drm-amdgpu-update-si-kicker-smc-firmware.patch
-Patch855: drm-radeon-drop-verde-dpm-quirks.patch
-Patch856: drm-radeon-update-smc-firmware-selection-for-si.patch
-
-#rhbz 1414068
-Patch857: k8s-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2190,6 +2176,9 @@ fi
 #
 #
 %changelog
+* Fri Jan 20 2017 Laura Abbott <labbott@redhat.com> - 4.9.5-200
+- Linux v4.9.5
+
 * Tue Jan 17 2017 Laura Abbott <labbott@fedoraproject.org>
 - Fix kubernetes networking issue (rhbz 1414068)
 
