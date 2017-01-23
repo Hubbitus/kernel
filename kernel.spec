@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -586,6 +586,9 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # Fix build issue with armada_trace
 Patch851: Armada-trace-build-fix.patch
+
+# selinux: allow context mounts on tmpfs, ramfs, devpts within user namespaces
+Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2157,6 +2160,9 @@ fi
 #
 #
 %changelog
+* Fri Jan 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc4.git4.1
+- Linux v4.10-rc4-199-ge90665a
+
 * Fri Jan 20 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Initial DT support for Hummingboard 2 (Edge/Gate)
 
