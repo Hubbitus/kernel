@@ -2176,6 +2176,9 @@ fi
 #
 #
 %changelog
+* Mon Jan 23 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Enable CONFIG_IPV6_GRE (rhbz 1405398)
+
 * Fri Jan 20 2017 Laura Abbott <labbott@redhat.com> - 4.9.5-200
 - Linux v4.9.5
 
