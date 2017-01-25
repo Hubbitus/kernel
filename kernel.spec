@@ -629,6 +629,9 @@ Patch851: selinux-namespace-fix.patch
 #rhbz 1390308
 Patch852: nouveau-add-maxwell-to-backlight-init.patch
 
+#CVE-2017-5576 CVE-2017-5577 rhbz 1416436 1416437 1416439
+Patch853: drm_vc4_Fix_an_integer_overflow_in_temporary_allocation_layout.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2176,6 +2179,9 @@ fi
 #
 #
 %changelog
+* Wed Jan 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5576 CVE-2017-5577 vc4 overflows (rhbz 1416436 1416437 1416439)
+
 * Mon Jan 23 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Enable CONFIG_IPV6_GRE (rhbz 1405398)
 
