@@ -513,6 +513,8 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 # Fix OMAP4 (pandaboard)
 Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
+Patch428: arm64-dma-mapping-Fix-dma_mapping_error-when-bypassing-SWIOTLB.patch
+
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
 Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
@@ -522,10 +524,10 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch433: bcm283x-fixes.patch
+Patch432: bcm283x-fixes.patch
 
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
-Patch434: bcm283x-mmc-imp-speed.patch
+Patch433: bcm283x-mmc-imp-speed.patch
 
 Patch440: AllWinner-net-emac.patch
 
@@ -2182,6 +2184,9 @@ fi
 #
 #
 %changelog
+* Thu Jan 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- arm64: dma-mapping: Fix dma_mapping_error() when bypassing SWIOTLB
+
 * Thu Jan 26 2017 Laura Abbott <labbott@redhat.com> - 4.9.6-200
 - Linux v4.9.6
 - Bring in fix for bogus EFI firmware

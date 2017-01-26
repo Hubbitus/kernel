@@ -1,0 +1,66 @@
+From patchwork Wed Jan 25 18:31:31 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2] arm64: dma-mapping: Fix dma_mapping_error() when bypassing
+ SWIOTLB
+From: Robin Murphy <robin.murphy@arm.com>
+X-Patchwork-Id: 9537723
+Message-Id: <840027acb4750542003dff17b4a8902ba8972754.1485368348.git.robin.murphy@arm.com>
+To: will.deacon@arm.com,
+	catalin.marinas@arm.com
+Cc: Jisheng Zhang <jszhang@marvell.com>, arnd@arndb.de,
+ konrad.wilk@oracle.com, aaro.koskinen@iki.fi, stable@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+Date: Wed, 25 Jan 2017 18:31:31 +0000
+
+When bypassing SWIOTLB on small-memory systems, we need to avoid calling
+into swiotlb_dma_mapping_error() in exactly the same way as we avoid
+swiotlb_dma_supported(), because the former also relies on SWIOTLB state
+being initialised.
+
+Under the assumptions for which we skip SWIOTLB, dma_map_{single,page}()
+will only ever return the DMA-offset-adjusted physical address of the
+page passed in, thus we can report success unconditionally.
+
+Fixes: b67a8b29df7e ("arm64: mm: only initialize swiotlb when necessary")
+CC: stable@vger.kernel.org
+CC: Jisheng Zhang <jszhang@marvell.com>
+Reported-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+Tested-by: Aaro Koskinen <aaro.koskinen@iki.fi>
+---
+
+v2: Get the return value the right way round this time... After some
+    careful reasoning it really is that simple.
+
+ arch/arm64/mm/dma-mapping.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/mm/dma-mapping.c b/arch/arm64/mm/dma-mapping.c
+index e04082700bb1..1ffb7d5d299a 100644
+--- a/arch/arm64/mm/dma-mapping.c
++++ b/arch/arm64/mm/dma-mapping.c
+@@ -352,6 +352,13 @@ static int __swiotlb_dma_supported(struct device *hwdev, u64 mask)
+ 	return 1;
+ }
+ 
++static int __swiotlb_dma_mapping_error(struct device *hwdev, dma_addr_t addr)
++{
++	if (swiotlb)
++		return swiotlb_dma_mapping_error(hwdev, addr);
++	return 0;
++}
++
+ static struct dma_map_ops swiotlb_dma_ops = {
+ 	.alloc = __dma_alloc,
+ 	.free = __dma_free,
+@@ -366,7 +373,7 @@ static struct dma_map_ops swiotlb_dma_ops = {
+ 	.sync_sg_for_cpu = __swiotlb_sync_sg_for_cpu,
+ 	.sync_sg_for_device = __swiotlb_sync_sg_for_device,
+ 	.dma_supported = __swiotlb_dma_supported,
+-	.mapping_error = swiotlb_dma_mapping_error,
++	.mapping_error = __swiotlb_dma_mapping_error,
+ };
+ 
+ static int __init atomic_pool_init(void)
