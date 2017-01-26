@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 5
+%define stable_update 6
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2179,6 +2179,9 @@ fi
 #
 #
 %changelog
+* Thu Jan 26 2017 Laura Abbott <labbott@redhat.com> - 4.9.6-200
+- Linux v4.9.6
+
 * Wed Jan 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2017-5576 CVE-2017-5577 vc4 overflows (rhbz 1416436 1416437 1416439)
 
