@@ -2190,6 +2190,8 @@ fi
 * Thu Jan 26 2017 Laura Abbott <labbott@redhat.com> - 4.9.6-200
 - Linux v4.9.6
 - Bring in fix for bogus EFI firmware
+- Fixes CVE-2017-5547, CVE-2016-10153, CVE-2017-5548, CVE-2017-5551
+  (rhbz 1416096 1416101 1416110 1416126 1416128)
 
 * Wed Jan 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2017-5576 CVE-2017-5577 vc4 overflows (rhbz 1416436 1416437 1416439)
