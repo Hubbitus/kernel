@@ -632,6 +632,9 @@ Patch852: nouveau-add-maxwell-to-backlight-init.patch
 #CVE-2017-5576 CVE-2017-5577 rhbz 1416436 1416437 1416439
 Patch853: drm_vc4_Fix_an_integer_overflow_in_temporary_allocation_layout.patch
 
+#The saddest EFI firmware bug
+Patch854: 0001-x86-efi-always-map-first-physical-page-into-EFI-page.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2181,6 +2184,7 @@ fi
 %changelog
 * Thu Jan 26 2017 Laura Abbott <labbott@redhat.com> - 4.9.6-200
 - Linux v4.9.6
+- Bring in fix for bogus EFI firmware
 
 * Wed Jan 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2017-5576 CVE-2017-5577 vc4 overflows (rhbz 1416436 1416437 1416439)
