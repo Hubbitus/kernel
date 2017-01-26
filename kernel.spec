@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2166,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Thu Jan 26 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc5.git3.1
+- Linux v4.10-rc5-122-gff9f8a7
+
 * Thu Jan 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - arm64: dma-mapping: Fix dma_mapping_error() when bypassing SWIOTLB
 
