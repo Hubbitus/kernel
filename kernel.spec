@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -592,9 +592,6 @@ Patch851: Armada-trace-build-fix.patch
 
 # selinux: allow context mounts on tmpfs, ramfs, devpts within user namespaces
 Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
-
-#CVE-2017-5576 CVE-2017-5577 rhbz 1416436 1416437 1416439
-Patch853: drm_vc4_Fix_an_integer_overflow_in_temporary_allocation_layout.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2166,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Fri Jan 27 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc5.git4.1
+- Linux v4.10-rc5-367-g1b1bc42
+
 * Thu Jan 26 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc5.git3.1
 - Linux v4.10-rc5-122-gff9f8a7
 
