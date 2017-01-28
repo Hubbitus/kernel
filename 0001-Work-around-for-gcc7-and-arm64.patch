@@ -1,0 +1,62 @@
+From 975dcf140bd307b431aff7b6d671155c796cfe5e Mon Sep 17 00:00:00 2001
+From: Laura Abbott <labbott@redhat.com>
+Date: Sat, 28 Jan 2017 16:13:49 +0100
+Subject: [PATCH] Work around for gcc7 and  arm64
+
+Originally proposed by Will Deacon <will.deacon@arm.com>
+
+http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/462224.html
+
+Signed-off-by: Laura Abbott <labbott@redhat.com>
+---
+ include/linux/log2.h | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
+
+diff --git a/include/linux/log2.h b/include/linux/log2.h
+index fd7ff3d91e6a..1ab22b79681e 100644
+--- a/include/linux/log2.h
++++ b/include/linux/log2.h
+@@ -16,12 +16,6 @@
+ #include <linux/bitops.h>
+ 
+ /*
+- * deal with unrepresentable constant logarithms
+- */
+-extern __attribute__((const, noreturn))
+-int ____ilog2_NaN(void);
+-
+-/*
+  * non-constant log of base 2 calculators
+  * - the arch may override these in asm/bitops.h if they can be implemented
+  *   more efficiently than using fls() and fls64()
+@@ -85,7 +79,7 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
+ #define ilog2(n)				\
+ (						\
+ 	__builtin_constant_p(n) ? (		\
+-		(n) < 1 ? ____ilog2_NaN() :	\
++		(n) < 1 ? 0 :	\
+ 		(n) & (1ULL << 63) ? 63 :	\
+ 		(n) & (1ULL << 62) ? 62 :	\
+ 		(n) & (1ULL << 61) ? 61 :	\
+@@ -149,9 +143,7 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
+ 		(n) & (1ULL <<  3) ?  3 :	\
+ 		(n) & (1ULL <<  2) ?  2 :	\
+ 		(n) & (1ULL <<  1) ?  1 :	\
+-		(n) & (1ULL <<  0) ?  0 :	\
+-		____ilog2_NaN()			\
+-				   ) :		\
++		0 ) :		\
+ 	(sizeof(n) <= 4) ?			\
+ 	__ilog2_u32(n) :			\
+ 	__ilog2_u64(n)				\
+@@ -194,7 +186,6 @@ unsigned long __rounddown_pow_of_two(unsigned long n)
+  * @n: parameter
+  *
+  * The first few values calculated by this routine:
+- *  ob2(0) = 0
+  *  ob2(1) = 0
+  *  ob2(2) = 1
+  *  ob2(3) = 2
+-- 
+2.11.0
+

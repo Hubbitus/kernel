@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -592,6 +592,9 @@ Patch851: Armada-trace-build-fix.patch
 
 # selinux: allow context mounts on tmpfs, ramfs, devpts within user namespaces
 Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
+
+# See http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/461597.html
+Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2163,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Sat Jan 28 2017 Laura Abbott <labbott@redhat.com> - 4.10.0-0.rc5.git4.2
+- Temporary workaround for gcc7 and arm64
+
 * Fri Jan 27 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc5.git4.1
 - Linux v4.10-rc5-367-g1b1bc42
 
