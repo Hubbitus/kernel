@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -595,6 +595,9 @@ Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
 
 # See http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/461597.html
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
+
+# CVE-2017-2596 rhbz 1417812 1417813
+Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2166,6 +2169,10 @@ fi
 #
 #
 %changelog
+* Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git0.2
+- Reenable debugging options.
+- Fix kvm nested virt CVE-2017-2596 rhbz (1417812 1417813)
+
 * Mon Jan 30 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git0.1
 - Linux v4.10-rc6
 - Disable debugging options.
