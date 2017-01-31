@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -596,7 +596,7 @@ Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
 # See http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/461597.html
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
-# CVE-2017-2596 rhbz 1417812 1417813
+#CVE-2017-2596 rhbz 1417812 1417813
 Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
 
 # END OF PATCH DEFINITIONS
@@ -2169,9 +2169,10 @@ fi
 #
 #
 %changelog
-* Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git0.2
+* Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git1.1
+- Linux v4.10-rc6-24-gf1774f4
 - Reenable debugging options.
-- Fix kvm nested virt CVE-2017-2596 rhbz (1417812 1417813)
+- Fix kvm nested virt CVE-2017-2596 (rhbz 1417812 1417813)
 
 * Mon Jan 30 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git0.1
 - Linux v4.10-rc6
