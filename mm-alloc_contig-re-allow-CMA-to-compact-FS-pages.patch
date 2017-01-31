@@ -1,0 +1,42 @@
+From 424f6c4818bbf1b8ccf58aa012ecc19c0bb9b446 Mon Sep 17 00:00:00 2001
+From: Lucas Stach <l.stach@pengutronix.de>
+Date: Tue, 24 Jan 2017 15:18:05 -0800
+Subject: [PATCH 179/273] mm: alloc_contig: re-allow CMA to compact FS pages
+
+Commit 73e64c51afc5 ("mm, compaction: allow compaction for GFP_NOFS
+requests") changed compation to skip FS pages if not explicitly allowed
+to touch them, but missed to update the CMA compact_control.
+
+This leads to a very high isolation failure rate, crippling performance
+of CMA even on a lightly loaded system.  Re-allow CMA to compact FS
+pages by setting the correct GFP flags, restoring CMA behavior and
+performance to the kernel 4.9 level.
+
+Fixes: 73e64c51afc5 (mm, compaction: allow compaction for GFP_NOFS requests)
+Link: http://lkml.kernel.org/r/20170113115155.24335-1-l.stach@pengutronix.de
+Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ mm/page_alloc.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index d604d25..41d5e2e 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -7248,6 +7248,7 @@ int alloc_contig_range(unsigned long start, unsigned long end,
+ 		.zone = page_zone(pfn_to_page(start)),
+ 		.mode = MIGRATE_SYNC,
+ 		.ignore_skip_hint = true,
++		.gfp_mask = GFP_KERNEL,
+ 	};
+ 	INIT_LIST_HEAD(&cc.migratepages);
+ 
+-- 
+2.9.3
+

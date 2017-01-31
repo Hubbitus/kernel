@@ -529,6 +529,8 @@ Patch432: bcm283x-fixes.patch
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
 Patch433: bcm283x-mmc-imp-speed.patch
 
+Patch434: mm-alloc_contig-re-allow-CMA-to-compact-FS-pages.patch
+
 Patch440: AllWinner-net-emac.patch
 
 Patch442: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
@@ -2184,6 +2186,9 @@ fi
 #
 #
 %changelog
+* Tue Jan 31 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix CMA compaction regression (Raspberry Pi and others)
+
 * Thu Jan 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - arm64: dma-mapping: Fix dma_mapping_error() when bypassing SWIOTLB
 
