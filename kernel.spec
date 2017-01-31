@@ -639,6 +639,9 @@ Patch853: drm_vc4_Fix_an_integer_overflow_in_temporary_allocation_layout.patch
 #The saddest EFI firmware bug
 Patch854: 0001-x86-efi-always-map-first-physical-page-into-EFI-page.patch
 
+# CVE-2017-2596 rhbz 1417812 1417813
+Patch855: kvm-fix-page-struct-leak-in-handle_vmon.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2186,6 +2189,9 @@ fi
 #
 #
 %changelog
+* Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix kvm nested virt CVE-2017-2596 (rhbz 1417812 1417813)
+
 * Tue Jan 31 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix CMA compaction regression (Raspberry Pi and others)
 
