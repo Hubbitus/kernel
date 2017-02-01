@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2169,6 +2169,10 @@ fi
 #
 #
 %changelog
+* Wed Feb 01 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git2.1
+- Linux v4.10-rc6-85-g6d04dfc
+- enable CONFIG_SENSORS_JC42 (rhbz 1417454)
+
 * Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc6.git1.1
 - Linux v4.10-rc6-24-gf1774f4
 - Reenable debugging options.
