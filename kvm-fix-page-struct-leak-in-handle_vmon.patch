@@ -1,32 +1,26 @@
-From patchwork Tue Jan 24 10:56:21 2017
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: kvm: fix page struct leak in handle_vmon
+From fc66c84bfca091a28d01ba4a2d18b6cfd72ce270 Mon Sep 17 00:00:00 2001
 From: Paolo Bonzini <pbonzini@redhat.com>
-X-Patchwork-Id: 9534885
-Message-Id: <1485255381-18069-1-git-send-email-pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc: dvyukov@google.com
 Date: Tue, 24 Jan 2017 11:56:21 +0100
+Subject: [PATCH] kvm: fix page struct leak in handle_vmon
 
 handle_vmon gets a reference on VMXON region page,
 but does not release it. Release the reference.
 
 Found by syzkaller; based on a patch by Dmitry.
 
+[labbott@redhat.com: Fixed kvm_skip_emulated_instruction for 4.9.x]
 Reported-by: Dmitry Vyukov <dvyukov@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- arch/x86/kvm/vmx.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/x86/kvm/vmx.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx.c b/arch/x86/kvm/vmx.c
-index 42cc3d6f4d20..0f7345035210 100644
+index 64774f4..7fef0a9 100644
 --- a/arch/x86/kvm/vmx.c
 +++ b/arch/x86/kvm/vmx.c
-@@ -7085,13 +7085,18 @@ static int nested_vmx_check_vmptr(struct kvm_vcpu *vcpu, int exit_reason,
+@@ -6925,14 +6925,20 @@ static int nested_vmx_check_vmptr(struct kvm_vcpu *vcpu, int exit_reason,
  		}
  
  		page = nested_get_page(vcpu, vmptr);
@@ -34,7 +28,8 @@ index 42cc3d6f4d20..0f7345035210 100644
 -		    *(u32 *)kmap(page) != VMCS12_REVISION) {
 +		if (page == NULL) {
  			nested_vmx_failInvalid(vcpu);
-+			return kvm_skip_emulated_instruction(vcpu);
++			skip_emulated_instruction(vcpu);
++			return 1;
 +		}
 +		if (*(u32 *)kmap(page) != VMCS12_REVISION) {
  			kunmap(page);
@@ -48,3 +43,6 @@ index 42cc3d6f4d20..0f7345035210 100644
  		vmx->nested.vmxon_ptr = vmptr;
  		break;
  	case EXIT_REASON_VMCLEAR:
+-- 
+2.7.4
+
