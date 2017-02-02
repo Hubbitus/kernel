@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -632,9 +632,6 @@ Patch851: selinux-namespace-fix.patch
 
 #rhbz 1390308
 Patch852: nouveau-add-maxwell-to-backlight-init.patch
-
-#CVE-2017-5576 CVE-2017-5577 rhbz 1416436 1416437 1416439
-Patch853: drm_vc4_Fix_an_integer_overflow_in_temporary_allocation_layout.patch
 
 #The saddest EFI firmware bug
 Patch854: 0001-x86-efi-always-map-first-physical-page-into-EFI-page.patch
@@ -2189,6 +2186,9 @@ fi
 #
 #
 %changelog
+* Thu Feb 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.7-200
+- Linux v4.9.7
+
 * Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix kvm nested virt CVE-2017-2596 (rhbz 1417812 1417813)
 
