@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -638,6 +638,9 @@ Patch854: 0001-x86-efi-always-map-first-physical-page-into-EFI-page.patch
 
 # CVE-2017-2596 rhbz 1417812 1417813
 Patch855: kvm-fix-page-struct-leak-in-handle_vmon.patch
+
+# rhbz 1418858
+Patch856: PCI-ASPM-Handle-PCI-to-PCIe-bridges-as-roots-of-PCIe-hierarchies.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2186,6 +2189,9 @@ fi
 #
 #
 %changelog
+* Thu Feb 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.7-201
+- Fix for pcie_aspm_init_link_state crash (rhbz 1418858)
+
 * Thu Feb 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.7-200
 - Linux v4.9.7
 
