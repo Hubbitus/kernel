@@ -1,3 +1,6 @@
+Linux 4.10 rebase notes:
+- F25 and earlier, revert S390x minumum hw level
+
 Linux 4.9 rebase notes:
 - F25 and earlier arm64: disable 48bit VA
 
