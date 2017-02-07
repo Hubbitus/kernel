@@ -640,6 +640,9 @@ Patch855: kvm-fix-page-struct-leak-in-handle_vmon.patch
 # rhbz 1418858
 Patch856: PCI-ASPM-Handle-PCI-to-PCIe-bridges-as-roots-of-PCIe-hierarchies.patch
 
+#CVE-2017-5897 rhbz 1419848 1419851
+Patch857: ip6_gre-fix-ip6gre_err-invalid-reads.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2187,6 +2190,9 @@ fi
 #
 #
 %changelog
+* Tue Feb  7 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5897 ip6_gre: Invalid reads in ip6gre_err (rhbz 1419848 1419851)
+
 * Tue Feb  7 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.9.8-201
 - Drop "fixes" for bcm238x as they seem to break other Raspberry Pi 3 things
 
