@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 200
+%global baserelease 201
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -523,8 +523,6 @@ Patch429: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
 Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
-
-Patch432: bcm283x-fixes.patch
 
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
 Patch433: bcm283x-mmc-imp-speed.patch
@@ -2189,6 +2187,9 @@ fi
 #
 #
 %changelog
+* Tue Feb  7 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.9.8-201
+- Drop "fixes" for bcm238x as they seem to break other Raspberry Pi 3 things
+
 * Mon Feb 06 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.8-200
 - Linux v4.9.8
 
