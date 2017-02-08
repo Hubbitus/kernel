@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -598,10 +598,6 @@ Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
 #CVE-2017-2596 rhbz 1417812 1417813
 Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
-
-#CVE-2017-5897 rhbz 1419848 1419851
-Patch855: ip6_gre-fix-ip6gre_err-invalid-reads.patch
-
 
 # END OF PATCH DEFINITIONS
 
@@ -2173,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Wed Feb 08 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc7.git2.1
+- Linux v4.10-rc7-65-g926af627
+
 * Tue Feb 07 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc7.git1.1
 - Linux v4.10-rc7-29-g8b1b41e
 - Reenable debugging options.
