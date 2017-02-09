@@ -527,8 +527,11 @@ Patch431: bcm283x-mmc-imp-speed.patch
 
 Patch432: bcm283x-VEC.patch
 
+# http://www.spinics.net/lists/dri-devel/msg132235.html
+Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+
 # http://www.spinics.net/lists/arm-kernel/msg552554.html
-Patch434: arm-imx6-hummingboard2.patch
+Patch438: arm-imx6-hummingboard2.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2169,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Thu Feb  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix OOPSes in vc4 (Raspberry Pi)
+
 * Wed Feb 08 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc7.git2.1
 - Linux v4.10-rc7-65-g926af627
 
