@@ -524,6 +524,8 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
+Patch432: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
 Patch433: bcm283x-mmc-imp-speed.patch
 
@@ -2194,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Thu Feb  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix OOPSes in vc4 (Raspberry Pi)
+
 * Thu Feb 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.9-200
 - Linux v4.9.9
 - Fix DMA on stack from 1-wire driver (rhbz 1415397)
