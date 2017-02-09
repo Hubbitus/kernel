@@ -647,6 +647,9 @@ Patch857: ip6_gre-fix-ip6gre_err-invalid-reads.patch
 Patch858: 1-2-media-cxusb-Use-a-dma-capable-buffer-also-for-reading.patch
 Patch859: 2-2-media-dvb-usb-firmware-don-t-do-DMA-on-stack.patch
 
+#rhbz 1420276
+Patch860: 0001-sctp-avoid-BUG_ON-on-sctp_wait_for_sndbuf.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2194,6 +2197,9 @@ fi
 #
 #
 %changelog
+* Thu Feb  9 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- sctp: avoid BUG_ON on sctp_wait_for_sndbuf (rhbz 1420276)
+
 * Tue Feb  7 2017 Laura Abbott <labbott@fedoraproject.org>
 - Fix for some DMA on stack with DVB devices (rhbz 1417829)
 - Enable CONFIG_SENSORS_JC42 (rhbz 1417454)
