@@ -649,6 +649,9 @@ Patch860: 0001-sctp-avoid-BUG_ON-on-sctp_wait_for_sndbuf.patch
 #rhbz 1415397
 Patch861: w1-ds2490-USB-transfer-buffers-need-to-be-DMAable.patch
 
+#CVE-2017-5970 rhbz 1421638
+Patch862: ipv4-keep-skb-dst-around-in-presence-of-IP-options.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2196,6 +2199,9 @@ fi
 #
 #
 %changelog
+* Mon Feb 13 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5970 keep skb->dst around in presence of IP options (rhbz 1421638)
+
 * Thu Feb  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix OOPSes in vc4 (Raspberry Pi)
 
