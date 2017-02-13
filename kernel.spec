@@ -24,7 +24,7 @@ Summary: The Linux kernel
 %global zipsed -e 's/\.ko$/\.ko.xz/'
 %endif
 
-%define buildid .pf7.hu.1
+%define buildid .pf5.hu.1
 
 # baserelease defines which build revision of this kernel version we're
 # building.  We used to call this fedora_build, but the magical name
@@ -42,20 +42,20 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 200
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 8
+%define base_sublevel 9
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-#+Hu Pf against 4.8.7 v4.8-pf6: https://pf.natalenko.name/news/?p=219
-%define stable_update 7
+#+Hu Pf against 4.9.8 v4.9-pf5: https://pf.natalenko.name/news/?p=242
+%define stable_update 8
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -413,7 +413,7 @@ Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
-
+Source12: remove-binary-diff.pl
 Source15: merge.pl
 Source16: mod-extra.list
 Source17: mod-extra.sh
@@ -472,7 +472,7 @@ Source2001: cpupower.config
 %if 0%{?stable_update}
 %if 0%{?stable_base}
 #*Hu %%define    stable_patch_00  patch-4.%%{base_sublevel}.%%{stable_base}.xz
-%global stable_patch_00 https://pf.natalenko.name/sources/4.8/patch-4.8-pf7.xz
+%global stable_patch_00 https://pf.natalenko.name/sources/4.9/patch-4.9-pf5.xz
 Source5000: %{stable_patch_00}
 %endif
 
@@ -502,8 +502,6 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-# http://www.spinics.net/lists/arm-kernel/msg523359.html
-Patch420: arm64-ACPI-parse-SPCR-table.patch
 
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
@@ -520,7 +518,8 @@ Patch426: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
 Patch427: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
-Patch428: ARM-OMAP4-Fix-crashes.patch
+
+Patch428: arm64-dma-mapping-Fix-dma_mapping_error-when-bypassing-SWIOTLB.patch
 
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
@@ -531,11 +530,18 @@ Patch430: ARM-tegra-usb-no-reset.patch
 
 Patch431: bcm2837-initial-support.patch
 
-Patch432: bcm283x-vc4-fixes.patch
+Patch432: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
-Patch433: AllWinner-net-emac.patch
+# http://www.spinics.net/lists/linux-mmc/msg41151.html
+Patch433: bcm283x-mmc-imp-speed.patch
 
-Patch434: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
+Patch434: mm-alloc_contig-re-allow-CMA-to-compact-FS-pages.patch
+
+Patch440: AllWinner-net-emac.patch
+
+Patch442: ARM-Drop-fixed-200-Hz-timer-requirement-from-Samsung-platforms.patch
+
+Patch443: imx6sx-Add-UDOO-Neo-support.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -571,7 +577,9 @@ Patch481: x86-Restrict-MSR-access-when-module-loading-is-restr.patch
 
 Patch482: Add-option-to-automatically-enforce-module-signature.patch
 
-Patch483: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
+Patch483: efi-Add-SHIM-and-image-security-database-GUID-defini.patch
+
+Patch484: efi-Disable-secure-boot-if-shim-is-in-insecure-mode.patch
 
 Patch485: efi-Add-EFI_SECURE_BOOT-bit.patch
 
@@ -617,38 +625,35 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 Patch508: kexec-uefi-copy-secure_boot-flag-in-boot-params.patch
 
+Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
+
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#rhbz 1200901 (There should be something better upstream at some point)
-Patch842: qxl-reapply-cursor-after-SetCrtc-calls.patch
-
-# From kernel list, currently in linux-next
-Patch845: HID-microsoft-Add-Surface-4-type-cover-pro-4-JP.patch
-
-# SELinux OverlayFS support (queued for 4.9)
-Patch846: security-selinux-overlayfs-support.patch
-
-#rhbz 1360688
-Patch847: rc-core-fix-repeat-events.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
-# CVE-2016-9083 CVE-2016-9084 rhbz 1389258 1389259 1389285
-Patch850: v3-vfio-pci-Fix-integer-overflows-bitmask-check.patch
-
-#rhbz 1325354
-Patch852: 0001-HID-input-ignore-System-Control-application-usages-i.patch
+# Request from dwalsh
+Patch851: selinux-namespace-fix.patch
 
 #rhbz 1390308
-Patch854: nouveau-add-maxwell-to-backlight-init.patch
+Patch852: nouveau-add-maxwell-to-backlight-init.patch
 
-#rhbz 1385823
-Patch855: 0001-platform-x86-ideapad-laptop-Add-Lenovo-Yoga-910-13IK.patch
+# CVE-2017-2596 rhbz 1417812 1417813
+Patch855: kvm-fix-page-struct-leak-in-handle_vmon.patch
 
-# CVE-2016-9755 rhbz 1400904 1400905
-Patch856: 0001-netfilter-ipv6-nf_defrag-drop-mangled-skb-on-ream-er.patch
+#CVE-2017-5897 rhbz 1419848 1419851
+Patch857: ip6_gre-fix-ip6gre_err-invalid-reads.patch
+
+#rhbz 1417829
+Patch858: 1-2-media-cxusb-Use-a-dma-capable-buffer-also-for-reading.patch
+Patch859: 2-2-media-dvb-usb-firmware-don-t-do-DMA-on-stack.patch
+
+#rhbz 1420276
+Patch860: 0001-sctp-avoid-BUG_ON-on-sctp_wait_for_sndbuf.patch
+
+#rhbz 1415397
+Patch861: w1-ds2490-USB-transfer-buffers-need-to-be-DMAable.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -826,7 +831,7 @@ This package provides debug information for package kernel-tools.
 # symlinks because of the trailing nonmatching alternation and
 # the leading .*, because of find-debuginfo.sh's buggy handling
 # of matching the pattern against the symlinks file.
-%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|.*%%{_bindir}/iio_event_monitor(\.debug)?|.*%%{_bindir}/iio_generic_buffer(\.debug)?|.*%%{_bindir}/lsiio(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
+%{expand:%%global debuginfo_args %{?debuginfo_args} -p '.*%%{_bindir}/centrino-decode(\.debug)?|.*%%{_bindir}/powernow-k8-decode(\.debug)?|.*%%{_bindir}/cpupower(\.debug)?|.*%%{_libdir}/libcpupower.*|.*%%{_bindir}/turbostat(\.debug)?|.*%%{_bindir}/x86_energy_perf_policy(\.debug)?|.*%%{_bindir}/tmon(\.debug)?|.*%%{_bindir}/lsgpio(\.debug)?|.*%%{_bindir}/gpio-hammer(\.debug)?|.*%%{_bindir}/gpio-event-mon(\.debug)?|.*%%{_bindir}/iio_event_monitor(\.debug)?|.*%%{_bindir}/iio_generic_buffer(\.debug)?|.*%%{_bindir}/lsiio(\.debug)?|XXX' -o kernel-tools-debuginfo.list}
 
 %endif # with_tools
 
@@ -1166,17 +1171,19 @@ if [ ! -d kernel-%{kversion}%{?dist}/vanilla-%{vanillaversion} ]; then
     cp -al vanilla-%{kversion} vanilla-%{vanillaversion}
     cd vanilla-%{vanillaversion}
 
+cp %{SOURCE12} .
+
 # Update vanilla to the latest upstream.
 # (non-released_kernel case only)
 %if 0%{?rcrev}
-    xzcat %{SOURCE5000} | patch -p1 -F1 -s
+    xzcat %{SOURCE5000} | ./remove-binary-diff.pl | patch -p1 -F1 -s
 %if 0%{?gitrev}
-    xzcat %{SOURCE5001} | patch -p1 -F1 -s
+    xzcat %{SOURCE5001} | ./remove-binary-diff.pl | patch -p1 -F1 -s
 %endif
 %else
 # pre-{base_sublevel+1}-rc1 case
 %if 0%{?gitrev}
-    xzcat %{SOURCE5000} | patch -p1 -F1 -s
+    xzcat %{SOURCE5000} | ./remove-binary-diff.pl | patch -p1 -F1 -s
 %endif
 %endif
     git init
@@ -1695,7 +1702,7 @@ BuildKernel %make_target %kernel_image
 %endif
 
 %global perf_make \
-  make -s EXTRA_CFLAGS="${RPM_OPT_FLAGS}" LDFLAGS="%{__global_ldflags}" %{?cross_opts} %{?_smp_mflags} -C tools/perf V=1 NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
+  make -s EXTRA_CFLAGS="${RPM_OPT_FLAGS}" LDFLAGS="%{__global_ldflags}" %{?cross_opts} -C tools/perf V=1 NO_PERF_READ_VDSO32=1 NO_PERF_READ_VDSOX32=1 WERROR=0 NO_LIBUNWIND=1 HAVE_CPLUS_DEMANGLE=1 NO_GTK2=1 NO_STRLCPY=1 NO_BIONIC=1 prefix=%{_prefix}
 %if %{with_perf}
 # perf
 %{perf_make} DESTDIR=$RPM_BUILD_ROOT all
@@ -1729,9 +1736,13 @@ chmod +x tools/power/cpupower/utils/version-gen.sh
 pushd tools/thermal/tmon/
 %{make}
 popd
+#-Hu1 iio does not work on CentOS:
 #-Hu1 pushd tools/iio/
 #-Hu1 %{make}
 #-Hu1 popd
+pushd tools/gpio/
+%{make}
+popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1902,6 +1913,9 @@ popd
 #-Hu1 pushd tools/iio
 #-Hu1 make INSTALL_ROOT=%{buildroot} install
 #-Hu1 popd
+pushd tools/gpio
+make DESTDIR=%{buildroot} install
+popd
 %endif
 
 %if %{with_bootwrapper}
@@ -2096,6 +2110,9 @@ fi
 #-Hu1 %{_bindir}/iio_event_monitor
 #-Hu1 %{_bindir}/iio_generic_buffer
 #-Hu1 %{_bindir}/lsiio
+%{_bindir}/lsgpio
+%{_bindir}/gpio-hammer
+%{_bindir}/gpio-event-mon
 %endif
 
 %if %{with_debuginfo}
@@ -2190,6 +2207,118 @@ fi
 #
 #
 %changelog
+* Sun Feb 12 2017 Pavel Alexeev <Pahan@Hubbitus.info> - 4.9.8-200.pf5.hu.1
+- Update Fedora upstream sources, new kernel version 4.9.8 (by PF, in Fedora 4.9.9)
+- Update PF patch v4.9-pf5 - https://pf.natalenko.name/news/?p=242
+- Update by comment: http://hubbitus.info/wiki/Repository#comment-3036205428
+- Add options:
+	o CONFIG_FORCE_IRQ_THREADING=y # http://ck.kolivas.org/patches/4.0/4.9/4.9-ck1/patches/0013-Make-threaded-IRQs-optionally-the-default-which-can-.patch
+	o CONFIG_BLK_WBT=y # http://cateee.net/lkddb/web-lkddb/BLK_WBT.html
+	o CONFIG_X86_P6_NOP=y
+	o CONFIG_BLK_WBT_SQ=y # 2 options: https://patchwork.kernel.org/patch/9398291/
+	o CONFIG_BLK_WBT_MQ=y
+
+* Thu Feb  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix OOPSes in vc4 (Raspberry Pi)
+
+* Thu Feb 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.9-200
+- Linux v4.9.9
+- Fix DMA on stack from 1-wire driver (rhbz 1415397)
+
+* Thu Feb  9 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- sctp: avoid BUG_ON on sctp_wait_for_sndbuf (rhbz 1420276)
+
+* Tue Feb  7 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix for some DMA on stack with DVB devices (rhbz 1417829)
+- Enable CONFIG_SENSORS_JC42 (rhbz 1417454)
+
+* Tue Feb  7 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5897 ip6_gre: Invalid reads in ip6gre_err (rhbz 1419848 1419851)
+
+* Tue Feb  7 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.9.8-201
+- Drop "fixes" for bcm238x as they seem to break other Raspberry Pi 3 things
+
+* Mon Feb 06 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.8-200
+- Linux v4.9.8
+
+* Thu Feb 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.7-201
+- Fix for pcie_aspm_init_link_state crash (rhbz 1418858)
+
+* Thu Feb 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.7-200
+- Linux v4.9.7
+
+* Tue Jan 31 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix kvm nested virt CVE-2017-2596 (rhbz 1417812 1417813)
+
+* Tue Jan 31 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix CMA compaction regression (Raspberry Pi and others)
+
+* Thu Jan 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- arm64: dma-mapping: Fix dma_mapping_error() when bypassing SWIOTLB
+
+* Thu Jan 26 2017 Laura Abbott <labbott@redhat.com> - 4.9.6-200
+- Linux v4.9.6
+- Bring in fix for bogus EFI firmware
+- Fixes CVE-2017-5547, CVE-2016-10153, CVE-2017-5548, CVE-2017-5551
+  (rhbz 1416096 1416101 1416110 1416126 1416128)
+
+* Wed Jan 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5576 CVE-2017-5577 vc4 overflows (rhbz 1416436 1416437 1416439)
+
+* Mon Jan 23 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Enable CONFIG_IPV6_GRE (rhbz 1405398)
+
+* Fri Jan 20 2017 Laura Abbott <labbott@redhat.com> - 4.9.5-200
+- Linux v4.9.5
+
+* Tue Jan 17 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix kubernetes networking issue (rhbz 1414068)
+
+* Tue Jan 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.4-201
+- Add possible ATI fixes
+
+* Mon Jan 16 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.4-200
+- Linux v4.9.4
+
+* Mon Jan 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor updates for Raspberry Pi 3 support
+- Re-enable /sys/class/gpio/
+- Build gpio tools
+
+* Thu Jan 12 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.3-200
+- Linux v4.9.3
+
+* Wed Jan 11 2017 Laura Abbott <labbott@fedoraproject.org>
+- Add fix for some thinkpads missed during the rebase.
+
+* Mon Jan 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.9.2-200
+- Linux v4.9.2 rebase
+
+* Fri Jan 06 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.16-300
+- Linux v4.8.16
+
+* Thu Dec 15 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.15-300
+- Linux v4.8.15
+- CVE-2016-9588 fix possible DoS in nVMX (rhbz 1404924 1404925)
+- Turn off CONFIG_IWLWIFI_PCIE_RTPM as it can cause wifi disconnects
+
+* Mon Dec 12 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.14-300
+- Linux v4.8.14
+- CVE-2016-8399 Fix out OOB stack read in memcpy_fromiovec (rhbz 1403833 1403834)
+
+* Fri Dec 09 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.13-300
+- Linux v4.8.13
+- CVE-2016-9576 fix use after free in SCSI generic device interface (rhbz 1403145 1403146)
+
+* Wed Dec 07 2016 Laura Abbott <labbott@fedoraproject.org>
+- Disable CONFIG_AF_KCM (rhbz 1402489)
+
+* Wed Dec 07 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-9793 avoid signed overflows for SO_{SND|RCV}BUFFORCE (rhbz 1402013 1402014)
+
+* Tue Dec 06 2016 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2016-8655 fix race condition in packet_set_ring (rhbz 1400019 1401820)
+
 * Fri Dec 02 2016 Justin M. Forbes <jforbes@fedoraproject.org> - 4.8.12-300
 - Linux v4.8.12
 - CVE-2016-9755 Fix Out-of-bounds write issue when defragmenting ipv6 packets (rhbz 1400904 1400905)
@@ -2205,7 +2334,6 @@ fi
 
 * Tue Nov 22 2016 Josh Boyer <jwboyer@fedoraproject.org>
 - Add patch from Dave Anderson to fix live system crash analysis on Aarch64
-
 
 * Mon Nov 21 2016 Pavel Alexeev <Pahan@Hubbitus.info> - 4.8.7-300.pf7.hu.1
 - Merge Fedora upstream changes.

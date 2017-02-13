@@ -1,7 +1,7 @@
-From e90ba04ee5efbed6fc17dfa7f62702f268fc1bc4 Mon Sep 17 00:00:00 2001
+From fb909e29d6c073f4c5777a0db75df72b726e4314 Mon Sep 17 00:00:00 2001
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
 Date: Fri, 7 Oct 2016 10:25:48 +0200
-Subject: [PATCH 1/9] ethernet: add sun8i-emac driver
+Subject: [PATCH 1/8] ethernet: add sun8i-emac driver
 
 This patch add support for sun8i-emac ethernet MAC hardware.
 It could be found in Allwinner H3/A83T/A64 SoCs.
@@ -2324,10 +2324,10 @@ index 0000000..bc74467
 -- 
 2.9.3
 
-From 7171a3584b7eb728d263f72876836dda933aa6a6 Mon Sep 17 00:00:00 2001
+From 1d9ea1f4df27f3a2e2ed7094852a23a4dd45e2be Mon Sep 17 00:00:00 2001
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
 Date: Fri, 7 Oct 2016 10:25:49 +0200
-Subject: [PATCH 2/9] MAINTAINERS: Add myself as maintainer of sun8i-emac
+Subject: [PATCH 2/8] MAINTAINERS: Add myself as maintainer of sun8i-emac
 
 This patch add myself as maintainer of the sun8i-emac driver.
 
@@ -2337,10 +2337,10 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index f593300..94dac86 100644
+index 411e3b8..e99a087 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -582,6 +582,12 @@ S:	Maintained
+@@ -590,6 +590,12 @@ S:	Maintained
  F:	Documentation/i2c/busses/i2c-ali1563
  F:	drivers/i2c/busses/i2c-ali1563.c
  
@@ -2356,10 +2356,10 @@ index f593300..94dac86 100644
 -- 
 2.9.3
 
-From 0c21240a091e9553751845f2aa3be0b5a88d9ac7 Mon Sep 17 00:00:00 2001
+From 6b3093e31b877f39475454b5af3b820dbb3a4f73 Mon Sep 17 00:00:00 2001
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
 Date: Fri, 7 Oct 2016 10:25:50 +0200
-Subject: [PATCH 3/9] ARM: sun8i: dt: Add DT bindings documentation for
+Subject: [PATCH 3/8] ARM: sun8i: dt: Add DT bindings documentation for
  Allwinner sun8i-emac
 
 This patch adds documentation for Device-Tree bindings for the
@@ -2450,10 +2450,10 @@ index 0000000..92e4ef3b
 -- 
 2.9.3
 
-From 95d456fcdd33eb7c1512956050faba648550e06f Mon Sep 17 00:00:00 2001
+From aa634aa1b0454befe54a14d03b9a3ba6f750dcfd Mon Sep 17 00:00:00 2001
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
 Date: Fri, 7 Oct 2016 10:25:51 +0200
-Subject: [PATCH 4/9] ARM: dts: sun8i-h3: Add dt node for the syscon control
+Subject: [PATCH 4/8] ARM: dts: sun8i-h3: Add dt node for the syscon control
  module
 
 This patch add the dt node for the syscon register present on the
@@ -2468,7 +2468,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index fdf9fdb..d658a596 100644
+index 75a8654..eac7d00 100644
 --- a/arch/arm/boot/dts/sun8i-h3.dtsi
 +++ b/arch/arm/boot/dts/sun8i-h3.dtsi
 @@ -140,6 +140,11 @@
@@ -2486,10 +2486,10 @@ index fdf9fdb..d658a596 100644
 -- 
 2.9.3
 
-From 7837b66f2bce01da31ec4c005023c729ba3f17a7 Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:52 +0200
-Subject: [PATCH 5/9] ARM: dts: sun8i-h3: add sun8i-emac ethernet driver
+From 976cca2d4eb5bf85c26dfaad03ea70bff88981fd Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Tue, 8 Nov 2016 10:23:08 +0000
+Subject: [PATCH 5/8] ARM: dts: sun8i-h3: add sun8i-emac ethernet driver
 
 The sun8i-emac is an ethernet MAC hardware that support 10/100/1000
 speed.
@@ -2503,11 +2503,11 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 24 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index d658a596..54174cf 100644
+index eac7d00..86a8665 100644
 --- a/arch/arm/boot/dts/sun8i-h3.dtsi
 +++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -446,6 +446,30 @@
- 			status = "disabled";
+@@ -535,6 +535,30 @@
+ 			#size-cells = <0>;
  		};
  
 +		emac: ethernet@1c30000 {
@@ -2540,10 +2540,10 @@ index d658a596..54174cf 100644
 -- 
 2.9.3
 
-From e9687b752a1551ae420a94ff44254831ef464557 Mon Sep 17 00:00:00 2001
+From 6e483713dda9e0d5e8e5f37d8b0367ff216c53db Mon Sep 17 00:00:00 2001
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
 Date: Fri, 7 Oct 2016 10:25:53 +0200
-Subject: [PATCH 6/9] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI PC
+Subject: [PATCH 6/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI PC
 
 The sun8i-emac hardware is present on the Orange PI PC.
 It uses the internal PHY.
@@ -2556,7 +2556,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-index daf50b9a6..71717cc 100644
+index 3ec9712..1b8dbc0 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
 @@ -54,6 +54,7 @@
@@ -2567,7 +2567,7 @@ index daf50b9a6..71717cc 100644
  	};
  
  	chosen {
-@@ -165,3 +166,10 @@
+@@ -183,3 +184,10 @@
  	/* USB VBUS is always on */
  	status = "okay";
  };
@@ -2581,10 +2581,10 @@ index daf50b9a6..71717cc 100644
 -- 
 2.9.3
 
-From 7df9f84ca65a398b1bb692344fa26c67235f19d3 Mon Sep 17 00:00:00 2001
+From 05cf4e2c77424ad5c9dc8495a65d6695d2831b0a Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
 Date: Fri, 7 Oct 2016 10:25:54 +0200
-Subject: [PATCH 7/9] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI One
+Subject: [PATCH 7/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI One
 
 The sun8i-emac hardware is present on the Orange PI One.
 It uses the internal PHY.
@@ -2598,7 +2598,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-index 0adf932..25f2455 100644
+index 5c9b5bf..fa398cc 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
 @@ -54,6 +54,7 @@
@@ -2626,10 +2626,10 @@ index 0adf932..25f2455 100644
 -- 
 2.9.3
 
-From dd8a48a9d7250d4bfc501dd5a4e8179ffac27d11 Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:55 +0200
-Subject: [PATCH 8/9] ARM: dts: sun8i: Enable sun8i-emac on the Orange Pi 2
+From 52c300b614fcb29e81067aa7ed8aafa489b590b7 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Tue, 8 Nov 2016 10:24:42 +0000
+Subject: [PATCH 8/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange Pi 2
 
 The sun8i-emac hardware is present on the Orange PI 2.
 It uses the internal PHY.
@@ -2642,7 +2642,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-index f93f5d1..5608eb4 100644
+index e5bcaba..ad66b61 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
 @@ -54,6 +54,7 @@
@@ -2650,10 +2650,10 @@ index f93f5d1..5608eb4 100644
  	aliases {
  		serial0 = &uart0;
 +		ethernet0 = &emac;
+ 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
+ 		ethernet1 = &rtl8189;
  	};
- 
- 	chosen {
-@@ -184,3 +185,10 @@
+@@ -212,3 +213,10 @@
  	usb1_vbus-supply = <&reg_usb1_vbus>;
  	status = "okay";
  };
@@ -2664,37 +2664,6 @@ index f93f5d1..5608eb4 100644
 +	allwinner,leds-active-low;
 +	status = "okay";
 +};
--- 
-2.9.3
-
-From cc1f0d509ecebebe8b50c97b71c84fb082ce0e56 Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Wed, 5 Oct 2016 11:48:24 +0200
-Subject: [PATCH 9/9] ARM: dt: sun8i-h3: Add sunxi-sid to dts for sun8i-h3
-
-This patch add support for the sunxi-sid driver to the device tree for sun8i-h3.
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm/boot/dts/sun8i-h3.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index 54174cf..8628b38 100644
---- a/arch/arm/boot/dts/sun8i-h3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -211,6 +211,11 @@
- 			#size-cells = <0>;
- 		};
- 
-+		sid: eeprom@01c14200 {
-+			compatible = "allwinner,sun7i-a20-sid";
-+			reg = <0x01c14200 0x200>;
-+		};
-+
- 		usbphy: phy@01c19400 {
- 			compatible = "allwinner,sun8i-h3-usb-phy";
- 			reg = <0x01c19400 0x2c>,
 -- 
 2.9.3
 

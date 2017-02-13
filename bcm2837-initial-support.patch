@@ -1,153 +1,28 @@
-From a2858804c7f5f4585b718543236b7ba3b3ec813a Mon Sep 17 00:00:00 2001
+From 49a6e9faf9a4e3b56c2bffd516f17ca1b6244084 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
-Date: Mon, 29 Aug 2016 09:14:15 +0100
-Subject: [PATCH] ARM: bcm283x: Add devicetree for the Raspberry Pi 3.
-
-For now this doesn't support the new hardware present on the Pi 3 (BT,
-wifi, GPIO expander).
-
-Rebased to the patch that went upstream for ARM64
+Date: Tue, 31 Jan 2017 23:21:32 +0000
+Subject: [PATCH] ARM: bcm2835: include rather than copy the commits for arm32
+ RPi3 support so it's always in sync
 
 Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
 ---
- arch/arm/boot/dts/Makefile            |  3 +-
- arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 30 ++++++++++++++
- arch/arm/boot/dts/bcm2837.dtsi        | 76 +++++++++++++++++++++++++++++++++++
- 3 files changed, 108 insertions(+), 1 deletion(-)
- create mode 100644 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
- create mode 100644 arch/arm/boot/dts/bcm2837.dtsi
+ arch/arm/boot/dts/Makefile | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index faacd52..ec41888 100644
+index f10fe85..4c46851 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -69,7 +69,8 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
- 	bcm2835-rpi-b-rev2.dtb \
+@@ -70,7 +70,8 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
  	bcm2835-rpi-b-plus.dtb \
  	bcm2835-rpi-a-plus.dtb \
--	bcm2836-rpi-2-b.dtb
-+	bcm2836-rpi-2-b.dtb \
-+	bcm2837-rpi-3-b.dtb
+ 	bcm2836-rpi-2-b.dtb \
+-	bcm2835-rpi-zero.dtb
++	bcm2835-rpi-zero.dtb \
++	../../../arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dtb
  dtb-$(CONFIG_ARCH_BCM_5301X) += \
  	bcm4708-asus-rt-ac56u.dtb \
  	bcm4708-asus-rt-ac68u.dtb \
-diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
-new file mode 100644
-index 0000000..7841b72
---- /dev/null
-+++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
-@@ -0,0 +1,30 @@
-+/dts-v1/;
-+#include "bcm2837.dtsi"
-+#include "bcm2835-rpi.dtsi"
-+#include "bcm283x-rpi-smsc9514.dtsi"
-+
-+/ {
-+	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
-+	model = "Raspberry Pi 3 Model B";
-+
-+	memory {
-+		reg = <0 0x40000000>;
-+	};
-+
-+	leds {
-+		act {
-+			gpios = <&gpio 47 0>;
-+		};
-+
-+		pwr {
-+			label = "PWR";
-+			gpios = <&gpio 35 0>;
-+			default-state = "keep";
-+			linux,default-trigger = "default-on";
-+		};
-+	};
-+};
-+
-+&uart1 {
-+	status = "okay";
-+};
-diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
-new file mode 100644
-index 0000000..8216bbb
---- /dev/null
-+++ b/arch/arm/boot/dts/bcm2837.dtsi
-@@ -0,0 +1,76 @@
-+#include "bcm283x.dtsi"
-+
-+/ {
-+	compatible = "brcm,bcm2836";
-+
-+	soc {
-+		ranges = <0x7e000000 0x3f000000 0x1000000>,
-+			 <0x40000000 0x40000000 0x00001000>;
-+		dma-ranges = <0xc0000000 0x00000000 0x3f000000>;
-+
-+		local_intc: local_intc {
-+			compatible = "brcm,bcm2836-l1-intc";
-+			reg = <0x40000000 0x100>;
-+			interrupt-controller;
-+			#interrupt-cells = <1>;
-+			interrupt-parent = <&local_intc>;
-+		};
-+	};
-+
-+	timer {
-+		compatible = "arm,armv7-timer";
-+		interrupt-parent = <&local_intc>;
-+		interrupts = <0>, // PHYS_SECURE_PPI
-+			     <1>, // PHYS_NONSECURE_PPI
-+			     <3>, // VIRT_PPI
-+			     <2>; // HYP_PPI
-+		always-on;
-+	};
-+
-+	cpus: cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		cpu0: cpu@0 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <0>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0x0 0x000000d8>;
-+		};
-+
-+		cpu1: cpu@1 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <1>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0x0 0x000000e0>;
-+		};
-+
-+		cpu2: cpu@2 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <2>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0x0 0x000000e8>;
-+		};
-+
-+		cpu3: cpu@3 {
-+			device_type = "cpu";
-+			compatible = "arm,cortex-a53";
-+			reg = <3>;
-+			enable-method = "spin-table";
-+			cpu-release-addr = <0x0 0x000000f0>;
-+		};
-+	};
-+};
-+
-+/* Make the BCM2835-style global interrupt controller be a child of the
-+ * CPU-local interrupt controller.
-+ */
-+&intc {
-+	compatible = "brcm,bcm2836-armctrl-ic";
-+	reg = <0x7e00b200 0x200>;
-+	interrupt-parent = <&local_intc>;
-+	interrupts = <8>;
-+};
 -- 
 2.9.3
+

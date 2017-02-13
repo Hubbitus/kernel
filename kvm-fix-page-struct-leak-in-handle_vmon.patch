@@ -1,0 +1,48 @@
+From fc66c84bfca091a28d01ba4a2d18b6cfd72ce270 Mon Sep 17 00:00:00 2001
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Tue, 24 Jan 2017 11:56:21 +0100
+Subject: [PATCH] kvm: fix page struct leak in handle_vmon
+
+handle_vmon gets a reference on VMXON region page,
+but does not release it. Release the reference.
+
+Found by syzkaller; based on a patch by Dmitry.
+
+[labbott@redhat.com: Fixed kvm_skip_emulated_instruction for 4.9.x]
+Reported-by: Dmitry Vyukov <dvyukov@google.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
+---
+ arch/x86/kvm/vmx.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/vmx.c b/arch/x86/kvm/vmx.c
+index 64774f4..7fef0a9 100644
+--- a/arch/x86/kvm/vmx.c
++++ b/arch/x86/kvm/vmx.c
+@@ -6925,14 +6925,20 @@ static int nested_vmx_check_vmptr(struct kvm_vcpu *vcpu, int exit_reason,
+ 		}
+ 
+ 		page = nested_get_page(vcpu, vmptr);
+-		if (page == NULL ||
+-		    *(u32 *)kmap(page) != VMCS12_REVISION) {
++		if (page == NULL) {
+ 			nested_vmx_failInvalid(vcpu);
++			skip_emulated_instruction(vcpu);
++			return 1;
++		}
++		if (*(u32 *)kmap(page) != VMCS12_REVISION) {
+ 			kunmap(page);
++			nested_release_page_clean(page);
++			nested_vmx_failInvalid(vcpu);
+ 			skip_emulated_instruction(vcpu);
+ 			return 1;
+ 		}
+ 		kunmap(page);
++		nested_release_page_clean(page);
+ 		vmx->nested.vmxon_ptr = vmptr;
+ 		break;
+ 	case EXIT_REASON_VMCLEAR:
+-- 
+2.7.4
+

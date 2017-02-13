@@ -68,3 +68,12 @@ CONFIG_ZRAM_LZ4_COMPRESS=y
 CONFIG_ZRAM_DEBUG=n
 
 CONFIG_MNATIVE=y
+
+# http://ck.kolivas.org/patches/4.0/4.9/4.9-ck1/patches/0013-Make-threaded-IRQs-optionally-the-default-which-can-.patch
+CONFIG_FORCE_IRQ_THREADING=y
+# http://cateee.net/lkddb/web-lkddb/BLK_WBT.html
+CONFIG_BLK_WBT=y
+CONFIG_X86_P6_NOP=y
+# 2 options: https://patchwork.kernel.org/patch/9398291/
+CONFIG_BLK_WBT_SQ=y
+CONFIG_BLK_WBT_MQ=y
