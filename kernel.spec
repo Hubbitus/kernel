@@ -2172,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Wed Feb 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable PWRSEQ_SIMPLE module (fixes rhbz 1377816)
+
 * Tue Feb 14 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc8.git0.2
 - Reenable debugging options.
 - CVE-2017-5967 Disable CONFIG_TIMER_STATS (rhbz 1422138 1422140)
