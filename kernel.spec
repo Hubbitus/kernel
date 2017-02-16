@@ -530,6 +530,10 @@ Patch432: bcm283x-VEC.patch
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
+# Fix RPi3 from crashing. Nowhere near a final fix but provides breathing room while that is sorted
+# https://github.com/anholt/linux/issues/89
+Patch434: 0001-i2c-bcm2835-Debug-test-for-curr_msg.patch
+
 # http://www.spinics.net/lists/arm-kernel/msg552554.html
 Patch438: arm-imx6-hummingboard2.patch
 
@@ -2174,6 +2178,7 @@ fi
 %changelog
 * Wed Feb 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable PWRSEQ_SIMPLE module (fixes rhbz 1377816)
+- Add patch to work around crash on RPi3
 
 * Tue Feb 14 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc8.git0.2
 - Reenable debugging options.

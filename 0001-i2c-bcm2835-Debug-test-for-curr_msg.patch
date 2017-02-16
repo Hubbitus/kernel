@@ -1,0 +1,29 @@
+From 81c53729ee7c7f721c357ed3b531ebc97ca44051 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 15 Feb 2017 11:57:57 -0800
+Subject: [PATCH] i2c-bcm2835: Debug test for curr_msg
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ drivers/i2c/busses/i2c-bcm2835.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-bcm2835.c b/drivers/i2c/busses/i2c-bcm2835.c
+index c3436f627028..a75fab4dd660 100644
+--- a/drivers/i2c/busses/i2c-bcm2835.c
++++ b/drivers/i2c/busses/i2c-bcm2835.c
+@@ -195,7 +195,10 @@ static irqreturn_t bcm2835_i2c_isr(int this_irq, void *data)
+ 	}
+ 
+ 	if (val & BCM2835_I2C_S_DONE) {
+-		if (i2c_dev->curr_msg->flags & I2C_M_RD) {
++		if (!i2c_dev->curr_msg) {
++			dev_info(i2c_dev->dev,
++				 "Processing DONE interrupt with no msg\n");
++		} else if (i2c_dev->curr_msg->flags & I2C_M_RD) {
+ 			bcm2835_drain_rxfifo(i2c_dev);
+ 			val = bcm2835_i2c_readl(i2c_dev, BCM2835_I2C_S);
+ 		}
+-- 
+2.11.0
+
