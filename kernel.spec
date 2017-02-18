@@ -520,6 +520,7 @@ Patch426: AllWinner-net-emac.patch
 # http://www.spinics.net/lists/arm-kernel/msg557831.html
 Patch427: arm64-dma-mapping-Fix-dma_mapping_error-when-bypassing-SWIOTLB.patch
 
+# http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
 # http://www.spinics.net/lists/linux-mmc/msg41151.html
@@ -533,6 +534,9 @@ Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..pa
 # Fix RPi3 from crashing. Nowhere near a final fix but provides breathing room while that is sorted
 # https://github.com/anholt/linux/issues/89
 Patch434: 0001-i2c-bcm2835-Debug-test-for-curr_msg.patch
+
+# Upstream fixes for i2c/serial/ethernet MAC addresses
+Patch435: bcm283x-fixes.patch
 
 # http://www.spinics.net/lists/arm-kernel/msg552554.html
 Patch438: arm-imx6-hummingboard2.patch
@@ -2176,6 +2180,10 @@ fi
 #
 #
 %changelog
+* Sat Feb 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update some Raspberry Pi patches
+- Add Raspberry Pi fixes for UART/i2c/stable eth MAC
+
 * Fri Feb 17 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc8.git2.1
 - Linux v4.10-rc8-62-g6dc39c5
 

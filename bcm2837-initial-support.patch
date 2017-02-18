@@ -1,27 +1,66 @@
-From 49a6e9faf9a4e3b56c2bffd516f17ca1b6244084 Mon Sep 17 00:00:00 2001
-From: Peter Robinson <pbrobinson@gmail.com>
-Date: Tue, 31 Jan 2017 23:21:32 +0000
-Subject: [PATCH] ARM: bcm2835: include rather than copy the commits for arm32
- RPi3 support so it's always in sync
+From patchwork Wed Feb  8 22:40:24 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: ARM: dts: Add devicetree for the Raspberry Pi 3, for arm32 (v3)
+From: Eric Anholt <eric@anholt.net>
+X-Patchwork-Id: 9563699
+Message-Id: <20170208224024.30415-1-eric@anholt.net>
+To: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring <robh+dt@kernel.org>, 
+ Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org
+Cc: Stephen Warren <swarren@wwwdotorg.org>, Lee Jones <lee@kernel.org>,
+ linux-kernel@vger.kernel.org, Eric Anholt <eric@anholt.net>,
+ bcm-kernel-feedback-list@broadcom.com,
+ linux-rpi-kernel@lists.infradead.org, 
+ linux-arm-kernel@lists.infradead.org, Gerd Hoffmann <kraxel@redhat.com>
+Date: Wed,  8 Feb 2017 14:40:24 -0800
 
-Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+Raspbian and Fedora have decided to support the Pi3 in 32-bit mode for
+now, so it's useful to be able to test that mode on an upstream
+kernel.  It's also been useful for me to use the same board for 32-bit
+and 64-bit development.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
 ---
- arch/arm/boot/dts/Makefile | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+
+v1: Gerd's patch that put the ../../../arm64/... link in the Makefile
+v2: Michael's patch that #included from ../../../arm64/... in a new
+    bcm2837-rpi-3-b.dts.
+v3: Mine, using symlinks to make sure that we don't break the split DT
+    tree.
+
+ arch/arm/boot/dts/Makefile            | 1 +
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 1 +
+ arch/arm/boot/dts/bcm2837.dtsi        | 1 +
+ 3 files changed, 3 insertions(+)
+ create mode 120000 arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+ create mode 120000 arch/arm/boot/dts/bcm2837.dtsi
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index f10fe85..4c46851 100644
+index 6576e3f000c9..416fdcedf5a1 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -70,7 +70,8 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
+@@ -70,6 +70,7 @@ dtb-$(CONFIG_ARCH_BCM2835) += \
  	bcm2835-rpi-b-plus.dtb \
  	bcm2835-rpi-a-plus.dtb \
  	bcm2836-rpi-2-b.dtb \
--	bcm2835-rpi-zero.dtb
-+	bcm2835-rpi-zero.dtb \
-+	../../../arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dtb
++	bcm2837-rpi-3-b.dtb \
+ 	bcm2835-rpi-zero.dtb
  dtb-$(CONFIG_ARCH_BCM_5301X) += \
  	bcm4708-asus-rt-ac56u.dtb \
- 	bcm4708-asus-rt-ac68u.dtb \
--- 
-2.9.3
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+new file mode 120000
+index 000000000000..ceebc0e163fb
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -0,0 +1 @@
++../../../arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts
+\ No newline at end of file
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+new file mode 120000
+index 000000000000..53f1cd2bba47
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -0,0 +1 @@
++../../../arm64/boot/dts/broadcom/bcm2837.dtsi
+\ No newline at end of file
