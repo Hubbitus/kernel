@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -42,13 +42,13 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 9
+%define base_sublevel 10
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 8
+%global rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2180,8 +2180,9 @@ fi
 #
 #
 %changelog
-* Mon Feb 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-0.rc8.git2.2
+* Mon Feb 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.10.0-1
 - Disable debugging options.
+- Linux v4.10
 
 * Sat Feb 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update some Raspberry Pi patches
