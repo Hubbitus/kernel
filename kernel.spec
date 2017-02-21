@@ -610,6 +610,9 @@ Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 #CVE-2017-2596 rhbz 1417812 1417813
 Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
 
+# build breakage during merge window
+Patch855: sched-core-Fix-build-paravirt-build-on-arm-and-arm64.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif

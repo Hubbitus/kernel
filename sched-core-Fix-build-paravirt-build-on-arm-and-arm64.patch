@@ -1,0 +1,41 @@
+From patchwork Tue Feb 21 17:29:01 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: sched/core: Fix build paravirt build on arm and arm64
+From: Mark Brown <broonie@kernel.org>
+X-Patchwork-Id: 9585221
+Message-Id: <20170221172901.6234-1-broonie@kernel.org>
+To: Ingo Molnar <mingo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Mike Galbraith <efault@gmx.de>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Mark Brown <broonie@kernel.org>
+Date: Tue, 21 Feb 2017 09:29:01 -0800
+
+Commit 004172bdad64432 (sched/core: Remove unnecessary #include
+headers) removed the inclusion of asm/paravirt.h which is used to get
+declarations of paravirt_steal_rq_enabled and paravirt_steal_clock.  It
+is implicitly included on but not on arm and arm64 breaking the build if
+paravirtualization is used.  Since things from that header are used
+directly fix the build by putting the direct inclusion back.
+
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ kernel/sched/core.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index c7ded3311ec4..6ea1925ac5c0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -23,6 +23,9 @@
+ 
+ #include <asm/switch_to.h>
+ #include <asm/tlb.h>
++#ifdef CONFIG_PARAVIRT
++#include <asm/paravirt.h>
++#endif
+ 
+ #include "sched.h"
+ #include "../workqueue_internal.h"
