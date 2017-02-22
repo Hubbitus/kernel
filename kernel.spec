@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -523,9 +523,6 @@ Patch427: arm64-dma-mapping-Fix-dma_mapping_error-when-bypassing-SWIOTLB.patch
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
-# http://www.spinics.net/lists/linux-mmc/msg41151.html
-Patch431: bcm283x-mmc-imp-speed.patch
-
 Patch432: bcm283x-VEC.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
@@ -601,17 +598,11 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Fix build issue with armada_trace
 Patch851: Armada-trace-build-fix.patch
 
-# selinux: allow context mounts on tmpfs, ramfs, devpts within user namespaces
-Patch852: selinux-allow-context-mounts-on-tmpfs-etc.patch
-
 # See http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/461597.html
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
 #CVE-2017-2596 rhbz 1417812 1417813
 Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
-
-# build breakage during merge window
-Patch855: sched-core-Fix-build-paravirt-build-on-arm-and-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2183,6 +2174,9 @@ fi
 #
 #
 %changelog
+* Wed Feb 22 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git2.1
+- Linux v4.10-2512-g7bb0338
+
 * Tue Feb 21 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git1.1
 
 - Linux v4.10-1242-g9763dd6
