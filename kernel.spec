@@ -595,6 +595,10 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Fix build issue with armada_trace
 Patch851: Armada-trace-build-fix.patch
 
+# Still other instances of this bug floating around
+Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
+
+
 # END OF PATCH DEFINITIONS
 
 %endif
