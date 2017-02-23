@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -517,9 +517,6 @@ Patch425: ARM-tegra-usb-no-reset.patch
 
 Patch426: AllWinner-net-emac.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg557831.html
-Patch427: arm64-dma-mapping-Fix-dma_mapping_error-when-bypassing-SWIOTLB.patch
-
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
@@ -597,12 +594,6 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # Fix build issue with armada_trace
 Patch851: Armada-trace-build-fix.patch
-
-# See http://lists.infradead.org/pipermail/linux-arm-kernel/2016-October/461597.html
-Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
-
-#CVE-2017-2596 rhbz 1417812 1417813
-Patch854: kvm-fix-page-struct-leak-in-handle_vmon.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2174,6 +2165,9 @@ fi
 #
 #
 %changelog
+* Thu Feb 23 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git3.1
+- Linux v4.10-6476-gbc49a78
+
 * Wed Feb 22 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git2.1
 - Linux v4.10-2512-g7bb0338
 
