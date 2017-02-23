@@ -11,6 +11,13 @@
 
 source scripts/kernel-version.sh
 
+klist -s
+if [ ! $? -eq 0 ]; then
+	echo "klist couldn't read the credential cache."
+	echo "Do you need to fix your kerberos tokens?"
+	exit 1
+fi
+
 git fetch origin
 if [ "$(git rev-parse origin/master)" != "$(git rev-parse HEAD)" ]; then
 	echo "I just did a git fetch and this branch does not match master"
