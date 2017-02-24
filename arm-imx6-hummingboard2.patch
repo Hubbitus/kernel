@@ -1,4 +1,4 @@
-From e2b55af60f9f498b95ffb458955f4ff787bd55a1 Mon Sep 17 00:00:00 2001
+From 1f4fd839f959f821d5dd3feb608a900ae5f32ade Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
 Date: Fri, 20 Jan 2017 08:32:55 +0000
 Subject: [PATCH] Add support for Hummingobard2 (Edge/Gate)
@@ -17,18 +17,18 @@ Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
  create mode 100644 arch/arm/boot/dts/imx6qdl-hummingboard2.dtsi
 
 diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 7327250..09227cc 100644
+index 0118084..ccdff66 100644
 --- a/arch/arm/boot/dts/Makefile
 +++ b/arch/arm/boot/dts/Makefile
-@@ -348,6 +348,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+@@ -353,6 +353,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
  	imx6dl-gw552x.dtb \
  	imx6dl-gw553x.dtb \
  	imx6dl-hummingboard.dtb \
 +	imx6dl-hummingboard2.dtb \
  	imx6dl-icore.dtb \
+ 	imx6dl-icore-rqs.dtb \
  	imx6dl-nit6xlite.dtb \
- 	imx6dl-nitrogen6x.dtb \
-@@ -390,6 +391,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+@@ -397,6 +398,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
  	imx6q-gw553x.dtb \
  	imx6q-h100.dtb \
  	imx6q-hummingboard.dtb \
@@ -729,5 +729,5 @@ index 0000000..66098a5
 +	status = "okay";
 +};
 -- 
-2.9.3
+2.7.4
 

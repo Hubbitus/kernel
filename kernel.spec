@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -520,8 +520,6 @@ Patch426: AllWinner-net-emac.patch
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
-Patch432: bcm283x-VEC.patch
-
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
@@ -591,9 +589,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# Fix build issue with armada_trace
-Patch851: Armada-trace-build-fix.patch
 
 # Still other instances of this bug floating around
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
@@ -2169,6 +2164,9 @@ fi
 #
 #
 %changelog
+* Fri Feb 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git4.1
+- Linux v4.10-9579-gf1ef09f
+
 * Thu Feb 23 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git3.1
 - Linux v4.10-6476-gbc49a78
 
