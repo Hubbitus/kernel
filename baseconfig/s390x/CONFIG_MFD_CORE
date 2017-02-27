@@ -1,1 +1,1 @@
-CONFIG_MFD_CORE=m
+# CONFIG_MFD_CORE is not set

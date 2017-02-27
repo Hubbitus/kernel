@@ -2162,6 +2162,7 @@ fi
 %changelog
 * Mon Feb 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git5.1
 - Linux v4.10-10320-ge5d56ef
+- Disable a series of s390x configuration options
 
 * Fri Feb 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git4.1
 - Linux v4.10-9579-gf1ef09f
