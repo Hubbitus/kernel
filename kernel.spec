@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 5
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -522,10 +522,6 @@ Patch430: bcm2837-initial-support.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
-
-# Fix RPi3 from crashing. Nowhere near a final fix but provides breathing room while that is sorted
-# https://github.com/anholt/linux/issues/89
-Patch434: 0001-i2c-bcm2835-Debug-test-for-curr_msg.patch
 
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
@@ -2164,6 +2160,9 @@ fi
 #
 #
 %changelog
+* Mon Feb 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git5.1
+- Linux v4.10-10320-ge5d56ef
+
 * Fri Feb 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git4.1
 - Linux v4.10-9579-gf1ef09f
 
