@@ -589,6 +589,8 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Still other instances of this bug floating around
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
+# compile error
+Patch854: 0001-Revert-part-of-a00cc7d9dd93-mm-x86-add-support-for-P.patch
 
 # END OF PATCH DEFINITIONS
 
