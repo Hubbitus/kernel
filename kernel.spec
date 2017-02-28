@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 5
+%define gitrev 6
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -588,9 +588,6 @@ Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # Still other instances of this bug floating around
 Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
-
-# compile error
-Patch854: 0001-mm-x86-fix-HIGHMEM64-PARAVIRT-build-config-for-nativ.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2161,6 +2158,9 @@ fi
 #
 #
 %changelog
+* Tue Feb 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git6.1
+- Linux v4.10-10531-g86292b3
+
 * Tue Feb 28 2017 Justin M. Forbes <jforbes@fedoraproject.org> 
 - Fix kernel-devel virtual provide
 
