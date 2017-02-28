@@ -593,6 +593,9 @@ Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#rhbz 1427593
+Patch666: ccm-stack.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2157,6 +2160,9 @@ fi
 #
 #
 %changelog
+* Tue Feb 28 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix for yet another stack variable in crypto (rhbz 1427593)
+
 * Tue Feb 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git6.1
 - Linux v4.10-10531-g86292b3
 
