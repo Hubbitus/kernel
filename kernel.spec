@@ -487,8 +487,18 @@ Source5000: patch-4.%{base_sublevel}-git%{gitrev}.xz
 %endif
 %endif
 
+## Patches needed for building this package
+
 # build tweak for build ID magic, even for -vanilla
-Source5005: kbuild-AFTER_LINK.patch
+Patch001: kbuild-AFTER_LINK.patch
+
+## compile fixes
+
+# ongoing complaint, full discussion delayed until ksummit/plumbers
+Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
+
+# Still other instances of this bug floating around
+Patch003: 0001-Work-around-for-gcc7-and-arm64.patch
 
 %if !%{nopatches}
 
@@ -582,12 +592,6 @@ Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#ongoing complaint, full discussion delayed until ksummit/plumbers
-Patch849: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# Still other instances of this bug floating around
-Patch853: 0001-Work-around-for-gcc7-and-arm64.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -1188,17 +1192,12 @@ do
 done
 %endif
 
-# The kbuild-AFTER_LINK patch is needed regardless so we list it as a Source
-# file and apply it separately from the rest.
-git am %{SOURCE5005}
-
-%if !%{nopatches}
+# Note: Even in the "nopatches" path some patches (build tweaks and compile
+# fixes) will always get applied; see patch defition above for details
 
 git am %{patches}
 
 # END OF PATCH APPLICATIONS
-
-%endif
 
 # Any further pre-build tree manipulations happen here.
 
@@ -2160,6 +2159,10 @@ fi
 %changelog
 * Tue Feb 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git6.1
 - Linux v4.10-10531-g86292b3
+
+* Tue Feb 28 2017 Thorsten Leemhuis <fedora@leemhuis.info>
+- apply patches with build tweaks (build-AFTER-LINK.patch) and compile fixes
+  all the time
 
 * Tue Feb 28 2017 Justin M. Forbes <jforbes@fedoraproject.org> 
 - Fix kernel-devel virtual provide
