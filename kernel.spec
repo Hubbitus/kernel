@@ -536,6 +536,9 @@ Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..pa
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
 
+# https://lists.freedesktop.org/archives/dri-devel/2017-February/133823.html
+Patch436: vc4-fix-vblank-cursor-update-issue.patch
+
 # http://www.spinics.net/lists/arm-kernel/msg552554.html
 Patch438: arm-imx6-hummingboard2.patch
 
@@ -2160,6 +2163,12 @@ fi
 #
 #
 %changelog
+* Wed Mar  1 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Tiny DRM on ARM platforms
+- ARM config updates
+- General config cleanups
+- Add patch to fix desktop lockups on RPi (vc4) RHBZ# 1389163
+
 * Tue Feb 28 2017 Laura Abbott <labbott@fedoraproject.org>
 - Fix for yet another stack variable in crypto (rhbz 1427593)
 
