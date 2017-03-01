@@ -602,6 +602,9 @@ Patch666: ccm-stack.patch
 # grabbed from mailing list
 Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
 
+# reported via IRC
+Patch668: objtool-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
