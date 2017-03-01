@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -598,6 +598,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #rhbz 1427593
 Patch666: ccm-stack.patch
+
+# grabbed from mailing list
+Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2163,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Wed Mar 01 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git7.1
+- Linux v4.10-10770-g2d6be4a
+
 * Wed Mar  1 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable Tiny DRM on ARM platforms
 - ARM config updates
