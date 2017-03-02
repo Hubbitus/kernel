@@ -2166,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Thu Mar 02 2017 Laura Abbott <labbott@fedoraproject.org>
+- Enable CONFIG_NET_L3_MASTER_DEV (rhbz 1428530)
+
 * Thu Mar 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git8.1
 - Linux v4.10-11073-g4977ab6
 
