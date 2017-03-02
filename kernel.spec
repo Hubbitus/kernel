@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -601,9 +601,6 @@ Patch666: ccm-stack.patch
 
 # grabbed from mailing list
 Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
-
-# reported via IRC
-Patch668: objtool-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2169,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Thu Mar 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git8.1
+- Linux v4.10-11073-g4977ab6
+
 * Wed Mar 01 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git7.1
 - Linux v4.10-10770-g2d6be4a
 
