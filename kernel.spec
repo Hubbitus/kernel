@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 2
+%global baserelease 1
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -496,9 +496,6 @@ Patch001: kbuild-AFTER_LINK.patch
 
 # ongoing complaint, full discussion delayed until ksummit/plumbers
 Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
-
-# Still other instances of this bug floating around
-Patch003: 0001-Work-around-for-gcc7-and-arm64.patch
 
 %if !%{nopatches}
 
@@ -2166,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Fri Mar 03 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git9.1
+- Linux v4.10-11319-gc82be9d
+
 * Thu Mar 02 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc0.git8.2
 - rebuilt
 
