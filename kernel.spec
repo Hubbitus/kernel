@@ -596,6 +596,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 # grabbed from mailing list
 Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
 
+# CVE-2017-2636 rhbz 1430049
+Patch668: 0001-tty-n_hdlc-get-rid-of-racy-n_hdlc.tbuf.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2160,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Tue Mar 07 2017 Laura Abbott <labbott@fedoraproject.org>
+- CVE-2017-2636 Race condition access to n_hdlc.tbuf causes double free in n_hdlc_release (rhbz 1430049)
+
 * Mon Mar 06 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc1.git0.1
 - Linux v4.11-rc1
 
