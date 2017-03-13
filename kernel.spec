@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -531,7 +531,7 @@ Patch430: bcm2837-initial-support.patch
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
 # bcm283x mmc for wifi http://www.spinics.net/lists/arm-kernel/msg567077.html
-Patch434: bcm283x-mmc-bcm2835.patch
+# Patch434: bcm283x-mmc-bcm2835.patch
 
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Mon Mar 13 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.11.0-0.rc2.git0.2
+- Disable bcm283x mmc improvements due to corner case issues
+
 * Mon Mar 13 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc2.git0.1
 - Linux v4.11-rc2
 
