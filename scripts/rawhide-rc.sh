@@ -3,6 +3,13 @@
 
 source scripts/kernel-version.sh
 
+klist -s
+if [ ! $? -eq 0 ]; then
+	echo "klist couldn't read the credential cache."
+	echo "Do you need to fix your kerberos tokens?"
+	exit 1
+fi
+
 make release
 # fixup the release because rpmdev-bumpspec *sigh*
 scripts/fixup-bumpspec.sh
