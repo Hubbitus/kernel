@@ -530,6 +530,9 @@ Patch430: bcm2837-initial-support.patch
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
+# bcm283x mmc for wifi http://www.spinics.net/lists/arm-kernel/msg567077.html
+Patch434: bcm283x-mmc-bcm2835.patch
+
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
 
@@ -2166,6 +2169,8 @@ fi
 * Sun Mar 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update kernel source location now ftp is retired
 - Enable STi h407 SoC
+- Minor ARM config cleanups
+- bcm283x mmc driver improvements
 
 * Fri Mar 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc1.git3.1
 - Linux v4.11-rc1-136-gc1aa905
