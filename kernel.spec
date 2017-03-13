@@ -407,7 +407,7 @@ BuildRequires: binutils-%{_build_arch}-linux-gnu, gcc-%{_build_arch}-linux-gnu
 %define cross_opts CROSS_COMPILE=%{_build_arch}-linux-gnu-
 %endif
 
-Source0: ftp://ftp.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
+Source0: https://www.kernel.org/pub/linux/kernel/v4.x/linux-%{kversion}.tar.xz
 
 Source10: perf-man-%{kversion}.tar.gz
 Source11: x509.genkey
@@ -2163,6 +2163,10 @@ fi
 #
 #
 %changelog
+* Sun Mar 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update kernel source location now ftp is retired
+- Enable STi h407 SoC
+
 * Fri Mar 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc1.git3.1
 - Linux v4.11-rc1-136-gc1aa905
 
