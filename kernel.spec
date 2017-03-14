@@ -531,7 +531,7 @@ Patch430: bcm2837-initial-support.patch
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
 # bcm283x mmc for wifi http://www.spinics.net/lists/arm-kernel/msg567077.html
-# Patch434: bcm283x-mmc-bcm2835.patch
+Patch434: bcm283x-mmc-bcm2835.patch
 
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Tue Mar 14 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- bcm283x mmc improvements round 2
+
 * Tue Mar 14 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc2.git1.1
 - Linux v4.11-rc2-24-gfb5fe0f
 
