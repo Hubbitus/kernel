@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Thu Mar 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable STi Serial Console
+
 * Thu Mar 16 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc2.git3.1
 - Linux v4.11-rc2-208-g69eea5a
 
