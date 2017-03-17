@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 2
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2163,6 +2163,9 @@ fi
 #
 #
 %changelog
+* Fri Mar 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc2.git4.1
+- Linux v4.11-rc2-235-gd528ae0
+
 * Thu Mar 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable STi Serial Console
 
