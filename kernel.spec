@@ -502,7 +502,6 @@ Source5005: kbuild-AFTER_LINK.patch
 
 # Standalone patches
 
-
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch421: qcom-QDF2432-tmp-errata.patch
 
@@ -654,6 +653,9 @@ Patch860: 0001-sctp-avoid-BUG_ON-on-sctp_wait_for_sndbuf.patch
 
 #rhbz 1415397
 Patch861: w1-ds2490-USB-transfer-buffers-need-to-be-DMAable.patch
+
+#CVE-2017-5970 rhbz 1421638
+Patch862: ipv4-keep-skb-dst-around-in-presence-of-IP-options.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2207,6 +2209,9 @@ fi
 #
 #
 %changelog
+* Mon Feb 13 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-5970 keep skb->dst around in presence of IP options (rhbz 1421638)
+
 * Sun Feb 12 2017 Pavel Alexeev <Pahan@Hubbitus.info> - 4.9.8-200.pf5.hu.1
 - Update Fedora upstream sources, new kernel version 4.9.8 (by PF, in Fedora 4.9.9)
 - Update PF patch v4.9-pf5 - https://pf.natalenko.name/news/?p=242
