@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 2
+%global rcrev 3
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -183,6 +183,9 @@ Summary: The Linux kernel
 %define _enable_debug_packages 0
 %endif
 %define debuginfodir /usr/lib/debug
+# Needed because we override almost everything involving build-ids
+# and debuginfo generation. Currently we rely on the old alldebug setting.
+%global _build_id_links alldebug
 
 # kernel PAE is only built on i686 and ARMv7.
 %ifnarch i686 armv7hl
@@ -2164,6 +2167,10 @@ fi
 #
 #
 %changelog
+* Mon Mar 20 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc3.git0.1
+- Linux v4.11-rc3
+- Fix for debuginfo conflicts (rhbz 1431296)
+
 * Mon Mar 20 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable debugging options.
 
