@@ -522,7 +522,8 @@ Patch424: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch425: ARM-tegra-usb-no-reset.patch
 
-Patch426: AllWinner-net-emac.patch
+Patch426: AllWinner-h3.patch
+Patch427: AllWinner-net-emac.patch
 
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
@@ -2163,6 +2164,9 @@ fi
 #
 #
 %changelog
+* Sun Mar 19 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Rebase AllWinner sun8i emac driver to latest proposed upstream
+
 * Fri Mar 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc2.git4.1
 - Linux v4.11-rc2-235-gd528ae0
 

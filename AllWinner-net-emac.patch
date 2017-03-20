@@ -1,186 +1,396 @@
-From fb909e29d6c073f4c5777a0db75df72b726e4314 Mon Sep 17 00:00:00 2001
+From patchwork Tue Mar 14 14:18:37 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2, 01/20] net-next: stmmac: export
+ stmmac_set_mac_addr/stmmac_get_mac_addr
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:48 +0200
-Subject: [PATCH 1/8] ethernet: add sun8i-emac driver
+X-Patchwork-Id: 9623505
+Message-Id: <20170314141856.24560-2-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:37 +0100
 
-This patch add support for sun8i-emac ethernet MAC hardware.
-It could be found in Allwinner H3/A83T/A64 SoCs.
-
-It supports 10/100/1000 Mbit/s speed with half/full duplex.
-It can use an internal PHY (MII 10/100) or an external PHY
-via RGMII/RMII.
+Thoses symbol will be needed for the dwmac-sun8i ethernet driver.
+For letting it to be build as module, they need to be exported.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- drivers/net/ethernet/allwinner/Kconfig      |   13 +
- drivers/net/ethernet/allwinner/Makefile     |    1 +
- drivers/net/ethernet/allwinner/sun8i-emac.c | 2266 +++++++++++++++++++++++++++
- 3 files changed, 2280 insertions(+)
- create mode 100644 drivers/net/ethernet/allwinner/sun8i-emac.c
+ drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/allwinner/Kconfig b/drivers/net/ethernet/allwinner/Kconfig
-index 47da7e7..060569c 100644
---- a/drivers/net/ethernet/allwinner/Kconfig
-+++ b/drivers/net/ethernet/allwinner/Kconfig
-@@ -33,4 +33,17 @@ config SUN4I_EMAC
-           To compile this driver as a module, choose M here.  The module
-           will be called sun4i-emac.
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
+index e60bfca..0ab985c8 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
+@@ -248,6 +248,7 @@ void stmmac_set_mac_addr(void __iomem *ioaddr, u8 addr[6],
+ 	data = (addr[3] << 24) | (addr[2] << 16) | (addr[1] << 8) | addr[0];
+ 	writel(data, ioaddr + low);
+ }
++EXPORT_SYMBOL_GPL(stmmac_set_mac_addr);
  
-+config SUN8I_EMAC
-+	tristate "Allwinner sun8i EMAC support"
-+	depends on ARCH_SUNXI || COMPILE_TEST
-+	depends on OF
-+	select MII
-+	select PHYLIB
-+        ---help---
-+	  This driver support the sun8i EMAC ethernet driver present on
-+	  H3/A83T/A64 Allwinner SoCs.
-+
-+          To compile this driver as a module, choose M here.  The module
-+          will be called sun8i-emac.
-+
- endif # NET_VENDOR_ALLWINNER
-diff --git a/drivers/net/ethernet/allwinner/Makefile b/drivers/net/ethernet/allwinner/Makefile
-index 03129f7..8bd1693c 100644
---- a/drivers/net/ethernet/allwinner/Makefile
-+++ b/drivers/net/ethernet/allwinner/Makefile
-@@ -3,3 +3,4 @@
- #
+ /* Enable disable MAC RX/TX */
+ void stmmac_set_mac(void __iomem *ioaddr, bool enable)
+@@ -279,4 +280,4 @@ void stmmac_get_mac_addr(void __iomem *ioaddr, unsigned char *addr,
+ 	addr[4] = hi_addr & 0xff;
+ 	addr[5] = (hi_addr >> 8) & 0xff;
+ }
+-
++EXPORT_SYMBOL_GPL(stmmac_get_mac_addr);
+From patchwork Tue Mar 14 14:18:38 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,02/20] net-next: stmmac: add optional setup function
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623509
+Message-Id: <20170314141856.24560-3-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:38 +0100
+
+Instead of ading more ifthen logic for adding a new mac_device_info
+setup function, it is easier to add a function pointer to the function
+needed.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 4 +++-
+ include/linux/stmmac.h                            | 3 +++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 4498a38..856ac57 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -3101,7 +3101,9 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+ 	struct mac_device_info *mac;
  
- obj-$(CONFIG_SUN4I_EMAC) += sun4i-emac.o
-+obj-$(CONFIG_SUN8I_EMAC) += sun8i-emac.o
-diff --git a/drivers/net/ethernet/allwinner/sun8i-emac.c b/drivers/net/ethernet/allwinner/sun8i-emac.c
+ 	/* Identify the MAC HW device */
+-	if (priv->plat->has_gmac) {
++	if (priv->plat->setup) {
++		mac = priv->plat->setup(priv);
++	} else if (priv->plat->has_gmac) {
+ 		priv->dev->priv_flags |= IFF_UNICAST_FLT;
+ 		mac = dwmac1000_setup(priv->ioaddr,
+ 				      priv->plat->multicast_filter_bins,
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index fc273e9..8f09f18 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -109,6 +109,8 @@ struct stmmac_axi {
+ 	bool axi_rb;
+ };
+ 
++struct stmmac_priv;
++
+ struct plat_stmmacenet_data {
+ 	int bus_id;
+ 	int phy_addr;
+@@ -136,6 +138,7 @@ struct plat_stmmacenet_data {
+ 	void (*fix_mac_speed)(void *priv, unsigned int speed);
+ 	int (*init)(struct platform_device *pdev, void *priv);
+ 	void (*exit)(struct platform_device *pdev, void *priv);
++	struct mac_device_info *(*setup)(struct stmmac_priv *priv);
+ 	void *bsp_priv;
+ 	struct clk *stmmac_clk;
+ 	struct clk *pclk;
+From patchwork Tue Mar 14 14:18:39 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,
+ 03/20] ARM: sun8i: dt: Add DT bindings documentation for Allwinner
+ dwmac-sun8i
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623517
+Message-Id: <20170314141856.24560-4-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:39 +0100
+
+This patch adds documentation for Device-Tree bindings for the
+Allwinner dwmac-sun8i driver.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ .../devicetree/bindings/net/dwmac-sun8i.txt        | 77 ++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/dwmac-sun8i.txt
+
+diff --git a/Documentation/devicetree/bindings/net/dwmac-sun8i.txt b/Documentation/devicetree/bindings/net/dwmac-sun8i.txt
 new file mode 100644
-index 0000000..bc74467
+index 0000000..f01ef17
 --- /dev/null
-+++ b/drivers/net/ethernet/allwinner/sun8i-emac.c
-@@ -0,0 +1,2266 @@
++++ b/Documentation/devicetree/bindings/net/dwmac-sun8i.txt
+@@ -0,0 +1,77 @@
++* Allwinner sun8i GMAC ethernet controller
++
++This device is a platform glue layer for stmmac.
++Please see stmmac.txt for the other unchanged properties.
++
++Required properties:
++- compatible: should be one of the following string:
++		"allwinner,sun8i-a83t-emac"
++		"allwinner,sun8i-h3-emac"
++		"allwinner,sun50i-a64-emac"
++- reg: address and length of the register for the device.
++- interrupts: interrupt for the device
++- interrupt-names: should be "macirq"
++- clocks: A phandle to the reference clock for this device
++- clock-names: should be "stmmaceth"
++- resets: A phandle to the reset control for this device
++- reset-names: should be "stmmaceth"
++- phy-mode: See ethernet.txt
++- phy-handle: See ethernet.txt
++- #address-cells: shall be 1
++- #size-cells: shall be 0
++- syscon: A phandle to the syscon of the SoC with one of the following
++ compatible string:
++  - allwinner,sun8i-h3-system-controller
++  - allwinner,sun8i-a64-system-controller
++  - allwinner,sun8i-a83t-system-controller
++
++Optional properties:
++- allwinner,tx-delay: TX clock delay chain value. Range value is 0-0x07. Default is 0)
++- allwinner,rx-delay: RX clock delay chain value. Range value is 0-0x1F. Default is 0)
++Both delay properties are in 0.1ns step.
++
++Optional properties for "allwinner,sun8i-h3-emac":
++- allwinner,leds-active-low: EPHY LEDs are active low
++
++Required child node of emac:
++- mdio bus node: should be named mdio
++
++Required properties of the mdio node:
++- #address-cells: shall be 1
++- #size-cells: shall be 0
++
++The device node referenced by "phy" or "phy-handle" should be a child node
++of the mdio node. See phy.txt for the generic PHY bindings.
++
++Required properties of the phy node with "allwinner,sun8i-h3-emac":
++- clocks: a phandle to the reference clock for the EPHY
++- resets: a phandle to the reset control for the EPHY
++
++Example:
++
++emac: ethernet@1c0b000 {
++	compatible = "allwinner,sun8i-h3-emac";
++	syscon = <&syscon>;
++	reg = <0x01c0b000 0x104>;
++	interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++	interrupt-names = "macirq";
++	resets = <&ccu RST_BUS_EMAC>;
++	reset-names = "stmmaceth";
++	clocks = <&ccu CLK_BUS_EMAC>;
++	clock-names = "stmmaceth";
++	#address-cells = <1>;
++	#size-cells = <0>;
++
++	phy = <&int_mii_phy>;
++	phy-mode = "mii";
++	allwinner,leds-active-low;
++	mdio: mdio {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		int_mii_phy: ethernet-phy@1 {
++			reg = <1>;
++			clocks = <&ccu CLK_BUS_EPHY>;
++			resets = <&ccu RST_BUS_EPHY>;
++		};
++	};
++};
+From patchwork Tue Mar 14 14:18:40 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,
+ 04/20] ARM: sun8i: dt: Add DT bindings documentation for Allwinner
+ syscon
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623533
+Message-Id: <20170314141856.24560-5-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:40 +0100
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ .../devicetree/bindings/misc/allwinner,syscon.txt     | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/allwinner,syscon.txt
+
+diff --git a/Documentation/devicetree/bindings/misc/allwinner,syscon.txt b/Documentation/devicetree/bindings/misc/allwinner,syscon.txt
+new file mode 100644
+index 0000000..9f5f1f5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/allwinner,syscon.txt
+@@ -0,0 +1,19 @@
++* Allwinner sun8i system controller
++
++This file describes the bindings for the system controller present in
++Allwinner SoC H3, A83T and A64.
++The principal function of this syscon is to control EMAC PHY choice and
++config.
++
++Required properties for the system controller:
++- reg: address and length of the register for the device.
++- compatible: should be "syscon" and one of the following string:
++		"allwinner,sun8i-h3-system-controller"
++		"allwinner,sun8i-a64-system-controller"
++		"allwinner,sun8i-a83t-system-controller"
++
++Example:
++syscon: syscon@01c00000 {
++	compatible = "syscon", "allwinner,sun8i-h3-system-controller";
++	reg = <0x01c00000 0x1000>;
++};
+From patchwork Tue Mar 14 14:18:41 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,05/20] net-next: stmmac: Add dwmac-sun8i
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623523
+Message-Id: <20170314141856.24560-6-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:41 +0100
+
+The dwmac-sun8i is a heavy hacked version of stmmac hardware by
+allwinner.
+In fact the only common part is the descriptor management and the first
+register function.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ drivers/net/ethernet/stmicro/stmmac/Kconfig        |  11 +
+ drivers/net/ethernet/stmicro/stmmac/Makefile       |   1 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c  | 938 +++++++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  27 +-
+ .../net/ethernet/stmicro/stmmac/stmmac_platform.c  |   9 +-
+ include/linux/stmmac.h                             |   1 +
+ 6 files changed, 984 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+index cfbe363..85c0e41 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
++++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
+@@ -145,6 +145,17 @@ config DWMAC_SUNXI
+ 	  This selects Allwinner SoC glue layer support for the
+ 	  stmmac device driver. This driver is used for A20/A31
+ 	  GMAC ethernet controller.
++
++config DWMAC_SUN8I
++	tristate "Allwinner sun8i GMAC support"
++	default ARCH_SUNXI
++	depends on OF && (ARCH_SUNXI || COMPILE_TEST)
++	---help---
++	  Support for Allwinner H3 A83T A64 EMAC ethernet controllers.
++
++	  This selects Allwinner SoC glue layer support for the
++	  stmmac device driver. This driver is used for H3/A83T/A64
++	  EMAC ethernet controller.
+ endif
+ 
+ config STMMAC_PCI
+diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
+index 700c603..fd4937a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/Makefile
++++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
+@@ -16,6 +16,7 @@ obj-$(CONFIG_DWMAC_SOCFPGA)	+= dwmac-altr-socfpga.o
+ obj-$(CONFIG_DWMAC_STI)		+= dwmac-sti.o
+ obj-$(CONFIG_DWMAC_STM32)	+= dwmac-stm32.o
+ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
++obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
+ obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
+ obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
+ stmmac-platform-objs:= stmmac_platform.o
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+new file mode 100644
+index 0000000..52ab67c
+--- /dev/null
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
+@@ -0,0 +1,938 @@
 +/*
-+ * sun8i-emac driver
++ * dwmac-sun8i.c - Allwinner sun8i DWMAC specific glue layer
 + *
-+ * Copyright (C) 2015-2016 Corentin LABBE <clabbe.montjoie@gmail.com>
++ * Copyright (C) 2017 Corentin Labbe <clabbe.montjoie@gmail.com>
 + *
-+ * This is the driver for Allwinner Ethernet MAC found in H3/A83T/A64 SoC
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
 + *
-+ * TODO:
-+ * - MAC filtering
-+ * - Jumbo frame
-+ * - features rx-all (NETIF_F_RXALL_BIT)
-+ * - PM runtime
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
 + */
-+#include <linux/bitops.h>
++
 +#include <linux/clk.h>
-+#include <linux/dma-mapping.h>
-+#include <linux/etherdevice.h>
-+#include <linux/interrupt.h>
++#include <linux/io.h>
 +#include <linux/iopoll.h>
-+#include <linux/mii.h>
++#include <linux/mfd/syscon.h>
 +#include <linux/module.h>
-+#include <linux/netdevice.h>
 +#include <linux/of_device.h>
 +#include <linux/of_mdio.h>
 +#include <linux/of_net.h>
 +#include <linux/phy.h>
-+#include <linux/pinctrl/consumer.h>
-+#include <linux/pinctrl/pinctrl.h>
 +#include <linux/platform_device.h>
-+#include <linux/reset.h>
-+#include <linux/scatterlist.h>
-+#include <linux/skbuff.h>
-+#include <linux/mfd/syscon.h>
++#include <linux/regulator/consumer.h>
 +#include <linux/regmap.h>
++#include <linux/stmmac.h>
 +
-+#define EMAC_BASIC_CTL0	0x00
-+#define EMAC_BASIC_CTL1	0x04
-+#define EMAC_INT_STA	0x08
-+#define EMAC_INT_EN	0x0C
-+#define EMAC_TX_CTL0	0x10
-+#define EMAC_TX_CTL1	0x14
-+#define EMAC_TX_FLOW_CTL	0x1C
-+#define EMAC_RX_CTL0	0x24
-+#define EMAC_RX_CTL1	0x28
-+#define EMAC_RX_FRM_FLT	0x38
-+#define EMAC_MDIO_CMD	0x48
-+#define EMAC_MDIO_DATA	0x4C
-+#define EMAC_TX_DMA_STA	0xB0
-+#define EMAC_TX_CUR_DESC	0xB4
-+#define EMAC_TX_CUR_BUF	0xB8
-+#define EMAC_RX_DMA_STA	0xC0
++#include "stmmac.h"
++#include "stmmac_platform.h"
 +
-+#define MDIO_CMD_MII_BUSY	BIT(0)
-+#define MDIO_CMD_MII_WRITE	BIT(1)
-+#define MDIO_CMD_MII_PHY_REG_ADDR_MASK	GENMASK(8, 4)
-+#define MDIO_CMD_MII_PHY_REG_ADDR_SHIFT	4
-+#define MDIO_CMD_MII_PHY_ADDR_MASK	GENMASK(16, 12)
-+#define MDIO_CMD_MII_PHY_ADDR_SHIFT	12
++/* General notes on dwmac-sun8i:
++ * Locking: no locking is necessary in this file because all necessary locking
++ *		is done in the "stmmac files"
++ */
 +
-+#define EMAC_MACADDR_HI	0x50
-+#define EMAC_MACADDR_LO	0x54
-+
-+#define EMAC_RX_DESC_LIST 0x34
-+#define EMAC_TX_DESC_LIST 0x20
-+
-+#define EMAC_RX_DO_CRC BIT(27)
-+#define EMAC_RX_STRIP_FCS BIT(28)
-+
-+#define LE32_BIT(x) (cpu_to_le32(BIT(x)))
-+
-+#define EMAC_COULD_BE_USED_BY_DMA LE32_BIT(31)
-+
-+/* Used in RX_CTL1*/
-+#define EMAC_RX_DMA_EN	BIT(30)
-+#define EMAC_RX_DMA_START	BIT(31)
-+/* Used in TX_CTL1*/
-+#define EMAC_TX_DMA_EN	BIT(30)
-+#define EMAC_TX_DMA_START	BIT(31)
-+
-+/* Used in RX_CTL0 */
-+#define EMAC_RX_RECEIVER_EN		BIT(31)
-+/* Used in TX_CTL0 */
-+#define EMAC_TX_TRANSMITTER_EN	BIT(31)
-+
-+/* Basic CTL0 */
-+#define EMAC_BCTL0_FD BIT(0)
-+#define EMAC_BCTL0_SPEED_10		2
-+#define EMAC_BCTL0_SPEED_100		3
-+#define EMAC_BCTL0_SPEED_MASK	GENMASK(3, 2)
-+#define EMAC_BCTL0_SPEED_SHIFT	2
-+
-+#define EMAC_FLOW_RX 1
-+#define EMAC_FLOW_TX 2
-+
-+#define EMAC_TX_INT		BIT(0)
-+#define EMAC_TX_DMA_STOP_INT	BIT(1)
-+#define EMAC_TX_BUF_UA_INT	BIT(2)
-+#define EMAC_TX_TIMEOUT_INT	BIT(3)
-+#define EMAC_TX_UNDERFLOW_INT	BIT(4)
-+#define EMAC_TX_EARLY_INT	BIT(5)
-+#define EMAC_RX_INT		BIT(8)
-+#define EMAC_RX_BUF_UA_INT	BIT(9)
-+#define EMAC_RX_DMA_STOP_INT	BIT(10)
-+#define EMAC_RX_TIMEOUT_INT	BIT(11)
-+#define EMAC_RX_OVERFLOW_INT	BIT(12)
-+#define EMAC_RX_EARLY_INT	BIT(13)
-+#define EMAC_RGMII_STA_INT	BIT(16)
-+
-+/* Bits used in frame RX status */
-+#define EMAC_DSC_RX_FIRST		BIT(9)
-+#define EMAC_DSC_RX_LAST		BIT(8)
-+
-+/* Bits used in frame TX ctl */
-+#define EMAC_MAGIC_TX_BIT		LE32_BIT(24)
-+#define EMAC_TX_DO_CRC		(LE32_BIT(27) | LE32_BIT(28))
-+#define EMAC_DSC_TX_FIRST		LE32_BIT(29)
-+#define EMAC_DSC_TX_LAST		LE32_BIT(30)
-+#define EMAC_WANT_INT			LE32_BIT(31)
-+
-+/* struct emac_variant - Describe an emac variant of sun8i-emac
-+ * @default_syscon_value: Default value of the syscon EMAC register
-+ * The default_syscon_value is also used for powering down the PHY
-+ * @internal_phy:	which PHY type is internal
-+ * @support_mii:	Does the SoC support MII
-+ * @support_rmii:	Does the SoC support RMII
-+ * @support_rgmii:	Does the SoC support RGMII
++/* struct emac_variant - Descrive dwmac-sun8i hardware variant
++ * @default_syscon_value:	The default value of the EMAC register in syscon
++ *				This value is used for disabling properly EMAC
++ *				and used as a good starting value in case of the
++ *				boot process(uboot) leave some stuff.
++ * @internal_phy:		Does the MAC embed an internal PHY
++ * @support_mii:		Does the MAC handle MII
++ * @support_rmii:		Does the MAC handle RMII
++ * @support_rgmii:		Does the MAC handle RGMII
 + */
 +struct emac_variant {
 +	u32 default_syscon_value;
@@ -188,6 +398,25 @@ index 0000000..bc74467
 +	bool support_mii;
 +	bool support_rmii;
 +	bool support_rgmii;
++};
++
++/* struct sunxi_priv_data - hold all sunxi private data
++ * @tx_clk:	reference to MAC TX clock
++ * @ephy_clk:	reference to the optional EPHY clock for the internal PHY
++ * @regulator:	reference to the optional regulator
++ * @rst_ephy:	reference to the optional EPHY reset for the internal PHY
++ * @variant:	reference to the current board variant
++ * @regmap:	regmap for using the syscon
++ * @use_internal_phy: Does the current PHY choice imply using the internal PHY
++ */
++struct sunxi_priv_data {
++	struct clk *tx_clk;
++	struct clk *ephy_clk;
++	struct regulator *regulator;
++	struct reset_control *rst_ephy;
++	const struct emac_variant *variant;
++	struct regmap *regmap;
++	bool use_internal_phy;
 +};
 +
 +static const struct emac_variant emac_variant_h3 = {
@@ -213,815 +442,85 @@ index 0000000..bc74467
 +	.support_rgmii = true
 +};
 +
-+static const char const estats_str[][ETH_GSTRING_LEN] = {
-+	/* errors */
-+	"rx_payload_error",
-+	"rx_CRC_error",
-+	"rx_phy_error",
-+	"rx_length_error",
-+	"rx_col_error",
-+	"rx_header_error",
-+	"rx_overflow_error",
-+	"rx_saf_error",
-+	"rx_daf_error",
-+	"rx_buf_error",
-+	"rx_invalid_error",
-+	"tx_timeout",
-+	/* misc infos */
-+	"tx_stop_queue",
-+	"rx_dma_ua",
-+	"rx_dma_stop",
-+	"tx_dma_ua",
-+	"tx_dma_stop",
-+	"rx_hw_csum",
-+	"tx_hw_csum",
-+	/* interrupts */
-+	"rx_int",
-+	"tx_int",
-+	"tx_early_int",
-+	"tx_underflow_int",
-+	"tx_timeout_int",
-+	"rx_early_int",
-+	"rx_overflow_int",
-+	"rx_timeout_int",
-+	"rgmii_state_int",
-+	/* debug */
-+	"tx_used_desc",
-+	"napi_schedule",
-+	"napi_underflow",
-+};
-+
-+struct sun8i_emac_stats {
-+	u64 rx_payload_error;
-+	u64 rx_crc_error;
-+	u64 rx_phy_error;
-+	u64 rx_length_error;
-+	u64 rx_col_error;
-+	u64 rx_header_error;
-+	u64 rx_overflow_error;
-+	u64 rx_saf_fail;
-+	u64 rx_daf_fail;
-+	u64 rx_buf_error;
-+	u64 rx_invalid_error;
-+	u64 tx_timeout;
-+
-+	u64 tx_stop_queue;
-+	u64 rx_dma_ua;
-+	u64 rx_dma_stop;
-+	u64 tx_dma_ua;
-+	u64 tx_dma_stop;
-+	u64 rx_hw_csum;
-+	u64 tx_hw_csum;
-+
-+	u64 rx_int;
-+	u64 tx_int;
-+	u64 tx_early_int;
-+	u64 tx_underflow_int;
-+	u64 tx_timeout_int;
-+	u64 rx_early_int;
-+	u64 rx_overflow_int;
-+	u64 rx_timeout_int;
-+	u64 rgmii_state_int;
-+
-+	u64 tx_used_desc;
-+	u64 napi_schedule;
-+	u64 napi_underflow;
-+};
-+
-+/* The datasheet said that each descriptor can transfers up to 4096bytes
-+ * But latter, a register documentation reduce that value to 2048
-+ * Anyway using 2048 cause strange behaviours and even BSP driver use 2047
-+ */
-+#define DESC_BUF_MAX 2044
-+
-+/* MAGIC value for knowing if a descriptor is available or not */
-+#define DCLEAN cpu_to_le32(BIT(16) | BIT(14) | BIT(12) | BIT(10) | BIT(9))
-+
-+/* struct dma_desc - Structure of DMA descriptor used by the hardware
-+ * @status:	Status of the frame written by HW, so RO for the
-+ *		driver (except for BIT(31) which is R/W)
-+ * @ctl:	Information on the frame written by the driver (INT, len,...)
-+ * @buf_addr:	physical address of the frame data
-+ * @next:	physical address of next dma_desc
-+ */
-+struct dma_desc {
-+	__le32 status;
-+	__le32 ctl;
-+	__le32 buf_addr;
-+	__le32 next;
-+};
-+
-+/* Describe how data from skb are DMA mapped (used in txinfo map member) */
-+#define MAP_SINGLE 1
-+#define MAP_PAGE 2
-+
-+/* Structure for storing information about data in TX ring buffer */
-+struct txinfo {
-+	struct sk_buff *skb;
-+	int map;
-+};
-+
-+struct sun8i_emac_priv {
-+	void __iomem *base;
-+	struct regmap *regmap;
-+	int irq;
-+	struct device *dev;
-+	struct net_device *ndev;
-+	struct mii_bus *mdio;
-+	struct napi_struct napi;
-+	spinlock_t tx_lock;/* control the access of transmit descriptors */
-+	int duplex;
-+	int speed;
-+	int link;
-+	int phy_interface;
-+	const struct emac_variant *variant;
-+	struct device_node *phy_node;
-+	struct device_node *mdio_node;
-+	struct clk *ahb_clk;
-+	struct clk *ephy_clk;
-+	bool use_internal_phy;
-+
-+	struct reset_control *rst_mac;
-+	struct reset_control *rst_ephy;
-+
-+	struct dma_desc *dd_rx;
-+	dma_addr_t dd_rx_phy;
-+	struct dma_desc *dd_tx;
-+	dma_addr_t dd_tx_phy;
-+	struct sk_buff **rx_skb;
-+	struct txinfo *txl;
-+
-+	int nbdesc_tx;
-+	int nbdesc_rx;
-+	int tx_slot;
-+	int tx_dirty;
-+	int rx_dirty;
-+	struct sun8i_emac_stats estats;
-+	u32 msg_enable;
-+	int flow_ctrl;
-+	int pause;
-+};
-+
-+static irqreturn_t sun8i_emac_dma_interrupt(int irq, void *dev_id);
-+
-+static void rb_inc(int *p, const int max)
-+{
-+	(*p)++;
-+	(*p) %= max;
-+}
-+
-+/* Locking strategy:
-+ * RX queue does not need any lock since only sun8i_emac_poll() access it.
-+ * (All other RX modifiers (ringparam/ndo_stop) disable NAPI and so
-+ * sun8i_emac_poll())
-+ * TX queue is handled by sun8i_emac_xmit(), sun8i_emac_complete_xmit() and
-+ * sun8i_emac_tx_timeout()
-+ * (All other RX modifiers (ringparam/ndo_stop) disable NAPI and stop queue)
-+ *
-+ * sun8i_emac_xmit() could fire only once (netif_tx_lock)
-+ * sun8i_emac_complete_xmit() could fire only once (called from NAPI)
-+ * sun8i_emac_tx_timeout() could fire only once (netif_tx_lock) and could not
-+ * race with sun8i_emac_xmit (due to netif_tx_lock) and with
-+ * sun8i_emac_complete_xmit which disable NAPI.
-+ *
-+ * So only sun8i_emac_xmit and sun8i_emac_complete_xmit could fire at the same
-+ * time.
-+ * But they never could modify the same descriptors:
-+ * - sun8i_emac_complete_xmit() will modify only descriptors with empty status
-+ * - sun8i_emac_xmit() will modify only descriptors set to DCLEAN
-+ * Proper memory barriers ensure that descriptor set to DCLEAN could not be
-+ * modified latter by sun8i_emac_complete_xmit().
-+ */
-+
-+/* Return the number of contiguous free descriptors
-+ * starting from tx_slot
-+ */
-+static int rb_tx_numfreedesc(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	if (priv->tx_slot < priv->tx_dirty)
-+		return priv->tx_dirty - priv->tx_slot;
-+
-+	return (priv->nbdesc_tx - priv->tx_slot) + priv->tx_dirty;
-+}
-+
-+/* sun8i_emac_rx_skb - Allocate a skb in a DMA descriptor
-+ *
-+ * @ndev:	The net_device for this interface
-+ * @i:		index of slot to fill
-+ *
-+ * Refill a DMA descriptor with a fresh skb and map it for DMA.
-+*/
-+static int sun8i_emac_rx_skb(struct net_device *ndev, int i)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct dma_desc *ddesc;
-+	struct sk_buff *skb;
-+
-+	ddesc = priv->dd_rx + i;
-+
-+	ddesc->ctl = 0;
-+
-+	skb = netdev_alloc_skb_ip_align(ndev, DESC_BUF_MAX);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	/* should not happen */
-+	if (unlikely(priv->rx_skb[i]))
-+		dev_warn(priv->dev, "BUG: Leaking a skbuff\n");
-+
-+	priv->rx_skb[i] = skb;
-+
-+	ddesc->buf_addr = dma_map_single(priv->dev, skb->data,
-+					 DESC_BUF_MAX, DMA_FROM_DEVICE);
-+	if (dma_mapping_error(priv->dev, ddesc->buf_addr)) {
-+		dev_err(priv->dev, "ERROR: Cannot map RX buffer for DMA\n");
-+		dev_kfree_skb(skb);
-+		return -EFAULT;
-+	}
-+	/* We cannot direcly use cpu_to_le32() after dma_map_single
-+	 * since dma_mapping_error use it
-+	 */
-+	ddesc->buf_addr = cpu_to_le32(ddesc->buf_addr);
-+	ddesc->ctl |= cpu_to_le32(DESC_BUF_MAX);
-+	/* EMAC_COULD_BE_USED_BY_DMA must be the last value written */
-+	wmb();
-+	ddesc->status = EMAC_COULD_BE_USED_BY_DMA;
-+
-+	return 0;
-+}
-+
-+static void sun8i_emac_stop_tx(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v;
-+
-+	netif_stop_queue(ndev);
-+
-+	v = readl(priv->base + EMAC_TX_CTL0);
-+	/* Disable transmitter after current reception */
-+	v &= ~EMAC_TX_TRANSMITTER_EN;
-+	writel(v, priv->base + EMAC_TX_CTL0);
-+
-+	v = readl(priv->base + EMAC_TX_CTL1);
-+	/* Stop TX DMA */
-+	v &= ~EMAC_TX_DMA_EN;
-+	writel(v, priv->base + EMAC_TX_CTL1);
-+
-+	/* We must be sure that all is stopped before leaving this function */
-+	wmb();
-+}
-+
-+static void sun8i_emac_stop_rx(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v;
-+
-+	v = readl(priv->base + EMAC_RX_CTL0);
-+	/* Disable receiver after current reception */
-+	v &= ~EMAC_RX_RECEIVER_EN;
-+	writel(v, priv->base + EMAC_RX_CTL0);
-+
-+	v = readl(priv->base + EMAC_RX_CTL1);
-+	/* Stop RX DMA */
-+	v &= ~EMAC_RX_DMA_EN;
-+	writel(v, priv->base + EMAC_RX_CTL1);
-+
-+	/* We must be sure that all is stopped before leaving this function */
-+	wmb();
-+}
-+
-+static void sun8i_emac_start_rx(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v;
-+
-+	v = readl(priv->base + EMAC_RX_CTL0);
-+	/* Enable receiver */
-+	v |= EMAC_RX_RECEIVER_EN;
-+	writel(v, priv->base + EMAC_RX_CTL0);
-+
-+	v = readl(priv->base + EMAC_RX_CTL1);
-+	v |= EMAC_RX_DMA_START;
-+	v |= EMAC_RX_DMA_EN;
-+	writel(v, priv->base + EMAC_RX_CTL1);
-+}
-+
-+static void sun8i_emac_start_tx(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v;
-+
-+	v = readl(priv->base + EMAC_TX_CTL0);
-+	v |= EMAC_TX_TRANSMITTER_EN;
-+	writel(v, priv->base + EMAC_TX_CTL0);
-+
-+	v = readl(priv->base + EMAC_TX_CTL1);
-+	v |= EMAC_TX_DMA_START;
-+	v |= EMAC_TX_DMA_EN;
-+	writel(v, priv->base + EMAC_TX_CTL1);
-+}
-+
-+/* sun8i_emac_set_macaddr - Set MAC address for slot index
-+ *
-+ * @addr: the MAC address to set
-+ * @index: The index of slot where to set address.
-+ *
-+ * The slot 0 is the main MAC address
-+ */
-+static void sun8i_emac_set_macaddr(struct sun8i_emac_priv *priv,
-+				   const u8 *addr, int index)
-+{
-+	u32 v;
-+
-+	dev_info(priv->dev, "device MAC address slot %d %pM", index, addr);
-+
-+	v = (addr[5] << 8) | addr[4];
-+	writel(v, priv->base + EMAC_MACADDR_HI + index * 8);
-+
-+	v = (addr[3] << 24) | (addr[2] << 16) | (addr[1] << 8) | addr[0];
-+	writel(v, priv->base + EMAC_MACADDR_LO + index * 8);
-+}
-+
-+static void sun8i_emac_set_link_mode(struct sun8i_emac_priv *priv)
-+{
-+	u32 v;
-+
-+	v = readl(priv->base + EMAC_BASIC_CTL0);
-+
-+	if (priv->duplex)
-+		v |= EMAC_BCTL0_FD;
-+	else
-+		v &= ~EMAC_BCTL0_FD;
-+
-+	v &= ~EMAC_BCTL0_SPEED_MASK;
-+
-+	switch (priv->speed) {
-+	case 1000:
-+		break;
-+	case 100:
-+		v |= EMAC_BCTL0_SPEED_100 << EMAC_BCTL0_SPEED_SHIFT;
-+		break;
-+	case 10:
-+		v |= EMAC_BCTL0_SPEED_10 << EMAC_BCTL0_SPEED_SHIFT;
-+		break;
-+	default:
-+		dev_err(priv->dev, "Unsupported speed %d\n", priv->speed);
-+		return;
-+	}
-+
-+	writel(v, priv->base + EMAC_BASIC_CTL0);
-+}
-+
-+static void sun8i_emac_flow_ctrl(struct sun8i_emac_priv *priv, int duplex,
-+				 int fc)
-+{
-+	u32 flow = 0;
-+
-+	flow = readl(priv->base + EMAC_RX_CTL0);
-+	if (fc & EMAC_FLOW_RX)
-+		flow |= BIT(16);
-+	else
-+		flow &= ~BIT(16);
-+	writel(flow, priv->base + EMAC_RX_CTL0);
-+
-+	flow = readl(priv->base + EMAC_TX_FLOW_CTL);
-+	if (fc & EMAC_FLOW_TX)
-+		flow |= BIT(0);
-+	else
-+		flow &= ~BIT(0);
-+	writel(flow, priv->base + EMAC_TX_FLOW_CTL);
-+}
-+
-+/* Grab a frame into a skb from descriptor number i */
-+static int sun8i_emac_rx_from_ddesc(struct net_device *ndev, int i)
-+{
-+	struct sk_buff *skb;
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct dma_desc *ddesc = priv->dd_rx + i;
-+	int frame_len;
-+	int rxcsum_done = 0;
-+	u32 dstatus = le32_to_cpu(ddesc->status);
-+
-+	if (ndev->features & NETIF_F_RXCSUM)
-+		rxcsum_done = 1;
-+
-+	/* bit0/bit7 work only on IPv4/IPv6 TCP traffic,
-+	 * (not on ARP for example) so we do not raise rx_errors/discard frame
-+	 */
-+	/* the checksum or length of received frame's payload is wrong*/
-+	if (dstatus & BIT(0)) {
-+		priv->estats.rx_payload_error++;
-+		rxcsum_done = 0;
-+	}
-+
-+	/* RX_CRC_ERR */
-+	if (dstatus & BIT(1)) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->ndev->stats.rx_crc_errors++;
-+		priv->estats.rx_crc_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* RX_PHY_ERR */
-+	if ((dstatus & BIT(3))) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->estats.rx_phy_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* RX_LENGTH_ERR */
-+	if ((dstatus & BIT(4))) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->ndev->stats.rx_length_errors++;
-+		priv->estats.rx_length_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* RX_COL_ERR */
-+	if ((dstatus & BIT(6))) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->estats.rx_col_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* RX_HEADER_ERR */
-+	if ((dstatus & BIT(7))) {
-+		priv->estats.rx_header_error++;
-+		rxcsum_done = 0;
-+	}
-+
-+	/* RX_OVERFLOW_ERR */
-+	if ((dstatus & BIT(11))) {
-+		priv->ndev->stats.rx_over_errors++;
-+		priv->estats.rx_overflow_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* RX_NO_ENOUGTH_BUF_ERR */
-+	if ((dstatus & BIT(14))) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->estats.rx_buf_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* BIT(9) is for the first frame, not having it is bad since we do not
-+	 * handle Jumbo frame
-+	 */
-+	if ((dstatus & EMAC_DSC_RX_FIRST) == 0) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->estats.rx_invalid_error++;
-+		goto discard_frame;
-+	}
-+
-+	/* this frame is not the last */
-+	if ((dstatus & EMAC_DSC_RX_LAST) == 0) {
-+		priv->ndev->stats.rx_errors++;
-+		priv->estats.rx_invalid_error++;
-+		goto discard_frame;
-+	}
-+
-+	frame_len = (dstatus >> 16) & 0x3FFF;
-+	if (!(ndev->features & NETIF_F_RXFCS))
-+		frame_len -= ETH_FCS_LEN;
-+
-+	skb = priv->rx_skb[i];
-+
-+	netif_dbg(priv, rx_status, priv->ndev,
-+		  "%s from %02d %pad len=%d status=%x st=%x\n",
-+		  __func__, i, &ddesc, frame_len, dstatus,
-+		  cpu_to_le32(ddesc->ctl));
-+
-+	skb_put(skb, frame_len);
-+
-+	dma_unmap_single(priv->dev, le32_to_cpu(ddesc->buf_addr), DESC_BUF_MAX,
-+			 DMA_FROM_DEVICE);
-+	skb->protocol = eth_type_trans(skb, priv->ndev);
-+	if (rxcsum_done) {
-+		skb->ip_summed = CHECKSUM_UNNECESSARY;
-+		priv->estats.rx_hw_csum++;
-+	} else {
-+		skb->ip_summed = CHECKSUM_PARTIAL;
-+	}
-+
-+	priv->ndev->stats.rx_packets++;
-+	priv->ndev->stats.rx_bytes += frame_len;
-+	priv->rx_skb[i] = NULL;
-+
-+	sun8i_emac_rx_skb(ndev, i);
-+	napi_gro_receive(&priv->napi, skb);
-+
-+	return 0;
-+	/* If the frame need to be dropped, we simply reuse the buffer */
-+discard_frame:
-+	ddesc->ctl = cpu_to_le32(DESC_BUF_MAX);
-+	/* EMAC_COULD_BE_USED_BY_DMA must be the last value written */
-+	wmb();
-+	ddesc->status = EMAC_COULD_BE_USED_BY_DMA;
-+	return 0;
-+}
-+
-+/* Iterate over dma_desc for finding completed xmit.
-+ *
-+ * The problem is: how to know that a descriptor is sent and not just in
-+ * preparation.
-+ * Need to have status=0 and st set but this is the state of first frame just
-+ * before setting the own-by-DMA bit.
-+ * The solution is to used the artificial value DCLEAN.
-+ */
-+static int sun8i_emac_complete_xmit(struct net_device *ndev, int budget)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct dma_desc *ddesc;
-+	int frame_len;
-+	int work = 0;
-+	unsigned int bytes_compl = 0, pkts_compl = 0;
-+	u32 dstatus;
-+
-+	do {
-+		ddesc = priv->dd_tx + priv->tx_dirty;
-+
-+		if (ddesc->status & EMAC_COULD_BE_USED_BY_DMA)
-+			goto xmit_end;
-+
-+		if (ddesc->status == DCLEAN)
-+			goto xmit_end;
-+
-+		dstatus = cpu_to_le32(ddesc->status);
-+
-+		if (ddesc->status == 0 && !ddesc->ctl) {
-+			dev_err(priv->dev, "BUG: reached the void %d %d\n",
-+				priv->tx_dirty, priv->tx_slot);
-+			goto xmit_end;
-+		}
-+
-+		/* TX_UNDERFLOW_ERR */
-+		if (dstatus & BIT(1))
-+			priv->ndev->stats.tx_errors++;
-+		/* TX_DEFER_ERR */
-+		if (dstatus & BIT(2))
-+			priv->ndev->stats.tx_errors++;
-+		/* BIT 6:3 numbers of collisions */
-+		if (dstatus & 0x78)
-+			priv->ndev->stats.collisions +=
-+				(dstatus & 0x78) >> 3;
-+		/* TX_COL_ERR_1 */
-+		if (dstatus & BIT(8))
-+			priv->ndev->stats.tx_errors++;
-+		/* TX_COL_ERR_0 */
-+		if (dstatus & BIT(9))
-+			priv->ndev->stats.tx_errors++;
-+		/* TX_CRS_ERR */
-+		if (dstatus & BIT(10))
-+			priv->ndev->stats.tx_carrier_errors++;
-+		/* TX_PAYLOAD_ERR */
-+		if (dstatus & BIT(12))
-+			priv->ndev->stats.tx_errors++;
-+		/* TX_LENGTH_ERR */
-+		if (dstatus & BIT(14))
-+			priv->ndev->stats.tx_errors++;
-+		/* TX_HEADER_ERR */
-+		if (dstatus & BIT(16))
-+			priv->ndev->stats.tx_errors++;
-+
-+		frame_len = le32_to_cpu(ddesc->ctl) & 0x3FFF;
-+		bytes_compl += frame_len;
-+
-+		if (priv->txl[priv->tx_dirty].map == MAP_SINGLE)
-+			dma_unmap_single(priv->dev,
-+					 le32_to_cpu(ddesc->buf_addr),
-+					 frame_len, DMA_TO_DEVICE);
-+		else
-+			dma_unmap_page(priv->dev,
-+				       le32_to_cpu(ddesc->buf_addr),
-+				       frame_len, DMA_TO_DEVICE);
-+		/* we can free skb only on last frame */
-+		if (priv->txl[priv->tx_dirty].skb &&
-+		    (ddesc->ctl & EMAC_DSC_TX_LAST)) {
-+			dev_kfree_skb_irq(priv->txl[priv->tx_dirty].skb);
-+			pkts_compl++;
-+		}
-+
-+		priv->txl[priv->tx_dirty].skb = NULL;
-+		priv->txl[priv->tx_dirty].map = 0;
-+		ddesc->ctl = 0;
-+		/* setting status to DCLEAN is the last value to be set */
-+		wmb();
-+		ddesc->status = DCLEAN;
-+		work++;
-+
-+		rb_inc(&priv->tx_dirty, priv->nbdesc_tx);
-+		ddesc = priv->dd_tx + priv->tx_dirty;
-+	} while (ddesc->ctl &&
-+		 !(ddesc->status & EMAC_COULD_BE_USED_BY_DMA) &&
-+		 work < budget);
-+
-+xmit_end:
-+	netdev_completed_queue(ndev, pkts_compl, bytes_compl);
-+
-+	/* if we don't have handled all packets */
-+	if (work < budget)
-+		work = 0;
-+
-+	if (netif_queue_stopped(ndev) &&
-+	    rb_tx_numfreedesc(ndev) > MAX_SKB_FRAGS + 1)
-+		netif_wake_queue(ndev);
-+	return work;
-+}
-+
-+static int sun8i_emac_poll(struct napi_struct *napi, int budget)
-+{
-+	struct sun8i_emac_priv *priv =
-+		container_of(napi, struct sun8i_emac_priv, napi);
-+	struct net_device *ndev = priv->ndev;
-+	int worked;
-+	struct dma_desc *ddesc;
-+
-+	priv->estats.napi_schedule++;
-+	worked = sun8i_emac_complete_xmit(ndev, budget);
-+
-+	ddesc = priv->dd_rx + priv->rx_dirty;
-+	while (!(ddesc->status & EMAC_COULD_BE_USED_BY_DMA) &&
-+	       worked < budget) {
-+		sun8i_emac_rx_from_ddesc(ndev, priv->rx_dirty);
-+		worked++;
-+		rb_inc(&priv->rx_dirty, priv->nbdesc_rx);
-+		ddesc = priv->dd_rx + priv->rx_dirty;
-+	};
-+	if (worked < budget) {
-+		priv->estats.napi_underflow++;
-+		napi_complete(&priv->napi);
-+		writel(EMAC_RX_INT | EMAC_TX_INT, priv->base + EMAC_INT_EN);
-+	}
-+	return worked;
-+}
-+
-+static int sun8i_mdio_read(struct mii_bus *bus, int phy_addr, int phy_reg)
-+{
-+	struct net_device *ndev = bus->priv;
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int err;
-+	u32 reg;
-+
-+	err = readl_poll_timeout(priv->base + EMAC_MDIO_CMD, reg,
-+				 !(reg & MDIO_CMD_MII_BUSY), 100, 10000);
-+	if (err) {
-+		dev_err(priv->dev, "%s timeout %x\n", __func__, reg);
-+		return err;
-+	}
-+
-+	reg &= ~MDIO_CMD_MII_WRITE;
-+	reg &= ~MDIO_CMD_MII_PHY_REG_ADDR_MASK;
-+	reg |= (phy_reg << MDIO_CMD_MII_PHY_REG_ADDR_SHIFT) &
-+		MDIO_CMD_MII_PHY_REG_ADDR_MASK;
-+
-+	reg &= ~MDIO_CMD_MII_PHY_ADDR_MASK;
-+
-+	reg |= (phy_addr << MDIO_CMD_MII_PHY_ADDR_SHIFT) &
-+		MDIO_CMD_MII_PHY_ADDR_MASK;
-+
-+	reg |= MDIO_CMD_MII_BUSY;
-+
-+	writel(reg, priv->base + EMAC_MDIO_CMD);
-+
-+	err = readl_poll_timeout(priv->base + EMAC_MDIO_CMD, reg,
-+				 !(reg & MDIO_CMD_MII_BUSY), 100, 10000);
-+
-+	if (err) {
-+		dev_err(priv->dev, "%s timeout %x\n", __func__, reg);
-+		return err;
-+	}
-+
-+	return readl(priv->base + EMAC_MDIO_DATA);
-+}
-+
-+static int sun8i_mdio_write(struct mii_bus *bus, int phy_addr, int phy_reg,
-+			    u16 data)
-+{
-+	struct net_device *ndev = bus->priv;
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 reg;
-+	int err;
-+
-+	err = readl_poll_timeout(priv->base + EMAC_MDIO_CMD, reg,
-+				 !(reg & MDIO_CMD_MII_BUSY), 100, 10000);
-+	if (err) {
-+		dev_err(priv->dev, "%s timeout %x\n", __func__, reg);
-+		return err;
-+	}
-+
-+	reg &= ~MDIO_CMD_MII_PHY_REG_ADDR_MASK;
-+	reg |= (phy_reg << MDIO_CMD_MII_PHY_REG_ADDR_SHIFT) &
-+		MDIO_CMD_MII_PHY_REG_ADDR_MASK;
-+
-+	reg &= ~MDIO_CMD_MII_PHY_ADDR_MASK;
-+	reg |= (phy_addr << MDIO_CMD_MII_PHY_ADDR_SHIFT) &
-+		MDIO_CMD_MII_PHY_ADDR_MASK;
-+
-+	reg |= MDIO_CMD_MII_WRITE;
-+	reg |= MDIO_CMD_MII_BUSY;
-+
-+	writel(reg, priv->base + EMAC_MDIO_CMD);
-+	writel(data, priv->base + EMAC_MDIO_DATA);
-+
-+	err = readl_poll_timeout(priv->base + EMAC_MDIO_CMD, reg,
-+				 !(reg & MDIO_CMD_MII_BUSY), 100, 10000);
-+	if (err) {
-+		dev_err(priv->dev, "%s timeout %x\n", __func__, reg);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sun8i_emac_mdio_register(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct mii_bus *bus;
-+	int ret;
-+
-+	bus = mdiobus_alloc();
-+	if (!bus) {
-+		netdev_err(ndev, "Failed to allocate a new mdio bus\n");
-+		return -ENOMEM;
-+	}
-+
-+	bus->name = dev_name(priv->dev);
-+	bus->read = &sun8i_mdio_read;
-+	bus->write = &sun8i_mdio_write;
-+	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-%x", bus->name, priv->dev->id);
-+
-+	bus->parent = priv->dev;
-+	bus->priv = ndev;
-+
-+	ret = of_mdiobus_register(bus, priv->mdio_node);
-+	if (ret) {
-+		netdev_err(ndev, "Could not register a MDIO bus: %d\n", ret);
-+		mdiobus_free(bus);
-+		return ret;
-+	}
-+
-+	priv->mdio = bus;
-+
-+	return 0;
-+}
-+
-+static void sun8i_emac_mdio_unregister(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	mdiobus_unregister(priv->mdio);
-+	mdiobus_free(priv->mdio);
-+}
-+
-+/* Run within phydev->lock */
-+static void sun8i_emac_adjust_link(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct phy_device *phydev = ndev->phydev;
-+	int new_state = 0;
-+
-+	netif_dbg(priv, link, priv->ndev,
-+		  "%s link=%x duplex=%x speed=%x\n", __func__,
-+		  phydev->link, phydev->duplex, phydev->speed);
-+	if (!phydev)
-+		return;
-+
-+	if (phydev->link) {
-+		if (phydev->duplex != priv->duplex) {
-+			new_state = 1;
-+			priv->duplex = phydev->duplex;
-+		}
-+		if (phydev->pause)
-+			sun8i_emac_flow_ctrl(priv, phydev->duplex,
-+					     priv->flow_ctrl);
-+
-+		if (phydev->speed != priv->speed) {
-+			new_state = 1;
-+			priv->speed = phydev->speed;
-+		}
-+
-+		if (priv->link == 0) {
-+			new_state = 1;
-+			priv->link = phydev->link;
-+		}
-+
-+		netif_dbg(priv, link, priv->ndev,
-+			  "%s new=%d link=%d pause=%d\n",
-+			  __func__, new_state, priv->link, phydev->pause);
-+		if (new_state)
-+			sun8i_emac_set_link_mode(priv);
-+	} else if (priv->link != phydev->link) {
-+		new_state = 1;
-+		priv->link = 0;
-+		priv->speed = 0;
-+		priv->duplex = -1;
-+	}
-+
-+	if (new_state)
-+		phy_print_status(phydev);
-+}
++#define EMAC_BASIC_CTL0 0x00
++#define EMAC_BASIC_CTL1 0x04
++#define EMAC_INT_STA    0x08
++#define EMAC_INT_EN     0x0C
++#define EMAC_TX_CTL0    0x10
++#define EMAC_TX_CTL1    0x14
++#define EMAC_TX_FLOW_CTL        0x1C
++#define EMAC_TX_DESC_LIST 0x20
++#define EMAC_RX_CTL0    0x24
++#define EMAC_RX_CTL1    0x28
++#define EMAC_RX_DESC_LIST 0x34
++#define EMAC_RX_FRM_FLT 0x38
++#define EMAC_MDIO_CMD   0x48
++#define EMAC_MDIO_DATA  0x4C
++#define EMAC_MACADDR_HI(reg) (0x50 + (reg) * 8)
++#define EMAC_MACADDR_LO(reg) (0x54 + (reg) * 8)
++#define EMAC_TX_DMA_STA 0xB0
++#define EMAC_TX_CUR_DESC        0xB4
++#define EMAC_TX_CUR_BUF 0xB8
++#define EMAC_RX_DMA_STA 0xC0
++#define EMAC_RX_CUR_DESC        0xC4
++#define EMAC_RX_CUR_BUF 0xC8
++
++/* Use in EMAC_BASIC_CTL1 */
++#define EMAC_BURSTLEN_SHIFT		24
++
++/* Used in EMAC_RX_FRM_FLT */
++#define EMAC_FRM_FLT_RXALL              BIT(0)
++#define EMAC_FRM_FLT_CTL                BIT(13)
++#define EMAC_FRM_FLT_MULTICAST          BIT(16)
++
++/* Used in RX_CTL1*/
++#define EMAC_RX_MD              BIT(1)
++#define EMAC_RX_TH_MASK		GENMASK(4, 5)
++#define EMAC_RX_TH_32		0
++#define EMAC_RX_TH_64		(0x1 << 4)
++#define EMAC_RX_TH_96		(0x2 << 4)
++#define EMAC_RX_TH_128		(0x3 << 4)
++#define EMAC_RX_DMA_EN  BIT(30)
++#define EMAC_RX_DMA_START       BIT(31)
++
++/* Used in TX_CTL1*/
++#define EMAC_TX_MD              BIT(1)
++#define EMAC_TX_NEXT_FRM        BIT(2)
++#define EMAC_TX_TH_MASK		GENMASK(8, 10)
++#define EMAC_TX_TH_64		0
++#define EMAC_TX_TH_128		(0x1 << 8)
++#define EMAC_TX_TH_192		(0x2 << 8)
++#define EMAC_TX_TH_256		(0x3 << 8)
++#define EMAC_TX_DMA_EN  BIT(30)
++#define EMAC_TX_DMA_START       BIT(31)
++
++/* Used in RX_CTL0 */
++#define EMAC_RX_RECEIVER_EN             BIT(31)
++#define EMAC_RX_DO_CRC BIT(27)
++#define EMAC_RX_FLOW_CTL_EN             BIT(16)
++
++/* Used in TX_CTL0 */
++#define EMAC_TX_TRANSMITTER_EN  BIT(31)
++
++/* Used in EMAC_TX_FLOW_CTL */
++#define EMAC_TX_FLOW_CTL_EN             BIT(0)
++
++/* Used in EMAC_INT_STA */
++#define EMAC_TX_INT             BIT(0)
++#define EMAC_TX_DMA_STOP_INT    BIT(1)
++#define EMAC_TX_BUF_UA_INT      BIT(2)
++#define EMAC_TX_TIMEOUT_INT     BIT(3)
++#define EMAC_TX_UNDERFLOW_INT   BIT(4)
++#define EMAC_TX_EARLY_INT       BIT(5)
++#define EMAC_RX_INT             BIT(8)
++#define EMAC_RX_BUF_UA_INT      BIT(9)
++#define EMAC_RX_DMA_STOP_INT    BIT(10)
++#define EMAC_RX_TIMEOUT_INT     BIT(11)
++#define EMAC_RX_OVERFLOW_INT    BIT(12)
++#define EMAC_RX_EARLY_INT       BIT(13)
++#define EMAC_RGMII_STA_INT      BIT(16)
++
++#define MAC_ADDR_TYPE_DST BIT(31)
 +
 +/* H3 specific bits for EPHY */
 +#define H3_EPHY_ADDR_SHIFT	20
@@ -1045,30 +544,434 @@ index 0000000..bc74467
 +#define SYSCON_ETCS_INT_GMII	0x2
 +#define SYSCON_EMAC_REG		0x30
 +
-+static int sun8i_emac_set_syscon(struct net_device *ndev)
++/* sun8i_dwmac_dma_reset() - reset the EMAC
++ * Called from stmmac via stmmac_dma_ops->reset
++ */
++static int sun8i_dwmac_dma_reset(void __iomem *ioaddr)
 +{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct device_node *node = priv->dev->of_node;
++	writel(0, ioaddr + EMAC_RX_CTL1);
++	writel(0, ioaddr + EMAC_TX_CTL1);
++	writel(0, ioaddr + EMAC_RX_FRM_FLT);
++	writel(0, ioaddr + EMAC_RX_DESC_LIST);
++	writel(0, ioaddr + EMAC_TX_DESC_LIST);
++	writel(0, ioaddr + EMAC_INT_EN);
++	writel(0x1FFFFFF, ioaddr + EMAC_INT_STA);
++	return 0;
++}
++
++/* sun8i_dwmac_dma_init() - initialize the EMAC
++ * Called from stmmac via stmmac_dma_ops->init
++ */
++static void sun8i_dwmac_dma_init(void __iomem *ioaddr,
++				 struct stmmac_dma_cfg *dma_cfg,
++				 u32 dma_tx, u32 dma_rx, int atds)
++{
++	/* Write TX and RX descriptors address */
++	writel(dma_rx, ioaddr + EMAC_RX_DESC_LIST);
++	writel(dma_tx, ioaddr + EMAC_TX_DESC_LIST);
++
++	writel(EMAC_RX_INT | EMAC_TX_INT, ioaddr + EMAC_INT_EN);
++	writel(0x1FFFFFF, ioaddr + EMAC_INT_STA);
++}
++
++/* sun8i_dwmac_dump_regs() - Dump EMAC address space
++ * Called from stmmac_dma_ops->dump_regs
++ * Used for ethtool
++ */
++static void sun8i_dwmac_dump_regs(void __iomem *ioaddr, u32 *reg_space)
++{
++	int i;
++
++	for (i = 0; i < 0xC8; i += 4) {
++		if (i == 0x32 || i == 0x3C)
++			continue;
++		reg_space[i / 4] = readl(ioaddr + i);
++	}
++}
++
++/* sun8i_dwmac_dump_mac_regs() - Dump EMAC address space
++ * Called from stmmac_ops->dump_regs
++ * Used for ethtool
++ */
++static void sun8i_dwmac_dump_mac_regs(struct mac_device_info *hw,
++				      u32 *reg_space)
++{
++	int i;
++	void __iomem *ioaddr = hw->pcsr;
++
++	for (i = 0; i < 0xC8; i += 4) {
++		if (i == 0x32 || i == 0x3C)
++			continue;
++		reg_space[i / 4] = readl(ioaddr + i);
++	}
++}
++
++static void sun8i_dwmac_enable_dma_irq(void __iomem *ioaddr)
++{
++	writel(EMAC_RX_INT | EMAC_TX_INT, ioaddr + EMAC_INT_EN);
++}
++
++static void sun8i_dwmac_disable_dma_irq(void __iomem *ioaddr)
++{
++	writel(0, ioaddr + EMAC_INT_EN);
++}
++
++static void sun8i_dwmac_dma_start_tx(void __iomem *ioaddr)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_TX_CTL0);
++	v |= EMAC_TX_TRANSMITTER_EN;
++	writel(v, ioaddr + EMAC_TX_CTL0);
++}
++
++static void sun8i_dwmac_enable_dma_transmission(void __iomem *ioaddr)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_TX_CTL1);
++	v |= EMAC_TX_DMA_START;
++	v |= EMAC_TX_DMA_EN;
++	writel_relaxed(v, ioaddr + EMAC_TX_CTL1);
++}
++
++static void sun8i_dwmac_dma_stop_tx(void __iomem *ioaddr)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_TX_CTL0);
++	v &= ~EMAC_TX_TRANSMITTER_EN;
++	writel(v, ioaddr + EMAC_TX_CTL0);
++}
++
++static void sun8i_dwmac_dma_start_rx(void __iomem *ioaddr)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_RX_CTL0);
++	v |= EMAC_RX_RECEIVER_EN;
++	writel(v, ioaddr + EMAC_RX_CTL0);
++
++	v = readl(ioaddr + EMAC_RX_CTL1);
++	v |= EMAC_RX_DMA_START;
++	v |= EMAC_RX_DMA_EN;
++	writel(v, ioaddr + EMAC_RX_CTL1);
++}
++
++static void sun8i_dwmac_dma_stop_rx(void __iomem *ioaddr)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_RX_CTL0);
++	v &= ~EMAC_RX_RECEIVER_EN;
++	writel(v, ioaddr + EMAC_RX_CTL0);
++
++	v = readl(ioaddr + EMAC_RX_CTL1);
++	v &= ~EMAC_RX_DMA_EN;
++	writel(v, ioaddr + EMAC_RX_CTL1);
++}
++
++static int sun8i_dwmac_dma_interrupt(void __iomem *ioaddr,
++				     struct stmmac_extra_stats *x)
++{
++	u32 v;
++	int ret = 0;
++
++	v = readl(ioaddr + EMAC_INT_STA);
++
++	if (v & EMAC_TX_INT) {
++		ret |= handle_tx;
++		x->tx_normal_irq_n++;
++	}
++
++	if (v & EMAC_TX_DMA_STOP_INT)
++		x->tx_process_stopped_irq++;
++
++	if (v & EMAC_TX_BUF_UA_INT)
++		x->tx_process_stopped_irq++;
++
++	if (v & EMAC_TX_TIMEOUT_INT)
++		ret |= tx_hard_error;
++
++	if (v & EMAC_TX_UNDERFLOW_INT) {
++		ret |= tx_hard_error;
++		x->tx_undeflow_irq++;
++	}
++
++	if (v & EMAC_TX_EARLY_INT)
++		x->tx_early_irq++;
++
++	if (v & EMAC_RX_INT) {
++		ret |= handle_rx;
++		x->rx_normal_irq_n++;
++	}
++
++	if (v & EMAC_RX_BUF_UA_INT)
++		x->rx_buf_unav_irq++;
++
++	if (v & EMAC_RX_DMA_STOP_INT)
++		x->rx_process_stopped_irq++;
++
++	if (v & EMAC_RX_TIMEOUT_INT)
++		ret |= tx_hard_error;
++
++	if (v & EMAC_RX_OVERFLOW_INT) {
++		ret |= tx_hard_error;
++		x->rx_overflow_irq++;
++	}
++
++	if (v & EMAC_RX_EARLY_INT)
++		x->rx_early_irq++;
++
++	if (v & EMAC_RGMII_STA_INT)
++		x->irq_rgmii_n++;
++
++	writel(v, ioaddr + EMAC_INT_STA);
++
++	return ret;
++}
++
++static void sun8i_dwmac_dma_operation_mode(void __iomem *ioaddr, int txmode,
++					   int rxmode, int rxfifosz)
++{
++	u32 v;
++
++	v = readl(ioaddr + EMAC_TX_CTL1);
++	if (txmode == SF_DMA_MODE) {
++		v |= EMAC_TX_MD;
++		/* Undocumented bit (called TX_NEXT_FRM in BSP), the original
++		 * comment is
++		 * "Operating on second frame increase the performance
++		 * especially when transmit store-and-forward is used."
++		 */
++		v |= EMAC_TX_NEXT_FRM;
++	} else {
++		v &= ~EMAC_TX_MD;
++		v &= ~EMAC_TX_TH_MASK;
++		if (txmode < 64)
++			v |= EMAC_TX_TH_64;
++		else if (txmode < 128)
++			v |= EMAC_TX_TH_128;
++		else if (txmode < 192)
++			v |= EMAC_TX_TH_192;
++		else if (txmode < 256)
++			v |= EMAC_TX_TH_256;
++	}
++	writel(v, ioaddr + EMAC_TX_CTL1);
++
++	v = readl(ioaddr + EMAC_RX_CTL1);
++	if (rxmode == SF_DMA_MODE) {
++		v |= EMAC_RX_MD;
++	} else {
++		v &= ~EMAC_RX_MD;
++		v &= ~EMAC_RX_TH_MASK;
++		if (rxmode < 32)
++			v |= EMAC_RX_TH_32;
++		else if (rxmode < 64)
++			v |= EMAC_RX_TH_64;
++		else if (rxmode < 96)
++			v |= EMAC_RX_TH_96;
++		else if (rxmode < 128)
++			v |= EMAC_RX_TH_128;
++	}
++	writel(v, ioaddr + EMAC_RX_CTL1);
++}
++
++static const struct stmmac_dma_ops sun8i_dwmac_dma_ops = {
++	.reset = sun8i_dwmac_dma_reset,
++	.init = sun8i_dwmac_dma_init,
++	.dump_regs = sun8i_dwmac_dump_regs,
++	.dma_mode = sun8i_dwmac_dma_operation_mode,
++	.enable_dma_transmission = sun8i_dwmac_enable_dma_transmission,
++	.enable_dma_irq = sun8i_dwmac_enable_dma_irq,
++	.disable_dma_irq = sun8i_dwmac_disable_dma_irq,
++	.start_tx = sun8i_dwmac_dma_start_tx,
++	.stop_tx = sun8i_dwmac_dma_stop_tx,
++	.start_rx = sun8i_dwmac_dma_start_rx,
++	.stop_rx = sun8i_dwmac_dma_stop_rx,
++	.dma_interrupt = sun8i_dwmac_dma_interrupt,
++};
++
++static int sun8i_dwmac_init(struct platform_device *pdev, void *priv)
++{
++	struct sunxi_priv_data *gmac = priv;
++	int ret;
++
++	if (gmac->regulator) {
++		ret = regulator_enable(gmac->regulator);
++		if (ret) {
++			dev_err(&pdev->dev, "Fail to enable regulator\n");
++			return ret;
++		}
++	}
++
++	ret = clk_prepare_enable(gmac->tx_clk);
++	if (ret) {
++		if (gmac->regulator)
++			regulator_disable(gmac->regulator);
++		dev_err(&pdev->dev, "Could not enable AHB clock\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static void sun8i_dwmac_core_init(struct mac_device_info *hw, int mtu)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	u32 v;
++
++	v = (8 << EMAC_BURSTLEN_SHIFT); /* burst len */
++	writel(v, ioaddr + EMAC_BASIC_CTL1);
++}
++
++static void sun8i_dwmac_set_umac_addr(struct mac_device_info *hw,
++				      unsigned char *addr,
++				      unsigned int reg_n)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	u32 v;
++
++	stmmac_set_mac_addr(ioaddr, addr, EMAC_MACADDR_HI(reg_n),
++			    EMAC_MACADDR_LO(reg_n));
++	if (reg_n > 0) {
++		v = readl(ioaddr + EMAC_MACADDR_HI(reg_n));
++		v |= MAC_ADDR_TYPE_DST;
++		writel(v, ioaddr + EMAC_MACADDR_HI(reg_n));
++	}
++}
++
++static void sun8i_dwmac_get_umac_addr(struct mac_device_info *hw,
++				      unsigned char *addr,
++				      unsigned int reg_n)
++{
++	void __iomem *ioaddr = hw->pcsr;
++
++	stmmac_get_mac_addr(ioaddr, addr, EMAC_MACADDR_HI(reg_n),
++			    EMAC_MACADDR_LO(reg_n));
++}
++
++/* caution this function must return non 0 to work */
++static int sun8i_dwmac_rx_ipc_enable(struct mac_device_info *hw)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	u32 v;
++
++	v = readl(ioaddr + EMAC_RX_CTL0);
++	v |= EMAC_RX_DO_CRC;
++	writel(v, ioaddr + EMAC_RX_CTL0);
++
++	return 1;
++}
++
++static void sun8i_dwmac_set_filter(struct mac_device_info *hw,
++				   struct net_device *dev)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	u32 v;
++	int i = 0;
++	struct netdev_hw_addr *ha;
++
++	v = readl(ioaddr + EMAC_RX_FRM_FLT);
++
++	v |= EMAC_FRM_FLT_CTL;
++
++	if (dev->flags & IFF_PROMISC) {
++		v = EMAC_FRM_FLT_RXALL;
++	} else if (dev->flags & IFF_ALLMULTI) {
++		v = EMAC_FRM_FLT_MULTICAST;
++	} else if (!netdev_mc_empty(dev)) {
++		netdev_for_each_mc_addr(ha, dev) {
++			i++;
++			sun8i_dwmac_set_umac_addr(hw, ha->addr, i);
++		}
++	}
++
++	if (netdev_uc_count(dev) + i > hw->unicast_filter_entries) {
++		netdev_info(dev, "Too many address, switching to promiscuous\n");
++		v = EMAC_FRM_FLT_RXALL;
++	} else {
++		netdev_for_each_uc_addr(ha, dev) {
++			i++;
++			sun8i_dwmac_set_umac_addr(hw, ha->addr, i);
++		}
++	}
++	writel(v, ioaddr + EMAC_RX_FRM_FLT);
++}
++
++static void sun8i_dwmac_flow_ctrl(struct mac_device_info *hw,
++				  unsigned int duplex,
++				  unsigned int fc, unsigned int pause_time)
++{
++	void __iomem *ioaddr = hw->pcsr;
++	u32 v;
++
++	v = readl(ioaddr + EMAC_RX_CTL0);
++	if (fc == FLOW_AUTO)
++		v |= EMAC_RX_FLOW_CTL_EN;
++	else
++		v &= ~EMAC_RX_FLOW_CTL_EN;
++	writel(v, ioaddr + EMAC_RX_CTL0);
++
++	v = readl(ioaddr + EMAC_TX_FLOW_CTL);
++	if (fc == FLOW_AUTO)
++		v |= EMAC_TX_FLOW_CTL_EN;
++	else
++		v &= ~EMAC_TX_FLOW_CTL_EN;
++	writel(v, ioaddr + EMAC_TX_FLOW_CTL);
++}
++
++static int sun8i_dwmac_reset(struct stmmac_priv *priv)
++{
++	u32 v;
++	int err;
++
++	v = readl(priv->ioaddr + EMAC_BASIC_CTL1);
++	writel(v | 0x01, priv->ioaddr + EMAC_BASIC_CTL1);
++
++	err = readl_poll_timeout(priv->ioaddr + EMAC_BASIC_CTL1, v,
++				 !(v & 0x01), 100, 10000);
++
++	if (err) {
++		dev_err(priv->device, "EMAC reset timeout\n");
++		return -EFAULT;
++	}
++	return 0;
++}
++
++static int sun8i_dwmac_set_syscon(struct stmmac_priv *priv)
++{
++	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
++	struct device_node *node = priv->device->of_node;
 +	int ret;
 +	u32 reg, val;
 +
-+	reg = priv->variant->default_syscon_value;
++	regmap_read(gmac->regmap, SYSCON_EMAC_REG, &val);
++	reg = gmac->variant->default_syscon_value;
++	if (reg != val)
++		dev_warn(priv->device,
++			 "Current syscon value is not the default %x (expect %x)\n",
++			 val, reg);
 +
-+	if (priv->variant->internal_phy) {
-+		if (!priv->use_internal_phy) {
++	if (gmac->variant->internal_phy) {
++		if (!gmac->use_internal_phy) {
 +			/* switch to external PHY interface */
 +			reg &= ~H3_EPHY_SELECT;
 +		} else {
 +			reg |= H3_EPHY_SELECT;
 +			reg &= ~H3_EPHY_SHUTDOWN;
++			dev_dbg(priv->device, "Select internal_phy %x\n", reg);
 +
-+			if (of_property_read_bool(priv->phy_node,
++			if (of_property_read_bool(priv->plat->phy_node,
 +						  "allwinner,leds-active-low"))
 +				reg |= H3_EPHY_LED_POL;
++			else
++				reg &= ~H3_EPHY_LED_POL;
 +
-+			ret = of_mdio_parse_addr(priv->dev, priv->phy_node);
++			ret = of_mdio_parse_addr(priv->device,
++						 priv->plat->phy_node);
 +			if (ret < 0) {
-+				netdev_err(ndev, "Could not parse MDIO addr\n");
++				dev_err(priv->device, "Could not parse MDIO addr\n");
 +				return ret;
 +			}
 +			/* of_mdio_parse_addr returns a valid (0 ~ 31) PHY
@@ -1079,29 +982,35 @@ index 0000000..bc74467
 +	}
 +
 +	if (!of_property_read_u32(node, "allwinner,tx-delay", &val)) {
++		dev_dbg(priv->device, "set tx-delay to %x\n", val);
 +		if (val <= SYSCON_ETXDC_MASK) {
 +			reg &= ~(SYSCON_ETXDC_MASK << SYSCON_ETXDC_SHIFT);
 +			reg |= (val << SYSCON_ETXDC_SHIFT);
 +		} else {
-+			netdev_warn(ndev, "Invalid TX clock delay: %d\n", val);
++			dev_err(priv->device, "Invalid TX clock delay: %d\n",
++				val);
++			return -EINVAL;
 +		}
 +	}
 +
 +	if (!of_property_read_u32(node, "allwinner,rx-delay", &val)) {
++		dev_dbg(priv->device, "set rx-delay to %x\n", val);
 +		if (val <= SYSCON_ERXDC_MASK) {
 +			reg &= ~(SYSCON_ERXDC_MASK << SYSCON_ERXDC_SHIFT);
 +			reg |= (val << SYSCON_ERXDC_SHIFT);
 +		} else {
-+			netdev_warn(ndev, "Invalid RX clock delay: %d\n", val);
++			dev_err(priv->device, "Invalid RX clock delay: %d\n",
++				val);
++			return -EINVAL;
 +		}
 +	}
 +
 +	/* Clear interface mode bits */
 +	reg &= ~(SYSCON_ETCS_MASK | SYSCON_EPIT);
-+	if (priv->variant->support_rmii)
++	if (gmac->variant->support_rmii)
 +		reg &= ~SYSCON_RMII_EN;
 +
-+	switch (priv->phy_interface) {
++	switch (priv->plat->interface) {
 +	case PHY_INTERFACE_MODE_MII:
 +		/* default */
 +		break;
@@ -1112,1402 +1021,483 @@ index 0000000..bc74467
 +		reg |= SYSCON_RMII_EN | SYSCON_ETCS_EXT_GMII;
 +		break;
 +	default:
-+		netdev_err(ndev, "Unsupported interface mode: %s",
-+			   phy_modes(priv->phy_interface));
++		dev_err(priv->device, "Unsupported interface mode: %s",
++			phy_modes(priv->plat->interface));
 +		return -EINVAL;
 +	}
 +
-+	regmap_write(priv->regmap, SYSCON_EMAC_REG, reg);
++	regmap_write(gmac->regmap, SYSCON_EMAC_REG, reg);
 +
 +	return 0;
 +}
 +
-+static void sun8i_emac_unset_syscon(struct net_device *ndev)
++static void sun8i_dwmac_unset_syscon(struct sunxi_priv_data *gmac)
 +{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 reg = priv->variant->default_syscon_value;
++	u32 reg = gmac->variant->default_syscon_value;
 +
-+	regmap_write(priv->regmap, SYSCON_EMAC_REG, reg);
++	regmap_write(gmac->regmap, SYSCON_EMAC_REG, reg);
 +}
 +
-+/* Set Management Data Clock, must be call after device reset */
-+static void sun8i_emac_set_mdc(struct net_device *ndev)
++static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
 +{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	unsigned long rate;
-+	u32 reg;
-+
-+	rate = clk_get_rate(priv->ahb_clk);
-+	if (rate > 160000000)
-+		reg = 0x3 << 20; /* AHB / 128 */
-+	else if (rate > 80000000)
-+		reg = 0x2 << 20; /* AHB / 64 */
-+	else if (rate > 40000000)
-+		reg = 0x1 << 20; /* AHB / 32 */
-+	else
-+		reg = 0x0 << 20; /* AHB / 16 */
-+	netif_dbg(priv, link, ndev, "MDC auto : %x\n", reg);
-+	writel(reg, priv->base + EMAC_MDIO_CMD);
-+}
-+
-+/* "power" the device, by enabling clk/reset/regulators */
-+static int sun8i_emac_power(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
++	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
 +	int ret;
 +
-+	ret = clk_prepare_enable(priv->ahb_clk);
-+	if (ret) {
-+		netdev_err(ndev, "Could not enable AHB clock\n");
++	if (gmac->ephy_clk) {
++		ret = clk_prepare_enable(gmac->ephy_clk);
++		if (ret) {
++			dev_err(priv->device, "Cannot enable ephy\n");
++			return ret;
++		}
++	}
++
++	if (gmac->rst_ephy) {
++		ret = reset_control_deassert(gmac->rst_ephy);
++		if (ret) {
++			dev_err(priv->device, "Cannot deassert ephy\n");
++			clk_disable_unprepare(gmac->ephy_clk);
++			return ret;
++		}
++	}
++
++	return 0;
++}
++
++static int sun8i_dwmac_unpower_internal_phy(struct sunxi_priv_data *gmac)
++{
++	if (gmac->ephy_clk)
++		clk_disable_unprepare(gmac->ephy_clk);
++	if (gmac->rst_ephy)
++		reset_control_assert(gmac->rst_ephy);
++	return 0;
++}
++
++static int sun8i_power_phy(struct stmmac_priv *priv)
++{
++	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
++	int ret;
++
++	ret = sun8i_dwmac_power_internal_phy(priv);
++	if (ret)
 +		return ret;
-+	}
 +
-+	if (priv->rst_mac) {
-+		ret = reset_control_deassert(priv->rst_mac);
-+		if (ret) {
-+			netdev_err(ndev, "Could not deassert reset\n");
-+			goto err_reset;
-+		}
-+	}
++	ret = sun8i_dwmac_set_syscon(priv);
++	if (ret)
++		goto error_phy;
 +
-+	if (priv->ephy_clk) {
-+		ret = clk_prepare_enable(priv->ephy_clk);
-+		if (ret) {
-+			netdev_err(ndev, "Could not enable EPHY clock\n");
-+			goto err_ephy_clk;
-+		}
-+	}
-+
-+	if (priv->rst_ephy) {
-+		ret = reset_control_deassert(priv->rst_ephy);
-+		if (ret) {
-+			netdev_err(ndev, "Could not deassert EPHY reset\n");
-+			goto err_ephy_reset;
-+		}
-+	}
-+
++	ret = sun8i_dwmac_reset(priv);
++	if (ret)
++		goto error_phy;
 +	return 0;
 +
-+err_ephy_reset:
-+	if (priv->ephy_clk)
-+		clk_disable_unprepare(priv->ephy_clk);
-+err_ephy_clk:
-+	if (priv->rst_mac)
-+		reset_control_assert(priv->rst_mac);
-+err_reset:
-+	clk_disable_unprepare(priv->ahb_clk);
++error_phy:
++	sun8i_dwmac_unset_syscon(gmac);
++	sun8i_dwmac_unpower_internal_phy(gmac);
 +	return ret;
 +}
 +
-+/* "Unpower" the device, disabling clocks and regulators, asserting reset */
-+static void sun8i_emac_unpower(struct net_device *ndev)
++static void sun8i_unpower_phy(struct sunxi_priv_data *gmac)
 +{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	if (priv->rst_ephy)
-+		reset_control_assert(priv->rst_ephy);
-+
-+	if (priv->ephy_clk)
-+		clk_disable_unprepare(priv->ephy_clk);
-+
-+	if (priv->rst_mac)
-+		reset_control_assert(priv->rst_mac);
-+
-+	clk_disable_unprepare(priv->ahb_clk);
++	sun8i_dwmac_unset_syscon(gmac);
++	sun8i_dwmac_unpower_internal_phy(gmac);
 +}
 +
-+static int sun8i_emac_init(struct net_device *ndev)
++static void sun8i_dwmac_exit(struct platform_device *pdev, void *priv)
 +{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct device_node *node = priv->dev->of_node;
-+	const u8 *addr;
++	struct sunxi_priv_data *gmac = priv;
 +
-+	/* Try to get MAC address from DT, or assign a random one */
-+	addr = of_get_mac_address(node);
-+	if (addr)
-+		ether_addr_copy(ndev->dev_addr, addr);
-+	else
-+		eth_hw_addr_random(ndev);
++	sun8i_unpower_phy(gmac);
 +
-+	return 0;
++	clk_disable_unprepare(gmac->tx_clk);
++
++	if (gmac->regulator)
++		regulator_disable(gmac->regulator);
 +}
 +
-+static int sun8i_emac_mdio_probe(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct phy_device *phydev = NULL;
-+
-+	phydev = of_phy_connect(ndev, priv->phy_node, &sun8i_emac_adjust_link,
-+				0, priv->phy_interface);
-+
-+	if (!phydev) {
-+		netdev_err(ndev, "Could not attach to PHY\n");
-+		return -ENODEV;
-+	}
-+
-+	phy_attached_info(phydev);
-+
-+	/* mask with MAC supported features */
-+	phydev->supported &= PHY_GBIT_FEATURES;
-+	phydev->advertising = phydev->supported;
-+
-+	priv->link = 0;
-+	priv->speed = 0;
-+	priv->duplex = -1;
-+
-+	return 0;
-+}
-+
-+/* Allocate both RX and TX ring buffer and init them
-+ * This function also write the startbase of thoses ring in the device.
-+ * All structures that help managing thoses rings are also handled
-+ * by this functions (rx_skb/txl)
-+ */
-+static int sun8i_emac_alloc_rings(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct dma_desc *ddesc;
-+	int err, i;
-+
-+	priv->rx_skb = kcalloc(priv->nbdesc_rx, sizeof(struct sk_buff *),
-+			      GFP_KERNEL);
-+	if (!priv->rx_skb) {
-+		err = -ENOMEM;
-+		goto rx_skb_error;
-+	}
-+	priv->txl = kcalloc(priv->nbdesc_tx, sizeof(struct txinfo), GFP_KERNEL);
-+	if (!priv->txl) {
-+		err = -ENOMEM;
-+		goto tx_error;
-+	}
-+
-+	/* allocate/init RX ring */
-+	priv->dd_rx = dma_zalloc_coherent(priv->dev,
-+			priv->nbdesc_rx * sizeof(struct dma_desc),
-+			&priv->dd_rx_phy, GFP_KERNEL);
-+	if (!priv->dd_rx) {
-+		dev_err(priv->dev, "ERROR: cannot allocate DMA RX buffer");
-+		err = -ENOMEM;
-+		goto dma_rx_error;
-+	}
-+	ddesc = priv->dd_rx;
-+	for (i = 0; i < priv->nbdesc_rx; i++) {
-+		sun8i_emac_rx_skb(ndev, i);
-+		ddesc->next = cpu_to_le32(priv->dd_rx_phy + (i + 1)
-+			* sizeof(struct dma_desc));
-+		ddesc++;
-+	}
-+	/* last descriptor point back to first one */
-+	ddesc--;
-+	ddesc->next = cpu_to_le32(priv->dd_rx_phy);
-+
-+	/* allocate/init TX ring */
-+	priv->dd_tx = dma_zalloc_coherent(priv->dev,
-+			priv->nbdesc_tx * sizeof(struct dma_desc),
-+			&priv->dd_tx_phy, GFP_KERNEL);
-+	if (!priv->dd_tx) {
-+		dev_err(priv->dev, "ERROR: cannot allocate DMA TX buffer");
-+		err = -ENOMEM;
-+		goto dma_tx_error;
-+	}
-+	ddesc = priv->dd_tx;
-+	for (i = 0; i < priv->nbdesc_tx; i++) {
-+		ddesc->status = DCLEAN;
-+		ddesc->ctl = 0;
-+		ddesc->next = cpu_to_le32(priv->dd_tx_phy + (i + 1)
-+			* sizeof(struct dma_desc));
-+		ddesc++;
-+	}
-+	/* last descriptor point back to first one */
-+	ddesc--;
-+	ddesc->next = cpu_to_le32(priv->dd_tx_phy);
-+	i--;
-+
-+	priv->tx_slot = 0;
-+	priv->tx_dirty = 0;
-+	priv->rx_dirty = 0;
-+
-+	/* write start of RX ring descriptor */
-+	writel(priv->dd_rx_phy, priv->base + EMAC_RX_DESC_LIST);
-+	/* write start of TX ring descriptor */
-+	writel(priv->dd_tx_phy, priv->base + EMAC_TX_DESC_LIST);
-+
-+	return 0;
-+dma_tx_error:
-+	dma_free_coherent(priv->dev, priv->nbdesc_rx * sizeof(struct dma_desc),
-+			  priv->dd_rx, priv->dd_rx_phy);
-+dma_rx_error:
-+	kfree(priv->txl);
-+tx_error:
-+	kfree(priv->rx_skb);
-+rx_skb_error:
-+	return err;
-+}
-+
-+static int sun8i_emac_open(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int err;
-+	u32 v;
-+
-+	err = sun8i_emac_power(ndev);
-+	if (err)
-+		return err;
-+
-+	err = request_irq(priv->irq, sun8i_emac_dma_interrupt, 0,
-+			  dev_name(priv->dev), ndev);
-+	if (err) {
-+		dev_err(priv->dev, "Cannot request IRQ: %d\n", err);
-+		goto err_power;
-+	}
-+
-+	/* Set interface mode (and configure internal PHY on H3) */
-+	err = sun8i_emac_set_syscon(ndev);
-+	if (err)
-+		goto err_irq;
-+
-+	/* Do SOFT RST */
-+	v = readl(priv->base + EMAC_BASIC_CTL1);
-+	writel(v | 0x01, priv->base + EMAC_BASIC_CTL1);
-+
-+	err = readl_poll_timeout(priv->base + EMAC_BASIC_CTL1, v,
-+				 !(v & 0x01), 100, 10000);
-+	if (err) {
-+		dev_err(priv->dev, "EMAC reset timeout\n");
-+		err = -EFAULT;
-+		goto err_syscon;
-+	}
-+
-+	sun8i_emac_set_mdc(ndev);
-+
-+	err = sun8i_emac_mdio_register(ndev);
-+	if (err)
-+		goto err_syscon;
-+
-+	err = sun8i_emac_mdio_probe(ndev);
-+	if (err)
-+		goto err_syscon;
-+
-+	/* DMA */
-+	v = (8 << 24);/* burst len */
-+	writel(v, priv->base + EMAC_BASIC_CTL1);
-+
-+	writel(EMAC_RX_INT | EMAC_TX_INT, priv->base + EMAC_INT_EN);
-+
-+	v = readl(priv->base + EMAC_RX_CTL0);
-+	/* CHECK_CRC */
-+	if (ndev->features & NETIF_F_RXCSUM)
-+		v |= EMAC_RX_DO_CRC;
-+	else
-+		v &= ~EMAC_RX_DO_CRC;
-+	/* STRIP_FCS */
-+	if (ndev->features & NETIF_F_RXFCS)
-+		v &= ~EMAC_RX_STRIP_FCS;
-+	else
-+		v |= EMAC_RX_STRIP_FCS;
-+	writel(v, priv->base + EMAC_RX_CTL0);
-+
-+	v = readl(priv->base + EMAC_TX_CTL1);
-+	/* TX_MD Transmission starts after a full frame located in TX DMA FIFO*/
-+	v |= BIT(1);
-+	/* Undocumented bit (called TX_NEXT_FRM in BSP), the original comment is
-+	 * "Operating on second frame increase the performance
-+	 * especially when transmit store-and-forward is used."
-+	 */
-+	v |= BIT(2);
-+	writel(v, priv->base + EMAC_TX_CTL1);
-+
-+	v = readl(priv->base + EMAC_RX_CTL1);
-+	/* RX_MD RX DMA reads data from RX DMA FIFO to host memory after a
-+	 * complete frame has been written to RX DMA FIFO
-+	*/
-+	v |= BIT(1);
-+	writel(v, priv->base + EMAC_RX_CTL1);
-+
-+	sun8i_emac_set_macaddr(priv, ndev->dev_addr, 0);
-+
-+	err = sun8i_emac_alloc_rings(ndev);
-+	if (err) {
-+		netdev_err(ndev, "Fail to allocate rings\n");
-+		goto err_mdio;
-+	}
-+
-+	phy_start(ndev->phydev);
-+
-+	sun8i_emac_start_rx(ndev);
-+	sun8i_emac_start_tx(ndev);
-+
-+	netif_napi_add(ndev, &priv->napi, sun8i_emac_poll, 64);
-+	napi_enable(&priv->napi);
-+	netif_start_queue(ndev);
-+
-+	return 0;
-+err_mdio:
-+	phy_disconnect(ndev->phydev);
-+err_syscon:
-+	sun8i_emac_unset_syscon(ndev);
-+err_irq:
-+	free_irq(priv->irq, ndev);
-+err_power:
-+	sun8i_emac_unpower(ndev);
-+	return err;
-+}
-+
-+/* Clean the TX ring of any accepted skb for xmit */
-+static void sun8i_emac_tx_clean(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int i;
-+	struct dma_desc *ddesc;
-+	int frame_len;
-+
-+	for (i = 0; i < priv->nbdesc_tx; i++) {
-+		if (priv->txl[i].skb) {
-+			ddesc = priv->dd_tx + i;
-+			frame_len = le32_to_cpu(ddesc->ctl) & 0x3FFF;
-+			switch (priv->txl[i].map) {
-+			case MAP_SINGLE:
-+				dma_unmap_single(priv->dev,
-+						 le32_to_cpu(ddesc->buf_addr),
-+						 frame_len, DMA_TO_DEVICE);
-+				break;
-+			case MAP_PAGE:
-+				dma_unmap_page(priv->dev,
-+					       le32_to_cpu(ddesc->buf_addr),
-+					       frame_len, DMA_TO_DEVICE);
-+				break;
-+			default:
-+				dev_err(priv->dev, "Trying to free an empty slot\n");
-+				continue;
-+			}
-+			dev_kfree_skb_any(priv->txl[i].skb);
-+			priv->txl[i].skb = NULL;
-+			ddesc->ctl = 0;
-+			ddesc->status = DCLEAN;
-+		}
-+	}
-+	priv->tx_slot = 0;
-+	priv->tx_dirty = 0;
-+}
-+
-+/* Clean the RX ring */
-+static void sun8i_emac_rx_clean(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int i;
-+	struct dma_desc *ddesc;
-+
-+	/* clean RX ring */
-+	for (i = 0; i < priv->nbdesc_rx; i++)
-+		if (priv->rx_skb[i]) {
-+			ddesc = priv->dd_rx + i;
-+			dma_unmap_single(priv->dev,
-+					 le32_to_cpu(ddesc->buf_addr),
-+					 DESC_BUF_MAX, DMA_FROM_DEVICE);
-+			dev_kfree_skb_any(priv->rx_skb[i]);
-+			priv->rx_skb[i] = NULL;
-+		}
-+}
-+
-+static int sun8i_emac_stop(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	napi_disable(&priv->napi);
-+
-+	sun8i_emac_stop_tx(ndev);
-+	sun8i_emac_stop_rx(ndev);
-+
-+	phy_stop(ndev->phydev);
-+	phy_disconnect(ndev->phydev);
-+
-+	sun8i_emac_mdio_unregister(ndev);
-+
-+	sun8i_emac_unset_syscon(ndev);
-+
-+	free_irq(priv->irq, ndev);
-+
-+	sun8i_emac_rx_clean(ndev);
-+	sun8i_emac_tx_clean(ndev);
-+
-+	kfree(priv->rx_skb);
-+	kfree(priv->txl);
-+
-+	dma_free_coherent(priv->dev, priv->nbdesc_rx * sizeof(struct dma_desc),
-+			  priv->dd_rx, priv->dd_rx_phy);
-+	dma_free_coherent(priv->dev, priv->nbdesc_tx * sizeof(struct dma_desc),
-+			  priv->dd_tx, priv->dd_tx_phy);
-+
-+	sun8i_emac_unpower(ndev);
-+
-+	return 0;
-+}
-+
-+static netdev_tx_t sun8i_emac_xmit(struct sk_buff *skb, struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct dma_desc *ddesc;
-+	struct dma_desc *first;
-+	int i = 0, rbd_first;
-+	unsigned int len, fraglen, tlen;
-+	u32 v;
-+	int n;
-+	int nf;
-+	const skb_frag_t *frag;
-+	int do_csum = 0;
-+
-+	if (skb_put_padto(skb, ETH_ZLEN))
-+		return NETDEV_TX_OK;
-+	len = skb_headlen(skb);
-+
-+	n = skb_shinfo(skb)->nr_frags;
-+
-+	if (skb->ip_summed == CHECKSUM_PARTIAL) {
-+		do_csum = 1;
-+		priv->estats.tx_hw_csum++;
-+	}
-+	netif_dbg(priv, tx_queued, ndev, "%s len=%u skblen=%u %x\n", __func__,
-+		  len, skb->len,
-+		  (skb->ip_summed == CHECKSUM_PARTIAL));
-+
-+	/* check for contigous space
-+	 * We need at least 1(skb->data) + n(numfrags) + 1(one clean slot)
-+	 */
-+	if (rb_tx_numfreedesc(ndev) < n + 2) {
-+		dev_err_ratelimited(priv->dev, "BUG!: TX is full %d %d\n",
-+				    priv->tx_dirty, priv->tx_slot);
-+		netif_stop_queue(ndev);
-+		return NETDEV_TX_BUSY;
-+	}
-+	i = priv->tx_slot;
-+
-+	ddesc = priv->dd_tx + i;
-+	first = priv->dd_tx + i;
-+	rbd_first = i;
-+
-+	ddesc->buf_addr = dma_map_single(priv->dev, skb->data, len,
-+					 DMA_TO_DEVICE);
-+	if (dma_mapping_error(priv->dev, ddesc->buf_addr)) {
-+		dev_err(priv->dev, "ERROR: Cannot map buffer for DMA\n");
-+		goto xmit_error;
-+	}
-+	/* We cannot direcly use cpu_to_le32() after dma_map_single
-+	 * since dma_mapping_error use it
-+	 */
-+	ddesc->buf_addr = cpu_to_le32(ddesc->buf_addr);
-+	priv->txl[i].map = MAP_SINGLE;
-+	priv->txl[i].skb = skb;
-+
-+	tlen = len;
-+	ddesc->ctl = le32_to_cpu(len);
-+	/* Undocumented bit that make it works
-+	 * Without it, packets never be sent on H3 SoC
-+	 */
-+	ddesc->ctl |= EMAC_MAGIC_TX_BIT;
-+	if (do_csum)
-+		ddesc->ctl |= EMAC_TX_DO_CRC;
-+
-+	/* handle fragmented skb, one descriptor per fragment  */
-+	for (nf = 0; nf < n; nf++) {
-+		frag = &skb_shinfo(skb)->frags[nf];
-+		rb_inc(&i, priv->nbdesc_tx);
-+		priv->txl[i].skb = skb;
-+		ddesc = priv->dd_tx + i;
-+		fraglen = skb_frag_size(frag);
-+		ddesc->ctl = le32_to_cpu(fraglen);
-+		tlen += fraglen,
-+		ddesc->ctl |= EMAC_MAGIC_TX_BIT;
-+		if (do_csum)
-+			ddesc->ctl |= EMAC_TX_DO_CRC;
-+
-+		ddesc->buf_addr = skb_frag_dma_map(priv->dev, frag, 0,
-+				fraglen, DMA_TO_DEVICE);
-+		if (dma_mapping_error(priv->dev, ddesc->buf_addr)) {
-+			dev_err(priv->dev, "Cannot map buffer for DMA\n");
-+			goto xmit_error;
-+		}
-+		/* Cannot directly use cpu_to_le32() after skb_frag_dma_map
-+		 * since dma_mapping_error use it
-+		 */
-+		ddesc->buf_addr = cpu_to_le32(ddesc->buf_addr);
-+		priv->txl[i].map = MAP_PAGE;
-+		ddesc->status = EMAC_COULD_BE_USED_BY_DMA;
-+	}
-+
-+	/* frame end */
-+	ddesc->ctl |= EMAC_DSC_TX_LAST;
-+	/* We want an interrupt after transmission */
-+	ddesc->ctl |= EMAC_WANT_INT;
-+
-+	rb_inc(&i, priv->nbdesc_tx);
-+
-+	/* This line was previously after DMA start, but with that we hit a
-+	 * small race with complete_xmit() where we complete more data than
-+	 * sent.
-+	 * The packet is sent just after EMAC_COULD_BE_USED_BY_DMA flag set and
-+	 * complete_xmit fire just after before netdev_sent_queue().
-+	 * This race could be observed only when overflowing a gigabit line.
-+	 */
-+	netdev_sent_queue(ndev, skb->len);
-+
-+	/* frame begin */
-+	first->ctl |= EMAC_DSC_TX_FIRST;
-+	wmb();/* EMAC_COULD_BE_USED_BY_DMA must be the last value written */
-+	first->status = EMAC_COULD_BE_USED_BY_DMA;
-+	priv->tx_slot = i;
-+
-+	/* Trying to optimize this (recording DMA start/stop) seems
-+	 * to lead to errors. So we always start DMA.
-+	 */
-+	v = readl(priv->base + EMAC_TX_CTL1);
-+	v |= EMAC_TX_DMA_START;
-+	v |= EMAC_TX_DMA_EN;
-+	writel_relaxed(v, priv->base + EMAC_TX_CTL1);
-+
-+	if (rb_tx_numfreedesc(ndev) < MAX_SKB_FRAGS + 1) {
-+		netif_stop_queue(ndev);
-+		priv->estats.tx_stop_queue++;
-+	}
-+	priv->estats.tx_used_desc = rb_tx_numfreedesc(ndev);
-+	priv->ndev->stats.tx_packets++;
-+	priv->ndev->stats.tx_bytes += tlen;
-+
-+	return NETDEV_TX_OK;
-+
-+xmit_error:
-+	/* destroy skb and return TX OK Documentation/DMA-API-HOWTO.txt */
-+	/* clean descritors from rbd_first to i */
-+	ddesc->ctl = 0;
-+	/* setting status to DCLEAN is the last value to be set */
-+	wmb();
-+	ddesc->status = DCLEAN;
-+	do {
-+		ddesc = priv->dd_tx + rbd_first;
-+		ddesc->ctl = 0;
-+		/* setting status to DCLEAN is the last value to be set */
-+		wmb();
-+		ddesc->status = DCLEAN;
-+		rb_inc(&rbd_first, priv->nbdesc_tx);
-+	} while (rbd_first != i);
-+	dev_kfree_skb_any(skb);
-+	return NETDEV_TX_OK;
-+}
-+
-+static int sun8i_emac_change_mtu(struct net_device *ndev, int new_mtu)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int max_mtu;
-+
-+	dev_info(priv->dev, "%s set MTU to %d\n", __func__, new_mtu);
-+
-+	if (netif_running(ndev)) {
-+		dev_err(priv->dev, "%s: must be stopped to change its MTU\n",
-+			ndev->name);
-+		return -EBUSY;
-+	}
-+
-+	max_mtu = SKB_MAX_HEAD(NET_SKB_PAD + NET_IP_ALIGN);
-+
-+	if ((new_mtu < 68) || (new_mtu > max_mtu)) {
-+		dev_err(priv->dev, "%s: invalid MTU, max MTU is: %d\n",
-+			ndev->name, max_mtu);
-+		return -EINVAL;
-+	}
-+
-+	ndev->mtu = new_mtu;
-+	netdev_update_features(ndev);
-+	return 0;
-+}
-+
-+static int sun8i_emac_set_features(struct net_device *ndev,
-+				   netdev_features_t features)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v;
-+
-+	v = readl(priv->base + EMAC_BASIC_CTL0);
-+	if (features & NETIF_F_LOOPBACK && netif_running(ndev)) {
-+		netif_info(priv, hw, ndev, "Set loopback features");
-+		v |= BIT(1);
-+	} else {
-+		netif_info(priv, hw, ndev, "Unset loopback features");
-+		v &= ~BIT(1);
-+	}
-+	writel(v, priv->base + EMAC_BASIC_CTL0);
-+
-+	v = readl(priv->base + EMAC_RX_CTL0);
-+	if (features & NETIF_F_RXCSUM) {
-+		v |= EMAC_RX_DO_CRC;
-+		netif_info(priv, hw, ndev, "Doing RX CRC check by hardware");
-+	} else {
-+		v &= ~EMAC_RX_DO_CRC;
-+		netif_info(priv, hw, ndev, "No RX CRC check by hardware");
-+	}
-+	if (features & NETIF_F_RXFCS) {
-+		v &= ~EMAC_RX_STRIP_FCS;
-+		netif_info(priv, hw, ndev, "Keep FCS");
-+	} else {
-+		v |= EMAC_RX_STRIP_FCS;
-+		netif_info(priv, hw, ndev, "Strip FCS");
-+	}
-+	writel(v, priv->base + EMAC_RX_CTL0);
-+
-+	netif_dbg(priv, drv, ndev, "%s %llx %x\n", __func__, features, v);
-+
-+	return 0;
-+}
-+
-+static void sun8i_emac_set_rx_mode(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v = 0;
-+	int i = 0;
-+	struct netdev_hw_addr *ha;
-+
-+	/* Receive all multicast frames */
-+	v |= BIT(16);
-+	/* Receive all control frames */
-+	v |= BIT(13);
-+	if (ndev->flags & IFF_PROMISC)
-+		v |= BIT(1);
-+	if (netdev_uc_count(ndev) > 7) {
-+		v |= BIT(1);
-+	} else {
-+		netdev_for_each_uc_addr(ha, ndev) {
-+			i++;
-+			sun8i_emac_set_macaddr(priv, ha->addr, i);
-+		}
-+	}
-+	writel(v, priv->base + EMAC_RX_FRM_FLT);
-+}
-+
-+static void sun8i_emac_tx_timeout(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	netdev_err(ndev, "%s\n", __func__);
-+
-+	sun8i_emac_stop_tx(ndev);
-+
-+	sun8i_emac_tx_clean(ndev);
-+
-+	/* write start of the new TX ring descriptor */
-+	writel(priv->dd_tx_phy, priv->base + EMAC_TX_DESC_LIST);
-+
-+	sun8i_emac_start_tx(ndev);
-+
-+	netdev_reset_queue(ndev);
-+
-+	priv->estats.tx_timeout++;
-+	ndev->stats.tx_errors++;
-+	netif_wake_queue(ndev);
-+}
-+
-+static int sun8i_emac_ioctl(struct net_device *ndev, struct ifreq *rq, int cmd)
-+{
-+	struct phy_device *phydev = ndev->phydev;
-+
-+	if (!netif_running(ndev))
-+		return -EINVAL;
-+
-+	if (!phydev)
-+		return -ENODEV;
-+
-+	return phy_mii_ioctl(phydev, rq, cmd);
-+}
-+
-+static int sun8i_emac_check_if_running(struct net_device *ndev)
-+{
-+	if (!netif_running(ndev))
-+		return -EINVAL;
-+	return 0;
-+}
-+
-+static int sun8i_emac_get_sset_count(struct net_device *ndev, int sset)
-+{
-+	switch (sset) {
-+	case ETH_SS_STATS:
-+		return ARRAY_SIZE(estats_str);
-+	}
-+	return -EOPNOTSUPP;
-+}
-+
-+static int sun8i_emac_ethtool_get_settings(struct net_device *ndev,
-+					   struct ethtool_cmd *cmd)
-+{
-+	struct phy_device *phy = ndev->phydev;
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	if (!phy) {
-+		netdev_err(ndev, "%s: %s: PHY is not registered\n",
-+			   __func__, ndev->name);
-+		return -ENODEV;
-+	}
-+
-+	if (!netif_running(ndev)) {
-+		dev_err(priv->dev, "interface disabled: we cannot track link speed / duplex setting\n");
-+		return -EBUSY;
-+	}
-+
-+	return phy_ethtool_gset(phy, cmd);
-+}
-+
-+static int sun8i_emac_ethtool_set_settings(struct net_device *ndev,
-+					   struct ethtool_cmd *cmd)
-+{
-+	struct phy_device *phy = ndev->phydev;
-+
-+	return phy_ethtool_sset(phy, cmd);
-+}
-+
-+static void sun8i_emac_ethtool_getdrvinfo(struct net_device *ndev,
-+					  struct ethtool_drvinfo *info)
-+{
-+	strlcpy(info->driver, "sun8i_emac", sizeof(info->driver));
-+	strcpy(info->version, "00");
-+	info->fw_version[0] = '\0';
-+}
-+
-+static void sun8i_emac_ethtool_stats(struct net_device *ndev,
-+				     struct ethtool_stats *dummy, u64 *data)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	memcpy(data, &priv->estats,
-+	       sun8i_emac_get_sset_count(ndev, ETH_SS_STATS) * sizeof(u64));
-+}
-+
-+static void sun8i_emac_ethtool_strings(struct net_device *dev, u32 stringset,
-+				       u8 *buffer)
-+{
-+	switch (stringset) {
-+	case ETH_SS_STATS:
-+		memcpy(buffer, &estats_str, sizeof(estats_str));
-+		break;
-+	}
-+}
-+
-+static u32 sun8i_emac_ethtool_getmsglevel(struct net_device *ndev)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	return priv->msg_enable;
-+}
-+
-+static void sun8i_emac_ethtool_setmsglevel(struct net_device *ndev, u32 level)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	priv->msg_enable = level;
-+}
-+
-+static void sun8i_emac_get_pauseparam(struct net_device *ndev,
-+				      struct ethtool_pauseparam *pause)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	pause->rx_pause = 0;
-+	pause->tx_pause = 0;
-+	pause->autoneg = ndev->phydev->autoneg;
-+
-+	if (priv->flow_ctrl & EMAC_FLOW_RX)
-+		pause->rx_pause = 1;
-+	if (priv->flow_ctrl & EMAC_FLOW_TX)
-+		pause->tx_pause = 1;
-+}
-+
-+static int sun8i_emac_set_pauseparam(struct net_device *ndev,
-+				     struct ethtool_pauseparam *pause)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	struct phy_device *phy = ndev->phydev;
-+	int new_pause = 0;
-+	int ret = 0;
-+
-+	if (pause->rx_pause)
-+		new_pause |= EMAC_FLOW_RX;
-+	if (pause->tx_pause)
-+		new_pause |= EMAC_FLOW_TX;
-+
-+	priv->flow_ctrl = new_pause;
-+	phy->autoneg = pause->autoneg;
-+
-+	if (phy->autoneg) {
-+		if (netif_running(ndev))
-+			ret = phy_start_aneg(phy);
-+	} else {
-+		sun8i_emac_flow_ctrl(priv, phy->duplex, priv->flow_ctrl);
-+	}
-+	return ret;
-+}
-+
-+static void sun8i_emac_ethtool_get_ringparam(struct net_device *ndev,
-+					     struct ethtool_ringparam *ring)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+
-+	ring->rx_pending = priv->nbdesc_rx;
-+	ring->tx_pending = priv->nbdesc_tx;
-+}
-+
-+static int sun8i_emac_ethtool_set_ringparam(struct net_device *ndev,
-+					    struct ethtool_ringparam *ring)
-+{
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	int err;
-+
-+	if (ring->rx_max_pending || ring->rx_mini_max_pending ||
-+	    ring->rx_jumbo_max_pending || ring->rx_mini_pending ||
-+	    ring->rx_jumbo_pending || ring->tx_max_pending)
-+		return -EINVAL;
-+
-+	if (ring->tx_pending < MAX_SKB_FRAGS + 1) {
-+		netdev_err(ndev, "The number of TX descriptors is too low");
-+		return -EINVAL;
-+	}
-+
-+	sun8i_emac_stop_tx(ndev);
-+	sun8i_emac_stop_rx(ndev);
-+
-+	sun8i_emac_rx_clean(ndev);
-+	sun8i_emac_tx_clean(ndev);
-+
-+	kfree(priv->rx_skb);
-+	kfree(priv->txl);
-+
-+	dma_free_coherent(priv->dev, priv->nbdesc_rx * sizeof(struct dma_desc),
-+			  priv->dd_rx, priv->dd_rx_phy);
-+	dma_free_coherent(priv->dev, priv->nbdesc_tx * sizeof(struct dma_desc),
-+			  priv->dd_tx, priv->dd_tx_phy);
-+
-+	priv->nbdesc_rx = ring->rx_pending;
-+	priv->nbdesc_tx = ring->tx_pending;
-+	err = sun8i_emac_alloc_rings(ndev);
-+	if (err) {
-+		/* Fatal error, we cannot re start */
-+		netdev_err(ndev, "Fail to allocate rings\n");
-+		return -EFAULT;
-+	}
-+
-+	sun8i_emac_start_rx(ndev);
-+	sun8i_emac_start_tx(ndev);
-+
-+	netif_start_queue(ndev);
-+
-+	netdev_info(ndev, "Ring Param settings: rx: %d, tx %d\n",
-+		    ring->rx_pending, ring->tx_pending);
-+	return 0;
-+}
-+
-+static const struct ethtool_ops sun8i_emac_ethtool_ops = {
-+	.begin = sun8i_emac_check_if_running,
-+	.get_settings = sun8i_emac_ethtool_get_settings,
-+	.set_settings = sun8i_emac_ethtool_set_settings,
-+	.get_link = ethtool_op_get_link,
-+	.get_pauseparam = sun8i_emac_get_pauseparam,
-+	.set_pauseparam = sun8i_emac_set_pauseparam,
-+	.get_ethtool_stats = sun8i_emac_ethtool_stats,
-+	.get_strings = sun8i_emac_ethtool_strings,
-+	.get_sset_count = sun8i_emac_get_sset_count,
-+	.get_drvinfo = sun8i_emac_ethtool_getdrvinfo,
-+	.get_msglevel = sun8i_emac_ethtool_getmsglevel,
-+	.set_msglevel = sun8i_emac_ethtool_setmsglevel,
-+	.get_ringparam = sun8i_emac_ethtool_get_ringparam,
-+	.set_ringparam = sun8i_emac_ethtool_set_ringparam,
++static const struct stmmac_ops sun8i_dwmac_ops = {
++	.core_init = sun8i_dwmac_core_init,
++	.dump_regs = sun8i_dwmac_dump_mac_regs,
++	.rx_ipc = sun8i_dwmac_rx_ipc_enable,
++	.set_filter = sun8i_dwmac_set_filter,
++	.flow_ctrl = sun8i_dwmac_flow_ctrl,
++	.set_umac_addr = sun8i_dwmac_set_umac_addr,
++	.get_umac_addr = sun8i_dwmac_get_umac_addr,
 +};
 +
-+static const struct net_device_ops sun8i_emac_netdev_ops = {
-+	.ndo_init = sun8i_emac_init,
-+	.ndo_open = sun8i_emac_open,
-+	.ndo_start_xmit = sun8i_emac_xmit,
-+	.ndo_stop = sun8i_emac_stop,
-+	.ndo_change_mtu = sun8i_emac_change_mtu,
-+	.ndo_set_features = sun8i_emac_set_features,
-+	.ndo_set_rx_mode = sun8i_emac_set_rx_mode,
-+	.ndo_tx_timeout = sun8i_emac_tx_timeout,
-+	.ndo_do_ioctl = sun8i_emac_ioctl,
-+	.ndo_set_mac_address = eth_mac_addr,
-+};
-+
-+/* No locking in this function since it is guaranteed to be run once and
-+ * do actions only done here:
-+ * - Scheduling NAPI
-+ * - Stopping interrupts
-+ * - Updating stats
-+ *
-+ * Even when not enabled via EMAC_INT_EN, some interrupt could fire, so we need
-+ * to handle all of them.
-+ * Interrupts know to fire when not enabled are:
-+ * - EMAC_TX_DMA_STOP_INT
-+ * - EMAC_TX_BUF_UA_INT
-+ * - EMAC_TX_EARLY_INT
-+ * - EMAC_RX_BUF_UA_INT
-+ * - EMAC_RX_EARLY_INT
-+ */
-+static irqreturn_t sun8i_emac_dma_interrupt(int irq, void *dev_id)
++static struct mac_device_info *sun8i_dwmac_setup(struct stmmac_priv *priv)
 +{
-+	struct net_device *ndev = dev_id;
-+	struct sun8i_emac_priv *priv = netdev_priv(ndev);
-+	u32 v, u;
-+
-+	v = readl(priv->base + EMAC_INT_STA);
-+
-+	/* When this bit is asserted, a frame transmission is completed. */
-+	if (v & EMAC_TX_INT) {
-+		priv->estats.tx_int++;
-+		writel(0, priv->base + EMAC_INT_EN);
-+		napi_schedule(&priv->napi);
-+	}
-+
-+	/* When this bit is asserted, the TX DMA FSM is stopped.
-+	 * For the moment only a call to tx_timeout cause this interrupt
-+	 * to fire.
-+	 */
-+	if (v & EMAC_TX_DMA_STOP_INT)
-+		priv->estats.tx_dma_stop++;
-+
-+	/* When this asserted, the TX DMA can not acquire next TX descriptor
-+	 * and TX DMA FSM is suspended.
-+	*/
-+	if (v & EMAC_TX_BUF_UA_INT) {
-+		priv->estats.tx_dma_ua++;
-+		writel(0, priv->base + EMAC_INT_EN);
-+		napi_schedule(&priv->napi);
-+	}
-+
-+	if (v & EMAC_TX_TIMEOUT_INT)
-+		priv->estats.tx_timeout_int++;
-+
-+	if (v & EMAC_TX_UNDERFLOW_INT)
-+		priv->estats.tx_underflow_int++;
-+
-+	/* When this bit asserted , the frame is transmitted to FIFO totally. */
-+	if (v & EMAC_TX_EARLY_INT)
-+		priv->estats.tx_early_int++;
-+
-+	/* When this bit is asserted, a frame reception is completed  */
-+	if (v & EMAC_RX_INT) {
-+		priv->estats.rx_int++;
-+		writel(0, priv->base + EMAC_INT_EN);
-+		napi_schedule(&priv->napi);
-+	}
-+
-+	/* When this asserted, the RX DMA can not acquire next RX descriptor
-+	 * and RX DMA FSM is suspended.
-+	*/
-+	if (v & EMAC_RX_BUF_UA_INT) {
-+		u = readl(priv->base + EMAC_RX_CTL1);
-+		writel(u | EMAC_RX_DMA_START, priv->base + EMAC_RX_CTL1);
-+		priv->estats.rx_dma_ua++;
-+	}
-+
-+	/* Same as TX DMA STOP, but never hit it */
-+	if (v & EMAC_RX_DMA_STOP_INT)
-+		priv->estats.rx_dma_stop++;
-+
-+	if (v & EMAC_RX_TIMEOUT_INT)
-+		priv->estats.rx_timeout_int++;
-+
-+	if (v & EMAC_RX_OVERFLOW_INT)
-+		priv->estats.rx_overflow_int++;
-+
-+	if (v & EMAC_RX_EARLY_INT)
-+		priv->estats.rx_early_int++;
-+
-+	if (v & EMAC_RGMII_STA_INT)
-+		priv->estats.rgmii_state_int++;
-+
-+	/* the datasheet state those register as read-only
-+	 * but nothing work(freeze) without writing to it
-+	 */
-+	writel(v, priv->base + EMAC_INT_STA);
-+
-+	return IRQ_HANDLED;
-+}
-+
-+static int sun8i_emac_probe(struct platform_device *pdev)
-+{
-+	struct device_node *node = pdev->dev.of_node;
-+	struct sun8i_emac_priv *priv;
-+	struct net_device *ndev;
-+	struct resource *res;
++	struct mac_device_info *mac;
 +	int ret;
 +
-+	ndev = alloc_etherdev(sizeof(*priv));
-+	if (!ndev)
++	mac = devm_kzalloc(priv->device, sizeof(*mac), GFP_KERNEL);
++	if (!mac)
++		return NULL;
++
++	ret = sun8i_power_phy(priv);
++	if (ret)
++		return NULL;
++
++	mac->pcsr = priv->ioaddr;
++	mac->mac = &sun8i_dwmac_ops;
++	mac->dma = &sun8i_dwmac_dma_ops;
++
++	mac->link.port = 0;
++	mac->link.duplex = BIT(0);
++	mac->link.speed = 1;
++	mac->mii.addr = EMAC_MDIO_CMD;
++	mac->mii.data = EMAC_MDIO_DATA;
++	mac->mii.reg_shift = 4;
++	mac->mii.reg_mask = GENMASK(8, 4);
++	mac->mii.addr_shift = 12;
++	mac->mii.addr_mask = GENMASK(16, 12);
++	mac->mii.clk_csr_shift = 20;
++	mac->mii.clk_csr_mask = GENMASK(22, 20);
++	mac->unicast_filter_entries = 8;
++
++	/* Synopsys Id is not available */
++	priv->synopsys_id = 0;
++
++	return mac;
++}
++
++static int sun8i_dwmac_probe(struct platform_device *pdev)
++{
++	struct plat_stmmacenet_data *plat_dat;
++	struct stmmac_resources stmmac_res;
++	struct sunxi_priv_data *gmac;
++	struct device *dev = &pdev->dev;
++	int ret;
++
++	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
++	if (ret)
++		return ret;
++
++	plat_dat = stmmac_probe_config_dt(pdev, &stmmac_res.mac);
++	if (IS_ERR(plat_dat))
++		return PTR_ERR(plat_dat);
++
++	gmac = devm_kzalloc(dev, sizeof(*gmac), GFP_KERNEL);
++	if (!gmac)
 +		return -ENOMEM;
 +
-+	SET_NETDEV_DEV(ndev, &pdev->dev);
-+	priv = netdev_priv(ndev);
-+	platform_set_drvdata(pdev, ndev);
-+
-+	priv->variant = of_device_get_match_data(&pdev->dev);
-+	if (!priv->variant) {
++	gmac->variant = of_device_get_match_data(&pdev->dev);
++	if (!gmac->variant) {
 +		dev_err(&pdev->dev, "Missing sun8i-emac variant\n");
 +		return -EINVAL;
 +	}
 +
-+	priv->mdio_node = of_get_child_by_name(node, "mdio");
-+	if (!priv->mdio_node) {
-+		netdev_err(ndev, "Could not find a MDIO node\n");
-+		return -EINVAL;
++	gmac->tx_clk = devm_clk_get(dev, "stmmaceth");
++	if (IS_ERR(gmac->tx_clk)) {
++		dev_err(dev, "could not get tx clock\n");
++		return PTR_ERR(gmac->tx_clk);
 +	}
 +
-+	priv->phy_node = of_parse_phandle(node, "phy-handle", 0);
-+	if (!priv->phy_node) {
-+		netdev_err(ndev, "No associated PHY\n");
-+		return -EINVAL;
++	/* Optional regulator for PHY */
++	gmac->regulator = devm_regulator_get_optional(dev, "phy");
++	if (IS_ERR(gmac->regulator)) {
++		if (PTR_ERR(gmac->regulator) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		dev_info(dev, "no regulator found\n");
++		gmac->regulator = NULL;
 +	}
 +
-+	priv->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
++	gmac->regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
 +						       "syscon");
-+	if (IS_ERR(priv->regmap)) {
-+		ret = PTR_ERR(priv->regmap);
++	if (IS_ERR(gmac->regmap)) {
++		ret = PTR_ERR(gmac->regmap);
 +		dev_err(&pdev->dev, "unable to map SYSCON:%d\n", ret);
 +		return ret;
 +	}
 +
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	priv->base = devm_ioremap_resource(&pdev->dev, res);
-+	if (IS_ERR(priv->base)) {
-+		ret = PTR_ERR(priv->base);
-+		dev_err(&pdev->dev, "Cannot request MMIO: %d\n", ret);
-+		return ret;
-+	}
-+
-+	priv->ahb_clk = devm_clk_get(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->ahb_clk)) {
-+		ret = PTR_ERR(priv->ahb_clk);
-+		dev_err(&pdev->dev, "Cannot get AHB clock err=%d\n", ret);
-+		goto probe_err;
-+	}
-+
-+	priv->rst_mac = devm_reset_control_get_optional(&pdev->dev, "ahb");
-+	if (IS_ERR(priv->rst_mac)) {
-+		ret = PTR_ERR(priv->rst_mac);
-+		if (ret == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_info(&pdev->dev, "No MAC reset control found %d\n", ret);
-+		priv->rst_mac = NULL;
-+	}
-+
-+	priv->phy_interface = of_get_phy_mode(node);
-+	if (priv->phy_interface < 0) {
-+		netdev_err(ndev, "PHY interface mode node unspecified\n");
-+		return priv->phy_interface;
-+	}
-+
-+	switch (priv->phy_interface) {
-+	case PHY_INTERFACE_MODE_MII:
-+		if (!priv->variant->support_mii)
-+			return -EINVAL;
-+		break;
-+	case PHY_INTERFACE_MODE_RMII:
-+		if (!priv->variant->support_rmii)
-+			return -EINVAL;
-+		break;
-+	case PHY_INTERFACE_MODE_RGMII:
-+		if (!priv->variant->support_rgmii)
-+			return -EINVAL;
-+		break;
-+	default:
-+		netdev_err(ndev, "Unsupported interface mode: %s",
-+			   phy_modes(priv->phy_interface));
-+		return -EINVAL;
-+	}
-+
-+	if (priv->phy_interface == priv->variant->internal_phy)
-+		priv->use_internal_phy = true;
-+
-+	if (priv->use_internal_phy) {
-+		priv->ephy_clk = of_clk_get(priv->phy_node, 0);
-+		if (IS_ERR(priv->ephy_clk)) {
-+			ret = PTR_ERR(priv->ephy_clk);
++	plat_dat->interface = of_get_phy_mode(dev->of_node);
++	if (plat_dat->interface == gmac->variant->internal_phy) {
++		dev_info(&pdev->dev, "Will use internal PHY\n");
++		gmac->use_internal_phy = true;
++		gmac->ephy_clk = of_clk_get(plat_dat->phy_node, 0);
++		if (IS_ERR(gmac->ephy_clk)) {
++			ret = PTR_ERR(gmac->ephy_clk);
 +			dev_err(&pdev->dev, "Cannot get EPHY clock err=%d\n",
 +				ret);
-+			goto probe_err;
++			return -EINVAL;
 +		}
 +
-+		priv->rst_ephy = of_reset_control_get(priv->phy_node, 0);
-+		if (IS_ERR(priv->rst_ephy)) {
-+			ret = PTR_ERR(priv->rst_ephy);
++		gmac->rst_ephy = of_reset_control_get(plat_dat->phy_node, NULL);
++		if (IS_ERR(gmac->rst_ephy)) {
++			ret = PTR_ERR(gmac->rst_ephy);
 +			if (ret == -EPROBE_DEFER)
-+				goto probe_err;
-+			dev_info(&pdev->dev,
-+				 "No EPHY reset control found %d\n", ret);
-+			priv->rst_ephy = NULL;
++				return ret;
++			dev_err(&pdev->dev, "No EPHY reset control found %d\n",
++				ret);
++			return -EINVAL;
 +		}
++	} else {
++		dev_info(&pdev->dev, "Will use external PHY\n");
++		gmac->use_internal_phy = false;
 +	}
 +
-+	priv->irq = platform_get_irq(pdev, 0);
-+	if (priv->irq < 0) {
-+		ret = priv->irq;
-+		dev_err(&pdev->dev, "Cannot claim IRQ: %d\n", ret);
-+		goto probe_err;
-+	}
-+
-+	spin_lock_init(&priv->tx_lock);
-+
-+	ndev->netdev_ops = &sun8i_emac_netdev_ops;
-+	ndev->ethtool_ops = &sun8i_emac_ethtool_ops;
-+
-+	priv->ndev = ndev;
-+	priv->dev = &pdev->dev;
-+
-+	ndev->hw_features = NETIF_F_SG | NETIF_F_HIGHDMA;
-+	ndev->hw_features |= NETIF_F_IP_CSUM | NETIF_F_IPV6_CSUM |
-+		NETIF_F_RXCSUM;
-+	ndev->features |= ndev->hw_features;
-+	ndev->hw_features |= NETIF_F_RXFCS;
-+	ndev->hw_features |= NETIF_F_RXALL;
-+	ndev->hw_features |= NETIF_F_LOOPBACK;
-+	ndev->priv_flags |= IFF_UNICAST_FLT;
-+
-+	ndev->watchdog_timeo = msecs_to_jiffies(5000);
-+	netif_carrier_off(ndev);
-+
-+	/* Benched on OPIPC with 100M, setting more than 256 does not give any
-+	 * perf boost
++	/* platform data specifying hardware features and callbacks.
++	 * hardware features were copied from Allwinner drivers.
 +	 */
-+	priv->nbdesc_rx = 128;
-+	priv->nbdesc_tx = 256;
++	plat_dat->rx_coe = STMMAC_RX_COE_TYPE2;
++	plat_dat->tx_coe = 1;
++	plat_dat->has_sun8i = true;
++	plat_dat->bsp_priv = gmac;
++	plat_dat->init = sun8i_dwmac_init;
++	plat_dat->exit = sun8i_dwmac_exit;
++	plat_dat->setup = sun8i_dwmac_setup;
 +
-+	ret = register_netdev(ndev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "ERROR: Register %s failed\n", ndev->name);
-+		goto probe_err;
-+	}
++	ret = sun8i_dwmac_init(pdev, plat_dat->bsp_priv);
++	if (ret)
++		return ret;
 +
-+	return 0;
++	ret = stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
++	if (ret)
++		sun8i_dwmac_exit(pdev, plat_dat->bsp_priv);
 +
-+probe_err:
-+	free_netdev(ndev);
 +	return ret;
 +}
 +
-+static int sun8i_emac_remove(struct platform_device *pdev)
-+{
-+	struct net_device *ndev = platform_get_drvdata(pdev);
-+
-+	unregister_netdev(ndev);
-+	platform_set_drvdata(pdev, NULL);
-+	free_netdev(ndev);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id sun8i_emac_of_match_table[] = {
-+	{ .compatible = "allwinner,sun8i-a83t-emac",
-+	  .data = &emac_variant_a83t },
++static const struct of_device_id sun8i_dwmac_match[] = {
 +	{ .compatible = "allwinner,sun8i-h3-emac",
-+	  .data = &emac_variant_h3 },
++		.data = &emac_variant_h3 },
++	{ .compatible = "allwinner,sun8i-a83t-emac",
++		.data = &emac_variant_a83t },
 +	{ .compatible = "allwinner,sun50i-a64-emac",
-+	  .data = &emac_variant_a64 },
-+	{}
++		.data = &emac_variant_a64 },
++	{ }
 +};
-+MODULE_DEVICE_TABLE(of, sun8i_emac_of_match_table);
++MODULE_DEVICE_TABLE(of, sun8i_dwmac_match);
 +
-+static struct platform_driver sun8i_emac_driver = {
-+	.probe          = sun8i_emac_probe,
-+	.remove         = sun8i_emac_remove,
-+	.driver         = {
-+		.name           = "sun8i-emac",
-+		.of_match_table	= sun8i_emac_of_match_table,
++static struct platform_driver sun8i_dwmac_driver = {
++	.probe  = sun8i_dwmac_probe,
++	.remove = stmmac_pltfr_remove,
++	.driver = {
++		.name           = "sun8i-dwmac",
++		.pm		= &stmmac_pltfr_pm_ops,
++		.of_match_table = sun8i_dwmac_match,
 +	},
 +};
++module_platform_driver(sun8i_dwmac_driver);
 +
-+module_platform_driver(sun8i_emac_driver);
-+
-+MODULE_DESCRIPTION("sun8i Ethernet driver");
++MODULE_AUTHOR("Corentin Labbe <clabbe.montjoie@gmail.com>");
++MODULE_DESCRIPTION("Allwinner sun8i DWMAC specific glue layer");
 +MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Corentin Labbe <clabbe.montjoie@gmail.com");
--- 
-2.9.3
-
-From 1d9ea1f4df27f3a2e2ed7094852a23a4dd45e2be Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:49 +0200
-Subject: [PATCH 2/8] MAINTAINERS: Add myself as maintainer of sun8i-emac
-
-This patch add myself as maintainer of the sun8i-emac driver.
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- MAINTAINERS | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 411e3b8..e99a087 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -590,6 +590,12 @@ S:	Maintained
- F:	Documentation/i2c/busses/i2c-ali1563
- F:	drivers/i2c/busses/i2c-ali1563.c
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+index 856ac57..05e8018 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
+@@ -177,6 +177,17 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
+ 		else if ((clk_rate >= CSR_F_250M) && (clk_rate < CSR_F_300M))
+ 			priv->clk_csr = STMMAC_CSR_250_300M;
+ 	}
++
++	if (priv->plat->has_sun8i) {
++		if (clk_rate > 160000000)
++			priv->clk_csr = 0x03;
++		else if (clk_rate > 80000000)
++			priv->clk_csr = 0x02;
++		else if (clk_rate > 40000000)
++			priv->clk_csr = 0x01;
++		else
++			priv->clk_csr = 0;
++	}
+ }
  
-+ALLWINNER SUN8I-EMAC ETHERNET DRIVER
-+M:	Corentin Labbe <clabbe.montjoie@gmail.com>
-+L:	netdev@vger.kernel.org
-+S:	Maintained
-+F:	drivers/net/ethernet/allwinner/sun8i-emac.c
+ static void print_pkt(unsigned char *buf, int len)
+@@ -697,6 +708,10 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 	if (phydev->link) {
+ 		u32 ctrl = readl(priv->ioaddr + MAC_CTRL_REG);
+ 
++		/* disable loopback */
++		if (priv->plat->has_sun8i)
++			ctrl &= ~BIT(1);
 +
- ALLWINNER SECURITY SYSTEM
- M:	Corentin Labbe <clabbe.montjoie@gmail.com>
- L:	linux-crypto@vger.kernel.org
--- 
-2.9.3
-
-From 6b3093e31b877f39475454b5af3b820dbb3a4f73 Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:50 +0200
-Subject: [PATCH 3/8] ARM: sun8i: dt: Add DT bindings documentation for
- Allwinner sun8i-emac
-
-This patch adds documentation for Device-Tree bindings for the
-Allwinner sun8i-emac driver.
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- .../bindings/net/allwinner,sun8i-emac.txt          | 70 ++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/allwinner,sun8i-emac.txt
-
-diff --git a/Documentation/devicetree/bindings/net/allwinner,sun8i-emac.txt b/Documentation/devicetree/bindings/net/allwinner,sun8i-emac.txt
-new file mode 100644
-index 0000000..92e4ef3b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/allwinner,sun8i-emac.txt
-@@ -0,0 +1,70 @@
-+* Allwinner sun8i EMAC ethernet controller
+ 		/* Now we make sure that we can be in full duplex mode.
+ 		 * If not, we operate in half-duplex mode. */
+ 		if (phydev->duplex != priv->oldduplex) {
+@@ -714,6 +729,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 
+ 		if (phydev->speed != priv->speed) {
+ 			new_state = 1;
++			if (priv->plat->has_sun8i)
++				ctrl &= ~GENMASK(3, 2);
+ 			switch (phydev->speed) {
+ 			case 1000:
+ 				if (priv->plat->has_gmac ||
+@@ -725,6 +742,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 				    priv->plat->has_gmac4) {
+ 					ctrl |= priv->hw->link.port;
+ 					ctrl |= priv->hw->link.speed;
++				} else if (priv->plat->has_sun8i) {
++					ctrl |= 3 << 2;
+ 				} else {
+ 					ctrl &= ~priv->hw->link.port;
+ 				}
+@@ -734,6 +753,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 				    priv->plat->has_gmac4) {
+ 					ctrl |= priv->hw->link.port;
+ 					ctrl &= ~(priv->hw->link.speed);
++				} else if (priv->plat->has_sun8i) {
++					ctrl |= 2 << 2;
+ 				} else {
+ 					ctrl &= ~priv->hw->link.port;
+ 				}
+@@ -1702,7 +1723,7 @@ static int stmmac_hw_setup(struct net_device *dev, bool init_ptp)
+ 	/* Enable the MAC Rx/Tx */
+ 	if (priv->synopsys_id >= DWMAC_CORE_4_00)
+ 		stmmac_dwmac4_set_mac(priv->ioaddr, true);
+-	else
++	else if (!priv->plat->has_sun8i)
+ 		stmmac_set_mac(priv->ioaddr, true);
+ 
+ 	/* Set the HW DMA mode and the COE */
+@@ -3123,6 +3144,10 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+ 
+ 	priv->hw = mac;
+ 
++	/* dwmac-sun8i only work in chain mode */
++	if (priv->plat->has_sun8i)
++		chain_mode = 1;
 +
-+Required properties:
-+- compatible: should be one of the following string:
-+		"allwinner,sun8i-a83t-emac"
-+		"allwinner,sun8i-h3-emac"
-+		"allwinner,sun50i-a64-emac"
-+- reg: address and length of the register for the device.
-+- syscon: A phandle to the syscon of the SoC
-+- interrupts: interrupt for the device
-+- clocks: A phandle to the reference clock for this device
-+- clock-names: should be "ahb"
-+- resets: A phandle to the reset control for this device
-+- reset-names: should be "ahb"
-+- phy-mode: See ethernet.txt
-+- phy-handle: See ethernet.txt
-+- #address-cells: shall be 1
-+- #size-cells: shall be 0
-+
-+Optional properties:
-+- allwinner,tx-delay: TX clock delay chain value. Range value is 0-0x07. Default is 0)
-+- allwinner,rx-delay: RX clock delay chain value. Range value is 0-0x1F. Default is 0)
-+Both delay properties does not have units, there are arbitrary value.
-+The TX/RX clock delay chain settings are board specific and could be found
-+in vendor FEX files.
-+
-+Optional properties for "allwinner,sun8i-h3-emac":
-+- allwinner,leds-active-low: EPHY LEDs are active low
-+
-+Required child node of emac:
-+- mdio bus node: should be named mdio
-+
-+Required properties of the mdio node:
-+- #address-cells: shall be 1
-+- #size-cells: shall be 0
-+
-+The device node referenced by "phy" or "phy-handle" should be a child node
-+of the mdio node. See phy.txt for the generic PHY bindings.
-+
-+Required properties of the phy node with "allwinner,sun8i-h3-emac":
-+- clocks: an extra phandle to the reference clock for the EPHY
-+- resets: an extra phandle to the reset control for the EPHY
-+
-+Example:
-+
-+emac: ethernet@01c0b000 {
-+	compatible = "allwinner,sun8i-h3-emac";
-+	syscon = <&syscon>;
-+	reg = <0x01c0b000 0x104>;
-+	interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
-+	resets = <&ccu RST_BUS_EMAC>;
-+	reset-names = "ahb";
-+	clocks = <&ccu CLK_BUS_EMAC>;
-+	clock-names = "ahb";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	phy = <&int_mii_phy>;
-+	phy-mode = "mii";
-+	allwinner,leds-active-low;
-+	mdio: mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		int_mii_phy: ethernet-phy@1 {
-+			reg = <1>;
-+			clocks = <&ccu CLK_BUS_EPHY>;
-+			resets = <&ccu RST_BUS_EPHY>;
-+		};
+ 	/* To use the chained or ring mode */
+ 	if (priv->synopsys_id >= DWMAC_CORE_4_00) {
+ 		priv->hw->mode = &dwmac4_ring_mode_ops;
+diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+index 0ba1caf..3c21862 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
++++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
+@@ -160,6 +160,12 @@ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
+ 			 struct device_node *np, struct device *dev)
+ {
+ 	bool mdio = true;
++	static const struct of_device_id need_mdio_ids[] = {
++		{ .compatible = "snps,dwc-qos-ethernet-4.10" },
++		{ .compatible = "allwinner,sun8i-a83t-emac" },
++		{ .compatible = "allwinner,sun8i-h3-emac" },
++		{ .compatible = "allwinner,sun50i-a64-emac" },
 +	};
-+};
--- 
-2.9.3
-
-From aa634aa1b0454befe54a14d03b9a3ba6f750dcfd Mon Sep 17 00:00:00 2001
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:51 +0200
-Subject: [PATCH 4/8] ARM: dts: sun8i-h3: Add dt node for the syscon control
+ 
+ 	/* If phy-handle property is passed from DT, use it as the PHY */
+ 	plat->phy_node = of_parse_phandle(np, "phy-handle", 0);
+@@ -176,8 +182,7 @@ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
+ 		mdio = false;
+ 	}
+ 
+-	/* exception for dwmac-dwc-qos-eth glue logic */
+-	if (of_device_is_compatible(np, "snps,dwc-qos-ethernet-4.10")) {
++	if (of_match_node(need_mdio_ids, np)) {
+ 		plat->mdio_node = of_get_child_by_name(np, "mdio");
+ 	} else {
+ 		/**
+diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
+index 8f09f18..100386c 100644
+--- a/include/linux/stmmac.h
++++ b/include/linux/stmmac.h
+@@ -147,6 +147,7 @@ struct plat_stmmacenet_data {
+ 	struct reset_control *stmmac_rst;
+ 	struct stmmac_axi *axi;
+ 	int has_gmac4;
++	bool has_sun8i;
+ 	bool tso_en;
+ 	int mac_port_sel_speed;
+ 	bool en_tx_lpi_clockgating;
+From patchwork Tue Mar 14 14:18:42 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2, 06/20] ARM: dts: sunxi-h3-h5: Add dt node for the syscon control
  module
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623549
+Message-Id: <20170314141856.24560-7-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:42 +0100
 
 This patch add the dt node for the syscon register present on the
-Allwinner H3.
+Allwinner H3/H5
 
 Only two register are present in this syscon and the only one useful is
-the one dedicated to EMAC clock.
+the one dedicated to EMAC clock..
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index 75a8654..eac7d00 100644
---- a/arch/arm/boot/dts/sun8i-h3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -140,6 +140,11 @@
+diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+index 2494ea0..07e4f36 100644
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+@@ -102,6 +102,12 @@
  		#size-cells = <1>;
  		ranges;
  
 +		syscon: syscon@01c00000 {
-+			compatible = "syscon";
++			compatible = "syscon",
++				"allwinner,sun8i-h3-system-controller";
 +			reg = <0x01c00000 0x1000>;
 +		};
 +
  		dma: dma-controller@01c02000 {
  			compatible = "allwinner,sun8i-h3-dma";
  			reg = <0x01c02000 0x1000>;
--- 
-2.9.3
+From patchwork Tue Mar 14 14:18:43 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,07/20] ARM: dts: sunxi-h3-h5: add dwmac-sun8i ethernet driver
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623561
+Message-Id: <20170314141856.24560-8-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:43 +0100
 
-From 976cca2d4eb5bf85c26dfaad03ea70bff88981fd Mon Sep 17 00:00:00 2001
-From: Peter Robinson <pbrobinson@gmail.com>
-Date: Tue, 8 Nov 2016 10:23:08 +0000
-Subject: [PATCH 5/8] ARM: dts: sun8i-h3: add sun8i-emac ethernet driver
-
-The sun8i-emac is an ethernet MAC hardware that support 10/100/1000
+The dwmac-sun8i is an ethernet MAC hardware that support 10/100/1000
 speed.
 
-This patch enable the sun8i-emac on the Allwinner H3 SoC Device-tree.
-The SoC H3 have an internal PHY, so optionals syscon and ephy are set.
+This patch enable the dwmac-sun8i on Allwinner H3/H5 SoC Device-tree.
+SoC H3/H5 have an internal PHY, so optionals syscon and ephy are set.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3.dtsi | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ arch/arm/boot/dts/sunxi-h3-h5.dtsi | 33 +++++++++++++++++++++++++++++++++
+ 1 file changed, 33 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3.dtsi b/arch/arm/boot/dts/sun8i-h3.dtsi
-index eac7d00..86a8665 100644
---- a/arch/arm/boot/dts/sun8i-h3.dtsi
-+++ b/arch/arm/boot/dts/sun8i-h3.dtsi
-@@ -535,6 +535,30 @@
- 			#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+index 07e4f36..c35af5e 100644
+--- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
++++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
+@@ -272,6 +272,14 @@
+ 			interrupt-controller;
+ 			#interrupt-cells = <3>;
+ 
++			emac_rgmii_pins: emac0@0 {
++				pins = "PD0", "PD1", "PD2", "PD3", "PD4",
++					"PD5", "PD7", "PD8", "PD9", "PD10",
++					"PD12", "PD13", "PD15", "PD16", "PD17";
++				function = "emac";
++				drive-strength = <40>;
++			};
++
+ 			i2c0_pins: i2c0 {
+ 				pins = "PA11", "PA12";
+ 				function = "i2c0";
+@@ -368,6 +376,31 @@
+ 			clocks = <&osc24M>;
  		};
  
 +		emac: ethernet@1c30000 {
@@ -2515,10 +1505,11 @@ index eac7d00..86a8665 100644
 +			syscon = <&syscon>;
 +			reg = <0x01c30000 0x104>;
 +			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq";
 +			resets = <&ccu RST_BUS_EMAC>;
-+			reset-names = "ahb";
++			reset-names = "stmmaceth";
 +			clocks = <&ccu CLK_BUS_EMAC>;
-+			clock-names = "ahb";
++			clock-names = "stmmaceth";
 +			#address-cells = <1>;
 +			#size-cells = <0>;
 +			status = "disabled";
@@ -2527,25 +1518,119 @@ index eac7d00..86a8665 100644
 +				#address-cells = <1>;
 +				#size-cells = <0>;
 +				int_mii_phy: ethernet-phy@1 {
-+					reg = <1>;
-+					clocks = <&ccu CLK_BUS_EPHY>;
-+					resets = <&ccu RST_BUS_EPHY>;
++				reg = <1>;
++				clocks = <&ccu CLK_BUS_EPHY>;
++				resets = <&ccu RST_BUS_EPHY>;
 +				};
 +			};
 +		};
 +
- 		gic: interrupt-controller@01c81000 {
- 			compatible = "arm,cortex-a7-gic", "arm,cortex-a15-gic";
- 			reg = <0x01c81000 0x1000>,
--- 
-2.9.3
-
-From 6e483713dda9e0d5e8e5f37d8b0367ff216c53db Mon Sep 17 00:00:00 2001
+ 		spi0: spi@01c68000 {
+ 			compatible = "allwinner,sun8i-h3-spi";
+ 			reg = <0x01c68000 0x1000>;
+From patchwork Tue Mar 14 14:18:44 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,08/20] ARM: dts: sun8i: Enable dwmac-sun8i on the Banana Pi M2+
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-Date: Fri, 7 Oct 2016 10:25:53 +0200
-Subject: [PATCH 6/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI PC
+X-Patchwork-Id: 9623539
+Message-Id: <20170314141856.24560-9-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, LABBE Corentin <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:44 +0100
 
-The sun8i-emac hardware is present on the Orange PI PC.
+From: LABBE Corentin <clabbe.montjoie@gmail.com>
+
+The dwmac-sun8i hardware is present on the Banana Pi M2+
+It uses an external PHY rtl8211e via RGMII.
+
+This patch create the needed regulator, emac and phy nodes.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts | 37 +++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
+index 52acbe1..30b0a41 100644
+--- a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
+@@ -90,6 +90,18 @@
+ 		pinctrl-0 = <&wifi_en_bpi_m2p>;
+ 		reset-gpios = <&r_pio 0 7 GPIO_ACTIVE_LOW>; /* PL7 */
+ 	};
++
++	reg_gmac_3v3: gmac-3v3 {
++		      compatible = "regulator-fixed";
++		      pinctrl-names = "default";
++		      pinctrl-0 = <&gmac_power_pin_orangepi>;
++		      regulator-name = "gmac-3v3";
++		      regulator-min-microvolt = <3300000>;
++		      regulator-max-microvolt = <3300000>;
++		      startup-delay-us = <100000>;
++		      enable-active-high;
++		      gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
++	      };
+ };
+ 
+ &ehci1 {
+@@ -186,3 +198,28 @@
+ 	/* USB VBUS is on as long as VCC-IO is on */
+ 	status = "okay";
+ };
++
++&pio {
++	gmac_power_pin_orangepi: gmac_power_pin@0 {
++		 pins = "PD6";
++		 function = "gpio_out";
++		 drive-strength = <10>;
++	 };
++};
++
++&mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		reg = <0>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii";
++
++	allwinner,leds-active-low;
++	status = "okay";
++};
+From patchwork Tue Mar 14 14:18:45 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,09/20] ARM: dts: sun8i: Enable dwmac-sun8i on the Orange PI PC
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623555
+Message-Id: <20170314141856.24560-10-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, LABBE Corentin <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:45 +0100
+
+From: LABBE Corentin <clabbe.montjoie@gmail.com>
+
+The dwmac-sun8i hardware is present on the Orange PI PC.
 It uses the internal PHY.
 
 This patch create the needed emac node.
@@ -2556,10 +1641,10 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-index 3ec9712..1b8dbc0 100644
+index f148111..746c25a 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-@@ -54,6 +54,7 @@
+@@ -53,6 +53,7 @@
  
  	aliases {
  		serial0 = &uart0;
@@ -2567,7 +1652,7 @@ index 3ec9712..1b8dbc0 100644
  	};
  
  	chosen {
-@@ -183,3 +184,10 @@
+@@ -184,3 +185,10 @@
  	/* USB VBUS is always on */
  	status = "okay";
  };
@@ -2578,30 +1663,90 @@ index 3ec9712..1b8dbc0 100644
 +	allwinner,leds-active-low;
 +	status = "okay";
 +};
--- 
-2.9.3
+From patchwork Tue Mar 14 14:18:46 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,10/20] ARM: dts: sun8i: Enable dwmac-sun8i on the Orange Pi 2
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623557
+Message-Id: <20170314141856.24560-11-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:46 +0100
 
-From 05cf4e2c77424ad5c9dc8495a65d6695d2831b0a Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Fri, 7 Oct 2016 10:25:54 +0200
-Subject: [PATCH 7/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange PI One
-
-The sun8i-emac hardware is present on the Orange PI One.
+The dwmac-sun8i hardware is present on the Orange PI 2.
 It uses the internal PHY.
 
 This patch create the needed emac node.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm/boot/dts/sun8i-h3-orangepi-2.dts | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
+index 5b6d145..3f54b12 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
+@@ -55,6 +55,7 @@
+ 		serial0 = &uart0;
+ 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
+ 		ethernet1 = &rtl8189;
++		ethernet0 = &emac;
+ 	};
+ 
+ 	chosen {
+@@ -203,3 +204,10 @@
+ 	usb1_vbus-supply = <&reg_usb1_vbus>;
+ 	status = "okay";
+ };
++
++&emac {
++	phy-handle = <&int_mii_phy>;
++	phy-mode = "mii";
++	allwinner,leds-active-low;
++	status = "okay";
++};
+From patchwork Tue Mar 14 14:18:47 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,11/20] ARM: dts: sun8i: Enable dwmac-sun8i on the Orange PI One
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623541
+Message-Id: <20170314141856.24560-12-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:47 +0100
+
+The dwmac-sun8i hardware is present on the Orange PI One.
+It uses the internal PHY.
+
+This patch create the needed emac node.
+
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
  arch/arm/boot/dts/sun8i-h3-orangepi-one.dts | 8 ++++++++
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-index 5c9b5bf..fa398cc 100644
+index ea8fd13..1f98ddc 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-@@ -54,6 +54,7 @@
+@@ -53,6 +53,7 @@
  
  	aliases {
  		serial0 = &uart0;
@@ -2609,7 +1754,7 @@ index 5c9b5bf..fa398cc 100644
  	};
  
  	chosen {
-@@ -94,6 +95,13 @@
+@@ -93,6 +94,13 @@
  	status = "okay";
  };
  
@@ -2623,47 +1768,412 @@ index 5c9b5bf..fa398cc 100644
  &mmc0 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin>;
--- 
-2.9.3
+From patchwork Tue Mar 14 14:18:48 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,12/20] ARM: dts: sun8i: Enable dwmac-sun8i on the Orange Pi plus
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623569
+Message-Id: <20170314141856.24560-13-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:48 +0100
 
-From 52c300b614fcb29e81067aa7ed8aafa489b590b7 Mon Sep 17 00:00:00 2001
-From: Peter Robinson <pbrobinson@gmail.com>
-Date: Tue, 8 Nov 2016 10:24:42 +0000
-Subject: [PATCH 8/8] ARM: dts: sun8i: Enable sun8i-emac on the Orange Pi 2
+The dwmac-sun8i hardware is present on the Orange PI plus.
+It uses an external PHY rtl8211e via RGMII.
 
-The sun8i-emac hardware is present on the Orange PI 2.
-It uses the internal PHY.
-
-This patch create the needed emac node.
+This patch create the needed regulator, emac and phy nodes.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-2.dts | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 35 ++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-index e5bcaba..ad66b61 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-@@ -54,6 +54,7 @@
- 
- 	aliases {
- 		serial0 = &uart0;
-+		ethernet0 = &emac;
- 		/* ethernet0 is the H3 emac, defined in sun8i-h3.dtsi */
- 		ethernet1 = &rtl8189;
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+index 8c40ab7..4e075a2 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+@@ -58,6 +58,18 @@
+ 		enable-active-high;
+ 		gpio = <&pio 6 11 GPIO_ACTIVE_HIGH>;
  	};
-@@ -212,3 +213,10 @@
- 	usb1_vbus-supply = <&reg_usb1_vbus>;
- 	status = "okay";
++
++	reg_gmac_3v3: gmac-3v3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&gmac_power_pin_orangepi>;
++		regulator-name = "gmac-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		startup-delay-us = <100000>;
++		enable-active-high;
++		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ &ehci3 {
+@@ -86,8 +98,31 @@
+ 		pins = "PG11";
+ 		function = "gpio_out";
+ 	};
++
++	gmac_power_pin_orangepi: gmac_power_pin@0 {
++		pins = "PD6";
++		function = "gpio_out";
++		drive-strength = <10>;
++	};
+ };
+ 
+ &usbphy {
+ 	usb3_vbus-supply = <&reg_usb3_vbus>;
  };
 +
++&mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		reg = <0>;
++	};
++};
++
 +&emac {
-+	phy-handle = <&int_mii_phy>;
-+	phy-mode = "mii";
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii";
++
 +	allwinner,leds-active-low;
 +	status = "okay";
 +};
--- 
-2.9.3
+From patchwork Tue Mar 14 14:18:49 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,
+ 13/20] ARM: dts: sun8i: orangepi-pc-plus: Set EMAC activity LEDs to
+ active high
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623593
+Message-Id: <20170314141856.24560-14-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:49 +0100
 
+On the Orange Pi PC Plus, the polarity of the LEDs on the RJ45 Ethernet
+port were changed from active low to active high.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
+index 8b93f5c..0380769 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
+@@ -86,3 +86,8 @@
+ 	/* eMMC is missing pull-ups */
+ 	bias-pull-up;
+ };
++
++&emac {
++	/* LEDs changed to active high on the plus */
++	/delete-property/ allwinner,leds-active-low;
++};
+From patchwork Tue Mar 14 14:18:50 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2, 14/20] ARM64: dts: sun50i-a64: Add dt node for the syscon control
+ module
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623591
+Message-Id: <20170314141856.24560-15-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:50 +0100
+
+This patch add the dt node for the syscon register present on the
+Allwinner A64.
+
+Only two register are present in this syscon and the only one useful is
+the one dedicated to EMAC clock.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 1c64ea2..3b09af2 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -121,6 +121,12 @@
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		syscon: syscon@01c00000 {
++			compatible = "syscon",
++				"allwinner,sun8i-h3-system-controller";
++			reg = <0x01c00000 0x1000>;
++		};
++
+ 		mmc0: mmc@1c0f000 {
+ 			compatible = "allwinner,sun50i-a64-mmc";
+ 			reg = <0x01c0f000 0x1000>;
+From patchwork Tue Mar 14 14:18:51 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,15/20] ARM64: dts: sun50i-a64: add dwmac-sun8i Ethernet driver
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623621
+Message-Id: <20170314141856.24560-16-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:51 +0100
+
+The dwmac-sun8i is an Ethernet MAC that supports 10/100/1000 Mbit
+connections. It is very similar to the device found in the Allwinner
+H3, but lacks the internal 100 Mbit PHY and its associated control
+bits.
+This adds the necessary bits to the Allwinner A64 SoC .dtsi, but keeps
+it disabled at this level.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 37 +++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+index 3b09af2..57d69e5 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
+@@ -277,6 +277,23 @@
+ 				bias-pull-up;
+ 			};
+ 
++			rmii_pins: rmii_pins {
++				pins = "PD10", "PD11", "PD13", "PD14",
++						"PD17", "PD18", "PD19", "PD20",
++						"PD22", "PD23";
++				function = "emac";
++				drive-strength = <40>;
++			};
++
++			rgmii_pins: rgmii_pins {
++				pins = "PD8", "PD9", "PD10", "PD11",
++						"PD12", "PD13", "PD15",
++						"PD16", "PD17", "PD18", "PD19",
++						"PD20", "PD21", "PD22", "PD23";
++				function = "emac";
++				drive-strength = <40>;
++			};
++
+ 			uart0_pins_a: uart0@0 {
+ 				pins = "PB8", "PB9";
+ 				function = "uart0";
+@@ -381,6 +398,26 @@
+ 			#size-cells = <0>;
+ 		};
+ 
++		emac: ethernet@1c30000 {
++			compatible = "allwinner,sun50i-a64-emac";
++			syscon = <&syscon>;
++			reg = <0x01c30000 0x100>;
++			interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
++			interrupt-names = "macirq";
++			resets = <&ccu RST_BUS_EMAC>;
++			reset-names = "stmmaceth";
++			clocks = <&ccu CLK_BUS_EMAC>;
++			clock-names = "stmmaceth";
++			status = "disabled";
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			mdio: mdio {
++				#address-cells = <1>;
++				#size-cells = <0>;
++			};
++		};
++
+ 		gic: interrupt-controller@1c81000 {
+ 			compatible = "arm,gic-400";
+ 			reg = <0x01c81000 0x1000>,
+From patchwork Tue Mar 14 14:18:52 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,16/20] ARM: dts: sun50i-a64: enable dwmac-sun8i on pine64
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623607
+Message-Id: <20170314141856.24560-17-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:52 +0100
+
+The dwmac-sun8i hardware is present on the pine64
+It uses an external PHY via RMII.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
+index c680ed3..b53994d 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
+@@ -109,3 +109,18 @@
+ &usbphy {
+ 	status = "okay";
+ };
++
++&mdio {
++	ext_rmii_phy1: ethernet-phy@1 {
++	      reg = <1>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&rmii_pins>;
++	phy-mode = "rmii";
++	phy-handle = <&ext_rmii_phy1>;
++	status = "okay";
++
++};
+From patchwork Tue Mar 14 14:18:53 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,17/20] ARM: dts: sun50i-a64: enable dwmac-sun8i on pine64 plus
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623597
+Message-Id: <20170314141856.24560-18-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:53 +0100
+
+The dwmac-sun8i hardware is present on the pine64 plus.
+It uses an external PHY rtl8211e via RGMII.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts | 16 +++++++++++++++-
+ 1 file changed, 15 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
+index 790d14d..8e06aed 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
+@@ -46,5 +46,19 @@
+ 	model = "Pine64+";
+ 	compatible = "pine64,pine64-plus", "allwinner,sun50i-a64";
+ 
+-	/* TODO: Camera, Ethernet PHY, touchscreen, etc. */
++	/* TODO: Camera, touchscreen, etc. */
++};
++
++&mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		reg = <1>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii_pins>;
++	phy-mode = "rgmii";
++	phy-handle = <&ext_rgmii_phy>;
++	status = "okay";
+ };
+From patchwork Tue Mar 14 14:18:54 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,
+ 18/20] ARM: dts: sun50i-a64: enable dwmac-sun8i on the BananaPi M64
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9623595
+Message-Id: <20170314141856.24560-19-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, 
+ wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com, 
+ davem@davemloft.net
+Cc: devicetree@vger.kernel.org, f.fainelli@gmail.com, netdev@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Corentin Labbe <clabbe.montjoie@gmail.com>, 
+ linux-arm-kernel@lists.infradead.org
+Date: Tue, 14 Mar 2017 15:18:54 +0100
+
+The dwmac-sun8i  hardware is present on the BananaPi M64.
+It uses an external PHY rtl8211e via RGMII.
+
+Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
+index 6872135..347c262 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
+@@ -77,6 +77,20 @@
+ 	bias-pull-up;
+ };
+ 
++&mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		reg = <1>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&rgmii_pins>;
++	phy-mode = "rgmii";
++	phy-handle = <&ext_rgmii_phy>;
++	status = "okay";
++};
++
+ &mmc0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&mmc0_pins>;
