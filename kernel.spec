@@ -543,6 +543,8 @@ Patch435: bcm283x-fixes.patch
 # https://lists.freedesktop.org/archives/dri-devel/2017-February/133823.html
 Patch436: vc4-fix-vblank-cursor-update-issue.patch
 
+Patch437: bcm283x-hdmi-audio.patch
+
 # http://www.spinics.net/lists/arm-kernel/msg552554.html
 Patch438: arm-imx6-hummingboard2.patch
 
@@ -2167,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Tue Mar 21 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add initial support for vc4 HDMI Audio
+
 * Mon Mar 20 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc3.git0.1
 - Linux v4.11-rc3
 - Fix for debuginfo conflicts (rhbz 1431296)
