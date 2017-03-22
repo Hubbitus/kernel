@@ -605,6 +605,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 # grabbed from mailing list
 Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
 
+# Fix crda rhbz 1422247
+Patch668: genetlink-fix-counting-regression-on-ctrl_dumpfamily.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2169,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Wed Mar 22 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix crda (rhbz 1422247)
+
 * Wed Mar 22 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc3.git1.1
 - Linux v4.11-rc3-35-g093b995
 
