@@ -608,6 +608,9 @@ Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
 # Fix crda rhbz 1422247
 Patch668: genetlink-fix-counting-regression-on-ctrl_dumpfamily.patch
 
+# Fix virtio devices rhbz 1430297
+Patch669: virtio_pci-fix-out-of-bound-access-for-msix_names.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2172,6 +2175,9 @@ fi
 #
 #
 %changelog
+* Thu Mar 23 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix virtio devices (rhbz 1430297)
+
 * Wed Mar 22 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix crda (rhbz 1422247)
 
