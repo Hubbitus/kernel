@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 3
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -604,9 +604,6 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 # grabbed from mailing list
 Patch667: v3-Revert-tty-serial-pl011-add-ttyAMA-for-matching-pl011-console.patch
-
-# Fix crda rhbz 1422247
-Patch668: genetlink-fix-counting-regression-on-ctrl_dumpfamily.patch
 
 # Fix virtio devices rhbz 1430297
 Patch669: virtio_pci-fix-out-of-bound-access-for-msix_names.patch
@@ -2175,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Fri Mar 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc3.git2.1
+- Linux v4.11-rc3-161-gebe6482
+
 * Thu Mar 23 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix virtio devices (rhbz 1430297)
 
