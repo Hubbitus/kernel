@@ -2172,6 +2172,10 @@ fi
 #
 #
 %changelog
+* Sun Mar 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix null pointer dereference in bcm2835 MMC driver
+- Minor ARM updates
+
 * Fri Mar 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc3.git2.1
 - Linux v4.11-rc3-161-gebe6482
 

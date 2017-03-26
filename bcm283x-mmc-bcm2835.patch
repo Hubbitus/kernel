@@ -1891,3 +1891,42 @@ index c309633..972f14d 100644
 +	status = "okay";
 +	bus-width = <4>;
 +};
+From patchwork Sat Mar 25 13:17:00 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: mmc: bcm2835: Fix possible NULL ptr dereference in bcm2835_request
+From: Stefan Wahren <stefan.wahren@i2se.com>
+X-Patchwork-Id: 9644591
+Message-Id: <1490447820-751-1-git-send-email-stefan.wahren@i2se.com>
+To: Ulf Hansson <ulf.hansson@linaro.org>, Eric Anholt <eric@anholt.net>,
+ Gerd Hoffmann <kraxel@redhat.com>
+Cc: Jaehoon Chung <jh80.chung@samsung.com>,
+ Dan Carpenter <dan.carpenter@oracle.com>,
+ linux-rpi-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
+ Stefan Wahren <stefan.wahren@i2se.com>
+Date: Sat, 25 Mar 2017 13:17:00 +0000
+
+This fixes a NULL pointer dereference in case of a MMC request with a
+set block count command and no data.
+
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+---
+ drivers/mmc/host/bcm2835.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/bcm2835.c b/drivers/mmc/host/bcm2835.c
+index 7d1b0db..1f343a4 100644
+--- a/drivers/mmc/host/bcm2835.c
++++ b/drivers/mmc/host/bcm2835.c
+@@ -1200,7 +1200,8 @@ static void bcm2835_request(struct mmc_host *mmc, struct mmc_request *mrq)
+ 		return;
+ 	}
+ 
+-	host->use_sbc = !!mrq->sbc && (host->mrq->data->flags & MMC_DATA_READ);
++	host->use_sbc = !!mrq->sbc && host->mrq->data &&
++			(host->mrq->data->flags & MMC_DATA_READ);
+ 	if (host->use_sbc) {
+ 		if (bcm2835_send_command(host, mrq->sbc)) {
+ 			if (!host->use_busy)
