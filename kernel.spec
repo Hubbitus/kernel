@@ -605,6 +605,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 # Fix virtio devices rhbz 1430297
 Patch669: virtio_pci-fix-out-of-bound-access-for-msix_names.patch
 
+#CVE-2017-7261 rhbz 1435719 1435740
+Patch670: vmwgfx-check-that-number-of-mip-levels-is-above-zero.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2169,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Mon Mar 27 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- CVE-2017-7261 vmwgfx: check that number of mip levels is above zero (rhbz 1435719 1435740)
+
 * Mon Mar 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc4.git0.1
 - Linux v4.11-rc4
 
