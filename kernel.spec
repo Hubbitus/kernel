@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2172,6 +2172,9 @@ fi
 #
 #
 %changelog
+* Tue Mar 28 2017 Laura Abbott <labbott@fedoraproject.org>
+- Reenable debugging options.
+
 * Mon Mar 27 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - CVE-2017-7261 vmwgfx: check that number of mip levels is above zero (rhbz 1435719 1435740)
 
