@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Wed Mar 29 2017 Dan Horák <dan@danny.cz>
+- Enable THP on Power (rhbz 1434007)
+
 * Wed Mar 29 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc4.git2.1
 - Linux v4.11-rc4-40-gfe82203
 
