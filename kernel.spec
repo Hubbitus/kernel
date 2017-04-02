@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Sun Apr  1 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable STi DRM driver
+
 * Thu Mar 30 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc4.git3.1
 - Linux v4.11-rc4-64-g89970a0
 
