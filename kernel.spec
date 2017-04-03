@@ -2169,7 +2169,7 @@ fi
 #
 #
 %changelog
-* Sun Apr  1 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+* Sun Apr  2 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable STi DRM driver
 
 * Thu Mar 30 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc4.git3.1
