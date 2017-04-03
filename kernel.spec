@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 4
+%global rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Mon Apr 03 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git0.1
+- Linux v4.11-rc5
+
 * Mon Apr 03 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable debugging options.
 
