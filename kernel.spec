@@ -2171,6 +2171,7 @@ fi
 %changelog
 * Mon Apr 03 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git0.1
 - Linux v4.11-rc5
+- Disable 64K pages on aarch64
 
 * Mon Apr 03 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable debugging options.
