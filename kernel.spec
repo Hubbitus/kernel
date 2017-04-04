@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Tue Apr  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Update AllWinner configs
+
 * Tue Apr 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git1.1
 - Linux v4.11-rc5-11-g08e4e0d
 
