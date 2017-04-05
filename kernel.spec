@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -601,9 +601,6 @@ Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
-
-#CVE-2017-7261 rhbz 1435719 1435740
-Patch670: vmwgfx-check-that-number-of-mip-levels-is-above-zero.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2169,6 +2166,9 @@ fi
 #
 #
 %changelog
+* Wed Apr 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git2.1
+- Linux v4.11-rc5-41-gaeb4a57
+
 * Tue Apr  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Update AllWinner configs
 
