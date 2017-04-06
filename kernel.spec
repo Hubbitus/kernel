@@ -545,7 +545,7 @@ Patch436: vc4-fix-vblank-cursor-update-issue.patch
 
 Patch437: bcm283x-hdmi-audio.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg552554.html
+# https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch438: arm-imx6-hummingboard2.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
@@ -2166,6 +2166,11 @@ fi
 #
 #
 %changelog
+* Thu Apr  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Rebase to new HummingBoard 2 DT patch
+- Minor ARM cleanups
+- Enable Serial device TTY port controller
+
 * Thu Apr 06 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git3.1
 - Linux v4.11-rc5-133-gea6b172
 
