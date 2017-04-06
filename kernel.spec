@@ -602,6 +602,9 @@ Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
 #CVE-2016-3134 rhbz 1317383 1317384
 Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
+#rhbz 1435154
+Patch666: powerpc-prom-Increase-RMA-size-to-512MB.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2166,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Thu Apr 06 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix for powerpc booting with large initrd (rhbz 1435154)
+
 * Thu Apr  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Rebase to new HummingBoard 2 DT patch
 - Minor ARM cleanups
