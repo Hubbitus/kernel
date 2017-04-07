@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Fri Apr 07 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc5.git4.1
+- Linux v4.11-rc5-152-g269c930
+
 * Fri Apr  7 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable VDSO for aarch64 and ARMv7-LPAE
 
