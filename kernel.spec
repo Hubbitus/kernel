@@ -2169,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Fri Apr  7 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable VDSO for aarch64 and ARMv7-LPAE
+
 * Thu Apr 06 2017 Laura Abbott <labbott@fedoraproject.org>
 - Fix for powerpc booting with large initrd (rhbz 1435154)
 
