@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 6
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2175,6 +2175,9 @@ fi
 #
 #
 %changelog
+* Wed Apr 12 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc6.git2.1
+- Linux v4.11-rc6-29-gb9b3322
+
 * Wed Apr 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add support for TI Bluetooth modules
 - Add fixes for 96boards HiKey
