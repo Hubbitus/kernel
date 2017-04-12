@@ -1,0 +1,77 @@
+From patchwork Sat Apr  8 07:18:40 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: reset: hi6220: Set module license so that it can be loaded
+From: Jeremy Linton <lintonrjeremy@gmail.com>
+X-Patchwork-Id: 9670985
+Message-Id: <20170408071840.29380-1-lintonrjeremy@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: p.zabel@pengutronix.de, saberlily.xia@hisilicon.com,
+ puck.chen@hisilicon.com, xinliang.liu@linaro.org,
+ Jeremy Linton <lintonrjeremy@gmail.com>
+Date: Sat,  8 Apr 2017 02:18:40 -0500
+
+The hi6220_reset driver can be built as a standalone module
+yet it cannot be loaded because it depends on GPL exported symbols.
+
+Lets set the module license so that the module loads, and things like
+the on-board kirin drm starts working.
+
+Signed-off-by: Jeremy Linton <lintonrjeremy@gmail.com>
+reviewed-by: Xinliang Liu <xinliang.liu@linaro.org>
+---
+ drivers/reset/hisilicon/hi6220_reset.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/reset/hisilicon/hi6220_reset.c b/drivers/reset/hisilicon/hi6220_reset.c
+index 35ce53e..d5e5229 100644
+--- a/drivers/reset/hisilicon/hi6220_reset.c
++++ b/drivers/reset/hisilicon/hi6220_reset.c
+@@ -155,3 +155,5 @@ static int __init hi6220_reset_init(void)
+ }
+ 
+ postcore_initcall(hi6220_reset_init);
++
++MODULE_LICENSE("GPL v2");
+From patchwork Mon Apr  3 05:28:42 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2,1/2] regulator: hi655x: Describe consumed platform device
+From: Jeremy Linton <lintonrjeremy@gmail.com>
+X-Patchwork-Id: 9658793
+Message-Id: <20170403052843.12711-2-lintonrjeremy@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: broonie@kernel.org, lgirdwood@gmail.com, puck.chen@hisilicon.com,
+ lee.jones@linaro.org, Jeremy Linton <lintonrjeremy@gmail.com>
+Date: Mon,  3 Apr 2017 00:28:42 -0500
+
+The hi655x-regulator driver consumes a similarly named platform device.
+Adding that to the module device table, allows modprobe to locate this
+driver once the device is created.
+
+Signed-off-by: Jeremy Linton <lintonrjeremy@gmail.com>
+---
+ drivers/regulator/hi655x-regulator.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/drivers/regulator/hi655x-regulator.c b/drivers/regulator/hi655x-regulator.c
+index 065c100..36ae54b 100644
+--- a/drivers/regulator/hi655x-regulator.c
++++ b/drivers/regulator/hi655x-regulator.c
+@@ -214,7 +214,14 @@ static int hi655x_regulator_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct platform_device_id hi655x_regulator_table[] = {
++	{ .name = "hi655x-regulator" },
++	{},
++};
++MODULE_DEVICE_TABLE(platform, hi655x_regulator_table);
++
+ static struct platform_driver hi655x_regulator_driver = {
++	.id_table = hi655x_regulator_table,
+ 	.driver = {
+ 		.name	= "hi655x-regulator",
+ 	},

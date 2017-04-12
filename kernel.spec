@@ -528,6 +528,12 @@ Patch425: ARM-tegra-usb-no-reset.patch
 Patch426: AllWinner-h3.patch
 Patch427: AllWinner-net-emac.patch
 
+# http://www.spinics.net/lists/linux-bluetooth/msg70169.html
+# https://www.spinics.net/lists/devicetree/msg170619.html
+Patch428: ti-bluetooth.patch
+
+Patch429: arm64-hikey-fixes.patch
+
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
@@ -2169,6 +2175,10 @@ fi
 #
 #
 %changelog
+* Wed Apr 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add support for TI Bluetooth modules
+- Add fixes for 96boards HiKey
+
 * Tue Apr 11 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc6.git1.1
 - Linux v4.11-rc6-4-gc08e611
 
