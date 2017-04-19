@@ -611,6 +611,9 @@ Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 #rhbz 1435154
 Patch666: powerpc-prom-Increase-RMA-size-to-512MB.patch
 
+# CVE-2017-7645 rhbz 1443615 1443617
+Patch667: CVE-2017-7645.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2175,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Wed Apr 19 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix CVE-2017-7645 (rhbz 1443615 1443617)
+
 * Wed Apr 19 2017 Laura Abbott <labbott@redhat.com> - 4.11.0-0.rc7.git1.1
 - Linux v4.11-rc7-29-g005882e53d62
 
