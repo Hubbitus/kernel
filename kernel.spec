@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2178,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Thu Apr 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.11.0-0.rc7.git2.1
+- Linux v4.11-rc7-42-gf61143c
+
 * Wed Apr 19 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix CVE-2017-7645 (rhbz 1443615 1443617)
 
