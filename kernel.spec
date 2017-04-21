@@ -2178,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Fri Apr 21 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ADV7533 sub module
+
 * Thu Apr 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.11.0-0.rc7.git2.1
 - Linux v4.11-rc7-42-gf61143c
 
