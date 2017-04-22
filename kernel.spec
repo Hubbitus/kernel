@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2178,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Fri Apr 21 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.11.0-0.rc7.git3.1
+- Linux v4.11-rc7-111-g057a650
+
 * Fri Apr 21 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable ADV7533 sub module
 
