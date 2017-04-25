@@ -614,6 +614,9 @@ Patch666: powerpc-prom-Increase-RMA-size-to-512MB.patch
 # CVE-2017-7645 rhbz 1443615 1443617
 Patch667: CVE-2017-7645.patch
 
+# CVE-2017-7477 rhbz 1445207 1445208
+Patch668: CVE-2017-7477.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2178,6 +2181,9 @@ fi
 #
 #
 %changelog
+* Tue Apr 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix CVE-2017-7477 (rhbz 1445207 1445208)
+
 * Tue Apr 25 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor ARM config cleanups
 
