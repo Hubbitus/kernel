@@ -2178,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Tue Apr 25 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config cleanups
+
 * Mon Apr 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git0.1
 - Linux v4.11-rc8
 
