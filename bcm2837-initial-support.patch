@@ -45,4 +45,4 @@ index 000000000000..c72a27d908b6
 --- /dev/null
 +++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
 @@ -0,0 +1 @@
-+#include "arm64/broadcom/bcm2837-rpi-3-b.dts"
++#include "../../../arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts"
