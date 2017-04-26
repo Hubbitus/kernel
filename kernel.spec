@@ -554,6 +554,8 @@ Patch437: bcm283x-hdmi-audio.patch
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch438: arm-imx6-hummingboard2.patch
 
+Patch440: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
+
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch466: input-kill-stupid-messages.patch
@@ -2181,6 +2183,10 @@ fi
 #
 #
 %changelog
+* Wed Apr 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable sound SoC on aarch64
+- Update some ARM patches to latest upstream
+
 * Tue Apr 25 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git1.1
 - Linux v4.11-rc8-14-g8f9cedc
 
