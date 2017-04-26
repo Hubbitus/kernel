@@ -2186,6 +2186,7 @@ fi
 * Wed Apr 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable sound SoC on aarch64
 - Update some ARM patches to latest upstream
+- ARM config updates
 
 * Tue Apr 25 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git1.1
 - Linux v4.11-rc8-14-g8f9cedc
