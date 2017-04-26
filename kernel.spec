@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 8
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2183,6 +2183,9 @@ fi
 #
 #
 %changelog
+* Wed Apr 26 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git2.1
+- Linux v4.11-rc8-17-gea839b4
+
 * Wed Apr 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable sound SoC on aarch64
 - Update some ARM patches to latest upstream
