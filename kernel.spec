@@ -554,6 +554,9 @@ Patch437: bcm283x-hdmi-audio.patch
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch438: arm-imx6-hummingboard2.patch
 
+# https://lkml.org/lkml/2017/4/4/316
+Patch339: media-cec-Fix-runtime-BUG-when-CONFIG_RC_CORE-CEC_CAP_RC.patch
+
 Patch440: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
 Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
@@ -2183,6 +2186,9 @@ fi
 #
 #
 %changelog
+* Fri Apr 28 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Upstream CEC patch to fix STi issues
+
 * Thu Apr 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git3.1
 - Linux v4.11-rc8-75-gf832460
 
