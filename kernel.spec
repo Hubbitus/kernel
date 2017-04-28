@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 8
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2186,6 +2186,9 @@ fi
 #
 #
 %changelog
+* Fri Apr 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git4.1
+- Linux v4.11-rc8-87-g8b5d11e
+
 * Fri Apr 28 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Upstream CEC patch to fix STi issues
 
