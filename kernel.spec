@@ -537,6 +537,8 @@ Patch429: arm64-hikey-fixes.patch
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch430: bcm2837-initial-support.patch
 
+Patch431: arm-rk3288-tinker.patch
+
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
@@ -2186,6 +2188,9 @@ fi
 #
 #
 %changelog
+* Sun Apr 30 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add initial ASUS Tinker board support
+
 * Fri Apr 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-0.rc8.git4.1
 - Linux v4.11-rc8-87-g8b5d11e
 
