@@ -44,80 +44,6 @@ index 94d34e0..6049600 100644
 -- 
 2.7.4
 
-From 0f9281e3b77bf5f767f1993d52b152a1ef317a0a Mon Sep 17 00:00:00 2001
-From: David Howells <dhowells@redhat.com>
-Date: Fri, 25 Nov 2016 11:52:05 +0000
-Subject: [PATCH 08/32] efi: Handle secure boot from UEFI-2.6
-
-UEFI-2.6 adds a new variable, DeployedMode.  If it exists, this must be 1
-if we're to engage lockdown mode.
-
-Reported-by: James Bottomley <James.Bottomley@HansenPartnership.com>
-Signed-off-by: David Howells <dhowells@redhat.com>
----
- drivers/firmware/efi/libstub/secureboot.c | 16 +++++++++++++++-
- include/linux/efi.h                       |  4 ++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/firmware/efi/libstub/secureboot.c b/drivers/firmware/efi/libstub/secureboot.c
-index 6def402..77af519 100644
---- a/drivers/firmware/efi/libstub/secureboot.c
-+++ b/drivers/firmware/efi/libstub/secureboot.c
-@@ -20,6 +20,9 @@ static const efi_char16_t const efi_SecureBoot_name[] = {
- static const efi_char16_t const efi_SetupMode_name[] = {
- 	'S', 'e', 't', 'u', 'p', 'M', 'o', 'd', 'e', 0
- };
-+static const efi_char16_t const efi_DeployedMode_name[] = {
-+	'D', 'e', 'p', 'l', 'o', 'y', 'e', 'd', 'M', 'o', 'd', 'e', 0
-+};
- 
- /* SHIM variables */
- static const efi_guid_t shim_guid = EFI_SHIM_LOCK_GUID;
-@@ -38,7 +41,7 @@ static efi_char16_t const shim_MokSBState_name[] = {
- enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
- {
- 	u32 attr;
--	u8 secboot, setupmode, moksbstate;
-+	u8 secboot, setupmode, deployedmode, moksbstate;
- 	unsigned long size;
- 	efi_status_t status;
- 
-@@ -57,6 +60,17 @@ enum efi_secureboot_mode efi_get_secureboot(efi_system_table_t *sys_table_arg)
- 	if (secboot == 0 || setupmode == 1)
- 		return efi_secureboot_mode_disabled;
- 
-+	/* UEFI-2.6 requires DeployedMode to be 1. */
-+	if (sys_table_arg->hdr.revision >= EFI_2_60_SYSTEM_TABLE_REVISION) {
-+		size = sizeof(deployedmode);
-+		status = get_efi_var(efi_DeployedMode_name, &efi_variable_guid,
-+				     NULL, &size, &deployedmode);
-+		if (status != EFI_SUCCESS)
-+			goto out_efi_err;
-+		if (deployedmode == 0)
-+			return efi_secureboot_mode_disabled;
-+	}
-+
- 	/*
- 	 * See if a user has put the shim into insecure mode. If so, and if the
- 	 * variable doesn't have the runtime attribute set, we might as well
-diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 6049600..784a276 100644
---- a/include/linux/efi.h
-+++ b/include/linux/efi.h
-@@ -646,6 +646,10 @@ typedef struct {
- 
- #define EFI_SYSTEM_TABLE_SIGNATURE ((u64)0x5453595320494249ULL)
- 
-+#define EFI_2_60_SYSTEM_TABLE_REVISION  ((2 << 16) | (60))
-+#define EFI_2_50_SYSTEM_TABLE_REVISION  ((2 << 16) | (50))
-+#define EFI_2_40_SYSTEM_TABLE_REVISION  ((2 << 16) | (40))
-+#define EFI_2_31_SYSTEM_TABLE_REVISION  ((2 << 16) | (31))
- #define EFI_2_30_SYSTEM_TABLE_REVISION  ((2 << 16) | (30))
- #define EFI_2_20_SYSTEM_TABLE_REVISION  ((2 << 16) | (20))
- #define EFI_2_10_SYSTEM_TABLE_REVISION  ((2 << 16) | (10))
--- 
-2.7.4
-
 From f05a90c19a9613d8d50597319ed91f691e25b689 Mon Sep 17 00:00:00 2001
 From: David Howells <dhowells@redhat.com>
 Date: Mon, 21 Nov 2016 23:36:17 +0000
@@ -317,8 +243,8 @@ index 447905e..d44e60e 100644
  #include <linux/jiffies.h>
 +#include <linux/security.h>
  
+ #include <linux/usb/xhci-dbgp.h>
  #include <video/edid.h>
- 
 @@ -1183,7 +1184,12 @@ void __init setup_arch(char **cmdline_p)
  			break;
  		case efi_secureboot_mode_enabled:
@@ -461,9 +387,9 @@ index d44e60e..f7635d0 100644
 +#include <linux/sysrq.h>
 +#include <linux/init_task.h>
 +
+ #include <linux/usb/xhci-dbgp.h>
  #include <video/edid.h>
  
- #include <asm/mtrr.h>
 @@ -1328,6 +1333,32 @@ void __init i386_reserve_resources(void)
  
  #endif /* CONFIG_X86_32 */

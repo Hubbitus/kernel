@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -1724,6 +1724,9 @@ popd
 pushd tools/gpio/
 %{make}
 popd
+pushd tools/kvm/kvm_stat
+%{make}
+popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1896,6 +1899,9 @@ make INSTALL_ROOT=%{buildroot} install
 popd
 pushd tools/gpio
 make DESTDIR=%{buildroot} install
+popd
+pushd tools/kvm/kvm_stat
+make INSTALL_ROOT=%{buildroot} install
 popd
 %endif
 
@@ -2094,6 +2100,8 @@ fi
 %{_bindir}/lsgpio
 %{_bindir}/gpio-hammer
 %{_bindir}/gpio-event-mon
+%{_mandir}/man1/kvm_stat*
+%{_bindir}/kvm_stat
 %endif
 
 %if %{with_debuginfo}
@@ -2188,6 +2196,10 @@ fi
 #
 #
 %changelog
+* Tue May 02 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git1.1
+- Linux v4.11-1464-gd3b5d35
+- Reenable debugging options.
+
 * Mon May 01 2017 Laura Abbott <labbott@fedoraproject.org> - 4.11.0-1
 - Linux v4.11
 
