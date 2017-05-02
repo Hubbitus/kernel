@@ -47,8 +47,12 @@ if [ ! -z "$@" ]; then
 	esac
     done
 fi
-cd tools/perf/Documentation/
+cd tools/kvm/kvm_stat/
+make man
+mv kvm_stat.1 ../../perf/Documentation
+cd ../../perf/Documentation/
 make
 tar -czvf $BASEDIR/perf-man-${KERNEL_VERSION}.${KERNEL_PATCHLEVEL}.tar.gz *.1
 make clean
+rm kvm_stat.1
 popd

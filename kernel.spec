@@ -390,7 +390,7 @@ BuildRequires: numactl-devel
 %endif
 %endif
 %if %{with_tools}
-BuildRequires: pciutils-devel gettext ncurses-devel asciidoc
+BuildRequires: pciutils-devel gettext ncurses-devel
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
@@ -1724,9 +1724,6 @@ popd
 pushd tools/gpio/
 %{make}
 popd
-pushd tools/kvm/kvm_stat
-%{make}
-popd
 %endif
 
 # In the modsign case, we do 3 things.  1) We check the "flavour" and hard
@@ -1901,7 +1898,7 @@ pushd tools/gpio
 make DESTDIR=%{buildroot} install
 popd
 pushd tools/kvm/kvm_stat
-make INSTALL_ROOT=%{buildroot} install
+make INSTALL_ROOT=%{buildroot} install-tools
 popd
 %endif
 
