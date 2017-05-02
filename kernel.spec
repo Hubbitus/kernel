@@ -390,7 +390,7 @@ BuildRequires: numactl-devel
 %endif
 %endif
 %if %{with_tools}
-BuildRequires: pciutils-devel gettext ncurses-devel
+BuildRequires: pciutils-devel gettext ncurses-devel asciidoc
 %endif
 BuildConflicts: rhbuildsys(DiskFree) < 500Mb
 %if %{with_debuginfo}
