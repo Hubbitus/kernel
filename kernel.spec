@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -528,10 +528,6 @@ Patch425: ARM-tegra-usb-no-reset.patch
 Patch426: AllWinner-h3.patch
 Patch427: AllWinner-net-emac.patch
 
-# http://www.spinics.net/lists/linux-bluetooth/msg70169.html
-# https://www.spinics.net/lists/devicetree/msg170619.html
-Patch428: ti-bluetooth.patch
-
 Patch429: arm64-hikey-fixes.patch
 
 # http://www.spinics.net/lists/devicetree/msg163238.html
@@ -541,9 +537,6 @@ Patch431: arm-rk3288-tinker.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
-
-# bcm283x mmc for wifi http://www.spinics.net/lists/arm-kernel/msg567077.html
-Patch434: bcm283x-mmc-bcm2835.patch
 
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
@@ -611,9 +604,6 @@ Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
 
 Patch509: MODSIGN-Don-t-try-secure-boot-if-EFI-runtime-is-disa.patch
-
-#CVE-2016-3134 rhbz 1317383 1317384
-Patch665: netfilter-x_tables-deal-with-bogus-nextoffset-values.patch
 
 #rhbz 1435154
 Patch666: powerpc-prom-Increase-RMA-size-to-512MB.patch
@@ -1853,6 +1843,9 @@ rm -rf %{buildroot}%{_docdir}/perf-tip
 mkdir -p %{buildroot}/%{_mandir}/man1
 pushd %{buildroot}/%{_mandir}/man1
 tar -xf %{SOURCE10}
+%if !%{with_tools}
+    rm -f kvm_stat.1
+%endif
 popd
 %endif
 
@@ -2193,6 +2186,9 @@ fi
 #
 #
 %changelog
+* Wed May 03 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git2.1
+- Linux v4.11-4395-g89c9fea
+
 * Tue May 02 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git1.1
 - Linux v4.11-1464-gd3b5d35
 - Reenable debugging options.
