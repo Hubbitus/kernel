@@ -55,8 +55,8 @@ index 5bc291a3d261..56ff5715ab67 100644
 --- a/include/keys/system_keyring.h
 +++ b/include/keys/system_keyring.h
 @@ -36,6 +36,7 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
- #ifdef CONFIG_SYSTEM_BLACKLIST_KEYRING
- extern struct key *system_blacklist_keyring;
+ 	return 0;
+ }
  #endif
 +extern struct key *get_system_keyring(void);
  

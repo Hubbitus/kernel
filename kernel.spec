@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -541,9 +541,6 @@ Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..pa
 # Upstream fixes for i2c/serial/ethernet MAC addresses
 Patch435: bcm283x-fixes.patch
 
-# https://lists.freedesktop.org/archives/dri-devel/2017-February/133823.html
-Patch436: vc4-fix-vblank-cursor-update-issue.patch
-
 Patch437: bcm283x-hdmi-audio.patch
 
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
@@ -573,11 +570,6 @@ Patch473: efi-lockdown.patch
 Patch487: Add-EFI-signature-data-types.patch
 
 Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
-
-# This doesn't apply. It seems like it could be replaced by
-# https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=5ac7eace2d00eab5ae0e9fdee63e38aee6001f7c
-# which has an explicit line about blacklisting
-Patch489: KEYS-Add-a-system-blacklist-keyring.patch
 
 Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
 
@@ -2186,6 +2178,9 @@ fi
 #
 #
 %changelog
+* Thu May 04 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git3.1
+- Linux v4.11-7650-ga1be8ed
+
 * Wed May 03 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git2.1
 - Linux v4.11-4395-g89c9fea
 
