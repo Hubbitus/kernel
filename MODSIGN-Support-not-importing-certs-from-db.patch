@@ -48,8 +48,8 @@ index fe4a6f2bf10a..a41da14b1ffd 100644
 -	int rc = 0;
 +	int ignore_db, rc = 0;
  	struct key *keyring = NULL;
+ 	struct key *blacklist = NULL;
  
- 	/* Check if SB is enabled and just return if not */
 @@ -60,17 +77,22 @@ static int __init load_uefi_certs(void)
  		return -EINVAL;
  	}

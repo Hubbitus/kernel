@@ -51,17 +51,36 @@ index 787eeead2f57..4d9123ed5c07 100644
   *
   * Restrict the addition of keys into a keyring based on the key-to-be-added
 diff --git a/include/keys/system_keyring.h b/include/keys/system_keyring.h
-index 5bc291a3d261..56ff5715ab67 100644
+index 359c2f9..e7160a6 100644
 --- a/include/keys/system_keyring.h
 +++ b/include/keys/system_keyring.h
-@@ -36,6 +36,7 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
+@@ -39,14 +39,26 @@ extern int restrict_link_by_builtin_and_secondary_trusted(
+ extern int mark_hash_blacklisted(const char *hash);
+ extern int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 			       const char *type);
++extern struct key *blacklist_keyring;
++
++static inline struct key *get_blacklist_keyring(void)
++{
++	return blacklist_keyring;
++}
+ #else
+ static inline int is_hash_blacklisted(const u8 *hash, size_t hash_len,
+ 				      const char *type)
+ {
  	return 0;
  }
++static inline struct key *get_blacklist_keyring(void)
++{
++	return NULL;
++}
  #endif
+
 +extern struct key *get_system_keyring(void);
- 
++
  #ifdef CONFIG_IMA_BLACKLIST_KEYRING
  extern struct key *ima_blacklist_keyring;
+
 diff --git a/init/Kconfig b/init/Kconfig
 index 461ad575a608..93646fd7b1c8 100644
 --- a/init/Kconfig
@@ -108,7 +127,7 @@ new file mode 100644
 index 000000000000..fe4a6f2bf10a
 --- /dev/null
 +++ b/kernel/modsign_uefi.c
-@@ -0,0 +1,99 @@
+@@ -0,0 +1,101 @@
 +#include <linux/kernel.h>
 +#include <linux/sched.h>
 +#include <linux/cred.h>
@@ -160,6 +179,7 @@ index 000000000000..fe4a6f2bf10a
 +	unsigned long dbsize = 0, dbxsize = 0, moksize = 0;
 +	int rc = 0;
 +	struct key *keyring = NULL;
++	struct key *blacklist = NULL;
 +
 +	/* Check if SB is enabled and just return if not */
 +	if (!efi_enabled(EFI_SECURE_BOOT))
@@ -194,12 +214,13 @@ index 000000000000..fe4a6f2bf10a
 +		kfree(mok);
 +	}
 +
++	blacklist = get_blacklist_keyring();
 +	dbx = get_cert_list(L"dbx", &secure_var, &dbxsize);
 +	if (!dbx) {
 +		pr_info("MODSIGN: Couldn't get UEFI dbx list\n");
 +	} else {
 +		rc = parse_efi_signature_list(dbx, dbxsize,
-+			system_blacklist_keyring);
++			blacklist);
 +		if (rc)
 +			pr_err("Couldn't parse dbx signatures: %d\n", rc);
 +		kfree(dbx);
@@ -210,4 +231,16 @@ index 000000000000..fe4a6f2bf10a
 +late_initcall(load_uefi_certs);
 -- 
 2.9.3
+diff --git a/certs/blacklist.c b/certs/blacklist.c
+index 3eddce0..bd9324c 100644
+--- a/certs/blacklist.c
++++ b/certs/blacklist.c
+@@ -21,7 +21,7 @@
+ #include <keys/system_keyring.h>
+ #include "blacklist.h"
 
+-static struct key *blacklist_keyring;
++struct key *blacklist_keyring;
+
+ /*
+  * The description must be a type prefix, a colon and then an even number of
