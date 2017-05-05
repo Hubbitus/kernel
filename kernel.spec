@@ -567,6 +567,8 @@ Patch472: crash-driver.patch
 
 Patch473: efi-lockdown.patch
 
+Patch486: KEYS-Allow-unrestricted-boot-time-addition-of-keys-t.patch
+
 Patch487: Add-EFI-signature-data-types.patch
 
 Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
