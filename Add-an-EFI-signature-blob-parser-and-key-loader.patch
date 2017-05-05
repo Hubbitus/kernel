@@ -1,29 +1,38 @@
-From 822b4b3eb76ca451a416a51f0a7bfedfa5c5ea39 Mon Sep 17 00:00:00 2001
+From e4c62c12635a371e43bd17e8d33a936668264491 Mon Sep 17 00:00:00 2001
 From: Dave Howells <dhowells@redhat.com>
-Date: Tue, 23 Oct 2012 09:36:28 -0400
-Subject: [PATCH 16/20] Add an EFI signature blob parser and key loader.
+Date: Fri, 5 May 2017 08:21:58 +0100
+Subject: [PATCH 2/4] efi: Add an EFI signature blob parser
 
-X.509 certificates are loaded into the specified keyring as asymmetric type
-keys.
+Add a function to parse an EFI signature blob looking for elements of
+interest.  A list is made up of a series of sublists, where all the
+elements in a sublist are of the same type, but sublists can be of
+different types.
 
-[labbott@fedoraproject.org: Drop KEY_ALLOC_TRUSTED]
+For each sublist encountered, the function pointed to by the
+get_handler_for_guid argument is called with the type specifier GUID and
+returns either a pointer to a function to handle elements of that type or
+NULL if the type is not of interest.
+
+If the sublist is of interest, each element is passed to the handler
+function in turn.
+
 Signed-off-by: David Howells <dhowells@redhat.com>
 ---
- crypto/asymmetric_keys/Kconfig      |   8 +++
- crypto/asymmetric_keys/Makefile     |   1 +
- crypto/asymmetric_keys/efi_parser.c | 108 ++++++++++++++++++++++++++++++++++++
- include/linux/efi.h                 |   4 ++
- 4 files changed, 121 insertions(+)
- create mode 100644 crypto/asymmetric_keys/efi_parser.c
+ certs/Kconfig       |   8 ++++
+ certs/Makefile      |   1 +
+ certs/efi_parser.c  | 112 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/efi.h |   9 +++++
+ 4 files changed, 130 insertions(+)
+ create mode 100644 certs/efi_parser.c
 
-diff --git a/crypto/asymmetric_keys/Kconfig b/crypto/asymmetric_keys/Kconfig
-index 331f6baf2df8..5f9002d3192e 100644
---- a/crypto/asymmetric_keys/Kconfig
-+++ b/crypto/asymmetric_keys/Kconfig
-@@ -61,4 +61,12 @@ config SIGNED_PE_FILE_VERIFICATION
- 	  This option provides support for verifying the signature(s) on a
- 	  signed PE binary.
- 
+diff --git a/certs/Kconfig b/certs/Kconfig
+index 6ce51ed..630ae09 100644
+--- a/certs/Kconfig
++++ b/certs/Kconfig
+@@ -82,4 +82,12 @@ config SYSTEM_BLACKLIST_HASH_LIST
+ 	  wrapper to incorporate the list into the kernel.  Each <hash> should
+ 	  be a string of hex digits.
+
 +config EFI_SIGNATURE_LIST_PARSER
 +	bool "EFI signature list parser"
 +	depends on EFI
@@ -32,28 +41,28 @@ index 331f6baf2df8..5f9002d3192e 100644
 +	  This option provides support for parsing EFI signature lists for
 +	  X.509 certificates and turning them into keys.
 +
- endif # ASYMMETRIC_KEY_TYPE
-diff --git a/crypto/asymmetric_keys/Makefile b/crypto/asymmetric_keys/Makefile
-index 6516855bec18..c099fe15ed6d 100644
---- a/crypto/asymmetric_keys/Makefile
-+++ b/crypto/asymmetric_keys/Makefile
-@@ -10,6 +10,7 @@ asymmetric_keys-y := \
- 	signature.o
- 
- obj-$(CONFIG_ASYMMETRIC_PUBLIC_KEY_SUBTYPE) += public_key.o
+ endmenu
+diff --git a/certs/Makefile b/certs/Makefile
+index 4119bb3..738151a 100644
+--- a/certs/Makefile
++++ b/certs/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_hashes.o
+ else
+ obj-$(CONFIG_SYSTEM_BLACKLIST_KEYRING) += blacklist_nohashes.o
+ endif
 +obj-$(CONFIG_EFI_SIGNATURE_LIST_PARSER) += efi_parser.o
- 
- #
- # X.509 Certificate handling
-diff --git a/crypto/asymmetric_keys/efi_parser.c b/crypto/asymmetric_keys/efi_parser.c
+
+ ifeq ($(CONFIG_SYSTEM_TRUSTED_KEYRING),y)
+
+diff --git a/certs/efi_parser.c b/certs/efi_parser.c
 new file mode 100644
-index 000000000000..636feb18b733
+index 0000000..4e396f9
 --- /dev/null
-+++ b/crypto/asymmetric_keys/efi_parser.c
-@@ -0,0 +1,108 @@
++++ b/certs/efi_parser.c
+@@ -0,0 +1,112 @@
 +/* EFI signature/key/certificate list parser
 + *
-+ * Copyright (C) 2012 Red Hat, Inc. All Rights Reserved.
++ * Copyright (C) 2012, 2016 Red Hat, Inc. All Rights Reserved.
 + * Written by David Howells (dhowells@redhat.com)
 + *
 + * This program is free software; you can redistribute it and/or
@@ -67,27 +76,44 @@ index 000000000000..636feb18b733
 +#include <linux/printk.h>
 +#include <linux/err.h>
 +#include <linux/efi.h>
-+#include <keys/asymmetric-type.h>
-+
-+static __initdata efi_guid_t efi_cert_x509_guid = EFI_CERT_X509_GUID;
 +
 +/**
 + * parse_efi_signature_list - Parse an EFI signature list for certificates
++ * @source: The source of the key
 + * @data: The data blob to parse
 + * @size: The size of the data blob
-+ * @keyring: The keyring to add extracted keys to
++ * @get_handler_for_guid: Get the handler func for the sig type (or NULL)
++ *
++ * Parse an EFI signature list looking for elements of interest.  A list is
++ * made up of a series of sublists, where all the elements in a sublist are of
++ * the same type, but sublists can be of different types.
++ *
++ * For each sublist encountered, the @get_handler_for_guid function is called
++ * with the type specifier GUID and returns either a pointer to a function to
++ * handle elements of that type or NULL if the type is not of interest.
++ *
++ * If the sublist is of interest, each element is passed to the handler
++ * function in turn.
++ *
++ * Error EBADMSG is returned if the list doesn't parse correctly and 0 is
++ * returned if the list was parsed correctly.  No error can be returned from
++ * the @get_handler_for_guid function or the element handler function it
++ * returns.
 + */
-+int __init parse_efi_signature_list(const void *data, size_t size, struct key *keyring)
++int __init parse_efi_signature_list(
++	const char *source,
++	const void *data, size_t size,
++	efi_element_handler_t (*get_handler_for_guid)(const efi_guid_t *))
 +{
++	efi_element_handler_t handler;
 +	unsigned offs = 0;
-+	size_t lsize, esize, hsize, elsize;
 +
 +	pr_devel("-->%s(,%zu)\n", __func__, size);
 +
 +	while (size > 0) {
-+		efi_signature_list_t list;
 +		const efi_signature_data_t *elem;
-+		key_ref_t key;
++		efi_signature_list_t list;
++		size_t lsize, esize, hsize, elsize;
 +
 +		if (size < sizeof(list))
 +			return -EBADMSG;
@@ -108,6 +134,7 @@ index 000000000000..636feb18b733
 +				 __func__, offs);
 +			return -EBADMSG;
 +		}
++
 +		if (lsize < sizeof(list) ||
 +		    lsize - sizeof(list) < hsize ||
 +		    esize < sizeof(*elem) ||
@@ -117,7 +144,8 @@ index 000000000000..636feb18b733
 +			return -EBADMSG;
 +		}
 +
-+		if (efi_guidcmp(list.signature_type, efi_cert_x509_guid) != 0) {
++		handler = get_handler_for_guid(&list.signature_type);
++		if (!handler) {
 +			data += lsize;
 +			size -= lsize;
 +			offs += lsize;
@@ -132,24 +160,9 @@ index 000000000000..636feb18b733
 +			elem = data;
 +
 +			pr_devel("ELEM[%04x]\n", offs);
-+
-+			key = key_create_or_update(
-+				make_key_ref(keyring, 1),
-+				"asymmetric",
-+				NULL,
++			handler(source,
 +				&elem->signature_data,
-+				esize - sizeof(*elem),
-+				(KEY_POS_ALL & ~KEY_POS_SETATTR) |
-+				KEY_USR_VIEW,
-+				KEY_ALLOC_NOT_IN_QUOTA);
-+
-+			if (IS_ERR(key))
-+				pr_err("Problem loading in-kernel X.509 certificate (%ld)\n",
-+				       PTR_ERR(key));
-+			else
-+				pr_notice("Loaded cert '%s' linked to '%s'\n",
-+					  key_ref_to_ptr(key)->description,
-+					  keyring->description);
++				esize - sizeof(*elem));
 +
 +			data += esize;
 +			size -= esize;
@@ -160,16 +173,21 @@ index 000000000000..636feb18b733
 +	return 0;
 +}
 diff --git a/include/linux/efi.h b/include/linux/efi.h
-index 190858d62fe3..668aa1244885 100644
+index 3259ad6..08024c6 100644
 --- a/include/linux/efi.h
 +++ b/include/linux/efi.h
-@@ -1025,6 +1025,10 @@ extern int efi_memattr_apply_permissions(struct mm_struct *mm,
+@@ -1055,6 +1055,15 @@ extern int efi_memattr_apply_permissions(struct mm_struct *mm,
  char * __init efi_md_typeattr_format(char *buf, size_t size,
  				     const efi_memory_desc_t *md);
- 
-+struct key;
-+extern int __init parse_efi_signature_list(const void *data, size_t size,
-+					   struct key *keyring);
+
++
++typedef void (*efi_element_handler_t)(const char *source,
++				      const void *element_data,
++				      size_t element_size);
++extern int __init parse_efi_signature_list(
++	const char *source,
++	const void *data, size_t size,
++	efi_element_handler_t (*get_handler_for_guid)(const efi_guid_t *));
 +
  /**
   * efi_range_is_wc - check the WC bit on an address range
