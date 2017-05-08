@@ -600,6 +600,9 @@ Patch667: CVE-2017-7645.patch
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch668: CVE-2017-7477.patch
 
+# Fix build on PPC
+Patch669: powerpc-fix-distclean-with-Makefile.postlink.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
