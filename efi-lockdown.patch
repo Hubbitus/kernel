@@ -800,15 +800,15 @@ index 0666287..b10992c 100644
  		return 0;
  	if (off + count > dev->cfg_size) {
 @@ -1009,6 +1012,9 @@ static int pci_mmap_resource(struct kobject *kobj, struct bin_attribute *attr,
- 	resource_size_t start, end;
- 	int i;
+ 	enum pci_mmap_state mmap_type;
+ 	struct resource *res = &pdev->resource[bar];
  
 +	if (kernel_is_locked_down())
 +		return -EPERM;
 +
- 	for (i = 0; i < PCI_ROM_RESOURCE; i++)
- 		if (res == &pdev->resource[i])
- 			break;
+ 	if (res->flags & IORESOURCE_MEM && iomem_is_exclusive(res->start))
+ 		return -EINVAL;
+ 
 @@ -1108,6 +1114,9 @@ static ssize_t pci_write_resource_io(struct file *filp, struct kobject *kobj,
  				     struct bin_attribute *attr, char *buf,
  				     loff_t off, size_t count)
@@ -845,13 +845,13 @@ index f82710a..139d6f0 100644
  		ret = pci_domain_nr(dev->bus);
 @@ -233,7 +239,7 @@ static int proc_bus_pci_mmap(struct file *file, struct vm_area_struct *vma)
  	struct pci_filp_private *fpriv = file->private_data;
- 	int i, ret, write_combine;
+ 	int i, ret, write_combine = 0, res_bit = IORESOURCE_MEM;
  
 -	if (!capable(CAP_SYS_RAWIO))
 +	if (!capable(CAP_SYS_RAWIO) || kernel_is_locked_down())
  		return -EPERM;
  
- 	/* Make sure the caller is mapping a real resource for this device */
+ 	if (fpriv->mmap_state == pci_mmap_io) {
 diff --git a/drivers/pci/syscall.c b/drivers/pci/syscall.c
 index 9bf993e..c095247 100644
 --- a/drivers/pci/syscall.c
