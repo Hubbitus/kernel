@@ -1793,7 +1793,7 @@ find $RPM_BUILD_ROOT/usr/tmp-headers/include \
 # Copy all the architectures we care about to their respective asm directories
 for arch in arm arm64 powerpc s390 x86 ; do
 mkdir -p $RPM_BUILD_ROOT/usr/${arch}-linux-gnu/include
-mv $RPM_BUILD_ROOT/usr/tmp-headers/include/asm-${arch} $RPM_BUILD_ROOT/usr/${arch}-linux-gnu/include/asm
+mv $RPM_BUILD_ROOT/usr/tmp-headers/include/arch-${arch} $RPM_BUILD_ROOT/usr/${arch}-linux-gnu/include/asm
 cp -a $RPM_BUILD_ROOT/usr/tmp-headers/include/asm-generic $RPM_BUILD_ROOT/usr/${arch}-linux-gnu/include/.
 done
 
