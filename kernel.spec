@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -588,9 +588,6 @@ Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # Patch503: drm-i915-turn-off-wc-mmaps.patch
-
-# CVE-2017-7645 rhbz 1443615 1443617
-Patch667: CVE-2017-7645.patch
 
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch668: CVE-2017-7477.patch
@@ -2170,6 +2167,9 @@ fi
 #
 #
 %changelog
+* Thu May 11 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git8.1
+- Linux v4.11-13167-g791a9a6
+
 * Wed May 10 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git7.1
 - Linux v4.11-12441-g56868a4
 
