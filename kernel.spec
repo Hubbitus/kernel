@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 8
+%define gitrev 9
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -594,6 +594,8 @@ Patch668: CVE-2017-7477.patch
 
 # Fix build on PPC
 Patch669: powerpc-fix-distclean-with-Makefile.postlink.patch
+
+Patch679: ARM-KVM-Fix-tracepoint-generation-after-move-to-virt-kvm-arm.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2167,6 +2169,9 @@ fi
 #
 #
 %changelog
+* Fri May 12 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git9.1
+- Linux v4.11-13318-g09d79d1
+
 * Thu May 11 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc0.git8.1
 - Linux v4.11-13167-g791a9a6
 
