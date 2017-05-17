@@ -509,9 +509,6 @@ Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
 # a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
 Patch420: qcom-QDF2432-tmp-errata.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg490981.html
-Patch421: geekbox-v4-device-tree-support.patch
-
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
 Patch422: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
