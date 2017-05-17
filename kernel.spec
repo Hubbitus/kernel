@@ -505,91 +505,100 @@ Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Git trees.
 
 # Standalone patches
+# 100 - Generic long running patches
 
-# a tempory patch for QCOM hardware enablement. Will be gone by end of 2016/F-26 GA
-Patch420: qcom-QDF2432-tmp-errata.patch
+Patch110: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+
+Patch111: input-kill-stupid-messages.patch
+
+Patch112: die-floppy-die.patch
+
+Patch113: no-pcspkr-modalias.patch
+
+Patch114: silence-fbcon-logo.patch
+
+Patch115: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
+
+Patch116: crash-driver.patch
+
+Patch117: lis3-improve-handling-of-null-rate.patch
+
+Patch118: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
+
+Patch119: criu-no-expert.patch
+
+Patch120: ath9k-rx-dma-stop-check.patch
+
+Patch121: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
+
+Patch122: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
+
+Patch123: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+
+# 200 - x86 / secureboot
+
+Patch201: efi-lockdown.patch
+
+Patch202: KEYS-Allow-unrestricted-boot-time-addition-of-keys-t.patch
+
+Patch203: Add-EFI-signature-data-types.patch
+
+Patch204: Add-an-EFI-signature-blob-parser-and-key-loader.patch
+
+Patch205: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
+
+Patch206: MODSIGN-Support-not-importing-certs-from-db.patch
+
+Patch210: disable-i8042-check-on-apple-mac.patch
+
+Patch211: drm-i915-hush-check-crtc-state.patch
+
+# Patch212: drm-i915-turn-off-wc-mmaps.patch
+
+# 300 - ARM patches
+
+# a tempory patch for QCOM hardware enablement. Will be gone by F-26 GA
+Patch301: qcom-QDF2432-tmp-errata.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
-Patch422: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+Patch102: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
-Patch423: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
 # Not particularly happy we don't yet have a proper upstream resolution this is the right direction
 # https://www.spinics.net/lists/arm-kernel/msg535191.html
-Patch424: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
+Patch304: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
-Patch425: ARM-tegra-usb-no-reset.patch
+Patch305: ARM-tegra-usb-no-reset.patch
 
-Patch427: AllWinner-net-emac.patch
+Patch306: AllWinner-net-emac.patch
 
-Patch429: arm64-hikey-fixes.patch
+Patch307: arm64-hikey-fixes.patch
 
 # http://www.spinics.net/lists/devicetree/msg163238.html
-Patch430: bcm2837-initial-support.patch
+Patch308: bcm2837-initial-support.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
-Patch433: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+Patch309: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
 # Upstream fixes for i2c/serial/ethernet MAC addresses
-Patch435: bcm283x-fixes.patch
+Patch310: bcm283x-fixes.patch
 
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
-Patch438: arm-imx6-hummingboard2.patch
+Patch311: arm-imx6-hummingboard2.patch
 
-Patch440: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
+Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
-Patch460: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
+# 400 - IBM (ppc/s390x) patches
 
-Patch466: input-kill-stupid-messages.patch
-
-Patch467: die-floppy-die.patch
-
-Patch468: no-pcspkr-modalias.patch
-
-Patch470: silence-fbcon-logo.patch
-
-Patch471: Kbuild-Add-an-option-to-enable-GCC-VTA.patch
-
-Patch472: crash-driver.patch
-
-Patch473: efi-lockdown.patch
-
-Patch486: KEYS-Allow-unrestricted-boot-time-addition-of-keys-t.patch
-
-Patch487: Add-EFI-signature-data-types.patch
-
-Patch488: Add-an-EFI-signature-blob-parser-and-key-loader.patch
-
-Patch490: MODSIGN-Import-certificates-from-UEFI-Secure-Boot.patch
-
-Patch491: MODSIGN-Support-not-importing-certs-from-db.patch
-
-Patch493: drm-i915-hush-check-crtc-state.patch
-
-Patch494: disable-i8042-check-on-apple-mac.patch
-
-Patch495: lis3-improve-handling-of-null-rate.patch
-
-Patch497: scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
-
-Patch498: criu-no-expert.patch
-
-Patch499: ath9k-rx-dma-stop-check.patch
-
-Patch500: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
-
-Patch501: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
-
-Patch502: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
-
-# Patch503: drm-i915-turn-off-wc-mmaps.patch
+# 500 - Temp fixes/CVEs etc
 
 # CVE-2017-7477 rhbz 1445207 1445208
-Patch668: CVE-2017-7477.patch
+Patch502: CVE-2017-7477.patch
 
-Patch679: ARM-KVM-Fix-tracepoint-generation-after-move-to-virt-kvm-arm.patch
+Patch503: ARM-KVM-Fix-tracepoint-generation-after-move-to-virt-kvm-arm.patch
 
 # END OF PATCH DEFINITIONS
 
