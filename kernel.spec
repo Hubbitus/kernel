@@ -553,8 +553,6 @@ Patch210: disable-i8042-check-on-apple-mac.patch
 
 Patch211: drm-i915-hush-check-crtc-state.patch
 
-# Patch212: drm-i915-turn-off-wc-mmaps.patch
-
 # 300 - ARM patches
 
 # a tempory patch for QCOM hardware enablement. Will be gone by F-26 GA
