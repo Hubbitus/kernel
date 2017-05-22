@@ -564,10 +564,6 @@ Patch102: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 # Fix OMAP4 (pandaboard)
 Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
-# Not particularly happy we don't yet have a proper upstream resolution this is the right direction
-# https://www.spinics.net/lists/arm-kernel/msg535191.html
-Patch304: arm64-mm-Fix-memmap-to-be-initialized-for-the-entire-section.patch
-
 # http://patchwork.ozlabs.org/patch/587554/
 Patch305: ARM-tegra-usb-no-reset.patch
 
