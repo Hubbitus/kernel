@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 1
+%global rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -577,9 +577,6 @@ Patch308: bcm2837-initial-support.patch
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch309: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
-# Upstream fixes for i2c/serial/ethernet MAC addresses
-Patch310: bcm283x-fixes.patch
-
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch311: arm-imx6-hummingboard2.patch
 
@@ -591,8 +588,6 @@ Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch502: CVE-2017-7477.patch
-
-Patch503: ARM-KVM-Fix-tracepoint-generation-after-move-to-virt-kvm-arm.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2166,6 +2161,10 @@ fi
 #
 #
 %changelog
+* Mon May 22 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc2.git0.1
+- Linux v4.12-rc2
+- Disable debugging options.
+
 * Fri May 19 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc1.git4.1
 - Linux v4.12-rc1-154-g8b4822d
 
