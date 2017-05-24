@@ -565,10 +565,13 @@ Patch211: drm-i915-hush-check-crtc-state.patch
 Patch301: qcom-QDF2432-tmp-errata.patch
 
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
-Patch102: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+Patch302: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
 Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+
+# http://www.spinics.net/lists/arm-kernel/msg582772.html
+Patch304: arm-dts-boneblack-wireless-add-WL1835-Bluetooth-device-node.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
 Patch305: ARM-tegra-usb-no-reset.patch
@@ -2147,6 +2150,9 @@ fi
 #
 #
 %changelog
+* Wed May 24 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Various ARM updates
+
 * Tue May 23 2017 Laura Abbott <labbott@fedoraproject.org>
 - Update debuginfo generation
 

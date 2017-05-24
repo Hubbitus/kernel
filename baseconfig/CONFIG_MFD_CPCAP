@@ -1,1 +1,1 @@
-CONFIG_MFD_CPCAP=m
+# CONFIG_MFD_CPCAP is not set
