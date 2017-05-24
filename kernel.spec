@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 2
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2150,6 +2150,9 @@ fi
 #
 #
 %changelog
+* Wed May 24 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc2.git2.1
+- Linux v4.12-rc2-62-g2426125
+
 * Wed May 24 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Various ARM updates
 
