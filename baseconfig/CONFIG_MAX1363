@@ -1,1 +1,1 @@
-# CONFIG_MAX1363 is not set
+CONFIG_MAX1363=m
