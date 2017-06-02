@@ -2150,6 +2150,9 @@ fi
 #
 #
 %changelog
+* Fri Jun 02 2017 Laura Abbott <labbott@fedoraproject.org>
+- Enable Chromebook keyboard backlight (rhbz 1447031)
+
 * Fri Jun 02 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc3.git3.1
 - Linux v4.12-rc3-80-g3b1e342
 
