@@ -19,6 +19,7 @@ fedpkg commit -c
 RC=`grep "%global rcrev" kernel.spec| cut -d ' ' -f 3`
 RC=$(($RC+1))
 BASE=`grep "%define base_sublevel" kernel.spec| cut -d ' ' -f 3`
+OLDBASE=$BASE
 # See comment in kernel.spec about the base numbering
 BASE=$(($BASE+1))
 
@@ -28,10 +29,11 @@ mv sources.tmp sources
 
 # Grab the tarball
 if [ ! -f patch-4.$BASE-rc$RC.xz ]; then
-	wget https://cdn.kernel.org/pub/linux/kernel/v4.x/testing/patch-4.$BASE-rc$RC.xz
+	wget -O patch-4.$BASE-rc$RC https://git.kernel.org/torvalds/p/v4.$BASE-rc$RC/v4.$OLDBASE
 	if [ ! $? -eq 0 ]; then
 		exit 1
 	fi
+	xz -9 patch-4.$BASE-rc$RC
 	fedpkg upload patch-4.$BASE-rc$RC.xz
 fi
 
