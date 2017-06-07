@@ -604,6 +604,9 @@ Patch311: arm-imx6-hummingboard2.patch
 
 Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
+Patch313: bcm2835-clk-audio-jitter-issues.patch
+Patch314: bcm2835-fix-potential-null-pointer-dereferences.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2164,6 +2167,9 @@ fi
 #
 #
 %changelog
+* Wed Jun  7 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- A couple of upstream fixes for Raspberry Pi
+
 * Tue Jun 06 2017 Laura Abbott <labbott@redhat.com>
 - Enable the vDSO for arm LPAE
 
