@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -590,8 +590,6 @@ Patch304: arm-dts-boneblack-wireless-add-WL1835-Bluetooth-device-node.patch
 Patch305: ARM-tegra-usb-no-reset.patch
 
 Patch306: AllWinner-net-emac.patch
-
-Patch307: arm64-hikey-fixes.patch
 
 # http://www.spinics.net/lists/devicetree/msg163238.html
 Patch308: bcm2837-initial-support.patch
@@ -2167,6 +2165,9 @@ fi
 #
 #
 %changelog
+* Fri Jun 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.12.0-0.rc4.git3.1
+- Linux v4.12-rc4-176-geb4125d
+
 * Thu Jun 08 2017 Laura Abbott <labbott@fedoraproject.org>
 - Update install path for asm cross headers
 
