@@ -2165,6 +2165,10 @@ fi
 #
 #
 %changelog
+* Wed Jun 14 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Rebase dwmac-sun8i to v6 that's in net-next
+- Add more device support and extra fixes for dwmac-sun8i
+
 * Mon Jun 12 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc5.git0.1
 - Linux v4.12-rc5
 - Disable debugging options.
