@@ -615,6 +615,27 @@ Patch502: CVE-2017-7477.patch
 # rhbz 1459326
 Patch504: RFC-audit-fix-a-race-condition-with-the-auditd-tracking-code.patch
 
+# 600 - Patches for improved Bay and Cherry Trail device support
+# Below patches are pending in -next:
+Patch601: 0001-platform-x86-Add-driver-for-ACPI-INT0002-Virtual-GPI.patch
+Patch602: 0002-mfd-Add-Cherry-Trail-Whiskey-Cove-PMIC-driver.patch
+Patch603: 0003-power-supply-core-Add-support-for-supplied-from-devi.patch
+Patch604: 0004-platform-x86-intel_cht_int33fe-Set-supplied-from-pro.patch
+Patch605: 0005-ACPI-PMIC-xpower-Add-support-for-the-GPI1-regulator-.patch
+Patch606: 0006-Input-axp20x-pek-Add-wakeup-support.patch
+Patch607: 0007-platform-x86-silead_dmi-Add-touchscreen-info-for-GP-.patch
+Patch608: 0008-platform-x86-silead_dmi-Add-touchscreen-info-for-PoV.patch
+Patch609: 0009-platform-x86-silead_dmi-Add-touchscreen-info-for-Pip.patch
+# Below patches are submitted upstream, awaiting review / merging
+Patch610: 0010-Input-silead-Add-support-for-capactive-home-button-f.patch
+Patch611: 0011-Input-goodix-Add-support-for-capacitive-home-button.patch
+Patch612: 0012-Input-gpio_keys-Do-not-report-wake-button-presses-as.patch
+Patch613: 0013-iio-accel-bmc150-Add-support-for-BOSC0200-ACPI-devic.patch
+Patch614: 0014-mmc-sdhci-acpi-Workaround-conflict-with-PCI-wifi-on-.patch
+Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
+# Small workaround patches for issues with a more comprehensive fix in -next
+Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2168,6 +2189,13 @@ fi
 #
 #
 %changelog
+* Fri Jun 23 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Enable AXP288 PMIC support on x86_64 for battery charging and monitoring
+  support on Bay and Cherry Trail tablets and laptops
+- Enable various drivers for peripherals found on Bay and Cherry Trail tablets
+- Add some small patches fixing suspend/resume touchscreen and accelerometer
+  issues on various Bay and Cherry Trail tablets
+
 * Thu Jun 22 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc6.git3.1
 - Linux v4.12-rc6-102-ga38371c
 - Reenable debugging options.
