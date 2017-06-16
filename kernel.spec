@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2165,6 +2165,10 @@ fi
 #
 #
 %changelog
+* Fri Jun 16 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc5.git2.1
+- Linux v4.12-rc5-187-gab2789b
+- Revert dwmac-sun8i rebase due to build issues
+
 * Thu Jun 15 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc5.git1.1
 - Linux v4.12-rc5-137-ga090bd4
 - Reenable debugging options.

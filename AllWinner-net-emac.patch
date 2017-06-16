@@ -1,21 +1,20 @@
-From patchwork Wed May 31 07:18:32 2017
+From patchwork Mon May  1 12:45:01 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6, 01/21] net-next: stmmac: export
- stmmac_set_mac_addr/stmmac_get_mac_addr
+Subject: [v5,
+ 01/20] net: stmmac: export stmmac_set_mac_addr/stmmac_get_mac_addr
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756043
-Message-Id: <20170531071852.12422-2-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706455
+Message-Id: <20170501124520.3769-2-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:32 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:01 +0200
 
 Thoses symbol will be needed for the dwmac-sun8i ethernet driver.
 For letting it to be build as module, they need to be exported.
@@ -26,7 +25,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
-index 38f94305aab5..67af0bdd7f10 100644
+index 38f9430..67af0bd 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac_lib.c
 @@ -248,6 +248,7 @@ void stmmac_set_mac_addr(void __iomem *ioaddr, u8 addr[6],
@@ -43,23 +42,23 @@ index 38f94305aab5..67af0bdd7f10 100644
  }
 -
 +EXPORT_SYMBOL_GPL(stmmac_get_mac_addr);
-From patchwork Wed May 31 07:18:33 2017
+
+From patchwork Mon May  1 12:45:02 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,02/21] net-next: stmmac: add optional setup function
+Subject: [v5,02/20] net: stmmac: add optional setup function
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9755987
-Message-Id: <20170531071852.12422-3-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706501
+Message-Id: <20170501124520.3769-3-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:33 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:02 +0200
 
 Instead of adding more ifthen logic for adding a new mac_device_info
 setup function, it is easier to add a function pointer to the function
@@ -72,10 +71,10 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  2 files changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index f158273eab9b..c80c9c3b67db 100644
+index cd8c601..b82ab64 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -3933,7 +3933,9 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+@@ -3947,7 +3947,9 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
  	struct mac_device_info *mac;
  
  	/* Identify the MAC HW device */
@@ -87,7 +86,7 @@ index f158273eab9b..c80c9c3b67db 100644
  		mac = dwmac1000_setup(priv->ioaddr,
  				      priv->plat->multicast_filter_bins,
 diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 3921cb9dfadb..8bb550bca96d 100644
+index 3921cb9..8bb550b 100644
 --- a/include/linux/stmmac.h
 +++ b/include/linux/stmmac.h
 @@ -177,6 +177,7 @@ struct plat_stmmacenet_data {
@@ -98,24 +97,25 @@ index 3921cb9dfadb..8bb550bca96d 100644
  	void *bsp_priv;
  	struct clk *stmmac_clk;
  	struct clk *pclk;
-From patchwork Wed May 31 07:18:34 2017
+
+From patchwork Mon May  1 12:45:03 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6, 03/21] dt-bindings: net-next: Add DT bindings documentation for
- Allwinner dwmac-sun8i
+Subject: [v5,
+ 03/20] dt-bindings: net: Add DT bindings documentation for Allwinner
+ dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9755997
-Message-Id: <20170531071852.12422-4-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706457
+Message-Id: <20170501124520.3769-4-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:34 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:03 +0200
 
 This patch adds documentation for Device-Tree bindings for the
 Allwinner dwmac-sun8i driver.
@@ -123,16 +123,16 @@ Allwinner dwmac-sun8i driver.
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/net/dwmac-sun8i.txt        | 78 ++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+ .../devicetree/bindings/net/dwmac-sun8i.txt        | 77 ++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/dwmac-sun8i.txt
 
 diff --git a/Documentation/devicetree/bindings/net/dwmac-sun8i.txt b/Documentation/devicetree/bindings/net/dwmac-sun8i.txt
 new file mode 100644
-index 000000000000..08e708c73193
+index 0000000..05cd067
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/net/dwmac-sun8i.txt
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,77 @@
 +* Allwinner sun8i GMAC ethernet controller
 +
 +This device is a platform glue layer for stmmac.
@@ -163,8 +163,7 @@ index 000000000000..08e708c73193
 +Optional properties:
 +- allwinner,tx-delay-ps: TX clock delay chain value in ps. Range value is 0-700. Default is 0)
 +- allwinner,rx-delay-ps: RX clock delay chain value in ps. Range value is 0-3100. Default is 0)
-+Both delay properties need to be a multiple of 100. They control the delay for
-+external PHY.
++Both delay properties need to be a multiple of 100.
 +
 +Optional properties for "allwinner,sun8i-h3-emac":
 +- allwinner,leds-active-low: EPHY LEDs are active low
@@ -198,7 +197,7 @@ index 000000000000..08e708c73193
 +	#address-cells = <1>;
 +	#size-cells = <0>;
 +
-+	phy-handle = <&int_mii_phy>;
++	phy = <&int_mii_phy>;
 +	phy-mode = "mii";
 +	allwinner,leds-active-low;
 +	mdio: mdio {
@@ -211,30 +210,29 @@ index 000000000000..08e708c73193
 +		};
 +	};
 +};
-From patchwork Wed May 31 07:18:35 2017
+
+From patchwork Mon May  1 12:45:04 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6, 04/21] dt-bindings: syscon: Add DT bindings documentation for
+Subject: [v5, 04/20] dt-bindings: syscon: Add DT bindings documentation for
  Allwinner syscon
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756039
-Message-Id: <20170531071852.12422-5-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706469
+Message-Id: <20170501124520.3769-5-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:35 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:04 +0200
 
 This patch adds documentation for Device-Tree bindings for the
 syscon present in allwinner devices.
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
  .../devicetree/bindings/misc/allwinner,syscon.txt     | 19 +++++++++++++++++++
  1 file changed, 19 insertions(+)
@@ -242,7 +240,7 @@ Acked-by: Rob Herring <robh@kernel.org>
 
 diff --git a/Documentation/devicetree/bindings/misc/allwinner,syscon.txt b/Documentation/devicetree/bindings/misc/allwinner,syscon.txt
 new file mode 100644
-index 000000000000..cb5769137c6c
+index 0000000..cb57691
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/misc/allwinner,syscon.txt
 @@ -0,0 +1,19 @@
@@ -265,23 +263,23 @@ index 000000000000..cb5769137c6c
 +	compatible = "allwinner,sun8i-h3-system-controller", "syscon";
 +	reg = <0x01c00000 0x1000>;
 +};
-From patchwork Wed May 31 07:18:36 2017
+
+From patchwork Mon May  1 12:45:05 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,05/21] net-next: stmmac: Add dwmac-sun8i
+Subject: [v5,05/20] net: stmmac: Add dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756029
-Message-Id: <20170531071852.12422-6-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706473
+Message-Id: <20170501124520.3769-6-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:36 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:05 +0200
 
 The dwmac-sun8i is a heavy hacked version of stmmac hardware by
 allwinner.
@@ -292,15 +290,15 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
  drivers/net/ethernet/stmicro/stmmac/Kconfig        |  11 +
  drivers/net/ethernet/stmicro/stmmac/Makefile       |   1 +
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c  | 990 +++++++++++++++++++++
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  15 +
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c  | 973 +++++++++++++++++++++
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  29 +
  .../net/ethernet/stmicro/stmmac/stmmac_platform.c  |   9 +-
  include/linux/stmmac.h                             |   1 +
- 6 files changed, 1025 insertions(+), 2 deletions(-)
+ 6 files changed, 1022 insertions(+), 2 deletions(-)
  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
 
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index cfbe3634dfa1..85c0e41f8021 100644
+index cfbe363..85c0e41 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
 +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
 @@ -145,6 +145,17 @@ config DWMAC_SUNXI
@@ -322,7 +320,7 @@ index cfbe3634dfa1..85c0e41f8021 100644
  
  config STMMAC_PCI
 diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index 700c60336674..fd4937a7fcab 100644
+index 700c603..fd4937a 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
 +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
 @@ -16,6 +16,7 @@ obj-$(CONFIG_DWMAC_SOCFPGA)	+= dwmac-altr-socfpga.o
@@ -335,10 +333,10 @@ index 700c60336674..fd4937a7fcab 100644
  stmmac-platform-objs:= stmmac_platform.o
 diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
 new file mode 100644
-index 000000000000..1a6bfe6c958f
+index 0000000..66eb980
 --- /dev/null
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -0,0 +1,990 @@
+@@ -0,0 +1,973 @@
 +/*
 + * dwmac-sun8i.c - Allwinner sun8i DWMAC specific glue layer
 + *
@@ -459,13 +457,6 @@ index 000000000000..1a6bfe6c958f
 +#define EMAC_RX_DMA_STA 0xC0
 +#define EMAC_RX_CUR_DESC        0xC4
 +#define EMAC_RX_CUR_BUF 0xC8
-+
-+/* Use in EMAC_BASIC_CTL0 */
-+#define EMAC_DUPLEX_FULL	BIT(0)
-+#define EMAC_LOOPBACK		BIT(1)
-+#define EMAC_SPEED_1000 0
-+#define EMAC_SPEED_100 (0x03 << 2)
-+#define EMAC_SPEED_10 (0x02 << 2)
 +
 +/* Use in EMAC_BASIC_CTL1 */
 +#define EMAC_BURSTLEN_SHIFT		24
@@ -955,11 +946,8 @@ index 000000000000..1a6bfe6c958f
 +	v = readl(priv->ioaddr + EMAC_BASIC_CTL1);
 +	writel(v | 0x01, priv->ioaddr + EMAC_BASIC_CTL1);
 +
-+	/* The timeout was previoulsy set to 10ms, but some board (OrangePI0)
-+	 * need more if no cable plugged. 100ms seems OK
-+	 */
 +	err = readl_poll_timeout(priv->ioaddr + EMAC_BASIC_CTL1, v,
-+				 !(v & 0x01), 100, 100000);
++				 !(v & 0x01), 100, 10000);
 +
 +	if (err) {
 +		dev_err(priv->device, "EMAC reset timeout\n");
@@ -1111,12 +1099,9 @@ index 000000000000..1a6bfe6c958f
 +	return 0;
 +}
 +
-+/* sun8i_power_phy() - Activate the PHY:
-+ * In case of error, no need to call sun8i_unpower_phy(),
-+ * it will be called anyway by sun8i_dwmac_exit()
-+ */
 +static int sun8i_power_phy(struct stmmac_priv *priv)
 +{
++	struct sunxi_priv_data *gmac = priv->plat->bsp_priv;
 +	int ret;
 +
 +	ret = sun8i_dwmac_power_internal_phy(priv);
@@ -1125,15 +1110,17 @@ index 000000000000..1a6bfe6c958f
 +
 +	ret = sun8i_dwmac_set_syscon(priv);
 +	if (ret)
-+		return ret;
++		goto error_phy;
 +
-+	/* After changing syscon value, the MAC need reset or it will use
-+	 * the last value (and so the last PHY set.
-+	 */
 +	ret = sun8i_dwmac_reset(priv);
 +	if (ret)
-+		return ret;
++		goto error_phy;
 +	return 0;
++
++error_phy:
++	sun8i_dwmac_unset_syscon(gmac);
++	sun8i_dwmac_unpower_internal_phy(gmac);
++	return ret;
 +}
 +
 +static void sun8i_unpower_phy(struct sunxi_priv_data *gmac)
@@ -1183,15 +1170,9 @@ index 000000000000..1a6bfe6c958f
 +	mac->mac = &sun8i_dwmac_ops;
 +	mac->dma = &sun8i_dwmac_dma_ops;
 +
-+	/* The loopback bit seems to be re-set when link change
-+	 * Simply mask it each time
-+	 * Speed 10/100/1000 are set in BIT(2)/BIT(3)
-+	 */
-+	mac->link.speed_mask = GENMASK(3, 2) | EMAC_LOOPBACK;
-+	mac->link.speed10 = EMAC_SPEED_10;
-+	mac->link.speed100 = EMAC_SPEED_100;
-+	mac->link.speed1000 = EMAC_SPEED_1000;
-+	mac->link.duplex = EMAC_DUPLEX_FULL;
++	mac->link.port = 0;
++	mac->link.duplex = BIT(0);
++	mac->link.speed = 1;
 +	mac->mii.addr = EMAC_MDIO_CMD;
 +	mac->mii.data = EMAC_MDIO_DATA;
 +	mac->mii.reg_shift = 4;
@@ -1330,7 +1311,7 @@ index 000000000000..1a6bfe6c958f
 +MODULE_DESCRIPTION("Allwinner sun8i DWMAC specific glue layer");
 +MODULE_LICENSE("GPL");
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index c80c9c3b67db..68a188e74c54 100644
+index b82ab64..39777a7 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
 @@ -235,6 +235,17 @@ static void stmmac_clk_csr_set(struct stmmac_priv *priv)
@@ -1351,7 +1332,49 @@ index c80c9c3b67db..68a188e74c54 100644
  }
  
  static void print_pkt(unsigned char *buf, int len)
-@@ -3955,6 +3966,10 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
+@@ -784,6 +795,14 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 	if (phydev->link) {
+ 		u32 ctrl = readl(priv->ioaddr + MAC_CTRL_REG);
+ 
++		/* dwmac-sun8i handle loopback in MAC_CTRL_REG */
++		if (priv->plat->has_sun8i) {
++			if (dev->features & NETIF_F_LOOPBACK)
++				ctrl |= BIT(1);
++			else
++				ctrl &= ~BIT(1);
++		}
++
+ 		/* Now we make sure that we can be in full duplex mode.
+ 		 * If not, we operate in half-duplex mode. */
+ 		if (phydev->duplex != priv->oldduplex) {
+@@ -800,6 +819,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 
+ 		if (phydev->speed != priv->speed) {
+ 			new_state = 1;
++			if (priv->plat->has_sun8i)
++				ctrl &= ~GENMASK(3, 2);
+ 			switch (phydev->speed) {
+ 			case 1000:
+ 				if (priv->plat->has_gmac ||
+@@ -811,6 +832,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 				    priv->plat->has_gmac4) {
+ 					ctrl |= priv->hw->link.port;
+ 					ctrl |= priv->hw->link.speed;
++				} else if (priv->plat->has_sun8i) {
++					ctrl |= 3 << 2;
+ 				} else {
+ 					ctrl &= ~priv->hw->link.port;
+ 				}
+@@ -820,6 +843,8 @@ static void stmmac_adjust_link(struct net_device *dev)
+ 				    priv->plat->has_gmac4) {
+ 					ctrl |= priv->hw->link.port;
+ 					ctrl &= ~(priv->hw->link.speed);
++				} else if (priv->plat->has_sun8i) {
++					ctrl |= 2 << 2;
+ 				} else {
+ 					ctrl &= ~priv->hw->link.port;
+ 				}
+@@ -3969,6 +3994,10 @@ static int stmmac_hw_init(struct stmmac_priv *priv)
  
  	priv->hw = mac;
  
@@ -1363,7 +1386,7 @@ index c80c9c3b67db..68a188e74c54 100644
  	if (priv->synopsys_id >= DWMAC_CORE_4_00) {
  		priv->hw->mode = &dwmac4_ring_mode_ops;
 diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-index 7fc3a1ef395a..3840529344ed 100644
+index 7fc3a1e..3840529 100644
 --- a/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 @@ -309,6 +309,12 @@ static int stmmac_dt_phy(struct plat_stmmacenet_data *plat,
@@ -1390,7 +1413,7 @@ index 7fc3a1ef395a..3840529344ed 100644
  	} else {
  		/**
 diff --git a/include/linux/stmmac.h b/include/linux/stmmac.h
-index 8bb550bca96d..108739ff9223 100644
+index 8bb550b..108739f 100644
 --- a/include/linux/stmmac.h
 +++ b/include/linux/stmmac.h
 @@ -186,6 +186,7 @@ struct plat_stmmacenet_data {
@@ -1401,25 +1424,25 @@ index 8bb550bca96d..108739ff9223 100644
  	bool tso_en;
  	int mac_port_sel_speed;
  	bool en_tx_lpi_clockgating;
-From patchwork Wed May 31 07:18:37 2017
+
+From patchwork Mon May  1 12:45:06 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,
- 06/21] arm: sun8i: sunxi-h3-h5: Add dt node for the syscon control
+Subject: [v5,
+ 06/20] arm: sun8i: sunxi-h3-h5: Add dt node for the syscon control
  module
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756021
-Message-Id: <20170531071852.12422-7-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706459
+Message-Id: <20170501124520.3769-7-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:37 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:06 +0200
 
 This patch add the dt node for the syscon register present on the
 Allwinner H3/H5
@@ -1433,7 +1456,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index d0067fec99de..3a28be5ab641 100644
+index 1aeeacb..d9691fc 100644
 --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 @@ -83,6 +83,12 @@
@@ -1449,23 +1472,23 @@ index d0067fec99de..3a28be5ab641 100644
  		dma: dma-controller@01c02000 {
  			compatible = "allwinner,sun8i-h3-dma";
  			reg = <0x01c02000 0x1000>;
-From patchwork Wed May 31 07:18:38 2017
+
+From patchwork Mon May  1 12:45:07 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,07/21] arm: sun8i: sunxi-h3-h5: add dwmac-sun8i ethernet driver
+Subject: [v5,07/20] arm: sun8i: sunxi-h3-h5: add dwmac-sun8i ethernet driver
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9755999
-Message-Id: <20170531071852.12422-8-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706465
+Message-Id: <20170501124520.3769-8-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:38 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:07 +0200
 
 The dwmac-sun8i is an ethernet MAC hardware that support 10/100/1000
 speed.
@@ -1479,7 +1502,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 34 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sunxi-h3-h5.dtsi b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
-index 3a28be5ab641..9e4a496f3cca 100644
+index d9691fc..45a9a30 100644
 --- a/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 +++ b/arch/arm/boot/dts/sunxi-h3-h5.dtsi
 @@ -285,6 +285,14 @@
@@ -1530,23 +1553,23 @@ index 3a28be5ab641..9e4a496f3cca 100644
  		spi0: spi@01c68000 {
  			compatible = "allwinner,sun8i-h3-spi";
  			reg = <0x01c68000 0x1000>;
-From patchwork Wed May 31 07:18:39 2017
+
+From patchwork Mon May  1 12:45:08 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,08/21] arm: sun8i: orangepi-pc: Enable dwmac-sun8i
+Subject: [v5,08/20] arm: sun8i: orangepi-pc: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756007
-Message-Id: <20170531071852.12422-9-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706463
+Message-Id: <20170501124520.3769-9-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:39 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:08 +0200
 
 The dwmac-sun8i hardware is present on the Orange PI PC.
 It uses the internal PHY.
@@ -1559,7 +1582,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
-index 1a044b17d6c6..998b60f8d295 100644
+index f148111..52e6575 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc.dts
 @@ -52,6 +52,7 @@
@@ -1570,7 +1593,7 @@ index 1a044b17d6c6..998b60f8d295 100644
  		serial0 = &uart0;
  	};
  
-@@ -113,6 +114,13 @@
+@@ -109,6 +110,13 @@
  	status = "okay";
  };
  
@@ -1584,23 +1607,23 @@ index 1a044b17d6c6..998b60f8d295 100644
  &ir {
  	pinctrl-names = "default";
  	pinctrl-0 = <&ir_pins_a>;
-From patchwork Wed May 31 07:18:40 2017
+
+From patchwork Mon May  1 12:45:09 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,09/21] arm: sun8i: orangepi-zero: Enable dwmac-sun8i
+Subject: [v5,09/20] arm: sun8i: orangepi-zero: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756075
-Message-Id: <20170531071852.12422-10-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706461
+Message-Id: <20170501124520.3769-10-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:40 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:09 +0200
 
 The dwmac-sun8i hardware is present on the Orange PI Zero.
 It uses the internal PHY.
@@ -1613,7 +1636,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
-index 9e8b082c134f..dd3525a0f06a 100644
+index 9e8b082..dd3525a 100644
 --- a/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
 +++ b/arch/arm/boot/dts/sun8i-h2-plus-orangepi-zero.dts
 @@ -57,6 +57,7 @@
@@ -1638,23 +1661,23 @@ index 9e8b082c134f..dd3525a0f06a 100644
  &mmc0 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_pins_a>;
-From patchwork Wed May 31 07:18:41 2017
+
+From patchwork Mon May  1 12:45:10 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,10/21] arm: sun8i: orangepi-one: Enable dwmac-sun8i
+Subject: [v5,10/20] arm: sun8i: orangepi-one: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756073
-Message-Id: <20170531071852.12422-11-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706471
+Message-Id: <20170501124520.3769-11-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:41 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:10 +0200
 
 The dwmac-sun8i hardware is present on the Orange PI One.
 It uses the internal PHY.
@@ -1667,7 +1690,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
-index 5fea430e0eb1..6880268e8b87 100644
+index 5fea430..6880268 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-one.dts
 @@ -52,6 +52,7 @@
@@ -1692,23 +1715,23 @@ index 5fea430e0eb1..6880268e8b87 100644
  &mmc0 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin>;
-From patchwork Wed May 31 07:18:42 2017
+
+From patchwork Mon May  1 12:45:11 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,11/21] arm: sun8i: orangepi-2: Enable dwmac-sun8i
+Subject: [v5,11/20] arm: sun8i: orangepi-2: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756071
-Message-Id: <20170531071852.12422-12-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706467
+Message-Id: <20170501124520.3769-12-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:42 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:11 +0200
 
 The dwmac-sun8i hardware is present on the Orange PI 2.
 It uses the internal PHY.
@@ -1721,7 +1744,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
-index 8ff71b1bb45b..17cdeae19c6f 100644
+index 5b6d145..cedd326 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-2.dts
 @@ -54,6 +54,7 @@
@@ -1732,7 +1755,7 @@ index 8ff71b1bb45b..17cdeae19c6f 100644
  		ethernet1 = &rtl8189;
  	};
  
-@@ -117,6 +118,13 @@
+@@ -108,6 +109,13 @@
  	status = "okay";
  };
  
@@ -1746,25 +1769,25 @@ index 8ff71b1bb45b..17cdeae19c6f 100644
  &ir {
  	pinctrl-names = "default";
  	pinctrl-0 = <&ir_pins_a>;
-From patchwork Wed May 31 07:18:43 2017
+
+From patchwork Mon May  1 12:45:12 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,
- 12/21] arm: sun8i: orangepi-pc-plus: Set EMAC activity LEDs to active
+Subject: [v5,
+ 12/20] arm: sun8i: orangepi-pc-plus: Set EMAC activity LEDs to active
  high
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756005
-Message-Id: <20170531071852.12422-13-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706481
+Message-Id: <20170501124520.3769-13-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:43 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:12 +0200
 
 On the Orange Pi PC Plus, the polarity of the LEDs on the RJ45 Ethernet
 port were changed from active low to active high.
@@ -1776,7 +1799,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 5 insertions(+)
 
 diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
-index 8b93f5c781a7..a10281b455f5 100644
+index 8b93f5c..a10281b 100644
 --- a/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
 +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-pc-plus.dts
 @@ -53,6 +53,11 @@
@@ -1791,66 +1814,24 @@ index 8b93f5c781a7..a10281b455f5 100644
  &mmc1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc1_pins_a>;
-From patchwork Wed May 31 07:18:44 2017
+
+From patchwork Mon May  1 12:45:13 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,13/21] arm: sun8i: nanopi-neo: Enable dwmac-sun8i
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756089
-Message-Id: <20170531071852.12422-14-clabbe.montjoie@gmail.com>
-To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
- will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:44 +0200
-
-The dwmac-sun8i hardware is present on the NanoPi Neo.
-It uses the internal PHY.
-This patch create the needed emac node.
-
-Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
----
- arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts
-index 8d2cc6e9a03f..78f6c24952dd 100644
---- a/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-nanopi-neo.dts
-@@ -46,3 +46,10 @@
- 	model = "FriendlyARM NanoPi NEO";
- 	compatible = "friendlyarm,nanopi-neo", "allwinner,sun8i-h3";
- };
-+
-+&emac {
-+	phy-handle = <&int_mii_phy>;
-+	phy-mode = "mii";
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-From patchwork Wed May 31 07:18:45 2017
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [v6, 14/21] arm64: allwinner: sun50i-a64: Add dt node for the syscon
+Subject: [v5, 13/20] arm64: allwinner: sun50i-a64: Add dt node for the syscon
  control module
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756069
-Message-Id: <20170531071852.12422-15-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706477
+Message-Id: <20170501124520.3769-14-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:45 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:13 +0200
 
 This patch add the dt node for the syscon register present on the
 Allwinner A64.
@@ -1864,7 +1845,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 6 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 90dc4ec79485..2eeba0d44074 100644
+index c7f669f..d7341ba 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 @@ -129,6 +129,12 @@
@@ -1880,24 +1861,24 @@ index 90dc4ec79485..2eeba0d44074 100644
  		mmc0: mmc@1c0f000 {
  			compatible = "allwinner,sun50i-a64-mmc";
  			reg = <0x01c0f000 0x1000>;
-From patchwork Wed May 31 07:18:46 2017
+
+From patchwork Mon May  1 12:45:14 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,
- 15/21] arm64: allwinner: sun50i-a64: add dwmac-sun8i Ethernet driver
+Subject: [v5,
+ 14/20] arm64: allwinner: sun50i-a64: add dwmac-sun8i Ethernet driver
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756015
-Message-Id: <20170531071852.12422-16-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706485
+Message-Id: <20170501124520.3769-15-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:46 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:14 +0200
 
 The dwmac-sun8i is an Ethernet MAC that supports 10/100/1000 Mbit
 connections. It is very similar to the device found in the Allwinner
@@ -1912,10 +1893,10 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 35 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index 2eeba0d44074..7a07353ac1f6 100644
+index d7341ba..18b3642 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -309,6 +309,21 @@
+@@ -287,6 +287,21 @@
  				bias-pull-up;
  			};
  
@@ -1937,7 +1918,7 @@ index 2eeba0d44074..7a07353ac1f6 100644
  			uart0_pins_a: uart0@0 {
  				pins = "PB8", "PB9";
  				function = "uart0";
-@@ -433,6 +448,26 @@
+@@ -391,6 +406,26 @@
  			#size-cells = <0>;
  		};
  
@@ -1964,23 +1945,23 @@ index 2eeba0d44074..7a07353ac1f6 100644
  		gic: interrupt-controller@1c81000 {
  			compatible = "arm,gic-400";
  			reg = <0x01c81000 0x1000>,
-From patchwork Wed May 31 07:18:47 2017
+
+From patchwork Mon May  1 12:45:15 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,16/21] arm64: allwinner: pine64: Enable dwmac-sun8i
+Subject: [v5,15/20] arm64: allwinner: pine64: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756067
-Message-Id: <20170531071852.12422-17-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706489
+Message-Id: <20170501124520.3769-16-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:47 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:15 +0200
 
 The dwmac-sun8i hardware is present on the pine64
 It uses an external PHY via RMII.
@@ -1991,10 +1972,10 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 16 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-index 7c533b6d4ba9..08cda24ea194 100644
+index c680ed3..3b491c0 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64.dts
-@@ -78,6 +78,15 @@
+@@ -70,6 +70,15 @@
  	status = "okay";
  };
  
@@ -2010,7 +1991,7 @@ index 7c533b6d4ba9..08cda24ea194 100644
  &i2c1 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&i2c1_pins>;
-@@ -88,6 +97,13 @@
+@@ -80,6 +89,13 @@
  	bias-pull-up;
  };
  
@@ -2024,23 +2005,23 @@ index 7c533b6d4ba9..08cda24ea194 100644
  &mmc0 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_pins>;
-From patchwork Wed May 31 07:18:48 2017
+
+From patchwork Mon May  1 12:45:16 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,17/21] arm64: allwinner: pine64-plus: Enable dwmac-sun8i
+Subject: [v5,16/20] arm64: allwinner: pine64-plus: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756065
-Message-Id: <20170531071852.12422-18-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706511
+Message-Id: <20170501124520.3769-17-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:48 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:16 +0200
 
 The dwmac-sun8i hardware is present on the pine64 plus.
 It uses an external PHY rtl8211e via RGMII.
@@ -2051,7 +2032,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 16 insertions(+), 1 deletion(-)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
-index 790d14daaa6a..24f1aac366d6 100644
+index 790d14d..24f1aac 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pine64-plus.dts
 @@ -46,5 +46,20 @@
@@ -2076,23 +2057,23 @@ index 790d14daaa6a..24f1aac366d6 100644
 +		reg = <1>;
 +	};
  };
-From patchwork Wed May 31 07:18:49 2017
+
+From patchwork Mon May  1 12:45:17 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [v6,18/21] arm64: allwinner: bananapi-m64: Enable dwmac-sun8i
+Subject: [v5,17/20] arm64: allwinner: bananapi-m64: Enable dwmac-sun8i
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9756025
-Message-Id: <20170531071852.12422-19-clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706509
+Message-Id: <20170501124520.3769-18-clabbe.montjoie@gmail.com>
 To: robh+dt@kernel.org, mark.rutland@arm.com,
- maxime.ripard@free-electrons.com, 
- wens@csie.org, linux@armlinux.org.uk, catalin.marinas@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
  will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
-Cc: devicetree@vger.kernel.org, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-arm-kernel@lists.infradead.org
-Date: Wed, 31 May 2017 09:18:49 +0200
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:17 +0200
 
 The dwmac-sun8i  hardware is present on the BananaPi M64.
 It uses an external PHY rtl8211e via RGMII.
@@ -2103,7 +2084,7 @@ Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
  1 file changed, 15 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-index 6872135d7f84..0d1f026d831a 100644
+index 6872135..0d1f026 100644
 --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
 +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
 @@ -67,6 +67,14 @@
@@ -2135,365 +2116,115 @@ index 6872135d7f84..0d1f026d831a 100644
  &mmc0 {
  	pinctrl-names = "default";
  	pinctrl-0 = <&mmc0_pins>;
-From patchwork Sun Jun  4 17:53:23 2017
+
+From patchwork Mon May  1 12:45:18 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: net-next: stmmac: dwmac-sun8i: ensure the EPHY is properly reseted
-From: Icenowy Zheng <icenowy@aosc.io>
-X-Patchwork-Id: 9765125
-Message-Id: <20170604175323.62124-1-icenowy@aosc.io>
-To: Corentin Labbe <clabbe.montjoie@gmail.com>,
- "David S . Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org, linux-sunxi@googlegroups.com,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- Icenowy Zheng <icenowy@aosc.io>
-Date: Mon,  5 Jun 2017 01:53:23 +0800
-
-The EPHY may be already enabled by bootloaders which have Ethernet
-capability (e.g. current U-Boot). Thus it should be reseted properly
-before doing the enabling sequence in the dwmac-sun8i driver, otherwise
-the EMAC reset process may fail if no cable is plugged, and then fail
-the dwmac-sun8i probing.
-
-Tested on Orange Pi PC, One and Zero. All the boards fail to have
-dwmac-sun8i probed with "EMAC reset timeout" without cable plugged
-before, and with this fix they're now all able to successfully probe the
-EMAC without cable plugged and then use the connection after a cable is
-hot-plugged in.
-
-Fixes: 9f93ac8d408 ("net-next: stmmac: Add dwmac-sun8i")
-Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Acked-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Reviewed-by: Corentin Labbe <clabbe.montjoie@gmail.com>
-Acked-by: is not as formal as Signed-off-by:.  It is a record that the acker
-Reviewed-by: is similar.
----
- drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-index 1a6bfe6c958f..54f93ee53ef7 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sun8i.c
-@@ -750,6 +750,11 @@ static int sun8i_dwmac_power_internal_phy(struct stmmac_priv *priv)
- 		return ret;
- 	}
- 
-+	/* Make sure the EPHY is properly reseted, as U-Boot may leave
-+	 * it at deasserted state, and thus it may fail to reset EMAC.
-+	 */
-+	reset_control_assert(gmac->rst_ephy);
-+
- 	ret = reset_control_deassert(gmac->rst_ephy);
- 	if (ret) {
- 		dev_err(priv->device, "Cannot deassert ephy\n");
-From patchwork Fri Jun  9 15:34:36 2017
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: ARM: sun8i: h3: Enable EMAC with external PHY on Orange Pi Plus 2E
-From: Chen-Yu Tsai <wens@csie.org>
-X-Patchwork-Id: 9778837
-Message-Id: <20170609153436.18370-1-wens@csie.org>
-To: Maxime Ripard <maxime.ripard@free-electrons.com>
+Subject: [v5,18/20] arm: sunxi: Enable dwmac-sun8i driver on sunxi_defconfig
+From: Corentin LABBE <clabbe.montjoie@gmail.com>
+X-Patchwork-Id: 9706507
+Message-Id: <20170501124520.3769-19-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
+ maxime.ripard@free-electrons.com, wens@csie.org,
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- Chen-Yu Tsai <wens@csie.org>, Corentin Labbe <clabbe.montjoie@gmail.com>, 
- linux-sunxi@googlegroups.co, linux-arm-kernel@lists.infradead.org
-Date: Fri,  9 Jun 2017 23:34:36 +0800
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:18 +0200
 
-The Orange Pi Plus 2E, unlike the Orange Pi PC and PC Plus which its
-schematics are based on, uses an external Realtek RTL8211E PHY in
-RGMII mode, with a GPIO enabling the regulator for I/O signalling
-power supplies. The PHY's main power supply is enabled by the main
-5V power supply.
-
-Add the regulator and PHY nodes, and override the PHY phandle under
-the EMAC node, so that the EMAC works properly on this board.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts
-index 5851a47a3089..80026f3caafc 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus2e.dts
-@@ -50,4 +50,30 @@
- / {
- 	model = "Xunlong Orange Pi Plus 2E";
- 	compatible = "xunlong,orangepi-plus2e", "allwinner,sun8i-h3";
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+	};
-+};
-+
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+	status = "okay";
-+};
-+
-+&mdio {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+	};
- };
-From patchwork Mon Jun  5 19:21:26 2017
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [1/5] ARM: sun8i: orangepi-plus: Enable dwmac-sun8i
-From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9767313
-Message-Id: <20170605192130.25320-2-clabbe.montjoie@gmail.com>
-To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk,
- maxime.ripard@free-electrons.com, wens@csie.org,
- catalin.marinas@arm.com, will.deacon@arm.com
-Cc: devicetree@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date: Mon,  5 Jun 2017 21:21:26 +0200
-
-The dwmac-sun8i hardware is present on the Orange PI plus.
-It uses an external PHY rtl8211e via RGMII.
-
-This patch create the needed regulator, emac and phy nodes.
+Enable the dwmac-sun8i driver in the sunxi default configuration
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 32 ++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+ arch/arm/configs/sunxi_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-index 8c40ab7bfa72..331ed683ac62 100644
---- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-@@ -47,6 +47,20 @@
- 	model = "Xunlong Orange Pi Plus / Plus 2";
- 	compatible = "xunlong,orangepi-plus", "allwinner,sun8i-h3";
- 
-+	aliases {
-+		ethernet0 = &emac;
-+	};
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
-+	};
-+
- 	reg_usb3_vbus: usb3-vbus {
- 		compatible = "regulator-fixed";
- 		pinctrl-names = "default";
-@@ -64,6 +78,24 @@
- 	status = "okay";
- };
- 
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-+
-+&mdio {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0>;
-+	};
-+};
-+
- &mmc2 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc2_8bit_pins>;
-From patchwork Mon Jun  5 19:21:27 2017
+diff --git a/arch/arm/configs/sunxi_defconfig b/arch/arm/configs/sunxi_defconfig
+index 5cd5dd70..504e022 100644
+--- a/arch/arm/configs/sunxi_defconfig
++++ b/arch/arm/configs/sunxi_defconfig
+@@ -40,6 +40,7 @@ CONFIG_ATA=y
+ CONFIG_AHCI_SUNXI=y
+ CONFIG_NETDEVICES=y
+ CONFIG_SUN4I_EMAC=y
++CONFIG_DWMAC_SUN8I=y
+ # CONFIG_NET_VENDOR_ARC is not set
+ # CONFIG_NET_CADENCE is not set
+ # CONFIG_NET_VENDOR_BROADCOM is not set
+
+From patchwork Mon May  1 12:45:19 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [2/5] ARM: sun8i: bananapi-m2-plus: Enable dwmac-sun8i
+Subject: [v5,
+ 19/20] arm: multi_v7: Enable dwmac-sun8i driver on multi_v7_defconfig
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9767321
-Message-Id: <20170605192130.25320-3-clabbe.montjoie@gmail.com>
-To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk,
+X-Patchwork-Id: 9706513
+Message-Id: <20170501124520.3769-20-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
  maxime.ripard@free-electrons.com, wens@csie.org,
- catalin.marinas@arm.com, will.deacon@arm.com
-Cc: devicetree@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date: Mon,  5 Jun 2017 21:21:27 +0200
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:19 +0200
 
-The dwmac-sun8i hardware is present on the Banana Pi M2+
-It uses an external PHY rtl8211e via RGMII.
-
-This patch create the needed regulator, emac and phy nodes.
+Enable the dwmac-sun8i driver in the multi_v7 default configuration
 
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts | 29 +++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ arch/arm/configs/multi_v7_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
-index 883072b611fa..d756ff825116 100644
---- a/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
-+++ b/arch/arm/boot/dts/sun8i-h3-bananapi-m2-plus.dts
-@@ -52,6 +52,7 @@
- 	compatible = "sinovoip,bpi-m2-plus", "allwinner,sun8i-h3";
- 
- 	aliases {
-+		ethernet0 = &emac;
- 		serial0 = &uart0;
- 		serial1 = &uart1;
- 	};
-@@ -84,6 +85,16 @@
- 		};
- 	};
- 
-+	reg_gmac_3v3: gmac-3v3 {
-+		      compatible = "regulator-fixed";
-+		      regulator-name = "gmac-3v3";
-+		      regulator-min-microvolt = <3300000>;
-+		      regulator-max-microvolt = <3300000>;
-+		      startup-delay-us = <100000>;
-+		      enable-active-high;
-+		      gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
-+	};
-+
- 	wifi_pwrseq: wifi_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -104,12 +115,30 @@
- 	status = "okay";
- };
- 
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-+
- &ir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&ir_pins_a>;
- 	status = "okay";
- };
- 
-+&mdio {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <0>;
-+	};
-+};
-+
- &mmc0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin>;
-From patchwork Mon Jun  5 19:21:28 2017
+diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
+index 2685e03..6da6af8 100644
+--- a/arch/arm/configs/multi_v7_defconfig
++++ b/arch/arm/configs/multi_v7_defconfig
+@@ -257,6 +257,7 @@ CONFIG_SMSC911X=y
+ CONFIG_STMMAC_ETH=y
+ CONFIG_STMMAC_PLATFORM=y
+ CONFIG_DWMAC_DWC_QOS_ETH=y
++CONFIG_DWMAC_SUN8I=y
+ CONFIG_TI_CPSW=y
+ CONFIG_XILINX_EMACLITE=y
+ CONFIG_AT803X_PHY=y
+
+From patchwork Mon May  1 12:45:20 2017
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [3/5] ARM: sun50i: orangepi-pc2: Enable dwmac-sun8i
+Subject: [v5,20/20] arm64: defconfig: Enable dwmac-sun8i driver on defconfig
 From: Corentin LABBE <clabbe.montjoie@gmail.com>
-X-Patchwork-Id: 9767347
-Message-Id: <20170605192130.25320-4-clabbe.montjoie@gmail.com>
-To: robh+dt@kernel.org, mark.rutland@arm.com, linux@armlinux.org.uk,
+X-Patchwork-Id: 9706505
+Message-Id: <20170501124520.3769-21-clabbe.montjoie@gmail.com>
+To: robh+dt@kernel.org, mark.rutland@arm.com,
  maxime.ripard@free-electrons.com, wens@csie.org,
- catalin.marinas@arm.com, will.deacon@arm.com
-Cc: devicetree@vger.kernel.org, linux-sunxi@googlegroups.com,
- Corentin Labbe <clabbe.montjoie@gmail.com>,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Date: Mon,  5 Jun 2017 21:21:28 +0200
+ linux@armlinux.org.uk, catalin.marinas@arm.com,
+ will.deacon@arm.com, peppe.cavallaro@st.com, alexandre.torgue@st.com
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ Corentin Labbe <clabbe.montjoie@gmail.com>
+Date: Mon,  1 May 2017 14:45:20 +0200
 
-The dwmac-sun8i hardware is present on the Orange PI PC2.
-It uses an external PHY rtl8211e via RGMII.
+Enable the dwmac-sun8i ethernet driver as a module in the ARM64 defconfig.
 
-This patch create the needed regulator, emac and phy nodes.
 Signed-off-by: Corentin Labbe <clabbe.montjoie@gmail.com>
 ---
- .../boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts  | 27 ++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-index dfecc17dcc92..a8296feee884 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-@@ -59,6 +59,7 @@
- 	};
- 
- 	aliases {
-+		ethernet0 = &emac;
- 		serial0 = &uart0;
- 	};
- 
-@@ -91,6 +92,16 @@
- 		};
- 	};
- 
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
-+	};
-+
- 	reg_usb0_vbus: usb0-vbus {
- 		compatible = "regulator-fixed";
- 		regulator-name = "usb0-vbus";
-@@ -126,12 +137,28 @@
- 	status = "okay";
- };
- 
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+	status = "okay";
-+};
-+
- &ir {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&ir_pins_a>;
- 	status = "okay";
- };
- 
-+&mdio {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <1>;
-+	};
-+};
-+
- &mmc0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&mmc0_pins_a>, <&mmc0_cd_pin>;
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index ce07285..4575fbb 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -193,6 +193,7 @@ CONFIG_RAVB=y
+ CONFIG_SMC91X=y
+ CONFIG_SMSC911X=y
+ CONFIG_STMMAC_ETH=m
++CONFIG_DWMAC_SUN8I=m
+ CONFIG_MDIO_BUS_MUX_MMIOREG=y
+ CONFIG_MESON_GXL_PHY=m
+ CONFIG_MICREL_PHY=y
