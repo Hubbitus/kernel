@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -611,6 +611,9 @@ Patch314: bcm2835-fix-potential-null-pointer-dereferences.patch
 
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch502: CVE-2017-7477.patch
+
+# rhbz 1459326
+Patch504: RFC-audit-fix-a-race-condition-with-the-auditd-tracking-code.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2165,6 +2168,9 @@ fi
 #
 #
 %changelog
+* Mon Jun 19 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Disable debugging options.
+
 * Fri Jun 16 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.12.0-0.rc5.git2.1
 - Linux v4.12-rc5-187-gab2789b
 - Revert dwmac-sun8i rebase due to build issues
