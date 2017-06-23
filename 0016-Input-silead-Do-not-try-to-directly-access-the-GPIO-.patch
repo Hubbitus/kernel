@@ -21,14 +21,6 @@ diff --git a/drivers/input/touchscreen/silead.c b/drivers/input/touchscreen/sile
 index c0ba40c09699..30fba3cbe277 100644
 --- a/drivers/input/touchscreen/silead.c
 +++ b/drivers/input/touchscreen/silead.c
-@@ -31,6 +31,7 @@
- #include <linux/irq.h>
- #include <linux/regulator/consumer.h>
- 
-+#include <acpi/acpi_bus.h>
- #include <asm/unaligned.h>
- 
- #define SILEAD_TS_NAME		"silead_ts"
 @@ -517,12 +518,21 @@ static int silead_ts_probe(struct i2c_client *client,
  	if (error)
  		return error;
