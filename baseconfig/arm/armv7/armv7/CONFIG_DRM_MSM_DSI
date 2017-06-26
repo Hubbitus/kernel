@@ -1,1 +1,1 @@
-# CONFIG_DRM_MSM_DSI is not set
+CONFIG_DRM_MSM_DSI=y

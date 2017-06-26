@@ -2193,6 +2193,9 @@ fi
 #
 #
 %changelog
+* Mon Jun 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Config improvements for Qualcomm devices
+
 * Mon Jun 26 2017 Laura Abbott <labbott@fedoraproject.org> - 4.12.0-0.rc7.git0.1
 - Linux v4.12-rc7
 - Make CONFIG_SERIAL_8250_PCI built in (rhbz 1464709)
