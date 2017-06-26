@@ -605,6 +605,10 @@ Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 Patch313: bcm2835-clk-audio-jitter-issues.patch
 Patch314: bcm2835-fix-potential-null-pointer-dereferences.patch
 
+# https://patchwork.freedesktop.org/patch/163300/
+# https://patchwork.freedesktop.org/patch/161978/
+Patch315: bcm283x-vc4-fix-vblank.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2189,6 +2193,9 @@ fi
 #
 #
 %changelog
+* Mon Jun 26 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- vc4: hopefully improve the vblank crash issues
+
 * Fri Jun 23 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Enable AXP288 PMIC support on x86_64 for battery charging and monitoring
   support on Bay and Cherry Trail tablets and laptops
