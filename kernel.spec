@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2197,6 +2197,9 @@ fi
 #
 #
 %changelog
+* Thu Jun 29 2017 Laura Abbott <labbott@fedoraproject.org> - 4.12.0-0.rc7.git2.1
+- Linux v4.12-rc7-25-g6474924
+
 * Wed Jun 28 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Tweak vc4 vblank for stability
 - Fix for early boot on Dragonboard 410c
