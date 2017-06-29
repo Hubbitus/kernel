@@ -609,6 +609,10 @@ Patch314: bcm2835-fix-potential-null-pointer-dereferences.patch
 # https://patchwork.freedesktop.org/patch/161978/
 Patch315: bcm283x-vc4-fix-vblank.patch
 
+# https://patchwork.kernel.org/patch/9815555/
+# https://patchwork.kernel.org/patch/9815651/
+Patch316: qcom-rmsg-spmi-fixes.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2193,6 +2197,10 @@ fi
 #
 #
 %changelog
+* Wed Jun 28 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Tweak vc4 vblank for stability
+- Fix for early boot on Dragonboard 410c
+
 * Tue Jun 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.12.0-0.rc7.git1.1
 - Linux v4.12-rc7-8-g3c2bfba
 

@@ -1,49 +1,7 @@
-From e487709ee89a572a3a8068f33e9275479fde9bf4 Mon Sep 17 00:00:00 2001
-From: Boris Brezillon <boris.brezillon@free-electrons.com>
-Date: Fri, 16 Jun 2017 10:30:33 +0200
-Subject: [PATCH 1/2] drm/vc4: Send a VBLANK event when disabling a CRTC
-
-VBLANK events are missed when the CRTC is being disabled because the
-driver does not wait till the end of the frame before stopping the
-HVS and PV blocks. In this case, we should explicitly issue a VBLANK
-event if there's one waiting.
-
-Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
----
- drivers/gpu/drm/vc4/vc4_crtc.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 9fcf05ca492b..66cffc548af2 100644
---- a/drivers/gpu/drm/vc4/vc4_crtc.c
-+++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -526,6 +526,19 @@ static void vc4_crtc_disable(struct drm_crtc *crtc)
- 	WARN_ON_ONCE((HVS_READ(SCALER_DISPSTATX(chan)) &
- 		      (SCALER_DISPSTATX_FULL | SCALER_DISPSTATX_EMPTY)) !=
- 		     SCALER_DISPSTATX_EMPTY);
-+
-+	/*
-+	 * Make sure we issue a vblank event after disabling the CRTC if
-+	 * someone was waiting it.
-+	 */
-+	if (crtc->state->event) {
-+		unsigned long flags;
-+
-+		spin_lock_irqsave(&dev->event_lock, flags);
-+		drm_crtc_send_vblank_event(crtc, crtc->state->event);
-+		crtc->state->event = NULL;
-+		spin_unlock_irqrestore(&dev->event_lock, flags);
-+	}
- }
- 
- static void vc4_crtc_enable(struct drm_crtc *crtc)
--- 
-2.13.0
-
-From 6c9d1ad4c10657d7d6f8455088686abee1805102 Mon Sep 17 00:00:00 2001
+From d40a5938a10a3ba73bce6395729fefd8b8bb1c07 Mon Sep 17 00:00:00 2001
 From: Peter Robinson <pbrobinson@gmail.com>
-Date: Mon, 26 Jun 2017 09:03:28 +0100
-Subject: [PATCH 2/2] drm/vc4: Fix VBLANK handling in crtc->enable() path
+Date: Thu, 29 Jun 2017 10:05:05 +0100
+Subject: [PATCH] drm/vc4: Fix VBLANK handling in crtc->enable() path
 
 When we are enabling a CRTC, drm_crtc_vblank_get() is called before
 drm_crtc_vblank_on(), which is not supposed to happen (hence the
@@ -56,11 +14,11 @@ Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
  1 file changed, 43 insertions(+), 23 deletions(-)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-index 66cffc548af2..47a8ef0a755d 100644
+index d86c8cce3182..316bd6210d69 100644
 --- a/drivers/gpu/drm/vc4/vc4_crtc.c
 +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-@@ -541,6 +541,34 @@ static void vc4_crtc_disable(struct drm_crtc *crtc)
- 	}
+@@ -530,6 +530,34 @@ static void vc4_crtc_disable(struct drm_crtc *crtc)
+ 		     SCALER_DISPSTATX_EMPTY);
  }
  
 +static void vc4_crtc_update_dlist(struct drm_crtc *crtc)
@@ -94,7 +52,7 @@ index 66cffc548af2..47a8ef0a755d 100644
  static void vc4_crtc_enable(struct drm_crtc *crtc)
  {
  	struct drm_device *dev = crtc->dev;
-@@ -551,6 +579,12 @@ static void vc4_crtc_enable(struct drm_crtc *crtc)
+@@ -540,6 +568,12 @@ static void vc4_crtc_enable(struct drm_crtc *crtc)
  
  	require_hvs_enabled(dev);
  
@@ -107,7 +65,7 @@ index 66cffc548af2..47a8ef0a755d 100644
  	/* Turn on the scaler, which will wait for vstart to start
  	 * compositing.
  	 */
-@@ -562,9 +596,6 @@ static void vc4_crtc_enable(struct drm_crtc *crtc)
+@@ -551,9 +585,6 @@ static void vc4_crtc_enable(struct drm_crtc *crtc)
  	/* Turn on the pixel valve, which will emit the vstart signal. */
  	CRTC_WRITE(PV_V_CONTROL,
  		   CRTC_READ(PV_V_CONTROL) | PV_VCONTROL_VIDEN);
@@ -117,7 +75,7 @@ index 66cffc548af2..47a8ef0a755d 100644
  }
  
  static bool vc4_crtc_mode_fixup(struct drm_crtc *crtc,
-@@ -619,7 +650,6 @@ static void vc4_crtc_atomic_flush(struct drm_crtc *crtc,
+@@ -608,7 +639,6 @@ static void vc4_crtc_atomic_flush(struct drm_crtc *crtc,
  {
  	struct drm_device *dev = crtc->dev;
  	struct vc4_dev *vc4 = to_vc4_dev(dev);
@@ -125,7 +83,7 @@ index 66cffc548af2..47a8ef0a755d 100644
  	struct vc4_crtc_state *vc4_state = to_vc4_crtc_state(crtc->state);
  	struct drm_plane *plane;
  	bool debug_dump_regs = false;
-@@ -641,25 +671,15 @@ static void vc4_crtc_atomic_flush(struct drm_crtc *crtc,
+@@ -630,25 +660,15 @@ static void vc4_crtc_atomic_flush(struct drm_crtc *crtc,
  
  	WARN_ON_ONCE(dlist_next - dlist_start != vc4_state->mm.size);
  
