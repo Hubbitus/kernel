@@ -2197,6 +2197,9 @@ fi
 #
 #
 %changelog
+* Thu Jun 29 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable HDMI on Amlogic Meson SoCs
+
 * Thu Jun 29 2017 Laura Abbott <labbott@fedoraproject.org> - 4.12.0-0.rc7.git2.1
 - Linux v4.12-rc7-25-g6474924
 
