@@ -1,0 +1,285 @@
+From 83b8b93188114e1a39b3475d9429a2ee8977a398 Mon Sep 17 00:00:00 2001
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Date: Wed, 28 Jun 2017 14:53:23 -0700
+Subject: [PATCH 1/6] rpmsg: Make modalias work for DeviceTree based devices
+
+When rpmsg devices are expected to be matched based on their compatible
+the modalias should reflect this, so that module autoloading has a
+chance to match and load the appropriate module.
+
+Tested-by: Rob Clark <robdclark@gmail.com>
+Reported-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/rpmsg/rpmsg_core.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/rpmsg/rpmsg_core.c b/drivers/rpmsg/rpmsg_core.c
+index 600f5f9f7431..62580ad1b1f1 100644
+--- a/drivers/rpmsg/rpmsg_core.c
++++ b/drivers/rpmsg/rpmsg_core.c
+@@ -342,6 +342,11 @@ static ssize_t modalias_show(struct device *dev,
+ 			     struct device_attribute *attr, char *buf)
+ {
+ 	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
++	ssize_t len;
++
++	len = of_device_modalias(dev, buf, PAGE_SIZE);
++	if (len != -ENODEV)
++		return len;
+ 
+ 	return sprintf(buf, RPMSG_DEVICE_MODALIAS_FMT "\n", rpdev->id.name);
+ }
+@@ -384,6 +389,11 @@ static int rpmsg_dev_match(struct device *dev, struct device_driver *drv)
+ static int rpmsg_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+ 	struct rpmsg_device *rpdev = to_rpmsg_device(dev);
++	int ret;
++
++	ret = of_device_uevent_modalias(dev, env);
++	if (ret != -ENODEV)
++		return ret;
+ 
+ 	return add_uevent_var(env, "MODALIAS=" RPMSG_DEVICE_MODALIAS_FMT,
+ 					rpdev->id.name);
+-- 
+2.13.0
+
+From ccdf75f90484a87ddb29649304156a503bf5a829 Mon Sep 17 00:00:00 2001
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
+Date: Wed, 28 Jun 2017 16:44:58 -0700
+Subject: [PATCH 2/6] spmi: Include OF based modalias in device uevent
+
+Include the OF-based modalias in the uevent sent when registering SPMI
+devices, so that user space has a chance to autoload the kernel module
+for the device.
+
+Reported-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Tested-by: Rob Clark <robdclark@gmail.com>
+Reviewed-by: Stephen Boyd <sboyd@codeaurora.org>
+---
+ drivers/spmi/spmi.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/spmi/spmi.c b/drivers/spmi/spmi.c
+index 2b9b0941d9eb..6d23226e5f69 100644
+--- a/drivers/spmi/spmi.c
++++ b/drivers/spmi/spmi.c
+@@ -365,11 +365,23 @@ static int spmi_drv_remove(struct device *dev)
+ 	return 0;
+ }
+ 
++static int spmi_drv_uevent(struct device *dev, struct kobj_uevent_env *env)
++{
++	int ret;
++
++	ret = of_device_uevent_modalias(dev, env);
++	if (ret != -ENODEV)
++		return ret;
++
++	return 0;
++}
++
+ static struct bus_type spmi_bus_type = {
+ 	.name		= "spmi",
+ 	.match		= spmi_device_match,
+ 	.probe		= spmi_drv_probe,
+ 	.remove		= spmi_drv_remove,
++	.uevent		= spmi_drv_uevent,
+ };
+ 
+ /**
+-- 
+2.13.0
+
+From 283d0e00a18b294ec56f1fb904896a546704faaf Mon Sep 17 00:00:00 2001
+From: Rob Clark <robdclark@gmail.com>
+Date: Fri, 30 Jun 2017 11:47:21 -0400
+Subject: [PATCH 3/6] soc: qcom: smsm: fix of_node refcnting problem
+
+of_find_node_with_property() drops the reference to the 'from' node,
+which eventually (after enough -EPROBE_DEFERs) drops the last reference
+to the node causing all sorts of fun problems, and this nice splat.
+
+  BUG: sleeping function called from invalid context at ../kernel/locking/mutex.c:747
+  in_atomic(): 1, irqs_disabled(): 128, pid: 33, name: kworker/0:1
+  4 locks held by kworker/0:1/33:
+   #0:  ("events"){.+.+.+}, at: [<ffff0000080fa91c>] process_one_work+0x1a4/0x728
+   #1:  (deferred_probe_work){+.+.+.}, at: [<ffff0000080fa91c>] process_one_work+0x1a4/0x728
+   #2:  (&dev->mutex){......}, at: [<ffff000008676078>] __device_attach+0x30/0x168
+   #3:  (devtree_lock){......}, at: [<ffff000008828fd0>] of_find_node_with_property+0x30/0xe0
+  irq event stamp: 18976
+  hardirqs last  enabled at (18975): [<ffff00000815794c>] __down_trylock_console_sem+0x74/0xb8
+  hardirqs last disabled at (18976): [<ffff0000089e26d4>] _raw_spin_lock_irqsave+0x2c/0x78
+  softirqs last  enabled at (16880): [<ffff0000080e0f00>] __do_softirq+0x580/0x640
+  softirqs last disabled at (16871): [<ffff0000080e13a4>] irq_exit+0xe4/0x138
+  CPU: 0 PID: 33 Comm: kworker/0:1 Tainted: G            E   4.12.0-rc5+ #1455
+  Hardware name: qualcomm dragonboard410c/dragonboard410c, BIOS 2017.07-rc1-00234-g22fa70a-dirty 06/26/2017
+  Workqueue: events deferred_probe_work_func
+  Call trace:
+  [<ffff000008089ee0>] dump_backtrace+0x0/0x230
+  [<ffff00000808a134>] show_stack+0x24/0x30
+  [<ffff0000084e1944>] dump_stack+0xac/0xe8
+  [<ffff00000810d7e0>] ___might_sleep+0x150/0x230
+  [<ffff00000810d918>] __might_sleep+0x58/0x90
+  [<ffff0000089dde18>] __mutex_lock+0x50/0x870
+  [<ffff0000089de674>] mutex_lock_nested+0x3c/0x50
+  [<ffff000008388ae0>] kernfs_remove+0x30/0x50
+  [<ffff00000838b720>] sysfs_remove_dir+0x58/0x70
+  [<ffff0000084e393c>] kobject_del+0x1c/0x58
+  [<ffff0000084e374c>] kobject_put+0xb4/0x208
+  [<ffff00000882c364>] of_node_put+0x24/0x30
+  [<ffff000008829018>] of_find_node_with_property+0x78/0xe0
+  [<ffff000000aff5f4>] qcom_smsm_probe+0x194/0x720 [smsm]
+  [<ffff0000086793b4>] platform_drv_probe+0x74/0x110
+  [<ffff0000086765bc>] driver_probe_device+0x2b4/0x420
+  [<ffff000008676920>] __device_attach_driver+0xd0/0x150
+  [<ffff000008673e78>] bus_for_each_drv+0x68/0xa8
+  [<ffff00000867611c>] __device_attach+0xd4/0x168
+  [<ffff000008676a1c>] device_initial_probe+0x24/0x30
+  [<ffff000008675380>] bus_probe_device+0xa0/0xa8
+  [<ffff000008675948>] deferred_probe_work_func+0xb8/0xf8
+  [<ffff0000080fa9d4>] process_one_work+0x25c/0x728
+  [<ffff0000080faef4>] worker_thread+0x54/0x3d8
+  [<ffff0000081031d8>] kthread+0x110/0x140
+  [<ffff000008082d90>] ret_from_fork+0x10/0x40
+  OF: ERROR: Bad of_node_put() on /smsm
+  CPU: 0 PID: 33 Comm: kworker/0:1 Tainted: G        W   E   4.12.0-rc5+ #1455
+  Hardware name: qualcomm dragonboard410c/dragonboard410c, BIOS 2017.07-rc1-00234-g22fa70a-dirty 06/26/2017
+  Workqueue: events deferred_probe_work_func
+
+Signed-off-by: Rob Clark <robdclark@gmail.com>
+---
+ drivers/soc/qcom/smsm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/soc/qcom/smsm.c b/drivers/soc/qcom/smsm.c
+index d0337b2a71c8..a64ecd597a22 100644
+--- a/drivers/soc/qcom/smsm.c
++++ b/drivers/soc/qcom/smsm.c
+@@ -495,7 +495,8 @@ static int qcom_smsm_probe(struct platform_device *pdev)
+ 	if (!smsm->hosts)
+ 		return -ENOMEM;
+ 
+-	local_node = of_find_node_with_property(pdev->dev.of_node, "#qcom,smem-state-cells");
++	local_node = of_find_node_with_property(of_node_get(pdev->dev.of_node),
++						"#qcom,smem-state-cells");
+ 	if (!local_node) {
+ 		dev_err(&pdev->dev, "no state entry\n");
+ 		return -EINVAL;
+-- 
+2.13.0
+
+From 40cb129048e5d2456da8d9d6468f292da3071b91 Mon Sep 17 00:00:00 2001
+From: Rob Clark <robdclark@gmail.com>
+Date: Fri, 30 Jun 2017 16:40:23 -0400
+Subject: [PATCH 4/6] thermal: qcom: tsens: fix crash due to incorrect __init
+
+init_common() is called from probe, which can happen after the __init
+section is already unloaded in the case of -EPROBE_DEFER.  Causing a
+later probe to attempt to branch to hyperspace.
+
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Rob Clark <robdclark@gmail.com>
+Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/thermal/qcom/tsens-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/thermal/qcom/tsens-common.c b/drivers/thermal/qcom/tsens-common.c
+index b1449ad67fc0..22ad37c9808c 100644
+--- a/drivers/thermal/qcom/tsens-common.c
++++ b/drivers/thermal/qcom/tsens-common.c
+@@ -123,7 +123,7 @@ static const struct regmap_config tsens_config = {
+ 	.reg_stride	= 4,
+ };
+ 
+-int __init init_common(struct tsens_device *tmdev)
++int init_common(struct tsens_device *tmdev)
+ {
+ 	void __iomem *base;
+ 
+-- 
+2.13.0
+
+From ae9b4fa55748cc9ce3c8ac039e46feab7257eff9 Mon Sep 17 00:00:00 2001
+From: Rob Clark <robdclark@gmail.com>
+Date: Sun, 2 Jul 2017 09:23:36 -0400
+Subject: [PATCH 5/6] soc: qcom: wcnss_ctrl: add missing MODULE_DEVICE_TABLE()
+
+This fixes a problem of wifi module not loading on db410c.
+
+Signed-off-by: Rob Clark <robdclark@gmail.com>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+---
+ drivers/soc/qcom/wcnss_ctrl.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/soc/qcom/wcnss_ctrl.c b/drivers/soc/qcom/wcnss_ctrl.c
+index b9069184df19..d008e5b82db4 100644
+--- a/drivers/soc/qcom/wcnss_ctrl.c
++++ b/drivers/soc/qcom/wcnss_ctrl.c
+@@ -347,6 +347,7 @@ static const struct of_device_id wcnss_ctrl_of_match[] = {
+ 	{ .compatible = "qcom,wcnss", },
+ 	{}
+ };
++MODULE_DEVICE_TABLE(of, wcnss_ctrl_of_match);
+ 
+ static struct rpmsg_driver wcnss_ctrl_driver = {
+ 	.probe = wcnss_ctrl_probe,
+-- 
+2.13.0
+
+From 173c1207986956ea4c00601a67c952751a1985e6 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Mon, 3 Jul 2017 10:10:21 +0100
+Subject: [PATCH 6/6] wcn36xx: check dma_mapping_error()
+
+Fixes splat:
+
+  wcn36xx a204000.wcnss:smd-edge:wcnss:wifi: DMA-API: device driver failed to check map error[device address=0x00000000b45ba000] [size=3872 bytes] [mapped as single]
+  ------------[ cut here ]------------
+  WARNING: CPU: 0 PID: 0 at ../lib/dma-debug.c:1167 check_unmap+0x474/0x8d0
+  Modules linked in: bnep(E) arc4(E) wcn36xx(E) mac80211(E) btqcomsmd(E) btqca(E) bluetooth(E) cfg80211(E) ecdh_generic(E) rfkill(E) vfat(E) fat(E) wcnss_ctrl qcom_wcnss_pil(E) mdt_loader(E) qcom_common(E) remoteproc(E) crc32_ce(E) virtio_ring(E) snd_soc_lpass_apq8016(E) snd_soc_lpass_cpu(E) virtio(E) snd_soc_lpass_platform(E) leds_gpio(E) snd_soc_hdmi_codec(E) snd_soc_apq8016_sbc(E) snd_soc_msm8916_digital(E) snd_soc_core(E) qcom_spmi_temp_alarm(E) ac97_bus(E) snd_pcm_dmaengine(E) snd_seq(E) snd_seq_device(E) snd_pcm(E) spi_qup(E) nvmem_qfprom(E) snd_timer(E) snd(E) soundcore(E) msm_rng(E) qcom_tsens(E) nvmem_core(E) uas(E) usb_storage(E) dm9601(E) cdc_ether(E) usbnet(E) mii(E) mmc_block(E) sdhci_msm(E) sdhci_pltfm(E) qcom_spmi_vadc(E) qcom_vadc_common(PE) clk_smd_rpm(E) industrialio(E)
+   qcom_smd_regulator(E) pinctrl_spmi_mpp(E) pinctrl_spmi_gpio(E) rtc_pm8xxx(E) adv7511(E) smd_rpm(E) qcom_spmi_pmic(E) regmap_spmi(E) phy_msm_usb(E) usb3503(E) extcon_usb_gpio(E) ci_hdrc_msm(E) ci_hdrc(E) qcom_hwspinlock(E) udc_core(E) extcon_core(E) ehci_msm(E) i2c_qup(E) sdhci(E) msm(E) mmc_core(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) sysimgblt(E) fb_sys_fops(E) spmi_pmic_arb(E) drm(E) spmi(E) qcom_smd(E) rpmsg_core smsm(E) gpio_keys(E) smp2p(E) smem(E) hwspinlock_core(E) sunrpc(E) scsi_transport_iscsi(E)
+  CPU: 0 PID: 0 Comm: swapper/0 Tainted: P            E   4.12.0-rc7+ #1476
+  Hardware name: qualcomm dragonboard410c/dragonboard410c, BIOS 2017.07-rc1-00234-g22fa70a-dirty 06/26/2017
+  task: ffff000009049780 task.stack: ffff000009030000
+  PC is at check_unmap+0x474/0x8d0
+  LR is at check_unmap+0x474/0x8d0
+  ...
+  Mapped at:
+   dma_entry_alloc+0x68/0xa8
+   debug_dma_map_page+0x94/0x148
+   wcn36xx_dxe_fill_skb.isra.1+0xbc/0xf8 [wcn36xx]
+   wcn36xx_dxe_init+0x244/0x398 [wcn36xx]
+   wcn36xx_start+0xf4/0x298 [wcn36xx]
+
+v2: pbrobinson: add kfree_skb(skb);
+
+Signed-off-by: Rob Clark <robdclark@gmail.com>
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+---
+ drivers/net/wireless/ath/wcn36xx/dxe.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/wcn36xx/dxe.c b/drivers/net/wireless/ath/wcn36xx/dxe.c
+index 87dfdaf9044c..d5c810a8cc52 100644
+--- a/drivers/net/wireless/ath/wcn36xx/dxe.c
++++ b/drivers/net/wireless/ath/wcn36xx/dxe.c
+@@ -289,6 +289,11 @@ static int wcn36xx_dxe_fill_skb(struct device *dev, struct wcn36xx_dxe_ctl *ctl)
+ 					 skb_tail_pointer(skb),
+ 					 WCN36XX_PKT_SIZE,
+ 					 DMA_FROM_DEVICE);
++	if (dma_mapping_error(dev, dxe->dst_addr_l)) {
++		dev_err(dev, "unable to map skb\n");
++		kfree_skb(skb);
++		return -ENOMEM;
++	}
+ 	ctl->skb = skb;
+ 
+ 	return 0;
+-- 
+2.13.0
+

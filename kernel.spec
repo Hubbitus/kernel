@@ -611,7 +611,11 @@ Patch315: bcm283x-vc4-fix-vblank.patch
 
 # https://patchwork.kernel.org/patch/9815555/
 # https://patchwork.kernel.org/patch/9815651/
-Patch316: qcom-rmsg-spmi-fixes.patch
+# https://patchwork.kernel.org/patch/9819885/
+# https://patchwork.kernel.org/patch/9820417/
+# https://patchwork.kernel.org/patch/9821151/
+# https://patchwork.kernel.org/patch/9821157/
+Patch316: qcom-msm89xx-fixes.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2197,6 +2201,11 @@ fi
 #
 #
 %changelog
+* Mon Jul  3 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Sync sun8i emac options
+- QCom fixes and config tweaks
+- Minor cleanups
+
 * Thu Jun 29 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Enable HDMI on Amlogic Meson SoCs
 
