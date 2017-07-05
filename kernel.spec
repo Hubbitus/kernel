@@ -639,6 +639,9 @@ Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
 # Small workaround patches for issues with a more comprehensive fix in -next
 Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
 
+# s390 compilation issue
+Patch617: s390-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
