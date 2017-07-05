@@ -1,4 +1,4 @@
-From 51eb7454942c68c84b82782e47637de3ba37f113 Mon Sep 17 00:00:00 2001
+From 93c501a65e23aba07389ad95b7e31834ae6d4722 Mon Sep 17 00:00:00 2001
 From: Adrian Hunter <adrian.hunter@intel.com>
 Date: Wed, 21 Jun 2017 15:08:39 +0300
 Subject: [PATCH 14/16] mmc: sdhci-acpi: Workaround conflict with PCI wifi on
@@ -12,6 +12,7 @@ the presence of the PCI wifi card in the expected slot with an ACPI
 companion node, is used to indicate that acpi_device_fix_up_power() should
 be avoided.
 
+[labbott@redhat.com: Rebased for Fedora]
 Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 Acked-by: Hans de Goede <hdegoede@redhat.com>
 Tested-by: Hans de Goede <hdegoede@redhat.com>
@@ -21,7 +22,7 @@ Cc: stable@vger.kernel.org
  1 file changed, 64 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-acpi.c b/drivers/mmc/host/sdhci-acpi.c
-index c6a9a1bfaa22..b3fb155f50e4 100644
+index cf66a3d..ac678e9 100644
 --- a/drivers/mmc/host/sdhci-acpi.c
 +++ b/drivers/mmc/host/sdhci-acpi.c
 @@ -45,6 +45,7 @@
@@ -108,7 +109,7 @@ index c6a9a1bfaa22..b3fb155f50e4 100644
  #endif
  
  static int bxt_get_cd(struct mmc_host *mmc)
-@@ -390,11 +446,16 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
+@@ -389,18 +445,20 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
  	if (acpi_bus_get_device(handle, &device))
  		return -ENODEV;
  
@@ -126,9 +127,6 @@ index c6a9a1bfaa22..b3fb155f50e4 100644
 +				acpi_device_fix_up_power(child);
 +	}
  
- 	if (acpi_bus_get_status(device) || !device->status.present)
- 		return -ENODEV;
-@@ -402,9 +463,6 @@ static int sdhci_acpi_probe(struct platform_device *pdev)
  	if (sdhci_acpi_byt_defer(dev))
  		return -EPROBE_DEFER;
  
@@ -139,5 +137,5 @@ index c6a9a1bfaa22..b3fb155f50e4 100644
  	if (!iomem)
  		return -ENOMEM;
 -- 
-2.13.0
+2.7.5
 

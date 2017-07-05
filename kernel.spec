@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 1
+%global released_kernel 0
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -552,7 +552,8 @@ Patch121: xen-pciback-Don-t-disable-PCI_COMMAND-on-PCI-device-.patch
 
 Patch122: Input-synaptics-pin-3-touches-when-the-firmware-repo.patch
 
-Patch123: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
+# This no longer applies, let's see if it needs to be updated
+# Patch123: firmware-Drop-WARN-from-usermodehelper_read_trylock-.patch
 
 # 200 - x86 / secureboot
 
@@ -583,16 +584,10 @@ Patch302: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 # Fix OMAP4 (pandaboard)
 Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
-# http://www.spinics.net/lists/arm-kernel/msg582772.html
-Patch304: arm-dts-boneblack-wireless-add-WL1835-Bluetooth-device-node.patch
-
 # http://patchwork.ozlabs.org/patch/587554/
 Patch305: ARM-tegra-usb-no-reset.patch
 
 Patch306: AllWinner-net-emac.patch
-
-# http://www.spinics.net/lists/devicetree/msg163238.html
-Patch308: bcm2837-initial-support.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch309: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
@@ -603,7 +598,6 @@ Patch311: arm-imx6-hummingboard2.patch
 Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
 Patch313: bcm2835-clk-audio-jitter-issues.patch
-Patch314: bcm2835-fix-potential-null-pointer-dereferences.patch
 
 # https://patchwork.freedesktop.org/patch/163300/
 # https://patchwork.freedesktop.org/patch/161978/
@@ -629,11 +623,8 @@ Patch504: RFC-audit-fix-a-race-condition-with-the-auditd-tracking-code.patch
 
 # 600 - Patches for improved Bay and Cherry Trail device support
 # Below patches are pending in -next:
-Patch601: 0001-platform-x86-Add-driver-for-ACPI-INT0002-Virtual-GPI.patch
 Patch602: 0002-mfd-Add-Cherry-Trail-Whiskey-Cove-PMIC-driver.patch
-Patch603: 0003-power-supply-core-Add-support-for-supplied-from-devi.patch
 Patch604: 0004-platform-x86-intel_cht_int33fe-Set-supplied-from-pro.patch
-Patch605: 0005-ACPI-PMIC-xpower-Add-support-for-the-GPI1-regulator-.patch
 Patch606: 0006-Input-axp20x-pek-Add-wakeup-support.patch
 Patch607: 0007-platform-x86-silead_dmi-Add-touchscreen-info-for-GP-.patch
 Patch608: 0008-platform-x86-silead_dmi-Add-touchscreen-info-for-PoV.patch
@@ -2201,6 +2192,10 @@ fi
 #
 #
 %changelog
+* Wed Jul 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git1.1
+
+- Linux v4.12-3441-g1996454
+
 * Wed Jul 05 2017 Laura Abbott <labbott@fedoraproject.org>
 - Reenable debugging options.
 
