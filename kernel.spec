@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -621,11 +621,7 @@ Patch502: CVE-2017-7477.patch
 # 600 - Patches for improved Bay and Cherry Trail device support
 # Below patches are pending in -next:
 Patch602: 0002-mfd-Add-Cherry-Trail-Whiskey-Cove-PMIC-driver.patch
-Patch604: 0004-platform-x86-intel_cht_int33fe-Set-supplied-from-pro.patch
 Patch606: 0006-Input-axp20x-pek-Add-wakeup-support.patch
-Patch607: 0007-platform-x86-silead_dmi-Add-touchscreen-info-for-GP-.patch
-Patch608: 0008-platform-x86-silead_dmi-Add-touchscreen-info-for-PoV.patch
-Patch609: 0009-platform-x86-silead_dmi-Add-touchscreen-info-for-Pip.patch
 # Below patches are submitted upstream, awaiting review / merging
 Patch610: 0010-Input-silead-Add-support-for-capactive-home-button-f.patch
 Patch611: 0011-Input-goodix-Add-support-for-capacitive-home-button.patch
@@ -635,9 +631,6 @@ Patch614: 0014-mmc-sdhci-acpi-Workaround-conflict-with-PCI-wifi-on-.patch
 Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
 # Small workaround patches for issues with a more comprehensive fix in -next
 Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
-
-# s390 compilation issue
-Patch617: s390-fix.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2192,6 +2185,9 @@ fi
 #
 #
 %changelog
+* Fri Jul 07 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git3.1
+- Linux v4.12-7934-g9f45efb
+
 * Thu Jul 06 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git2.1
 - Linux v4.12-6090-g9b51f04
 
