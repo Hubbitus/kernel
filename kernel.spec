@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -597,8 +597,6 @@ Patch311: arm-imx6-hummingboard2.patch
 
 Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
-Patch313: bcm2835-clk-audio-jitter-issues.patch
-
 # https://patchwork.freedesktop.org/patch/163300/
 # https://patchwork.freedesktop.org/patch/161978/
 Patch315: bcm283x-vc4-fix-vblank.patch
@@ -619,9 +617,6 @@ Patch316: qcom-msm89xx-fixes.patch
 Patch502: CVE-2017-7477.patch
 
 # 600 - Patches for improved Bay and Cherry Trail device support
-# Below patches are pending in -next:
-Patch602: 0002-mfd-Add-Cherry-Trail-Whiskey-Cove-PMIC-driver.patch
-Patch606: 0006-Input-axp20x-pek-Add-wakeup-support.patch
 # Below patches are submitted upstream, awaiting review / merging
 Patch610: 0010-Input-silead-Add-support-for-capactive-home-button-f.patch
 Patch611: 0011-Input-goodix-Add-support-for-capacitive-home-button.patch
@@ -2185,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Mon Jul 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git4.1
+- Linux v4.12-10317-gaf3c8d9
+
 * Fri Jul 07 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git3.1
 - Linux v4.12-7934-g9f45efb
 
