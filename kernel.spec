@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Wed Jul 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Build in i2c-rk3x to fix some device boot
+
 * Wed Jul 12 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git6.1
 - Linux v4.12-10784-g3b06b1a7448e
 
