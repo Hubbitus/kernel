@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 6
+%define gitrev 7
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Thu Jul 13 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git7.1
+- Linux v4.12-10985-g4ca6df134847
+
 * Wed Jul 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Build in i2c-rk3x to fix some device boot
 
