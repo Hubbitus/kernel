@@ -1,1 +1,1 @@
-# CONFIG_IIO_MUX is not set
+CONFIG_IIO_MUX=m

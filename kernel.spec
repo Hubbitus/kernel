@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Thu Jul 13 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor updates for ARM
+
 * Thu Jul 13 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git7.1
 - Linux v4.12-10985-g4ca6df134847
 
