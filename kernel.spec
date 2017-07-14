@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 0
 # The git snapshot level
-%define gitrev 7
+%define gitrev 8
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Fri Jul 14 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git8.1
+- Linux v4.12-11618-gb86faee6d111
+
 * Thu Jul 13 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Minor updates for ARM
 
