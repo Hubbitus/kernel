@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 0
+%global rcrev 1
 # The git snapshot level
-%define gitrev 8
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -620,9 +620,9 @@ Patch502: CVE-2017-7477.patch
 # Below patches are submitted upstream, awaiting review / merging
 Patch610: 0010-Input-silead-Add-support-for-capactive-home-button-f.patch
 Patch611: 0011-Input-goodix-Add-support-for-capacitive-home-button.patch
-Patch612: 0012-Input-gpio_keys-Do-not-report-wake-button-presses-as.patch
+# This either needs to be removed or rebased
+# Patch612: 0012-Input-gpio_keys-Do-not-report-wake-button-presses-as.patch
 Patch613: 0013-iio-accel-bmc150-Add-support-for-BOSC0200-ACPI-devic.patch
-Patch614: 0014-mmc-sdhci-acpi-Workaround-conflict-with-PCI-wifi-on-.patch
 Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
 # Small workaround patches for issues with a more comprehensive fix in -next
 Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Mon Jul 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc1.git0.1
+- Linux v4.13-rc1
+
 * Mon Jul 17 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable debugging options.
 
