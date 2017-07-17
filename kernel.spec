@@ -2180,6 +2180,9 @@ fi
 #
 #
 %changelog
+* Sun Jul 16 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Minor ARM config updates
+
 * Fri Jul 14 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc0.git8.1
 - Linux v4.12-11618-gb86faee6d111
 
