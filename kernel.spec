@@ -619,6 +619,10 @@ Patch312: qcom-display-iommu.patch
 # https://patchwork.kernel.org/patch/9839803/
 Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 
+# This breaks RPi booting with a LPAE kernel, we don't support the DSI ports currently
+# Revert it while I engage upstream to work out what's going on
+Patch314: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2194,6 +2198,7 @@ fi
 - Add fix for Tegra GPU display with IOMMU
 - Add QCom IOMMU for Dragonboard display
 - Add QCom patch to fix USB on Dragonboard
+- Fix Raspberry Pi booting with LPAE kernel
 
 * Tue Jul 18 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc1.git1.1
 - Linux v4.13-rc1-24-gcb8c65ccff7f
