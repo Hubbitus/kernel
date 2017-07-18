@@ -1,1 +1,1 @@
-# CONFIG_DEVPORT is not set
+CONFIG_DEVPORT=y
