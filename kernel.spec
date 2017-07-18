@@ -585,21 +585,21 @@ Patch302: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
-Patch305: ARM-tegra-usb-no-reset.patch
+Patch304: ARM-tegra-usb-no-reset.patch
 
-Patch306: AllWinner-net-emac.patch
+Patch305: AllWinner-net-emac.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
-Patch309: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+Patch306: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
-Patch311: arm-imx6-hummingboard2.patch
+Patch307: arm-imx6-hummingboard2.patch
 
-Patch312: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
+Patch308: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
 # https://patchwork.freedesktop.org/patch/163300/
 # https://patchwork.freedesktop.org/patch/161978/
-Patch315: bcm283x-vc4-fix-vblank.patch
+Patch309: bcm283x-vc4-fix-vblank.patch
 
 # https://patchwork.kernel.org/patch/9815555/
 # https://patchwork.kernel.org/patch/9815651/
@@ -607,7 +607,14 @@ Patch315: bcm283x-vc4-fix-vblank.patch
 # https://patchwork.kernel.org/patch/9820417/
 # https://patchwork.kernel.org/patch/9821151/
 # https://patchwork.kernel.org/patch/9821157/
-Patch316: qcom-msm89xx-fixes.patch
+Patch310: qcom-msm89xx-fixes.patch
+
+# https://patchwork.kernel.org/patch/9831825/
+# https://patchwork.kernel.org/patch/9833721/
+Patch311: arm-tegra-fix-gpu-iommu.patch
+
+# https://www.spinics.net/lists/linux-arm-msm/msg28203.html
+Patch312: qcom-display-iommu.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2180,6 +2187,10 @@ fi
 #
 #
 %changelog
+* Tue Jul 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add fix for Tegra GPU display with IOMMU
+- Add QCom IOMMU for Dragonboard display
+
 * Tue Jul 18 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc1.git1.1
 - Linux v4.13-rc1-24-gcb8c65ccff7f
 
