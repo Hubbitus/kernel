@@ -616,6 +616,9 @@ Patch311: arm-tegra-fix-gpu-iommu.patch
 # https://www.spinics.net/lists/linux-arm-msm/msg28203.html
 Patch312: qcom-display-iommu.patch
 
+# https://patchwork.kernel.org/patch/9839803/
+Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2190,6 +2193,7 @@ fi
 * Tue Jul 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add fix for Tegra GPU display with IOMMU
 - Add QCom IOMMU for Dragonboard display
+- Add QCom patch to fix USB on Dragonboard
 
 * Tue Jul 18 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc1.git1.1
 - Linux v4.13-rc1-24-gcb8c65ccff7f
