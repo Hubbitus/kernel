@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 1
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2194,6 +2194,9 @@ fi
 #
 #
 %changelog
+* Wed Jul 19 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc1.git2.1
+- Linux v4.13-rc1-59-g74cbd96bc2e0
+
 * Tue Jul 18 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add fix for Tegra GPU display with IOMMU
 - Add QCom IOMMU for Dragonboard display
