@@ -589,17 +589,10 @@ Patch304: ARM-tegra-usb-no-reset.patch
 
 Patch305: AllWinner-net-emac.patch
 
-# http://www.spinics.net/lists/dri-devel/msg132235.html
-Patch306: drm-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
-
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch307: arm-imx6-hummingboard2.patch
 
 Patch308: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
-
-# https://patchwork.freedesktop.org/patch/163300/
-# https://patchwork.freedesktop.org/patch/161978/
-Patch309: bcm283x-vc4-fix-vblank.patch
 
 # https://patchwork.kernel.org/patch/9815555/
 # https://patchwork.kernel.org/patch/9815651/
@@ -619,9 +612,16 @@ Patch312: qcom-display-iommu.patch
 # https://patchwork.kernel.org/patch/9839803/
 Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 
+# http://www.spinics.net/lists/dri-devel/msg132235.html
+Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+
+# https://patchwork.freedesktop.org/patch/163300/
+# https://patchwork.freedesktop.org/patch/161978/
+Patch321: bcm283x-vc4-fix-vblank.patch
+
 # This breaks RPi booting with a LPAE kernel, we don't support the DSI ports currently
 # Revert it while I engage upstream to work out what's going on
-Patch314: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
+Patch322: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
 
 # 400 - IBM (ppc/s390x) patches
 
