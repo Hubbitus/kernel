@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 1
+%global rcrev 2
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -614,10 +614,6 @@ Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
-
-# https://patchwork.freedesktop.org/patch/163300/
-# https://patchwork.freedesktop.org/patch/161978/
-Patch321: bcm283x-vc4-fix-vblank.patch
 
 # This breaks RPi booting with a LPAE kernel, we don't support the DSI ports currently
 # Revert it while I engage upstream to work out what's going on
@@ -2194,6 +2190,9 @@ fi
 #
 #
 %changelog
+* Mon Jul 24 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc2.git0.1
+- Linux v4.13-rc2
+
 * Mon Jul 24 2017 Laura Abbott <labbott@fedoraproject.org>
 - Disable debugging options.
 
