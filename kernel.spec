@@ -415,6 +415,8 @@ BuildConflicts: rpm < 4.13.0.1-19
 %undefine _unique_build_ids
 %undefine _unique_debug_names
 %undefine _unique_debug_srcs
+%undefine _debugsource_packages
+%undefine _debuginfo_subpackages
 %global _find_debuginfo_opts -r
 %global _missing_build_ids_terminate_build 1
 %global _no_recompute_build_ids 1
