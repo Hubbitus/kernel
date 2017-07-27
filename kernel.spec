@@ -2192,6 +2192,9 @@ fi
 #
 #
 %changelog
+* Thu Jul 27 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable ACPI CPPC CPUFreq driver on aarch64
+
 * Wed Jul 26 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc2.git1.1
 - Linux v4.13-rc2-22-gfd2b2c57ec20
 
