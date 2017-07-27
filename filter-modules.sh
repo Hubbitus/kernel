@@ -20,7 +20,7 @@ chardrvs="mwave pcmcia"
 
 netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
-ethdrvs="3com adaptec alteon amd atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
+ethdrvs="3com adaptec alteon amd aquantia atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
 
 inputdrvs="gameport tablet touchscreen"
 
