@@ -621,6 +621,9 @@ Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO
 # Revert it while I engage upstream to work out what's going on
 Patch322: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
 
+# Breaking mustang booting
+Patch323: 0001-Revert-xgene-Don-t-fail-probe-if-there-is-no-clk-res.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2192,6 +2195,9 @@ fi
 #
 #
 %changelog
+* Thu Jul 27 2017 Laura Abbott <labbott@fedoraproject.org>
+- Revert patch breaking mustang boot
+
 * Thu Jul 27 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc2.git2.1
 - Linux v4.13-rc2-27-gda08f35b0f82
 
