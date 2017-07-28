@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 2
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2195,6 +2195,9 @@ fi
 #
 #
 %changelog
+* Fri Jul 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc2.git3.1
+- Linux v4.13-rc2-110-g0b5477d9dabd
+
 * Thu Jul 27 2017 Laura Abbott <labbott@fedoraproject.org>
 - Revert patch breaking mustang boot
 
