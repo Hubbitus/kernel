@@ -2195,6 +2195,9 @@ fi
 #
 #
 %changelog
+* Fri Jul 28 2017 Adrian Reber <adrian@lisas.de>
+- Enable CHECKPOINT_RESTORE on s390x
+
 * Fri Jul 28 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc2.git3.1
 - Linux v4.13-rc2-110-g0b5477d9dabd
 
