@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Fri Aug 11 2017 Josh Boyer <jwboyer@fedoraproject.org>
+- Disable MEMORY_HOTPLUG_DEFAULT_ONLINE on ppc64 (rhbz 1476380)
+
 * Thu Aug 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc4.git3.1
 - Linux v4.13-rc4-139-g8d31f80eb388
 
