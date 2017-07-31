@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 1
+%global baserelease 2
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2195,6 +2195,9 @@ fi
 #
 #
 %changelog
+* Mon Jul 31 2017 Florian Weimer <fweimer@redhat.com> - 4.13.0-0.rc2.git3.2
+- Rebuild with binutils fix for ppc64le (#1475636)
+
 * Fri Jul 28 2017 Adrian Reber <adrian@lisas.de>
 - Enable CHECKPOINT_RESTORE on s390x
 
