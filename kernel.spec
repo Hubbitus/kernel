@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 03 2017 Laura Abbott <labbott@redhat.com>
+- Keep UDF in the main kernel package (rhbz 1471314)
+
 * Thu Aug 03 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc3.git3.1
 - Linux v4.13-rc3-118-g19ec50a438c2
 
