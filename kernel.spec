@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 3
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Fri Aug 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc3.git4.1
+- Linux v4.13-rc3-152-g869c058fbe74
+
 * Thu Aug 03 2017 Laura Abbott <labbott@redhat.com>
 - Keep UDF in the main kernel package (rhbz 1471314)
 
