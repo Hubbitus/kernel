@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Fri Aug  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM QCom updates
+
 * Fri Aug 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc3.git4.1
 - Linux v4.13-rc3-152-g869c058fbe74
 
