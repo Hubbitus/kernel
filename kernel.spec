@@ -615,15 +615,18 @@ Patch312: qcom-display-iommu.patch
 # https://patchwork.kernel.org/patch/9839803/
 Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 
+# Breaking mustang booting
+Patch314: 0001-Revert-xgene-Don-t-fail-probe-if-there-is-no-clk-res.patch
+
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
+
+# Fix USB on the RPi https://patchwork.kernel.org/patch/9879371/
+Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe.patch
 
 # This breaks RPi booting with a LPAE kernel, we don't support the DSI ports currently
 # Revert it while I engage upstream to work out what's going on
 Patch322: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
-
-# Breaking mustang booting
-Patch323: 0001-Revert-xgene-Don-t-fail-probe-if-there-is-no-clk-res.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2198,6 +2201,7 @@ fi
 %changelog
 * Fri Aug  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM QCom updates
+- Patch to fix USB on Raspberry Pi
 
 * Fri Aug 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc3.git4.1
 - Linux v4.13-rc3-152-g869c058fbe74
