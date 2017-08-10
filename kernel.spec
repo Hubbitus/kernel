@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 4
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -614,9 +614,6 @@ Patch312: qcom-display-iommu.patch
 
 # https://patchwork.kernel.org/patch/9839803/
 Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
-
-# Breaking mustang booting
-Patch314: 0001-Revert-xgene-Don-t-fail-probe-if-there-is-no-clk-res.patch
 
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
@@ -2199,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc4.git3.1
+- Linux v4.13-rc4-139-g8d31f80eb388
+
 * Wed Aug 09 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc4.git2.1
 - Linux v4.13-rc4-52-gbfa738cf3dfa
 
