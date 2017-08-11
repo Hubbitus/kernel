@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 4
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Fri Aug 11 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc4.git4.1
+- Linux v4.13-rc4-220-gb2dbdf2ca1d2
+
 * Fri Aug 11 2017 Dan Horak <dan@danny.cz>
 - disable SWIOTLB on Power (#1480380)
 
