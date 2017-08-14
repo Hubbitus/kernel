@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2196,6 +2196,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 14 2017 Laura Abbott <labbott@fedoraproject.org>
+- Disable debugging options.
+
 * Fri Aug 11 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc4.git4.1
 - Linux v4.13-rc4-220-gb2dbdf2ca1d2
 
