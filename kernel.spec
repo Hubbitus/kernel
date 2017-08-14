@@ -643,6 +643,9 @@ Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
 # Small workaround patches for issues with a more comprehensive fix in -next
 Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
 
+# rhbz 1476467
+Patch617: Fix-for-module-sig-verification.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2196,6 +2199,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 14 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix for signed module loading (rhbz 1476467)
+
 * Mon Aug 14 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git0.1
 - Linux v4.13-rc5
 
