@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2199,6 +2199,9 @@ fi
 #
 #
 %changelog
+* Tue Aug 15 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git1.1
+- Linux v4.13-rc5-9-gfcd07350007b
+
 * Mon Aug 14 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Fix for signed module loading (rhbz 1476467)
 
