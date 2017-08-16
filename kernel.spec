@@ -646,6 +646,9 @@ Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
 # rhbz 1476467
 Patch617: Fix-for-module-sig-verification.patch
 
+# request for bug fix
+Patch618: iio-race-fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2199,6 +2202,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 16 2017 Laura Abbott <labbott@redhat.com>
+- Fix for iio race
+
 * Wed Aug 16 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Enable CONFIG_DRM_VBOXVIDEO=m on x86
 - Enable CONFIG_R8188EU=m on x86_64, some Cherry Trail devices use this
