@@ -32,6 +32,6 @@ aarch64-debug=baseconfig:baseconfig-arm:baseconfig-arm-arm64:debugconfig:debugco
 
 # arm
 armv7hl=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-armv7
-armv7hl-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-armv7:debugconfig:debugconfig-arm:debugconfig-arm-armv7
+armv7hl-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-armv7:debugconfig:debugconfig-arm
 armv7hl-lpae=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-lpae
-armv7hl-lpae-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-lpae:debugconfig:debugconfig-arm:debugconfig-arm-armv7
+armv7hl-lpae-debug=baseconfig:baseconfig-arm:baseconfig-arm-armv7:baseconfig-arm-armv7-lpae:debugconfig:debugconfig-arm
