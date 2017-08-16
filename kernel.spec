@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 1
+%define gitrev 2
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2202,6 +2202,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 16 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git2.1
+- Linux v4.13-rc5-67-g510c8a899caf
+
 * Wed Aug 16 2017 Laura Abbott <labbott@redhat.com>
 - Fix for iio race
 
