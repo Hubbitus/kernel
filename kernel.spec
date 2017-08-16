@@ -2199,6 +2199,10 @@ fi
 #
 #
 %changelog
+* Wed Aug 16 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Enable CONFIG_DRM_VBOXVIDEO=m on x86
+- Enable CONFIG_R8188EU=m on x86_64, some Cherry Trail devices use this
+
 * Tue Aug 15 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git1.1
 - Linux v4.13-rc5-9-gfcd07350007b
 
