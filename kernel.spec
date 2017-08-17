@@ -649,6 +649,9 @@ Patch617: Fix-for-module-sig-verification.patch
 # request for bug fix
 Patch618: iio-race-fix.patch
 
+# rhbz 1482249
+Patch619: 0001-mm-vmalloc-Don-t-unconditonally-use-__GFP_HIGHMEM.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2202,6 +2205,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 17 2017 Laura Abbott <labbott@fedoraproject.org>
+- Fix for vmalloc_32 failure (rhbz 1482249)
+
 * Wed Aug 16 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git2.1
 - Linux v4.13-rc5-67-g510c8a899caf
 
