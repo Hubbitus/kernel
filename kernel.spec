@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 5
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2205,6 +2205,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 17 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc5.git3.1
+- Linux v4.13-rc5-75-gac9a40905a61
+
 * Thu Aug 17 2017 Laura Abbott <labbott@fedoraproject.org>
 - Fix for vmalloc_32 failure (rhbz 1482249)
 
