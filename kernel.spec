@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 5
+%global rcrev 6
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -648,9 +648,6 @@ Patch617: Fix-for-module-sig-verification.patch
 
 # request for bug fix
 Patch618: iio-race-fix.patch
-
-# rhbz 1482249
-Patch619: 0001-mm-vmalloc-Don-t-unconditonally-use-__GFP_HIGHMEM.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2205,6 +2202,10 @@ fi
 #
 #
 %changelog
+* Mon Aug 21 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.0-0.rc6.git0.1
+- Disable debugging options.
+- Linux v4.13-rc6
+
 * Fri Aug 18 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.0-0.rc5.git4.1
 - Linux v4.13-rc5-130-g039a8e384733
 
