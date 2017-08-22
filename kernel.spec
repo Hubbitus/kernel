@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 6
 # The git snapshot level
-%define gitrev 0
+%define gitrev 1
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 1
+%define debugbuildsenabled 0
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -528,9 +528,6 @@ Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
 
 # Standalone patches
 # 100 - Generic long running patches
-
-# Force python3
-Patch105: force-python3-in-kvm_stat.patch
 
 Patch110: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
@@ -2205,6 +2202,10 @@ fi
 #
 #
 %changelog
+* Tue Aug 22 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.0-0.rc6.git1.1
+- Linux v4.13-rc6-45-g6470812e2226
+- Reenable debugging options.
+
 * Tue Aug 22 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Force python3 for kvm_stat because we can't dep (rhbz 1456722)
 
