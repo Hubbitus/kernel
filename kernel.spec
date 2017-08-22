@@ -529,6 +529,9 @@ Patch002: 0001-iio-Use-event-header-from-kernel-tree.patch
 # Standalone patches
 # 100 - Generic long running patches
 
+# Force python3
+Patch105: force-python3-in-kvm_stat.patch
+
 Patch110: lib-cpumask-Make-CPUMASK_OFFSTACK-usable-without-deb.patch
 
 Patch111: input-kill-stupid-messages.patch
@@ -2202,6 +2205,9 @@ fi
 #
 #
 %changelog
+* Tue Aug 22 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Force python3 for kvm_stat because we can't dep (rhbz 1456722)
+
 * Mon Aug 21 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.0-0.rc6.git0.1
 - Disable debugging options.
 - Linux v4.13-rc6
