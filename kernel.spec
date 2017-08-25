@@ -649,6 +649,12 @@ Patch617: Fix-for-module-sig-verification.patch
 # request for bug fix
 Patch618: iio-race-fix.patch
 
+# rhbz 1485086
+Patch619: pci-mark-amd-stoney-gpu-ats-as-broken.patch
+
+# CVE-2017-7558 rhbz 1480266 1484810
+Patch621: net-sctp-Avoid-out-of-bounds-reads-from-address-storage.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -788,6 +794,7 @@ Obsoletes: cpufreq-utils < 1:009-0.6.p1
 Obsoletes: cpufrequtils < 1:009-0.6.p1
 Obsoletes: cpuspeed < 1:1.5-16
 Requires: kernel-tools-libs = %{version}-%{release}
+%define __requires_exclude ^%{_bindir}/python
 %description -n kernel-tools
 This package contains the tools/ directory from the kernel source
 and the supporting documentation.
@@ -2202,6 +2209,11 @@ fi
 #
 #
 %changelog
+* Fri Aug 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- For for AMD Stoney GPU (rhbz 1485086)
+- Fix for CVE-2017-7558 (rhbz 1480266 1484810)
+- Fix for kvm_stat (rhbz 1483527)
+
 * Fri Aug 25 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-0.rc6.git4.1
 - Linux v4.13-rc6-102-g90a6cd503982
 
