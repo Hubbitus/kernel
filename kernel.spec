@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -2209,6 +2209,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 28 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc6.git4.2
+- Disable debugging options.
+
 * Fri Aug 25 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - For for AMD Stoney GPU (rhbz 1485086)
 - Fix for CVE-2017-7558 (rhbz 1480266 1484810)
