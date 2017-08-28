@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 6
+%global rcrev 7
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -645,9 +645,6 @@ Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
 
 # rhbz 1476467
 Patch617: Fix-for-module-sig-verification.patch
-
-# request for bug fix
-Patch618: iio-race-fix.patch
 
 # rhbz 1485086
 Patch619: pci-mark-amd-stoney-gpu-ats-as-broken.patch
@@ -2209,6 +2206,9 @@ fi
 #
 #
 %changelog
+* Mon Aug 28 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git0.1
+- Linux v4.13-rc7
+
 * Mon Aug 28 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc6.git4.2
 - Disable debugging options.
 
