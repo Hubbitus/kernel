@@ -615,6 +615,9 @@ Patch312: qcom-display-iommu.patch
 # https://patchwork.kernel.org/patch/9839803/
 Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 
+# https://patchwork.kernel.org/patch/9850189/
+Patch314: qcom-msm-ci_hdrc_msm_probe-missing-of_node_get.patch
+
 # http://www.spinics.net/lists/dri-devel/msg132235.html
 Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
 
@@ -2206,6 +2209,9 @@ fi
 #
 #
 %changelog
+* Wed Aug 30 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix for QCom Dragonboard USB
+
 * Wed Aug 30 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git2.1
 - Linux v4.13-rc7-15-g36fde05f3fb5
 
