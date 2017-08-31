@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 2
+%define gitrev 3
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2210,6 +2210,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 31 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git3.1
+- Linux v4.13-rc7-37-g42ff72cf2702
+
 * Thu Aug 31 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Update patches for power-button wakeup issues on Bay / Cherry Trail devices
 - Add patches to fix an IRQ storm on devices with a MAX17042 fuel-gauge
