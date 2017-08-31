@@ -637,14 +637,15 @@ Patch502: CVE-2017-7477.patch
 
 # 600 - Patches for improved Bay and Cherry Trail device support
 # Below patches are submitted upstream, awaiting review / merging
+Patch601: 0001-Input-gpio_keys-Allow-suppression-of-input-events-fo.patch
+Patch602: 0002-Input-soc_button_array-Suppress-power-button-presses.patch
 Patch610: 0010-Input-silead-Add-support-for-capactive-home-button-f.patch
 Patch611: 0011-Input-goodix-Add-support-for-capacitive-home-button.patch
-# This either needs to be removed or rebased
-# Patch612: 0012-Input-gpio_keys-Do-not-report-wake-button-presses-as.patch
+# These patches are queued for 4.14 and can be dropped on rebase to 4.14-rc1
+Patch603: 0001-power-supply-max17042_battery-Add-support-for-ACPI-e.patch
+Patch604: 0002-power-supply-max17042_battery-Fix-ACPI-interrupt-iss.patch
 Patch613: 0013-iio-accel-bmc150-Add-support-for-BOSC0200-ACPI-devic.patch
 Patch615: 0015-i2c-cht-wc-Add-Intel-Cherry-Trail-Whiskey-Cove-SMBUS.patch
-# Small workaround patches for issues with a more comprehensive fix in -next
-Patch616: 0016-Input-silead-Do-not-try-to-directly-access-the-GPIO-.patch
 
 # rhbz 1476467
 Patch617: Fix-for-module-sig-verification.patch
@@ -2209,6 +2210,10 @@ fi
 #
 #
 %changelog
+* Thu Aug 31 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Update patches for power-button wakeup issues on Bay / Cherry Trail devices
+- Add patches to fix an IRQ storm on devices with a MAX17042 fuel-gauge
+
 * Wed Aug 30 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix for QCom Dragonboard USB
 
