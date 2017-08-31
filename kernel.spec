@@ -2210,6 +2210,9 @@ fi
 #
 #
 %changelog
+* Thu Aug 31 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Disable Infiniband/RDMA on ARMv7 as we no longer have userspace tools
+
 * Thu Aug 31 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git3.1
 - Linux v4.13-rc7-37-g42ff72cf2702
 
