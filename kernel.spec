@@ -69,7 +69,7 @@ Summary: The Linux kernel
 # The rc snapshot level
 %global rcrev 7
 # The git snapshot level
-%define gitrev 3
+%define gitrev 4
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -2210,6 +2210,9 @@ fi
 #
 #
 %changelog
+* Fri Sep 01 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git4.1
+- Linux v4.13-rc7-74-ge89ce1f89f62
+
 * Thu Aug 31 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Disable Infiniband/RDMA on ARMv7 as we no longer have userspace tools
 
