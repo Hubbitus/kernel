@@ -6,7 +6,7 @@ Summary: The Linux kernel
 # For a stable, released kernel, released_kernel should be 1. For rawhide
 # and/or a kernel built from an rc or git snapshot, released_kernel should
 # be 0.
-%global released_kernel 0
+%global released_kernel 1
 
 # Sign modules on x86.  Make sure the config files match this setting if more
 # architectures are added.
@@ -48,7 +48,7 @@ Summary: The Linux kernel
 # base_sublevel is the kernel version we're starting with and patching
 # on top of -- for example, 3.1-rc7-git1 starts with a 3.0 base,
 # which yields a base_sublevel of 0.
-%define base_sublevel 12
+%define base_sublevel 13
 
 ## If this is a released kernel ##
 %if 0%{?released_kernel}
@@ -67,9 +67,9 @@ Summary: The Linux kernel
 # The next upstream release sublevel (base_sublevel+1)
 %define upstream_sublevel %(echo $((%{base_sublevel} + 1)))
 # The rc snapshot level
-%global rcrev 7
+%global rcrev 0
 # The git snapshot level
-%define gitrev 4
+%define gitrev 0
 # Set rpm version accordingly
 %define rpmversion 4.%{upstream_sublevel}.0
 %endif
@@ -125,7 +125,7 @@ Summary: The Linux kernel
 # Set debugbuildsenabled to 1 for production (build separate debug kernels)
 #  and 0 for rawhide (all kernels are debug kernels).
 # See also 'make debug' and 'make release'.
-%define debugbuildsenabled 0
+%define debugbuildsenabled 1
 
 # Want to build a vanilla kernel build without any non-upstream patches?
 %define with_vanilla %{?_with_vanilla: 1} %{?!_with_vanilla: 0}
@@ -652,9 +652,6 @@ Patch617: Fix-for-module-sig-verification.patch
 
 # rhbz 1485086
 Patch619: pci-mark-amd-stoney-gpu-ats-as-broken.patch
-
-# CVE-2017-7558 rhbz 1480266 1484810
-Patch621: net-sctp-Avoid-out-of-bounds-reads-from-address-storage.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2210,6 +2207,9 @@ fi
 #
 #
 %changelog
+* Mon Sep 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-1
+- Linux v4.13
+
 * Fri Sep 01 2017 Laura Abbott <labbott@redhat.com> - 4.13.0-0.rc7.git4.1
 - Linux v4.13-rc7-74-ge89ce1f89f62
 
