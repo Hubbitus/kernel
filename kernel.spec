@@ -590,7 +590,7 @@ Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 # http://patchwork.ozlabs.org/patch/587554/
 Patch304: ARM-tegra-usb-no-reset.patch
 
-Patch305: AllWinner-net-emac.patch
+Patch305: allwinner-net-emac.patch
 
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
 Patch307: arm-imx6-hummingboard2.patch
@@ -2207,6 +2207,9 @@ fi
 #
 #
 %changelog
+* Mon Sep  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Revert drop of sun8i-emac DT bindings, we support for certain devs
+
 * Mon Sep 04 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.0-1
 - Linux v4.13
 
