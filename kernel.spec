@@ -2207,6 +2207,9 @@ fi
 #
 #
 %changelog
+* Sat Sep  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Only build ParPort support on x86
+
 * Mon Sep  4 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Revert drop of sun8i-emac DT bindings, we support for certain devs
 

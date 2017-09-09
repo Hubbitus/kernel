@@ -1,1 +1,1 @@
-CONFIG_PARPORT=m
+# CONFIG_PARPORT is not set
