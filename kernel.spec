@@ -578,24 +578,21 @@ Patch211: drm-i915-hush-check-crtc-state.patch
 
 # 300 - ARM patches
 
-# a tempory patch for QCOM hardware enablement. Will be gone by F-26 GA
-Patch301: qcom-QDF2432-tmp-errata.patch
-
 # http://www.spinics.net/lists/linux-tegra/msg26029.html
-Patch302: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
+Patch301: usb-phy-tegra-Add-38.4MHz-clock-table-entry.patch
 
 # Fix OMAP4 (pandaboard)
-Patch303: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
+Patch302: arm-revert-mmc-omap_hsmmc-Use-dma_request_chan-for-reque.patch
 
 # http://patchwork.ozlabs.org/patch/587554/
-Patch304: ARM-tegra-usb-no-reset.patch
+Patch303: ARM-tegra-usb-no-reset.patch
 
-Patch305: allwinner-net-emac.patch
+Patch304: allwinner-net-emac.patch
 
 # https://www.spinics.net/lists/arm-kernel/msg554183.html
-Patch307: arm-imx6-hummingboard2.patch
+Patch305: arm-imx6-hummingboard2.patch
 
-Patch308: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
+Patch306: arm64-Add-option-of-13-for-FORCE_MAX_ZONEORDER.patch
 
 # https://patchwork.kernel.org/patch/9815555/
 # https://patchwork.kernel.org/patch/9815651/
