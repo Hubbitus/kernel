@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -621,9 +621,12 @@ Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO
 # Fix USB on the RPi https://patchwork.kernel.org/patch/9879371/
 Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe.patch
 
-# This breaks RPi booting with a LPAE kernel, we don't support the DSI ports currently
-# Revert it while I engage upstream to work out what's going on
-Patch322: Revert-ARM-dts-bcm2835-Add-the-DSI-module-nodes-and-.patch
+# Updat3 move of bcm2837, landed in 4.14
+Patch322: bcm2837-move-dt.patch
+
+# bcm2837 bluetooth support
+#
+Patch323: bcm2837-bluetooth-support.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2204,6 +2207,10 @@ fi
 #
 #
 %changelog
+* Sun Sep 10 2017 Peter Robinson <pbrobinson@fedoraproject.org> 4.13.1-301
+- Raspberry Pi serial console fixes, minor other Pi improvements
+- Various ARM cleanups, build mmc/pwrseq non modular
+
 * Sun Sep 10 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.1-300
 - Linux v4.13.1
 
