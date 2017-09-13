@@ -656,6 +656,15 @@ Patch617: Fix-for-module-sig-verification.patch
 # rhbz 1485086
 Patch619: pci-mark-amd-stoney-gpu-ats-as-broken.patch
 
+# CVE-2017-12154 rhbz 1491224 1491231
+Patch620: kvm-nVMX-Don-t-allow-L2-to-access-the-hardware-CR8.patch
+
+# CVE-2017-12153 rhbz 1491046 1491057
+Patch621: nl80211-check-for-the-required-netlink-attributes-presence.patch
+
+# CVE-2017-1000251 rhbz 1489716 1490906
+Patch622: bluetooth-properly-check-l2cap-config-option-output-buffer-length.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2210,6 +2219,11 @@ fi
 #
 #
 %changelog
+* Wed Sep 13 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix CVE-2017-12154 (rhbz 1491224 1491231)
+- Fix CVE-2017-12153 (rhbz 1491046 1491057)
+- Fix CVE-2017-1000251 (rhbz 1489716 1490906)
+
 * Tue Sep 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix issue with DMA allocation with some device configurations
 
