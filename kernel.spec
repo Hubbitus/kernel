@@ -2216,6 +2216,9 @@ fi
 #
 #
 %changelog
+* Fri Sep 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable Tegra 186
+
 * Thu Sep 14 2017 Laura Abbott <labbott@redhat.com> - 4.13.2-300
 - Linux v4.13.2
 
