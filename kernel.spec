@@ -2225,6 +2225,9 @@ fi
 #
 #
 %changelog
+* Wed Sep 20 2017 Laura Abbott <labbott@redhat.com>
+- Disable CONFIG_VIRTIO_BLK_SCSI
+
 * Wed Sep 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.3-300
 - Linux v4.13.3
 - Fixes 1493435 1493436
