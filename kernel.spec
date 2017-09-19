@@ -615,9 +615,6 @@ Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 # https://patchwork.kernel.org/patch/9850189/
 Patch314: qcom-msm-ci_hdrc_msm_probe-missing-of_node_get.patch
 
-# http://www.spinics.net/lists/dri-devel/msg132235.html
-Patch320: bcm283x-vc4-Fix-OOPSes-from-trying-to-cache-a-partially-constructed-BO..patch
-
 # Fix USB on the RPi https://patchwork.kernel.org/patch/9879371/
 Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe.patch
 
@@ -628,8 +625,10 @@ Patch322: bcm2837-move-dt.patch
 #
 Patch323: bcm2837-bluetooth-support.patch
 
+Patch324: bcm283x-vc4-fixes.patch
+
 # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20170912&id=723288836628bc1c0855f3bb7b64b1803e4b9e4a
-Patch324: arm-of-restrict-dma-configuration.patch
+Patch330: arm-of-restrict-dma-configuration.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2223,6 +2222,9 @@ fi
 #
 #
 %changelog
+* Tue Sep 19 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix a few vc4 crashes on the Raspberry Pi
+
 * Mon Sep 18 2017 Justin M. Forbes <jforbes@edoraproject.org>
 - Fixes for QXL (rhbz 1462381)
 - Fix rhbz 1431375

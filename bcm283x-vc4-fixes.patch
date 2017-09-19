@@ -1,0 +1,1803 @@
+From d74617cb4aebe5a4cb3eeda3070053ccfc36a0ae Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Tue, 25 Jul 2017 09:27:32 -0700
+Subject: [PATCH 1/6] drm/vc4: Demote user-accessible DRM_ERROR paths to
+ DRM_DEBUG.
+
+Userspace shouldn't be able to spam dmesg by passing bad arguments.
+This has particularly become an issues since we started using a bad
+argument to set_tiling to detect if set_tiling was supported.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Fixes: 83753117f1de ("drm/vc4: Add get/set tiling ioctls.")
+Link: https://patchwork.freedesktop.org/patch/msgid/20170725162733.28007-1-eric@anholt.net
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/gpu/drm/vc4/vc4_bo.c               | 14 +++---
+ drivers/gpu/drm/vc4/vc4_gem.c              | 10 ++--
+ drivers/gpu/drm/vc4/vc4_kms.c              |  2 +-
+ drivers/gpu/drm/vc4/vc4_render_cl.c        | 40 +++++++--------
+ drivers/gpu/drm/vc4/vc4_validate.c         | 78 +++++++++++++++---------------
+ drivers/gpu/drm/vc4/vc4_validate_shaders.c | 72 +++++++++++++--------------
+ 6 files changed, 108 insertions(+), 108 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_bo.c b/drivers/gpu/drm/vc4/vc4_bo.c
+index 487f96412d35..ede80199001d 100644
+--- a/drivers/gpu/drm/vc4/vc4_bo.c
++++ b/drivers/gpu/drm/vc4/vc4_bo.c
+@@ -389,7 +389,7 @@ vc4_prime_export(struct drm_device *dev, struct drm_gem_object *obj, int flags)
+ 	struct vc4_bo *bo = to_vc4_bo(obj);
+ 
+ 	if (bo->validated_shader) {
+-		DRM_ERROR("Attempting to export shader BO\n");
++		DRM_DEBUG("Attempting to export shader BO\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+@@ -410,7 +410,7 @@ int vc4_mmap(struct file *filp, struct vm_area_struct *vma)
+ 	bo = to_vc4_bo(gem_obj);
+ 
+ 	if (bo->validated_shader && (vma->vm_flags & VM_WRITE)) {
+-		DRM_ERROR("mmaping of shader BOs for writing not allowed.\n");
++		DRM_DEBUG("mmaping of shader BOs for writing not allowed.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -435,7 +435,7 @@ int vc4_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma)
+ 	struct vc4_bo *bo = to_vc4_bo(obj);
+ 
+ 	if (bo->validated_shader && (vma->vm_flags & VM_WRITE)) {
+-		DRM_ERROR("mmaping of shader BOs for writing not allowed.\n");
++		DRM_DEBUG("mmaping of shader BOs for writing not allowed.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -447,7 +447,7 @@ void *vc4_prime_vmap(struct drm_gem_object *obj)
+ 	struct vc4_bo *bo = to_vc4_bo(obj);
+ 
+ 	if (bo->validated_shader) {
+-		DRM_ERROR("mmaping of shader BOs not allowed.\n");
++		DRM_DEBUG("mmaping of shader BOs not allowed.\n");
+ 		return ERR_PTR(-EINVAL);
+ 	}
+ 
+@@ -501,7 +501,7 @@ int vc4_mmap_bo_ioctl(struct drm_device *dev, void *data,
+ 
+ 	gem_obj = drm_gem_object_lookup(file_priv, args->handle);
+ 	if (!gem_obj) {
+-		DRM_ERROR("Failed to look up GEM BO %d\n", args->handle);
++		DRM_DEBUG("Failed to look up GEM BO %d\n", args->handle);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -605,7 +605,7 @@ int vc4_set_tiling_ioctl(struct drm_device *dev, void *data,
+ 
+ 	gem_obj = drm_gem_object_lookup(file_priv, args->handle);
+ 	if (!gem_obj) {
+-		DRM_ERROR("Failed to look up GEM BO %d\n", args->handle);
++		DRM_DEBUG("Failed to look up GEM BO %d\n", args->handle);
+ 		return -ENOENT;
+ 	}
+ 	bo = to_vc4_bo(gem_obj);
+@@ -636,7 +636,7 @@ int vc4_get_tiling_ioctl(struct drm_device *dev, void *data,
+ 
+ 	gem_obj = drm_gem_object_lookup(file_priv, args->handle);
+ 	if (!gem_obj) {
+-		DRM_ERROR("Failed to look up GEM BO %d\n", args->handle);
++		DRM_DEBUG("Failed to look up GEM BO %d\n", args->handle);
+ 		return -ENOENT;
+ 	}
+ 	bo = to_vc4_bo(gem_obj);
+diff --git a/drivers/gpu/drm/vc4/vc4_gem.c b/drivers/gpu/drm/vc4/vc4_gem.c
+index d5b821ad06af..a3e45e67f417 100644
+--- a/drivers/gpu/drm/vc4/vc4_gem.c
++++ b/drivers/gpu/drm/vc4/vc4_gem.c
+@@ -659,7 +659,7 @@ vc4_cl_lookup_bos(struct drm_device *dev,
+ 		/* See comment on bo_index for why we have to check
+ 		 * this.
+ 		 */
+-		DRM_ERROR("Rendering requires BOs to validate\n");
++		DRM_DEBUG("Rendering requires BOs to validate\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -691,7 +691,7 @@ vc4_cl_lookup_bos(struct drm_device *dev,
+ 		struct drm_gem_object *bo = idr_find(&file_priv->object_idr,
+ 						     handles[i]);
+ 		if (!bo) {
+-			DRM_ERROR("Failed to look up GEM BO %d: %d\n",
++			DRM_DEBUG("Failed to look up GEM BO %d: %d\n",
+ 				  i, handles[i]);
+ 			ret = -EINVAL;
+ 			spin_unlock(&file_priv->table_lock);
+@@ -729,7 +729,7 @@ vc4_get_bcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 	    args->shader_rec_count >= (UINT_MAX /
+ 					  sizeof(struct vc4_shader_state)) ||
+ 	    temp_size < exec_size) {
+-		DRM_ERROR("overflow in exec arguments\n");
++		DRM_DEBUG("overflow in exec arguments\n");
+ 		ret = -EINVAL;
+ 		goto fail;
+ 	}
+@@ -974,7 +974,7 @@ vc4_wait_bo_ioctl(struct drm_device *dev, void *data,
+ 
+ 	gem_obj = drm_gem_object_lookup(file_priv, args->handle);
+ 	if (!gem_obj) {
+-		DRM_ERROR("Failed to look up GEM BO %d\n", args->handle);
++		DRM_DEBUG("Failed to look up GEM BO %d\n", args->handle);
+ 		return -EINVAL;
+ 	}
+ 	bo = to_vc4_bo(gem_obj);
+@@ -1009,7 +1009,7 @@ vc4_submit_cl_ioctl(struct drm_device *dev, void *data,
+ 	int ret = 0;
+ 
+ 	if ((args->flags & ~VC4_SUBMIT_CL_USE_CLEAR_COLOR) != 0) {
+-		DRM_ERROR("Unknown flags: 0x%02x\n", args->flags);
++		DRM_DEBUG("Unknown flags: 0x%02x\n", args->flags);
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_kms.c b/drivers/gpu/drm/vc4/vc4_kms.c
+index bc6ecdc6f104..b2c55eb09ca3 100644
+--- a/drivers/gpu/drm/vc4/vc4_kms.c
++++ b/drivers/gpu/drm/vc4/vc4_kms.c
+@@ -204,7 +204,7 @@ static struct drm_framebuffer *vc4_fb_create(struct drm_device *dev,
+ 		gem_obj = drm_gem_object_lookup(file_priv,
+ 						mode_cmd->handles[0]);
+ 		if (!gem_obj) {
+-			DRM_ERROR("Failed to look up GEM BO %d\n",
++			DRM_DEBUG("Failed to look up GEM BO %d\n",
+ 				  mode_cmd->handles[0]);
+ 			return ERR_PTR(-ENOENT);
+ 		}
+diff --git a/drivers/gpu/drm/vc4/vc4_render_cl.c b/drivers/gpu/drm/vc4/vc4_render_cl.c
+index 5dc19429d4ae..da3bfd53f0bd 100644
+--- a/drivers/gpu/drm/vc4/vc4_render_cl.c
++++ b/drivers/gpu/drm/vc4/vc4_render_cl.c
+@@ -378,14 +378,14 @@ static int vc4_full_res_bounds_check(struct vc4_exec_info *exec,
+ 	u32 render_tiles_stride = DIV_ROUND_UP(exec->args->width, 32);
+ 
+ 	if (surf->offset > obj->base.size) {
+-		DRM_ERROR("surface offset %d > BO size %zd\n",
++		DRM_DEBUG("surface offset %d > BO size %zd\n",
+ 			  surf->offset, obj->base.size);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if ((obj->base.size - surf->offset) / VC4_TILE_BUFFER_SIZE <
+ 	    render_tiles_stride * args->max_y_tile + args->max_x_tile) {
+-		DRM_ERROR("MSAA tile %d, %d out of bounds "
++		DRM_DEBUG("MSAA tile %d, %d out of bounds "
+ 			  "(bo size %zd, offset %d).\n",
+ 			  args->max_x_tile, args->max_y_tile,
+ 			  obj->base.size,
+@@ -401,7 +401,7 @@ static int vc4_rcl_msaa_surface_setup(struct vc4_exec_info *exec,
+ 				      struct drm_vc4_submit_rcl_surface *surf)
+ {
+ 	if (surf->flags != 0 || surf->bits != 0) {
+-		DRM_ERROR("MSAA surface had nonzero flags/bits\n");
++		DRM_DEBUG("MSAA surface had nonzero flags/bits\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -415,7 +415,7 @@ static int vc4_rcl_msaa_surface_setup(struct vc4_exec_info *exec,
+ 	exec->rcl_write_bo[exec->rcl_write_bo_count++] = *obj;
+ 
+ 	if (surf->offset & 0xf) {
+-		DRM_ERROR("MSAA write must be 16b aligned.\n");
++		DRM_DEBUG("MSAA write must be 16b aligned.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -437,7 +437,7 @@ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 	int ret;
+ 
+ 	if (surf->flags & ~VC4_SUBMIT_RCL_SURFACE_READ_IS_FULL_RES) {
+-		DRM_ERROR("Extra flags set\n");
++		DRM_DEBUG("Extra flags set\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -453,12 +453,12 @@ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 
+ 	if (surf->flags & VC4_SUBMIT_RCL_SURFACE_READ_IS_FULL_RES) {
+ 		if (surf == &exec->args->zs_write) {
+-			DRM_ERROR("general zs write may not be a full-res.\n");
++			DRM_DEBUG("general zs write may not be a full-res.\n");
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (surf->bits != 0) {
+-			DRM_ERROR("load/store general bits set with "
++			DRM_DEBUG("load/store general bits set with "
+ 				  "full res load/store.\n");
+ 			return -EINVAL;
+ 		}
+@@ -473,19 +473,19 @@ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 	if (surf->bits & ~(VC4_LOADSTORE_TILE_BUFFER_TILING_MASK |
+ 			   VC4_LOADSTORE_TILE_BUFFER_BUFFER_MASK |
+ 			   VC4_LOADSTORE_TILE_BUFFER_FORMAT_MASK)) {
+-		DRM_ERROR("Unknown bits in load/store: 0x%04x\n",
++		DRM_DEBUG("Unknown bits in load/store: 0x%04x\n",
+ 			  surf->bits);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (tiling > VC4_TILING_FORMAT_LT) {
+-		DRM_ERROR("Bad tiling format\n");
++		DRM_DEBUG("Bad tiling format\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (buffer == VC4_LOADSTORE_TILE_BUFFER_ZS) {
+ 		if (format != 0) {
+-			DRM_ERROR("No color format should be set for ZS\n");
++			DRM_DEBUG("No color format should be set for ZS\n");
+ 			return -EINVAL;
+ 		}
+ 		cpp = 4;
+@@ -499,16 +499,16 @@ static int vc4_rcl_surface_setup(struct vc4_exec_info *exec,
+ 			cpp = 4;
+ 			break;
+ 		default:
+-			DRM_ERROR("Bad tile buffer format\n");
++			DRM_DEBUG("Bad tile buffer format\n");
+ 			return -EINVAL;
+ 		}
+ 	} else {
+-		DRM_ERROR("Bad load/store buffer %d.\n", buffer);
++		DRM_DEBUG("Bad load/store buffer %d.\n", buffer);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (surf->offset & 0xf) {
+-		DRM_ERROR("load/store buffer must be 16b aligned.\n");
++		DRM_DEBUG("load/store buffer must be 16b aligned.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -533,7 +533,7 @@ vc4_rcl_render_config_surface_setup(struct vc4_exec_info *exec,
+ 	int cpp;
+ 
+ 	if (surf->flags != 0) {
+-		DRM_ERROR("No flags supported on render config.\n");
++		DRM_DEBUG("No flags supported on render config.\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -541,7 +541,7 @@ vc4_rcl_render_config_surface_setup(struct vc4_exec_info *exec,
+ 			   VC4_RENDER_CONFIG_FORMAT_MASK |
+ 			   VC4_RENDER_CONFIG_MS_MODE_4X |
+ 			   VC4_RENDER_CONFIG_DECIMATE_MODE_4X)) {
+-		DRM_ERROR("Unknown bits in render config: 0x%04x\n",
++		DRM_DEBUG("Unknown bits in render config: 0x%04x\n",
+ 			  surf->bits);
+ 		return -EINVAL;
+ 	}
+@@ -556,7 +556,7 @@ vc4_rcl_render_config_surface_setup(struct vc4_exec_info *exec,
+ 	exec->rcl_write_bo[exec->rcl_write_bo_count++] = *obj;
+ 
+ 	if (tiling > VC4_TILING_FORMAT_LT) {
+-		DRM_ERROR("Bad tiling format\n");
++		DRM_DEBUG("Bad tiling format\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -569,7 +569,7 @@ vc4_rcl_render_config_surface_setup(struct vc4_exec_info *exec,
+ 		cpp = 4;
+ 		break;
+ 	default:
+-		DRM_ERROR("Bad tile buffer format\n");
++		DRM_DEBUG("Bad tile buffer format\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -590,7 +590,7 @@ int vc4_get_rcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 
+ 	if (args->min_x_tile > args->max_x_tile ||
+ 	    args->min_y_tile > args->max_y_tile) {
+-		DRM_ERROR("Bad render tile set (%d,%d)-(%d,%d)\n",
++		DRM_DEBUG("Bad render tile set (%d,%d)-(%d,%d)\n",
+ 			  args->min_x_tile, args->min_y_tile,
+ 			  args->max_x_tile, args->max_y_tile);
+ 		return -EINVAL;
+@@ -599,7 +599,7 @@ int vc4_get_rcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 	if (has_bin &&
+ 	    (args->max_x_tile > exec->bin_tiles_x ||
+ 	     args->max_y_tile > exec->bin_tiles_y)) {
+-		DRM_ERROR("Render tiles (%d,%d) outside of bin config "
++		DRM_DEBUG("Render tiles (%d,%d) outside of bin config "
+ 			  "(%d,%d)\n",
+ 			  args->max_x_tile, args->max_y_tile,
+ 			  exec->bin_tiles_x, exec->bin_tiles_y);
+@@ -642,7 +642,7 @@ int vc4_get_rcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 	 */
+ 	if (!setup.color_write && !setup.zs_write &&
+ 	    !setup.msaa_color_write && !setup.msaa_zs_write) {
+-		DRM_ERROR("RCL requires color or Z/S write\n");
++		DRM_DEBUG("RCL requires color or Z/S write\n");
+ 		return -EINVAL;
+ 	}
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_validate.c b/drivers/gpu/drm/vc4/vc4_validate.c
+index 814b512c6b9a..2db485abb186 100644
+--- a/drivers/gpu/drm/vc4/vc4_validate.c
++++ b/drivers/gpu/drm/vc4/vc4_validate.c
+@@ -109,7 +109,7 @@ vc4_use_bo(struct vc4_exec_info *exec, uint32_t hindex)
+ 	struct vc4_bo *bo;
+ 
+ 	if (hindex >= exec->bo_count) {
+-		DRM_ERROR("BO index %d greater than BO count %d\n",
++		DRM_DEBUG("BO index %d greater than BO count %d\n",
+ 			  hindex, exec->bo_count);
+ 		return NULL;
+ 	}
+@@ -117,7 +117,7 @@ vc4_use_bo(struct vc4_exec_info *exec, uint32_t hindex)
+ 	bo = to_vc4_bo(&obj->base);
+ 
+ 	if (bo->validated_shader) {
+-		DRM_ERROR("Trying to use shader BO as something other than "
++		DRM_DEBUG("Trying to use shader BO as something other than "
+ 			  "a shader\n");
+ 		return NULL;
+ 	}
+@@ -172,7 +172,7 @@ vc4_check_tex_size(struct vc4_exec_info *exec, struct drm_gem_cma_object *fbo,
+ 	 * our math.
+ 	 */
+ 	if (width > 4096 || height > 4096) {
+-		DRM_ERROR("Surface dimensions (%d,%d) too large",
++		DRM_DEBUG("Surface dimensions (%d,%d) too large",
+ 			  width, height);
+ 		return false;
+ 	}
+@@ -191,7 +191,7 @@ vc4_check_tex_size(struct vc4_exec_info *exec, struct drm_gem_cma_object *fbo,
+ 		aligned_height = round_up(height, utile_h);
+ 		break;
+ 	default:
+-		DRM_ERROR("buffer tiling %d unsupported\n", tiling_format);
++		DRM_DEBUG("buffer tiling %d unsupported\n", tiling_format);
+ 		return false;
+ 	}
+ 
+@@ -200,7 +200,7 @@ vc4_check_tex_size(struct vc4_exec_info *exec, struct drm_gem_cma_object *fbo,
+ 
+ 	if (size + offset < size ||
+ 	    size + offset > fbo->base.size) {
+-		DRM_ERROR("Overflow in %dx%d (%dx%d) fbo size (%d + %d > %zd)\n",
++		DRM_DEBUG("Overflow in %dx%d (%dx%d) fbo size (%d + %d > %zd)\n",
+ 			  width, height,
+ 			  aligned_width, aligned_height,
+ 			  size, offset, fbo->base.size);
+@@ -214,7 +214,7 @@ static int
+ validate_flush(VALIDATE_ARGS)
+ {
+ 	if (!validate_bin_pos(exec, untrusted, exec->args->bin_cl_size - 1)) {
+-		DRM_ERROR("Bin CL must end with VC4_PACKET_FLUSH\n");
++		DRM_DEBUG("Bin CL must end with VC4_PACKET_FLUSH\n");
+ 		return -EINVAL;
+ 	}
+ 	exec->found_flush = true;
+@@ -226,13 +226,13 @@ static int
+ validate_start_tile_binning(VALIDATE_ARGS)
+ {
+ 	if (exec->found_start_tile_binning_packet) {
+-		DRM_ERROR("Duplicate VC4_PACKET_START_TILE_BINNING\n");
++		DRM_DEBUG("Duplicate VC4_PACKET_START_TILE_BINNING\n");
+ 		return -EINVAL;
+ 	}
+ 	exec->found_start_tile_binning_packet = true;
+ 
+ 	if (!exec->found_tile_binning_mode_config_packet) {
+-		DRM_ERROR("missing VC4_PACKET_TILE_BINNING_MODE_CONFIG\n");
++		DRM_DEBUG("missing VC4_PACKET_TILE_BINNING_MODE_CONFIG\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -243,7 +243,7 @@ static int
+ validate_increment_semaphore(VALIDATE_ARGS)
+ {
+ 	if (!validate_bin_pos(exec, untrusted, exec->args->bin_cl_size - 2)) {
+-		DRM_ERROR("Bin CL must end with "
++		DRM_DEBUG("Bin CL must end with "
+ 			  "VC4_PACKET_INCREMENT_SEMAPHORE\n");
+ 		return -EINVAL;
+ 	}
+@@ -264,7 +264,7 @@ validate_indexed_prim_list(VALIDATE_ARGS)
+ 
+ 	/* Check overflow condition */
+ 	if (exec->shader_state_count == 0) {
+-		DRM_ERROR("shader state must precede primitives\n");
++		DRM_DEBUG("shader state must precede primitives\n");
+ 		return -EINVAL;
+ 	}
+ 	shader_state = &exec->shader_state[exec->shader_state_count - 1];
+@@ -281,7 +281,7 @@ validate_indexed_prim_list(VALIDATE_ARGS)
+ 
+ 	if (offset > ib->base.size ||
+ 	    (ib->base.size - offset) / index_size < length) {
+-		DRM_ERROR("IB access overflow (%d + %d*%d > %zd)\n",
++		DRM_DEBUG("IB access overflow (%d + %d*%d > %zd)\n",
+ 			  offset, length, index_size, ib->base.size);
+ 		return -EINVAL;
+ 	}
+@@ -301,13 +301,13 @@ validate_gl_array_primitive(VALIDATE_ARGS)
+ 
+ 	/* Check overflow condition */
+ 	if (exec->shader_state_count == 0) {
+-		DRM_ERROR("shader state must precede primitives\n");
++		DRM_DEBUG("shader state must precede primitives\n");
+ 		return -EINVAL;
+ 	}
+ 	shader_state = &exec->shader_state[exec->shader_state_count - 1];
+ 
+ 	if (length + base_index < length) {
+-		DRM_ERROR("primitive vertex count overflow\n");
++		DRM_DEBUG("primitive vertex count overflow\n");
+ 		return -EINVAL;
+ 	}
+ 	max_index = length + base_index - 1;
+@@ -324,7 +324,7 @@ validate_gl_shader_state(VALIDATE_ARGS)
+ 	uint32_t i = exec->shader_state_count++;
+ 
+ 	if (i >= exec->shader_state_size) {
+-		DRM_ERROR("More requests for shader states than declared\n");
++		DRM_DEBUG("More requests for shader states than declared\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -332,7 +332,7 @@ validate_gl_shader_state(VALIDATE_ARGS)
+ 	exec->shader_state[i].max_index = 0;
+ 
+ 	if (exec->shader_state[i].addr & ~0xf) {
+-		DRM_ERROR("high bits set in GL shader rec reference\n");
++		DRM_DEBUG("high bits set in GL shader rec reference\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -356,7 +356,7 @@ validate_tile_binning_config(VALIDATE_ARGS)
+ 	int bin_slot;
+ 
+ 	if (exec->found_tile_binning_mode_config_packet) {
+-		DRM_ERROR("Duplicate VC4_PACKET_TILE_BINNING_MODE_CONFIG\n");
++		DRM_DEBUG("Duplicate VC4_PACKET_TILE_BINNING_MODE_CONFIG\n");
+ 		return -EINVAL;
+ 	}
+ 	exec->found_tile_binning_mode_config_packet = true;
+@@ -368,14 +368,14 @@ validate_tile_binning_config(VALIDATE_ARGS)
+ 
+ 	if (exec->bin_tiles_x == 0 ||
+ 	    exec->bin_tiles_y == 0) {
+-		DRM_ERROR("Tile binning config of %dx%d too small\n",
++		DRM_DEBUG("Tile binning config of %dx%d too small\n",
+ 			  exec->bin_tiles_x, exec->bin_tiles_y);
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (flags & (VC4_BIN_CONFIG_DB_NON_MS |
+ 		     VC4_BIN_CONFIG_TILE_BUFFER_64BIT)) {
+-		DRM_ERROR("unsupported binning config flags 0x%02x\n", flags);
++		DRM_DEBUG("unsupported binning config flags 0x%02x\n", flags);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -493,20 +493,20 @@ vc4_validate_bin_cl(struct drm_device *dev,
+ 		const struct cmd_info *info;
+ 
+ 		if (cmd >= ARRAY_SIZE(cmd_info)) {
+-			DRM_ERROR("0x%08x: packet %d out of bounds\n",
++			DRM_DEBUG("0x%08x: packet %d out of bounds\n",
+ 				  src_offset, cmd);
+ 			return -EINVAL;
+ 		}
+ 
+ 		info = &cmd_info[cmd];
+ 		if (!info->name) {
+-			DRM_ERROR("0x%08x: packet %d invalid\n",
++			DRM_DEBUG("0x%08x: packet %d invalid\n",
+ 				  src_offset, cmd);
+ 			return -EINVAL;
+ 		}
+ 
+ 		if (src_offset + info->len > len) {
+-			DRM_ERROR("0x%08x: packet %d (%s) length 0x%08x "
++			DRM_DEBUG("0x%08x: packet %d (%s) length 0x%08x "
+ 				  "exceeds bounds (0x%08x)\n",
+ 				  src_offset, cmd, info->name, info->len,
+ 				  src_offset + len);
+@@ -519,7 +519,7 @@ vc4_validate_bin_cl(struct drm_device *dev,
+ 		if (info->func && info->func(exec,
+ 					     dst_pkt + 1,
+ 					     src_pkt + 1)) {
+-			DRM_ERROR("0x%08x: packet %d (%s) failed to validate\n",
++			DRM_DEBUG("0x%08x: packet %d (%s) failed to validate\n",
+ 				  src_offset, cmd, info->name);
+ 			return -EINVAL;
+ 		}
+@@ -537,7 +537,7 @@ vc4_validate_bin_cl(struct drm_device *dev,
+ 	exec->ct0ea = exec->ct0ca + dst_offset;
+ 
+ 	if (!exec->found_start_tile_binning_packet) {
+-		DRM_ERROR("Bin CL missing VC4_PACKET_START_TILE_BINNING\n");
++		DRM_DEBUG("Bin CL missing VC4_PACKET_START_TILE_BINNING\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -549,7 +549,7 @@ vc4_validate_bin_cl(struct drm_device *dev,
+ 	 * semaphore increment.
+ 	 */
+ 	if (!exec->found_increment_semaphore_packet || !exec->found_flush) {
+-		DRM_ERROR("Bin CL missing VC4_PACKET_INCREMENT_SEMAPHORE + "
++		DRM_DEBUG("Bin CL missing VC4_PACKET_INCREMENT_SEMAPHORE + "
+ 			  "VC4_PACKET_FLUSH\n");
+ 		return -EINVAL;
+ 	}
+@@ -588,11 +588,11 @@ reloc_tex(struct vc4_exec_info *exec,
+ 		uint32_t remaining_size = tex->base.size - p0;
+ 
+ 		if (p0 > tex->base.size - 4) {
+-			DRM_ERROR("UBO offset greater than UBO size\n");
++			DRM_DEBUG("UBO offset greater than UBO size\n");
+ 			goto fail;
+ 		}
+ 		if (p1 > remaining_size - 4) {
+-			DRM_ERROR("UBO clamp would allow reads "
++			DRM_DEBUG("UBO clamp would allow reads "
+ 				  "outside of UBO\n");
+ 			goto fail;
+ 		}
+@@ -612,14 +612,14 @@ reloc_tex(struct vc4_exec_info *exec,
+ 		if (VC4_GET_FIELD(p3, VC4_TEX_P2_PTYPE) ==
+ 		    VC4_TEX_P2_PTYPE_CUBE_MAP_STRIDE) {
+ 			if (cube_map_stride) {
+-				DRM_ERROR("Cube map stride set twice\n");
++				DRM_DEBUG("Cube map stride set twice\n");
+ 				goto fail;
+ 			}
+ 
+ 			cube_map_stride = p3 & VC4_TEX_P2_CMST_MASK;
+ 		}
+ 		if (!cube_map_stride) {
+-			DRM_ERROR("Cube map stride not set\n");
++			DRM_DEBUG("Cube map stride not set\n");
+ 			goto fail;
+ 		}
+ 	}
+@@ -660,7 +660,7 @@ reloc_tex(struct vc4_exec_info *exec,
+ 	case VC4_TEXTURE_TYPE_RGBA64:
+ 	case VC4_TEXTURE_TYPE_YUV422R:
+ 	default:
+-		DRM_ERROR("Texture format %d unsupported\n", type);
++		DRM_DEBUG("Texture format %d unsupported\n", type);
+ 		goto fail;
+ 	}
+ 	utile_w = utile_width(cpp);
+@@ -713,7 +713,7 @@ reloc_tex(struct vc4_exec_info *exec,
+ 		level_size = aligned_width * cpp * aligned_height;
+ 
+ 		if (offset < level_size) {
+-			DRM_ERROR("Level %d (%dx%d -> %dx%d) size %db "
++			DRM_DEBUG("Level %d (%dx%d -> %dx%d) size %db "
+ 				  "overflowed buffer bounds (offset %d)\n",
+ 				  i, level_width, level_height,
+ 				  aligned_width, aligned_height,
+@@ -764,7 +764,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 
+ 	nr_relocs = ARRAY_SIZE(shader_reloc_offsets) + nr_attributes;
+ 	if (nr_relocs * 4 > exec->shader_rec_size) {
+-		DRM_ERROR("overflowed shader recs reading %d handles "
++		DRM_DEBUG("overflowed shader recs reading %d handles "
+ 			  "from %d bytes left\n",
+ 			  nr_relocs, exec->shader_rec_size);
+ 		return -EINVAL;
+@@ -774,7 +774,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 	exec->shader_rec_size -= nr_relocs * 4;
+ 
+ 	if (packet_size > exec->shader_rec_size) {
+-		DRM_ERROR("overflowed shader recs copying %db packet "
++		DRM_DEBUG("overflowed shader recs copying %db packet "
+ 			  "from %d bytes left\n",
+ 			  packet_size, exec->shader_rec_size);
+ 		return -EINVAL;
+@@ -794,7 +794,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 
+ 	for (i = 0; i < shader_reloc_count; i++) {
+ 		if (src_handles[i] > exec->bo_count) {
+-			DRM_ERROR("Shader handle %d too big\n", src_handles[i]);
++			DRM_DEBUG("Shader handle %d too big\n", src_handles[i]);
+ 			return -EINVAL;
+ 		}
+ 
+@@ -810,13 +810,13 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 
+ 	if (((*(uint16_t *)pkt_u & VC4_SHADER_FLAG_FS_SINGLE_THREAD) == 0) !=
+ 	    to_vc4_bo(&bo[0]->base)->validated_shader->is_threaded) {
+-		DRM_ERROR("Thread mode of CL and FS do not match\n");
++		DRM_DEBUG("Thread mode of CL and FS do not match\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	if (to_vc4_bo(&bo[1]->base)->validated_shader->is_threaded ||
+ 	    to_vc4_bo(&bo[2]->base)->validated_shader->is_threaded) {
+-		DRM_ERROR("cs and vs cannot be threaded\n");
++		DRM_DEBUG("cs and vs cannot be threaded\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -831,7 +831,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 		*(uint32_t *)(pkt_v + o) = bo[i]->paddr + src_offset;
+ 
+ 		if (src_offset != 0) {
+-			DRM_ERROR("Shaders must be at offset 0 of "
++			DRM_DEBUG("Shaders must be at offset 0 of "
+ 				  "the BO.\n");
+ 			return -EINVAL;
+ 		}
+@@ -842,7 +842,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 
+ 		if (validated_shader->uniforms_src_size >
+ 		    exec->uniforms_size) {
+-			DRM_ERROR("Uniforms src buffer overflow\n");
++			DRM_DEBUG("Uniforms src buffer overflow\n");
+ 			return -EINVAL;
+ 		}
+ 
+@@ -900,7 +900,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 
+ 		if (vbo->base.size < offset ||
+ 		    vbo->base.size - offset < attr_size) {
+-			DRM_ERROR("BO offset overflow (%d + %d > %zu)\n",
++			DRM_DEBUG("BO offset overflow (%d + %d > %zu)\n",
+ 				  offset, attr_size, vbo->base.size);
+ 			return -EINVAL;
+ 		}
+@@ -909,7 +909,7 @@ validate_gl_shader_rec(struct drm_device *dev,
+ 			max_index = ((vbo->base.size - offset - attr_size) /
+ 				     stride);
+ 			if (state->max_index > max_index) {
+-				DRM_ERROR("primitives use index %d out of "
++				DRM_DEBUG("primitives use index %d out of "
+ 					  "supplied %d\n",
+ 					  state->max_index, max_index);
+ 				return -EINVAL;
+diff --git a/drivers/gpu/drm/vc4/vc4_validate_shaders.c b/drivers/gpu/drm/vc4/vc4_validate_shaders.c
+index 0b2df5c6efb4..d3f15bf60900 100644
+--- a/drivers/gpu/drm/vc4/vc4_validate_shaders.c
++++ b/drivers/gpu/drm/vc4/vc4_validate_shaders.c
+@@ -200,7 +200,7 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 		uint32_t clamp_reg, clamp_offset;
+ 
+ 		if (sig == QPU_SIG_SMALL_IMM) {
+-			DRM_ERROR("direct TMU read used small immediate\n");
++			DRM_DEBUG("direct TMU read used small immediate\n");
+ 			return false;
+ 		}
+ 
+@@ -209,7 +209,7 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 		 */
+ 		if (is_mul ||
+ 		    QPU_GET_FIELD(inst, QPU_OP_ADD) != QPU_A_ADD) {
+-			DRM_ERROR("direct TMU load wasn't an add\n");
++			DRM_DEBUG("direct TMU load wasn't an add\n");
+ 			return false;
+ 		}
+ 
+@@ -220,13 +220,13 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 		 */
+ 		clamp_reg = raddr_add_a_to_live_reg_index(inst);
+ 		if (clamp_reg == ~0) {
+-			DRM_ERROR("direct TMU load wasn't clamped\n");
++			DRM_DEBUG("direct TMU load wasn't clamped\n");
+ 			return false;
+ 		}
+ 
+ 		clamp_offset = validation_state->live_min_clamp_offsets[clamp_reg];
+ 		if (clamp_offset == ~0) {
+-			DRM_ERROR("direct TMU load wasn't clamped\n");
++			DRM_DEBUG("direct TMU load wasn't clamped\n");
+ 			return false;
+ 		}
+ 
+@@ -238,7 +238,7 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 
+ 		if (!(add_b == QPU_MUX_A && raddr_a == QPU_R_UNIF) &&
+ 		    !(add_b == QPU_MUX_B && raddr_b == QPU_R_UNIF)) {
+-			DRM_ERROR("direct TMU load didn't add to a uniform\n");
++			DRM_DEBUG("direct TMU load didn't add to a uniform\n");
+ 			return false;
+ 		}
+ 
+@@ -246,14 +246,14 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 	} else {
+ 		if (raddr_a == QPU_R_UNIF || (sig != QPU_SIG_SMALL_IMM &&
+ 					      raddr_b == QPU_R_UNIF)) {
+-			DRM_ERROR("uniform read in the same instruction as "
++			DRM_DEBUG("uniform read in the same instruction as "
+ 				  "texture setup.\n");
+ 			return false;
+ 		}
+ 	}
+ 
+ 	if (validation_state->tmu_write_count[tmu] >= 4) {
+-		DRM_ERROR("TMU%d got too many parameters before dispatch\n",
++		DRM_DEBUG("TMU%d got too many parameters before dispatch\n",
+ 			  tmu);
+ 		return false;
+ 	}
+@@ -265,7 +265,7 @@ check_tmu_write(struct vc4_validated_shader_info *validated_shader,
+ 	 */
+ 	if (!is_direct) {
+ 		if (validation_state->needs_uniform_address_update) {
+-			DRM_ERROR("Texturing with undefined uniform address\n");
++			DRM_DEBUG("Texturing with undefined uniform address\n");
+ 			return false;
+ 		}
+ 
+@@ -336,35 +336,35 @@ validate_uniform_address_write(struct vc4_validated_shader_info *validated_shade
+ 	case QPU_SIG_LOAD_TMU1:
+ 		break;
+ 	default:
+-		DRM_ERROR("uniforms address change must be "
++		DRM_DEBUG("uniforms address change must be "
+ 			  "normal math\n");
+ 		return false;
+ 	}
+ 
+ 	if (is_mul || QPU_GET_FIELD(inst, QPU_OP_ADD) != QPU_A_ADD) {
+-		DRM_ERROR("Uniform address reset must be an ADD.\n");
++		DRM_DEBUG("Uniform address reset must be an ADD.\n");
+ 		return false;
+ 	}
+ 
+ 	if (QPU_GET_FIELD(inst, QPU_COND_ADD) != QPU_COND_ALWAYS) {
+-		DRM_ERROR("Uniform address reset must be unconditional.\n");
++		DRM_DEBUG("Uniform address reset must be unconditional.\n");
+ 		return false;
+ 	}
+ 
+ 	if (QPU_GET_FIELD(inst, QPU_PACK) != QPU_PACK_A_NOP &&
+ 	    !(inst & QPU_PM)) {
+-		DRM_ERROR("No packing allowed on uniforms reset\n");
++		DRM_DEBUG("No packing allowed on uniforms reset\n");
+ 		return false;
+ 	}
+ 
+ 	if (add_lri == -1) {
+-		DRM_ERROR("First argument of uniform address write must be "
++		DRM_DEBUG("First argument of uniform address write must be "
+ 			  "an immediate value.\n");
+ 		return false;
+ 	}
+ 
+ 	if (validation_state->live_immediates[add_lri] != expected_offset) {
+-		DRM_ERROR("Resetting uniforms with offset %db instead of %db\n",
++		DRM_DEBUG("Resetting uniforms with offset %db instead of %db\n",
+ 			  validation_state->live_immediates[add_lri],
+ 			  expected_offset);
+ 		return false;
+@@ -372,7 +372,7 @@ validate_uniform_address_write(struct vc4_validated_shader_info *validated_shade
+ 
+ 	if (!(add_b == QPU_MUX_A && raddr_a == QPU_R_UNIF) &&
+ 	    !(add_b == QPU_MUX_B && raddr_b == QPU_R_UNIF)) {
+-		DRM_ERROR("Second argument of uniform address write must be "
++		DRM_DEBUG("Second argument of uniform address write must be "
+ 			  "a uniform.\n");
+ 		return false;
+ 	}
+@@ -417,7 +417,7 @@ check_reg_write(struct vc4_validated_shader_info *validated_shader,
+ 	switch (waddr) {
+ 	case QPU_W_UNIFORMS_ADDRESS:
+ 		if (is_b) {
+-			DRM_ERROR("relative uniforms address change "
++			DRM_DEBUG("relative uniforms address change "
+ 				  "unsupported\n");
+ 			return false;
+ 		}
+@@ -452,11 +452,11 @@ check_reg_write(struct vc4_validated_shader_info *validated_shader,
+ 		/* XXX: I haven't thought about these, so don't support them
+ 		 * for now.
+ 		 */
+-		DRM_ERROR("Unsupported waddr %d\n", waddr);
++		DRM_DEBUG("Unsupported waddr %d\n", waddr);
+ 		return false;
+ 
+ 	case QPU_W_VPM_ADDR:
+-		DRM_ERROR("General VPM DMA unsupported\n");
++		DRM_DEBUG("General VPM DMA unsupported\n");
+ 		return false;
+ 
+ 	case QPU_W_VPM:
+@@ -559,7 +559,7 @@ check_instruction_writes(struct vc4_validated_shader_info *validated_shader,
+ 	bool ok;
+ 
+ 	if (is_tmu_write(waddr_add) && is_tmu_write(waddr_mul)) {
+-		DRM_ERROR("ADD and MUL both set up textures\n");
++		DRM_DEBUG("ADD and MUL both set up textures\n");
+ 		return false;
+ 	}
+ 
+@@ -588,7 +588,7 @@ check_branch(uint64_t inst,
+ 	 * there's no need for it.
+ 	 */
+ 	if (waddr_add != QPU_W_NOP || waddr_mul != QPU_W_NOP) {
+-		DRM_ERROR("branch instruction at %d wrote a register.\n",
++		DRM_DEBUG("branch instruction at %d wrote a register.\n",
+ 			  validation_state->ip);
+ 		return false;
+ 	}
+@@ -614,7 +614,7 @@ check_instruction_reads(struct vc4_validated_shader_info *validated_shader,
+ 		validated_shader->uniforms_size += 4;
+ 
+ 		if (validation_state->needs_uniform_address_update) {
+-			DRM_ERROR("Uniform read with undefined uniform "
++			DRM_DEBUG("Uniform read with undefined uniform "
+ 				  "address\n");
+ 			return false;
+ 		}
+@@ -660,19 +660,19 @@ vc4_validate_branches(struct vc4_shader_validation_state *validation_state)
+ 			continue;
+ 
+ 		if (ip - last_branch < 4) {
+-			DRM_ERROR("Branch at %d during delay slots\n", ip);
++			DRM_DEBUG("Branch at %d during delay slots\n", ip);
+ 			return false;
+ 		}
+ 		last_branch = ip;
+ 
+ 		if (inst & QPU_BRANCH_REG) {
+-			DRM_ERROR("branching from register relative "
++			DRM_DEBUG("branching from register relative "
+ 				  "not supported\n");
+ 			return false;
+ 		}
+ 
+ 		if (!(inst & QPU_BRANCH_REL)) {
+-			DRM_ERROR("relative branching required\n");
++			DRM_DEBUG("relative branching required\n");
+ 			return false;
+ 		}
+ 
+@@ -682,13 +682,13 @@ vc4_validate_branches(struct vc4_shader_validation_state *validation_state)
+ 		 * end of the shader object.
+ 		 */
+ 		if (branch_imm % sizeof(inst) != 0) {
+-			DRM_ERROR("branch target not aligned\n");
++			DRM_DEBUG("branch target not aligned\n");
+ 			return false;
+ 		}
+ 
+ 		branch_target_ip = after_delay_ip + (branch_imm >> 3);
+ 		if (branch_target_ip >= validation_state->max_ip) {
+-			DRM_ERROR("Branch at %d outside of shader (ip %d/%d)\n",
++			DRM_DEBUG("Branch at %d outside of shader (ip %d/%d)\n",
+ 				  ip, branch_target_ip,
+ 				  validation_state->max_ip);
+ 			return false;
+@@ -699,7 +699,7 @@ vc4_validate_branches(struct vc4_shader_validation_state *validation_state)
+ 		 * the shader.
+ 		 */
+ 		if (after_delay_ip >= validation_state->max_ip) {
+-			DRM_ERROR("Branch at %d continues past shader end "
++			DRM_DEBUG("Branch at %d continues past shader end "
+ 				  "(%d/%d)\n",
+ 				  ip, after_delay_ip, validation_state->max_ip);
+ 			return false;
+@@ -709,7 +709,7 @@ vc4_validate_branches(struct vc4_shader_validation_state *validation_state)
+ 	}
+ 
+ 	if (max_branch_target > validation_state->max_ip - 3) {
+-		DRM_ERROR("Branch landed after QPU_SIG_PROG_END");
++		DRM_DEBUG("Branch landed after QPU_SIG_PROG_END");
+ 		return false;
+ 	}
+ 
+@@ -750,7 +750,7 @@ vc4_handle_branch_target(struct vc4_shader_validation_state *validation_state)
+ 		return true;
+ 
+ 	if (texturing_in_progress(validation_state)) {
+-		DRM_ERROR("Branch target landed during TMU setup\n");
++		DRM_DEBUG("Branch target landed during TMU setup\n");
+ 		return false;
+ 	}
+ 
+@@ -837,7 +837,7 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 		case QPU_SIG_LAST_THREAD_SWITCH:
+ 			if (!check_instruction_writes(validated_shader,
+ 						      &validation_state)) {
+-				DRM_ERROR("Bad write at ip %d\n", ip);
++				DRM_DEBUG("Bad write at ip %d\n", ip);
+ 				goto fail;
+ 			}
+ 
+@@ -855,7 +855,7 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 				validated_shader->is_threaded = true;
+ 
+ 				if (ip < last_thread_switch_ip + 3) {
+-					DRM_ERROR("Thread switch too soon after "
++					DRM_DEBUG("Thread switch too soon after "
+ 						  "last switch at ip %d\n", ip);
+ 					goto fail;
+ 				}
+@@ -867,7 +867,7 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 		case QPU_SIG_LOAD_IMM:
+ 			if (!check_instruction_writes(validated_shader,
+ 						      &validation_state)) {
+-				DRM_ERROR("Bad LOAD_IMM write at ip %d\n", ip);
++				DRM_DEBUG("Bad LOAD_IMM write at ip %d\n", ip);
+ 				goto fail;
+ 			}
+ 			break;
+@@ -878,14 +878,14 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 				goto fail;
+ 
+ 			if (ip < last_thread_switch_ip + 3) {
+-				DRM_ERROR("Branch in thread switch at ip %d",
++				DRM_DEBUG("Branch in thread switch at ip %d",
+ 					  ip);
+ 				goto fail;
+ 			}
+ 
+ 			break;
+ 		default:
+-			DRM_ERROR("Unsupported QPU signal %d at "
++			DRM_DEBUG("Unsupported QPU signal %d at "
+ 				  "instruction %d\n", sig, ip);
+ 			goto fail;
+ 		}
+@@ -898,7 +898,7 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 	}
+ 
+ 	if (ip == validation_state.max_ip) {
+-		DRM_ERROR("shader failed to terminate before "
++		DRM_DEBUG("shader failed to terminate before "
+ 			  "shader BO end at %zd\n",
+ 			  shader_obj->base.size);
+ 		goto fail;
+@@ -907,7 +907,7 @@ vc4_validate_shader(struct drm_gem_cma_object *shader_obj)
+ 	/* Might corrupt other thread */
+ 	if (validated_shader->is_threaded &&
+ 	    validation_state.all_registers_used) {
+-		DRM_ERROR("Shader uses threading, but uses the upper "
++		DRM_DEBUG("Shader uses threading, but uses the upper "
+ 			  "half of the registers, too\n");
+ 		goto fail;
+ 	}
+-- 
+2.13.5
+
+From 28b369f5abc790f56e668869d88f261ca7a27c55 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Tue, 8 Aug 2017 13:56:05 -0700
+Subject: [PATCH 2/6] drm/vc4: Fix leak of HDMI EDID
+
+We don't keep a pointer to it around anywhere, so it's our job to free
+it.
+
+Cc: Stefan Wahren <stefan.wahren@i2se.com>
+Link: https://github.com/anholt/linux/issues/101
+Fixes: c8b75bca92cb ("drm/vc4: Add KMS support for Raspberry Pi.")
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170808205605.4432-1-eric@anholt.net
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Tested-by: Stefan Wahren <stefan.wahren@i2se.com>
+---
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index ed63d4e85762..f7803fd7f47c 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -260,6 +260,7 @@ static int vc4_hdmi_connector_get_modes(struct drm_connector *connector)
+ 	drm_mode_connector_update_edid_property(connector, edid);
+ 	ret = drm_add_edid_modes(connector, edid);
+ 	drm_edid_to_eld(connector, edid);
++	kfree(edid);
+ 
+ 	return ret;
+ }
+-- 
+2.13.5
+
+From 3b688b6d347f777a8e86165decc33198b063b8c0 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Tue, 25 Jul 2017 11:27:16 -0700
+Subject: [PATCH 3/6] drm/vc4: Start using u64_to_user_ptr.
+
+Chris Wilson pointed out this little cleanup in a review of new code,
+so let's fix up the code I was copying from.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170725182718.31468-1-eric@anholt.net
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+---
+ drivers/gpu/drm/vc4/vc4_gem.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_gem.c b/drivers/gpu/drm/vc4/vc4_gem.c
+index a3e45e67f417..8b551bc630c4 100644
+--- a/drivers/gpu/drm/vc4/vc4_gem.c
++++ b/drivers/gpu/drm/vc4/vc4_gem.c
+@@ -119,7 +119,7 @@ vc4_get_hang_state_ioctl(struct drm_device *dev, void *data,
+ 		bo_state[i].size = vc4_bo->base.base.size;
+ 	}
+ 
+-	if (copy_to_user((void __user *)(uintptr_t)get_state->bo,
++	if (copy_to_user(u64_to_user_ptr(get_state->bo),
+ 			 bo_state,
+ 			 state->bo_count * sizeof(*bo_state)))
+ 		ret = -EFAULT;
+@@ -678,8 +678,7 @@ vc4_cl_lookup_bos(struct drm_device *dev,
+ 		goto fail;
+ 	}
+ 
+-	if (copy_from_user(handles,
+-			   (void __user *)(uintptr_t)args->bo_handles,
++	if (copy_from_user(handles, u64_to_user_ptr(args->bo_handles),
+ 			   exec->bo_count * sizeof(uint32_t))) {
+ 		ret = -EFAULT;
+ 		DRM_ERROR("Failed to copy in GEM handles\n");
+@@ -755,21 +754,21 @@ vc4_get_bcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 	exec->shader_state_size = args->shader_rec_count;
+ 
+ 	if (copy_from_user(bin,
+-			   (void __user *)(uintptr_t)args->bin_cl,
++			   u64_to_user_ptr(args->bin_cl),
+ 			   args->bin_cl_size)) {
+ 		ret = -EFAULT;
+ 		goto fail;
+ 	}
+ 
+ 	if (copy_from_user(exec->shader_rec_u,
+-			   (void __user *)(uintptr_t)args->shader_rec,
++			   u64_to_user_ptr(args->shader_rec),
+ 			   args->shader_rec_size)) {
+ 		ret = -EFAULT;
+ 		goto fail;
+ 	}
+ 
+ 	if (copy_from_user(exec->uniforms_u,
+-			   (void __user *)(uintptr_t)args->uniforms,
++			   u64_to_user_ptr(args->uniforms),
+ 			   args->uniforms_size)) {
+ 		ret = -EFAULT;
+ 		goto fail;
+-- 
+2.13.5
+
+From da81d76bce216c160d2924a52e362b160bbb6ca1 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Tue, 25 Jul 2017 11:27:17 -0700
+Subject: [PATCH 4/6] drm/vc4: Add an ioctl for labeling GEM BOs for summary
+ stats
+
+This has proven immensely useful for debugging memory leaks and
+overallocation (which is a rather serious concern on the platform,
+given that we typically run at about 256MB of CMA out of up to 1GB
+total memory, with framebuffers that are about 8MB ecah).
+
+The state of the art without this is to dump debug logs from every GL
+application, guess as to kernel allocations based on bo_stats, and try
+to merge that all together into a global picture of memory allocation
+state.  With this, you can add a couple of calls to the debug build of
+the 3D driver and get a pretty detailed view of GPU memory usage from
+/debug/dri/0/bo_stats (or when we debug print to dmesg on allocation
+failure).
+
+The Mesa side currently labels at the gallium resource level (so you
+see that a 1920x20 pixmap has been created, presumably for the window
+system panel), but we could extend that to be even more useful with
+glObjectLabel() names being sent all the way down to the kernel.
+
+(partial) example of sorted debugfs output with Mesa labeling all
+resources:
+
+               kernel BO cache:  16392kb BOs (3)
+       tiling shadow 1920x1080:   8160kb BOs (1)
+       resource 1920x1080@32/0:   8160kb BOs (1)
+scanout resource 1920x1080@32/0:   8100kb BOs (1)
+                        kernel:   8100kb BOs (1)
+
+v2: Use strndup_user(), use lockdep assertion instead of just a
+    comment, fix an array[-1] reference, extend comment about name
+    freeing.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170725182718.31468-2-eric@anholt.net
+Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
+---
+ drivers/gpu/drm/vc4/vc4_bo.c        | 258 ++++++++++++++++++++++++++++--------
+ drivers/gpu/drm/vc4/vc4_drv.c       |   8 +-
+ drivers/gpu/drm/vc4/vc4_drv.h       |  39 +++++-
+ drivers/gpu/drm/vc4/vc4_gem.c       |   2 +-
+ drivers/gpu/drm/vc4/vc4_render_cl.c |   2 +-
+ drivers/gpu/drm/vc4/vc4_v3d.c       |   3 +-
+ include/uapi/drm/vc4_drm.h          |  11 ++
+ 7 files changed, 257 insertions(+), 66 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_bo.c b/drivers/gpu/drm/vc4/vc4_bo.c
+index ede80199001d..27c4a927311f 100644
+--- a/drivers/gpu/drm/vc4/vc4_bo.c
++++ b/drivers/gpu/drm/vc4/vc4_bo.c
+@@ -24,21 +24,35 @@
+ #include "vc4_drv.h"
+ #include "uapi/drm/vc4_drm.h"
+ 
++static const char * const bo_type_names[] = {
++	"kernel",
++	"V3D",
++	"V3D shader",
++	"dumb",
++	"binner",
++	"RCL",
++	"BCL",
++	"kernel BO cache",
++};
++
++static bool is_user_label(int label)
++{
++	return label >= VC4_BO_TYPE_COUNT;
++}
++
+ static void vc4_bo_stats_dump(struct vc4_dev *vc4)
+ {
+-	DRM_INFO("num bos allocated: %d\n",
+-		 vc4->bo_stats.num_allocated);
+-	DRM_INFO("size bos allocated: %dkb\n",
+-		 vc4->bo_stats.size_allocated / 1024);
+-	DRM_INFO("num bos used: %d\n",
+-		 vc4->bo_stats.num_allocated - vc4->bo_stats.num_cached);
+-	DRM_INFO("size bos used: %dkb\n",
+-		 (vc4->bo_stats.size_allocated -
+-		  vc4->bo_stats.size_cached) / 1024);
+-	DRM_INFO("num bos cached: %d\n",
+-		 vc4->bo_stats.num_cached);
+-	DRM_INFO("size bos cached: %dkb\n",
+-		 vc4->bo_stats.size_cached / 1024);
++	int i;
++
++	for (i = 0; i < vc4->num_labels; i++) {
++		if (!vc4->bo_labels[i].num_allocated)
++			continue;
++
++		DRM_INFO("%30s: %6dkb BOs (%d)\n",
++			 vc4->bo_labels[i].name,
++			 vc4->bo_labels[i].size_allocated / 1024,
++			 vc4->bo_labels[i].num_allocated);
++	}
+ }
+ 
+ #ifdef CONFIG_DEBUG_FS
+@@ -47,30 +61,103 @@ int vc4_bo_stats_debugfs(struct seq_file *m, void *unused)
+ 	struct drm_info_node *node = (struct drm_info_node *)m->private;
+ 	struct drm_device *dev = node->minor->dev;
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+-	struct vc4_bo_stats stats;
++	int i;
+ 
+-	/* Take a snapshot of the current stats with the lock held. */
+ 	mutex_lock(&vc4->bo_lock);
+-	stats = vc4->bo_stats;
++	for (i = 0; i < vc4->num_labels; i++) {
++		if (!vc4->bo_labels[i].num_allocated)
++			continue;
++
++		seq_printf(m, "%30s: %6dkb BOs (%d)\n",
++			   vc4->bo_labels[i].name,
++			   vc4->bo_labels[i].size_allocated / 1024,
++			   vc4->bo_labels[i].num_allocated);
++	}
+ 	mutex_unlock(&vc4->bo_lock);
+ 
+-	seq_printf(m, "num bos allocated: %d\n",
+-		   stats.num_allocated);
+-	seq_printf(m, "size bos allocated: %dkb\n",
+-		   stats.size_allocated / 1024);
+-	seq_printf(m, "num bos used: %d\n",
+-		   stats.num_allocated - stats.num_cached);
+-	seq_printf(m, "size bos used: %dkb\n",
+-		   (stats.size_allocated - stats.size_cached) / 1024);
+-	seq_printf(m, "num bos cached: %d\n",
+-		   stats.num_cached);
+-	seq_printf(m, "size bos cached: %dkb\n",
+-		   stats.size_cached / 1024);
+-
+ 	return 0;
+ }
+ #endif
+ 
++/* Takes ownership of *name and returns the appropriate slot for it in
++ * the bo_labels[] array, extending it as necessary.
++ *
++ * This is inefficient and could use a hash table instead of walking
++ * an array and strcmp()ing.  However, the assumption is that user
++ * labeling will be infrequent (scanout buffers and other long-lived
++ * objects, or debug driver builds), so we can live with it for now.
++ */
++static int vc4_get_user_label(struct vc4_dev *vc4, const char *name)
++{
++	int i;
++	int free_slot = -1;
++
++	for (i = 0; i < vc4->num_labels; i++) {
++		if (!vc4->bo_labels[i].name) {
++			free_slot = i;
++		} else if (strcmp(vc4->bo_labels[i].name, name) == 0) {
++			kfree(name);
++			return i;
++		}
++	}
++
++	if (free_slot != -1) {
++		WARN_ON(vc4->bo_labels[free_slot].num_allocated != 0);
++		vc4->bo_labels[free_slot].name = name;
++		return free_slot;
++	} else {
++		u32 new_label_count = vc4->num_labels + 1;
++		struct vc4_label *new_labels =
++			krealloc(vc4->bo_labels,
++				 new_label_count * sizeof(*new_labels),
++				 GFP_KERNEL);
++
++		if (!new_labels) {
++			kfree(name);
++			return -1;
++		}
++
++		free_slot = vc4->num_labels;
++		vc4->bo_labels = new_labels;
++		vc4->num_labels = new_label_count;
++
++		vc4->bo_labels[free_slot].name = name;
++		vc4->bo_labels[free_slot].num_allocated = 0;
++		vc4->bo_labels[free_slot].size_allocated = 0;
++
++		return free_slot;
++	}
++}
++
++static void vc4_bo_set_label(struct drm_gem_object *gem_obj, int label)
++{
++	struct vc4_bo *bo = to_vc4_bo(gem_obj);
++	struct vc4_dev *vc4 = to_vc4_dev(gem_obj->dev);
++
++	lockdep_assert_held(&vc4->bo_lock);
++
++	if (label != -1) {
++		vc4->bo_labels[label].num_allocated++;
++		vc4->bo_labels[label].size_allocated += gem_obj->size;
++	}
++
++	vc4->bo_labels[bo->label].num_allocated--;
++	vc4->bo_labels[bo->label].size_allocated -= gem_obj->size;
++
++	if (vc4->bo_labels[bo->label].num_allocated == 0 &&
++	    is_user_label(bo->label)) {
++		/* Free user BO label slots on last unreference.
++		 * Slots are just where we track the stats for a given
++		 * name, and once a name is unused we can reuse that
++		 * slot.
++		 */
++		kfree(vc4->bo_labels[bo->label].name);
++		vc4->bo_labels[bo->label].name = NULL;
++	}
++
++	bo->label = label;
++}
++
+ static uint32_t bo_page_index(size_t size)
+ {
+ 	return (size / PAGE_SIZE) - 1;
+@@ -80,7 +167,8 @@ static uint32_t bo_page_index(size_t size)
+ static void vc4_bo_destroy(struct vc4_bo *bo)
+ {
+ 	struct drm_gem_object *obj = &bo->base.base;
+-	struct vc4_dev *vc4 = to_vc4_dev(obj->dev);
++
++	vc4_bo_set_label(obj, -1);
+ 
+ 	if (bo->validated_shader) {
+ 		kfree(bo->validated_shader->texture_samples);
+@@ -88,9 +176,6 @@ static void vc4_bo_destroy(struct vc4_bo *bo)
+ 		bo->validated_shader = NULL;
+ 	}
+ 
+-	vc4->bo_stats.num_allocated--;
+-	vc4->bo_stats.size_allocated -= obj->size;
+-
+ 	reservation_object_fini(&bo->_resv);
+ 
+ 	drm_gem_cma_free_object(obj);
+@@ -99,12 +184,6 @@ static void vc4_bo_destroy(struct vc4_bo *bo)
+ /* Must be called with bo_lock held. */
+ static void vc4_bo_remove_from_cache(struct vc4_bo *bo)
+ {
+-	struct drm_gem_object *obj = &bo->base.base;
+-	struct vc4_dev *vc4 = to_vc4_dev(obj->dev);
+-
+-	vc4->bo_stats.num_cached--;
+-	vc4->bo_stats.size_cached -= obj->size;
+-
+ 	list_del(&bo->unref_head);
+ 	list_del(&bo->size_head);
+ }
+@@ -165,7 +244,8 @@ static void vc4_bo_cache_purge(struct drm_device *dev)
+ }
+ 
+ static struct vc4_bo *vc4_bo_get_from_cache(struct drm_device *dev,
+-					    uint32_t size)
++					    uint32_t size,
++					    enum vc4_kernel_bo_type type)
+ {
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+ 	uint32_t page_index = bo_page_index(size);
+@@ -186,6 +266,8 @@ static struct vc4_bo *vc4_bo_get_from_cache(struct drm_device *dev,
+ 	kref_init(&bo->base.base.refcount);
+ 
+ out:
++	if (bo)
++		vc4_bo_set_label(&bo->base.base, type);
+ 	mutex_unlock(&vc4->bo_lock);
+ 	return bo;
+ }
+@@ -208,8 +290,9 @@ struct drm_gem_object *vc4_create_object(struct drm_device *dev, size_t size)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	mutex_lock(&vc4->bo_lock);
+-	vc4->bo_stats.num_allocated++;
+-	vc4->bo_stats.size_allocated += size;
++	bo->label = VC4_BO_TYPE_KERNEL;
++	vc4->bo_labels[VC4_BO_TYPE_KERNEL].num_allocated++;
++	vc4->bo_labels[VC4_BO_TYPE_KERNEL].size_allocated += size;
+ 	mutex_unlock(&vc4->bo_lock);
+ 	bo->resv = &bo->_resv;
+ 	reservation_object_init(bo->resv);
+@@ -218,7 +301,7 @@ struct drm_gem_object *vc4_create_object(struct drm_device *dev, size_t size)
+ }
+ 
+ struct vc4_bo *vc4_bo_create(struct drm_device *dev, size_t unaligned_size,
+-			     bool allow_unzeroed)
++			     bool allow_unzeroed, enum vc4_kernel_bo_type type)
+ {
+ 	size_t size = roundup(unaligned_size, PAGE_SIZE);
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
+@@ -229,7 +312,7 @@ struct vc4_bo *vc4_bo_create(struct drm_device *dev, size_t unaligned_size,
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	/* First, try to get a vc4_bo from the kernel BO cache. */
+-	bo = vc4_bo_get_from_cache(dev, size);
++	bo = vc4_bo_get_from_cache(dev, size, type);
+ 	if (bo) {
+ 		if (!allow_unzeroed)
+ 			memset(bo->base.vaddr, 0, bo->base.base.size);
+@@ -251,7 +334,13 @@ struct vc4_bo *vc4_bo_create(struct drm_device *dev, size_t unaligned_size,
+ 			return ERR_PTR(-ENOMEM);
+ 		}
+ 	}
+-	return to_vc4_bo(&cma_obj->base);
++	bo = to_vc4_bo(&cma_obj->base);
++
++	mutex_lock(&vc4->bo_lock);
++	vc4_bo_set_label(&cma_obj->base, type);
++	mutex_unlock(&vc4->bo_lock);
++
++	return bo;
+ }
+ 
+ int vc4_dumb_create(struct drm_file *file_priv,
+@@ -268,7 +357,7 @@ int vc4_dumb_create(struct drm_file *file_priv,
+ 	if (args->size < args->pitch * args->height)
+ 		args->size = args->pitch * args->height;
+ 
+-	bo = vc4_bo_create(dev, args->size, false);
++	bo = vc4_bo_create(dev, args->size, false, VC4_BO_TYPE_DUMB);
+ 	if (IS_ERR(bo))
+ 		return PTR_ERR(bo);
+ 
+@@ -348,8 +437,7 @@ void vc4_free_object(struct drm_gem_object *gem_bo)
+ 	list_add(&bo->size_head, cache_list);
+ 	list_add(&bo->unref_head, &vc4->bo_cache.time_list);
+ 
+-	vc4->bo_stats.num_cached++;
+-	vc4->bo_stats.size_cached += gem_bo->size;
++	vc4_bo_set_label(&bo->base.base, VC4_BO_TYPE_KERNEL_CACHE);
+ 
+ 	vc4_bo_cache_free_old(dev);
+ 
+@@ -483,7 +571,7 @@ int vc4_create_bo_ioctl(struct drm_device *dev, void *data,
+ 	 * We can't allocate from the BO cache, because the BOs don't
+ 	 * get zeroed, and that might leak data between users.
+ 	 */
+-	bo = vc4_bo_create(dev, args->size, false);
++	bo = vc4_bo_create(dev, args->size, false, VC4_BO_TYPE_V3D);
+ 	if (IS_ERR(bo))
+ 		return PTR_ERR(bo);
+ 
+@@ -536,7 +624,7 @@ vc4_create_shader_bo_ioctl(struct drm_device *dev, void *data,
+ 		return -EINVAL;
+ 	}
+ 
+-	bo = vc4_bo_create(dev, args->size, true);
++	bo = vc4_bo_create(dev, args->size, true, VC4_BO_TYPE_V3D_SHADER);
+ 	if (IS_ERR(bo))
+ 		return PTR_ERR(bo);
+ 
+@@ -651,9 +739,24 @@ int vc4_get_tiling_ioctl(struct drm_device *dev, void *data,
+ 	return 0;
+ }
+ 
+-void vc4_bo_cache_init(struct drm_device *dev)
++int vc4_bo_cache_init(struct drm_device *dev)
+ {
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	int i;
++
++	/* Create the initial set of BO labels that the kernel will
++	 * use.  This lets us avoid a bunch of string reallocation in
++	 * the kernel's draw and BO allocation paths.
++	 */
++	vc4->bo_labels = kcalloc(VC4_BO_TYPE_COUNT, sizeof(*vc4->bo_labels),
++				 GFP_KERNEL);
++	if (!vc4->bo_labels)
++		return -ENOMEM;
++	vc4->num_labels = VC4_BO_TYPE_COUNT;
++
++	BUILD_BUG_ON(ARRAY_SIZE(bo_type_names) != VC4_BO_TYPE_COUNT);
++	for (i = 0; i < VC4_BO_TYPE_COUNT; i++)
++		vc4->bo_labels[i].name = bo_type_names[i];
+ 
+ 	mutex_init(&vc4->bo_lock);
+ 
+@@ -663,19 +766,66 @@ void vc4_bo_cache_init(struct drm_device *dev)
+ 	setup_timer(&vc4->bo_cache.time_timer,
+ 		    vc4_bo_cache_time_timer,
+ 		    (unsigned long)dev);
++
++	return 0;
+ }
+ 
+ void vc4_bo_cache_destroy(struct drm_device *dev)
+ {
+ 	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	int i;
+ 
+ 	del_timer(&vc4->bo_cache.time_timer);
+ 	cancel_work_sync(&vc4->bo_cache.time_work);
+ 
+ 	vc4_bo_cache_purge(dev);
+ 
+-	if (vc4->bo_stats.num_allocated) {
+-		DRM_ERROR("Destroying BO cache while BOs still allocated:\n");
+-		vc4_bo_stats_dump(vc4);
++	for (i = 0; i < vc4->num_labels; i++) {
++		if (vc4->bo_labels[i].num_allocated) {
++			DRM_ERROR("Destroying BO cache with %d %s "
++				  "BOs still allocated\n",
++				  vc4->bo_labels[i].num_allocated,
++				  vc4->bo_labels[i].name);
++		}
++
++		if (is_user_label(i))
++			kfree(vc4->bo_labels[i].name);
+ 	}
++	kfree(vc4->bo_labels);
++}
++
++int vc4_label_bo_ioctl(struct drm_device *dev, void *data,
++		       struct drm_file *file_priv)
++{
++	struct vc4_dev *vc4 = to_vc4_dev(dev);
++	struct drm_vc4_label_bo *args = data;
++	char *name;
++	struct drm_gem_object *gem_obj;
++	int ret = 0, label;
++
++	if (!args->len)
++		return -EINVAL;
++
++	name = strndup_user(u64_to_user_ptr(args->name), args->len + 1);
++	if (IS_ERR(name))
++		return PTR_ERR(name);
++
++	gem_obj = drm_gem_object_lookup(file_priv, args->handle);
++	if (!gem_obj) {
++		DRM_ERROR("Failed to look up GEM BO %d\n", args->handle);
++		kfree(name);
++		return -ENOENT;
++	}
++
++	mutex_lock(&vc4->bo_lock);
++	label = vc4_get_user_label(vc4, name);
++	if (label != -1)
++		vc4_bo_set_label(gem_obj, label);
++	else
++		ret = -ENOMEM;
++	mutex_unlock(&vc4->bo_lock);
++
++	drm_gem_object_unreference_unlocked(gem_obj);
++
++	return ret;
+ }
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.c b/drivers/gpu/drm/vc4/vc4_drv.c
+index c6b487c3d2b7..75c1f50a7b5d 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.c
++++ b/drivers/gpu/drm/vc4/vc4_drv.c
+@@ -140,6 +140,7 @@ static const struct drm_ioctl_desc vc4_drm_ioctls[] = {
+ 	DRM_IOCTL_DEF_DRV(VC4_GET_PARAM, vc4_get_param_ioctl, DRM_RENDER_ALLOW),
+ 	DRM_IOCTL_DEF_DRV(VC4_SET_TILING, vc4_set_tiling_ioctl, DRM_RENDER_ALLOW),
+ 	DRM_IOCTL_DEF_DRV(VC4_GET_TILING, vc4_get_tiling_ioctl, DRM_RENDER_ALLOW),
++	DRM_IOCTL_DEF_DRV(VC4_LABEL_BO, vc4_label_bo_ioctl, DRM_RENDER_ALLOW),
+ };
+ 
+ static struct drm_driver vc4_drm_driver = {
+@@ -257,7 +258,9 @@ static int vc4_drm_bind(struct device *dev)
+ 	vc4->dev = drm;
+ 	drm->dev_private = vc4;
+ 
+-	vc4_bo_cache_init(drm);
++	ret = vc4_bo_cache_init(drm);
++	if (ret)
++		goto dev_unref;
+ 
+ 	drm_mode_config_init(drm);
+ 
+@@ -281,8 +284,9 @@ static int vc4_drm_bind(struct device *dev)
+ 	component_unbind_all(dev, drm);
+ gem_destroy:
+ 	vc4_gem_destroy(drm);
+-	drm_dev_unref(drm);
+ 	vc4_bo_cache_destroy(drm);
++dev_unref:
++	drm_dev_unref(drm);
+ 	return ret;
+ }
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_drv.h b/drivers/gpu/drm/vc4/vc4_drv.h
+index df22698d62ee..75d9957cb76d 100644
+--- a/drivers/gpu/drm/vc4/vc4_drv.h
++++ b/drivers/gpu/drm/vc4/vc4_drv.h
+@@ -11,6 +11,24 @@
+ #include <drm/drm_encoder.h>
+ #include <drm/drm_gem_cma_helper.h>
+ 
++/* Don't forget to update vc4_bo.c: bo_type_names[] when adding to
++ * this.
++ */
++enum vc4_kernel_bo_type {
++	/* Any kernel allocation (gem_create_object hook) before it
++	 * gets another type set.
++	 */
++	VC4_BO_TYPE_KERNEL,
++	VC4_BO_TYPE_V3D,
++	VC4_BO_TYPE_V3D_SHADER,
++	VC4_BO_TYPE_DUMB,
++	VC4_BO_TYPE_BIN,
++	VC4_BO_TYPE_RCL,
++	VC4_BO_TYPE_BCL,
++	VC4_BO_TYPE_KERNEL_CACHE,
++	VC4_BO_TYPE_COUNT
++};
++
+ struct vc4_dev {
+ 	struct drm_device *dev;
+ 
+@@ -46,14 +64,14 @@ struct vc4_dev {
+ 		struct timer_list time_timer;
+ 	} bo_cache;
+ 
+-	struct vc4_bo_stats {
++	u32 num_labels;
++	struct vc4_label {
++		const char *name;
+ 		u32 num_allocated;
+ 		u32 size_allocated;
+-		u32 num_cached;
+-		u32 size_cached;
+-	} bo_stats;
++	} *bo_labels;
+ 
+-	/* Protects bo_cache and the BO stats. */
++	/* Protects bo_cache and bo_labels. */
+ 	struct mutex bo_lock;
+ 
+ 	uint64_t dma_fence_context;
+@@ -169,6 +187,11 @@ struct vc4_bo {
+ 	/* normally (resv == &_resv) except for imported bo's */
+ 	struct reservation_object *resv;
+ 	struct reservation_object _resv;
++
++	/* One of enum vc4_kernel_bo_type, or VC4_BO_TYPE_COUNT + i
++	 * for user-allocated labels.
++	 */
++	int label;
+ };
+ 
+ static inline struct vc4_bo *
+@@ -460,7 +483,7 @@ struct vc4_validated_shader_info {
+ struct drm_gem_object *vc4_create_object(struct drm_device *dev, size_t size);
+ void vc4_free_object(struct drm_gem_object *gem_obj);
+ struct vc4_bo *vc4_bo_create(struct drm_device *dev, size_t size,
+-			     bool from_cache);
++			     bool from_cache, enum vc4_kernel_bo_type type);
+ int vc4_dumb_create(struct drm_file *file_priv,
+ 		    struct drm_device *dev,
+ 		    struct drm_mode_create_dumb *args);
+@@ -478,6 +501,8 @@ int vc4_get_tiling_ioctl(struct drm_device *dev, void *data,
+ 			 struct drm_file *file_priv);
+ int vc4_get_hang_state_ioctl(struct drm_device *dev, void *data,
+ 			     struct drm_file *file_priv);
++int vc4_label_bo_ioctl(struct drm_device *dev, void *data,
++		       struct drm_file *file_priv);
+ int vc4_mmap(struct file *filp, struct vm_area_struct *vma);
+ struct reservation_object *vc4_prime_res_obj(struct drm_gem_object *obj);
+ int vc4_prime_mmap(struct drm_gem_object *obj, struct vm_area_struct *vma);
+@@ -485,7 +510,7 @@ struct drm_gem_object *vc4_prime_import_sg_table(struct drm_device *dev,
+ 						 struct dma_buf_attachment *attach,
+ 						 struct sg_table *sgt);
+ void *vc4_prime_vmap(struct drm_gem_object *obj);
+-void vc4_bo_cache_init(struct drm_device *dev);
++int vc4_bo_cache_init(struct drm_device *dev);
+ void vc4_bo_cache_destroy(struct drm_device *dev);
+ int vc4_bo_stats_debugfs(struct seq_file *m, void *arg);
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_gem.c b/drivers/gpu/drm/vc4/vc4_gem.c
+index 8b551bc630c4..80f1953b4938 100644
+--- a/drivers/gpu/drm/vc4/vc4_gem.c
++++ b/drivers/gpu/drm/vc4/vc4_gem.c
+@@ -774,7 +774,7 @@ vc4_get_bcl(struct drm_device *dev, struct vc4_exec_info *exec)
+ 		goto fail;
+ 	}
+ 
+-	bo = vc4_bo_create(dev, exec_size, true);
++	bo = vc4_bo_create(dev, exec_size, true, VC4_BO_TYPE_BCL);
+ 	if (IS_ERR(bo)) {
+ 		DRM_ERROR("Couldn't allocate BO for binning\n");
+ 		ret = PTR_ERR(bo);
+diff --git a/drivers/gpu/drm/vc4/vc4_render_cl.c b/drivers/gpu/drm/vc4/vc4_render_cl.c
+index da3bfd53f0bd..e0539731130b 100644
+--- a/drivers/gpu/drm/vc4/vc4_render_cl.c
++++ b/drivers/gpu/drm/vc4/vc4_render_cl.c
+@@ -320,7 +320,7 @@ static int vc4_create_rcl_bo(struct drm_device *dev, struct vc4_exec_info *exec,
+ 
+ 	size += xtiles * ytiles * loop_body_size;
+ 
+-	setup->rcl = &vc4_bo_create(dev, size, true)->base;
++	setup->rcl = &vc4_bo_create(dev, size, true, VC4_BO_TYPE_RCL)->base;
+ 	if (IS_ERR(setup->rcl))
+ 		return PTR_ERR(setup->rcl);
+ 	list_add_tail(&to_vc4_bo(&setup->rcl->base)->unref_head,
+diff --git a/drivers/gpu/drm/vc4/vc4_v3d.c b/drivers/gpu/drm/vc4/vc4_v3d.c
+index 8c723da71f66..622cd43840b8 100644
+--- a/drivers/gpu/drm/vc4/vc4_v3d.c
++++ b/drivers/gpu/drm/vc4/vc4_v3d.c
+@@ -236,7 +236,8 @@ vc4_allocate_bin_bo(struct drm_device *drm)
+ 	INIT_LIST_HEAD(&list);
+ 
+ 	while (true) {
+-		struct vc4_bo *bo = vc4_bo_create(drm, size, true);
++		struct vc4_bo *bo = vc4_bo_create(drm, size, true,
++						  VC4_BO_TYPE_BIN);
+ 
+ 		if (IS_ERR(bo)) {
+ 			ret = PTR_ERR(bo);
+diff --git a/include/uapi/drm/vc4_drm.h b/include/uapi/drm/vc4_drm.h
+index 6ac4c5c014cb..551628e571f9 100644
+--- a/include/uapi/drm/vc4_drm.h
++++ b/include/uapi/drm/vc4_drm.h
+@@ -40,6 +40,7 @@ extern "C" {
+ #define DRM_VC4_GET_PARAM                         0x07
+ #define DRM_VC4_SET_TILING                        0x08
+ #define DRM_VC4_GET_TILING                        0x09
++#define DRM_VC4_LABEL_BO                          0x0a
+ 
+ #define DRM_IOCTL_VC4_SUBMIT_CL           DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_SUBMIT_CL, struct drm_vc4_submit_cl)
+ #define DRM_IOCTL_VC4_WAIT_SEQNO          DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_WAIT_SEQNO, struct drm_vc4_wait_seqno)
+@@ -51,6 +52,7 @@ extern "C" {
+ #define DRM_IOCTL_VC4_GET_PARAM           DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_GET_PARAM, struct drm_vc4_get_param)
+ #define DRM_IOCTL_VC4_SET_TILING          DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_SET_TILING, struct drm_vc4_set_tiling)
+ #define DRM_IOCTL_VC4_GET_TILING          DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_GET_TILING, struct drm_vc4_get_tiling)
++#define DRM_IOCTL_VC4_LABEL_BO            DRM_IOWR(DRM_COMMAND_BASE + DRM_VC4_LABEL_BO, struct drm_vc4_label_bo)
+ 
+ struct drm_vc4_submit_rcl_surface {
+ 	__u32 hindex; /* Handle index, or ~0 if not present. */
+@@ -311,6 +313,15 @@ struct drm_vc4_set_tiling {
+ 	__u64 modifier;
+ };
+ 
++/**
++ * struct drm_vc4_label_bo - Attach a name to a BO for debug purposes.
++ */
++struct drm_vc4_label_bo {
++	__u32 handle;
++	__u32 len;
++	__u64 name;
++};
++
+ #if defined(__cplusplus)
+ }
+ #endif
+-- 
+2.13.5
+
+From 34cbed8ed9441caa13017108dac189e09c35f9af Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 2 Aug 2017 13:32:40 -0700
+Subject: [PATCH 5/6] drm/vc4: Fix double destroy of the BO cache on teardown.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+It's also destroyed from the top level vc4_drv.c initialization, which
+is where the cache was actually initialized from.
+
+This used to just involve duplicate del_timer() and cancel_work_sync()
+being called, but it started causing kmalloc issues once we
+double-freed the new BO label array.
+
+Fixes: 1908a876f909 ("drm/vc4: Add an ioctl for labeling GEM BOs for summary stats")
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170802203242.12815-1-eric@anholt.net
+Tested-by: Noralf Trønnes <noralf@tronnes.org>
+Acked-by: Noralf Trønnes <noralf@tronnes.org>
+Reviewed-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+---
+ drivers/gpu/drm/vc4/vc4_gem.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_gem.c b/drivers/gpu/drm/vc4/vc4_gem.c
+index 80f1953b4938..624177b9cce4 100644
+--- a/drivers/gpu/drm/vc4/vc4_gem.c
++++ b/drivers/gpu/drm/vc4/vc4_gem.c
+@@ -1117,6 +1117,4 @@ vc4_gem_destroy(struct drm_device *dev)
+ 
+ 	if (vc4->hang_state)
+ 		vc4_free_hang_state(dev, vc4->hang_state);
+-
+-	vc4_bo_cache_destroy(dev);
+ }
+-- 
+2.13.5
+
+From 4f218eea5be54c8506e6db700750e8b8019dc6af Mon Sep 17 00:00:00 2001
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Fri, 16 Jun 2017 10:30:33 +0200
+Subject: [PATCH 6/6] drm/vc4: Send a VBLANK event when disabling a CRTC
+
+VBLANK events are missed when the CRTC is being disabled because the
+driver does not wait till the end of the frame before stopping the
+HVS and PV blocks. In this case, we should explicitly issue a VBLANK
+event if there's one waiting.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Link: http://patchwork.freedesktop.org/patch/msgid/1497601833-24588-1-git-send-email-boris.brezillon@free-electrons.com
+---
+ drivers/gpu/drm/vc4/vc4_crtc.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
+index a12cc7ea99b6..b0582ad3f459 100644
+--- a/drivers/gpu/drm/vc4/vc4_crtc.c
++++ b/drivers/gpu/drm/vc4/vc4_crtc.c
+@@ -518,6 +518,19 @@ static void vc4_crtc_disable(struct drm_crtc *crtc)
+ 	WARN_ON_ONCE((HVS_READ(SCALER_DISPSTATX(chan)) &
+ 		      (SCALER_DISPSTATX_FULL | SCALER_DISPSTATX_EMPTY)) !=
+ 		     SCALER_DISPSTATX_EMPTY);
++
++	/*
++	 * Make sure we issue a vblank event after disabling the CRTC if
++	 * someone was waiting it.
++	 */
++	if (crtc->state->event) {
++		unsigned long flags;
++
++		spin_lock_irqsave(&dev->event_lock, flags);
++		drm_crtc_send_vblank_event(crtc, crtc->state->event);
++		crtc->state->event = NULL;
++		spin_unlock_irqrestore(&dev->event_lock, flags);
++	}
+ }
+ 
+ static void vc4_crtc_update_dlist(struct drm_crtc *crtc)
+-- 
+2.13.5
+
