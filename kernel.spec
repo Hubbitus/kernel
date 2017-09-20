@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 2
+%define stable_update 3
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -667,6 +667,9 @@ Patch622: qxl-fixes.patch
 # rhbz 1431375
 Patch623: HID-rmi-Make-sure-the-HID-device-is-opened-on-resume.patch
 Patch624: input-rmi4-remove-the-need-for-artifical-IRQ.patch
+
+# rhbz 1493435 1493436
+Patch625: KEYS-prevent-KEYCTL_READ-on-negative-key.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2222,6 +2225,10 @@ fi
 #
 #
 %changelog
+* Wed Sep 20 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.3-300
+- Linux v4.13.3
+- Fixes 1493435 1493436
+
 * Tue Sep 19 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix a few vc4 crashes on the Raspberry Pi
 
