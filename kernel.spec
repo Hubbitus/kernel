@@ -671,6 +671,11 @@ Patch624: input-rmi4-remove-the-need-for-artifical-IRQ.patch
 # rhbz 1493435 1493436
 Patch625: KEYS-prevent-KEYCTL_READ-on-negative-key.patch
 
+# rhbz 1432684
+Patch626: 1-3-net-set-tb--fast_sk_family.patch
+Patch627: 2-3-net-use-inet6_rcv_saddr-to-compare-sockets.patch
+Patch628: 3-3-inet-fix-improper-empty-comparison.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2225,6 +2230,9 @@ fi
 #
 #
 %changelog
+* Thu Sep 21 2017 Laura Abbott <labbott@redhat.com>
+- Fix useaddr regression (rhbz 1432684)
+
 * Wed Sep 20 2017 Laura Abbott <labbott@redhat.com>
 - Disable CONFIG_VIRTIO_BLK_SCSI
 

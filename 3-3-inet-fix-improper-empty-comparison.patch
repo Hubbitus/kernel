@@ -1,0 +1,53 @@
+From patchwork Mon Sep 18 16:28:57 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [3/3] inet: fix improper empty comparison
+X-Patchwork-Submitter: Josef Bacik <josef@toxicpanda.com>
+X-Patchwork-Id: 815029
+X-Patchwork-Delegate: davem@davemloft.net
+Message-Id: <1505752137-15522-4-git-send-email-jbacik@fb.com>
+To: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, crobinso@redhat.com,
+ labbott@redhat.com, kernel-team@fb.com
+Cc: Josef Bacik <jbacik@fb.com>, stable@vger.kernel.org
+Date: Mon, 18 Sep 2017 12:28:57 -0400
+From: josef@toxicpanda.com
+List-Id: <netdev.vger.kernel.org>
+
+From: Josef Bacik <jbacik@fb.com>
+
+When doing my reuseport rework I screwed up and changed a
+
+if (hlist_empty(&tb->owners))
+
+to
+
+if (!hlist_empty(&tb->owners))
+
+This is obviously bad as all of the reuseport/reuse logic was reversed,
+which caused weird problems like allowing an ipv4 bind conflict if we
+opened an ipv4 only socket on a port followed by an ipv6 only socket on
+the same port.
+
+Cc: stable@vger.kernel.org
+Fixes: b9470c27607b ("inet: kill smallest_size and smallest_port")
+Reported-by: Cole Robinson <crobinso@redhat.com>
+Signed-off-by: Josef Bacik <jbacik@fb.com>
+---
+ net/ipv4/inet_connection_sock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index a1bf30438bc5..c039c937ba90 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -321,7 +321,7 @@ int inet_csk_get_port(struct sock *sk, unsigned short snum)
+ 			goto fail_unlock;
+ 	}
+ success:
+-	if (!hlist_empty(&tb->owners)) {
++	if (hlist_empty(&tb->owners)) {
+ 		tb->fastreuse = reuse;
+ 		if (sk->sk_reuseport) {
+ 			tb->fastreuseport = FASTREUSEPORT_ANY;
