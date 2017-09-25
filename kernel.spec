@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -2230,6 +2230,9 @@ fi
 #
 #
 %changelog
+* Mon Sep 25 2017 Laura Abbott <labbott@redhat.com> - 4.13.3-301
+- Bump for new build
+
 * Thu Sep 21 2017 Laura Abbott <labbott@redhat.com>
 - Fix useaddr regression (rhbz 1432684)
 
