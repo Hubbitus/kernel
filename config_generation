@@ -20,8 +20,7 @@ ppc64-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64:debugconf
 # ppc64le
 ppc64le=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64le
 ppc64le-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64le:debugconfig
-ppc64p7=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64p7
-ppc64p7-debug=baseconfig:baseconfig-powerpc:baseconfig-powerpc-powerpc64p7:debugconfig
+
 # s390x
 s390x=baseconfig:baseconfig-s390x
 s390x-debug=baseconfig:baseconfig-s390x:debugconfig

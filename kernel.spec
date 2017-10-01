@@ -267,7 +267,7 @@ Summary: The Linux kernel
 %define make_target vmlinux
 %define kernel_image vmlinux
 %define kernel_image_elf 1
-%ifarch ppc64 ppc64p7
+%ifarch ppc64
 %define all_arch_configs kernel-%{version}-ppc64*.config
 %endif
 %ifarch ppc64le
@@ -377,7 +377,7 @@ Version: %{rpmversion}
 Release: %{pkg_release}
 # DO NOT CHANGE THE 'ExclusiveArch' LINE TO TEMPORARILY EXCLUDE AN ARCHITECTURE BUILD.
 # SET %%nobuildarches (ABOVE) INSTEAD
-ExclusiveArch: %{all_x86} x86_64 ppc64 ppc64p7 s390x %{arm} aarch64 ppc64le
+ExclusiveArch: %{all_x86} x86_64 ppc64 s390x %{arm} aarch64 ppc64le
 ExclusiveOS: Linux
 %ifnarch %{nobuildarches}
 Requires: kernel-core-uname-r = %{KVERREL}%{?variant}
@@ -451,7 +451,6 @@ Source93: filter-aarch64.sh
 Source95: filter-ppc64.sh
 Source96: filter-ppc64le.sh
 Source97: filter-s390x.sh
-Source98: filter-ppc64p7.sh
 Source99: filter-modules.sh
 %define modsign_cmd %{SOURCE18}
 
@@ -469,8 +468,6 @@ Source30: kernel-ppc64.config
 Source31: kernel-ppc64-debug.config
 Source32: kernel-ppc64le.config
 Source33: kernel-ppc64le-debug.config
-Source34: kernel-ppc64p7.config
-Source35: kernel-ppc64p7-debug.config
 Source36: kernel-s390x.config
 Source37: kernel-s390x-debug.config
 Source38: kernel-x86_64.config

@@ -46,8 +46,6 @@ function merge_configs()
 		echo "# powerpc" > $name
 	elif [ "x$arch" == "xppc64le" ]; then
 		echo "# powerpc" > $name
-	elif [ "x$arch" == "xppc64p7" ]; then
-		echo "# powerpc" > $name
 	elif [ "x$arch" == "xs390x" ]; then
 		echo "# s390" > $name
 	elif [ "x$arch" == "xarmv7hl" ]; then
