@@ -2227,6 +2227,7 @@ fi
 * Thu Oct 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.5-300
 - Linux v4.13.5
 - Fix for peaq_wmi nul spew (rhbz 1497861)
+- Fixes CVE-2017-14954 (rhbz 1497745 1497747)
 
 * Thu Sep 28 2017 Laura Abbott <labbott@redhat.com> - 4.13.4-300
 - Linux v4.13.4
