@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 4
+%define stable_update 5
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -655,12 +655,6 @@ Patch617: Fix-for-module-sig-verification.patch
 # rhbz 1485086
 Patch619: pci-mark-amd-stoney-gpu-ats-as-broken.patch
 
-# CVE-2017-12154 rhbz 1491224 1491231
-Patch620: kvm-nVMX-Don-t-allow-L2-to-access-the-hardware-CR8.patch
-
-# CVE-2017-12153 rhbz 1491046 1491057
-Patch621: nl80211-check-for-the-required-netlink-attributes-presence.patch
-
 # Should fix our QXL issues
 Patch622: qxl-fixes.patch
 
@@ -668,13 +662,13 @@ Patch622: qxl-fixes.patch
 Patch623: HID-rmi-Make-sure-the-HID-device-is-opened-on-resume.patch
 Patch624: input-rmi4-remove-the-need-for-artifical-IRQ.patch
 
-# rhbz 1493435 1493436
-Patch625: KEYS-prevent-KEYCTL_READ-on-negative-key.patch
-
 # rhbz 1432684
 Patch626: 1-3-net-set-tb--fast_sk_family.patch
 Patch627: 2-3-net-use-inet6_rcv_saddr-to-compare-sockets.patch
 Patch628: 3-3-inet-fix-improper-empty-comparison.patch
+
+# rhbz 1497861
+Patch629: 0001-platform-x86-peaq-wmi-Add-DMI-check-before-binding-t.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2230,6 +2224,10 @@ fi
 #
 #
 %changelog
+* Thu Oct 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.5-300
+- Linux v4.13.5
+- Fix for peaq_wmi nul spew (rhbz 1497861)
+
 * Thu Sep 28 2017 Laura Abbott <labbott@redhat.com> - 4.13.4-300
 - Linux v4.13.4
 
