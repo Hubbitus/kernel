@@ -630,6 +630,9 @@ Patch324: bcm283x-vc4-fixes.patch
 # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20170912&id=723288836628bc1c0855f3bb7b64b1803e4b9e4a
 Patch330: arm-of-restrict-dma-configuration.patch
 
+# Upstream ACPI fix
+Patch331: arm64-xgene-acpi-fix.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2224,6 +2227,9 @@ fi
 #
 #
 %changelog
+* Fri Oct  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- ARM ACPI fix for x-gene RHBZ #1498117
+
 * Thu Oct 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.5-300
 - Linux v4.13.5
 - Fix for peaq_wmi nul spew (rhbz 1497861)
