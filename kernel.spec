@@ -633,6 +633,15 @@ Patch330: arm-of-restrict-dma-configuration.patch
 # Upstream ACPI fix
 Patch331: arm64-xgene-acpi-fix.patch
 
+# Generic fixes and enablement for Socionext SoC and 96board
+Patch332: ahci-don-t-ignore-result-code-of-ahci_reset_controller.patch
+
+# https://patchwork.kernel.org/patch/9980861/
+Patch333: PCI-aspm-deal-with-missing-root-ports-in-link-state-handling.patch
+
+# https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=synquacer-netsec
+Patch334: arm64-socionext-96b-enablement.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2229,6 +2238,7 @@ fi
 %changelog
 * Fri Oct  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM ACPI fix for x-gene RHBZ #1498117
+- Initial support for Socionext Synquacer platform
 
 * Thu Oct 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.5-300
 - Linux v4.13.5
