@@ -1,0 +1,27 @@
+From cf866c6ef2e421b5563ab34c04dd4b07be5aa013 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Sat, 7 Oct 2017 10:11:39 +0100
+Subject: [PATCH] hack for bus clk
+
+Turn it up to 11!
+---
+ drivers/gpu/drm/msm/msm_gpu.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
+index 9f3dbc236ab3..75acdda496b5 100644
+--- a/drivers/gpu/drm/msm/msm_gpu.c
++++ b/drivers/gpu/drm/msm/msm_gpu.c
+@@ -93,6 +93,9 @@ static int enable_clk(struct msm_gpu *gpu)
+ {
+ 	int i;
+ 
++	if (gpu->grp_clks[4])
++		clk_set_rate(gpu->grp_clks[4], INT_MAX);
++
+ 	if (gpu->core_clk && gpu->fast_rate)
+ 		clk_set_rate(gpu->core_clk, gpu->fast_rate);
+ 
+-- 
+2.14.2
+

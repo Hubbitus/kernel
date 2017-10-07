@@ -615,6 +615,9 @@ Patch313: qcom-Force-host-mode-for-USB-on-apq8016-sbc.patch
 # https://patchwork.kernel.org/patch/9850189/
 Patch314: qcom-msm-ci_hdrc_msm_probe-missing-of_node_get.patch
 
+# Hack until interconnect API lands upstream
+Patch315: qcom-clk-gpu-msm.patch
+
 # Fix USB on the RPi https://patchwork.kernel.org/patch/9879371/
 Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe.patch
 
@@ -2239,6 +2242,7 @@ fi
 * Fri Oct  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM ACPI fix for x-gene RHBZ #1498117
 - Initial support for Socionext Synquacer platform
+- Fix for QCom GPU clock rate
 
 * Thu Oct 05 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.5-300
 - Linux v4.13.5
