@@ -2239,6 +2239,9 @@ fi
 #
 #
 %changelog
+* Mon Oct  9 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Enable KASLR on aarch64
+
 * Fri Oct  6 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - ARM ACPI fix for x-gene RHBZ #1498117
 - Initial support for Socionext Synquacer platform
