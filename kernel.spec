@@ -2252,7 +2252,7 @@ fi
 #
 %changelog
 * Wed Oct 11 2017 Jeremy Cline <jeremy@jcline.org>
-- Fix incorrect updates of uninstantiated keys crash the kernel (rhbz 1498017)
+- Fix incorrect updates of uninstantiated keys crash the kernel (rhbz 1498016 1498017)
 
 * Tue Oct 10 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Disable kernel tracking on SMBus devices (rhbz 1482648)
