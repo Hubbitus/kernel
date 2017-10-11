@@ -657,6 +657,10 @@ Patch334: arm64-socionext-96b-enablement.patch
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch502: CVE-2017-7477.patch
 
+# rhbz 1498016 1498017
+Patch503: KEYS-don-t-let-add_key-update-an-uninstantiated-key.patch
+Patch504: KEYS-fix-race-between-updating-and-finding-negative-.patch
+
 # 600 - Patches for improved Bay and Cherry Trail device support
 # Below patches are submitted upstream, awaiting review / merging
 Patch601: 0001-Input-gpio_keys-Allow-suppression-of-input-events-fo.patch
@@ -2247,6 +2251,9 @@ fi
 #
 #
 %changelog
+* Wed Oct 11 2017 Jeremy Cline <jeremy@jcline.org>
+- Fix incorrect updates of uninstantiated keys crash the kernel (rhbz 1498017)
+
 * Tue Oct 10 2017 Justin M. Forbes <jforbes@fedoraproject.org>
 - Disable kernel tracking on SMBus devices (rhbz 1482648)
 
