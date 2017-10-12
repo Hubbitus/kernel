@@ -650,6 +650,9 @@ Patch333: PCI-aspm-deal-with-missing-root-ports-in-link-state-handling.patch
 # https://git.kernel.org/pub/scm/linux/kernel/git/ardb/linux.git/log/?h=synquacer-netsec
 Patch334: arm64-socionext-96b-enablement.patch
 
+# ThunderX fixes
+Patch335: arm64-cavium-fixes.patch
+
 # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c0d8832e78cbfd4a64b7112e34920af4b0b0e60e
 # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ae2e972dae3cea795e9f8f94eb1601213c2d49f0
 Patch350: arm64-ensure-ready-for-userspace.patch
@@ -2255,6 +2258,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 12 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fixes for Cavium ThunderX plaforms
+
 * Wed Oct 11 2017 Jeremy Cline <jeremy@jcline.org>
 - Fix incorrect updates of uninstantiated keys crash the kernel (rhbz 1498016 1498017)
 
