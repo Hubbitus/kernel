@@ -705,6 +705,9 @@ Patch630: Input-synaptics---Disable-kernel-tracking-on-SMBus-devices.patch
 # Headed upstream
 Patch631: drm-i915-boost-GPU-clocks-if-we-miss-the-pageflip.patch
 
+# fix gnome 3.26+ not working under VirtualBox, submitted upstream, Cc: Stable
+Patch632: 0001-staging-vboxvideo-Fix-reporting-invalid-suggested-of.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2259,6 +2262,9 @@ fi
 #
 #
 %changelog
+* Thu Oct 12 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Fix vboxvideo causing gnome 3.26+ to not work under VirtualBox
+
 * Thu Oct 12 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.6-300
 - Linux v4.13.6
 - Fixes CVE-2017-1000255 (rhbz 1498067 1500335)
