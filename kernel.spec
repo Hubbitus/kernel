@@ -2262,7 +2262,7 @@ fi
 #
 %changelog
 * Sun Oct 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
-- Fix USB-3 Superspeed negotiation on exynos5 hardware
+- Fix USB-3 Superspeed negotiation on exynos5 hardware (rhbz 1487006)
 
 * Thu Oct 12 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Fix vboxvideo causing gnome 3.26+ to not work under VirtualBox
