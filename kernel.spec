@@ -653,8 +653,7 @@ Patch334: arm64-socionext-96b-enablement.patch
 # ThunderX fixes
 Patch335: arm64-cavium-fixes.patch
 
-# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c0d8832e78cbfd4a64b7112e34920af4b0b0e60e
-# https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ae2e972dae3cea795e9f8f94eb1601213c2d49f0
+Patch336: arm-exynos-fix-usb3.patch
 
 # 400 - IBM (ppc/s390x) patches
 
@@ -2262,6 +2261,9 @@ fi
 #
 #
 %changelog
+* Sun Oct 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Fix USB-3 Superspeed negotiation on exynos5 hardware
+
 * Thu Oct 12 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Fix vboxvideo causing gnome 3.26+ to not work under VirtualBox
 
