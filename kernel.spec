@@ -2265,6 +2265,7 @@ fi
 %changelog
 * Mon Oct 16 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.7-300
 - Linux v4.13.7
+- Fixes CVE-2017-5123 (rhbz 1500094 1501762)
 
 * Sun Oct 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix USB-3 Superspeed negotiation on exynos5 hardware (rhbz 1487006)
