@@ -655,6 +655,8 @@ Patch335: arm64-cavium-fixes.patch
 
 Patch336: arm-exynos-fix-usb3.patch
 
+Patch337: arm64-aw64-devices.patch
+
 # 400 - IBM (ppc/s390x) patches
 
 # 500 - Temp fixes/CVEs etc
@@ -2263,6 +2265,7 @@ fi
 %changelog
 * Sun Oct 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix USB-3 Superspeed negotiation on exynos5 hardware (rhbz 1487006)
+- Some AllWinner A64 fixes and improvements
 
 * Thu Oct 12 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Fix vboxvideo causing gnome 3.26+ to not work under VirtualBox
