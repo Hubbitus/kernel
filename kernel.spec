@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 6
+%define stable_update 7
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2263,6 +2263,9 @@ fi
 #
 #
 %changelog
+* Mon Oct 16 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.7-300
+- Linux v4.13.7
+
 * Sun Oct 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Fix USB-3 Superspeed negotiation on exynos5 hardware (rhbz 1487006)
 - Some AllWinner A64 fixes and improvements
