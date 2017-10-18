@@ -2262,6 +2262,7 @@ fi
 %changelog
 * Wed Oct 18 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.8-300
 - Linux v4.13.8
+- Fix CVE-2017-12190 (rhbz 1495089 1503580)
 
 * Mon Oct 16 2017 Justin M. Forbes <jforbes@fedoraproject.org> - 4.13.7-300
 - Linux v4.13.7
