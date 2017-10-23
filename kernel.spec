@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 8
+%define stable_update 9
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -2260,6 +2260,9 @@ fi
 #
 #
 %changelog
+* Mon Oct 23 2017 Laura Abbott <labbott@redhat.com> - 4.13.9-300
+- Linux v4.13.9
+
 * Wed Oct 18 2017 Laura Abbott <labbott@fedoraproject.org> - 4.13.8-300
 - Linux v4.13.8
 - Fix CVE-2017-12190 (rhbz 1495089 1503580)
