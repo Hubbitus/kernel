@@ -33,7 +33,7 @@ index bc98ef95514a..67fa3fa32011 100644
  #include <linux/input-polldev.h>
  #include <linux/kernel.h>
  #include <linux/module.h>
-@@ -64,8 +65,22 @@ static void peaq_wmi_poll(struct input_polled_dev *dev)
+@@ -64,8 +65,23 @@ static void peaq_wmi_poll(struct input_polled_dev *dev)
  	}
  }
  
@@ -45,6 +45,7 @@ index bc98ef95514a..67fa3fa32011 100644
 +			DMI_MATCH(DMI_PRODUCT_NAME, "PEAQ PMM C1010 MD99187"),
 +		},
 +	},
++	{}
 +};
 +
  static int __init peaq_wmi_init(void)

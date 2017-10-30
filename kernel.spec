@@ -2256,6 +2256,10 @@ fi
 #
 #
 %changelog
+* Mon Oct 30 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
+- Fix 0001-platform-x86-peaq-wmi-Add-DMI-check-before-binding-t.patch
+  having a dmi_table which lacks a terminating entry
+
 * Fri Oct 27 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.10-300
 - Linux v4.13.10
 
