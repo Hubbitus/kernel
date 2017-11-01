@@ -702,6 +702,9 @@ Patch631: drm-i915-boost-GPU-clocks-if-we-miss-the-pageflip.patch
 # fix gnome 3.26+ not working under VirtualBox, submitted upstream, Cc: Stable
 Patch632: 0001-staging-vboxvideo-Fix-reporting-invalid-suggested-of.patch
 
+# http://patchwork.ozlabs.org/patch/831938/
+Patch633: net-mlxsw-reg-Add-high-and-low-temperature-thresholds.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2256,6 +2259,9 @@ fi
 #
 #
 %changelog
+* Wed Nov 01 2017 Laura Abbott <labbott@fedoraproject.org>
+- Add fix for potential mlxsw firmware incompatibility
+
 * Mon Oct 30 2017 Hans de Goede <jwrdegoede@fedoraproject.org>
 - Fix 0001-platform-x86-peaq-wmi-Add-DMI-check-before-binding-t.patch
   having a dmi_table which lacks a terminating entry
