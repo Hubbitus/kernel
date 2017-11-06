@@ -1,0 +1,42 @@
+From patchwork Sun Nov  5 17:09:50 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v3,1/2] Input: synaptics-rmi4 - RMI4 can also use SMBUS version 3
+From: Yiannis Marangos <yiannis.marangos@gmail.com>
+X-Patchwork-Id: 10042385
+Message-Id: <20171105170951.20261-2-yiannis.marangos@gmail.com>
+To: linux-input@vger.kernel.org, dmitry.torokhov@gmail.com
+Cc: Yiannis Marangos <yiannis.marangos@gmail.com>
+Date: Sun,  5 Nov 2017 19:09:50 +0200
+
+Some synaptics devices such as LEN0073 use SMBUS version 3.
+
+Signed-off-by: Yiannis Marangos <yiannis.marangos@gmail.com>
+Acked-by: Benjamin Tissoires <benjamion.tissoires@redhat.com>
+---
+ drivers/input/rmi4/rmi_smbus.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/input/rmi4/rmi_smbus.c b/drivers/input/rmi4/rmi_smbus.c
+index 225025a0940c..b6ccf39c6a7b 100644
+--- a/drivers/input/rmi4/rmi_smbus.c
++++ b/drivers/input/rmi4/rmi_smbus.c
+@@ -312,7 +312,7 @@ static int rmi_smb_probe(struct i2c_client *client,
+ 	rmi_smb->xport.dev = &client->dev;
+ 	rmi_smb->xport.pdata = *pdata;
+ 	rmi_smb->xport.pdata.irq = client->irq;
+-	rmi_smb->xport.proto_name = "smb2";
++	rmi_smb->xport.proto_name = "smb";
+ 	rmi_smb->xport.ops = &rmi_smb_ops;
+ 
+ 	smbus_version = rmi_smb_get_version(rmi_smb);
+@@ -322,7 +322,7 @@ static int rmi_smb_probe(struct i2c_client *client,
+ 	rmi_dbg(RMI_DEBUG_XPORT, &client->dev, "Smbus version is %d",
+ 		smbus_version);
+ 
+-	if (smbus_version != 2) {
++	if (smbus_version != 2 && smbus_version != 3) {
+ 		dev_err(&client->dev, "Unrecognized SMB version %d\n",
+ 				smbus_version);
+ 		return -ENODEV;
