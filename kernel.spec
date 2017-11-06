@@ -712,6 +712,9 @@ Patch634: selinux-Generalize-support-for-NNP-nosuid-SELinux-do.patch
 Patch635: v3-1-2-Input-synaptics-rmi4---RMI4-can-also-use-SMBUS-version-3.patch
 Patch636: v3-2-2-Input-synaptics---Lenovo-X1-Carbon-5-should-use-SMBUS-RMI.patch
 
+# rhbz 1490803
+Patch637: 1-2-kvm-vmx-Reinstate-support-for-CPUs-without-virtual-NMI.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2268,6 +2271,7 @@ fi
 %changelog
 * Mon Nov 06 2017 Laura Abbott <labbott@redhat.com>
 - Patches for ThinkPad X1 Carbon Gen5 Touchpad (rhbz 1509461)
+- Fix for KVM regression on some machines (rhbz 1490803)
 
 * Thu Nov 02 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.11-300
 - Linux v4.13.11
