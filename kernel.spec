@@ -715,6 +715,12 @@ Patch636: v3-2-2-Input-synaptics---Lenovo-X1-Carbon-5-should-use-SMBUS-RMI.patch
 # rhbz 1490803
 Patch637: 1-2-kvm-vmx-Reinstate-support-for-CPUs-without-virtual-NMI.patch
 
+# CVE-2017-16532 rhbz 1510835 1510854
+Patch638: 0001-usb-usbtest-fix-NULL-pointer-dereference.patch
+
+# CVE-2017-16538 rhbz 1510826 1510854
+Patch639: CVE-2017-16538.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2269,6 +2275,10 @@ fi
 #
 #
 %changelog
+* Wed Nov 08 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix CVE-2017-16532 (rhbz 1510835 1510854)
+- Fix CVE-2017-16538 (rhbz 1510826 1510854)
+
 * Mon Nov 06 2017 Laura Abbott <labbott@redhat.com>
 - Patches for ThinkPad X1 Carbon Gen5 Touchpad (rhbz 1509461)
 - Fix for KVM regression on some machines (rhbz 1490803)
