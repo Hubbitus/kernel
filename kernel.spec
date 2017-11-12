@@ -620,6 +620,9 @@ Patch314: qcom-msm-ci_hdrc_msm_probe-missing-of_node_get.patch
 # Hack until interconnect API lands upstream
 Patch315: qcom-clk-gpu-msm.patch
 
+# https://patchwork.kernel.org/patch/10054387/
+Patch316: USB-ulpi-fix-bus-node-lookup.patch
+
 # Fix USB on the RPi https://patchwork.kernel.org/patch/9879371/
 Patch321: bcm283x-dma-mapping-skip-USB-devices-when-configuring-DMA-during-probe.patch
 
