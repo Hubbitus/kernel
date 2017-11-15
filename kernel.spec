@@ -635,6 +635,8 @@ Patch323: bcm2837-bluetooth-support.patch
 
 Patch324: bcm283x-vc4-fixes.patch
 
+Patch325: rpi-graphics-fix.patch
+
 # https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/commit/?h=next-20170912&id=723288836628bc1c0855f3bb7b64b1803e4b9e4a
 Patch330: arm-of-restrict-dma-configuration.patch
 
@@ -2278,6 +2280,9 @@ fi
 #
 #
 %changelog
+* Wed Nov 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
+- Add fix for vc4 interupts
+
 * Wed Nov 08 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.12-300
 - Linux v4.13.12
 
