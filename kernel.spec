@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 12
+%define stable_update 13
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -665,6 +665,9 @@ Patch337: arm64-aw64-devices.patch
 
 # CVE-2017-7477 rhbz 1445207 1445208
 Patch502: CVE-2017-7477.patch
+
+# CVE-2017-15115 rhbz 1513346 1513345
+Patch503: sctp-do-not-peel-off-an-assoc-from-one-netns-to-another-one.patch
 
 # 600 - Patches for improved Bay and Cherry Trail device support
 # Below patches are submitted upstream, awaiting review / merging
@@ -2280,6 +2283,10 @@ fi
 #
 #
 %changelog
+* Wed Nov 15 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.13-300
+- Linux v4.13.13
+- Fix CVE-2017-15115 (rhbz 1513346 1513345)
+
 * Wed Nov 15 2017 Peter Robinson <pbrobinson@fedoraproject.org>
 - Add fix for vc4 interupts
 
