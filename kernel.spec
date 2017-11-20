@@ -54,7 +54,7 @@ Summary: The Linux kernel
 %if 0%{?released_kernel}
 
 # Do we have a -stable update to apply?
-%define stable_update 13
+%define stable_update 14
 # Set rpm version accordingly
 %if 0%{?stable_update}
 %define stablerev %{stable_update}
@@ -722,9 +722,6 @@ Patch636: v3-2-2-Input-synaptics---Lenovo-X1-Carbon-5-should-use-SMBUS-RMI.patch
 
 # rhbz 1490803
 Patch637: 1-2-kvm-vmx-Reinstate-support-for-CPUs-without-virtual-NMI.patch
-
-# CVE-2017-16532 rhbz 1510835 1510854
-Patch638: 0001-usb-usbtest-fix-NULL-pointer-dereference.patch
 
 # CVE-2017-16538 rhbz 1510826 1510854
 Patch639: CVE-2017-16538.patch
@@ -2283,6 +2280,9 @@ fi
 #
 #
 %changelog
+* Sun Nov 19 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.14-300
+- Linux v4.13.14
+
 * Wed Nov 15 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.13-300
 - Linux v4.13.13
 - Fix CVE-2017-15115 (rhbz 1513346 1513345)
