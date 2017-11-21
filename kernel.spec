@@ -720,6 +720,9 @@ Patch637: 1-2-kvm-vmx-Reinstate-support-for-CPUs-without-virtual-NMI.patch
 # CVE-2017-16538 rhbz 1510826 1510854
 Patch639: CVE-2017-16538.patch
 
+# rhbz 1507931
+Patch640: qxl_cursor_fix.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2274,6 +2277,9 @@ fi
 #
 #
 %changelog
+* Tue Nov 21 2017 Justin M. Forbes <jforbes@fedoraproject.org>
+- Fix cursor issues with QXL (rhbz 1507931)
+
 * Tue Nov 21 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.15-300
 - Linux v4.13.15
 
