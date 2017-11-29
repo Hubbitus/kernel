@@ -42,7 +42,7 @@ Summary: The Linux kernel
 # For non-released -rc kernels, this will be appended after the rcX and
 # gitX tags, so a 3 here would become part of release "0.rcX.gitX.3"
 #
-%global baserelease 300
+%global baserelease 301
 %global fedora_build %{baserelease}
 
 # base_sublevel is the kernel version we're starting with and patching
@@ -725,6 +725,13 @@ Patch640: qxl_cursor_fix.patch
 
 # rhbz 1462175
 Patch641: HID-rmi-Check-that-a-device-is-a-RMI-device-before-c.patch
+
+# rhbz 1518707
+Patch642: 0001-powerpc-64s-radix-Fix-128TB-512TB-virtual-address-bo.patch
+Patch643: 0002-powerpc-64s-hash-Fix-512T-hint-detection-to-use-128T.patch
+Patch644: 0003-powerpc-64s-hash-Fix-128TB-512TB-virtual-address-bou.patch
+Patch645: 0004-powerpc-64s-hash-Fix-fork-with-512TB-process-address.patch
+Patch646: 0005-powerpc-64s-hash-Allow-MAP_FIXED-allocations-to-cros.patch
 
 # END OF PATCH DEFINITIONS
 
@@ -2280,8 +2287,9 @@ fi
 #
 #
 %changelog
-* Wed Nov 29 2017 Jeremy Cline <jeremy@jcline.org>
+* Wed Nov 29 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.16-301
 - Fix USB null pointer dereference on ThinkPad X1 (rhbz 1462175)
+- Patches ppc64, ppc64le mm failure (rhbz 1518707)
 
 * Mon Nov 27 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.16-300
 - Linux v4.13.16
