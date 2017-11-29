@@ -723,6 +723,9 @@ Patch639: CVE-2017-16538.patch
 # rhbz 1507931
 Patch640: qxl_cursor_fix.patch
 
+# rhbz 1462175
+Patch641: HID-rmi-Check-that-a-device-is-a-RMI-device-before-c.patch
+
 # END OF PATCH DEFINITIONS
 
 %endif
@@ -2277,6 +2280,9 @@ fi
 #
 #
 %changelog
+* Wed Nov 29 2017 Jeremy Cline <jeremy@jcline.org>
+- Fix USB null pointer dereference on ThinkPad X1 (rhbz 1462175)
+
 * Mon Nov 27 2017 Jeremy Cline <jeremy@jcline.org> - 4.13.16-300
 - Linux v4.13.16
 - Fix CVE-2017-16649 (rhbz 1516267 1516274)
