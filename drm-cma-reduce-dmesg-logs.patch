@@ -1,0 +1,96 @@
+From patchwork Thu Oct  5 11:29:17 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v2] drm/gem-cma-helper: Change the level of the allocation failure
+ message
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+X-Patchwork-Id: 180737
+Message-Id: <20171005112917.15949-1-boris.brezillon@free-electrons.com>
+To: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ dri-devel@lists.freedesktop.org
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>
+Date: Thu,  5 Oct 2017 13:29:17 +0200
+
+drm_gem_cma_create() prints an error message when dma_alloc_wc() fails to
+allocate the amount of memory we requested. This can lead to annoying
+error messages when CMA is only one possible source of memory for the BO
+allocation. Turn this error message into a debug one.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Reviewed-by: Eric Engestrom <eric.engestrom@imgtec.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+---
+Changes in v2:
+- Remove __must_check attribute
+---
+ drivers/gpu/drm/drm_gem_cma_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+index 373e33f22be4..020e7668dfab 100644
+--- a/drivers/gpu/drm/drm_gem_cma_helper.c
++++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+@@ -112,7 +112,7 @@ struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
+ 	cma_obj->vaddr = dma_alloc_wc(drm->dev, size, &cma_obj->paddr,
+ 				      GFP_KERNEL | __GFP_NOWARN);
+ 	if (!cma_obj->vaddr) {
+-		dev_err(drm->dev, "failed to allocate buffer with size %zu\n",
++		dev_dbg(drm->dev, "failed to allocate buffer with size %zu\n",
+ 			size);
+ 		ret = -ENOMEM;
+ 		goto error;
+From patchwork Wed Oct  4 12:54:47 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: cma: Take __GFP_NOWARN into account in cma_alloc()
+From: Boris Brezillon <boris.brezillon@free-electrons.com>
+X-Patchwork-Id: 180554
+Message-Id: <20171004125447.15195-1-boris.brezillon@free-electrons.com>
+To: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+ Laura Abbott <labbott@redhat.com>
+Cc: Boris Brezillon <boris.brezillon@free-electrons.com>,
+ Jaewon Kim <jaewon31.kim@samsung.com>, dri-devel@lists.freedesktop.org
+Date: Wed,  4 Oct 2017 14:54:47 +0200
+
+cma_alloc() unconditionally prints an INFO message when the CMA
+allocation fails. Make this message conditional on the non-presence of
+__GFP_NOWARN in gfp_mask.
+
+Signed-off-by: Boris Brezillon <boris.brezillon@free-electrons.com>
+Acked-by: Laura Abbott <labbott@redhat.com>
+---
+Hello,
+
+This patch aims at removing INFO messages that are displayed when the
+VC4 driver tries to allocate buffer objects. From the driver perspective
+an allocation failure is acceptable, and the driver can possibly do
+something to make following allocation succeed (like flushing the VC4
+internal cache).
+
+Also, I don't understand why this message is only an INFO message, and
+not a WARN (pr_warn()). Please let me know if you have good reasons to
+keep it as an unconditional pr_info().
+
+Thanks,
+
+Boris
+---
+ mm/cma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/cma.c b/mm/cma.c
+index c0da318c020e..022e52bd8370 100644
+--- a/mm/cma.c
++++ b/mm/cma.c
+@@ -460,7 +460,7 @@ struct page *cma_alloc(struct cma *cma, size_t count, unsigned int align,
+ 
+ 	trace_cma_alloc(pfn, page, count, align);
+ 
+-	if (ret) {
++	if (ret && !(gfp_mask & __GFP_NOWARN)) {
+ 		pr_info("%s: alloc failed, req-size: %zu pages, ret: %d\n",
+ 			__func__, count, ret);
+ 		cma_debug_show_areas(cma);

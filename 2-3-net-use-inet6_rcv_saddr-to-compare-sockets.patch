@@ -1,0 +1,44 @@
+From patchwork Mon Sep 18 16:28:56 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [2/3] net: use inet6_rcv_saddr to compare sockets
+X-Patchwork-Submitter: Josef Bacik <josef@toxicpanda.com>
+X-Patchwork-Id: 815028
+X-Patchwork-Delegate: davem@davemloft.net
+Message-Id: <1505752137-15522-3-git-send-email-jbacik@fb.com>
+To: davem@davemloft.net, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, crobinso@redhat.com,
+ labbott@redhat.com, kernel-team@fb.com
+Cc: Josef Bacik <jbacik@fb.com>, stable@vger.kernel.org
+Date: Mon, 18 Sep 2017 12:28:56 -0400
+From: josef@toxicpanda.com
+List-Id: <netdev.vger.kernel.org>
+
+From: Josef Bacik <jbacik@fb.com>
+
+In ipv6_rcv_saddr_equal() we need to use inet6_rcv_saddr(sk) for the
+ipv6 compare with the fast socket information to make sure we're doing
+the proper comparisons.
+
+Cc: stable@vger.kernel.org
+Fixes: 637bc8bbe6c0 ("inet: reset tb->fastreuseport when adding a reuseport sk")
+Reported-and-tested-by: Cole Robinson <crobinso@redhat.com>
+Signed-off-by: Josef Bacik <jbacik@fb.com>
+---
+ net/ipv4/inet_connection_sock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+index f87f4805e244..a1bf30438bc5 100644
+--- a/net/ipv4/inet_connection_sock.c
++++ b/net/ipv4/inet_connection_sock.c
+@@ -266,7 +266,7 @@ static inline int sk_reuseport_match(struct inet_bind_bucket *tb,
+ #if IS_ENABLED(CONFIG_IPV6)
+ 	if (tb->fast_sk_family == AF_INET6)
+ 		return ipv6_rcv_saddr_equal(&tb->fast_v6_rcv_saddr,
+-					    &sk->sk_v6_rcv_saddr,
++					    inet6_rcv_saddr(sk),
+ 					    tb->fast_rcv_saddr,
+ 					    sk->sk_rcv_saddr,
+ 					    tb->fast_ipv6_only,

@@ -1,0 +1,642 @@
+From 98dc77d57169f51d100f8b0cb3e4d1e0911ef7a4 Mon Sep 17 00:00:00 2001
+From: Loic Poulain <loic.poulain@gmail.com>
+Date: Tue, 4 Jul 2017 12:57:56 +0200
+Subject: Bluetooth: hci_bcm: Make bcm_request_irq fail if no IRQ resource
+
+In case of no IRQ resource associated to the bcm_device, requesting
+IRQ should return an error in order to not enable low power mgmt.
+
+Signed-off-by: Loic Poulain <loic.poulain@gmail.com>
+Reported-by: Ian Molton <ian@mnementh.co.uk>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+---
+ drivers/bluetooth/hci_bcm.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 6a662d0..6b42372 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -176,7 +176,7 @@ static irqreturn_t bcm_host_wake(int irq, void *data)
+ static int bcm_request_irq(struct bcm_data *bcm)
+ {
+ 	struct bcm_device *bdev = bcm->dev;
+-	int err = 0;
++	int err;
+ 
+ 	/* If this is not a platform device, do not enable PM functionalities */
+ 	mutex_lock(&bcm_device_lock);
+@@ -185,21 +185,23 @@ static int bcm_request_irq(struct bcm_data *bcm)
+ 		goto unlock;
+ 	}
+ 
+-	if (bdev->irq > 0) {
+-		err = devm_request_irq(&bdev->pdev->dev, bdev->irq,
+-				       bcm_host_wake, IRQF_TRIGGER_RISING,
+-				       "host_wake", bdev);
+-		if (err)
+-			goto unlock;
++	if (bdev->irq <= 0) {
++		err = -EOPNOTSUPP;
++		goto unlock;
++	}
+ 
+-		device_init_wakeup(&bdev->pdev->dev, true);
++	err = devm_request_irq(&bdev->pdev->dev, bdev->irq, bcm_host_wake,
++			       IRQF_TRIGGER_RISING, "host_wake", bdev);
++	if (err)
++		goto unlock;
+ 
+-		pm_runtime_set_autosuspend_delay(&bdev->pdev->dev,
+-						 BCM_AUTOSUSPEND_DELAY);
+-		pm_runtime_use_autosuspend(&bdev->pdev->dev);
+-		pm_runtime_set_active(&bdev->pdev->dev);
+-		pm_runtime_enable(&bdev->pdev->dev);
+-	}
++	device_init_wakeup(&bdev->pdev->dev, true);
++
++	pm_runtime_set_autosuspend_delay(&bdev->pdev->dev,
++					 BCM_AUTOSUSPEND_DELAY);
++	pm_runtime_use_autosuspend(&bdev->pdev->dev);
++	pm_runtime_set_active(&bdev->pdev->dev);
++	pm_runtime_enable(&bdev->pdev->dev);
+ 
+ unlock:
+ 	mutex_unlock(&bcm_device_lock);
+-- 
+cgit v1.1
+
+From 74183a1c50a3c61e62d2e585107ea3c0b942a3ff Mon Sep 17 00:00:00 2001
+From: Marcel Holtmann <marcel@holtmann.org>
+Date: Wed, 16 Aug 2017 09:53:30 +0200
+Subject: Bluetooth: hci_bcm: Use operation speed of 4Mbps only for ACPI
+ devices
+
+Not all Broadcom controller support the 4Mbps operational speed on UART
+devices. This is because the UART clock setting changes might not be
+supported.
+
+  < HCI Command: Broadcom Write UART Clock Setting (0x3f|0x0045) plen 1
+         01                                               .
+  > HCI Event: Command Complete (0x0e) plen 4
+       Broadcom Write UART Clock Setting (0x3f|0x0045) ncmd 1
+         Status: Unknown HCI Command (0x01)
+
+To support any operational speed higher than 3Mbps, support for this
+command is required. With that respect it is better to not enforce any
+operational speed by default. Only when its support is known, then allow
+for higher operational speed.
+
+This patch assigns the 4Mbps opertional speed only for devices
+discovered through ACPI and leave all others at the default 115200.
+
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+---
+ drivers/bluetooth/hci_bcm.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 6b42372..1eb286a 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -59,6 +59,7 @@ struct bcm_device {
+ 	bool			clk_enabled;
+ 
+ 	u32			init_speed;
++	u32			oper_speed;
+ 	int			irq;
+ 	u8			irq_polarity;
+ 
+@@ -303,6 +304,7 @@ static int bcm_open(struct hci_uart *hu)
+ 		if (hu->tty->dev->parent == dev->pdev->dev.parent) {
+ 			bcm->dev = dev;
+ 			hu->init_speed = dev->init_speed;
++			hu->oper_speed = dev->oper_speed;
+ #ifdef CONFIG_PM
+ 			dev->hu = hu;
+ #endif
+@@ -699,8 +701,10 @@ static int bcm_resource(struct acpi_resource *ares, void *data)
+ 
+ 	case ACPI_RESOURCE_TYPE_SERIAL_BUS:
+ 		sb = &ares->data.uart_serial_bus;
+-		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_UART)
++		if (sb->type == ACPI_RESOURCE_SERIAL_TYPE_UART) {
+ 			dev->init_speed = sb->default_baud_rate;
++			dev->oper_speed = 4000000;
++		}
+ 		break;
+ 
+ 	default:
+@@ -853,7 +857,6 @@ static const struct hci_uart_proto bcm_proto = {
+ 	.name		= "Broadcom",
+ 	.manufacturer	= 15,
+ 	.init_speed	= 115200,
+-	.oper_speed	= 4000000,
+ 	.open		= bcm_open,
+ 	.close		= bcm_close,
+ 	.flush		= bcm_flush,
+-- 
+cgit v1.1
+
+From 33cd149e767be9afbab9fcd3d5165a2de62313c8 Mon Sep 17 00:00:00 2001
+From: Loic Poulain <loic.poulain@gmail.com>
+Date: Thu, 17 Aug 2017 19:59:51 +0200
+Subject: Bluetooth: hci_bcm: Add serdev support
+
+Add basic support for Broadcom serial slave devices.
+Probe the serial device, retrieve its maximum speed and
+register a new hci uart device.
+
+Tested/compatible with bcm43438 (RPi3).
+
+Signed-off-by: Loic Poulain <loic.poulain@gmail.com>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+---
+ drivers/bluetooth/Kconfig   |  1 +
+ drivers/bluetooth/hci_bcm.c | 85 +++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 84 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig
+index 3a6ead6..fae5a74 100644
+--- a/drivers/bluetooth/Kconfig
++++ b/drivers/bluetooth/Kconfig
+@@ -168,6 +168,7 @@ config BT_HCIUART_INTEL
+ config BT_HCIUART_BCM
+ 	bool "Broadcom protocol support"
+ 	depends on BT_HCIUART
++	depends on BT_HCIUART_SERDEV
+ 	select BT_HCIUART_H4
+ 	select BT_BCM
+ 	help
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 1eb286a..34882f1 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -27,6 +27,8 @@
+ #include <linux/firmware.h>
+ #include <linux/module.h>
+ #include <linux/acpi.h>
++#include <linux/of.h>
++#include <linux/property.h>
+ #include <linux/platform_device.h>
+ #include <linux/clk.h>
+ #include <linux/gpio/consumer.h>
+@@ -34,6 +36,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/dmi.h>
+ #include <linux/pm_runtime.h>
++#include <linux/serdev.h>
+ 
+ #include <net/bluetooth/bluetooth.h>
+ #include <net/bluetooth/hci_core.h>
+@@ -46,6 +49,7 @@
+ 
+ #define BCM_AUTOSUSPEND_DELAY	5000 /* default autosleep delay */
+ 
++/* platform device driver resources */
+ struct bcm_device {
+ 	struct list_head	list;
+ 
+@@ -69,6 +73,12 @@ struct bcm_device {
+ #endif
+ };
+ 
++/* serdev driver resources */
++struct bcm_serdev {
++	struct hci_uart hu;
++};
++
++/* generic bcm uart resources */
+ struct bcm_data {
+ 	struct sk_buff		*rx_skb;
+ 	struct sk_buff_head	txq;
+@@ -80,6 +90,14 @@ struct bcm_data {
+ static DEFINE_MUTEX(bcm_device_lock);
+ static LIST_HEAD(bcm_device_list);
+ 
++static inline void host_set_baudrate(struct hci_uart *hu, unsigned int speed)
++{
++	if (hu->serdev)
++		serdev_device_set_baudrate(hu->serdev, speed);
++	else
++		hci_uart_set_baudrate(hu, speed);
++}
++
+ static int bcm_set_baudrate(struct hci_uart *hu, unsigned int speed)
+ {
+ 	struct hci_dev *hdev = hu->hdev;
+@@ -290,6 +308,14 @@ static int bcm_open(struct hci_uart *hu)
+ 
+ 	hu->priv = bcm;
+ 
++	/* If this is a serdev defined device, then only use
++	 * serdev open primitive and skip the rest.
++	 */
++	if (hu->serdev) {
++		serdev_device_open(hu->serdev);
++		goto out;
++	}
++
+ 	if (!hu->tty->dev)
+ 		goto out;
+ 
+@@ -325,6 +351,12 @@ static int bcm_close(struct hci_uart *hu)
+ 
+ 	bt_dev_dbg(hu->hdev, "hu %p", hu);
+ 
++	/* If this is a serdev defined device, only use serdev
++	 * close primitive and then continue as usual.
++	 */
++	if (hu->serdev)
++		serdev_device_close(hu->serdev);
++
+ 	/* Protect bcm->dev against removal of the device or driver */
+ 	mutex_lock(&bcm_device_lock);
+ 	if (bcm_device_exists(bdev)) {
+@@ -400,7 +432,7 @@ static int bcm_setup(struct hci_uart *hu)
+ 		speed = 0;
+ 
+ 	if (speed)
+-		hci_uart_set_baudrate(hu, speed);
++		host_set_baudrate(hu, speed);
+ 
+ 	/* Operational speed if any */
+ 	if (hu->oper_speed)
+@@ -413,7 +445,7 @@ static int bcm_setup(struct hci_uart *hu)
+ 	if (speed) {
+ 		err = bcm_set_baudrate(hu, speed);
+ 		if (!err)
+-			hci_uart_set_baudrate(hu, speed);
++			host_set_baudrate(hu, speed);
+ 	}
+ 
+ finalize:
+@@ -906,9 +938,57 @@ static struct platform_driver bcm_driver = {
+ 	},
+ };
+ 
++static int bcm_serdev_probe(struct serdev_device *serdev)
++{
++	struct bcm_serdev *bcmdev;
++	u32 speed;
++	int err;
++
++	bcmdev = devm_kzalloc(&serdev->dev, sizeof(*bcmdev), GFP_KERNEL);
++	if (!bcmdev)
++		return -ENOMEM;
++
++	bcmdev->hu.serdev = serdev;
++	serdev_device_set_drvdata(serdev, bcmdev);
++
++	err = device_property_read_u32(&serdev->dev, "max-speed", &speed);
++	if (!err)
++		bcmdev->hu.oper_speed = speed;
++
++	return hci_uart_register_device(&bcmdev->hu, &bcm_proto);
++}
++
++static void bcm_serdev_remove(struct serdev_device *serdev)
++{
++	struct bcm_serdev *bcmdev = serdev_device_get_drvdata(serdev);
++
++	hci_uart_unregister_device(&bcmdev->hu);
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id bcm_bluetooth_of_match[] = {
++	{ .compatible = "brcm,bcm43438-bt" },
++	{ },
++};
++MODULE_DEVICE_TABLE(of, bcm_bluetooth_of_match);
++#endif
++
++static struct serdev_device_driver bcm_serdev_driver = {
++	.probe = bcm_serdev_probe,
++	.remove = bcm_serdev_remove,
++	.driver = {
++		.name = "hci_uart_bcm",
++		.of_match_table = of_match_ptr(bcm_bluetooth_of_match),
++	},
++};
++
+ int __init bcm_init(void)
+ {
++	/* For now, we need to keep both platform device
++	 * driver (ACPI generated) and serdev driver (DT).
++	 */
+ 	platform_driver_register(&bcm_driver);
++	serdev_device_driver_register(&bcm_serdev_driver);
+ 
+ 	return hci_uart_register_proto(&bcm_proto);
+ }
+@@ -916,6 +996,7 @@ int __init bcm_init(void)
+ int __exit bcm_deinit(void)
+ {
+ 	platform_driver_unregister(&bcm_driver);
++	serdev_device_driver_unregister(&bcm_serdev_driver);
+ 
+ 	return hci_uart_unregister_proto(&bcm_proto);
+ }
+-- 
+cgit v1.1
+
+From 01d5e44ace8a20fc51e0d530f98acb3c365345a5 Mon Sep 17 00:00:00 2001
+From: Marcel Holtmann <marcel@holtmann.org>
+Date: Thu, 17 Aug 2017 21:41:09 +0200
+Subject: Bluetooth: hci_bcm: Handle empty packet after firmware loading
+
+The Broadcom controller on the Raspberry Pi3 sends an empty packet with
+packet type 0x00 after launching the firmware. This will cause logging
+of errors.
+
+  Bluetooth: hci0: Frame reassembly failed (-84)
+
+Since this seems to be an intented behaviour of the controller, handle
+it gracefully by parsing that empty packet with packet type 0x00 and
+then just simply report it as diagnostic packet.
+
+With that change no errors are logging and the packet itself is actually
+recorded in the Bluetooth monitor traces.
+
+  < HCI Command: Broadcom Launch RAM (0x3f|0x004e) plen 4
+         Address: 0xffffffff
+  > HCI Event: Command Complete (0x0e) plen 4
+       Broadcom Launch RAM (0x3f|0x004e) ncmd 1
+         Status: Success (0x00)
+  = Vendor Diagnostic (len 0)
+  < HCI Command: Broadcom Update UART Baud Rate (0x3f|0x0018) plen 6
+         00 00 00 10 0e 00                                ......
+  > HCI Event: Command Complete (0x0e) plen 4
+       Broadcom Update UART Baud Rate (0x3f|0x0018) ncmd 1
+         Status: Success (0x00)
+  < HCI Command: Reset (0x03|0x0003) plen 0
+  > HCI Event: Command Complete (0x0e) plen 4
+       Reset (0x03|0x0003) ncmd 1
+         Status: Success (0x00)
+
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+Signed-off-by: Johan Hedberg <johan.hedberg@intel.com>
+---
+ drivers/bluetooth/hci_bcm.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/bluetooth/hci_bcm.c b/drivers/bluetooth/hci_bcm.c
+index 34882f1..e254011 100644
+--- a/drivers/bluetooth/hci_bcm.c
++++ b/drivers/bluetooth/hci_bcm.c
+@@ -44,6 +44,9 @@
+ #include "btbcm.h"
+ #include "hci_uart.h"
+ 
++#define BCM_NULL_PKT 0x00
++#define BCM_NULL_SIZE 0
++
+ #define BCM_LM_DIAG_PKT 0x07
+ #define BCM_LM_DIAG_SIZE 63
+ 
+@@ -468,11 +471,19 @@ finalize:
+ 	.lsize = 0, \
+ 	.maxlen = BCM_LM_DIAG_SIZE
+ 
++#define BCM_RECV_NULL \
++	.type = BCM_NULL_PKT, \
++	.hlen = BCM_NULL_SIZE, \
++	.loff = 0, \
++	.lsize = 0, \
++	.maxlen = BCM_NULL_SIZE
++
+ static const struct h4_recv_pkt bcm_recv_pkts[] = {
+ 	{ H4_RECV_ACL,      .recv = hci_recv_frame },
+ 	{ H4_RECV_SCO,      .recv = hci_recv_frame },
+ 	{ H4_RECV_EVENT,    .recv = hci_recv_frame },
+ 	{ BCM_RECV_LM_DIAG, .recv = hci_recv_diag  },
++	{ BCM_RECV_NULL,    .recv = hci_recv_diag  },
+ };
+ 
+ static int bcm_recv(struct hci_uart *hu, const void *data, int count)
+-- 
+cgit v1.1
+
+From c34dc3bfa7642fda423208579015d615f7becfa0 Mon Sep 17 00:00:00 2001
+From: Ian Molton <ian@mnementh.co.uk>
+Date: Sat, 8 Jul 2017 17:37:41 +0100
+Subject: Bluetooth: hci_serdev: Introduce hci_uart_unregister_device()
+
+Several drivers have the same (and incorrect) code in their
+_remove() handler.
+
+Coalesce this into a shared function.
+
+Signed-off-by: Ian Molton <ian@mnementh.co.uk>
+Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.co.uk>
+Signed-off-by: Marcel Holtmann <marcel@holtmann.org>
+---
+ drivers/bluetooth/hci_serdev.c | 13 +++++++++++++
+ drivers/bluetooth/hci_uart.h   |  1 +
+ 2 files changed, 14 insertions(+)
+
+diff --git a/drivers/bluetooth/hci_serdev.c b/drivers/bluetooth/hci_serdev.c
+index aea9301..b725ac4 100644
+--- a/drivers/bluetooth/hci_serdev.c
++++ b/drivers/bluetooth/hci_serdev.c
+@@ -354,3 +354,16 @@ err_alloc:
+ 	return err;
+ }
+ EXPORT_SYMBOL_GPL(hci_uart_register_device);
++
++void hci_uart_unregister_device(struct hci_uart *hu)
++{
++	struct hci_dev *hdev = hu->hdev;
++
++	hci_unregister_dev(hdev);
++	hci_free_dev(hdev);
++
++	cancel_work_sync(&hu->write_work);
++
++	hu->proto->close(hu);
++}
++EXPORT_SYMBOL_GPL(hci_uart_unregister_device);
+diff --git a/drivers/bluetooth/hci_uart.h b/drivers/bluetooth/hci_uart.h
+index c6e9e1c..d9cd95d 100644
+--- a/drivers/bluetooth/hci_uart.h
++++ b/drivers/bluetooth/hci_uart.h
+@@ -112,6 +112,7 @@ struct hci_uart {
+ int hci_uart_register_proto(const struct hci_uart_proto *p);
+ int hci_uart_unregister_proto(const struct hci_uart_proto *p);
+ int hci_uart_register_device(struct hci_uart *hu, const struct hci_uart_proto *p);
++void hci_uart_unregister_device(struct hci_uart *hu);
+ 
+ int hci_uart_tx_wakeup(struct hci_uart *hu);
+ int hci_uart_init_ready(struct hci_uart *hu);
+-- 
+cgit v1.1
+
+From patchwork Thu Aug 17 17:59:48 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [v4,1/4] dt-bindings: net: bluetooth: Add broadcom-bluetooth
+X-Patchwork-Submitter: Loic Poulain <loic.poulain@gmail.com>
+X-Patchwork-Id: 802828
+Message-Id: <1502992791-10265-1-git-send-email-loic.poulain@gmail.com>
+To: robh+dt@kernel.org, f.fainelli@gmail.com, rjui@broadcom.com,
+ marcel@holtmann.org, johan.hedberg@gmail.com, stefan.wahren@i2se.com
+Cc: devicetree@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, Loic Poulain <loic.poulain@gmail.com>
+Date: Thu, 17 Aug 2017 19:59:48 +0200
+From: Loic Poulain <loic.poulain@gmail.com>
+List-Id: <devicetree.vger.kernel.org>
+
+Add binding document for serial bluetooth chips using
+Broadcom protocol.
+
+Signed-off-by: Loic Poulain <loic.poulain@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+---
+ v2: dt-bindings as separate patch
+     rebase on upcoming pi3 dts changes
+ v3: changes in bcm serdev drivers:
+     name refactoring and additional comments
+     Add generic host_set_baudrate method
+     Use agnostic device_property_read
+ v4: changes in doc and dts:
+     Add additional params to broadcom bt dt-bindings
+     Set the max baudrate to 2000000 instead of 921600
+     use chosen/stdout-path instead of console=
+     remove useless earlyprintk
+     same changes in bcm283x.dtsi
+
+ .../devicetree/bindings/net/broadcom-bluetooth.txt | 35 ++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/broadcom-bluetooth.txt
+
+diff --git a/Documentation/devicetree/bindings/net/broadcom-bluetooth.txt b/Documentation/devicetree/bindings/net/broadcom-bluetooth.txt
+new file mode 100644
+index 0000000..4194ff7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/broadcom-bluetooth.txt
+@@ -0,0 +1,35 @@
++Broadcom Bluetooth Chips
++---------------------
++
++This documents the binding structure and common properties for serial
++attached Broadcom devices.
++
++Serial attached Broadcom devices shall be a child node of the host UART
++device the slave device is attached to.
++
++Required properties:
++
++ - compatible: should contain one of the following:
++   * "brcm,bcm43438-bt"
++
++Optional properties:
++
++ - max-speed: see Documentation/devicetree/bindings/serial/slave-device.txt
++ - shutdown-gpios: GPIO specifier, used to enable the BT module
++ - device-wakeup-gpios: GPIO specifier, used to wakeup the controller
++ - host-wakeup-gpios: GPIO specifier, used to wakeup the host processor
++ - clocks: clock specifier if external clock provided to the controller
++ - clock-names: should be "extclk"
++
++
++Example:
++
++&uart2 {
++       pinctrl-names = "default";
++       pinctrl-0 = <&uart2_pins>;
++
++       bluetooth {
++               compatible = "brcm,bcm43438-bt";
++               max-speed = <921600>;
++       };
++};
+From a92507095467d77f4fd05f54ae8d299459c2c3a3 Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Sun, 10 Sep 2017 19:29:23 +0100
+Subject: [PATCH 1/2] ARM: dts: bcm283x: Use stdout-path instead of console
+ bootarg
+
+Add the serial port config to "chosen/stdout-path".
+Create serial0/1 aliases referring to uart0 ant uart1 paths.
+Remove unneeded earlyprintk.
+
+Signed-off-by: Loic Poulain <loic.poulain@xxxxxxxxx>
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+---
+ arch/arm/boot/dts/bcm283x.dtsi | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/bcm283x.dtsi b/arch/arm/boot/dts/bcm283x.dtsi
+index 431dcfc900c0..013431e3d7c3 100644
+--- a/arch/arm/boot/dts/bcm283x.dtsi
++++ b/arch/arm/boot/dts/bcm283x.dtsi
+@@ -20,8 +20,13 @@
+ 	#address-cells = <1>;
+ 	#size-cells = <1>;
+ 
++	aliases {
++		serial0 = &uart0;
++		serial1 = &uart1;
++	};
++
+ 	chosen {
+-		bootargs = "earlyprintk console=ttyAMA0";
++		stdout-path = "serial0:115200n8";
+ 	};
+ 
+ 	thermal-zones {
+-- 
+2.13.5
+
+From 50252c318fe2fcfcbd0832fa835e7fd1fafd7d2d Mon Sep 17 00:00:00 2001
+From: Peter Robinson <pbrobinson@gmail.com>
+Date: Sun, 10 Sep 2017 19:30:02 +0100
+Subject: [PATCH 2/2] ARM: dts: bcm2837-rpi-3-b: Add bcm43438 serial slave
+
+Add BCM43438 (bluetooth) as a slave device of uart0 (pl011/ttyAMA0).
+This allows to automatically insert the bcm43438 to the bluetooth
+subsystem instead of relying on userspace helpers (hciattach).
+
+Overwrite chosen/stdout-path to use 8250 aux uart as console.
+
+Signed-off-by: Loic Poulain <loic.poulain@xxxxxxxxx>
+Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
+---
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+index 20725ca487f3..e4488cb3067e 100644
+--- a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -8,6 +8,11 @@
+ 	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
+ 	model = "Raspberry Pi 3 Model B";
+ 
++	chosen {
++		/* 8250 auxiliar UART instead of pl011 */
++		stdout-path = "serial1:115200n8";
++	};
++
+ 	memory {
+ 		reg = <0 0x40000000>;
+ 	};
+@@ -24,6 +29,11 @@
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&uart0_gpio32 &gpclk2_gpio43>;
+ 	status = "okay";
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		max-speed = <2000000>;
++	};
+ };
+ 
+ /* uart1 is mapped to the pin header */
+-- 
+2.13.5
+

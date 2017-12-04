@@ -1,0 +1,238 @@
+From 333e2a813cdfb86ff286ece6f13bec371aa03d7b Mon Sep 17 00:00:00 2001
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Date: Thu, 17 Aug 2017 13:37:06 +0100
+Subject: [PATCH] drm/i915: Boost GPU clocks if we miss the pageflip's vblank
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+If we miss the current vblank because the gpu was busy, that may cause a
+jitter as the frame rate temporarily drops. We try to limit the impact
+of this by then boosting the GPU clock to deliver the frame as quickly
+as possible. Originally done in commit 6ad790c0f5ac ("drm/i915: Boost GPU
+frequency if we detect outstanding pageflips") but was never forward
+ported to atomic and finally dropped in commit fd3a40242e87 ("drm/i915:
+Rip out legacy page_flip completion/irq handling").
+
+One of the most typical use-cases for this is a mostly idle desktop.
+Rendering one frame of the desktop's frontbuffer can easily be
+accomplished by the GPU running at low frequency, but often exceeds
+the time budget of the desktop compositor. The result is that animations
+such as opening the menu, doing a fullscreen switch, or even just trying
+to move a window around are slow and jerky. We need to respond within a
+frame to give the best impression of a smooth UX, as a compromise we
+instead respond if that first frame misses its goal. The result should
+be a near-imperceivable initial delay and a smooth animation even
+starting from idle. The cost, as ever, is that we spend more power than
+is strictly necessary as we overestimate the required GPU frequency and
+then try to ramp down.
+
+This of course is reactionary, too little, too late; nevertheless it is
+surprisingly effective.
+
+Bugzilla: https://bugs.freedesktop.org/show_bug.cgi?id=102199
+Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Cc: Daniel Vetter <daniel.vetter@intel.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/20170817123706.6777-1-chris@chris-wilson.co.uk
+Tested-by: Lyude Paul <lyude@redhat.com>
+Reviewed-by: Radoslaw Szwichtenberg <radoslaw.szwichtenberg@intel.com>
+---
+ drivers/gpu/drm/i915/i915_gem.c      | 10 +++---
+ drivers/gpu/drm/i915/intel_display.c | 63 ++++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/i915/intel_pm.c      | 14 ++++----
+ 3 files changed, 77 insertions(+), 10 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/i915_gem.c b/drivers/gpu/drm/i915/i915_gem.c
+index 969bac8404f1..7d409b29d75a 100644
+--- a/drivers/gpu/drm/i915/i915_gem.c
++++ b/drivers/gpu/drm/i915/i915_gem.c
+@@ -355,6 +355,7 @@ i915_gem_object_wait_fence(struct dma_fence *fence,
+ 			   long timeout,
+ 			   struct intel_rps_client *rps)
+ {
++	unsigned long irq_flags;
+ 	struct drm_i915_gem_request *rq;
+ 
+ 	BUILD_BUG_ON(I915_WAIT_INTERRUPTIBLE != 0x1);
+@@ -410,9 +411,9 @@ i915_gem_object_wait_fence(struct dma_fence *fence,
+ 		 * Compensate by giving the synchronous client credit for
+ 		 * a waitboost next time.
+ 		 */
+-		spin_lock(&rq->i915->rps.client_lock);
++		spin_lock_irqsave(&rq->i915->rps.client_lock, irq_flags);
+ 		list_del_init(&rps->link);
+-		spin_unlock(&rq->i915->rps.client_lock);
++		spin_unlock_irqrestore(&rq->i915->rps.client_lock, irq_flags);
+ 	}
+ 
+ 	return timeout;
+@@ -5029,6 +5030,7 @@ void i915_gem_release(struct drm_device *dev, struct drm_file *file)
+ {
+ 	struct drm_i915_file_private *file_priv = file->driver_priv;
+ 	struct drm_i915_gem_request *request;
++	unsigned long flags;
+ 
+ 	/* Clean up our request list when the client is going away, so that
+ 	 * later retire_requests won't dereference our soon-to-be-gone
+@@ -5040,9 +5042,9 @@ void i915_gem_release(struct drm_device *dev, struct drm_file *file)
+ 	spin_unlock(&file_priv->mm.lock);
+ 
+ 	if (!list_empty(&file_priv->rps.link)) {
+-		spin_lock(&to_i915(dev)->rps.client_lock);
++		spin_lock_irqsave(&to_i915(dev)->rps.client_lock, flags);
+ 		list_del(&file_priv->rps.link);
+-		spin_unlock(&to_i915(dev)->rps.client_lock);
++		spin_unlock_irqrestore(&to_i915(dev)->rps.client_lock, flags);
+ 	}
+ }
+ 
+diff --git a/drivers/gpu/drm/i915/intel_display.c b/drivers/gpu/drm/i915/intel_display.c
+index 022125082649..875eb7aec2f1 100644
+--- a/drivers/gpu/drm/i915/intel_display.c
++++ b/drivers/gpu/drm/i915/intel_display.c
+@@ -13301,6 +13301,58 @@ static const struct drm_crtc_funcs intel_crtc_funcs = {
+ 	.set_crc_source = intel_crtc_set_crc_source,
+ };
+ 
++struct wait_rps_boost {
++	struct wait_queue_entry wait;
++
++	struct drm_crtc *crtc;
++	struct drm_i915_gem_request *request;
++};
++
++static int do_rps_boost(struct wait_queue_entry *_wait,
++			unsigned mode, int sync, void *key)
++{
++	struct wait_rps_boost *wait = container_of(_wait, typeof(*wait), wait);
++	struct drm_i915_gem_request *rq = wait->request;
++
++	gen6_rps_boost(rq->i915, NULL, rq->emitted_jiffies);
++	i915_gem_request_put(rq);
++
++	drm_crtc_vblank_put(wait->crtc);
++
++	list_del(&wait->wait.entry);
++	kfree(wait);
++	return 1;
++}
++
++static void add_rps_boost_after_vblank(struct drm_crtc *crtc,
++				       struct dma_fence *fence)
++{
++	struct wait_rps_boost *wait;
++
++	if (!dma_fence_is_i915(fence))
++		return;
++
++	if (INTEL_GEN(to_i915(crtc->dev)) < 6)
++		return;
++
++	if (drm_crtc_vblank_get(crtc))
++		return;
++
++	wait = kmalloc(sizeof(*wait), GFP_KERNEL);
++	if (!wait) {
++		drm_crtc_vblank_put(crtc);
++		return;
++	}
++
++	wait->request = to_request(dma_fence_get(fence));
++	wait->crtc = crtc;
++
++	wait->wait.func = do_rps_boost;
++	wait->wait.flags = 0;
++
++	add_wait_queue(drm_crtc_vblank_waitqueue(crtc), &wait->wait);
++}
++
+ /**
+  * intel_prepare_plane_fb - Prepare fb for usage on plane
+  * @plane: drm plane to prepare for
+@@ -13392,6 +13444,8 @@ intel_prepare_plane_fb(struct drm_plane *plane,
+ 		return 0;
+ 
+ 	if (!new_state->fence) { /* implicit fencing */
++		struct dma_fence *fence;
++
+ 		ret = i915_sw_fence_await_reservation(&intel_state->commit_ready,
+ 						      obj->resv, NULL,
+ 						      false, I915_FENCE_TIMEOUT,
+@@ -13399,7 +13453,16 @@ intel_prepare_plane_fb(struct drm_plane *plane,
+ 		if (ret < 0)
+ 			return ret;
+ 
++		fence = reservation_object_get_excl_rcu(obj->resv);
++		if (fence) {
++			add_rps_boost_after_vblank(new_state->crtc, fence);
++			dma_fence_put(fence);
++		}
++
+ 		i915_gem_object_wait_priority(obj, 0, I915_PRIORITY_DISPLAY);
++
++	} else {
++		add_rps_boost_after_vblank(new_state->crtc, new_state->fence);
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/i915/intel_pm.c b/drivers/gpu/drm/i915/intel_pm.c
+index 40b224b44d1b..b0ee9c4d33f4 100644
+--- a/drivers/gpu/drm/i915/intel_pm.c
++++ b/drivers/gpu/drm/i915/intel_pm.c
+@@ -6108,6 +6108,7 @@ void gen6_rps_busy(struct drm_i915_private *dev_priv)
+ 
+ void gen6_rps_idle(struct drm_i915_private *dev_priv)
+ {
++	unsigned long flags;
+ 	/* Flush our bottom-half so that it does not race with us
+ 	 * setting the idle frequency and so that it is bounded by
+ 	 * our rpm wakeref. And then disable the interrupts to stop any
+@@ -6127,16 +6128,17 @@ void gen6_rps_idle(struct drm_i915_private *dev_priv)
+ 	}
+ 	mutex_unlock(&dev_priv->rps.hw_lock);
+ 
+-	spin_lock(&dev_priv->rps.client_lock);
++	spin_lock_irqsave(&dev_priv->rps.client_lock, flags);
+ 	while (!list_empty(&dev_priv->rps.clients))
+ 		list_del_init(dev_priv->rps.clients.next);
+-	spin_unlock(&dev_priv->rps.client_lock);
++	spin_unlock_irqrestore(&dev_priv->rps.client_lock, flags);
+ }
+ 
+ void gen6_rps_boost(struct drm_i915_private *dev_priv,
+ 		    struct intel_rps_client *rps,
+ 		    unsigned long submitted)
+ {
++	unsigned long flags;
+ 	/* This is intentionally racy! We peek at the state here, then
+ 	 * validate inside the RPS worker.
+ 	 */
+@@ -6151,14 +6153,14 @@ void gen6_rps_boost(struct drm_i915_private *dev_priv,
+ 	if (rps && time_after(jiffies, submitted + DRM_I915_THROTTLE_JIFFIES))
+ 		rps = NULL;
+ 
+-	spin_lock(&dev_priv->rps.client_lock);
++	spin_lock_irqsave(&dev_priv->rps.client_lock, flags);
+ 	if (rps == NULL || list_empty(&rps->link)) {
+-		spin_lock_irq(&dev_priv->irq_lock);
++		spin_lock(&dev_priv->irq_lock);
+ 		if (dev_priv->rps.interrupts_enabled) {
+ 			dev_priv->rps.client_boost = true;
+ 			schedule_work(&dev_priv->rps.work);
+ 		}
+-		spin_unlock_irq(&dev_priv->irq_lock);
++		spin_unlock(&dev_priv->irq_lock);
+ 
+ 		if (rps != NULL) {
+ 			list_add(&rps->link, &dev_priv->rps.clients);
+@@ -6166,7 +6168,7 @@ void gen6_rps_boost(struct drm_i915_private *dev_priv,
+ 		} else
+ 			dev_priv->rps.boosts++;
+ 	}
+-	spin_unlock(&dev_priv->rps.client_lock);
++	spin_unlock_irqrestore(&dev_priv->rps.client_lock, flags);
+ }
+ 
+ int intel_set_rps(struct drm_i915_private *dev_priv, u8 val)

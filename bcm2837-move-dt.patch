@@ -1,0 +1,516 @@
+From 3bfe25fa9f8a56c5c877c7fd854d89238787c6d8 Mon Sep 17 00:00:00 2001
+From: Eric Anholt <eric@anholt.net>
+Date: Wed, 26 Jul 2017 13:01:56 -0700
+Subject: ARM: dts: bcm283x: Move the BCM2837 DT contents from arm64 to arm.
+
+BCM2837 is somewhat unusual in that we build its DT on both arm32 and
+arm64.  Most devices are being run in arm32 mode.
+
+Having the body of the DT for 2837 separate from 2835/6 has been a
+source of pain, as we often need to make changes that span both
+directories simultaneously (for example, the thermal changes for 4.13,
+or anything that changes the name of a node referenced by '&' from
+board files).  Other changes are made more complicated than they need
+to be, such as the SDHOST enabling, because we have to split a single
+logical change into a 283[56] half and a 2837 half.
+
+To fix this, make the stub board include file live in arm64 instead of
+arm32, and keep all of BCM283x's contents in arm32.  From here on, our
+changes to DT contents can be submitted through a single tree.
+
+Signed-off-by: Eric Anholt <eric@anholt.net>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts              | 42 ++++++++++-
+ arch/arm/boot/dts/bcm2837.dtsi                     | 86 ++++++++++++++++++++++
+ arch/arm64/boot/dts/broadcom/bcm2835-rpi.dtsi      |  1 -
+ arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts   | 42 +----------
+ arch/arm64/boot/dts/broadcom/bcm2837.dtsi          | 86 ----------------------
+ .../boot/dts/broadcom/bcm283x-rpi-smsc9514.dtsi    |  1 -
+ .../boot/dts/broadcom/bcm283x-rpi-usb-host.dtsi    |  1 -
+ arch/arm64/boot/dts/broadcom/bcm283x.dtsi          |  1 -
+ 8 files changed, 128 insertions(+), 132 deletions(-)
+ create mode 100644 arch/arm/boot/dts/bcm2837.dtsi
+ delete mode 120000 arch/arm64/boot/dts/broadcom/bcm2835-rpi.dtsi
+ delete mode 100644 arch/arm64/boot/dts/broadcom/bcm2837.dtsi
+ delete mode 120000 arch/arm64/boot/dts/broadcom/bcm283x-rpi-smsc9514.dtsi
+ delete mode 120000 arch/arm64/boot/dts/broadcom/bcm283x-rpi-usb-host.dtsi
+ delete mode 120000 arch/arm64/boot/dts/broadcom/bcm283x.dtsi
+
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+index c72a27d..972f14d 100644
+--- a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -1 +1,41 @@
+-#include "arm64/broadcom/bcm2837-rpi-3-b.dts"
++/dts-v1/;
++#include "bcm2837.dtsi"
++#include "bcm2835-rpi.dtsi"
++#include "bcm283x-rpi-smsc9514.dtsi"
++#include "bcm283x-rpi-usb-host.dtsi"
++
++/ {
++	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
++	model = "Raspberry Pi 3 Model B";
++
++	memory {
++		reg = <0 0x40000000>;
++	};
++
++	leds {
++		act {
++			gpios = <&gpio 47 0>;
++		};
++	};
++};
++
++&uart1 {
++	status = "okay";
++};
++
++/* SDHCI is used to control the SDIO for wireless */
++&sdhci {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emmc_gpio34>;
++	status = "okay";
++	bus-width = <4>;
++	non-removable;
++};
++
++/* SDHOST is used to drive the SD card */
++&sdhost {
++	pinctrl-names = "default";
++	pinctrl-0 = <&sdhost_gpio48>;
++	status = "okay";
++	bus-width = <4>;
++};
+diff --git a/arch/arm/boot/dts/bcm2837.dtsi b/arch/arm/boot/dts/bcm2837.dtsi
+new file mode 100644
+index 0000000..2d5de6f0
+--- /dev/null
++++ b/arch/arm/boot/dts/bcm2837.dtsi
+@@ -0,0 +1,86 @@
++#include "bcm283x.dtsi"
++
++/ {
++	compatible = "brcm,bcm2837";
++
++	soc {
++		ranges = <0x7e000000 0x3f000000 0x1000000>,
++			 <0x40000000 0x40000000 0x00001000>;
++		dma-ranges = <0xc0000000 0x00000000 0x3f000000>;
++
++		local_intc: local_intc {
++			compatible = "brcm,bcm2836-l1-intc";
++			reg = <0x40000000 0x100>;
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			interrupt-parent = <&local_intc>;
++		};
++	};
++
++	timer {
++		compatible = "arm,armv7-timer";
++		interrupt-parent = <&local_intc>;
++		interrupts = <0>, // PHYS_SECURE_PPI
++			     <1>, // PHYS_NONSECURE_PPI
++			     <3>, // VIRT_PPI
++			     <2>; // HYP_PPI
++		always-on;
++	};
++
++	cpus: cpus {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		cpu0: cpu@0 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <0>;
++			enable-method = "spin-table";
++			cpu-release-addr = <0x0 0x000000d8>;
++		};
++
++		cpu1: cpu@1 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <1>;
++			enable-method = "spin-table";
++			cpu-release-addr = <0x0 0x000000e0>;
++		};
++
++		cpu2: cpu@2 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <2>;
++			enable-method = "spin-table";
++			cpu-release-addr = <0x0 0x000000e8>;
++		};
++
++		cpu3: cpu@3 {
++			device_type = "cpu";
++			compatible = "arm,cortex-a53";
++			reg = <3>;
++			enable-method = "spin-table";
++			cpu-release-addr = <0x0 0x000000f0>;
++		};
++	};
++};
++
++/* Make the BCM2835-style global interrupt controller be a child of the
++ * CPU-local interrupt controller.
++ */
++&intc {
++	compatible = "brcm,bcm2836-armctrl-ic";
++	reg = <0x7e00b200 0x200>;
++	interrupt-parent = <&local_intc>;
++	interrupts = <8>;
++};
++
++&cpu_thermal {
++	coefficients = <(-538)	412000>;
++};
++
++/* enable thermal sensor with the correct compatible property set */
++&thermal {
++	compatible = "brcm,bcm2837-thermal";
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2835-rpi.dtsi b/arch/arm64/boot/dts/broadcom/bcm2835-rpi.dtsi
+deleted file mode 120000
+index 3937b77..0000000
+--- a/arch/arm64/boot/dts/broadcom/bcm2835-rpi.dtsi
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../arm/boot/dts/bcm2835-rpi.dtsi
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts b/arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts
+index 972f14d..699d340 100644
+--- a/arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts
++++ b/arch/arm64/boot/dts/broadcom/bcm2837-rpi-3-b.dts
+@@ -1,41 +1 @@
+-/dts-v1/;
+-#include "bcm2837.dtsi"
+-#include "bcm2835-rpi.dtsi"
+-#include "bcm283x-rpi-smsc9514.dtsi"
+-#include "bcm283x-rpi-usb-host.dtsi"
+-
+-/ {
+-	compatible = "raspberrypi,3-model-b", "brcm,bcm2837";
+-	model = "Raspberry Pi 3 Model B";
+-
+-	memory {
+-		reg = <0 0x40000000>;
+-	};
+-
+-	leds {
+-		act {
+-			gpios = <&gpio 47 0>;
+-		};
+-	};
+-};
+-
+-&uart1 {
+-	status = "okay";
+-};
+-
+-/* SDHCI is used to control the SDIO for wireless */
+-&sdhci {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&emmc_gpio34>;
+-	status = "okay";
+-	bus-width = <4>;
+-	non-removable;
+-};
+-
+-/* SDHOST is used to drive the SD card */
+-&sdhost {
+-	pinctrl-names = "default";
+-	pinctrl-0 = <&sdhost_gpio48>;
+-	status = "okay";
+-	bus-width = <4>;
+-};
++#include "arm/bcm2837-rpi-3-b.dts"
+diff --git a/arch/arm64/boot/dts/broadcom/bcm2837.dtsi b/arch/arm64/boot/dts/broadcom/bcm2837.dtsi
+deleted file mode 100644
+index 2d5de6f0..0000000
+--- a/arch/arm64/boot/dts/broadcom/bcm2837.dtsi
++++ /dev/null
+@@ -1,86 +0,0 @@
+-#include "bcm283x.dtsi"
+-
+-/ {
+-	compatible = "brcm,bcm2837";
+-
+-	soc {
+-		ranges = <0x7e000000 0x3f000000 0x1000000>,
+-			 <0x40000000 0x40000000 0x00001000>;
+-		dma-ranges = <0xc0000000 0x00000000 0x3f000000>;
+-
+-		local_intc: local_intc {
+-			compatible = "brcm,bcm2836-l1-intc";
+-			reg = <0x40000000 0x100>;
+-			interrupt-controller;
+-			#interrupt-cells = <1>;
+-			interrupt-parent = <&local_intc>;
+-		};
+-	};
+-
+-	timer {
+-		compatible = "arm,armv7-timer";
+-		interrupt-parent = <&local_intc>;
+-		interrupts = <0>, // PHYS_SECURE_PPI
+-			     <1>, // PHYS_NONSECURE_PPI
+-			     <3>, // VIRT_PPI
+-			     <2>; // HYP_PPI
+-		always-on;
+-	};
+-
+-	cpus: cpus {
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		cpu0: cpu@0 {
+-			device_type = "cpu";
+-			compatible = "arm,cortex-a53";
+-			reg = <0>;
+-			enable-method = "spin-table";
+-			cpu-release-addr = <0x0 0x000000d8>;
+-		};
+-
+-		cpu1: cpu@1 {
+-			device_type = "cpu";
+-			compatible = "arm,cortex-a53";
+-			reg = <1>;
+-			enable-method = "spin-table";
+-			cpu-release-addr = <0x0 0x000000e0>;
+-		};
+-
+-		cpu2: cpu@2 {
+-			device_type = "cpu";
+-			compatible = "arm,cortex-a53";
+-			reg = <2>;
+-			enable-method = "spin-table";
+-			cpu-release-addr = <0x0 0x000000e8>;
+-		};
+-
+-		cpu3: cpu@3 {
+-			device_type = "cpu";
+-			compatible = "arm,cortex-a53";
+-			reg = <3>;
+-			enable-method = "spin-table";
+-			cpu-release-addr = <0x0 0x000000f0>;
+-		};
+-	};
+-};
+-
+-/* Make the BCM2835-style global interrupt controller be a child of the
+- * CPU-local interrupt controller.
+- */
+-&intc {
+-	compatible = "brcm,bcm2836-armctrl-ic";
+-	reg = <0x7e00b200 0x200>;
+-	interrupt-parent = <&local_intc>;
+-	interrupts = <8>;
+-};
+-
+-&cpu_thermal {
+-	coefficients = <(-538)	412000>;
+-};
+-
+-/* enable thermal sensor with the correct compatible property set */
+-&thermal {
+-	compatible = "brcm,bcm2837-thermal";
+-	status = "okay";
+-};
+diff --git a/arch/arm64/boot/dts/broadcom/bcm283x-rpi-smsc9514.dtsi b/arch/arm64/boot/dts/broadcom/bcm283x-rpi-smsc9514.dtsi
+deleted file mode 120000
+index dca7c05..0000000
+--- a/arch/arm64/boot/dts/broadcom/bcm283x-rpi-smsc9514.dtsi
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../arm/boot/dts/bcm283x-rpi-smsc9514.dtsi
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/broadcom/bcm283x-rpi-usb-host.dtsi b/arch/arm64/boot/dts/broadcom/bcm283x-rpi-usb-host.dtsi
+deleted file mode 120000
+index cbeebe3..0000000
+--- a/arch/arm64/boot/dts/broadcom/bcm283x-rpi-usb-host.dtsi
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../arm/boot/dts/bcm283x-rpi-usb-host.dtsi
+\ No newline at end of file
+diff --git a/arch/arm64/boot/dts/broadcom/bcm283x.dtsi b/arch/arm64/boot/dts/broadcom/bcm283x.dtsi
+deleted file mode 120000
+index 5f54e4c..0000000
+--- a/arch/arm64/boot/dts/broadcom/bcm283x.dtsi
++++ /dev/null
+@@ -1 +0,0 @@
+-../../../../arm/boot/dts/bcm283x.dtsi
+\ No newline at end of file
+-- 
+cgit v1.1
+
+From 4188ea2aeb6dd8f99ab77662f463e41bc464a704 Mon Sep 17 00:00:00 2001
+From: Stefan Wahren <stefan.wahren@i2se.com>
+Date: Sun, 30 Jul 2017 19:10:32 +0200
+Subject: ARM: bcm283x: Define UART pinmuxing on board level
+
+Until RPI 3 and Zero W the pl011 (uart0) was always on pin 14/15. So in
+order to take care of them and other boards in the future,
+we need to define UART pinmuxing on board level.
+
+This work based on Eric Anholt's patch "ARM: bcm2385: Don't force pl011
+onto pins 14/15." and Fabian Vogt's patch "ARM64: dts: bcm2837: assign
+uart0 to BT and uart1 to pin headers".
+
+Signed-off-by: Stefan Wahren <stefan.wahren@i2se.com>
+Reviewed-by: Eric Anholt <eric@anholt.net>
+Signed-off-by: Eric Anholt <eric@anholt.net>
+---
+ arch/arm/boot/dts/bcm2835-rpi-a-plus.dts |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-a.dts      |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-b-plus.dts |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-b.dts      |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi-zero.dts   |  6 ++++++
+ arch/arm/boot/dts/bcm2835-rpi.dtsi       |  2 +-
+ arch/arm/boot/dts/bcm2836-rpi-2-b.dts    |  6 ++++++
+ arch/arm/boot/dts/bcm2837-rpi-3-b.dts    | 10 ++++++++++
+ 9 files changed, 53 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts b/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
+index d070454..9f86649 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-a-plus.dts
+@@ -99,3 +99,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-a.dts b/arch/arm/boot/dts/bcm2835-rpi-a.dts
+index 46d078e..4b1af06 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-a.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-a.dts
+@@ -94,3 +94,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+index 432088e..a846f1e 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-plus.dts
+@@ -101,3 +101,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+index 4133bc2..e860964 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b-rev2.dts
+@@ -94,3 +94,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-b.dts b/arch/arm/boot/dts/bcm2835-rpi-b.dts
+index 4d56fe3..5d77f3f 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-b.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-b.dts
+@@ -89,3 +89,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_HIGH>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi-zero.dts b/arch/arm/boot/dts/bcm2835-rpi-zero.dts
+index 79a20d5..7036240 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi-zero.dts
++++ b/arch/arm/boot/dts/bcm2835-rpi-zero.dts
+@@ -103,3 +103,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2835-rpi.dtsi b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+index e55b362..e36c392 100644
+--- a/arch/arm/boot/dts/bcm2835-rpi.dtsi
++++ b/arch/arm/boot/dts/bcm2835-rpi.dtsi
+@@ -39,7 +39,7 @@
+ 	};
+ 
+ 	alt0: alt0 {
+-		brcm,pins = <4 5 7 8 9 10 11 14 15>;
++		brcm,pins = <4 5 7 8 9 10 11>;
+ 		brcm,function = <BCM2835_FSEL_ALT0>;
+ 	};
+ };
+diff --git a/arch/arm/boot/dts/bcm2836-rpi-2-b.dts b/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
+index bf19e8c..e8de414 100644
+--- a/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
++++ b/arch/arm/boot/dts/bcm2836-rpi-2-b.dts
+@@ -39,3 +39,9 @@
+ &hdmi {
+ 	hpd-gpios = <&gpio 46 GPIO_ACTIVE_LOW>;
+ };
++
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio14>;
++	status = "okay";
++};
+diff --git a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+index 972f14d..20725ca 100644
+--- a/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
++++ b/arch/arm/boot/dts/bcm2837-rpi-3-b.dts
+@@ -19,7 +19,17 @@
+ 	};
+ };
+ 
++/* uart0 communicates with the BT module */
++&uart0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart0_gpio32 &gpclk2_gpio43>;
++	status = "okay";
++};
++
++/* uart1 is mapped to the pin header */
+ &uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_gpio14>;
+ 	status = "okay";
+ };
+ 
+-- 
+cgit v1.1
+

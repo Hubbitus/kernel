@@ -1,0 +1,455 @@
+From c03847b4a603846903ee72a5e1baab03e0591423 Mon Sep 17 00:00:00 2001
+From: Ashok Kumar Sekar <asekar@redhat.com>
+Date: Fri, 23 Sep 2016 04:16:19 -0700
+Subject: [PATCH 1/8] PCI: Vulcan: AHCI PCI bar fix for Broadcom Vulcan early
+ silicon
+
+PCI BAR 5 is not setup correctly for the on-board AHCI
+controller on Broadcom's Vulcan processor. Added a quirk to fix BAR 5
+by using BAR 4's resources which are populated correctly but NOT used
+by the AHCI controller actually.
+
+Signed-off-by: Ashok Kumar Sekar <asekar@redhat.com>
+Signed-off-by: Jayachandran C <jchandra@broadcom.com>
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/pci/quirks.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
+index dc624fb34e72..94b7bdf63b19 100644
+--- a/drivers/pci/quirks.c
++++ b/drivers/pci/quirks.c
+@@ -3994,6 +3994,30 @@ DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9084,
+ 				quirk_bridge_cavm_thrx2_pcie_root);
+ 
+ /*
++ * PCI BAR 5 is not setup correctly for the on-board AHCI controller
++ * on Broadcom's Vulcan processor. Added a quirk to fix BAR 5 by
++ * using BAR 4's resources which are populated correctly and NOT
++ * actually used by the AHCI controller.
++ */
++static void quirk_fix_vulcan_ahci_bars(struct pci_dev *dev)
++{
++	struct resource *r =  &dev->resource[4];
++
++	if (!(r->flags & IORESOURCE_MEM) || (r->start == 0))
++		return;
++
++	/* Set BAR5 resource to BAR4 */
++	dev->resource[5] = *r;
++
++	/* Update BAR5 in pci config space */
++	pci_write_config_dword(dev, PCI_BASE_ADDRESS_5, r->start);
++
++	/* Clear BAR4's resource */
++	memset(r, 0, sizeof(*r));
++}
++DECLARE_PCI_FIXUP_HEADER(PCI_VENDOR_ID_BROADCOM, 0x9027, quirk_fix_vulcan_ahci_bars);
++
++/*
+  * Intersil/Techwell TW686[4589]-based video capture cards have an empty (zero)
+  * class code.  Fix it.
+  */
+-- 
+2.11.0
+
+From c84892e4b6b671fda7e499a0bb0787bd026de015 Mon Sep 17 00:00:00 2001
+From: Jayachandran C <jnair@caviumnetworks.com>
+Date: Fri, 10 Mar 2017 10:04:52 +0000
+Subject: [PATCH 2/8] ahci: thunderx2: Fix for errata that affects stop engine
+
+Apply workaround for this errata:
+  Synopsis: Resetting PxCMD.ST may hang the SATA device
+
+  Description: An internal ping-pong buffer state is not reset
+  correctly for an PxCMD.ST=0 command for a SATA channel. This
+  may cause the SATA interface to hang when a PxCMD.ST=0 command
+  is received.
+
+  Workaround: A SATA_BIU_CORE_ENABLE.sw_init_bsi must be asserted
+  by the driver whenever the PxCMD.ST needs to be de-asserted. This
+  will reset both the ports. So, it may not always work in a 2
+  channel SATA system.
+
+  Resolution: Fix in B0.
+
+Add the code to ahci_stop_engine() to do this. It is not easy to
+stop the other "port" since it is associated with a different AHCI
+interface. Please note that with this fix, SATA reset does not
+hang any more, but it can cause failures on the other interface
+if that is in active use.
+
+Unfortunately, we have nothing other the the CPU ID to check if the
+SATA block has this issue.
+
+Signed-off-by: Jayachandran C <jnair@caviumnetworks.com>
+[added check to restict to pci devs on the soc only]
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/ata/libahci.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
+
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index 3e286d86ab42..9116bba1b07d 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -669,6 +669,23 @@ int ahci_stop_engine(struct ata_port *ap)
+ 	tmp &= ~PORT_CMD_START;
+ 	writel(tmp, port_mmio + PORT_CMD);
+ 
++#ifdef CONFIG_ARM64
++	/* Rev Ax of Cavium CN99XX needs a hack for port stop */
++	if (dev_is_pci(ap->host->dev) &&
++	    to_pci_dev(ap->host->dev)->vendor == 0x14e4 &&
++	    to_pci_dev(ap->host->dev)->device == 0x9027 &&
++	    MIDR_IS_CPU_MODEL_RANGE(read_cpuid_id(),
++			MIDR_CPU_MODEL(ARM_CPU_IMP_BRCM, BRCM_CPU_PART_VULCAN),
++			MIDR_CPU_VAR_REV(0, 0),
++			MIDR_CPU_VAR_REV(0, MIDR_REVISION_MASK))) {
++		tmp = readl(hpriv->mmio + 0x8000);
++		writel(tmp | (1 << 26), hpriv->mmio + 0x8000);
++		udelay(1);
++		writel(tmp & ~(1 << 26), hpriv->mmio + 0x8000);
++		dev_warn(ap->host->dev, "CN99XX stop engine fix applied!\n");
++	}
++#endif
++
+ 	/* wait for engine to stop. This could be as long as 500 msec */
+ 	tmp = ata_wait_register(ap, port_mmio + PORT_CMD,
+ 				PORT_CMD_LIST_ON, PORT_CMD_LIST_ON, 1, 500);
+-- 
+2.11.0
+
+From 98a39621952f6a13c5198e79f1c080ea6fc1d092 Mon Sep 17 00:00:00 2001
+From: Jayachandran C <jnair@caviumnetworks.com>
+Date: Sun, 22 Feb 1998 18:42:42 -0800
+Subject: [PATCH 3/8] ahci: thunderx2: stop engine fix update
+
+The current reset fix fails during continuous reboot test. The failure
+happens when both the on-board SATA slots are used and when one of the
+controllers are reset.
+
+The latest ThunderX2 firmware (3.1) enables hardware error interrupts and
+when the reset fix fails, we get a hang with the print:
+[   14.839308] sd 1:0:0:0: [sdb] 468862128 512-byte logical blocks: (240 GB/224 GiB)
+[   14.846796] sd 1:0:0:0: [sdb] 4096-byte physical blocks
+[   14.852036] sd 1:0:0:0: [sdb] Write Protect is off
+[   14.856843] sd 1:0:0:0: [sdb] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+[   14.866022] ata2.00: Enabling discard_zeroes_data
+
+        *** NBU BAR Error 0x1e25c ***
+         AddrLo 0x1d80180 AddrHi 0x0
+
+To fix this issue, update the SATA reset fix to increase the delays between register writes.
+
+Signed-off-by: Jayachandran C <jnair@caviumnetworks.com>
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/ata/libahci.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index 9116bba1b07d..1d3e614bad2b 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -679,10 +679,11 @@ int ahci_stop_engine(struct ata_port *ap)
+ 			MIDR_CPU_VAR_REV(0, 0),
+ 			MIDR_CPU_VAR_REV(0, MIDR_REVISION_MASK))) {
+ 		tmp = readl(hpriv->mmio + 0x8000);
++		udelay(100);
+ 		writel(tmp | (1 << 26), hpriv->mmio + 0x8000);
+-		udelay(1);
++		udelay(100);
+ 		writel(tmp & ~(1 << 26), hpriv->mmio + 0x8000);
+-		dev_warn(ap->host->dev, "CN99XX stop engine fix applied!\n");
++		dev_warn(ap->host->dev, "CN99XX SATA reset workaround applied\n");
+ 	}
+ #endif
+ 
+-- 
+2.11.0
+
+From 33c107d2a2b570cd5246262108ad07cc102e9fcd Mon Sep 17 00:00:00 2001
+From: Robert Richter <rrichter@cavium.com>
+Date: Thu, 16 Mar 2017 18:01:59 +0100
+Subject: [PATCH 4/8] iommu/arm-smmu, ACPI: Enable Cavium SMMU-v2
+
+In next IORT spec release there will be a definition of a Cavium
+specific model. Until then, enable the Cavium SMMU using cpu id
+registers. All versions of Cavium's SMMUv2 implementation must be
+enabled.
+
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/iommu/arm-smmu.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/arm-smmu.c b/drivers/iommu/arm-smmu.c
+index d42cad5a3d52..37aee96ccc0e 100644
+--- a/drivers/iommu/arm-smmu.c
++++ b/drivers/iommu/arm-smmu.c
+@@ -53,6 +53,8 @@
+ 
+ #include <linux/amba/bus.h>
+ 
++#include <asm/cputype.h>
++
+ #include "io-pgtable.h"
+ #include "arm-smmu-regs.h"
+ 
+@@ -1871,6 +1873,24 @@ static const struct of_device_id arm_smmu_of_match[] = {
+ MODULE_DEVICE_TABLE(of, arm_smmu_of_match);
+ 
+ #ifdef CONFIG_ACPI
++
++static int acpi_smmu_enable_cavium(struct arm_smmu_device *smmu, int ret)
++{
++	u32 cpu_model;
++
++	if (!IS_ENABLED(CONFIG_ARM64))
++		return ret;
++
++	cpu_model = read_cpuid_id() & MIDR_CPU_MODEL_MASK;
++	if (cpu_model != MIDR_THUNDERX)
++		return ret;
++
++	smmu->version = ARM_SMMU_V2;
++	smmu->model = CAVIUM_SMMUV2;
++
++	return 0;
++}
++
+ static int acpi_smmu_get_data(u32 model, struct arm_smmu_device *smmu)
+ {
+ 	int ret = 0;
+@@ -1901,7 +1921,7 @@ static int acpi_smmu_get_data(u32 model, struct arm_smmu_device *smmu)
+ 		ret = -ENODEV;
+ 	}
+ 
+-	return ret;
++	return acpi_smmu_enable_cavium(smmu, ret);
+ }
+ 
+ static int arm_smmu_device_acpi_probe(struct platform_device *pdev,
+-- 
+2.11.0
+
+From 5523edb06c95d7ac9e81d94366e71d929c08ebd4 Mon Sep 17 00:00:00 2001
+From: Robert Richter <rrichter@cavium.com>
+Date: Wed, 12 Apr 2017 15:06:03 +0200
+Subject: [PATCH 5/8] iommu: Print a message with the default domain type
+ created
+
+There are several ways the bypass mode can be enabled. With commit
+
+ fccb4e3b8ab0 iommu: Allow default domain type to be set on the kernel command line
+
+there is the option to switch into bypass mode. And, depending on
+devicetree options, bypass mode can be also enabled. This makes it
+hard to determine if direct mapping is enabled. Print message with the
+default domain type case.
+
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/iommu/iommu.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 3f6ea160afed..7aaafaca6baf 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -599,7 +599,9 @@ int iommu_group_add_device(struct iommu_group *group, struct device *dev)
+ 
+ 	trace_add_device_to_group(group->id, dev);
+ 
+-	pr_info("Adding device %s to group %d\n", dev_name(dev), group->id);
++	pr_info("Adding device %s to group %d, default domain type %d\n",
++		dev_name(dev), group->id,
++		group->default_domain ? group->default_domain->type : -1);
+ 
+ 	return 0;
+ 
+-- 
+2.11.0
+
+From 71e0ad5ab606077c24a96d69f4bfed58d7ef16c7 Mon Sep 17 00:00:00 2001
+From: Robert Richter <rrichter@cavium.com>
+Date: Thu, 4 May 2017 17:48:48 +0200
+Subject: [PATCH 6/8] iommu, aarch64: Set bypass mode per default
+
+We see a performance degradation if smmu is enabled in non-bypass mode.
+This is a problem in the kernel's implememntation. Until that is solved,
+enable smmu in bypass mode per default.
+
+We have tested that SMMU passthrough mode doesn't effect VFIO on both
+CN88xx and CN99xx and haven't found any issues.
+
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/iommu/iommu.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index 7aaafaca6baf..24de0b934221 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -36,7 +36,12 @@
+ 
+ static struct kset *iommu_group_kset;
+ static DEFINE_IDA(iommu_group_ida);
++
++#ifdef CONFIG_ARM64
++static unsigned int iommu_def_domain_type = IOMMU_DOMAIN_IDENTITY;
++#else
+ static unsigned int iommu_def_domain_type = IOMMU_DOMAIN_DMA;
++#endif
+ 
+ struct iommu_callback_data {
+ 	const struct iommu_ops *ops;
+-- 
+2.11.0
+
+From 27f103963f926d6a7a8adaad1ee227fd3b51f591 Mon Sep 17 00:00:00 2001
+From: Robert Richter <rrichter@cavium.com>
+Date: Wed, 12 Apr 2017 10:31:15 +0200
+Subject: [PATCH 7/8] iommu/arm-smmu, ACPI: Enable Cavium SMMU-v3
+
+In next IORT spec release there will be a definition of a Cavium
+specific model. Until then, enable the Cavium SMMU using cpu id
+registers. Early silicon versions (A1) of Cavium's CN99xx SMMUv3
+implementation must be enabled. For later silicon versions (B0) the
+iort change will be in place.
+
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ drivers/acpi/arm64/iort.c   | 16 ++++++++++++++--
+ drivers/iommu/arm-smmu-v3.c | 19 +++++++++++++++++++
+ 2 files changed, 33 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/acpi/arm64/iort.c b/drivers/acpi/arm64/iort.c
+index a3215ee671c1..b603af92eec2 100644
+--- a/drivers/acpi/arm64/iort.c
++++ b/drivers/acpi/arm64/iort.c
+@@ -26,6 +26,8 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
++#include <asm/cputype.h>
++
+ #define IORT_TYPE_MASK(type)	(1 << (type))
+ #define IORT_MSI_TYPE		(1 << ACPI_IORT_NODE_ITS_GROUP)
+ #define IORT_IOMMU_TYPE		((1 << ACPI_IORT_NODE_SMMU) |	\
+@@ -824,13 +826,22 @@ static int __init arm_smmu_v3_count_resources(struct acpi_iort_node *node)
+ 	return num_res;
+ }
+ 
++static bool is_cavium_cn99xx_smmu_v3(void)
++{
++	u32 cpu_model = read_cpuid_id() & MIDR_CPU_MODEL_MASK;
++
++	return cpu_model == MIDR_CPU_MODEL(ARM_CPU_IMP_BRCM,
++					   BRCM_CPU_PART_VULCAN);
++}
++
+ static bool arm_smmu_v3_is_combined_irq(struct acpi_iort_smmu_v3 *smmu)
+ {
+ 	/*
+ 	 * Cavium ThunderX2 implementation doesn't not support unique
+ 	 * irq line. Use single irq line for all the SMMUv3 interrupts.
+ 	 */
+-	if (smmu->model != ACPI_IORT_SMMU_V3_CAVIUM_CN99XX)
++	if (smmu->model != ACPI_IORT_SMMU_V3_CAVIUM_CN99XX
++	    && !is_cavium_cn99xx_smmu_v3())
+ 		return false;
+ 
+ 	/*
+@@ -848,7 +859,8 @@ static unsigned long arm_smmu_v3_resource_size(struct acpi_iort_smmu_v3 *smmu)
+ 	 * Override the size, for Cavium ThunderX2 implementation
+ 	 * which doesn't support the page 1 SMMU register space.
+ 	 */
+-	if (smmu->model == ACPI_IORT_SMMU_V3_CAVIUM_CN99XX)
++	if (smmu->model == ACPI_IORT_SMMU_V3_CAVIUM_CN99XX
++	    || is_cavium_cn99xx_smmu_v3())
+ 		return SZ_64K;
+ 
+ 	return SZ_128K;
+diff --git a/drivers/iommu/arm-smmu-v3.c b/drivers/iommu/arm-smmu-v3.c
+index 568c400eeaed..d147cb5c7309 100644
+--- a/drivers/iommu/arm-smmu-v3.c
++++ b/drivers/iommu/arm-smmu-v3.c
+@@ -39,6 +39,8 @@
+ 
+ #include <linux/amba/bus.h>
+ 
++#include <asm/cputype.h>
++
+ #include "io-pgtable.h"
+ 
+ /* MMIO registers */
+@@ -2659,6 +2661,21 @@ static int arm_smmu_device_hw_probe(struct arm_smmu_device *smmu)
+ }
+ 
+ #ifdef CONFIG_ACPI
++
++static void acpi_smmu_enable_cavium(struct arm_smmu_device *smmu)
++{
++	u32 cpu_model;
++
++	if (!IS_ENABLED(CONFIG_ARM64))
++		return;
++
++	cpu_model = read_cpuid_id() & MIDR_CPU_MODEL_MASK;
++	if (cpu_model != MIDR_CPU_MODEL(ARM_CPU_IMP_BRCM, BRCM_CPU_PART_VULCAN))
++		return;
++
++	smmu->options |= ARM_SMMU_OPT_PAGE0_REGS_ONLY;
++}
++
+ static void acpi_smmu_get_options(u32 model, struct arm_smmu_device *smmu)
+ {
+ 	switch (model) {
+@@ -2670,6 +2687,8 @@ static void acpi_smmu_get_options(u32 model, struct arm_smmu_device *smmu)
+ 		break;
+ 	}
+ 
++	acpi_smmu_enable_cavium(smmu);
++
+ 	dev_notice(smmu->dev, "option mask 0x%x\n", smmu->options);
+ }
+ 
+-- 
+2.11.0
+
+From ff677cc625b52b93351dd73d7881251067f0e976 Mon Sep 17 00:00:00 2001
+From: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
+Date: Wed, 20 Aug 2014 15:10:58 -0700
+Subject: [PATCH 8/8] arm64: gicv3: its: Increase FORCE_MAX_ZONEORDER for
+ Cavium ThunderX
+
+In case of ARCH_THUNDER, there is a need to allocate the GICv3 ITS table
+which is bigger than the allowed max order. So we are forcing it only in
+case of 4KB page size.
+
+Signed-off-by: Radha Mohan Chintakuntla <rchintakuntla@cavium.com>
+[rric: use ARM64_4K_PAGES since we have now ARM64_16K_PAGES, change order]
+Signed-off-by: Robert Richter <rrichter@cavium.com>
+---
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 2c3e2d693d76..023867378f45 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -784,6 +784,7 @@ config FORCE_MAX_ZONEORDER
+ 	default "14" if (ARM64_64K_PAGES && TRANSPARENT_HUGEPAGE)
+ 	default "13" if (ARCH_THUNDER && !ARM64_64K_PAGES)
+ 	default "12" if (ARM64_16K_PAGES && TRANSPARENT_HUGEPAGE)
++	default "13" if (ARM64_4K_PAGES && ARCH_THUNDER)
+ 	default "11"
+ 	help
+ 	  The kernel memory allocator divides physically contiguous memory
+-- 
+2.11.0
+

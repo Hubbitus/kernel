@@ -20,8 +20,8 @@ index 3d22fc3..07aec76 100644
 -	struct scsi_device *sdp = sdkp->device;
 +	struct scsi_device *sdp;
  	struct request_queue *q = sdkp->disk->queue;
+ 	sector_t old_capacity = sdkp->capacity;
  	unsigned char *buffer;
- 	unsigned int dev_max, rw_max;
 @@ -2833,6 +2833,11 @@ static int sd_revalidate_disk(struct gendisk *disk)
  	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp,
  				      "sd_revalidate_disk\n"));

@@ -1,0 +1,3 @@
+#time fedpkg --dist f27 build --scratch --srpm --arch=x86_64
+
+time fedpkg --dist f27 build --scratch --srpm

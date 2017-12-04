@@ -1,0 +1,80 @@
+From 27b9d46d25c873b351757c44ce523bf0ede1d08e Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Mon, 14 Aug 2017 11:02:59 +0200
+Subject: [PATCH 2/2] power: supply: max17042_battery: Fix ACPI interrupt
+ issues
+
+On some x86/ACPI boards the DSDT defines an ACPI event handler for
+the max17047 IRQ, this causes several problems:
+
+1) We need to share the IRQ to avoid an error getting it
+
+2) Even of we are willing to share, we may fail to share because some
+   DSDTs claim it exclusivly
+
+3) If we are unable to share the IRQ, or the IRQ is only listed as an
+   ACPI event source and not in the max1704 firmware node, then the
+   charge threshold IRQ (which is used to give an IRQ every 1 percent
+   charge change) becomes a problem, the ACPI event handler will not
+   update this to the next 1 percent threshold, so the IRQ keeps firing
+   and we get an IRQ storm pegging 1 CPU core.
+
+   This happens despite the max17042 driver not setting the charge
+   threshold because Windows uses it and leaves it set on reboot.
+
+   So if we are unable to get the IRQ we need to reprogram the
+   charge threshold to its disabled setting.
+
+This commit fixes al of the above, while at it it also makes the error
+msg when being unable to get the IRQ consistent with other messages.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ drivers/power/supply/max17042_battery.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/power/supply/max17042_battery.c b/drivers/power/supply/max17042_battery.c
+index b2ddb7eb69c6..18a44e4ed6ff 100644
+--- a/drivers/power/supply/max17042_battery.c
++++ b/drivers/power/supply/max17042_battery.c
+@@ -1050,11 +1050,18 @@ static int max17042_probe(struct i2c_client *client,
+ 	}
+ 
+ 	if (client->irq) {
++		unsigned int flags = IRQF_TRIGGER_FALLING | IRQF_ONESHOT;
++
++		/*
++		 * On ACPI systems the IRQ may be handled by ACPI-event code,
++		 * so we need to share (if the ACPI code is willing to share).
++		 */
++		if (acpi_id)
++			flags |= IRQF_SHARED | IRQF_PROBE_SHARED;
++
+ 		ret = devm_request_threaded_irq(&client->dev, client->irq,
+ 						NULL,
+-						max17042_thread_handler,
+-						IRQF_TRIGGER_FALLING |
+-						IRQF_ONESHOT,
++						max17042_thread_handler, flags,
+ 						chip->battery->desc->name,
+ 						chip);
+ 		if (!ret) {
+@@ -1064,10 +1071,13 @@ static int max17042_probe(struct i2c_client *client,
+ 			max17042_set_soc_threshold(chip, 1);
+ 		} else {
+ 			client->irq = 0;
+-			dev_err(&client->dev, "%s(): cannot get IRQ\n",
+-				__func__);
++			if (ret != -EBUSY)
++				dev_err(&client->dev, "Failed to get IRQ\n");
+ 		}
+ 	}
++	/* Not able to update the charge threshold when exceeded? -> disable */
++	if (!client->irq)
++		regmap_write(chip->regmap, MAX17042_SALRT_Th, 0xff00);
+ 
+ 	regmap_read(chip->regmap, MAX17042_STATUS, &val);
+ 	if (val & STATUS_POR_BIT) {
+-- 
+2.13.4
+

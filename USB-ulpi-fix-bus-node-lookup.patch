@@ -1,0 +1,48 @@
+From patchwork Sat Nov 11 15:31:18 2017
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: USB: ulpi: fix bus-node lookup
+From: Johan Hovold <johan@kernel.org>
+X-Patchwork-Id: 10054387
+Message-Id: <20171111153118.16038-1-johan@kernel.org>
+To: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+ Peter Robinson <pbrobinson@gmail.com>, Johan Hovold <johan@kernel.org>,
+ stable <stable@vger.kernel.org>
+Date: Sat, 11 Nov 2017 16:31:18 +0100
+
+Fix bus-node lookup during registration, which ended up searching the whole
+device tree depth-first starting at the parent (or grand parent) rather
+than just matching on its children.
+
+To make things worse, the parent (or grand-parent) node could end being
+prematurely freed as well.
+
+Fixes: ef6a7bcfb01c ("usb: ulpi: Support device discovery via DT")
+Reported-by: Peter Robinson <pbrobinson@gmail.com>
+Reported-by: Stephen Boyd <sboyd@codeaurora.org>
+Cc: stable <stable@vger.kernel.org>     # 4.10
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
+ drivers/usb/common/ulpi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/common/ulpi.c b/drivers/usb/common/ulpi.c
+index 8b351444cc40..9a2ab6751a23 100644
+--- a/drivers/usb/common/ulpi.c
++++ b/drivers/usb/common/ulpi.c
+@@ -180,9 +180,9 @@ static int ulpi_of_register(struct ulpi *ulpi)
+ 	/* Find a ulpi bus underneath the parent or the grandparent */
+ 	parent = ulpi->dev.parent;
+ 	if (parent->of_node)
+-		np = of_find_node_by_name(parent->of_node, "ulpi");
++		np = of_get_child_by_name(parent->of_node, "ulpi");
+ 	else if (parent->parent && parent->parent->of_node)
+-		np = of_find_node_by_name(parent->parent->of_node, "ulpi");
++		np = of_get_child_by_name(parent->parent->of_node, "ulpi");
+ 	if (!np)
+ 		return 0;
+ 

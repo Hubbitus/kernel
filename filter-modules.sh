@@ -20,21 +20,21 @@ chardrvs="mwave pcmcia"
 
 netdrvs="appletalk can dsa hamradio ieee802154 irda ppp slip usb wireless"
 
-ethdrvs="3com adaptec alteon amd atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
+ethdrvs="3com adaptec alteon amd aquantia atheros broadcom cadence calxeda chelsio cisco dec dlink emulex icplus marvell mellanox neterion nvidia oki-semi packetengines qlogic rdc renesas sfc silan sis smsc stmicro sun tehuti ti wiznet xircom"
 
 inputdrvs="gameport tablet touchscreen"
 
-scsidrvs="aacraid aic7xxx aic94xx be2iscsi bfa bnx2i bnx2fc csiostor cxgbi esas2r fcoe fnic isci libsas lpfc megaraid mpt2sas mpt3sas mvsas pm8001 qla2xxx qla4xxx sym53c8xx_2 ufs"
+scsidrvs="aacraid aic7xxx aic94xx be2iscsi bfa bnx2i bnx2fc csiostor cxgbi esas2r fcoe fnic isci libsas lpfc megaraid mpt2sas mpt3sas mvsas pm8001 qla2xxx qla4xxx sym53c8xx_2 ufs qedf"
 
 usbdrvs="atm image misc serial wusbcore"
 
-fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs udf ufs"
+fsdrvs="affs befs coda cramfs dlm ecryptfs hfs hfsplus jfs minix ncpfs nilfs2 ocfs2 reiserfs romfs squashfs sysv ubifs ufs"
 
 netprots="6lowpan appletalk atm ax25 batman-adv bluetooth can dccp dsa ieee802154 irda l2tp mac80211 mac802154 mpls netrom nfc rds rfkill rose sctp wireless"
 
 drmdrvs="amd ast gma500 i2c i915 mgag200 nouveau radeon via "
 
-singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qla1280 9pnet_rdma rpcrdma nvmet-rdma nvme-rdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user sbp_target cxgbit iw_cxgb3 iw_cxgb4 cxgb3i cxgb3i cxgb3i_ddp cxgb4i chcr"
+singlemods="ntb_netdev iscsi_ibft iscsi_boot_sysfs megaraid pmcraid qedi qla1280 9pnet_rdma rpcrdma nvmet-rdma nvme-rdma hid-picolcd hid-prodikeys hwa-hc hwpoison-inject hid-sensor-hub target_core_user sbp_target cxgbit iw_cxgb3 iw_cxgb4 cxgb3i cxgb3i cxgb3i_ddp cxgb4i chcr parport_serial"
 
 # Grab the arch-specific filter list overrides
 source ./filter-$2.sh

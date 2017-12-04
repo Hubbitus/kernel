@@ -1,1 +1,0 @@
-fedpkg --dist f25 build --scratch --srpm --arch=x86_64

@@ -1,0 +1,2 @@
+
+time copr build hubbitus/kernel-pf $( fedpkg --release f27 srpm | grep -oP '(?<= ).+\.src\.rpm' )

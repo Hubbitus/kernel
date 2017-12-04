@@ -31,30 +31,29 @@ by make verrel
 config heirarchy.
 -----------------
 Instead of having to maintain a config file for every arch variant we build on,
-the kernel spec uses a nested system of configs.  At the top level, is
-config-generic. Add options here that should be present in every possible
-config on all architectures.
+the kernel spec uses a nested system of configs. Each option CONFIG_FOO is
+represented by a single file named CONFIG_FOO which contains the state (=y, =m,
+=n). These options are collected in the folder baseconfig. Architecture specifi
+options are set in nested folders. An option set in a nested folder will
+override the same option set in one of the higher levels.
 
-Beneath this are per-arch overrides. For example config-x86-generic add
-additional x86 specific options, and also _override_ any options that were
-set in config-generic.
+The individual CONFIG_FOO files only exist in the pkg-git repository. The RPM
+contains kernel-foo.config files which are the result of combining all the
+CONFIG_FOO files. The files are combined by running build_configs.sh. This
+script _must_ be run each time one of the options is changed.
 
-The heirarchy looks like this..
+Example flow:
 
-                           config-generic
-                                 |
-                         config-x86-generic
-                         |                |
-             config-x86-32-generic   config-x86-64-generic
+# Enable the option CONFIG_ABC123 as a module for all arches
+echo "CONFIG_ABC123=m" > baseconfig/CONFIG_ABC1234
+# enable the option CONFIG_XYZ321 for only x86
+echo "# CONFIG_XYZ321 is not set" > baseconfig/CONFIG_XYZ321
+echo "CONFIG_XYZ321=m" > baseconfig/x86/CONFIG_XYZ321
+# regenerate the combined config files
+./build_configs.sh
 
-An option set in a lower level will override the same option set in one
-of the higher levels.
-
-
-There exist two additional overrides, config-debug, and config-nodebug,
-which override -generic, and the per-arch overrides. It is documented
-further below.
-
+The file config_generation gives a listing of what folders go into each
+config file generated.
 
 debug options.
 --------------
@@ -69,14 +68,11 @@ typically been run already, which sets up the following..
 If we are building for rawhide, 'make debug' has been run, which changes
 the status quo to:
 - We only build one kernel 'kernel'
-- The debug options from 'config-debug' are always turned on.
+- The debug options are always turned on.
 This is done to increase coverage testing, as not many people actually
 run kernel-debug.
 
-To add new debug options, add an option to _both_ config-debug and config-nodebug,
-and also new stanzas to the Makefile 'debug' and 'release' targets.
-
-Sometimes debug options get added to config-generic, or per-arch overrides
-instead of config-[no]debug. In this instance, the options should have no
-discernable performance impact, otherwise they belong in the debug files.
-
+The debug options are managed in a separate heierarchy under debugconfig. This
+works in a similar manner to baseconfig. More deeply nested folders, again,
+override options. The file config_generation gives a listing of what folders
+go into each config file generated.

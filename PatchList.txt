@@ -60,8 +60,6 @@ disable-i8042-check-on-apple-mac.patch
 
 lis3-improve-handling-of-null-rate.patch
 
-watchdog-Disable-watchdog-on-virtual-machines.patch
-
 scsi-sd_revalidate_disk-prevent-NULL-ptr-deref.patch
 
 criu-no-expert.patch
